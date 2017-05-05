@@ -23,6 +23,13 @@ function errRemoveClientContact(){
 }
 
 </script>
+
+
+ <div class="side_mask">
+      <div class="proj_close"></div>
+ </div>
+    
+    
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -129,44 +136,7 @@ function errRemoveClientContact(){
                 <th><i class="fa fa-remove"></i></th>
               </tr>
             </thead>
-            <tbody class="ui-sortable">
-              <tr>
-                <!-- <td><a href="javascript:void(0)"><i class="fa fa-ellipsis-h"></i></a></td> -->
-                <td>
-                  <div class="inputCustom">
-                    <input type="text" class="calendar paddingRight" id="0sdate-input" placeholder="Start Date" name="0invoiceStartDate">
-                    <input type="text" class="calendar paddingLeft" id="0edate-input" placeholder="End Date" name="0invoiceEndDate">
-                  </div>
-                </td>
-                <td>
-                  <div class="tbldata-dotdot-vsm select-field">
-                    <select class="form-control input-sm" id="0candidateId" name="0candidate">
-                    <option value="">--selcet Associate--</option>
-                    </select>
-                  </div>
-                </td>
-                <td>
-                  <div class="tbldata-dotdot-100 select-field">
-                    <select class="form-control input-sm" id="0sow" name="0sow">
-                      <option value="">selcet Sow</option>
-                    </select>
-                  </div>
-                </td>
-                <td>
-                  <div class="tbldata-dotdot-100">
-                    <input type="text" class="form-control input-sm" placeholder="Rate" name="0rate" id="0rate">
-                  </div>
-                </td>
-                <td>
-                  <div class="tbldata-dotdot-vsm">
-                    <input type="text" class="form-control input-sm inline_field" placeholder="HH:MM" id="0totalHours" name="0totalHours" onblur="singleRowTotalhour();" >
-                  </div>
-                </td>
-                <td><div class="tblminwidth-75 text-right"  ><input type="text" name="0amount" id="0amount" placeholder = "00:00" class="ReadTextFli" readinly> </div></td>
-                <td><a class="text-danger tblminwidth-50" title="Remove row"><i class="fa fa-remove"></i></a></td>
-              </tr>
-               
-            </tbody>
+            
             <tfoot class="table_footer">
               <tr>
                 <td colspan="4"></td>
@@ -184,17 +154,18 @@ function errRemoveClientContact(){
           <div class="clearfix invoice_other">
           <div class="col-md-5">
             <div class="clearfix mb">
-              <button type="button" class="btn btn-sm btn-primary mr" onclick="addInvoice();"><i class="fa fa-plus paddingRight"></i>Add</button>
-              <!-- <button type="button" class="btn btn-sm btn-default" onclick="deleteRow()"><i class="fa fa-close paddingRight"></i>Clear</button> -->
+              <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>
             </div>
-           <!--  <div class="clearfix mb"><p>Do you want to raise separate invoice for each item</p>
-              <label class="paddingRight">
-                <input type="radio" value="Y" id="seperateInvoice" name="seperateInvoice">
-                <strong class="paddingLeft">Yes</strong></label>
-              <label class="paddingLeft">
-                <input type="radio" value="N" id="seperateInvoice" name="seperateInvoice">
-                <strong class="paddingLeft">No</strong></label>
-            </div> -->
+            
+            
+             <div class="new_side_wrap">
+		         <div class="new_side_wrap_inn">
+			         <div class="new_side_wrap_cta">
+			         	<div id="associatesListDiv"></div>
+			         </div>
+		         </div>
+	         </div>
+          
             <div class="clearfix mb">
               <label><strong>Message</strong></label>
               <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
@@ -324,8 +295,9 @@ function errRemoveClientContact(){
 <!-- ********************************************* Add Rows Invoice Table functionality start  ************************************************************ -->	
 	<div id="divTaskTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm select-field">
-       <select class="form-control input-sm" id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate" onchange="getSow(REPLACEROWID)"> </select>
-       </div>
+	   <input type="text" class="form-control input-sm" readonly="readonly" id="REPLACEROWIDcandidateName"  > </inmput>
+       <input type="hidden" class="form-control input-sm"  id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate"> </inmput>
+    </div>
 	</div>
 	
 	<div id="divTaskTd3" style="display: none; float: left;">
@@ -396,22 +368,30 @@ function errRemoveClientContact(){
 	 	 }	    	 
 	    	 
 	    	 //===================
+	    		 
+  		 var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	     $("#maxTsRowNum").val(maxTsRowNum - 1);
 	    
 	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	     
 	     var afterDiscountTotal = $("#afterDiscountTotal").val();
+	     
 	     
 		    for(var i=0; i< maxRowNum; i++){
 		         var taxType = $("#"+i+"taxdiscountType").val();
+		        
 		         var taxValue = $("#"+i+"taxdiscountvalue").val();
 		         var taxTotal = $("#"+i+"taxTotal").val();
-		         
-		            var tot = $("#grandTotal").val();
+		         var tot = $("#grandTotal").val();
 		             
-		            var first=parseFloat(tot);
-		             var second=parseFloat(taxTotal); 
-		             var total  = (first+second);
-	                
-		             $("#grandTotal").val(total);
+	             var first=parseFloat(tot);
+	             var second=parseFloat(taxTotal); 
+	             
+	             
+	             var total  = (first+second);
+	             
+                
+	             $("#grandTotal").val(total);
 		    }
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
@@ -422,82 +402,101 @@ function errRemoveClientContact(){
 		}
 		
 		
-		
 	
 	}
 </script>
 
   <script type="text/javascript">
 	function addInvoice() {
-		var checkMaxTsRowNum = $("#maxTsRowNum").val();
-		var tbl = document.getElementById("addInvoiceTbl");
-		var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-		$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
-  
 		
-		var row = tbl.insertRow(maxRowNum);
-		row.setAttribute("id", "divTsRow" + maxRowNum);
+		var oTable = $('#example').dataTable();
+		var rowcollection =  oTable.$("input[name='associates[]']:checked", {"page": "all"});
 		
-		var text = "";
-		var cell0 = row.insertCell(0);
-		text = text+"<div  class='inputCustom'>";
-		text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'invoiceStartDate" placeholder="Start Date">';
-		text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'invoiceEndDate" placeholder="End Date">';
-		text = text+'</div>';
-		cell0.innerHTML = text;
+		   var internalOutput = "";
+		   rowcollection.each(function(index,elem){
+			   
+		   var checkbox_value = $(elem).val().split(",");
+		   
+			var checkMaxTsRowNum = $("#maxTsRowNum").val();
+			var tbl = document.getElementById("addInvoiceTbl");
+			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+	  
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divTsRow" + maxRowNum);
+			
+			var text = "";
+			var cell0 = row.insertCell(0);
+			text = text+"<div  class='inputCustom'>";
+			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'invoiceStartDate" placeholder="Start Date">';
+			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'invoiceEndDate" placeholder="End Date">';
+			text = text+'</div>';
+			cell0.innerHTML = text;
+			
+			$( "#"+maxRowNum+"sdate-input" ).datepicker({
+				  changeMonth: true,
+			      changeYear: true,
+			      dateFormat : 'dd-mm-yy',
+			      minDate: 0  ,
+				  onSelect : function(selected) {
+			 	  }
+			    });
+			
+			$( "#"+maxRowNum+"edate-input" ).datepicker({
+				  changeMonth: true,
+			      changeYear: true,
+			      dateFormat : 'dd-mm-yy',
+			      minDate: 0  ,
+				  onSelect : function(selected) {
+			 	  }
+			    });
+			
+			
+			var cell1 = row.insertCell(1);
+			var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+			divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divTsTd2Str = divTsTd2Str.replace(/PRICECALCULATION/g,("")); 
+			cell1.innerHTML = divTsTd2Str;
+			
+			var cell1 = row.insertCell(2);
+			var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+			divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd3Str;
+			
+			var cell1 = row.insertCell(3);
+			var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+			divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd4Str;
+			
+			var cell1 = row.insertCell(4);
+			var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+			divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd5Str;
+			
+			
+			var cell1 = row.insertCell(5);
+			var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+			divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd6Str;
+			
+			var cell1 = row.insertCell(6);
+			var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+			divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divTsTd7Str;
+			
+			
+			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
+			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
+			getSow(maxRowNum);
+			maskme(); 
+			
+		   });
 		
-		$( "#"+maxRowNum+"sdate-input" ).datepicker({
-			  changeMonth: true,
-		      changeYear: true,
-		      dateFormat : 'dd-mm-yy',
-		      minDate: 0  ,
-			  onSelect : function(selected) {
-		 	  }
-		    });
 		
-		$( "#"+maxRowNum+"edate-input" ).datepicker({
-			  changeMonth: true,
-		      changeYear: true,
-		      dateFormat : 'dd-mm-yy',
-		      minDate: 0  ,
-			  onSelect : function(selected) {
-		 	  }
-		    });
-		
-		
-		var cell1 = row.insertCell(1);
-		var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
-		divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd2Str = divTsTd2Str.replace(/PRICECALCULATION/g,("")); 
-		cell1.innerHTML = divTsTd2Str;
-		
-		var cell1 = row.insertCell(2);
-		var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
-		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell1.innerHTML = divTsTd3Str;
-		
-		var cell1 = row.insertCell(3);
-		var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
-		divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell1.innerHTML = divTsTd4Str;
-		
-		var cell1 = row.insertCell(4);
-		var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
-		divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell1.innerHTML = divTsTd5Str;
-		
-		
-		var cell1 = row.insertCell(5);
-		var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
-		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell1.innerHTML = divTsTd6Str;
-		
-		var cell1 = row.insertCell(6);
-		var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
-		divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell1.innerHTML = divTsTd7Str;
-		getUserList(maxRowNum);
-		maskme(); 
+	    $(".new_side_wrap").removeClass("new_side_wrap_active");
+ 		$(".side_mask").fadeOut(200);
+ 		$("body").css('overflow-y', 'auto')
 	}
   </script>
   
@@ -530,6 +529,114 @@ function errRemoveClientContact(){
   
   }
   </script>
+  
+  
+  
+  <script>
+  function getAllAssociates(){
+	  $('.action-pop').slideUp();
+	  var sourceleadUrl ='${sourceleadUrl}';
+	   $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getAssociatesList?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(data) {
+	        	
+	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	        		
+	        		
+	        		    var result = '';
+	             	    result = result +'<div class="modal-body clearfix">';
+	             		result = result +'     </div>';
+	             		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
+	             	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+	             		result = result +'           <thead>';
+	             		result = result +'           <tr>';
+	             		result = result +'             <th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
+	             		result = result +'             <th>Associate Name</th>';
+	             		result = result +'             <th>Email</th>';
+	             		result = result +'             <th>Phone</th>';
+	             		result = result +'           </tr>';
+	             		result = result +'           </thead>';
+	                    result = result +"<tbody>"; 
+	                    
+	                    var json = JSON.parse(data);
+	                    
+	                    for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+	                    	 var mobilephone = '';
+	                    	 var associateName
+	                    	 
+	                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName !='undefined'){
+	                    		 associateName = opt.firstName+" "+opt.lastName;
+	 		        		}else{
+	 		        			associateName = opt.firstName;
+	 		        		}
+	                    	 
+	                    	 if(opt.mobilePhone != null && opt.mobilePhone != 'undefined' && opt.mobilePhone != ""){
+	                    		 mobilephone = opt.mobilePhone;
+	                    	 }else{
+	                    		 mobilephone = "&nbsp;&nbsp;-----------";
+	                    	 }
+	                    	 
+	                    	 
+	                    	 result = result +'<tr>';
+	                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
+	                    	 result = result +'<td>'+associateName+'</td>';
+	                    	 result = result +'<td>'+opt.email+'</td>';
+	                    	 result = result +'<td>'+mobilephone+'</td>';
+	                    	 result = result +'</tr>';
+	                    }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     result = result +'     </div>'; 
+	                 	 result = result +'     <div class="clearfix">';
+	                 	
+	                 	 result = result +'       </div>'; 
+	                 	 result = result +'   </div>'; 
+	                 	 result = result +'   <div class="modal-footer">';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();">Add</button>';
+	                 	 result = result +'   </div>'; 
+	                 	 $("#associatesListDiv").empty(); 
+	                     $("#associatesListDiv").append(result); 
+	                     pagination(); 
+	        		
+	        	}
+	        },
+	        
+	    }); 
+	    
+	  $(".new_side_wrap").addClass("new_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+		
+  }
+  </script>
+  
+  <script>
+    $(".addApplicant_close, .side_mask").click(function() {
+    	$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+</script>
+  
+  
+  <script>
+function pagination(){
+    $("#example").DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+  
   <script>
   function getSow(rowId){
 	  var candidateId = $('#'+rowId+'candidateId').val();
