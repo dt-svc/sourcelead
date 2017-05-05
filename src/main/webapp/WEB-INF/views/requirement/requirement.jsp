@@ -307,7 +307,7 @@ $(document).ready(function () {
          <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
              <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-	                 <option value="" disabled selected>------ Select -----</option>
+	                 <option value="" disabled selected>--- Select Employment Type ---</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
@@ -903,7 +903,7 @@ $(document).ready(function () {
                 <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'  &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
                 	<input type="checkbox" name="cd" id="apprverReq"  onClick="approvalType('Default');removeApprovers();" checked >
                 </c:if>
-               		 <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
+               		 <label>&nbsp;&nbsp;<strong>Approver Required</strong></label>
                 </div>
                 
                 <!-- Radio buttons for Sequential or Parallel function -->
@@ -1565,6 +1565,8 @@ function getCities(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			} */
+			
+			
 			
 		   $("#countryReq").chosen();
 	       $("#state").chosen();
@@ -2794,6 +2796,10 @@ for (var i = 0; i < splitNotice.length; i++) {
 }
 	$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
 }
+$('.chosen-select').each(function() {
+	var $this = $(this);
+	$this.next().css({'width': '100%'});
+})
 </script>
 
 <script>

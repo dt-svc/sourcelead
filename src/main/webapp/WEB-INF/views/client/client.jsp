@@ -126,6 +126,38 @@ window.onload = function () {
                   </select>
               </div>
             </div>
+            
+            
+            <div class="form-group ">
+				<label class="col-md-3">Address</label>
+				<div class="col-md-9">
+				<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+			<div class="form-group ">
+				<label class="col-md-3">Billing Address</label>
+				<div class="col-md-9">
+				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+            <div class="clearfix mb"></div>
+             <div class="form-group">
+              <label class="col-md-3">Payment Term</label>
+              <div class="col-md-9">
+                  <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
+                  <option selected="selected" disabled value="">Select Payment Term</option>
+                    <option value="10 days">10 days</option>
+                    <option value="15 days">15 days</option>
+                    <option value="30 days">30 days</option>
+                    <option value="45 days">45 days</option>
+                    <option value="60 days">60 days</option>
+                    <option value="90 days">90 days</option>
+                  </select>
+              </div>
+            </div>
+            
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <h3>Contact Details</h3>
@@ -315,6 +347,7 @@ function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
  	var orgLocationId = document.getElementById("orgLocationId").value; 
+ 	alert("orgLocationId"+orgLocationId);
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(orgName){
    	 $.ajax({
