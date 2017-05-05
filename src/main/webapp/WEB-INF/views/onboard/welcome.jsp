@@ -51,6 +51,14 @@
 		  </div>
 		  
 			<div class="welCo1">
+			
+				<c:if test="${!empty SourceLeadWeb_candidateOnBoarding.rejectedReason}">
+					<div class="welcomeError">
+							<p>Rejected Reason</p>
+							${SourceLeadWeb_candidateOnBoarding.rejectedReason}
+					</div>
+				</c:if>
+				
 				<h2>Welcome to ${SourceLeadWeb_orgName}</h2>
 				<h3>First and foremost, Welcome to the Company!</h3>
 				<p>Below you can find out brief introduction about the Company and a glance at the manager, your team and support documents, next verify your personal information, documents and take a couple of minutes to view boarding undertakings </p><br>

@@ -784,6 +784,10 @@ public class CandidateOnBoardRestController {
 					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 				}
 				
+				if(null != candidateOnBoarding.getOnboardingUser()){
+					candidateOnBoarding.setUserEmail(candidateOnBoarding.getOnboardingUser().getEmail());
+				}
+				
 				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
 				candidateOnBoarding.setDocumentsCount(documentsCount);
 				Integer acceptedDocumentsCount = onBoardingTemplateDocumentsService.getCandidateAcceptedOnboardingDocumentsCountByCandidateOnboardingId(candidateOnBoarding.getId());
@@ -1899,7 +1903,41 @@ public class CandidateOnBoardRestController {
 			 
 			 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 			 candidateOnBoarding.setOnboardSubmitted(Constants.YES);	
+			 candidateOnBoarding.setCandidateOnBoardStatus("Submitted");
 			 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			 
+			 return "success";
+			 
+		   }
+		 
+		 
+		 @RequestMapping(value = "/rejectOnboardedCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String rejectOnboardedCandidate(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+			 
+			 
+			 json = "{"+json+"}";
+			 
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 if(jsonObj.has("onboardCandidateUUID") && !isNullOrEmpty(jsonObj.getString("onboardCandidateUUID"))){
+				 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(jsonObj.getString("onboardCandidateUUID"));
+				 candidateOnBoarding.setOnboardSubmitted(Constants.NO);	
+				 candidateOnBoarding.setRejectedReason(jsonObj.getString("rejectedReason"));
+				 candidateOnBoarding.setCandidateOnBoardStatus("Rejected");
+				 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			 }
+			 
+			 return "success";
+			 
+		   }
+		 
+		 
+		 @RequestMapping(value = "/acceptOnboardingCandiate" , method = RequestMethod.POST)
+		 public @ResponseBody  String acceptOnboardingCandiate(@RequestParam(value="onboardCandidateUUID", required=false) String onboardCandidateUUID,HttpServletRequest request) throws Exception {
+			 
+				 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onboardCandidateUUID);
+				 candidateOnBoarding.setCandidateOnBoardStatus("Accepted");
+				 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
 			 
 			 return "success";
 			 
