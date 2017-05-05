@@ -65,4 +65,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		 
 	}
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Invoice getInvoicetById(Long invoiceId) throws Exception {
+		logger.debug("In InvoiceDaoImpl getInvoicetById method");
+		Session session = this.sessionFactory.getCurrentSession();
+		return (Invoice) session.get(Invoice.class, invoiceId);
+	}
+
 }

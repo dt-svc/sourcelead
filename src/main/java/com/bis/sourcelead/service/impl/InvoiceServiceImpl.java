@@ -266,5 +266,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceLineItemsSet;
 		
 	}
+	@Override
+	public Invoice getInvoicetById(Long invoiceId) throws Exception {
+		return invoiceDao.getInvoicetById(invoiceId);
+	}
 	
 }
