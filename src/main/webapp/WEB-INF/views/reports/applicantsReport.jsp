@@ -83,12 +83,12 @@ function prepareReportDataDiv(data){
     	var report= json[i];
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div><span>'+report.requirementTitle+'</span></div> ';
+        result = result + '<div><span title="'+report.requirementTitle+'">'+report.requirementTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
         if(report.applicantName != null && report.applicantName != '' && report.applicantName !='undefined'){
-       	result = result + '<div><span>'+report.applicantName+'</span></div>';
+       	result = result + '<div><span title="'+report.applicantName+'">'+report.applicantName+'</span></div>';
  		} else{
 		result = result + '<div><span>---</span></div>';
 		    }

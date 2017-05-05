@@ -5,8 +5,8 @@ public enum Submission_ApprovalStatus {
 	SUBMITTEDFORAPPROVAL("submitted for approval"),
 	APPROVED("approved"),
 	REJECTED("rejected"),
-	REOPENED("reopened");
-	
+	REOPENED("reopened"),
+	ACTIONREQUIRED("Action Required");
 	
     private String value;
 	private Submission_ApprovalStatus(String value){

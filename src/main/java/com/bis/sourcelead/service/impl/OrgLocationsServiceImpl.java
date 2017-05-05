@@ -192,4 +192,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception {
 		return orgLocationsDao.getOrgLocationByOrgId(orgId);
 	}
+
+	@Override
+	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet) {
+		return orgLocationsDao.getAllOrgsStartsWithAlphabet(alphabet);
+	}
 }

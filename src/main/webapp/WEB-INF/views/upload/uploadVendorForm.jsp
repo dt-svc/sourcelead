@@ -117,9 +117,9 @@ margin:10px 220px 0;
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
-			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
-			  </p>
+<!-- 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
+			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
+ -->			  </p>
 			  </span>
             </div>
             <div class="panel-body checkbox div-checkbox hidden">
@@ -133,10 +133,10 @@ margin:10px 220px 0;
 			  <p class="clearfix mt">
 			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
-			  <p>
-			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
-			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
+			  <p class="text-center">
+			  <label class="paddingRight"><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
+			  <label class="paddingRight"><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
+			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
 			  </p>
 			  </span>
             </div>

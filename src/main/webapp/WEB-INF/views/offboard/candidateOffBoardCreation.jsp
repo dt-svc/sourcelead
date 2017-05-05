@@ -31,6 +31,7 @@
   	        document.getElementById("checkList").disabled = false;
   	        $("#candidateOffBoardUUID").val('${offBoardingUUID}');
   	        $("#documentstemplateId").val(offBoardingId);
+  	        $("#offboardTaskDiv").val('Y');
   	        
   	        loadOffboardingUser('${offBoardingUUID}');
 		}else{
@@ -49,7 +50,7 @@
       <div class="pull-left">
         <h2>Employee offboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Offboarding </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -61,11 +62,12 @@
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
              <li onclick="getOffboardingCheckList();"> <a href="#offboardCheckList" data-toggle="tab" id="checkList"> <i class="fa fa-check-square-o paddingRight"></i> <span>Check List</span> <br>
               <small>Check List</small> </a></li>
-            <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOffBoardId" id="candidateOffBoardId" value=""/>
           <input type="hidden" name="candidateOffBoardUUID" id="candidateOffBoardUUID" value=""/>
+          <input type="hidden" id="offboardTaskDiv" value="N"/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
@@ -286,8 +288,8 @@
                               <div class="col-md-6">
                                 <div class="row">
                                 
-                                <div class="col-md-12 mb10">
-                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
+                                <div class="col-md-12 mb10" id="taskNameDiv">
+                                  <label>Subject <span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
                                 
@@ -332,7 +334,7 @@
 	                                <div class="row">
 	                                
 	                                <div class="col-md-12 mb10">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
                                     <label class="radio-inline">
@@ -353,7 +355,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                      <label><strong>Due before:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -439,7 +441,7 @@
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
                                     <input type="button" id="offboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOffboardTask();"  value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOffboardTask();">
                                   </div>
                                 </div>
                               </div>
@@ -478,8 +480,6 @@
 	  			<i class="fa fa-times" onclick="removeOffboardPackAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
-
-
 
 
 <script>
@@ -916,6 +916,8 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		     	       $("#documentstemplateId").val(offboardId);
 		        	}
 		        	
+		        	
+		        	$("#savedoffboardId").val(offboardId);
 	     	        $("#candidateOffBoardId").val(offboardId);
 	     	        
 	     	       $("#save_offboardUser").removeAttr("disabled");
@@ -1346,6 +1348,7 @@ function createOffboardCheckList(saveType){
 	      		        		var $tabs = $('.tabbable li');
 	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	      		     	        document.getElementById("templateTasks").disabled = false;
+	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
 	      		        	}else{
 	      		        		getOffboardingCheckList();
@@ -1404,6 +1407,10 @@ function cancel(){
 
 <script>
 function getOffboardingTasksList(){
+	
+	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
+	if(offboardTaskDiv == 'Y'){
+	
 	var offboardId = document.getElementById("candidateOffBoardId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
@@ -1475,7 +1482,7 @@ function getOffboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+offboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" value="Send" id="finish_task" onclick="saveAndFinishOffboardTemplate('+offboardId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -1490,7 +1497,7 @@ function getOffboardingTasksList(){
 	
   $("#loading").removeAttr("style");
 }
-	
+	}
 }
 </script>
 
@@ -1527,6 +1534,16 @@ function saveAndFinishOffboardTemplate(offboardId){
   <script>
   function flushOffboardTask(){
 	  document.getElementById("addoffboardTask_form").reset();
+	  $('#taskMonths').removeAttr('data-validation-optional');
+	  $("#taskMonths").attr("data-validation", "required");
+	  
+	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
+	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+	  $('#assignToUserDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   
@@ -1663,9 +1680,9 @@ function saveOffboardTask(){
 	  }
 }
 
-$('body').on('blur', '#addonboardTask_form', function() {
-	$("#addonboardTask_form").showHelpOnFocus();
-	$("#addonboardTask_form").validateOnBlur(false, validationSettings);  
+$('body').on('blur', '#addoffboardTask_form', function() {
+	$("#addoffboardTask_form").showHelpOnFocus();
+	$("#addoffboardTask_form").validateOnBlur(false, validationSettings);  
 });
 </script>
 

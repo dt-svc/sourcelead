@@ -43,7 +43,7 @@ public class SignatureRequestUtil {
 	@Autowired
 	private Html2PdfUtil html2PdfUtil;
 	
-	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws DocumentException, ApiException{
+	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws Exception{
 		
 		// Enter your DocuSign credentials:
 		String UserName = "prasannavadla9@gmail.com";
@@ -129,7 +129,7 @@ public class SignatureRequestUtil {
 		// default unit of measurement is pixels, can be mms, cms, inches also
 		SignHere signHere = new SignHere();
 		signHere.setDocumentId(doc.getDocumentId());
-		signHere.setPageNumber("1");
+		signHere.setPageNumber(doc.getPages());
 		signHere.setRecipientId("1");
 		signHere.setXPosition("100");
 		signHere.setYPosition("150");

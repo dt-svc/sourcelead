@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import org.json.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
@@ -25,7 +26,7 @@ public interface ContractsTemplateService {
 
 	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user, Org org)throws Exception;
 
-	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType)throws Exception;
+	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType)throws Exception;
 
 	Contracts getContractById(Long contractId);
 
@@ -38,9 +39,13 @@ public interface ContractsTemplateService {
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
 
-	ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception;
+	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception;
 
 	List<Contracts> getListOfContractsEnvId();
+	
+	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
+
+	Contracts saveExistigContract(JSONObject jsonObj, MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception;
 
 	
 }

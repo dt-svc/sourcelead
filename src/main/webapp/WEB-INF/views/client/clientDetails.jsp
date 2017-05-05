@@ -42,7 +42,6 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
-						
 						result = result + '<strong>Website:</strong>';
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 						result = result + '<span title='+json.webSite+'>'+json.webSite+'</span><div class="clearfix"></div>';
@@ -171,6 +170,7 @@
 						 var country = '';
 						 var state = '';
 						 var city = '';
+						 var website ='';
 						
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
@@ -180,6 +180,9 @@
 						}
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							city = json.city;
+						}
+						if(json.webSite != null && json.webSite !='' && json.webSite !='undefined'){
+							website = json.webSite;
 						}
 						
 						
@@ -192,7 +195,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 								result = result + '<label>Website</label>';
-								result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" value="'+json.webSite+'" placeholder="client website" ></div>';
+								result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" value="'+website+'" placeholder="client website" ></div>';
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';
@@ -218,7 +221,7 @@
 								
 								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 								result = result + '<label>Website</label>';
-								result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="validate_Space validate_domain validate_length length2-100 " data-validation-optional="true"  value="'+json.webSite+'" placeholder="client website" ></div>';
+								result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" data-validation="validate_Space validate_domain validate_length length2-100 " data-validation-optional="true"  value="'+website+'" placeholder="client website" ></div>';
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';

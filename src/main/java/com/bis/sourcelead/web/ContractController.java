@@ -141,12 +141,38 @@ public class ContractController {
 	/**
 	 * display add new contract  page 
 	 * @return model
+	 * @throws Exception 
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')")
 	@RequestMapping(value = "/addExistingContract")
-	public ModelAndView addExistingContract(HttpServletRequest request) {
+	public ModelAndView addExistingContract(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
+		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CLIENT));
+		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+		for (OrgRelations orgRelations : orgRelationsList) {
+			String orgName = "";
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+			}
+			orgRelations.setOrgName(orgName);
+		}
+		for (OrgRelations orgRelations : clientList) {
+			String orgName = "";
+			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+			}
+			orgRelations.setOrgName(orgName);
+		}
+		model.addObject("userList", userList);
+		model.addObject("clientList", clientList);
+		model.addObject("orgRelationsList", orgRelationsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("contracts/addExistedContract");
 		return model;

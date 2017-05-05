@@ -49,7 +49,7 @@
       <div class="pull-left">
         <h2>Employee Onboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
  </section>
  
  
@@ -64,7 +64,7 @@
               <small>Employee details &amp; Postion details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
-            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+            <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="candidateOnBoardId" id="candidateOnBoardId" value=""/>
@@ -78,14 +78,14 @@
                <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
                 <p><strong>Employee Details</strong></p>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="getCandidateDetails();getOfferDetails();" field-name="Candidate">
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">
                   </div>
@@ -97,20 +97,20 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Address 1" data-validation="required validate_Space">
+                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-md-3 control-label">Street Address 2</label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Address 2" data-validation-optional="true"  data-validation="validate_Space">
+                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Street Address 2" data-validation-optional="true"  data-validation="validate_Space">
                   </div>
                 </div>
                   
                  <div class="form-group">
-                  <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Country <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <select class="chosen-select" data-placeholder="Select Country" id="country" onchange="getStates();" name="country">
                       <option disabled>Select Country</option>
@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile Number <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
@@ -151,7 +151,7 @@
 
                   
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Personal Email <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="personalEmail" name="personalEmail" readonly="readonly">
                   </div>
@@ -175,7 +175,7 @@
                 </div> -->
 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Role<span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Role<span class="text-danger">*</span></label>
                   <div class="col-md-6">
                       <select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">
                     </select>
@@ -183,7 +183,7 @@
                 </div>
 
                   <div class="form-group">
-                  <label class="col-md-3 control-label">Date Of Join<span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">
                   </div>
@@ -195,7 +195,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Rate / Salary <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Rate / Salary <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="salaryRate" name="salaryRate">
                   </div>
@@ -387,8 +387,8 @@
                               <div class="col-md-6">
                                 <div class="row">
                                 
-                                <div class="col-md-12 mb10">
-                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
+                                <div class="col-md-12 mb10" id="taskNameDiv">
+                                  <label>Subject <span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
                                 
@@ -433,7 +433,7 @@
 	                                <div class="row">
 	                                
 	                                <div class="col-md-12 mb10">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
                                     <label class="radio-inline">
@@ -454,7 +454,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                      <label><strong>Due after:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -1052,7 +1052,7 @@ function getOnBoardCandidateCountry(country){
           success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
-        	$('#country').append('<option value="">---Select---</option>');
+        	$('#country').append('<option value="">---Select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == country){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1081,7 +1081,7 @@ function getOnBoardCandidateStates(country,state){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(state != null && state != 'undefined' && json[i] == state){
 	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
@@ -1115,7 +1115,7 @@ function getOnBoardCandidateCities(country,state,city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
@@ -1130,7 +1130,7 @@ function getOnBoardCandidateCities(country,state,city){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---Select---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
@@ -1346,6 +1346,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		        	}
 		        	
 	     	        $("#candidateOnBoardId").val(onboardId);
+	     	        $("#savedonboardId").val(onboardId);
 	     	        
 	     	       $("#save_onboardUser").removeAttr("disabled");
 	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
@@ -1435,6 +1436,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    	
 		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
 		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
+		    	}else{
+		    		getReportingManager(json['onBoardRoleId']);
 		    	}
 		    	
 		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
@@ -1888,6 +1891,16 @@ function createTemplateDocs(saveType){
   <script>
   function flushOnboardTask(){
 	  document.getElementById("addonboardTask_form").reset();
+	  $('#taskMonths').removeAttr('data-validation-optional');
+	  $("#taskMonths").attr("data-validation", "required");
+	  
+	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
+	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+	  $('#assignToUserDiv').find('p.jquery_form_error_message').remove();
 	
   }
   </script>
@@ -2077,7 +2090,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" id="finish_task" value="Finish" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" id="finish_task" value="Send" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		

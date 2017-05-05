@@ -19,11 +19,16 @@ padding-bottom: 15px;
 min-height: 150px;
 }
 .popupFilter #example_filter {
-top:-63px !important;
+top:-55px !important;
 }
-.dataTable thead {
-background: #368ee0;
-color:#fff;
+.dataTable thead th {
+background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px;
+}
+.dataTable thead tr th {
+vertical-align: middle;
+}
+.dataTable thead tr td {
+text-align: center;
 }
 table.dataTable.no-footer {
 border-bottom:0;
@@ -42,7 +47,7 @@ margin-top: 15px;
 padding: 0 !important;
 margin-top: 10px;
 }
-.dataTables_wrapper .dataTables_filter input {
+dataTables_wrapper .dataTables_filter input {
 background-color:#fff;
 height: 34px;
 width:400px;
@@ -53,11 +58,23 @@ border-radius:3px;
 background-color: #ccc;
 }
 .ratetype p {
-bottom: -14px;
+bottom: -14px !important;
 left:-20px !important;
 }
 .pras.req-title p{
-bottom:-14px;
+bottom:-2px;
+}
+.payrate_p p.jquery_form_error_message{
+ bottom: -13px;padding-left: 0 !important;
+}
+.form-control {
+padding: 6px 12px !important; height: 34px !important;
+}
+.bootstrap-select {
+width: 100% !important;
+}
+.icon-inside .form-control {
+    padding: 6px 12px 6px 30px !important;
 }
 </style>
 
@@ -258,7 +275,7 @@ $(document).ready(function () {
 	                </span>
 	            </label>
                 <select class="form-control chosen-select" id="template"  onChange="setTemplateValues();">
-                   <option value=""  selected>Select template</option>
+                   <option value=""  selected>--- Select template ---</option>
                     <c:forEach var="title" items="${jobsTemplateList}">
 	                    <option value="${title.id}">${title.jobTitle}</option>
                      </c:forEach>   
@@ -289,8 +306,8 @@ $(document).ready(function () {
 		<div class="form-group">
          <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);" >
-	                 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;------ Select -----</option>
+             <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+	                 <option value="" disabled selected>------ Select -----</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
@@ -349,7 +366,7 @@ $(document).ready(function () {
               <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="education" id="education" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
                <c:forEach var="education" items="${educationsList}">
                		<c:set var = "NUM" value = "${0}"/>
                		<c:forEach var="existedEducation" items="${requirement.reqEducationListString}">
@@ -371,10 +388,10 @@ $(document).ready(function () {
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6">
-	                 <input type="text" class="form-control" placeholder="minExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
 	                <div class="col-md-6" >
-	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="maxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
               </div>
               <div class="row" id="expId">
@@ -404,10 +421,10 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group">
+          <div class="form-group" >
             <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
-             <div class="input-group">
+             <div class="input-group payrate_p">
                 <div class="input-group-btn selp-custom-min">
                   
                   <select class="selectpicker" id="currencyCode" name="currencyCode" >
@@ -431,9 +448,9 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_int validate_length length1-8" data-validation-optional="true"  value="">
-                <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
+                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="">
+                <div class="input-group-btn selp-custom-min payrate_p">
+                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <option value="">Rate Per</option>
                     <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -481,7 +498,7 @@ $(document).ready(function () {
          <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="skills" id="skills" data-placeholder="Select Skills" data-validation-optional="true">
                <c:forEach var="skill" items="${skillsList}">
                		<c:set var = "NUM" value = "${0}"/>
                		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
@@ -510,7 +527,7 @@ $(document).ready(function () {
                   </span>
                 </label>
                 
-                <input type="text" class="form-control" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
+                <input type="text" class="form-control input-sm" readonly id="uploadFile" name="docFile"  value="${requirement.fileName}" type="file"   placeholder="Upload File ..." field-name="Upload Resume" data-validation="validate_docimgpdf" data-validation-optional="true">
               <div class="clearfix"></div> <div class="clearfix"></div>
               </div>
             </div>
@@ -537,7 +554,7 @@ $(document).ready(function () {
           <div class="form-group">
               <label class="col-md-3">Notice Period</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="noticePeriod" id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
+                <select multiple class="chosen-select form-control" name="noticePeriod" data-placeholder="Select Notice Period"  id="noticePeriod" data-validation-optional="true" onclick="getNoticeperiod();">
 					     <option  selected value="${noticePrd}">${noticePrd}</option>
 					        <option  ${requirement.noticePeriod  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
 	                		 <option  ${requirement.noticePeriod  == '15-Days' ? 'selected' : ''}>15 Days</option>
@@ -551,7 +568,7 @@ $(document).ready(function () {
           <div class="form-group">
 	         <label class="col-md-3">Cooling-Off Period</label>
 	         <div class="col-md-9">
-	             <select class="selectpicker form-control" id="coolingOff" name="coolingOff" >
+	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             
 	             		<c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
 	                     	 <option ${requirement.reqCoolingOffPeriod  == '0 Days' ? 'selected' : ''} value="0 Days">0 Days</option>
@@ -649,7 +666,7 @@ $(document).ready(function () {
               <div class="form-group">
                 <label class="col-md-3">Client<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                  <div class="form-icon">
+                  <div>
                    <c:set var="val" value="${requirement.isClientJob}"/>
                    <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -815,7 +832,7 @@ $(document).ready(function () {
 	                </div>
 	                <input type="text" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -924,7 +941,7 @@ $(document).ready(function () {
          <div class="form-group parallel" style="display:none;">
                 <label class="col-md-3">Approver<span class="text-danger">*</span></label>
                 <div class="col-md-9">
-                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true">
+                    <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true" data-placeholder="Select Approver">
                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
                        <option disabled>Select Approver</option>
                        <c:forEach var="report" items="${approverList}">
@@ -1013,10 +1030,9 @@ $(document).ready(function () {
                 <div class="form-icon">
                 <span class="icon-inside"> <i class="fa fa-search-plus"></i>
 				
-                  <input type="text" id="assignedTo" placeholder="Assign Team" field-name = "Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
-
+                 <input type="text" id="assignedTo" placeholder="Assign Team" field-name ="Assign To" class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="popupWindow(${requirement.id});">
                   </span>
-                  <span data-target="#addTeam" data-toggle="modal"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
+                  <span data-target="#addTeam" data-toggle="modal" title="Add Team"> <i class="fa fa-plus btn btn-default formic1" onclick="flushStoreTeam();getTeamOwners();"></i> </span>
                   </div>
                 <!-- Modal content Assign To -->
                 <div role="dialog" id="assignTeam"   class="modal fade">
@@ -1038,7 +1054,7 @@ $(document).ready(function () {
           <div class="form-group">
             <label class="col-md-3">Priority<span class="text-danger">*</span></label>
             <div class="col-md-9">
-              <select class="selectpicker form-control" id="priority" name="priority" data-validation = "required" field-name = "priority">
+              <select class="selectpicker" id="priority" name="priority" data-validation = "required" field-name = "priority">
                 <option ${requirement.priority  == 'Medium' ? 'selected' : ''}>Medium</option>
                 <option ${requirement.priority  == 'Low' ? 'selected' : ''}>Low</option>
                 <option ${requirement.priority  == 'Urgent' ? 'selected' : ''}>Urgent</option>
@@ -1111,7 +1127,7 @@ $(document).ready(function () {
                             </div>
                             <div class="form-group">
                             <label class="col-lg-4">Team Lead <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
+                            <div class="col-lg-8 select-field">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
 			                    	
 			                  </select>
@@ -1120,7 +1136,7 @@ $(document).ready(function () {
                             <div class="form-group">
                             <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
                             <div class="col-lg-8">
-                             <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">
+                             <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" data-placeholder="Select Team Member" data-validation="required validate_Space" field-name="Team Member">
 					                  
 		                       </select>
                               </div>
@@ -1128,7 +1144,7 @@ $(document).ready(function () {
                           </div>
                         </div>
                       </div>
-                      <div class="modal-footer">
+                      <div class="modal-footer mt">
                         <button class="btn btn-primary" type="button" id="add_team" onclick="storeTeam();" >Save</button>
                         <button data-dismiss="modal" class="btn btn-default"   type="button">Cancel</button>
                       </div>
@@ -1246,7 +1262,7 @@ function validate_fileupload(fileName)
           var rateType = document.getElementById("rateType").value; 
   		 if(rateType != null && rateType != ""){
   			 $('#rate').removeAttr('data-validation-optional');
-  			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+  			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
   		 }else{
   			 $('#rate').removeAttr('data-validation');
   			 $('#rate').attr("data-validation-optional","true"); 
@@ -1256,7 +1272,7 @@ function validate_fileupload(fileName)
  		 if(rate != null && rate != ""){
  			 $('#rateType').removeAttr('data-validation-optional');
  			 $('#rateType').attr("data-validation","required");
- 			 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+ 			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
  		 }else{
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
@@ -1604,17 +1620,20 @@ function getCities(){
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.on('keyup', function(e1)
 		    {
-		    	var newEducation = this.value.replace(",","");
+		    	var newEducation = this.value.replace("\'","");
 		    	   if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 			        {
 		    		   var par = this.parent;
 			            var option = $("<option>").val(newEducation).text(newEducation);
 			            selectone.append(option);
 			            selectone.find(option).prop('selected', true);
+			            
 			            $("#education option").each(function(){
 	                         $(this).siblings("[value='"+ this.value+"']").remove();
 	                   });
+			            
 			            $("#education").trigger("chosen:updated");
+			           
 			        }
 		    
 		    });
@@ -2045,7 +2064,7 @@ function popupWindow(reqId){
  		result = result +'       </div>';
  		
  		result = result +'       <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100">';
- 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important">';
+ 		result = result +'          <select id="rolesDiv" class="selectpicker" multiple data-actions-box="true" onchange="filterTeamMembers();" style="display:block !important" title="--Select Assign Team--">';
  		result = result +'          </select>';
  		result = result +'       </div>';
  		

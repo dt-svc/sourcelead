@@ -212,9 +212,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					 if(orgSpoc.getClientUser().getFirstName() !=null && orgSpoc.getClientUser().getLastName() !=null){
 						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()); 
 					 }else{
-						 spocNameSB.append(spocNameSB.toString());
+						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
 					 }
-					 orgSpoc.setSpocName(orgSpoc.getVendorUser().getFirstName());
+					 orgSpoc.setSpocName(spocNameSB.toString());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
 					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
 					
@@ -531,6 +531,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	public List<OrgSpoc> getSpoclistByDomain(Long orgRelationId, String domain) throws Exception
 	{
 		return orgSpocDao.getSpoclistByDomain(orgRelationId,domain);
+	}
+
+	@Override
+	public boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId)
+			throws Exception {
+		return orgSpocDao.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgRelationId, ownerUserId);
 	}
 	
 }
