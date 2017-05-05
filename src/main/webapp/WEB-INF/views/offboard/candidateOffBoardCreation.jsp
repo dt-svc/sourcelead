@@ -317,10 +317,10 @@
                                 
                                 <div class="col-md-12 mb10">
                                   <div class="mt">
-                                    <label class="checkbox-inline">
+                                    <label class="paddingRight">
                                       <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
@@ -337,10 +337,10 @@
                                   <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
-                                    <label class="radio-inline">
+                                    <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
                                       Candidate </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
                                   </div>
@@ -382,7 +382,7 @@
 											</div> 
                                       
                                         
-                                        <div class="col-md-6 paddingRight paddingLeft">
+                                        <div class="col-md-6 paddingLeft">
 										<label class="small">Days</label>
 											<div class="select-field">
 												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
@@ -429,7 +429,7 @@
                                     
                                   </div>
                                 </div>
-	                               <div class="col-md-12 mb10">
+	                               <div class="clearfix mb10">
                                   <label>Description</label>
                                   <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
                                 </div>
