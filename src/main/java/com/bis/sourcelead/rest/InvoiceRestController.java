@@ -25,11 +25,13 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -56,6 +58,9 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private InvoiceService invoiceService;
+	
+	@Autowired
+	private InvoicePaymentService invoicePaymentService;
 	
 	@RequestMapping(value = "/getClientContactsByOrgRelationId", method = RequestMethod.GET)
 	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -180,5 +185,26 @@ public class InvoiceRestController {
 	  return resultJson;
 	}
 	
+    
+	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
+	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		String invoicePaymentSaved = "failed";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(jsonObj, user, orgLocation, multiFile,invoiceId);
+		if(null !=invoicePayment){
+			invoicePaymentSaved = "success";
+		}
+		return invoicePaymentSaved;
+	} 
     
 }
