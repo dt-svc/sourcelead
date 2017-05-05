@@ -316,7 +316,7 @@ function errRemoveClientContact(){
 
 	<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm inline_field" placeholder="HH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
+	     <input type="text" class="form-control input-sm inline_field" placeholder="HHHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
 	     </div>
 	</div>
 	
@@ -334,38 +334,44 @@ function errRemoveClientContact(){
 		 var rate = $("#"+rowId+"rate").val();
 		 var totalHours = $("#"+rowId+"totalHours").val();
 		 var subTotal = $("#inoviceTotal").val();
-		 
-	     var split = totalHours.split(':');
-	     var hours = split[0];
- 	     var minute = split[1];
-		 var hourminits = hours * 60;
-		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
-	     var totlalAmount = (perMinit * finalmin);
-	     var subtractTotal = subTotal - totlalAmount.toFixed(2)
-	     $('#inoviceTotal').val(subtractTotal);
-	    /*  $("#grandTotal").val(subtractTotal); */
-	     $("#hiddenTotal").val(subtractTotal);
-	     
+		 if(totalHours != ''){
+			 var split = totalHours.split(':');
+		     var hours = split[0];
+	 	     var minute = split[1];
+			 var hourminits = hours * 60;
+			 var finalmin = parseInt(hourminits) + parseInt(minute);
+		     var perMinit = rate / 60;
+		     var totlalAmount = (perMinit * finalmin);
+		     var subtractTotal = subTotal - totlalAmount.toFixed(2)
+		     $('#inoviceTotal').val(subtractTotal);
+		    /*  $("#grandTotal").val(subtractTotal); */
+		     $("#hiddenTotal").val(subtractTotal);
+		     
+		 }
+	    
 	     //==============
 	     var discountValue = $("#discountValue").val();
 	     var discountType = $("#disCount").val();
 	     var subtractValueFromRow = $("#hiddenTotal").val();
-	     var total ='';
-	 	 if(discountType == 'flat'){
-	 		total = subtractValueFromRow-discountValue;
-	 		$("#discountTotal").val(discountValue);
-	 		$("#grandTotal").val(total);
-	 		$("#afterDiscountTotal").val(total);
-	 		
-	 	  }
-	 	  if(discountType == 'percentage'){
-	 		var perCentValue = (subtractValueFromRow * discountValue)/100;
-	 		total = subtractValueFromRow - perCentValue;
-	 		$("#discountTotal").val(perCentValue);
-	 		$("#grandTotal").val(total);
-	 		$("#afterDiscountTotal").val(total);
-	 	 }	    	 
+	    if(subtractValueFromRow != ''){
+	    	 var total ='';
+		 	 if(discountType == 'flat'){
+		 		total = subtractValueFromRow-discountValue;
+		 		$("#discountTotal").val(discountValue);
+		 		$("#grandTotal").val(total);
+		 		$("#afterDiscountTotal").val(total);
+		 		
+		 	  }
+		 	  if(discountType == 'percentage'){
+		 		var perCentValue = (subtractValueFromRow * discountValue)/100;
+		 		total = subtractValueFromRow - perCentValue;
+		 		alert("total"); 
+		 		$("#discountTotal").val(perCentValue);
+		 		$("#grandTotal").val(total);
+		 		$("#afterDiscountTotal").val(total);
+		 	 }	 	
+	    }
+	       	 
 	    	 
 	    	 //===================
 	    		 
@@ -376,7 +382,6 @@ function errRemoveClientContact(){
 	     
 	     var afterDiscountTotal = $("#afterDiscountTotal").val();
 	     
-	     
 		    for(var i=0; i< maxRowNum; i++){
 		         var taxType = $("#"+i+"taxdiscountType").val();
 		        
@@ -386,12 +391,8 @@ function errRemoveClientContact(){
 		             
 	             var first=parseFloat(tot);
 	             var second=parseFloat(taxTotal); 
-	             
-	             
 	             var total  = (first+second);
-	             
-                
-	             $("#grandTotal").val(total);
+// 	             $("#grandTotal").val(total);
 		    }
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
@@ -713,7 +714,9 @@ function pagination(){
   }
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();
-	  var hourminits = hours * 60;
+	  var split = hours.split(':');
+	  var splitHours = split[0];
+	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
 	     var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
@@ -724,16 +727,14 @@ function pagination(){
   </script>
   <script>
   function  calTotalamount(rowId,totlalAmount){
-	  
-   var hiddenTotal = +document.getElementById("hiddenTotal").value;
-   var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
-   var arroundGrand = grandTotal.toFixed(2)
-   $("#inoviceTotal").val(arroundGrand);
-   $("#hiddenTotal").val(arroundGrand);
-   $("#grandTotal").val(arroundGrand);
-   $("#afterDiscountTotal").val(arroundGrand);
-   
-   
+	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
+	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
+	    var arroundGrand = grandTotal.toFixed(2)
+	    $("#inoviceTotal").val(arroundGrand);
+	    $("#hiddenTotal").val(arroundGrand);
+	    $("#grandTotal").val(arroundGrand);
+	    $("#afterDiscountTotal").val(arroundGrand);
+	    
    /* =====================  After adding the rows calculate the discount start  ===================== */
    var discountValue =  $("#discountValue").val();
    var discountType =  $("#disCount").val();
@@ -774,11 +775,11 @@ function pagination(){
 	             var second=parseFloat(taxTotal); 
 	             var total  = (first+second);
               
-	             $("#grandTotal").val(total);
+// 	             $("#grandTotal").val(total);
 	    }
    /* =====================  After adding the rows calculate the tax end  ===================== */
    
-   
+	    
   }
   </script>
   
@@ -811,7 +812,7 @@ function calculateDiscount(){
 	}
 }
 </script>
-
+<!-- 
 <script>
   function singleRowTotalhour(){
 	     var rate = $("#0rate").val();
@@ -873,7 +874,7 @@ function calculateDiscount(){
 	     $("#afterDiscountTotal").val(singleRowTotlalAmount); 
   }
   </script>
-  
+   -->
 
 
   
@@ -1289,11 +1290,13 @@ $(document).ready(function() {
 function maskme(){
 	$.mask.definitions['H'] = "[0-9]";
     $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
     $.mask.definitions['M'] = "[0-9]";
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hh:Mm"); 
+    $(".inline_field").mask("Hhhh:Mm"); 
 }
 </script>
 <script>
