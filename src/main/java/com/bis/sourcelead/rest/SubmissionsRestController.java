@@ -861,7 +861,8 @@ public class SubmissionsRestController {
 
 	@RequestMapping(value = "/reActivateRejectedApplicant")
 	public @ResponseBody String reActivateApplicant(
-			@RequestParam(value = "submissionId", required = false) Long submissionId,HttpServletRequest request)
+			@RequestParam(value = "submissionId", required = false) Long submissionId,
+			@RequestParam(value = "type", required = false) String type,HttpServletRequest request)
 			throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -870,7 +871,12 @@ public class SubmissionsRestController {
 
 		// to update submission history
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		if(ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(type)){
+			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REJECTED.getValue());
+		}else if(ApplicantSubmissionStatus.BACKOUT.getValue().equalsIgnoreCase(type)){
+			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.BACKOUT.getValue());
+		}
+		
 		if(requirementSubmission.getPreviousSubmissionStatus()!=null){
 		requirementSubmissionHistory.setToStage(requirementSubmission.getPreviousSubmissionStatus().toString());
 		}
@@ -880,6 +886,42 @@ public class SubmissionsRestController {
 		requirementSubmission.setSubmissionRateStatus(null);
 		requirementSubmission.setPreviousSubmissionStatus(null);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
+		requirementSubmission.setUpdatedDate(new Date());
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
+				requirementSubmissionHistory);
+
+		return "success";
+	}
+	
+	/**
+	 * 
+	 * author : Pavan Jampana desc : This method is used to Backout the Applicant
+	 * from Requirement Pipeline List from Offer Accept Stage.
+	 */
+
+	@RequestMapping(value = "/backoutApplicant")
+	public @ResponseBody String backoutApplicant(
+			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		RequirementSubmission requirementSubmission = requirementSubmissionService
+				.getRequirementSubmissionById(submissionId);
+
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.BACKOUT.toString());
+
+		// to update Submission status
+		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
