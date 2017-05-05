@@ -365,6 +365,12 @@ function receivePaymentPop1(total){
 	
 	$("#recvPymntpop").fadeIn(200);
     $('.modal-backdrop').fadeIn(200).addClass('in');
+    
+    $('#paymentDate').datepicker({
+		dateFormat : 'dd-mm-yy',
+		changeMonth: true,
+		changeYear: true, 
+	});
 }
 
 </script>  
@@ -539,13 +545,5 @@ function cancelbtn(){
         $('.modal-backdrop').fadeOut(200).removeClass('in');
     }); */
 </script>
-<script>
-	$(function() {
-		$('#paymentDate').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-		});
-	});
-</script>
+
  <jsp:include page="../masterFooter.jsp" />	

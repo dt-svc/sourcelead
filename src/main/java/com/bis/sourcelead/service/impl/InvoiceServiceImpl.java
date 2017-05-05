@@ -127,7 +127,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		if(jsonObj.has("grandTotal") && !"".equalsIgnoreCase(jsonObj.getString("grandTotal"))){
-			invoice.setTotal(jsonObj.getString("grandTotal"));;
+			invoice.setTotal(jsonObj.getString("grandTotal"));
+			invoice.setDueAmount(jsonObj.getString("grandTotal"));
+		}
+		
+		if(jsonObj.has("afterDiscountTotal") && !"".equalsIgnoreCase(jsonObj.getString("afterDiscountTotal"))){
+			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
 		}
 		invoice.setPaymentStatus("Unpaid");
 		invoice.setCreatedBy(user.getUserCode());

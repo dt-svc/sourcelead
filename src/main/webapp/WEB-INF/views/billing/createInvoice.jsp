@@ -162,7 +162,7 @@ function errRemoveClientContact(){
                     <input type="text" class="form-control input-sm inline_field" placeholder="HH:MM" id="0totalHours" name="0totalHours" onblur="singleRowTotalhour();" >
                   </div>
                 </td>
-                <td><div class="tbldata-dotdot-100 text-right"  ><input type="text" name="0amount" id="0amount" placeholder = "00:00" class="ReadTextFli" readinly> </div></td>
+                <td><div class="tblminwidth-75 text-right"  ><input type="text" name="0amount" id="0amount" placeholder = "00:00" class="ReadTextFli" readinly> </div></td>
                 <td><a class="text-danger tblminwidth-50" title="Remove row"><i class="fa fa-remove"></i></a></td>
               </tr>
                
@@ -171,7 +171,7 @@ function errRemoveClientContact(){
               <tr>
                 <td colspan="4"></td>
                 <td><strong>Subtotal</strong></td>
-                <td><div>  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>
+                <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>
                 <input type="hidden" value = "" id="hiddenTotal">
                 <td>&nbsp;</td>
               </tr>

@@ -63,6 +63,9 @@ public class Invoice {
 	@Column(name = "DISCOUNT_AMOUNT")
 	private String discountAmount;
 	
+	@Column(name = "AFTER_DISCOUNT_VALUE")
+	private String afterDiscountValue;
+	
 	@Column(name = "SUB_TOTAL")
 	private String subTotal;
 	
@@ -421,5 +424,12 @@ public class Invoice {
 		this.isSeparateInvoice = isSeparateInvoice;
 	}
 
-	
+	public String getAfterDiscountValue() {
+		return afterDiscountValue;
+	}
+
+	public void setAfterDiscountValue(String afterDiscountValue) {
+		this.afterDiscountValue = afterDiscountValue;
+	}
+
 }
