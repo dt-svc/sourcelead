@@ -69,32 +69,56 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li><span id="onboard-pop"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play"></i></span>|
-                        <div class="approved_pop">
+                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Invoice</span><i class="glyphicon glyphicon-play" ></i>|
+                        <div class="approved_pop" id="invoiceTabOne">
                           <ul>
                             <li>
-                              <input type="checkbox" value="" name="onboard" id="onboard1" checked="">
-                              <label for="onboard1">Sent</label>
+                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceList();" >
+                              <label for="onboard1">Draft</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard2" name="onboard" checked="">
-                              <label for="onboard2">In progress</label>
+                              <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Sent</label>
+                            </li>
+                            <!-- <li>
+                              <input type="checkbox" id="onboard3" name="invoiceStatus">
+                              <label for="onboard3">Accepted</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard3" name="onboard" checked="">
-                              <label for="onboard3">Completed</label>
+                              <input type="checkbox" id="onboard4" name="invoiceStatus">
+                              <label for="onboard4">Rejected</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard4" name="onboard">
-                              <label for="onboard4">Declain</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="onboard5" name="onboard">
-                              <label for="onboard5">Waiting for approval</label>
-                            </li>
+                              <input type="checkbox" id="onboard5" name="invoiceStatus">
+                              <label for="onboard5">On-Hold</label>
+                            </li> -->
                           </ul>
                         </div>
                       </li>
+                      
+                      <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
+                        <div class="approved_pop" id="paymentTabOne">
+                          <ul>
+                            <li>
+                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
+                              <label for="onboard1">Unpaid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Partial Paid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard3">Paid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard4">OverDue</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </li>                      
+                      
                       <div class="clearfix"></div>
                     </ul>
                     <div class="clearfix"></div>
@@ -117,7 +141,7 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li><span id="offboard-pop"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play"></i></span>|
+                      <li id="payment-ID1"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play"></i>|
                         <div class="approved_pop">
                           <ul>
                             <li>
@@ -381,9 +405,21 @@ function receivePaymentPop1(total){
 <script>
 function getInvoiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var invoice = [];
+	var payment = [];
+	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+    {
+		invoice.push($(this).val());
+    });
+	
+	$('input:checkbox[name=paymentStatus]:checked').each(function() 
+	 {
+		payment.push($(this).val());
+	 });
+	
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}",
+        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoice+"&paymentStatus="+payment,
         success: function(data) {
         	var json = JSON.parse(data);
         	var result = "";
@@ -548,4 +584,35 @@ function cancelbtn(){
 		});
 	});
 </script>
+
+<script>
+$(document).ready(function() {
+    $("#invoiceID1").click(function(){
+		$("#invoiceTabOne").slideToggle(0);
+		$("#paymentTabOne").slideUp(200);
+	});
+    $("html").click(function() {
+        $("#invoiceTabOne").slideUp(0);
+    });
+    $("#invoiceTabOne, #invoiceID1").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+
+
+$(document).ready(function() {
+    $("#paymentID1").click(function(){
+		$("#paymentTabOne").slideToggle(0);
+		$("#invoiceTabOne").slideUp(200);
+	});
+    $("html").click(function() {
+        $("#paymentTabOne").slideUp(0);
+    });
+    $("#paymentTabOne, #paymentID1").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+</script>
+
+
  <jsp:include page="../masterFooter.jsp" />	

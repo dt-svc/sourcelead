@@ -151,10 +151,10 @@ public class InvoiceRestController {
  	}
     
     @RequestMapping(value = "/getInvoiceList")
-	public String getInvoiceList(HttpServletRequest request) throws Exception {
+	public String getInvoiceList(@RequestParam(value = "invoiceStatus", required = false) String invoiceStatus,@RequestParam(value = "paymentStatus", required = false) String paymentStatus,HttpServletRequest request) throws Exception {
 		String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId());
+		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus);
 		for(Invoice invoice :invoiceList){
 			if(invoice.getClientOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getClientOrgRelationID().getResponderLocationId().getOrg().getOrgName());

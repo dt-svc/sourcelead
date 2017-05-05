@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -10,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bis.sourcelead.dao.InvoiceDao;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 
@@ -40,9 +41,41 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) {
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoce  where invoce.orgLocation.id =:orgLocationId and invoce.status = '1' "; 
+		String[] invoiceTokens = invoiceStatus.split(",");
+		String[] paymentTokens = paymentStatus.split(",");
+		
+		String subQuery = "";
+		String subQuery1 = "";
+		if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
+			subQuery = subQuery + "invoce.invoiceStatus = 'DRAFT' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("SENT")) {
+			subQuery = subQuery + "invoce.invoiceStatus = 'SENT' or ";
+		}
+		
+		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
+			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+		} 
+		
+		if (Arrays.asList(paymentTokens).contains("Unpaid")) {
+			subQuery1 = subQuery1 + "invoce.paymentStatus = 'Unpaid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("Partial Paid")) {
+			subQuery1 = subQuery1 + "invoce.paymentStatus = 'Partial Paid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("Paid")) {
+			subQuery1 = subQuery1 + "invoce.paymentStatus = 'Paid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("OverDue")) {
+			subQuery1 = subQuery1 + "invoce.paymentStatus = 'OverDue' or ";
+		}
+		
+		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
+			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+		} 
+		String query = "from Invoice invoce  where  invoce.orgLocation.id =:orgLocationId and invoce.status = '1' "+subQuery+" "+subQuery1+""; 
 		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return departmentList;
 	}
