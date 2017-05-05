@@ -129,7 +129,7 @@ public class SignatureRequestUtil {
 		// default unit of measurement is pixels, can be mms, cms, inches also
 		SignHere signHere = new SignHere();
 		signHere.setDocumentId(doc.getDocumentId());
-		signHere.setPageNumber(doc.getPages());
+		signHere.setPageNumber("1");
 		signHere.setRecipientId("1");
 		signHere.setXPosition("100");
 		signHere.setYPosition("150");

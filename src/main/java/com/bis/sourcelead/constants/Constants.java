@@ -27,10 +27,13 @@ public class Constants {
 	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px", "15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
 	
+	
 	public static final String EMPLOYEE_ID = "Employee ID";
 	public static final String FIRST_NAME = "First Name*";
 	public static final String LAST_NAME = "Last Name";
 	public static final String EMAIL_ID = "Email id*";
+	public static final String EMAIL_ID_BULK_IMPORT = "Email*";
+	public static final String PHONE_NUMBER_BULK_IMPORT = "Phone";
 	public static final String PHONE_NUMBER = "Phone Number";
 	public static final String RATE = "Rate";
 	public static final String RATEPER = "Rate Per";
@@ -43,7 +46,7 @@ public class Constants {
 	public static final String CLIENT_NAME = "Client Name*";
 	public static final String PHONE = "Phone";
 	public static final String STATUS = "Status";
-	public static final String OWNER = "Owner (Email)";
+	public static final String OWNER = "Owner(Email)";
 	public static final String WEBSITE = "Website";
 	public static final String COUNTRY = "Country*";
 	public static final String SATATE = "State";
@@ -51,6 +54,11 @@ public class Constants {
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
 	public static final String JOB_OTHER = "Other";
+	
+	public static final String CLIENT_ADDRESS = "ClientAddress";
+	public static final String BILLING_ADDRESS = "BillingAddress";
+	public static final String PAYMENT_TERMS = "PaymentTerms";
+	
 	
 	public static final String country = "Country";
 	
@@ -541,12 +549,14 @@ public class Constants {
 //    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 //    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	
-	public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
+	public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)","ClientAddress","BillingAddress","PaymentTerms"};
    
-    public static String[] CLIENT_HEADERS = {"Client Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
+    public static String[] CLIENT_HEADERS = {"Client Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)","ClientAddress","BillingAddress","PaymentTerms"};
     
     public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
     public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    
+    public static String[] CLIENT_PAYMENT_TERMS = {"10 days","15 days","30 days","45 days","60 days","90 days"};
     
     public static int level1 =1;
     public static int level2 =2;
