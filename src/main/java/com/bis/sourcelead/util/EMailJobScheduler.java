@@ -1683,7 +1683,7 @@ public class EMailJobScheduler {
 	@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void runContractDocumentStatus() throws Exception {
-				logger.info("##########  E-Mail Job Scheduler started..! ##########");
+				/*logger.info("##########  E-Mail Job Scheduler started..! ##########");
 				List<Contracts> conList =  contractsTemplateService.getListOfContractsEnvId();
 				
 				
@@ -1802,5 +1802,5 @@ public class EMailJobScheduler {
 		        {
 		            System.out.println("Exception: " + ex);
 		        }
-	}
+	}*/
 }
