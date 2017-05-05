@@ -349,7 +349,7 @@ function cancelOrgImg(){
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
-                                    <h4 id="coolingOffHeading">Configure Cooling-Off Period</h4>
+                                    <h4 id="coolingOffHeading">Cooling-Off Period</h4>
                                     <div id="coolingOffLoading"></div>
                                 </div>
                             </div>
@@ -691,6 +691,7 @@ function configCoolingOff(){
 					
 					result = result + '<div class="pull-right">';
 					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
 					$("#coolingOffPeriodDiv").empty(); 
@@ -942,6 +943,7 @@ function loadSignature(){
  					} 
 					result = result + '<div class="pull-right">';
 					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
 					
@@ -1169,7 +1171,14 @@ function restSignature(){
 }
 </script>
 
+<script>
+function cancelBtn(){
+// 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  location.replace(sourceleadUrl+"/dashboard");
+}
 
+</script>
 
 <script type="text/javascript">
         var validationSettings = {

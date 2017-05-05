@@ -1416,7 +1416,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     background-color:#ff4b4b;
     }          
 .project_tabs_inn_table.vendor_wrap_inn_table div span {
-    max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;
+    max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;
     }  
 .project_tabs_inn_table.vendor_wrap_inn_table div span.mid-span {
     max-width:300px;
@@ -3484,7 +3484,7 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
 }
 .welcoHead ul li span {
 	display:block; width: 35px; height: 35px; background-color: #fff; border-radius: 50%; margin: 3px auto;
-	padding: 5px 0px 0px 0px; font-size: 14px; font-weight: 500; color: #787878; border: 2px solid #bdbdbd; position: relative;
+	padding: 7px 0px 0px 0px; font-size: 14px; font-weight: 500; color: #787878; border: 2px solid #bdbdbd; position: relative;
 	z-index: 100;
 }
 .welSiO {
@@ -4262,4 +4262,30 @@ float: none !important; padding: 2px 5px; color: #333;
 }
 #InsertLink .modal-body {
 	padding:30px 15px;
+}
+.poMail {
+    top:0px !important; max-height: none !important; margin: 0px !important; padding: 0px !important; border:none !important;
+}
+.hotmailSelOut {
+    padding: 0px 15px !important;
+}
+.hotmailSel {
+    width: 100%; padding: 10px 10px; background-color: #e6e6e6;
+}
+.hotmailSel .form-control {
+    width: 30%;
+}
+.mailFil {
+       
+}
+.mailFil .dataTables_filter {
+	position: absolute !important; top: -34px !important;
+}
+
+.welcomeError {
+	padding: 15px; background-color: #ffc8ca; margin: 0px 0px 18px 0px; font-size: 14px; font-weight: 400; color: #454545;
+	line-height: 22px; border-radius: 5px;
+}
+.welcomeError p {
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500;
 }
