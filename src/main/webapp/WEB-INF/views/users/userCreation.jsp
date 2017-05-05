@@ -223,13 +223,14 @@
 				                    <input type="text" class="form-control" id="Rate" field-name="Rate" name="rate" value="" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 				                    <span class="hidden">Rate</span>
 		                        <div class="input-group-btn tblminwidth-75 ratetype">
-				                     <select class="form-control selectpicker" id="RatePer" name="ratePer" field-name="Rate Per">
+				                     <select class="selectpicker" id="RatePer" name="RatePer" field-name="Rate Per">
 				                        <option value="">-Rate Per-</option>
 				                        <option>Hourly</option>
 				                        <option>Daily</option>
 				                        <option>Weekly</option>
 				                        <option>Bi-Weekly</option>
 				                        <option>Semi-Monthly</option>
+				                        <option>Bi-Monthly</option>
 				                        <option>Monthly</option>
 				                        <option>Yearly</option>
 			                         </select>
@@ -316,7 +317,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
  </script>
  <script>
  function getVendorContactList(){
-	var orgRelationID = $('#vendors').val();
+	 var orgRelationID = $('#vendors').val();
 	 var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 			    type: "POST",
@@ -356,6 +357,9 @@ function getEmployeementType(designationType){
 		 $('#vendors').attr("data-validation","required"); 
 		 $('#vendorcontact').attr("data-validation","required"); 
 		  getVendorsByOrgLocationId();
+		   $('#vendorcontact').empty();
+		  $('#vendorcontact').trigger("chosen:updated"); 
+		  
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
 		 $('#vendors').removeAttr("data-validation","required"); 
@@ -626,8 +630,7 @@ function getEmployeementType(designationType){
 		 
 		 $("#employeementType").val('');
 	     $('#employeementType').trigger("chosen:updated");
-		 
-		 
+	     
 		 
 	 }
  }
@@ -653,6 +656,23 @@ function getAssociateUserDetails(){
 	        		  $("#EmailId").val(json['email']);
 	        		  $("#phone").val(json['mobilePhone']);
 	        		  $("#designationType").val(json['designationType']);
+	        		  
+	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
+	        		  $("#Rate").val(json['currentRate']);
+// 	        		  $("#RatePer").val(json['currentRateType']);
+	        		  $("select[name=RatePer]").val(json['currentRateType']);
+		        	  $("#RatePer").selectpicker('refresh');
+		        	  
+	        		  }else{
+	        			  $("#Rate").val('');
+	        		  }
+	        		  
+	        		  $("select[name=currentCurrency]").val(json['currentRateCurrency']);
+		        	  $("#currentCurrency").selectpicker('refresh');
+		        	  
+		        	  
+// 	        		  $("#currentCurrency").val(json['currentRateCurrency']);
+	        		  
 	        		  $("#designationType").selectpicker('refresh');
 	        		  employementType(json['designationType']);
 	        		  if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] !='undefined' && json['vendorOrgRelationId'] !=''){

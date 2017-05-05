@@ -1114,7 +1114,7 @@ function requirementDetails(requirementId){
 				            if(json.isClientJob  == 'Y')
 				            	{
 				            	
-				            result = result +'   <h2>Client details:</h2>';
+				            result = result +'   <h2>Client Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            
 				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
@@ -1229,7 +1229,7 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            
-				            result = result +'   <h2>Internal details:</h2>';
+				            result = result +'   <h2>Internal Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            //result = result +'     <div class="require_wrap_details_cta"> <b>Manager:</b> <span>Manager</span>';
 				            if(json.isClientJob  == 'N'){
@@ -4792,6 +4792,7 @@ function getRateListDiv(submissionId, candidateId){
 	                     result = result + '      <tr>';
 	                     result = result + '        <th>By</th>';
 	                     result = result + '        <th>Rate</th>';
+	                     result = result + '        <th>Rate per hourly</th>';
 	                     result = result + '        <th>Comment</th>';
 	                     result = result + '        <th>Date</th>';
 	                     result = result + '        <th>Action</th>';
@@ -4811,8 +4812,9 @@ function getRateListDiv(submissionId, candidateId){
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
-					    	 
+					    	     
 						    	 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+						    		var resultDtata = getRatePerHourly(report.rateAndType);
 						    		 rateAndType = report.rateAndType;
 						    	 }else{
 						    		 rateAndType = "---";
@@ -4834,6 +4836,12 @@ function getRateListDiv(submissionId, candidateId){
 				                     }else{
 				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
 				                     } */
+				                     if(resultDtata != null && resultDtata != 'undefined' && resultDtata !=''){
+				                    	 result = result + '        <td><div class="tblminwidth-75">'+resultDtata+'</div></td>';
+				                     }else{
+				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
+				                     }
+				                    
 				                     
 				                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
 				                    	 result = result + '        <td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
@@ -5895,6 +5903,44 @@ function recommendationAlertCancel(candidateId){
 	refreshImageBlock(candidateId);
 }
 </script>
+
+<script>
+function getRatePerHourly(rateAnDrateType){
+var result ='';
+var reg = /^-?\d+(?:\.\d{0,2})?/;
+var rateValue = rateAnDrateType.split(/\s+/);
+if(rateValue[1] == 'Monthly'){
+	var rateMontlyToHourly = (rateValue[0]/184);
+	result = parseFloat(rateMontlyToHourly).toString().match(reg)[0];
+}
+if(rateValue[1] == 'Hourly'){
+	var rateMontlyToHourly = (rateValue[0]);
+	result = parseFloat(rateMontlyToHourly).toString().match(reg)[0];
+}
+if(rateValue[1] == 'Weekly'){
+	var rateMontlyToHourly = (rateValue[0]/40);
+	result = parseFloat(rateMontlyToHourly).toString().match(reg)[0];
+}
+if(rateValue[1] == 'Bi-weekly'){
+	var rateMontlyToHourly = (rateValue[0]/80);
+	result = parseFloat(rateMontlyToHourly).toString().match(reg)[0];
+}
+if(rateValue[1] == 'Bi-Monthly'){
+	var rateMontlyToHourly = (rateValue[0]/368);
+	result = parseFloat(rateMontlyToHourly).toString().match(reg)[0];
+}
+if(rateValue[1] == 'Semi-Monthly'){
+	var rateMontlyToHourly = (rateValue[0]/87);
+	result = parseFloat(rateMontlyToHourly).toString().match(reg)[0];
+}
+if(rateValue[1] == 'Yearly'){
+	var rateMontlyToHourly = (rateValue[0]/2088);
+	result = parseFloat(rateMontlyToHourly).toString().match(reg)[0];
+}
+return result;
+}
+</script>
+
 
 <!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
