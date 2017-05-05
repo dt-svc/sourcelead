@@ -344,12 +344,12 @@ function dashboardAddInterview(){
 function interviewType(id){ 
 	var selectedReqId = $("#1interviewType").val();
 	 if(selectedReqId=="Other"){
-		 document.getElementById("#1interviewTypeCheck").style.display="block";
+		 $("#1interviewTypeCheck").attr("style", "display:block");
 		 $("#1interviewTypeother").removeAttr('data-validation-optional');
 		 $("#1interviewTypeother").attr("data-validation","required validate_length length1-50"); 
 	 }
 	 else{
-		 document.getElementById("#1interviewTypeCheck").style.display="none";
+		 $("#1interviewTypeCheck").attr("style", "display:none");
 		 $("#1interviewTypeother").removeAttr("data-validation");
 		 $("#1interviewTypeother").attr("data-validation-optional","true");
 	 }
