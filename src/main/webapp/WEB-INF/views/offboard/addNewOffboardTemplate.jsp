@@ -36,6 +36,7 @@
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="templateId" id="templateId" value=""/>
+          <input type="hidden" id="offboardTaskDiv" value="N"/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
@@ -51,12 +52,12 @@
                   </div>
                   <div class="col-md-6">
                     <label>Description <span class="text-danger paddingLeft">*</span></label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation="required"></textarea>
+                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation="required validate_Space validate_length length2-500"></textarea>
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/offboardingTemplatesList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -102,7 +103,7 @@
                
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/offboardingTemplatesList'">
                     <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -147,7 +148,7 @@
                               <div class="col-md-6">
                                 <div class="row">
                                 
-                                <div class="col-md-12 mb10">
+                                <div class="col-md-12 mb10" id="taskNameDiv">
                                   <label>Subject <span class="text-danger paddingLeft">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
@@ -214,7 +215,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                      <label><strong>Due before:</strong><span class="text-danger paddingLeft">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -354,6 +355,16 @@
   <script>
   function flushOffboardTask(){
 	  document.getElementById("addoffboardTask_form").reset();
+	  $('#taskMonths').removeAttr('data-validation-optional');
+	  $("#taskMonths").attr("data-validation", "required");
+	  
+	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
+	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+	  $('#assignToUserDiv').find('p.jquery_form_error_message').remove();
 	
   }
   </script>
@@ -380,8 +391,6 @@
 	  
 	  var taskMonths = document.getElementById("taskMonths").value;
 	  var taskDays = document.getElementById("taskDays").value;
-	/*   var taskHours = document.getElementById("taskHours").value;
-	  var taskMinutes = document.getElementById("taskMinutes").value; */
 	  
 	  
 	  if(taskMonths == '' && taskDays == '' ){
@@ -414,6 +423,7 @@
   	      document.getElementById("templateDocs").disabled = false;
   	      document.getElementById("templateTasks").disabled = false;
   	      document.getElementById("checkList").disabled = false;
+  	      $("#offboardTaskDiv").val('Y');
 		}
 		
 		getTemplateDetails();
@@ -1018,81 +1028,88 @@ function validateTemplateName(){
 
 <script>
 function getOffboardingTasksList(){
-	var templateId = document.getElementById("templateId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
-	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	 
-        	if(json.length > 0){ 
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		
-	        		var prority = '';
-	        		var repeat = '';
-	        		
-	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
-	        			prority = report.priority;
-	        		}else{
-	        			prority = '----';
-	        		}
-	        		
-	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
-	        			repeat = report.taskRepeat;
-	        		}else{
-	        			repeat = '----';
-	        		}
-	        		
-	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	        		result = result +'<div class="media-body">';
-	        		result = result +'<div class="clearfix taskheder">';
-	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i> </label>';
-	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
-	        		result = result +'</div>';
-	        		result = result +'<ul class="list-inline list-description mt10">';
-	        		
-	        		result = result +'<li><span>Assign To:</span>';
-	        		
-	        		if(report.usersList.length > 0){
-	        			for(var j=0; j<report.usersList.length; j++){
-		 					result = result +'<label>'+report.usersList[j]+'</label>';
+	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
+	if(offboardTaskDiv == 'Y'){
+	
+		var templateId = document.getElementById("templateId").value;
+		var sourceleadUrl = '${sourceleadUrl}';
+		var locationId = '${SourceLeadWeb_orgLocationId}';
+		
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+		    success: function(data) {
+		    	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	 
+	        	if(json.length > 0){ 
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var report = json[i];
+		        		
+		        		var prority = '';
+		        		var repeat = '';
+		        		
+		        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+		        			prority = report.priority;
+		        		}else{
+		        			prority = '----';
+		        		}
+		        		
+		        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+		        			repeat = report.taskRepeat;
+		        		}else{
+		        			repeat = '----';
+		        		}
+		        		
+		        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+		        		result = result +'<div class="media-body">';
+		        		result = result +'<div class="clearfix taskheder">';
+		        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i> </label>';
+		        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+		        		result = result +'</div>';
+		        		result = result +'<ul class="list-inline list-description mt10">';
+		        		
+		        		result = result +'<li><span>Assign To:</span>';
+		        		
+		        		if(report.usersList.length > 0){
+		        			for(var j=0; j<report.usersList.length; j++){
+			 					result = result +'<label>'+report.usersList[j]+'</label>';
+			 				}
+		        		}else{
+		 					result = result +'Onboarding Candidate';
 		 				}
-	        		}else{
-	 					result = result +'Onboarding Candidate';
-	 				}
-	        		result = result +'</li>';
-	        		
-	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
-	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
-	        		result = result +'</ul>';
-	        		result = result +'</div>';
-	        		result = result +'</div>';
-				}
-        	}else{
-        		result = result +'<div><h4>No Tasks Found</h4></div>';
-        	}
-        	
-        	result = result +'<div class="form-footer clearfix mt">';
-    		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		
-    		 $("#offboardTasksList").empty();
-           	 $("#offboardTasksList").append(result); 
-    		
-        	 
-	    }
-   }); 
-	
-  $("#loading").removeAttr("style");
+		        		result = result +'</li>';
+		        		
+		        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+		        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+		        		result = result +'</ul>';
+		        		result = result +'</div>';
+		        		result = result +'</div>';
+					}
+	        	}else{
+	        		result = result +'<div><h4>No Tasks Found</h4></div>';
+	        	}
+	        	
+	        	result = result +'<div class="form-footer clearfix mt">';
+	    		result = result +'<div class="pull-right mr">';
+	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOffboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+	    		result = result +'</div>';
+	    		result = result +'</div>';
+	    		
+	    		 $("#offboardTasksList").empty();
+	           	 $("#offboardTasksList").append(result); 
+	    		
+	        	 
+		    }
+		    
+	   }); 
+		
+	  $("#loading").removeAttr("style");
+  
+	}
 	
 }
 </script>
@@ -1129,6 +1146,7 @@ function saveAndFinishOffboardTemplate(templateId){
        	 
 	    	 $("#finish_task").removeAttr("disabled");
 	    	 $("#loading").removeAttr("style");
+	    	 location.replace(sourceleadUrl+"/offboardingTemplatesList"); 
 	    	
 	    }
    }); 
@@ -1355,6 +1373,7 @@ function createTemplateCheckList(saveType){
 	      		        		var $tabs = $('.tabbable li');
 	      		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	      		     	        document.getElementById("templateTasks").disabled = false;
+	      		     	        $("#offboardTaskDiv").val('Y');
 	      		     	        getOffboardingTasksList();
 	      		        	}else{
 	      		        		getOffboardingCheckList();

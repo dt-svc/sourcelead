@@ -123,5 +123,7 @@ public interface OrgSpocService {
 	List<OrgSpoc> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
 
 	List<OrgSpoc> getSpoclistByDomain(Long id, String domain)throws Exception;
+	
+	boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId) throws Exception;
 
 }

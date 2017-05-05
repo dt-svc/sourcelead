@@ -13,6 +13,17 @@
 <script src="resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="resources/js/offboardCheckList-view-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
+
+<style type="text/css">
+.onboardLabel p {
+margin-bottom: 0; margin-top: 7px;
+}
+.onboardLabel label.control-label:after{
+content:":";
+padding-left: 25px;	
+}
+</style>
+
 <script> 
 	$(document).ready(function(){
 		offboardCandidateDetails();
@@ -26,7 +37,7 @@
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Offboarding Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Offboarding Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -110,7 +121,7 @@
 	        	 var json = JSON.parse(data);
 	        	 
 	        	 var result = "";
-				 result = result +'	 <div class="col-md-12"> ';                                                                                         
+				 result = result +'	 <div class="col-md-12 onboardLabel"> ';                                                                                         
 				 result = result +'   <div class="form-horizontal">';
 				 result = result +'     <p><strong>Employee Details</strong></p>';
 				 result = result +'     <div class="form-group">';

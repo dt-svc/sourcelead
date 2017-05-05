@@ -83,10 +83,7 @@ width: 100% !important;
 	                       <div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="education" id="education"
-									data-validation="validate_Space"
-									data-validation-optional="true">
+								<select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
 									<c:forEach var="edu" items="${educationsList}">
 										<c:if
 											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
@@ -121,7 +118,7 @@ width: 100% !important;
 						 <div class="form-group">
 			              <label class="col-md-3">Skills</label>
 			              <div class="col-md-9">
-			                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
+			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">
 			               <c:forEach var="skill" items="${skillsList}">
 			               		<c:set var = "NUM" value = "${0}"/>
 			               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
@@ -169,7 +166,7 @@ width: 100% !important;
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-md-6">
-										<input type="text" class="form-control" placeholder="minExp"
+										<input type="text" class="form-control" placeholder="MinExp"
 											id="minExp" name="minExp" value="${requirement.minExp}"
 											field-name="MinExp"
 											data-validation="validate_Space validate_float validate_length length1-5"
@@ -178,7 +175,7 @@ width: 100% !important;
 									</div>
 									<div class="col-md-6">
 										<input type="text" class="form-control" id="maxExp"
-											name="maxExp" placeholder="maxExp"
+											name="maxExp" placeholder="MaxExp"
 											value="${requirement.maxExp}" field-name="MaxExp"
 											data-validation="validate_Space validate_float validate_length length1-5"
 											data-validation-optional="true" onblur="minMaxExperience();"

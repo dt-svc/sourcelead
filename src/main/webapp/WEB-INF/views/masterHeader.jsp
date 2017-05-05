@@ -210,10 +210,10 @@ document.onkeydown=function(e){
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option>
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirements</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
-	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option>
+	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
 	           <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
@@ -225,7 +225,7 @@ document.onkeydown=function(e){
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
 			</c:forEach>
-	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associate</option>
+	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 		</select>
 			
 			
@@ -370,7 +370,7 @@ document.onkeydown=function(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
-	                      <sec:authorize access="hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
+	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
 	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
 	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
@@ -1175,13 +1175,13 @@ jQuery('.main-header').removeClass('navbar-fixed-top');}
 });
 </script> -->
 <script>
-jQuery(window).scroll(function () {
+/* jQuery(window).scroll(function () {
 if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 100 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
 jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
 } else if (jQuery(window).scrollTop() <= 50){
 jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-20%"});
 }
-});
+}); */
 
 // Select picker updated script for universalSerch
 

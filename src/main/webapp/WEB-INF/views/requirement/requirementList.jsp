@@ -127,7 +127,7 @@ max-width:220px;
 display: inline;
 }
 .timesheet_out {
-overflow-x: auto; background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+overflow-x: auto;  background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); top:-45px;
 }
 .vendor_wrap {
 box-shadow:none;
@@ -1299,13 +1299,12 @@ function requirementPipeline(requirementId){
 		</div>  
   </section>
   
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-      <div class="timesheet_head timesheetHead_Custom">
-       <div class="pull-left cand-advsrch advsrch_chosen">
+  
+  <div class="clearfix">
+  <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup reqadvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          <div class="cand-advsrch-popup reqadvsrch candAdvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
             <div class="row">
              <!--  <div class="col-md-4">
                 <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1336,15 +1335,15 @@ function requirementPipeline(requirementId){
             <div class="row">
               <div class="clearfix">
                 <div class="col-md-8">
-                  <label>Job Title</label>
+                  <label>Title</label>
                   <div class="clearfix">
                     <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
                   </div>
                 </div>
                   <div class="col-md-4">
-                  <label>Job Id</label>
+                  <label>Id</label>
                   <div class="clearfix">
-                    <input type="text" id="jobId" name="jobId" class="form-control input-sm" placeholder="job Id">
+                    <input type="text" id="jobId" name="jobId" class="form-control input-sm" placeholder="Requirement Id">
                   </div>
                 </div>
             <%--    <div class="form-group">
@@ -1445,9 +1444,9 @@ function requirementPipeline(requirementId){
                 </div>
                 
                 <div class="col-md-4">
-                  <label>Client<i class="fa fa-info-circle" title="CLient"></i></label>
+                  <label>Client</label>
                   <div class="clearfix">
-                    <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
+                    <select class="chosen-select" id="client" name="client" data-placeholder="Select Client" multiple>
                       <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
@@ -1513,7 +1512,7 @@ function requirementPipeline(requirementId){
                 </div> --%>
 
                 <div class="col-md-4 hidden">
-                  <label>Client<i class="fa fa-info-circle" title="CLient"></i></label>
+                  <label>Client</label>
                   <div class="clearfix">
                     <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
                       <c:forEach var="report" items="${add_clientList}">
@@ -1531,9 +1530,9 @@ function requirementPipeline(requirementId){
               
               
          <div class="col-md-4">
-         <label>Notice Period<i class="fa fa-info-circle" title="Notice Period"></i></label>
+         <label>Notice Period</label>
           <div class="clearfix">
-             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" >
+             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" data-placeholder="Select Notice Period">
 	                 <option  ${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
 	                 <option  ${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
 	                 <option  ${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
@@ -1567,13 +1566,20 @@ function requirementPipeline(requirementId){
               <div class="pull-right mr"> 
               <!-- <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> 
               <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>  -->
-               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-primary"/>
-               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/></div>
+               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-success"/>
+               <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
+               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/></div>
             </div>
           </div>
           </form:form>
           
         </div>
+  </div>
+  
+  <div class="timesheet_out">
+    <div class="vendor_wrap">
+      <div class="timesheet_head timesheetHead_Custom">
+       
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
         
@@ -2290,6 +2296,18 @@ function getCities(){
     	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
+}
+</script>
+<script>
+function clearSearch(){
+	document.getElementById("requirement_form").reset();
+	$('#requirementStatu').val('').trigger('chosen:updated');
+	$('#updatedOn').val('').trigger('chosen:updated');
+	$('#client').val('').trigger('chosen:updated');
+	$('#country').val('').trigger('chosen:updated');
+	$('#state').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	$('#noticePeriod').val('').trigger('chosen:updated');
 }
 </script>
 

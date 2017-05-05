@@ -136,5 +136,42 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateEmployers getCandidateCurrentEmployer(Long candidateId, Long orgLocationId) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers  employer left join fetch employer.candidateId left join fetch employer.orgLocationId where employer.candidateId = :candidateId and "
+				+ " employer.orgLocationId.id = :orgLocationId and employer.isCurrentPosition = 'Y' and employer.status = '1' ";
+		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId)
+				.setCacheable(true).list();
+		
+
+		CandidateEmployers canEMp = null;
+		if (employersList != null && employersList.size() > 0) {
+			canEMp = (CandidateEmployers) employersList.iterator().next();
+		}
+		return canEMp;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers  employer left join fetch employer.candidateId left join fetch employer.orgLocationId where employer.candidateId = :candidateId and "
+				+ " employer.orgLocationId.id = :orgLocationId and employer.isCurrentPosition = 'N' and employer.status = '1' ";
+		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId)
+				.setCacheable(true).list();
+		
+
+		CandidateEmployers canEMp = null;
+		if (employersList != null && employersList.size() > 0) {
+			canEMp = (CandidateEmployers) employersList.iterator().next();
+		}
+		return canEMp;
+	}
+
 
 }

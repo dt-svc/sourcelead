@@ -48,6 +48,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Html2PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -70,6 +71,9 @@ public class ContractRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private Html2PdfUtil html2PdfUtil;
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
@@ -112,14 +116,43 @@ public class ContractRestController {
 	public @ResponseBody  void testController(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
+		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
+		String totalBody = header + contractsTemplate.getTemplateContent();
     	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
   	    Document document = new Document();
   	    PdfWriter.getInstance(document, byteArray);
   	    document.open();
   	    HTMLWorker htmlWorker = new HTMLWorker(document);
-  	    htmlWorker.parse(new StringReader(contractsTemplate.getTemplateContent()));
+  	    htmlWorker.parse(new StringReader(totalBody));
   	    document.close();
   	    byte[] pdfBytes = byteArray.toByteArray();
+  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+  	    response.setContentType("application/pdf");
+  	    response.setContentLength(pdfBytes.length);
+          ServletOutputStream sos = response.getOutputStream();
+          sos.write(pdfBytes);
+          sos.flush();
+          sos.close();
+	}
+	
+	@RequestMapping(value = "/viewContractPdf/{id}", method = RequestMethod.GET)
+	public @ResponseBody  void viewContractPdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		byte[] pdfBytes = null ;
+	
+		if(contract.getEnvelopId()!=null && contract.getTypeOfContract().equalsIgnoreCase("New")){
+			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+		}
+		if(contract.getTypeOfContract().equalsIgnoreCase("New")&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
+			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+		}
+		if(contract.getEnvelopId()==null && contract.getTypeOfContract().equalsIgnoreCase("Existing")){
+			  pdfBytes = contract.getDocFile();
+		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
   	    response.setContentLength(pdfBytes.length);
@@ -205,10 +238,10 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType);
 		return commonUtil.toJSON(contracts);
 	} 
 	
@@ -271,13 +304,13 @@ public class ContractRestController {
 		 contractsTemplateService.saveNewContract(contracts);
 		}*/
 		
-		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
+		if(("WAITING_TO_BE_VERIFY").equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 			if(null != childContarct.getParentContractId()){
 				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus("Finalized");
+				childContarct.setTemplateSubmissionStatus("FINALIZED");
 				contracts.setId(contracts.getId());
-				contracts.setTemplateSubmissionStatus("Finalized");
+				contracts.setTemplateSubmissionStatus("FINALIZED");
 			}
 			 contractsTemplateService.saveNewContract(childContarct);
 			 contractsTemplateService.saveNewContract(contracts);

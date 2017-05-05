@@ -831,7 +831,7 @@ function sideBar(requirementId){
 							 
 							 var submitToClient = '';
 						     if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
-	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to Client</a>';
+	           				    submitToClient = '<a href="javascript:void(0)" title="" onclick="submitToClient('+requirementId+');" class="submitTo"><i class="fa fa-plus"></i>&nbsp;Submit to client</a>';
 	           			     }
 							
 				            result = result +'<div id="actionsDiv" class="timesheet_head timesheetHead candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">';
@@ -865,10 +865,10 @@ function sideBar(requirementId){
 				            	result = result + submitToClient;
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">';
-				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Schedule interview</a>';
+				            	result = result +'   <a href="javascript:void(0)" title="" onclick="addInterview('+requirementId+');" class="add-interview"><i class="fa fa-plus"></i>&nbsp;Schedule Interview</a>';
 				            '</sec:authorize>';
 				            '<sec:authorize access="hasAnyRole(\'ROLE_CREAE_OFFER\')">';
-				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Generate offer</a>';
+				            	result = result +'    <a href="javascript:void(0)" title=""  onclick="addOffer('+requirementId+');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Generate Offer</a>';
 				            '</sec:authorize>';
 				            result = result +'    </span>';
 				            result = result +' </div>';	
@@ -3802,7 +3802,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th>City</th>';
 		    result = result +'<th>Ph. No</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
-		    result = result +'<th>Number of req</th>';
+		    result = result +'<th>Number Of Requirements</th>';
 		    result = result +'<th>Updated Date</th>';
 		    result = result +'<th>Score</th>';
 		    result = result +'<th>Action</th>';

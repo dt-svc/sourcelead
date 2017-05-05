@@ -5,6 +5,9 @@
 .chosen-container {
     width: 100% !important;
 }
+.validationError p.jquery_form_error_message {
+width: 75px; padding: 0 !important;
+}
 </style>
  <!-- Applicant Authorization -->
       <div class="dashboard-widget clearfix mb eventAlert">
@@ -262,11 +265,11 @@ function dashboardAddInterview(){
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<div class="pull-left timeZone" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
+		result = result + '			<div class="pull-left timeZone validationError" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<select class="form-control"  id="1timeZone" name="1timeZone">';
+		result = result + '			<select class="form-control"  id="1timeZone" name="1timeZone" field-name="Timezone" data-validation="required">';
 		result = result + '			</select>';
 		result = result + '		</td>';
 		
@@ -395,7 +398,7 @@ function getSeheduledInterviewsList(){
         				result = result + '<th>Applicant</th>';
         				result = result + '<th>Interview Type</th>';
         				result = result + '<th>Start Date</th>';
-        				result = result + '<th>End Date</th>';	
+        				result = result + '<th>Start time - End time</th>';	
         				result = result + '<th>Time Zone</th>';
         				result = result + '<th>Details</th>';
         				result = result + '<th>Interviewer</th>';
@@ -423,18 +426,23 @@ function getSeheduledInterviewsList(){
 	                 	result = result + '       </td>';
 	                 	
 	                 	result = result + '       <td>';
+	                 	var sTime = "";
 	                 	if(null != opt.interviewTimeZoneStartTimeStr && '' != opt.interviewTimeZoneStartTimeStr && 'undefined' != opt.interviewTimeZoneStartTimeStr){
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneStartTimeStr+'</div>';
+	                 		sTime = opt.interviewTimeZoneStartTimeStr.substr(opt.interviewTimeZoneStartTimeStr.length - 8);
+	                 		var iDate = opt.interviewTimeZoneStartTimeStr.substring(0, 10)
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+iDate+'</div>';
 	                 	}else{
 	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
 	                 	}
 	                 	result = result + '       </td>';
 	                 	
 	                 	result = result + '       <td>';
+	                 	var eTime = "";
 	                 	if(null != opt.interviewTimeZoneEndTimeStr && '' != opt.interviewTimeZoneEndTimeStr && 'undefined' != opt.interviewTimeZoneEndTimeStr){
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneEndTimeStr+'</div>';
+	                 		eTime = opt.interviewTimeZoneEndTimeStr.substr(opt.interviewTimeZoneEndTimeStr.length - 8);
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+sTime+" - "+eTime+'</div>';
 	                 	}else{
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+sTime+'</div>';
 	                 	}
 	                 	result = result + '       </td>';
 	                 	
@@ -663,6 +671,14 @@ function getTimezonesList(){
 				}
 			}
 		}
+</script>
+
+<script>
+function cancelAddInterviewDiv(){
+	 $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+	 $(".side_mask").fadeOut(200);
+ 	 $("body").css('overflow-y', 'auto');
+}
 </script>
 
 

@@ -107,4 +107,6 @@ public interface OrgSpocDao {
 
 	List<OrgSpoc> getSpoclistByDomain(Long orgRelationId, String domain)throws Exception;
 	
+	boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId) throws Exception;
+	
 }

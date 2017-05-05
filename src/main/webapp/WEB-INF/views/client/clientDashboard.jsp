@@ -228,9 +228,9 @@ overflow-x: auto;
 										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
 											<option value="Active">Active</option>
 											<option value="In-Active">In-Active</option>
-											<option value="New">New</option>
+											<!-- <option value="New">New</option>
 											<option value="Negotiation">Negotiation</option>
-											<option value="Contract">Contract</option>
+											<option value="Contract">Contract</option> -->
 									</select>
 						 </div>  
               	</div>
@@ -278,9 +278,9 @@ overflow-x: auto;
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
 								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
-								<li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
+								<!-- <li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
 								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li>
+	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li> -->
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -1022,9 +1022,9 @@ function preparedClientContacts(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 					result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1150,9 +1150,9 @@ function preparedClientContactListFromElk(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 	    			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1876,10 +1876,10 @@ function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>User delete message here</p>";
-	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	//result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1891,14 +1891,13 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
-		 reason = encodeURIComponent(reason);
-		$("#reasonForSpocDiv").empty();
-		
-		 $("#row"+spocId).empty();
-		 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-		 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-		
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+	  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+  	  $("#reasonForSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+  	  
+	}else{
+	  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
 		   url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1916,12 +1915,6 @@ function saveReason1(spocId, orgRelationID){
 	             msgFadein();
 		    }
 	   });
-	}else{
-		if(reason){
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
 	}
 	  
 }
