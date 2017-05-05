@@ -199,7 +199,7 @@
                                   <div class="">
                                     <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
-                                      Candidate </label>
+                                      Offboard User </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
@@ -1079,7 +1079,7 @@ function getOffboardingTasksList(){
 			 					result = result +'<label>'+report.usersList[j]+'</label>';
 			 				}
 		        		}else{
-		 					result = result +'Onboarding Candidate';
+		 					result = result +'Offboarding Candidate';
 		 				}
 		        		result = result +'</li>';
 		        		

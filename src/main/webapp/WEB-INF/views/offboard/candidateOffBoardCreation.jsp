@@ -339,7 +339,7 @@
                                   <div class="">
                                     <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
-                                      Candidate </label>
+                                      Offboard User </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
@@ -731,14 +731,14 @@ function getTemplateResignationDocumentsDetails(offboardId){
                 		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadOffboardDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
-           				
-           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           				 
+           				 if(opt.offboardDocumentType != 'Candidate Documents'){
          					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
         				 }else{
         					result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
         				 }
            				 
-           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           				 if(opt.offboardDocumentType != 'Candidate Documents'){
             					result = result +"<input type='hidden' name='savedResignationAttcahments' id='resignationAttachment"+opt.id+"' value='"+opt.id+"' />";
            				  }
            				 
@@ -793,7 +793,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
            					result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
            				 }
            				 
-           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           				 if(opt.offboardDocumentType != 'Candidate Documents'){
          					result = result +"<input type='hidden' name='savedOffboardPackAttcahments' id='offboardPackAttachment"+opt.id+"' value='"+opt.id+"' />";
         				  }
            				 
