@@ -1120,9 +1120,9 @@ $(document).ready(function () {
                           <div class="col-xs-12 col-md-12 col-lg-12">
                             <div class="form-group">
                             <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
+                            <div class="col-lg-8" id="teamNameDiv">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">
                               </div>
                             </div>
                             <div class="form-group">
@@ -2098,9 +2098,8 @@ function getUserList(teamType){
 	   $('input[name^="assignUserId"]').each(function() {
 	 		selectedUsersForAssign.push($(this).val());
 	   });
-	   
- 	   $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	   $.ajax({
+ 	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+ 	   $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
@@ -2182,7 +2181,7 @@ function getUserList(teamType){
 		                    		 }
 		                    	 }
 		                    	 
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
@@ -2814,6 +2813,35 @@ function getEditRequirementDetails(requirementId){
 	
 }
 </script>
+
+<script type="text/javascript">
+ function validateTeamName() {
+	 var name = $('#name').val(); 
+	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(name != null && name != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  
+		        		  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#add_team").attr("disabled", "disabled");
+						  $("#add_team").addClass('button').val('Processing..');
+		        	}
+		        	else{
+		        		
+		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
+		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_team" ).addClass('button').val('Save');
+                         $("#add_team").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 } 
+ }
+ </script> 
 
 <script type="text/javascript">
 $(document).ready(function(){
