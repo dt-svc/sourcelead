@@ -141,5 +141,7 @@ public interface CandidateService {
 	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
+
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId)throws Exception ;
 	
 }

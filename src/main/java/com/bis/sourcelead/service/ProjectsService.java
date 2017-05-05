@@ -108,5 +108,7 @@ public interface ProjectsService {
 		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
 		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status) throws Exception ;
+
+		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 		
 }

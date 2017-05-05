@@ -239,6 +239,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
 			contracts.setApproverUser(approverUser);
 		}
+
 		if(("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))|| "NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType")))){
 			contracts.setInitiatorType("Client");
 			contracts.setOrgLocationId(orgLocation);
@@ -255,7 +256,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 //			}
 			contracts.setContactUser(vendorContactsUser);
 		}
-		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			contracts.setInitiatorType("Vendor");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
@@ -337,6 +338,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
+
 		if(null == approverUser && !"DRAFT".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
 			vendorContracts.setParentContractId(savedContracts);
 			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
@@ -360,8 +362,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setContactUser(ownerUser);
 			}
 			
-			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-				vendorContracts.setContractType("Vendor MSA");
+			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Vendor MSA");	
+				}else{
+					vendorContracts.setContractType("Vendor SOW");
+				}
+				
 				vendorContracts.setInitiatorType("Vendor");
 				vendorContracts.setParentContractId(savedContracts);
 				vendorContracts.setContractOrgLocationId(orgLocation);

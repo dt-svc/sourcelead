@@ -380,13 +380,13 @@ $(document).ready(function(){
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				<strong>RoleChangeReason:</strong><span class="fix">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>RoleChangeReason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
 				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Reason:</strong><span class="fix">'+json.terminateReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>Reason:</strong><span class="fix" title = "'+json.terminateReason+'">'+json.terminateReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
