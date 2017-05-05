@@ -3305,8 +3305,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 
 
 	@Override
-	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId) {
-		return requirementDao.getTotalRequirementsReleasedToSpoc(relationId, spocId);
+	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId, Date startDateUTC, Date endDateUTC) {
+		return requirementDao.getTotalRequirementsReleasedToSpoc(relationId, spocId,startDateUTC,endDateUTC);
 	}
 	
 	@Override
@@ -3332,6 +3332,13 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		
 			return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(orgLocationId, userType, userId, userCode, numberOfDays);
 		
+	}
+
+
+	@Override
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
+			Date startDateUTC, Date endDateUTC) throws Exception {
+		return requirementDao.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocationId, orgRelationId, startDateUTC, endDateUTC);
 	}
 	
 }

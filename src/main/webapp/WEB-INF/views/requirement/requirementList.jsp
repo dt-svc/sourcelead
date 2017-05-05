@@ -127,7 +127,7 @@ max-width:220px;
 display: inline;
 }
 .timesheet_out {
-overflow-x: auto; background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+overflow-x: auto;  background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); top:-45px;
 }
 .vendor_wrap {
 box-shadow:none;
@@ -1299,10 +1299,9 @@ function requirementPipeline(requirementId){
 		</div>  
   </section>
   
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-      <div class="timesheet_head timesheetHead_Custom">
-       <div class="pull-left cand-advsrch advsrch_chosen">
+  
+  <div class="clearfix">
+  <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup reqadvsrch candAdvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -1575,6 +1574,12 @@ function requirementPipeline(requirementId){
           </form:form>
           
         </div>
+  </div>
+  
+  <div class="timesheet_out">
+    <div class="vendor_wrap">
+      <div class="timesheet_head timesheetHead_Custom">
+       
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
         
