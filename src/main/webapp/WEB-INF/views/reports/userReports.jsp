@@ -101,7 +101,6 @@
 <h4 class="pull-left mr">Vendors Report</h4>
 	  <div class="reportBtn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
-		 <option value="">select</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
 		  <option value="week">1 week</option>
@@ -199,6 +198,7 @@ function usersList(){
 	                     result = result +"<th><i class='fa fa-handshake-o fa-2x'></i><div class='small'>Interviewed</div></th>"; 
 	                     result = result +"<th><i class='fa fa-envelope-open-o fa-2x'></i><div class='small'>Offered</div></th>"; 
 	                     result = result +"<th><i class='fa fa-ban fa-2x'></i><div class='small'>Rejected</div></th>";
+	                     result = result +"<th><i class='fa fa-arrow-circle-left fa-2x'></i> <div class='small'>Back-Out</div></th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -280,6 +280,10 @@ function usersList(){
 	                    	 }else{
 	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
 	                    	 }
+	                    	 
+	                    	 result = result + '<td>';
+                    		 result = result + '<div class="small"><span>0</span></div>';
+	                         result = result + '</td>';
 		                    
 		                     result = result +"</tr>";
 	                     }
