@@ -266,10 +266,10 @@ overflow-x: auto;
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
+							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">Completed</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">On-Hold</label></li>
                         </ul>
                     </div>                	
                 </li>
@@ -627,16 +627,16 @@ function filter(){
    		    		}
    		    		result = result +'<td data-title="Status"><div>';
    		    		if(report.projectStatus == 'STARTED'){
-	    			  result = result +'<b>'+report.projectStatus+'</b>';
+	    			  result = result +'<b>Started</b>';
 	    			}
    		    		if(report.projectStatus == 'INPROGRESS'){
-  	    			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
+  	    			  result = result +'<b class="proj_process">In-Progress</b>';
   	    			}
    		    		if(report.projectStatus == 'COMPLETED'){
-  	    			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
+  	    			  result = result +'<b class="proj_active">Completed</b>';
   	    			}
    		    		if(report.projectStatus == 'ONHOLD'){
-  	    			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+  	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
   	    			}
    		    		
    		    		result = result +'</div></td>';
