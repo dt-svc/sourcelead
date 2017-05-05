@@ -22,7 +22,7 @@ min-height: 150px;
 top:-55px !important;
 }
 .dataTable thead th {
-background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px;
+background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px; text-align:center;
 }
 .dataTable thead tr th {
 vertical-align: middle;
@@ -623,7 +623,7 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Save as a template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as a Template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>

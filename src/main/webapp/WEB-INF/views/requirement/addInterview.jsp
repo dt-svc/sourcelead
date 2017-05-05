@@ -37,7 +37,7 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	 result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
+	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
 // 	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';

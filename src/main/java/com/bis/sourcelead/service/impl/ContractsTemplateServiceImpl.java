@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,12 +33,15 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.itextpdf.text.Document;
@@ -67,6 +71,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Override
 	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
@@ -155,10 +162,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
+        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+        
 		contracts.setContractType(jsonObj.getString("contractType"));
 		ContractsTemplate contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
 		if(null != contractsTemplate){
 			contracts.setContractsTemplate(contractsTemplate);
+			vendorContracts.setContractsTemplate(contractsTemplate);
 		}
 		contracts.setTypeOfContract("New");
 		vendorContracts.setTypeOfContract("New");
@@ -193,7 +203,26 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractsTemplate(contractsTemplate);
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-        Date startDate = format.parse(jsonObj.getString("startDate"));
+		
+		
+		String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
+		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+		contracts.setStartDate(convertedDate);
+		if(jsonObj.has("endDate")){
+			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
+				String endDateStr = Constants.TZ_DF.format(jsonObj.getString("endDate"));  
+				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+				contracts.setEndDate(convertedEndDate);
+				vendorContracts.setEndDate(convertedEndDate);
+			}
+		}
+		
+		
+		
+   /*     Date startDate = format.parse(jsonObj.getString("startDate"));
 		contracts.setStartDate(startDate);
 		vendorContracts.setStartDate(startDate);
 		if(jsonObj.has("endDate")){
@@ -202,7 +231,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setEndDate(endDate);
 				vendorContracts.setEndDate(endDate);
 			}
-		}
+		}*/
 		User approverUser = null;
 		User vendorContactsUser = null;
 		if(jsonObj.has("approver") && null != jsonObj.getString("approver") && !"".equals(jsonObj.getString("approver"))){
@@ -292,10 +321,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 //		contracts.setTemplateSubmissionStatus("pending");
 		vendorContracts.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 		vendorContracts.setStatus("0");
-		if(null != approverUser){
+		if(null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
 			contracts.setTemplateSubmissionStatus("WAITING_FOR_APPROVER");
 			sendMailToContractApprover(user,approverUser,contracts,orgLocation);
-		}else{
+		}
+		else if("DRAFT".equalsIgnoreCase(saveType)){
+			contracts.setTemplateSubmissionStatus("DRAFT");
+		}
+		else{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
 		contracts.setCreatedDate(new Date());
@@ -346,8 +379,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		            Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
 		            savedContracts.setDocId(con.getTempdocId());
 		            savedContracts.setEnvelopId(con.getTempEnvId());
-		            savedContracts.setContractStatus(con.getStatus());
+		            savedContracts.setContractStatus(con.getContractStatus());
+		            vendorContracts.setDocId(con.getTempdocId());
+		            vendorContracts.setEnvelopId(con.getTempEnvId());
+		            vendorContracts.setContractStatus(con.getContractStatus());
 		        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedContracts);
+		        	contractsTemplateDao.saveNewContract(vendorContracts);
 			  }
 		}
 		return savedContracts;
@@ -675,7 +712,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		Contracts vendorContracts = new Contracts();
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
+
         
+        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		contracts.setContractType(jsonObj.getString("contractType"));
 		
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
@@ -704,18 +743,23 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		contracts.setTypeOfContract("Existing");
+		vendorContracts.setTypeOfContract("Existing");
 		contracts.setContractTitle(jsonObj.getString("contractTitle"));
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-        Date startDate = format.parse(jsonObj.getString("startDate"));
-		contracts.setStartDate(startDate);
-		vendorContracts.setStartDate(startDate);
+		String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
+		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+		contracts.setStartDate(convertedDate);
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				Date endDate = format.parse(jsonObj.getString("endDate"));
-				contracts.setEndDate(endDate);
-				vendorContracts.setEndDate(endDate);
+				String endDateStr = Constants.TZ_DF.format(jsonObj.getString("endDate"));  
+				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+				contracts.setEndDate(convertedEndDate);
+				vendorContracts.setEndDate(convertedEndDate);
 			}
 		}
 		User approverUser = null;

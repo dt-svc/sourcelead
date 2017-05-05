@@ -425,7 +425,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 weekEndDate = format.parse(v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
-						weekFrequencyDates.append(weekStartDate);
+						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");
 					 }else{
 						 weekFrequencyDates.append((shortormat.format(weekStartDate))).append("-").append(shortormat.format(weekEndDate)).append(",");
 					 }
@@ -472,10 +472,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        PdfPTable table = new PdfPTable(header.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(20);
+	        cell1.setColspan(23);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-	        if(header.length < 20){
+	        if(header.length > 20){
             table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});
 	        }else{
 	        table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});	
@@ -544,7 +544,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }
 			int count = 5;
 			SubmissionApproverHierarchy sah= null;
-			float monthTotalHours = 0f;
+			 float monthTotalHours = 0f;
 			 float weekTotalHours = 0f;
 			 float  weekBillableHours = 0f;
 			 float  monthBillableTotalHours = 0f;
@@ -640,7 +640,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 weekEndDate = format.parse(v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
-						weekFrequencyDates.append(weekStartDate);
+						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");
 					 }else{
 						 weekFrequencyDates.append((shortormat.format(weekStartDate))).append("-").append(shortormat.format(weekEndDate)).append(",");
 					 }
