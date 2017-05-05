@@ -585,8 +585,6 @@ function discordApplicant(){
 	 
 	 $("input[name=PhoneNumber]").val('');
 	 $("input[name=Designation]").val('');
-	 $("select[name=state]").val('');
-	 $("select[name=city]").val('');
 	 $("select[name=NoticePeriod]").val('');
 	 $("select[name=WorkExperience]").val(0);
 	 $("input[name=ExpectedCTC]").val('');
@@ -596,6 +594,8 @@ function discordApplicant(){
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');
 	
+	 getCandidateStates();
+	 getSubmissionCandidateCities();
  }
 </script>
 

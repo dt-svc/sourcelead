@@ -322,13 +322,13 @@ public class ReportRestController {
 		int rejectedSum = 0;
 		long vendorLocationId = 0L;
 	    for(OrgRelations orgrel : vendorslist){
-	    	List<Requirement> reqList = requirementService.getAllReleasedJobsForVendor(orgLocations.getId(), orgrel.getId(), null, null);
+	    	List<Requirement> reqList = requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(), orgrel.getId(),startDateUTC,endDateUTC);
 	    	if(orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 	    		vendorLocationId = orgrel.getLocationId().getId();
 			}if(orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				vendorLocationId = orgrel.getResponderLocationId().getId();
 			}
-	    	List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getApplicantCountSubmittedByVendor(orgLocations.getId(),vendorLocationId);
+	    	List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(orgLocations.getId(),vendorLocationId,startDateUTC,endDateUTC);
 	    	orgrel.setSubmittedCount(reqSubmissionList.size());
 	    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
 		    	for(RequirementSubmission reqSub : reqSubmissionList){
@@ -391,6 +391,7 @@ public class ReportRestController {
 			HttpServletRequest request) throws Exception {
 		
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    
 	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -444,11 +445,13 @@ public class ReportRestController {
 		int offeredSum = 0;
 		int rejectedSum = 0;
 		
-	    List<OrgSpoc> vendorSpocsList = orgSpocService.getSpoclistByDomain(relationId,"");
-	    for(OrgSpoc spoc : vendorSpocsList){
-	    	List<Requirement> reqList = requirementService.getTotalRequirementsReleasedToSpoc(relationId,spoc.getId());
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(relationId, loginUser.getId(),orgLocations.getId(),"Vendor");
+		
+//	    List<OrgSpoc> vendorSpocsList = orgSpocService.getSpoclistByDomain(relationId,"");
+	    for(OrgSpoc spoc : orgSpocsList){
+	    	List<Requirement> reqList = requirementService.getTotalRequirementsReleasedToSpoc(relationId,spoc.getId(),startDateUTC,endDateUTC);
 	    	spoc.setReqReleasedCount(reqList.size());
-	    	   List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getVendorSpocSubmissions(spoc.getVendorUser().getUserCode(),orgLocations.getId());
+	    	   List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getVendorSpocSubmissions(spoc.getVendorUser().getUserCode(),orgLocations.getId(),startDateUTC,endDateUTC);
 	    	   spoc.setSubmittedCount(reqSubmissionList.size());
 		    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
 			    	for(RequirementSubmission reqSub : reqSubmissionList){
@@ -500,7 +503,7 @@ public class ReportRestController {
 		    	spoc.setRejectedCount(rejectedSum);
 	    }
 	    
-		return commonUtil.toJSON(vendorSpocsList);
+		return commonUtil.toJSON(orgSpocsList);
 	}
 	
 	

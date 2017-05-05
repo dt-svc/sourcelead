@@ -13,7 +13,7 @@
     <div id="offboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Off-board Templates List</h2>
+            <h2>Offboard Templates List</h2>
           </div>
     </section>
     
