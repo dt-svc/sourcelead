@@ -84,7 +84,7 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/createInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		sessionData.setNav(Constants.Billing);
+		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
@@ -107,7 +107,7 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/invoiceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		sessionData.setNav(Constants.Billing);
+		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
