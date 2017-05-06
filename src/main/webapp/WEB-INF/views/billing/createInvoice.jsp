@@ -23,13 +23,18 @@ function errRemoveClientContact(){
 }
 
 </script>
-
+  <script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
  <div class="side_mask">
       <div class="proj_close"></div>
  </div>
     
-    
+<div id="popUp"></div>  
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -281,7 +286,7 @@ function errRemoveClientContact(){
       <footer class="form-footer">
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT')">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml">Send</button>
+                  <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
                   <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
               </div>
           </footer>
@@ -779,7 +784,7 @@ function pagination(){
 	             var second=parseFloat(taxTotal); 
 	             var total  = (first+second);
               
-	             $("#grandTotal").val(total);
+// 	             $("#grandTotal").val(total);
 	    }
    /* =====================  After adding the rows calculate the tax end  ===================== */
    
@@ -1240,38 +1245,53 @@ function saveInvoice(saveType){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          };  */
-	
-	   if ($('#invoice_form').validate(false, validationSettings)){  
-		    var frm = $('#invoice_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var form = $('#invoice_form')[0];
-	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        $.ajax({
-		    	type: "POST",
-		    	 data: formData,
-			      contentType : 'application/json; charset=utf-8',
-			      enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
-		        success: function(result) {
-		     		$("#invoiceLoading").removeAttr("style");
-		     		location.replace(sourceleadUrl+"/invoiceList");
-		     		
-		        },
-		    });  
-	         return true; 
-		
-	   }else{
-		return false;
-	  } 
+         var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+         if ($('#invoice_form').validate(false, validationSettings)){  
+ 		    var frm = $('#invoice_form').serializeFormJSON();
+ 	        var con = JSON.stringify(frm);
+ 	        con = con.replace(/[{}]/g, "");
+ 	        //It will escape all the special characters
+ 	        var jsonData = encodeURIComponent(con);
+ 	        
+ 	        var form = $('#invoice_form')[0];
+ 	 	    var formData = new FormData(form); 
+ 	 	    var sourceleadUrl ='${sourceleadUrl}';
+         if(maxTsRowNum < 2){
+        	 var result = "";
+     		result = result +"	<div class='project_inn_mask'></div>";
+     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+     		result = result +"		<p>At least one Add column Inovoice Line Item</p>";
+     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+     		result = result +"	</div>";
+     		$("#popUp").append(result);
+     		$("#invoice_pop").slideDown(200);
+     		$(".project_inn_mask").fadeIn(200);
+	        }else{
+	        	
+	    	        
+	    	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    	        $.ajax({
+	    		    	 type: "POST",
+	    		    	 data: formData,
+	    			     contentType : 'application/json; charset=utf-8',
+	    			     enctype: 'multipart/form-data',
+	    		         processData: false,
+	    		         contentType:false,
+	    			     dataType : 'json',
+	     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
+	    		        success: function(result) {
+	    		     		$("#invoiceLoading").removeAttr("style");
+	    		     		location.replace(sourceleadUrl+"/invoiceList");
+	    		     		
+	    		        },
+	    		    });  
+	    	         return true; 
+	        }
+         }else{
+	    		return false;
+	    	  } 
+	   
 }
 
 $('body').on('blur', '#invoice_form', function() {
