@@ -316,7 +316,7 @@ function errRemoveClientContact(){
 
 	<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm inline_field" placeholder="HHHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
+	     <input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
 	     </div>
 	</div>
 	
@@ -365,7 +365,6 @@ function errRemoveClientContact(){
 		 	  if(discountType == 'percentage'){
 		 		var perCentValue = (subtractValueFromRow * discountValue)/100;
 		 		total = subtractValueFromRow - perCentValue;
-		 		alert("total"); 
 		 		$("#discountTotal").val(perCentValue);
 		 		$("#grandTotal").val(total);
 		 		$("#afterDiscountTotal").val(total);
@@ -675,24 +674,29 @@ function pagination(){
  	     
  	     var hours1 = hours.charAt(0);
 		 var hours2 = hours.charAt(1);
+		 var hours3 = hours.charAt(2);
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
 		
-		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("0"+hours1+":00");
-			calAddRowAmount("0"+hours1,"00",rowId);
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+			calAddRowAmount("00"+hours1,"00",rowId);
 		 }
-		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("0"+hours2+":00");
-			calAddRowAmount("0"+hours2,"00",rowId);
+		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+			calAddRowAmount("00"+hours2,"00",rowId);
+		 }
+		 if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+			calAddRowAmount("00"+hours3,"00",rowId);
 		 }
 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00:"+min1+"0");
-			calAddRowAmount("00",min1+"0",rowId);
+			 $("#"+rowId+"totalHours").val("000:"+min1+"0");
+			calAddRowAmount("000",min1+"0",rowId);
 		 }
 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00:0"+min2);
-			calAmount("00","0"+min2,rowId);
+			 $("#"+rowId+"totalHours").val("000:0"+min2);
+			calAmount("000","0"+min2,rowId);
 		 }
 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 			 $("#"+rowId+"totalHours").val(hours+":00");
@@ -775,7 +779,7 @@ function pagination(){
 	             var second=parseFloat(taxTotal); 
 	             var total  = (first+second);
               
-// 	             $("#grandTotal").val(total);
+	             $("#grandTotal").val(total);
 	    }
    /* =====================  After adding the rows calculate the tax end  ===================== */
    
@@ -1291,12 +1295,11 @@ function maskme(){
 	$.mask.definitions['H'] = "[0-9]";
     $.mask.definitions['h'] = "[0-9]";
     $.mask.definitions['h'] = "[0-9]";
-    $.mask.definitions['h'] = "[0-9]";
     $.mask.definitions['M'] = "[0-9]";
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hhhh:Mm"); 
+    $(".inline_field").mask("Hhh:Mm"); 
 }
 </script>
 <script>
