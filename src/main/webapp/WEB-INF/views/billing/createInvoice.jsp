@@ -387,19 +387,30 @@ function cancel(){
 		    for(var i=0; i< maxRowNum; i++){
 		         var taxType = $("#"+i+"taxdiscountType").val();
 		        
-		         var taxValue = $("#"+i+"taxdiscountvalue").val();
-		         var taxTotal = $("#"+i+"taxTotal").val();
+		         var taxValu = $("#"+i+"taxdiscountvalue").val();
+		         if(taxValu == ''){
+		        	  taxValue = "0";
+		         }else{
+		        	 taxValue = taxValu;
+		         }
+		         var taxTotales = $("#"+i+"taxTotal").val();
+		         if(taxTotales == ''){
+		        	 taxTotal = "0";
+		         }else{
+		        	 taxTotal = taxTotales;
+		         }
 		         var tot = $("#grandTotal").val();
 		             
-		         if(taxValue == '' && taxTotal==''){
+		        /*  if(taxValue == '' && taxTotal==''){
 	            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-	              }else{
+	              }else{ */
+	            	
 	            	  var tot = $("#grandTotal").val();
 	  	            var first=parseFloat(tot);
 	  	             var second=parseFloat(taxTotal); 
 	  	             var total  = (first+second);
 	  	           $("#grandTotal").val(total.toFixed(2));
-	              }
+	              /* } */
 		        
 		    }
 		
@@ -881,6 +892,7 @@ function calculateDiscount(){
 	var subTotal = $("#inoviceTotal").val();
 	var discountValue = $("#discountValue").val();
 	var total ='';
+	f
 	if(discountType == 'flat'){
 		total = subTotal-discountValue;
 		$("#discountTotal").val(discountValue.toFixed(2));
@@ -1150,20 +1162,19 @@ function singleRowTaxDiscount(){
 	var taxType = $("#0taxdiscountType").val();
     var taxValue = $("#0taxdiscountvalue").val();
     var afterDiscountTotal = $("#afterDiscountTotal").val();
-   
      var total ='';
     if(taxType == 'flat'){
         total = parseInt(afterDiscountTotal) + parseInt(taxValue);
-        $("#0taxTotal").val(taxValue.toFixed(2));
-        $("#grandTotal").val(total.toFixed(2));
+        $("#0taxTotal").val(taxValue);
+        $("#grandTotal").val(total);
     }
     if(taxType == 'percentage'){
         var perCentValue = (afterDiscountTotal * taxValue)/100;
         var first=parseFloat(perCentValue.toFixed(2));
         var second=parseFloat(afterDiscountTotal);
         total = (first+second).toFixed(2);
-        $("#0taxTotal").val(first.toFixed(2));
-        $("#grandTotal").val(total.toFixed(2));
+        $("#0taxTotal").val(first);
+        $("#grandTotal").val(total);
     }   
 }
 </script>
