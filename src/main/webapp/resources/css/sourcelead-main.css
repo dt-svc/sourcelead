@@ -2022,7 +2022,7 @@ ul.sl-jobboard li img {
 	top: -2px;
 }
 .release-jobs-tbl table tr th {
-	text-align: left
+	text-align:center;
 }
 .candidateHead ul li {
 	border-right: 1px solid #ddd;
@@ -2581,6 +2581,9 @@ div.heightScroll {
 .divskill table thead {
 	background: #375d81;
 	color: #fff;
+}
+.divskill table thead th{
+    text-align: center;
 }
 .divskill table tr:nth-child(even) {
 	background-color: #dddddd;
@@ -6428,7 +6431,7 @@ div.inputCustom {
 }
 .menuWidget ul.menupop {
     position: absolute; top: 5px; right: 15px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
-    width: 210px; box-shadow: -1px 1px 2px #333; display: none;
+    width: 325px; box-shadow: -1px 1px 2px #333; display: none;
 }
 .menuWidget ul li{
     cursor: pointer; color: #263238;
@@ -6523,7 +6526,10 @@ padding: 15px 15px 25px 15px;
     position: relative; top: 5px;
 }
 /* Billing Dashboard css */
-
+.custom_search {
+ position: absolute; top: 45px; right: 0; background: #ededed;  border: 1px solid #ddd; border-radius: 3px; z-index: 99;
+ padding: 10px 15px; display: none; width: 400px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
