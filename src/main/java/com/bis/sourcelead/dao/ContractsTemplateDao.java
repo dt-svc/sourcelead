@@ -12,7 +12,7 @@ public interface ContractsTemplateDao {
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
 
-	ContractsTemplate saveContractTemplate(Long contractTemplateId);
+	//ContractsTemplate saveContractTemplate(Long contractTemplateId);
 
 	List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation)throws Exception;
 
