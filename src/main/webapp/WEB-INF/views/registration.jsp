@@ -135,7 +135,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="popemailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" readonly="readonly">
 		                  <b></b>
 		              </span>
 		            </div>
@@ -217,7 +217,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="poprecruiterEmailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail" readonly="readonly" onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
 		                  <b></b>
 		              </span>
 		            </div>
