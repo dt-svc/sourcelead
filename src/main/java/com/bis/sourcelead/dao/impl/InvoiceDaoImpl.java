@@ -1,7 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
@@ -41,18 +44,19 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus) {
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC) {
 		Session session = this.sessionFactory.getCurrentSession();
+		
 		String[] invoiceTokens = invoiceStatus.split(",");
 		String[] paymentTokens = paymentStatus.split(",");
 		
 		String subQuery = "";
 		String subQuery1 = "";
 		if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
-			subQuery = subQuery + "invoce.invoiceStatus = 'DRAFT' or ";
+			subQuery = subQuery + "invoice.invoiceStatus = 'DRAFT' or ";
 		}
 		if (Arrays.asList(invoiceTokens).contains("SENT")) {
-			subQuery = subQuery + "invoce.invoiceStatus = 'SENT' or ";
+			subQuery = subQuery + "invoice.invoiceStatus = 'SENT' or ";
 		}
 		
 		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
@@ -60,23 +64,23 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		} 
 		
 		if (Arrays.asList(paymentTokens).contains("Unpaid")) {
-			subQuery1 = subQuery1 + "invoce.paymentStatus = 'Unpaid' or ";
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Unpaid' or ";
 		}
 		if (Arrays.asList(paymentTokens).contains("Partial Paid")) {
-			subQuery1 = subQuery1 + "invoce.paymentStatus = 'Partial Paid' or ";
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Partial Paid' or ";
 		}
 		if (Arrays.asList(paymentTokens).contains("Paid")) {
-			subQuery1 = subQuery1 + "invoce.paymentStatus = 'Paid' or ";
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Paid' or ";
 		}
 		if (Arrays.asList(paymentTokens).contains("OverDue")) {
-			subQuery1 = subQuery1 + "invoce.paymentStatus = 'OverDue' or ";
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'OverDue' or ";
 		}
 		
 		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
 			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
 		} 
-		String query = "from Invoice invoce  where  invoce.orgLocation.id =:orgLocationId and invoce.status = '1' "+subQuery+" "+subQuery1+""; 
-		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		String query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC"; 
+		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return departmentList;
 	}
 	

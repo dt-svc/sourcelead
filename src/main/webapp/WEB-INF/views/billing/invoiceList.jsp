@@ -25,15 +25,19 @@ $(document).ready(function(){
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons"> <a href="<c:url value='/createInvoice'/>"  class="btn btn-primary btn-sm" title="Create invoice"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
             <div class="pull-right select-field ml">
-              <select class="form-control input-sm">
-                <option class="disabled" selected="">--Select option--</option>
-                <option>1 Month</option>
-                <option>2 Months</option>
-                <option>3 Months</option>
-                <option>6 Months</option>
-                <option>1 Year</option>
-                <option>Custom ... </option>
+              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
+                <option value="month">1 Month</option>
+                <option value="twomonths">2 Months</option>
+                <option value="threemonths">3 Months</option>
+                <option value="sixmonths">6 Months</option>
+                <option value="oneyear">1 Year</option>
+                <option value="custom">Custom</option>
               </select>
+              
+              <div class="custom_search">
+              <div id="customDateDivId"></id>
+            </div>
+          </div>
             </div>
           </div>
           <ul class="nav nav-tabs" id="tab_bar">
@@ -404,9 +408,23 @@ function receivePaymentPop1(total){
 
 <script>
 function getInvoiceList(){
+	$(".custom_search").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var invoice = [];
 	var payment = [];
+	var dayWisetype = $("#dayWiseTypeId").val();
+	
+	var startDate = $("#billingStartDate").val();
+	var endDate = $("#billingEndDate").val();
+	
+	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#invoiceStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#invoiceEndDate").empty().append("End Date is Required") ; 
+	}
+	
+	
 	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
     {
 		invoice.push($(this).val());
@@ -419,7 +437,7 @@ function getInvoiceList(){
 	
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoice+"&paymentStatus="+payment,
+        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate,
         success: function(data) {
         	var json = JSON.parse(data);
         	var result = "";
@@ -612,6 +630,115 @@ $(document).ready(function() {
         e.stopPropagation();
     });	
 });
+</script>
+
+<script>
+    //search script
+        function customInvoiceList() {
+            var selectVal = $("#dayWiseTypeId").val();
+            if (selectVal == "custom") {
+                $(".custom_search").show();
+                customDate();
+            }else {
+                $(".custom_search").hide();
+            }
+        }
+       
+</script>
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<script>
+function closePopup() {
+         $(".custom_search").toggle();
+}
+</script>
+
+<script>
+function customDate(){
+	var result = "";                                                                                                                                  
+	result = result +'	<div class="clearfix row"> <span class="pull-left ml">Custom Search</span>                                                     ';
+	result = result +'   <div class="closeSearch pull-right mr" title="Close Div" onclick="closePopup();">X</div>                                                              ';
+	result = result +'   <div class="clearfix mt10"></div>                                                                                             ';
+	result = result +'   <div class="col-md-5 paddingRight" id="errStartDate">                                                                                           ';
+	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" placeholder="Start Date">                   ';
+	result = result +'                                                                                                                                 ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +'   <div class="col-md-5 paddingLeft" id="errEndDate">                                                                                            ';
+	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" placeholder="End Date">                       ';
+	result = result +'                                                                                                                                 ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +'   <div class="col-md-2 paddingLeft" onclick="searchResults();">                                                                ';
+	result = result +'     <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search paddingRight"></i></button>           ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +' </div>                                                                                                                          ';
+	$("#customDateDivId").empty();
+	$("#customDateDivId").append(result);
+	
+	$('#billingStartDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : 'dd-mm-yy',
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			var dt = toDate("#billingStartDate");
+			dt.setDate(dt.getDate() + 1);
+			$("#billingEndDate").datepicker("option", "minDate", dt);
+			removeStartdateval();
+		}
+	
+	});
+	
+	$('#billingEndDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : 'dd-mm-yy',
+		beforeShow: function(){
+	           this.value='';
+	     },
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			var dt = toDate("#billingEndDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#billingStartDate").datepicker("option", "maxDate", dt);
+			removeEnddateval();
+		}
+	});
+}
+</script>
+<script>
+function removeStartdateval(){
+	$("#errStartDate").find('p.jquery_form_error_message').remove();
+}
+function removeEnddateval(){
+	$("#errEndDate").find('p.jquery_form_error_message').remove();
+}
+
+</script>
+<script>
+function searchResults(){
+	$("#errStartDate").find('p.jquery_form_error_message').remove();
+	$("#errEndDate").find('p.jquery_form_error_message').remove();
+	var startDate =  $('#billingStartDate').val();
+	var endDate =  $('#billingEndDate').val();
+	if(startDate != null && startDate != '' && startDate != 'undefined' && endDate != null && endDate != '' && endDate != 'undefined'){
+		getInvoiceList();
+	}else{
+		if(startDate != null && startDate != '' && startDate != 'undefined'){
+			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+		}else if(endDate != null && endDate != '' && endDate != 'undefined'){
+			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+		}else{
+			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+		}
+	} 
+}
+
 </script>
 
 

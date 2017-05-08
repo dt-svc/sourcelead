@@ -55,8 +55,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private CommonUtil commonUtil;
 	
 	@Override
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus) throws Exception {
-		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus);
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC);
 	}
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
 	{
