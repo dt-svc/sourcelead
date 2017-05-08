@@ -276,10 +276,10 @@
                     </div>
             </div>
             <div class="form-group">
-              <label class="col-md-4">Invoice Frequency<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
-                    <option value="">Select Frequency</option>
+                    <option value="">Select Cycle</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Bi-Weekly">Bi-Weekly</option>
                     <option value="Semi-Monthly">Semi-Monthly</option> 
@@ -452,7 +452,7 @@ function getVendorContacts(){
 	        var opt = json[i];
 	            // need to use in edit
        			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+"</option>";
+       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
 			}
        	    $("#vendorContact").empty();
 	        $("#vendorContact").append(output);
@@ -477,7 +477,7 @@ function getClientContacts(){
 	var opt = json[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);

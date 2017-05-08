@@ -406,10 +406,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 
 	@Override
-	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType) throws Exception
+	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus) throws Exception
 	{
-		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType);
-		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType);
+		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus);
+		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus);
 		
 		Contracts contractsForList = new Contracts();
 		
