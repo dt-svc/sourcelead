@@ -138,8 +138,8 @@ public class Html2PdfUtil {
 		            	}
 		            }  
 		            else if(matchPattern.group().equalsIgnoreCase("[State Of Jurisdiction]")){
-		            	if(null != contracts.getStateOfJurisdiction()){
-		            		matchPattern.appendReplacement(sb, contracts.getStateOfJurisdiction());
+		            	if(null != contracts.getStateJurisdiction()){
+		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
 		            }  
 	            }
