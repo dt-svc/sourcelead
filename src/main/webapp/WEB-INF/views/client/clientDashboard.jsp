@@ -228,9 +228,9 @@ overflow-x: auto;
 										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
 											<option value="Active">Active</option>
 											<option value="In-Active">In-Active</option>
-											<option value="New">New</option>
+											<!-- <option value="New">New</option>
 											<option value="Negotiation">Negotiation</option>
-											<option value="Contract">Contract</option>
+											<option value="Contract">Contract</option> -->
 									</select>
 						 </div>  
               	</div>
@@ -278,9 +278,9 @@ overflow-x: auto;
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
 								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
-								<li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
+								<!-- <li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
 								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li>
+	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li> -->
 	                        </ul>
 	                      </div>                	
 	                  </li>
@@ -983,7 +983,7 @@ function preparedClientContacts(data){
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name </th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
 		   	result = result +'  <th>Client</th>';
 		   	result = result +' <th>Status</th>';
@@ -1022,9 +1022,9 @@ function preparedClientContacts(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 					result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1068,7 +1068,7 @@ function preparedClientContacts(data){
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-		   		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+		   		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')"; title="Remove client contact"></i></div></td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
@@ -1097,7 +1097,7 @@ function preparedClientContactListFromElk(data){
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
 		   	result = result +'  <th>Client</th>';
 		   	result = result +' <th>Status</th>';
@@ -1150,9 +1150,9 @@ function preparedClientContactListFromElk(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 	    			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1195,7 +1195,7 @@ function preparedClientContactListFromElk(data){
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')";></i></div></td>';
+		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove client contact"></i></div></td>';
 		   	 '</sec:authorize>';
 		   	 
 		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';

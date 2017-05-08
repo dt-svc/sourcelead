@@ -2225,6 +2225,9 @@ function minMaxExperience(){
 	     $("#excludeKeyWord").empty();
 	     $("#designation").empty();
 	      $("#minRate").val(''); 
+	      $("#country").val(''); 
+	      $("#state").val('');
+	      $("#city").val('');
 	      
 	     $("#currency").val('');
 	     $('.selectpicker').selectpicker('refresh');
@@ -2256,6 +2259,9 @@ function minMaxExperience(){
 	     $("#applicantType").val('');
 	     $("#candidateSkills").val('');
 	     $("#primarySkill").val('');
+	     $("#country").val(''); 
+	     $("#state").val(''); 
+	     $("#city").val(''); 
 	    
 	}
 </script>
