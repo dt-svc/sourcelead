@@ -248,6 +248,9 @@ public class Constants {
 	
 	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
 	
+	public static String UPDATED_USER_ROLE_EMAIL="UserRoleChanged";
+	public static String UPDATED_USER_ROLE_NOTIFICATION="UserRoleChanged";
+	
 	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER="updatedRequirementEmailToManager";
 	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER="updatedRequirementNotificationToManager";
 	public static String  UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER="updatedFeedbackNotificationToRequirementOwner";
