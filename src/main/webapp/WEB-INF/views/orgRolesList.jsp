@@ -16,6 +16,9 @@ window.onload = function () {
 .dataTables_wrapper .dataTables_filter input {
 background-color: #f5f5f5;
 }
+.role_header {
+padding-right: 254px; padding-top: 10px;
+}
 </style>
 <section class="content-wraper">
 <div id="listLoading"></div>

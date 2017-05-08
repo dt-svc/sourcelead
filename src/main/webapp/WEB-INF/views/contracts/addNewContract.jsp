@@ -52,17 +52,19 @@
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           	
           	<div class="form-group">
-              <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Contract Title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="titleDiv">
                 <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
               </div>
             </div>
                        
             <div class="form-group">
-              <label class="col-md-4">Select template<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Select Template<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template">
                   </select>
+              </div>
+              <div class="col-md-8">
               </div>
             </div>  
             
@@ -167,7 +169,7 @@
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="approver" name="approver" onchange="changeSaveButton();">
-                  <option value=''>--Select Owner--</option>
+                  <option value=''>--Select Approver--</option>
                   <c:forEach var="user" items="${userList}">
                    <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
 	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
@@ -274,10 +276,10 @@
                     </div>
             </div>
             <div class="form-group">
-              <label class="col-md-4">Invoice frequency<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
-                    <option value="">Select frequency</option>
+                    <option value="">Select Cycle</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Bi-Weekly">Bi-Weekly</option>
                     <option value="Semi-Monthly">Semi-Monthly</option> 
@@ -287,10 +289,10 @@
             </div>
             
               <div class="form-group">
-              <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errPayment">
                   <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
-                    <option value="">Select frequency</option>
+                    <option value="">Select Frequency</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
                     <option value="30 days">30 days</option>
@@ -343,7 +345,7 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right mt">
-            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
             <input type="button" value="Save" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left">
 
             <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:none">
@@ -450,7 +452,7 @@ function getVendorContacts(){
 	        var opt = json[i];
 	            // need to use in edit
        			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+"</option>";
+       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
 			}
        	    $("#vendorContact").empty();
 	        $("#vendorContact").append(output);
@@ -475,7 +477,7 @@ function getClientContacts(){
 	var opt = json[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
@@ -606,8 +608,8 @@ function getContractTemplates(){
 	if(contractType == "NDA" || contractType == "NCA"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
-		document.getElementById("vendorDiv").style.display="none";
-		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="block";
+		document.getElementById("vendorContactDiv").style.display="block"; 
 		document.getElementById("billingDiv").style.display="none";
 	}
 		 
@@ -618,7 +620,7 @@ function getContractTemplates(){
       success :function(data) {
     	var json = JSON.parse(data);
       	var output = "";
-      	output = output + "<option>Select Vendor Contact</option>";
+      	output = output + "<option>Select Template</option>";
       	for (var i=0; i<json.length; i++)
 			{
 	        var opt = json[i];
@@ -704,10 +706,10 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
 		
-		$('#orgRelationId').removeAttr('data-validation');
-		$('#orgRelationId').attr('data-validation-optional',"true");
-		$('#vendorContact').removeAttr('data-validation');
-		$('#vendorContact').attr('data-validation-optional',"true");
+		/* $('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true"); */
+		/* $('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true"); */
 		
 		
 		
@@ -1130,7 +1132,7 @@ function validateContractTitle(){
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_template" ).addClass('button').val('Save Template');
+		        		 $("#save_template" ).addClass('button').val('Save');
                         $("#save_template").removeAttr("disabled");
 		        	}
 		        	}

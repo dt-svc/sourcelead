@@ -208,7 +208,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <div class="col-md-6">';
 		       
 		       result = result + ' <div class="row">';
-		       result = result + ' <div class="col-md-12">';
+		       result = result + ' <div class="col-md-8 paddingRight">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
@@ -221,7 +221,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' </div>';
 		       
 		       
-		       result = result + ' <div class="col-md-6">';
+		       result = result + ' <div class="col-md-4">';
 			   
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
@@ -2093,7 +2093,10 @@ function rescheduleInterClose(){
 
  <script>
  function rescheduleInterviewUpdate(submissionId){
-	    validateOtherMail();
+	 	if($("#notificationToOthers").prop('checked') == true){
+	 		validateOtherMail();
+		}
+		
 		if ($('#rescheduleInterview_form').validate(false, validationSettings)) {
 			var frm = $('#rescheduleInterview_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -2338,7 +2341,6 @@ function pipelineList(requirementId){
 	filterReq(requirementId,submissionType);
 }
 </script>
-
 
 
 

@@ -320,6 +320,7 @@ public class ReportRestController {
 		int interviewsSum = 0;
 		int offeredSum = 0;
 		int rejectedSum = 0;
+		int backoutSum = 0;
 		long vendorLocationId = 0L;
 	    for(OrgRelations orgrel : vendorslist){
 	    	List<Requirement> reqList = requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(), orgrel.getId(),startDateUTC,endDateUTC);
@@ -339,6 +340,7 @@ public class ReportRestController {
 					int interviewsCount = 0;
 					int offeredCount = 0;
 					int rejectedCount = 0;
+					int backoutCount = 0;
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
@@ -356,6 +358,8 @@ public class ReportRestController {
 								submitToClientCount++;
 							}else if("rejected".equals(rsh.getToStage())){
 								rejectedCount++;
+							}else if("backout".equals(rsh.getToStage())){
+								backoutCount++;
 							}
 						}
 						 applicantsSum = applicantsSum+applicantsCount;
@@ -365,6 +369,7 @@ public class ReportRestController {
 						 interviewsSum = interviewsSum+interviewsCount;
 						 offeredSum = offeredSum+offeredCount;
 						 rejectedSum = rejectedSum+rejectedCount;
+						 backoutSum = backoutSum + backoutCount;
 					}
 				}
 	    	}
@@ -379,6 +384,7 @@ public class ReportRestController {
 	    	orgrel.setInterviewedCount(interviewsSum);
 	    	orgrel.setOfferedCount(offeredSum);
 	    	orgrel.setRejectedCount(rejectedSum);
+	    	orgrel.setBackoutCount(backoutSum);
 	    }
 	    
 		return commonUtil.toJSON(vendorslist);
@@ -444,7 +450,7 @@ public class ReportRestController {
 		int interviewsSum = 0;
 		int offeredSum = 0;
 		int rejectedSum = 0;
-		
+		int backoutSum = 0;
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(relationId, loginUser.getId(),orgLocations.getId(),"Vendor");
 		
 //	    List<OrgSpoc> vendorSpocsList = orgSpocService.getSpoclistByDomain(relationId,"");
@@ -462,6 +468,7 @@ public class ReportRestController {
 						int interviewsCount = 0;
 						int offeredCount = 0;
 						int rejectedCount = 0;
+						int backoutCount = 0;
 						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 						if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 							for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
@@ -479,6 +486,8 @@ public class ReportRestController {
 									submitToClientCount++;
 								}else if("rejected".equals(rsh.getToStage())){
 									rejectedCount++;
+								}else if("backout".equals(rsh.getToStage())){
+									backoutCount++;
 								}
 							}
 							 applicantsSum = applicantsSum+applicantsCount;
@@ -488,6 +497,7 @@ public class ReportRestController {
 							 interviewsSum = interviewsSum+interviewsCount;
 							 offeredSum = offeredSum+offeredCount;
 							 rejectedSum = rejectedSum+rejectedCount;
+							 backoutSum = backoutSum + backoutCount;
 						}
 					}
 		    	}
@@ -501,6 +511,7 @@ public class ReportRestController {
 		    	spoc.setInterviewedCount(interviewsSum);
 		    	spoc.setOfferedCount(offeredSum);
 		    	spoc.setRejectedCount(rejectedSum);
+		    	spoc.setBackoutCount(backoutSum);
 	    }
 	    
 		return commonUtil.toJSON(orgSpocsList);

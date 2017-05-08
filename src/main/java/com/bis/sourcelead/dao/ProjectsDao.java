@@ -72,4 +72,6 @@ public interface ProjectsDao {
 	
 	Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 
+	public List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception;
+
 }

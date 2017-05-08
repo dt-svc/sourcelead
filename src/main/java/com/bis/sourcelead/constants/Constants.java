@@ -363,6 +363,9 @@ public class Constants {
 	public static  String Associates = "Associates";
 	public static  String OnAndOffboard = "OnAndOffboard";
 	
+	public static  String Receivable = "Receivable";
+	public static  String Payables = "Payables";
+	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	

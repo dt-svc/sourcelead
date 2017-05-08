@@ -115,6 +115,7 @@ public class UserRestController {
 	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
+	
 	@Autowired
 	private UserRoleService userRoleService;
 	
@@ -804,11 +805,15 @@ public class UserRestController {
 		@RequestMapping(value = "/updateEndDateByProjectMemberId", method = RequestMethod.POST)
 		public String updateEndDateByProjectMemberId(@RequestParam(value = "endDate", required = false) String endDate,
 
-				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId) throws Exception {
-
-					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,HttpServletRequest request) throws Exception {
 					
+			
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				
+					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						if(pmh == null){
@@ -822,10 +827,14 @@ public class UserRestController {
 
 						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
 							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+							
 						}
+						// mail forward to members inline end date edit
+						projectEnddatechangetoEmployee(projectMembers,user, orgLocations, endDate );
 						
 						Date terminationDate = sdf.parse(endDate);
 						Date currentDate = new  Date();
+						
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
 							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
 						}
@@ -837,7 +846,69 @@ public class UserRestController {
 		       }
 		
 		
-		
+		 private void projectEnddatechangetoEmployee(ProjectMembers emp, User loginUser,  OrgLocations loginOrgLocation, String changedEndDate) throws Exception {
+			 Projects projects = projectsService.getProjectById(emp.getProjects().getId());
+			 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 StringBuilder fromNameBuilder=new StringBuilder();
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(emp.getEmployee().getUser().getFirstName());
+			 emailMessage.setLastName(emp.getEmployee().getUser().getLastName());
+			 emailMessage.setToEmail(emp.getEmployee().getUser().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 globalVarsMap.put("projectStartdate",sdf.format(projects.getStartDate()));
+			 globalVarsMap.put("projectEnddate",changedEndDate);
+			 
+			 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("loginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("loginUser",loginUser.getFirstName());
+				}
+			 if(emailMessage.getFirstName() != null && emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getFirstName()) && !"".equalsIgnoreCase(emailMessage.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("employeeName",userBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("employeeName",emailMessage.getFirstName());
+				}
+			 globalVarsMap.put("projectName", projects.getProjectName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+			 
+			 //setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 if(null != projects.getOrgLocationsId())
+			 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+		}
 		
 		/**
 		 * to assign the project to the particular user

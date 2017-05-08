@@ -75,6 +75,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	@Override
 	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
 		
@@ -138,8 +141,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public ContractsTemplate getContractTemplateById(Long contractTemplateId) {
-		return contractsTemplateDao.saveContractTemplate(contractTemplateId);
+	public ContractsTemplate getContractTemplateById(Long contractTemplateId) throws Exception {
+		return contractsTemplateDao.getContractTemplateById(contractTemplateId);
 	}
 
 	@Override
@@ -203,26 +206,26 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractsTemplate(contractsTemplate);
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-		
-		
-		String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
+		Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
+		String currentTimeStr = Constants.TZ_DF.format(startTime);  
 		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 		contracts.setStartDate(convertedDate);
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				String endDateStr = Constants.TZ_DF.format(jsonObj.getString("endDate"));  
+				Date endTimeStr = commonUtil.getDateFormat(jsonObj.getString("endDate"));  
+				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
 				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 				contracts.setEndDate(convertedEndDate);
 				vendorContracts.setEndDate(convertedEndDate);
 			}
 		}
+	
 		
 		
-		
-   /*     Date startDate = format.parse(jsonObj.getString("startDate"));
+ /*      Date startDate = format.parse(jsonObj.getString("startDate"));
 		contracts.setStartDate(startDate);
 		vendorContracts.setStartDate(startDate);
 		if(jsonObj.has("endDate")){
@@ -238,7 +241,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
 			contracts.setApproverUser(approverUser);
 		}
-		if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+
+		if(("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))|| "NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType")))){
 			contracts.setInitiatorType("Client");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
@@ -254,7 +258,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 //			}
 			contracts.setContactUser(vendorContactsUser);
 		}
-		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			contracts.setInitiatorType("Vendor");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
@@ -336,7 +340,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
+
 		if(null == approverUser && !"DRAFT".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
+			vendorContracts.setParentContractId(savedContracts);
 			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
 				vendorContracts.setContractType("Client MSA");
 				vendorContracts.setInitiatorType("Client");
@@ -358,8 +364,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setContactUser(ownerUser);
 			}
 			
-			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-				vendorContracts.setContractType("Vendor MSA");
+			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Vendor MSA");	
+				}else{
+					vendorContracts.setContractType("Vendor SOW");
+				}
+				
 				vendorContracts.setInitiatorType("Vendor");
 				vendorContracts.setParentContractId(savedContracts);
 				vendorContracts.setContractOrgLocationId(orgLocation);
@@ -395,10 +406,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 
 	@Override
-	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType) throws Exception
+	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus) throws Exception
 	{
-		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType);
-		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType);
+		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus);
+		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus);
 		
 		Contracts contractsForList = new Contracts();
 		
@@ -748,14 +759,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-		String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
+		Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
+		String currentTimeStr = Constants.TZ_DF.format(startTime);  
 		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 		contracts.setStartDate(convertedDate);
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				String endDateStr = Constants.TZ_DF.format(jsonObj.getString("endDate"));  
+				Date endTimeStr = commonUtil.getDateFormat(jsonObj.getString("endDate"));  
+				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
 				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
 				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 				contracts.setEndDate(convertedEndDate);
