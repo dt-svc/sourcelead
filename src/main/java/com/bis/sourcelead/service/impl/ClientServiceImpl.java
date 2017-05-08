@@ -227,6 +227,16 @@ public class ClientServiceImpl implements ClientService{
 				if(jsonObj.has("webSite")){
 					org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
 				}
+				if(jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))){
+					org.setClientAddress(jsonObj.getString("address"));
+				}
+				if(jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))){
+					org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+				}
+				if(jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))){
+					org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
+				}
+				org.setId(org.getId());
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
 			}
@@ -401,7 +411,15 @@ public class ClientServiceImpl implements ClientService{
 			if(jsonObj.has("orgName")){
 				org.setOrgName(jsonObj.getString("orgName"));
 			}
-			
+			if(jsonObj.has("address") && !isNullOrEmpty(jsonObj.getString("address"))){
+				org.setClientAddress(jsonObj.getString("address"));
+			}
+			if(jsonObj.has("billingAddress") && !isNullOrEmpty(jsonObj.getString("billingAddress"))){
+				org.setClientBillingAddress(jsonObj.getString("billingAddress"));
+			}
+			if(jsonObj.has("PaymentTerm") && !isNullOrEmpty(jsonObj.getString("PaymentTerm"))){
+				org.setPaymentTerm(jsonObj.getString("PaymentTerm"));
+			}
 			if(jsonObj.has("companyWebsite")){
 				org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
 			}

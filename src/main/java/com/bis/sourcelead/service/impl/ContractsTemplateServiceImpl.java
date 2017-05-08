@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,12 +33,15 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
 import com.itextpdf.text.Document;
@@ -67,6 +71,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Override
 	public ContractsTemplate saveContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
@@ -155,6 +162,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
+        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+        
 		contracts.setContractType(jsonObj.getString("contractType"));
 		ContractsTemplate contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
 		if(null != contractsTemplate){
@@ -194,7 +203,27 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractsTemplate(contractsTemplate);
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-        Date startDate = format.parse(jsonObj.getString("startDate"));
+		
+	/*	Date currentTimeStr1 = Constants.TZ_DF.parse(jsonObj.getString("startDate"));  
+		String currentTimeStr = Constants.TZ_DF.format(currentTimeStr1);  
+		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+		contracts.setStartDate(convertedDate);
+		if(jsonObj.has("endDate")){
+			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
+				Date endTimeStr = Constants.TZ_DF.parse(jsonObj.getString("endDate"));  
+				String endDateStr = Constants.TZ_DF.format(endTimeStr);  
+				String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+				Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+				contracts.setEndDate(convertedEndDate);
+				vendorContracts.setEndDate(convertedEndDate);
+			}
+		}
+		*/
+		
+		
+       Date startDate = format.parse(jsonObj.getString("startDate"));
 		contracts.setStartDate(startDate);
 		vendorContracts.setStartDate(startDate);
 		if(jsonObj.has("endDate")){
@@ -210,7 +239,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 approverUser = userService.getUserById(Long.parseLong(jsonObj.getString("approver")));
 			contracts.setApproverUser(approverUser);
 		}
-		if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+
+		if(("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))|| "NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType")))){
 			contracts.setInitiatorType("Client");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
@@ -226,7 +256,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 //			}
 			contracts.setContactUser(vendorContactsUser);
 		}
-		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			contracts.setInitiatorType("Vendor");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
@@ -308,7 +338,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
+
 		if(null == approverUser && !"DRAFT".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
+			vendorContracts.setParentContractId(savedContracts);
 			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
 				vendorContracts.setContractType("Client MSA");
 				vendorContracts.setInitiatorType("Client");
@@ -330,8 +362,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setContactUser(ownerUser);
 			}
 			
-			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-				vendorContracts.setContractType("Vendor MSA");
+			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Vendor MSA");	
+				}else{
+					vendorContracts.setContractType("Vendor SOW");
+				}
+				
 				vendorContracts.setInitiatorType("Vendor");
 				vendorContracts.setParentContractId(savedContracts);
 				vendorContracts.setContractOrgLocationId(orgLocation);
@@ -684,7 +721,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		Contracts vendorContracts = new Contracts();
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
+
         
+        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		contracts.setContractType(jsonObj.getString("contractType"));
 		
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
@@ -718,7 +757,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-        Date startDate = format.parse(jsonObj.getString("startDate"));
+		Date startDate = format.parse(jsonObj.getString("startDate"));
 		contracts.setStartDate(startDate);
 		vendorContracts.setStartDate(startDate);
 		if(jsonObj.has("endDate")){

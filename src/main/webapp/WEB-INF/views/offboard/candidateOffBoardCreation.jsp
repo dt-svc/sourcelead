@@ -317,10 +317,10 @@
                                 
                                 <div class="col-md-12 mb10">
                                   <div class="mt">
-                                    <label class="checkbox-inline">
+                                    <label class="paddingRight">
                                       <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
@@ -337,10 +337,10 @@
                                   <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
-                                    <label class="radio-inline">
+                                    <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
-                                      Candidate </label>
-                                    <label class="checkbox-inline">
+                                      Offboard User </label>
+                                    <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
                                   </div>
@@ -382,7 +382,7 @@
 											</div> 
                                       
                                         
-                                        <div class="col-md-6 paddingRight paddingLeft">
+                                        <div class="col-md-6 paddingLeft">
 										<label class="small">Days</label>
 											<div class="select-field">
 												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
@@ -429,7 +429,7 @@
                                     
                                   </div>
                                 </div>
-	                               <div class="col-md-12 mb10">
+	                               <div class="clearfix mb10">
                                   <label>Description</label>
                                   <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
                                 </div>
@@ -731,14 +731,14 @@ function getTemplateResignationDocumentsDetails(offboardId){
                 		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadOffboardDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
-           				
-           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           				 
+           				 if(opt.offboardDocumentType != 'Candidate Documents'){
          					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
         				 }else{
         					result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
         				 }
            				 
-           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           				 if(opt.offboardDocumentType != 'Candidate Documents'){
             					result = result +"<input type='hidden' name='savedResignationAttcahments' id='resignationAttachment"+opt.id+"' value='"+opt.id+"' />";
            				  }
            				 
@@ -793,7 +793,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
            					result = result +"<input class='dele' type='button' onClick='deleteOffBoardingDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
            				 }
            				 
-           				 if(opt.onboardDocumentType != 'Candidate Documents'){
+           				 if(opt.offboardDocumentType != 'Candidate Documents'){
          					result = result +"<input type='hidden' name='savedOffboardPackAttcahments' id='offboardPackAttachment"+opt.id+"' value='"+opt.id+"' />";
         				  }
            				 
@@ -1449,7 +1449,7 @@ function getOffboardingTasksList(){
 	        		result = result +'<div class="media-body">';
 	        		result = result +'<div class="clearfix taskheder">';
 	        		
-	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.offboardTaskType+"\");'></i></label>";
+	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong><a href='#'><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.offboardTaskType+"\");'></i></a></label>";
 	        		
 	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
 	        		result = result +'</div>';
