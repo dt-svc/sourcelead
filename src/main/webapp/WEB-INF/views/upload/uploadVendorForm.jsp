@@ -83,7 +83,7 @@ margin:10px 220px 0;
 			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
-			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
+			<i aria-hidden="true" class="fa fa-paperclip" title="Attach file"></i> <br/>
                 <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
             </label>
         	</div>

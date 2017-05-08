@@ -101,6 +101,15 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "CLIENT_ADDRESS")
+	private String clientAddress;
+	
+	@Column(name = "CLIENT_BILLING_ADDRESS")
+	private String billingAddress;
+	
+	@Column(name = "PAYMENT_TERM")
+	private String paymentTerm;
+	
 	@Transient
 	private String reason;
 
@@ -310,6 +319,30 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setReason(String reason)
 	{
 		this.reason = reason;
+	}
+
+	public String getClientAddress() {
+		return clientAddress;
+	}
+
+	public void setClientAddress(String clientAddress) {
+		this.clientAddress = clientAddress;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public String getPaymentTerm() {
+		return paymentTerm;
+	}
+
+	public void setPaymentTerm(String paymentTerm) {
+		this.paymentTerm = paymentTerm;
 	}
 	
 }
