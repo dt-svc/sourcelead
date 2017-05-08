@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Contracts;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Invoice;
 
 public interface InvoiceDao{
@@ -15,7 +14,7 @@ public interface InvoiceDao{
 	
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
-	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId);
+//	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId);
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId)throws Exception;
 
