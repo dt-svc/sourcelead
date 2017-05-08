@@ -217,13 +217,55 @@
 	                 <c:if test="${userTabs.tabName == 'Contracts'}">
 	                   <li class="${sessionData.nav == 'Contract' ? 'side-nav-active' : ''}"><a href="<c:url value='/contractListbyStatus'/>" title="Contracts"><span><i class="fa fa-object-ungroup"></i></span>Contracts</a></li>
 	                </c:if> 
+	                
+	                
+	                
+	                
+	                
+	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">
+	                   <li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'side-nav-active' : ''}">
+							  <a href="#" class="tree-view-new" title="Billing">
+								<span><i class="fa fa-money"></i></span>
+							  Billing <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+							  <a href="#" class="tree-view" title="Billing">
+								<span><i class="fa fa-money"></i></span>
+							  Billing <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+						   
+						   <c:if test="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables'}">
+                              <ul class="collapses" style="display: block">
+                                  <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Receivable">Receivable</a></li>
+                                  <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables">Payables</a></li>
+                              </ul>
+                           </c:if>
+                              
+                           <c:if test="${sessionData.nav != 'Receivable' || sessionData.nav != 'Payables'}">
+                           <ul class="collapses" style="display: none">
+                               <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Receivable">Receivable</a></li>
+                               <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables">Payables</a></li>
+                           </ul>
+                           </c:if>
+                              
+						  </li>
+	                 </c:if>
+	                 
+	                 
+	                  <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Receivable'}">
+	                   <li class="${sessionData.nav == 'Receivable' ? 'side-nav-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Billing"><span><i class="fa fa-money"></i></span>Billing</a></li>
+	                 </c:if>
+	                 
+	                 <c:if test="${SourceLeadWeb_billingTabsCount < 2 && userTabs.tabName == 'Payables'}">
+	                 <li class="${sessionData.nav == 'Payables' ? 'side-nav-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Billing"><span><i class="fa fa-money"></i></span>Billing</a></li>
+	                 </c:if>
 	                 
 
           </c:forEach>
           
           				 
      <%--  <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li> --%>
-		<li class="${sessionData.nav == 'Billing' ? 'side-nav-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Biling"><span><i class="fa fa-money"></i></span>Billing</a></li>
         </ul>
       </div>
     </div>

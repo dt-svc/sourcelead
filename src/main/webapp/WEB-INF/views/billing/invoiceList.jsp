@@ -278,7 +278,7 @@ $(document).ready(function(){
   
   
 <script>
-function receivePaymentPop1(total){
+function receivePaymentPop1(invoiceId,total){
 	var paymentAmount = total.toFixed(2);
 	 var result = "";
 	result = result +'  <div class="modal-dialog modal-lg">';
@@ -291,15 +291,15 @@ function receivePaymentPop1(total){
 
 	result = result +'        <!-- Add New Task Widget -->                                                ';
 	result = result +'        <div class="col-md-12 clearfix">                                            ';
-	result = result +'        <form class="form-horizontal clearfix">                                     ';
+	result = result +'        <form class="form-horizontal clearfix" id="receivePayment-form" name="receivePayment-form" enctype="multipart/form-data">                                     ';
 	result = result +'          <div class="row mt">                                                      ';
-	result = result +'            <div class="col-md-4">     ';
+	result = result +'            <div class="col-md-4" id="errPaymentDate">     ';
 	result = result +'              <label>Payment Date<span class="text-danger paddingLeft">*</span></label>    ';
-	result = result +'              <input class="form-control input-sm calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate"> ';
+	result = result +'              <input class="form-control input-sm calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date"> ';
 	result = result +'            </div>';
-	result = result +'            <div class="col-md-4 select-field">';
-	result = result +'              <label>Payment Method</label> ';
-	result = result +'              <select class="form-control" id="paymentMethod" name="paymentMethod"> ';
+	result = result +'            <div class="col-md-4 select-field" id="errPaymethod">';
+	result = result +'              <label>Payment Method<span class="text-danger paddingLeft">*</span></label> ';
+	result = result +'              <select class="form-control" id="paymentMethod" name="paymentMethod" data-validation="required" field-name="Payment Method" onchange="removeErr();"> ';
 	result = result +'                <option selected="" disabled="">-- Select Method --</option>';
 	result = result +'                <option value="Cash">Cash</option>   ';
 	result = result +'                <option value="Cheque">Cheque</option> ';
@@ -307,8 +307,8 @@ function receivePaymentPop1(total){
 	result = result +'              </select>   ';
 	result = result +'            </div>  ';
 	result = result +'            <div class="col-md-4">  ';
-	result = result +'              <label>Reference No</label> ';
-	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber"> ';
+	result = result +'              <label>Reference No<span class="text-danger paddingLeft">*</span></label> ';
+	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required" field-name="Reference No"> ';
 	result = result +'            </div>        ';
 	result = result +'          </div>          ';
 	result = result +'          <div class="row mt">                                 ';
@@ -318,12 +318,12 @@ function receivePaymentPop1(total){
 	result = result +'                  <label>Amount Received</label>               ';
 	result = result +'                  <div class="row">                            ';
 	result = result +'                    <div class="col-md-6">                     ';
-	result = result +'                      <input name="ar" type="radio">           ';
+	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked>           ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
-	result = result +'                      <input name="ar" type="radio">     ';
+	result = result +'                      <input  type="radio" name="paymentAmount" value="custom">     ';
 	result = result +'                      Custom:                       ';
 	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" >       ';
 	result = result +'                    </div>                      ';
@@ -331,8 +331,7 @@ function receivePaymentPop1(total){
 	result = result +'                </div>                          ';
 	result = result +'                <div class="col-md-12 mt">      ';
 	result = result +'                  <label>Memo</label>           ';
-	result = result +'                  <textarea rows="2" class="form-control" placeholder="Memo" id="paymentMemo" name="paymentMemo">     ';
-	result = result +'                        </textarea>                                               ';
+	result = result +'                  <textarea rows="2" class="form-control" placeholder="Memo" id="paymentMemo" name="paymentMemo"></textarea>';
 	result = result +'                </div>                                                            ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -350,7 +349,7 @@ function receivePaymentPop1(total){
 	result = result +'          <div class="clearfix"></div>                                            ';
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
-	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button">   ';
+	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
 	result = result +'          </div>                                                                                                ';
@@ -365,10 +364,26 @@ function receivePaymentPop1(total){
 	
 	$("#recvPymntpop").fadeIn(200);
     $('.modal-backdrop').fadeIn(200).addClass('in');
+    
+    $('#paymentDate').datepicker({
+		dateFormat : 'dd-mm-yy',
+		changeMonth: true,
+		changeYear: true, 
+		onSelect : function(selected) {
+			removeValidate();
+		}
+	});
 }
 
 </script>  
-  
+<script>
+function removeValidate(){
+	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
+}
+function removeErr(){
+	$('#errPaymethod').find('p.jquery_form_error_message').remove(); 
+}
+</script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
 <div id="recvPymntpop" class="modal" style="display: none;">
@@ -377,7 +392,91 @@ function receivePaymentPop1(total){
 
 
 <!-- modal pop --> 
+<script>
+function saveReceivePayment(invoiceId){
+	 if ($('#receivePayment-form').validate(false, validationSettings)){  
+		    var frm = $('#receivePayment-form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var form = $('#receivePayment-form')[0];
+	 	   var formData = new FormData(form); 
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $.ajax({
+		    	type: "POST",
+		    	 data: formData,
+			      contentType : 'application/json; charset=utf-8',
+			      enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+			      dataType : 'json',
+		    	 url: sourceleadUrl+"/saveInvoicePayment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&invoiceId="+invoiceId, 
+		        success: function(result) {
+		     		location.replace(sourceleadUrl+"/invoiceList");
+		     		
+		        },
+		    });  
+	         return true; 
+		
+	   }else{
+		return false;
+	  } 
+}
+$('body').on('blur', '#receivePayment-form', function() {
+	$("#receivePayment-form").showHelpOnFocus();
+	$("#receivePayment-form").validateOnBlur(false, validationSettings);  
+});
+</script>
 
+<!-- <script>
+function saveInvoice(saveType){
+	/* var validationSettings = {
+	        errorMessagePosition : 'element',
+	       borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         };  */
+	
+	   if ($('#invoice_form').validate(false, validationSettings)){  
+		    var frm = $('#invoice_form').serializeFormJSON();
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        //It will escape all the special characters
+	        var jsonData = encodeURIComponent(con);
+	        
+	        var form = $('#invoice_form')[0];
+	 	   var formData = new FormData(form); 
+	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $.ajax({
+		    	type: "POST",
+		    	 data: formData,
+			      contentType : 'application/json; charset=utf-8',
+			      enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+			      dataType : 'json',
+		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
+		        success: function(result) {
+		     		$("#invoiceLoading").removeAttr("style");
+		     		location.replace(sourceleadUrl+"/invoiceList");
+		     		
+		        },
+		    });  
+	         return true; 
+		
+	   }else{
+		return false;
+	  } 
+}
+
+$('body').on('blur', '#invoice_form', function() {
+	$("#invoice_form").showHelpOnFocus();
+	$("#invoice_form").validateOnBlur(false, validationSettings);  
+}); 
+</script> -->
 <script>
 function getInvoiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -439,7 +538,7 @@ function getInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot_80">'+report.total+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
-				result = result +'           <div class="tbldata-dotdot_80">'+report.total+'</div>';
+				result = result +'           <div class="tbldata-dotdot_80">'+report.dueAmount+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot_100">'+report.invoiceStatus+'</div>';
@@ -451,7 +550,7 @@ function getInvoiceList(){
 				
 				result = result +'         <td> ';
 				 
-				result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.total+');">Receive</span> </td>          ';
+				result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 				result = result +'       </tr>                                                                                                           ';
 
     		}
@@ -539,13 +638,5 @@ function cancelbtn(){
         $('.modal-backdrop').fadeOut(200).removeClass('in');
     }); */
 </script>
-<script>
-	$(function() {
-		$('#paymentDate').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-		});
-	});
-</script>
+
  <jsp:include page="../masterFooter.jsp" />	
