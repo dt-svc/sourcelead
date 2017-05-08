@@ -165,6 +165,9 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private Integer backoutCount;
+	
+	@Transient
+	private String ownerUserName;
 
 
 	public Long getSpocLocationId() {
@@ -517,4 +520,13 @@ public class OrgSpoc implements Serializable{
 	public void setBackoutCount(Integer backoutCount) {
 		this.backoutCount = backoutCount;
 	}
+
+	public String getOwnerUserName() {
+		return ownerUserName;
+	}
+
+	public void setOwnerUserName(String ownerUserName) {
+		this.ownerUserName = ownerUserName;
+	}
+	
 }

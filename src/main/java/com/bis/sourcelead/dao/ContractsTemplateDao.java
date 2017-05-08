@@ -22,7 +22,7 @@ public interface ContractsTemplateDao {
 
 	Contracts saveNewContract(Contracts contracts)throws Exception;
 
-	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType)throws Exception;
+	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus)throws Exception;
 
 	Contracts getContractById(Long contractId);
 
