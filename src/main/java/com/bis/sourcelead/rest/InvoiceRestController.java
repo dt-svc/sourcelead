@@ -1,6 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,22 +17,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mchange.v2.cfg.PropertiesConfigSource.Parse;
 
 @RestController
 public class InvoiceRestController {
@@ -50,6 +58,9 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private InvoiceService invoiceService;
+	
+	@Autowired
+	private InvoicePaymentService invoicePaymentService;
 	
 	@RequestMapping(value = "/getClientContactsByOrgRelationId", method = RequestMethod.GET)
 	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -80,15 +91,28 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
-			HttpServletRequest request) throws Exception {
+	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
+		String invoiceSaved = "failed";
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		return "success";
+		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
+		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
+		 final Map files = request.getFileMap();
+		for(int i=0;i<attcahmentMaxRowNumber;i++){
+			MultipartFile  multiFile = (MultipartFile)files.get(i+"invoicedocFile");
+			if(multiFile != null && !multiFile.isEmpty()){
+				attachedfileList.add(multiFile); 
+			}
+		}
+		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList);
+		if(null !=invoice){
+			invoiceSaved = "success";
+		}
+		return invoiceSaved;
 	} 
 	
     @RequestMapping(value = "/getAssociatesList", method = RequestMethod.GET)
@@ -119,11 +143,14 @@ public class InvoiceRestController {
  	{
      	String resultJson = "";
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-     	
-     	List<Contracts> contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId);
-     	if(null != contractsList){
-     		resultJson = commonUtil.toJSON(contractsList);	
+     	if(null != orgRelationId){
+     		List<Contracts> contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId);	
+     		if(null != contractsList){
+         		resultJson = commonUtil.toJSON(contractsList);	
+         	}
      	}
+     	
+     	
  	  
  	  return resultJson;
  	}
@@ -149,11 +176,35 @@ public class InvoiceRestController {
 			}
 			invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
+			invoice.setTotal(invoice.getTotal());
+			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
+			invoice.setPaymentStatus(invoice.getPaymentStatus());
 			
 		}
 	    resultJson = commonUtil.toJSON(invoiceList);
 	  return resultJson;
 	}
 	
+    
+	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
+	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		String invoicePaymentSaved = "failed";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(jsonObj, user, orgLocation, multiFile,invoiceId);
+		if(null !=invoicePayment){
+			invoicePaymentSaved = "success";
+		}
+		return invoicePaymentSaved;
+	} 
     
 }

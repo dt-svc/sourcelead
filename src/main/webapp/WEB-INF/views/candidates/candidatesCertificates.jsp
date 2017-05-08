@@ -1,7 +1,10 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+ 
 <style>
 .clsDatePicker {
 	z-index: 100000 !important;
@@ -134,6 +137,7 @@ function storeCertificate(candidateId){
 			            			$("#cerMsgDiv").html("Success!! New Certification added");
 				               		candidateCertificateList(candidateId);
 				               		cerMsgFadein();
+				               		qwikCertificates(candidateId);
 							    	}
 							   }
 						},
@@ -272,7 +276,7 @@ function candidateCertificateList(candidateId){
 	                    		 result = result +' </sec:authorize>';
 	                    	 }else{
 	                    		 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
-	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');"></a>';
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
 	                    		result = result +' </sec:authorize>';
 	                    	 }
 	                    	 
@@ -282,7 +286,7 @@ function candidateCertificateList(candidateId){
 	                    		 result = result +' </sec:authorize>';
 	                    	}else{
 	                    		result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate"></i>';
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
 	                    		 result = result +' </sec:authorize>';
 	                    	}
 	                    	 result  = result + '           </div></td>';
@@ -698,7 +702,7 @@ function addCertification(candidateId) {
 	            			$("#cerMsgDiv").html("Certification details updated");
 							candidateCertificateList(candidateId);
 							cerMsgFadein();
-							candidateQuickViewProfile(candidateId);
+							qwikCertificates(candidateId);
 						},
 					});
 			return true;

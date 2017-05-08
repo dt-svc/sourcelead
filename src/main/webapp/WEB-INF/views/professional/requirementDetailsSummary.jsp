@@ -80,6 +80,32 @@ min-height:100px;
 }
 </style>
 
+<script type="text/javascript">
+var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
+function setPostValues(title,link,picture,description,comment){
+	 if (title) {
+         postdatavalues.title = title;
+     }
+     if (link) {
+         postdatavalues.link = link;
+     }
+     if (picture) {
+         postdatavalues.picture = picture;
+     }
+     if (description) {
+         postdatavalues.description = description;
+     }
+     if (description) {
+         postdatavalues.comment = description;
+     }
+}
+function getPostValueDetails(){
+	 return postdatavalues;
+  }
+
+</script>
+
+
 <script>
 window.onload = function () {
 	 var requirementUUID = '${requirementUUID}'; 
@@ -226,7 +252,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
 				 
-				 result = result +'<a href="'+sourceleadUrl+'" class="refer">Login</a>';
+				 result = result +'<a href="'+sourceleadUrl+'" class="refer">Refer</a>';
 				 result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'" class="jobApply">Apply</a>';
 				 
 				
@@ -277,6 +303,7 @@ function publicRequirementProfile(requirementUUID){
 		$(imageId).attr('src','resources/images/office-image.jpg');
 	}
 </script>
+<jsp:include page="../socialinviterscripts.jsp" />
 </body>
 </html>
 

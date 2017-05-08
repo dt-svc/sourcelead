@@ -101,7 +101,7 @@ public class InvoiceServiceTest {
         
         invoiceLineItemsSet.add(invoiceLineItems);
         invoice.setInvoiceLineItems(invoiceLineItemsSet);
-        invoiceService.saveInvoice(invoice);
+//        invoiceService.saveInvoice(invoice);
         logger.info("invoice saved successfully");
 	}
 	

@@ -28,6 +28,12 @@ public class InvoiceTax {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
+	@Column(name = "TAX_NAME")
+	private String taxName;
+	
+	@Column(name = "TAX_AMOUNT")
+	private String taxAmount;
+	
 	@Column(name = "TAX_VALUE")
 	private String taxValue;
 	
@@ -152,6 +158,22 @@ public class InvoiceTax {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getTaxName() {
+		return taxName;
+	}
+
+	public void setTaxName(String taxName) {
+		this.taxName = taxName;
+	}
+
+	public String getTaxAmount() {
+		return taxAmount;
+	}
+
+	public void setTaxAmount(String taxAmount) {
+		this.taxAmount = taxAmount;
 	}
 	
 }

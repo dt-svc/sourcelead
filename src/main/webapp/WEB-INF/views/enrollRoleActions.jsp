@@ -41,11 +41,11 @@ window.onload = function () {
     <section class="clearfix">
      <div class="select-role clearfix section-action-btns">
      <div id="loading"></div>
-     <div class="clearfix mt">
+     <div class="clearfix">
      <h3 id="role"></h3>
 	<select id="test-select" multiple="multiple">
 		 <c:forEach var="action" items="${actionsList}">
-		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
+		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName == 'Associates List' ? 'Associates' : action.tabs.tabName == 'Receivable' || action.tabs.tabName == 'Payables' ? 'Billing' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
 	     </c:forEach>
     </select>
      </div>
@@ -82,10 +82,10 @@ window.onload = function () {
 function alertMessage(message){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a pofix'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' style='width:100%' type='button' value='Ok' onclick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#actionsPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);

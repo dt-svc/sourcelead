@@ -18,12 +18,28 @@
 .pras.req-title p{
 bottom:-14px;
 }
+.ratetype p {
+bottom: -14px !important;
+left:-20px !important;
+}
+.pras.req-title p{
+bottom:-2px;
+}
+.form-control {
+padding: 6px 12px !important; height: 34px !important;
+}
+.bootstrap-select {
+width: 100% !important;
+}
 </style>
+
 
 
 <script>
 	$(document).ready(function() {
+		
 		document.getElementById("requirementtemplate_form").reset();
+		
 	});
 </script>
 
@@ -67,10 +83,7 @@ bottom:-14px;
 	                       <div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="education" id="education"
-									data-validation="validate_Space"
-									data-validation-optional="true">
+								<select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
 									<c:forEach var="edu" items="${educationsList}">
 										<c:if
 											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
@@ -105,7 +118,7 @@ bottom:-14px;
 						 <div class="form-group">
 			              <label class="col-md-3">Skills</label>
 			              <div class="col-md-9">
-			                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
+			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">
 			               <c:forEach var="skill" items="${skillsList}">
 			               		<c:set var = "NUM" value = "${0}"/>
 			               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
@@ -125,7 +138,7 @@ bottom:-14px;
 							<div class="form-group">
 								<label class="col-md-3">Employment Type</label>
 									<div class="col-md-9">
-										<select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);">
+										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
 											<option value="">Select</option>
 											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
 											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
@@ -153,7 +166,7 @@ bottom:-14px;
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-md-6">
-										<input type="text" class="form-control" placeholder="minExp"
+										<input type="text" class="form-control" placeholder="MinExp"
 											id="minExp" name="minExp" value="${requirement.minExp}"
 											field-name="MinExp"
 											data-validation="validate_Space validate_float validate_length length1-5"
@@ -162,7 +175,7 @@ bottom:-14px;
 									</div>
 									<div class="col-md-6">
 										<input type="text" class="form-control" id="maxExp"
-											name="maxExp" placeholder="maxExp"
+											name="maxExp" placeholder="MaxExp"
 											value="${requirement.maxExp}" field-name="MaxExp"
 											data-validation="validate_Space validate_float validate_length length1-5"
 											data-validation-optional="true" onblur="minMaxExperience();"
@@ -246,16 +259,21 @@ bottom:-14px;
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
 		
-		
+		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
-			 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+			
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#requirementtemplate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
+			
+			var jsonData = JSON.stringify(frm);
+			
+		   //	var con = JSON.stringify(frm);
+		  //	con = con.replace(/[{}]/g, ""); 
+		
+		   // var jsonData = encodeURIComponent(con);
 			var form = $('#requirementtemplate_form')[0];
       		var formData = new FormData(form); 
+      		formData.append("json",jsonData);
 			//It will escape all the special characters
 			$("#store_RequirementTemplate").attr("disabled", "disabled");
 			$("#store_RequirementTemplate").addClass('button').val('Processing..');
@@ -269,7 +287,7 @@ bottom:-14px;
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 								location.replace(sourceleadUrl+"/template");
 						},
@@ -309,6 +327,7 @@ bottom:-14px;
 
 <script type="text/javascript">
 		window.onload = function () {
+			
 			var jobType = '${requirement.jobType}';
 			if(null != jobType && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
@@ -321,7 +340,7 @@ bottom:-14px;
 				  $("#jobOtherType").val('');
 			}
 			
-			getEditRequirementDetails(requirementId);
+			
 		 };
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
@@ -450,23 +469,21 @@ function getJobType(jobType){
 }
 </script>
 
-<script>
-$(document).ready(function() {
-	getEditRequirementDetails(requirementId)
-});
-</script>
-
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor").Editor();
+			});
+       </script> 
 <script>
 function getEditRequirementDetails(requirementId){
-	alert("HELLLOOOO");
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(templateId !=''){
+	if(requirementId !=''){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/getEditRequirementDetails?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
 			success : function(data) {
-				alert("data"+data);
-				
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);
 			},
@@ -483,5 +500,4 @@ $(document).ready(function(){
 	
 });
 </script>
-
 <jsp:include page="../masterFooter.jsp" />

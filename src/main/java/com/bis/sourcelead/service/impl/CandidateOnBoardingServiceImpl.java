@@ -210,6 +210,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			User reportingManager = new User();
 			reportingManager.setId(Long.valueOf(jsonObj.getString("reportingManager")));
 			candidateOnBoarding.setManagerUserId(reportingManager);
+		}else{
+			candidateOnBoarding.setManagerUserId(null);
 		}
 		
 		if(jsonObj.has("team") && !isNullOrEmpty(jsonObj.getString("team"))){
@@ -511,7 +513,18 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	    	userRole.setReportingManager(reportingManager);
 	    }
 	    userRole.setOrgLocations(orgLocations);
-	    userRole.setIsPrimary(1);
+	    
+	    try {
+			boolean isUserActive = userRoleDao.isUserActive(onboardingUser.getId());
+			 if(isUserActive == false){
+				  userRole.setIsPrimary(1);
+			  }else{
+				  userRole.setIsPrimary(0);
+			  }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	   
 	    userRole.setUserState(Status.NOT_LOGGEDIN);
 	    userRole.setCreatedBy(loginUser.getUserCode());
 	    userRole.setCreatedDate(commonUtil.currentDate());

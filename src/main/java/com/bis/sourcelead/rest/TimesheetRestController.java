@@ -1225,7 +1225,7 @@ public class TimesheetRestController {
 	    tabDiv.append("		    	<div class='timesheet_button'>");	
 	    
 	    
-	    tabDiv.append("<div class='totalWrap'>");
+	    tabDiv.append("<div class='totalWrap pull-left'>");
 	    tabDiv.append("<ul>");
 		tabDiv.append("<li>");
 		tabDiv.append("<span>Billable Hours</span>");

@@ -105,6 +105,9 @@ public class UserRole implements Serializable{
 	private String employeeId;
 	
 	@Transient
+	private String userEmploymentType;
+	
+	@Transient
 	private Integer projectsCount;
 	
 	@Transient
@@ -135,8 +138,20 @@ public class UserRole implements Serializable{
 	private String dailyHours;
 	
 	@Transient
+	private String currentCurrency;
+	
+	@Transient
 	List<User> allReportingManagers;
 	
+	
+	@Transient
+	 private String vendorName;
+	 
+	 @Transient
+	 private String vendorContactName;
+	 
+	 @Transient
+	 private String departmentName;
 	
 	@Transient
 	private String userName;
@@ -169,7 +184,6 @@ public class UserRole implements Serializable{
 	@Transient
 	List<Roles> rolesList;
 	
-	
 	@Transient
 	private Integer assignedUsersCountToReportingManager;
 	
@@ -197,6 +211,17 @@ public class UserRole implements Serializable{
 	@Transient
 	private String isMailSent;
 	
+	@Transient
+	private String vendorOrgRelationId;
+	
+	@Transient
+	private String designationOtherType;
+	
+	@Transient
+	private String vendorSpocId;
+	
+	@Transient
+	private String department;
 	
 	public String getUserName() {
 		return userName;
@@ -603,7 +628,95 @@ public class UserRole implements Serializable{
 		this.orgId = orgId;
 	}
 
+	public String getUserEmploymentType()
+	{
+		return userEmploymentType;
+	}
+
+	public void setUserEmploymentType(String userEmploymentType)
+	{
+		this.userEmploymentType = userEmploymentType;
+	}
+
+	public String getVendorName()
+	{
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName)
+	{
+		this.vendorName = vendorName;
+	}
+
+	public String getVendorContactName()
+	{
+		return vendorContactName;
+	}
+
+	public void setVendorContactName(String vendorContactName)
+	{
+		this.vendorContactName = vendorContactName;
+	}
+
+	public String getVendorOrgRelationId()
+	{
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(String vendorOrgRelationId)
+	{
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	public String getVendorSpocId()
+	{
+		return vendorSpocId;
+	}
+
+	public void setVendorSpocId(String vendorSpocId)
+	{
+		this.vendorSpocId = vendorSpocId;
+	}
+
+	public String getDesignationOtherType()
+	{
+		return designationOtherType;
+	}
+
+	public void setDesignationOtherType(String designationOtherType)
+	{
+		this.designationOtherType = designationOtherType;
+	}
+
+	public String getCurrentCurrency()
+	{
+		return currentCurrency;
+	}
+
+	public void setCurrentCurrency(String currentCurrency)
+	{
+		this.currentCurrency = currentCurrency;
+	}
+
+	public String getDepartment()
+	{
+		return department;
+	}
+
+	public void setDepartment(String department)
+	{
+		this.department = department;
+	}
+
+	public String getDepartmentName()
+	{
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName)
+	{
+		this.departmentName = departmentName;
+	}
+
 	
-
-
 }

@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -109,7 +110,8 @@ public class OrgLocations implements Serializable{
     @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 
-    
+    @Transient
+    private String orgName;
 
 	public Timezone getTimezone() {
 		return timezone;
@@ -281,8 +283,13 @@ public class OrgLocations implements Serializable{
 	public void setOrgRelationsList(Set<OrgRelations> orgRelationsList) {
 		this.orgRelationsList = orgRelationsList;
 	}
-	
-	
 
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 	
 }

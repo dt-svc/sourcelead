@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.pdfbox.util.StringUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -125,8 +126,33 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType) throws Exception
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType, String contractsType) throws Exception
 	{
+		String[] type = contractsType.split(",");
+		
+		String subQuery = "";
+		if(type.length > 0){
+			for(int i=0; i<type.length; i++){
+				
+				if(type[i].equalsIgnoreCase("MSA")){
+					subQuery = subQuery + "contracts.contractType like '%MSA%' OR ";
+				}
+				if(type[i].equalsIgnoreCase("SOW")){
+					subQuery = subQuery + "contracts.contractType like '%SOW%' OR ";
+				}
+				if(type[i].equalsIgnoreCase("NDA")){
+					subQuery = subQuery + "contracts.contractType like '%NDA%' OR ";
+				}
+				if(type[i].equalsIgnoreCase("NCA")){
+					subQuery = subQuery + "contracts.contractType like '%NCA%' OR ";
+				}
+			}
+			if(null != subQuery && "" != subQuery){
+				subQuery = subQuery.substring(0, subQuery.length() - 3);
+				subQuery = "and (" +subQuery+ ")";
+			}
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 				+ "left join fetch contracts.requirementSubmission "
@@ -137,7 +163,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 				+ "left join fetch contracts.contractOrgLocationId "
 				+ "left join fetch contracts.contactUser "
 				+ "left join fetch contracts.approverUser "
-				+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%'";
+				+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%' "+subQuery;
 		List<Contracts>  ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();
 		return ContractsList;
 	}
@@ -170,21 +196,16 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ContractsTemplate findByContractTemplateName(String templateName, Long orgLocationId) throws Exception {
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<ContractsTemplate> contractsTemp = new ArrayList<ContractsTemplate>();
-			try{
-				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.orgLocationId.id = :orgLocationId" )
-						.setString( "templateName", templateName ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId" )
+						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
 				if (contractsTemp.size() > 0) {
 					return contractsTemp.get(0);
 				} else {
 					return null;
 				}
-			}catch(Exception e){
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			}
-			return null;
 	}
 
 	@Override
@@ -195,8 +216,18 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return contractsList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Contracts findContractTitleByOrgLocationAndContractType(String contractTitle, String contractType,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contracts = new ArrayList<Contracts>();
+			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId" )
+					.setString( "contractTitle", contractTitle ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+		if (contracts.size() > 0) {
+			return contracts.get(0);
+		} else {
+			return null;
+		}
+	}
 
-	
-
-	
 }

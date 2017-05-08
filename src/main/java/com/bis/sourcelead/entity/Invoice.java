@@ -63,6 +63,9 @@ public class Invoice {
 	@Column(name = "DISCOUNT_AMOUNT")
 	private String discountAmount;
 	
+	@Column(name = "AFTER_DISCOUNT_VALUE")
+	private String afterDiscountValue;
+	
 	@Column(name = "SUB_TOTAL")
 	private String subTotal;
 	
@@ -83,6 +86,9 @@ public class Invoice {
 	@Column(name = "INVOICE_STATUS")
 	private String invoiceStatus;
 	
+	@Column(name = "PAYMENT_STATUS")
+	private String paymentStatus;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -95,8 +101,27 @@ public class Invoice {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "DISCOUNT_TYPE")
+	private String discountType;
+	
+	@Column(name = "PAYMENT_FREQUENCY")
+	private String paymentFrequency;
+	
+	@Column(name = "DISCOUNT_VALUE")
+	private String discountValue;
+	
+	@Column(name = "IS_SEPARATE_INVOICE")
+	private String isSeparateInvoice;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
+	private Set<InvoiceTax> invoiceTax;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
+	private Set<InvoiceDocument> invoiceDocumentSet;
+	
 	
 	@Transient
 	private String clientName;
@@ -291,6 +316,22 @@ public class Invoice {
 		this.invoiceLineItems = invoiceLineItems;
 	}
 
+	public Set<InvoiceTax> getInvoiceTax() {
+		return invoiceTax;
+	}
+
+	public void setInvoiceTax(Set<InvoiceTax> invoiceTax) {
+		this.invoiceTax = invoiceTax;
+	}
+	
+	public Set<InvoiceDocument> getInvoiceDocumentSet() {
+		return invoiceDocumentSet;
+	}
+
+	public void setInvoiceDocumentSet(Set<InvoiceDocument> invoiceDocumentSet) {
+		this.invoiceDocumentSet = invoiceDocumentSet;
+	}
+
 	public OrgLocations getOrgLocation()
 	{
 		return orgLocation;
@@ -309,6 +350,14 @@ public class Invoice {
 	public void setInvoiceStatus(String invoiceStatus)
 	{
 		this.invoiceStatus = invoiceStatus;
+	}
+
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
 	}
 
 	public String getClientName() {
@@ -343,4 +392,44 @@ public class Invoice {
 		this.dueDateStr = dueDateStr;
 	}
 	
+	public String getDiscountType() {
+		return discountType;
+	}
+
+	public void setDiscountType(String discountType) {
+		this.discountType = discountType;
+	}
+
+	public String getPaymentFrequency() {
+		return paymentFrequency;
+	}
+
+	public void setPaymentFrequency(String paymentFrequency) {
+		this.paymentFrequency = paymentFrequency;
+	}
+
+	public String getDiscountValue() {
+		return discountValue;
+	}
+
+	public void setDiscountValue(String discountValue) {
+		this.discountValue = discountValue;
+	}
+
+	public String getIsSeparateInvoice() {
+		return isSeparateInvoice;
+	}
+
+	public void setIsSeparateInvoice(String isSeparateInvoice) {
+		this.isSeparateInvoice = isSeparateInvoice;
+	}
+
+	public String getAfterDiscountValue() {
+		return afterDiscountValue;
+	}
+
+	public void setAfterDiscountValue(String afterDiscountValue) {
+		this.afterDiscountValue = afterDiscountValue;
+	}
+
 }

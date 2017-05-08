@@ -274,7 +274,7 @@ function prepareRequirementData(data){
    	 
    	result = result +"<td>";
    	if(opt.jobId != '' && opt.jobId != null){
-	   	result = result +"<div class='tbldata-dotdot-100' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
+	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.jobId+"'>"+opt.jobId+"</span></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}
@@ -282,21 +282,21 @@ function prepareRequirementData(data){
 	
    	 if(opt.jobId != '' && opt.jobId != null){
    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+        	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
         '</sec:authorize>';
         '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-        	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+        	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
         '</sec:authorize>';
    	 }else{
    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+            	result = result +"<td><a href='<c:url value='/requirementSummary?requirementUUID="+opt.requirementUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span><i class='fa fa-binoculars'></i></div></a></td>";
             '</sec:authorize>';
             '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-            	result = result +"<td><div class='proj_show tbldata-dotdot'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+            	result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
             '</sec:authorize>';
    	 }
         if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
-       	 result = result +"<td><div title='"+opt.clientName+"'><span>"+opt.clientName+"</span></div></td>";
+       	 result = result +"<td><div title='"+opt.clientName+"' class='tbldata-dotdot-100'>"+opt.clientName+"</div></td>";
         }else{
        	 result = result +"<td><div>-----</div></td>";
         }
@@ -328,9 +328,9 @@ function prepareRequirementData(data){
     	 }
        
         if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-            result = result +"<td><div><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
+            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
         }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-            result = result +"<td><div><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+            result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
 
         }else{
             result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
@@ -346,7 +346,7 @@ function prepareRequirementData(data){
        	 result = result +"<td><div>0</div></td>";
         } */
         if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-       	 result = result +"<td><div><span title='"+opt.manager+"'>"+opt.manager+"</span></div></td>";
+       	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
         }else{
        	 result = result +"<td><div>----</div></td>";
         }
@@ -355,7 +355,7 @@ function prepareRequirementData(data){
            }else{
           	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
            }
-          result = result +"<td><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
+          result = result +"<td><div style='width:75px'><select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
            if(opt.requirementSubmissionStatus == "DRAFT"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 				'<sec:authorize access="hasAnyRole(\'ROLE_ONHOLD_REQUIREMENT\')">';
@@ -472,8 +472,8 @@ function prepareRequirementData(data){
 			}
 
 			result = result +" </select>";	
-           result = result +" </td>";
-           result = result +" <td>";
+           result = result +" </div></td>";
+           result = result +" <td><div class='widthIcon'>";
            
 	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
@@ -493,7 +493,7 @@ function prepareRequirementData(data){
 		else{
            result = result +"<div>--</div>";
        }    '</sec:authorize>';    
-		result = result +"</td>";
+		result = result +"</div></td>";
         result = result +"</tr>";
         result = result +"</tr>";
        
@@ -1305,7 +1305,7 @@ function requirementPipeline(requirementId){
        <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup reqadvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          <div class="cand-advsrch-popup reqadvsrch candAdvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
             <div class="row">
              <!--  <div class="col-md-4">
                 <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
@@ -1336,15 +1336,15 @@ function requirementPipeline(requirementId){
             <div class="row">
               <div class="clearfix">
                 <div class="col-md-8">
-                  <label>Job Title</label>
+                  <label>Title</label>
                   <div class="clearfix">
                     <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
                   </div>
                 </div>
                   <div class="col-md-4">
-                  <label>Job Id</label>
+                  <label>Id</label>
                   <div class="clearfix">
-                    <input type="text" id="jobId" name="jobId" class="form-control input-sm" placeholder="job Id">
+                    <input type="text" id="jobId" name="jobId" class="form-control input-sm" placeholder="Requirement Id">
                   </div>
                 </div>
             <%--    <div class="form-group">
@@ -1445,9 +1445,9 @@ function requirementPipeline(requirementId){
                 </div>
                 
                 <div class="col-md-4">
-                  <label>Client<i class="fa fa-info-circle" title="CLient"></i></label>
+                  <label>Client</label>
                   <div class="clearfix">
-                    <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
+                    <select class="chosen-select" id="client" name="client" data-placeholder="Select Client" multiple>
                       <c:forEach var="report" items="${add_clientList}">
 							 	<c:if test="${report.locationId.id == loginOrgLocId}">  
 			                    	<option value="${report.id},${report.responderLocationId.org.orgName}" ${report.id  == requirement.clientId.id ? 'selected' : ''} >${report.responderLocationId.org.orgName}</option>
@@ -1513,7 +1513,7 @@ function requirementPipeline(requirementId){
                 </div> --%>
 
                 <div class="col-md-4 hidden">
-                  <label>Client<i class="fa fa-info-circle" title="CLient"></i></label>
+                  <label>Client</label>
                   <div class="clearfix">
                     <select class="chosen-select" id="client" name="client" data-placeholder="Client" multiple>
                       <c:forEach var="report" items="${add_clientList}">
@@ -1531,9 +1531,9 @@ function requirementPipeline(requirementId){
               
               
          <div class="col-md-4">
-         <label>Notice Period<i class="fa fa-info-circle" title="Notice Period"></i></label>
+         <label>Notice Period</label>
           <div class="clearfix">
-             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" >
+             <select multiple class="chosen-select form-control" id="noticePeriod" name="noticePeriod"  data-validation-optional="true" data-placeholder="Select Notice Period">
 	                 <option  ${requirement.noticeperiodList  == 'Immediately Available' ? 'selected' : ''}>Immediately Available</option>
 	                 <option  ${requirement.noticeperiodList  == '15-Days' ? 'selected' : ''}>15-Days</option>
 	                 <option  ${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
@@ -1567,8 +1567,9 @@ function requirementPipeline(requirementId){
               <div class="pull-right mr"> 
               <!-- <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a> 
               <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>  -->
-               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-primary"/>
-               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/></div>
+               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-success"/>
+               <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
+               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/></div>
             </div>
           </div>
           </form:form>
@@ -2290,6 +2291,18 @@ function getCities(){
     	$('#city').append('<option value="">---select city---</option>');
     	$('#city').trigger("chosen:updated");
 	}
+}
+</script>
+<script>
+function clearSearch(){
+	document.getElementById("requirement_form").reset();
+	$('#requirementStatu').val('').trigger('chosen:updated');
+	$('#updatedOn').val('').trigger('chosen:updated');
+	$('#client').val('').trigger('chosen:updated');
+	$('#country').val('').trigger('chosen:updated');
+	$('#state').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	$('#noticePeriod').val('').trigger('chosen:updated');
 }
 </script>
 

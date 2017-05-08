@@ -63,6 +63,8 @@ import com.bis.sourcelead.entity.EmailRecipient;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -79,6 +81,8 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -188,6 +192,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -319,6 +329,32 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 if(jsonObj.has("monthExp") && !isNullOrEmpty(jsonObj.getString("monthExp"))){
 						 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
 					 }
+					 
+					 if(jsonObj.has("designationType") && jsonObj.getString("designationType") !=null){
+							candidate.setDesignationType(jsonObj.getString("designationType"));
+					 } 
+				 
+					if(jsonObj.has("designationOtherType") && jsonObj.has("designationType") && "Other".equalsIgnoreCase(jsonObj.getString("designationType"))){
+						candidate.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+					}else{
+						candidate.setDesignationOtherType(null);
+					}
+					 
+					 
+					if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
+						OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+						candidate.setOrgRelationId(orgRelation);
+					}else{
+						candidate.setOrgRelationId(null);
+					}
+					
+					if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
+						OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorContact")));
+						candidate.setSpocId(orgspoc);
+					}else{
+						candidate.setSpocId(null);
+					}
+					 
 					candidate.setCandidateType("Candidate");
 					candidate.setIsAssociate(Constants.NO);
 					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -1042,9 +1078,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 
 	//to get candidates for submit to client
 	@Override
-	public List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long orgLocationsId,
-			Long requirementId) throws Exception {
-		return requirementSubmissionDao.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(orgLocationsId, requirementId);
+	public List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(OrgLocations loginOrgLocation,
+			Requirement requirement,User user,String loginUserRole) throws Exception {
+		return requirementSubmissionDao.getAllShortLitstedCandidatesForClientSubmissionByRequirementId(loginOrgLocation, requirement,user,loginUserRole);
 	}
 	
 	@Override
@@ -4140,13 +4176,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId) {
-		return requirementSubmissionDao.getVendorSpocSubmissions(userCode,orgLocationId);
+	public List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId, Date startDateUTC, Date endDateUTC) {
+		return requirementSubmissionDao.getVendorSpocSubmissions(userCode,orgLocationId,startDateUTC,endDateUTC);
 	}
 	
 	@Override
 	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
 		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType);
+	}
+
+	@Override
+	public List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId,
+			Long orgRelationId, Date startUTCDate, Date endUTCDate) {
+		return requirementSubmissionDao.getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(orgLocationId,orgRelationId, startUTCDate, endUTCDate);
 	}
 
 }

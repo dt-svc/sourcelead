@@ -57,7 +57,9 @@ function onboardingCandidatesList(){
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Position Type</th>";
 	                     result = result +"    <th>Onboard Status</th>";
-	                     result = result +"<th>Actions</th>";
+	                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+	                    	 result = result +"<th>Actions</th>";
+	                     '</sec:authorize>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -94,17 +96,18 @@ function onboardingCandidatesList(){
 				                     result = result +"<td><div><span>Ready to onboard</span></div></td>";
 			                     }
 			                     
-			                    if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
-			                    	 if(opt.onboardStatus == 'Draft'){
-			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
-			                    	 }else if(opt.onboardStatus == 'Finished'){
-			                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
-			                    	 }
-			                    	
-			                    }else{
-			                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
-			                    }
-			                     
+			                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
+				                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
+				                    	 if(opt.onboardStatus == 'Draft'){
+				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
+				                    	 }else if(opt.onboardStatus == 'Finished'){
+				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
+				                    	 }
+				                    	
+				                    }else{
+				                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
+				                    }
+			                     '</sec:authorize>';  
 
 		                     
 		                     result = result +"</tr>";

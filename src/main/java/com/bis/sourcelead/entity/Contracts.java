@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -161,6 +162,16 @@ public class Contracts {
 	@Column(name = "STATE_JURISDICTION")
 	private String stateJurisdiction;
 	
+	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String fileName;
+	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+	
+	@Column(name = "FILE_TYPE")
+	private String fileType;
+	
 	@Transient
 	private String ownerName;
 	
@@ -188,7 +199,30 @@ public class Contracts {
 	@Transient
 	private String tempdocId;
 	
-	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
 	public String getTempEnvId() {
 		return tempEnvId;
 	}
