@@ -63,7 +63,14 @@ public class TimesheetReportsRestController {
 			}
 			response.setContentType(mimeType);
 			StringBuilder fileName = new StringBuilder();
-			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(timesheetReportFile.getName()).append("\"").toString());
+			StringBuilder timesheetfileName = new StringBuilder();
+			int pos = timesheetReportFile.getName().lastIndexOf("-");
+			String result = timesheetReportFile.getName().substring(fileName.length(), pos);
+			int index = timesheetReportFile.getName().lastIndexOf(".");
+			String fileType = timesheetReportFile.getName().substring(index, timesheetReportFile.getName().length());
+			String tsFileName = timesheetfileName.append(result).append(fileType).toString();
+			
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(tsFileName).append("\"").toString());
 			response.setContentLength((int) timesheetReportFile.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(timesheetReportFile));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
