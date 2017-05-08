@@ -210,7 +210,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 String pattern = "dd-MM-yyyy";
 	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 		
-		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowAssociatesNum"));
+		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
 		 for(int i=1;i<maxRowCount;i++){
 			 
 			 if(jsonObj.has(i+"invoiceStartDate")){

@@ -128,7 +128,6 @@ function cancel(){
         <!-- Table starts here-->
           <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">
           <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />
-           <input type="hidden" id="maxTsRowAssociatesNum" name="maxTsRowAssociatesNum" />
           <table width="100%">
             <thead id="addInvoiceTbl">
               <tr id="divTsRow0">
@@ -380,8 +379,6 @@ function cancel(){
 	    	 
 	    	 //===================
 	    		 
-  		 var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-	     $("#maxTsRowNum").val(maxTsRowNum - 1);
 	    
 	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	     
@@ -428,8 +425,7 @@ function cancel(){
 			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 			
-			$("#maxTsRowAssociatesNum").val(maxRowNum+1)
-	  
+			
 			
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divTsRow" + maxRowNum);
@@ -543,11 +539,10 @@ function cancel(){
   <script>
   function getAllAssociates(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-	  var maxTsRowAssociatesNum = $("#maxTsRowAssociatesNum").val();
 	  
 	  var selectedAssociates = '';
 	  if(maxTsRowNum > 1){
-		  for(var i=1; i<maxTsRowAssociatesNum; i++){
+		  for(var i=1; i<maxTsRowNum; i++){
 			  if(document.getElementById(i+"candidateId")){
 				  var associateId = document.getElementById(i+"candidateId").value;
 				  if(selectedAssociates == ''){
@@ -558,6 +553,8 @@ function cancel(){
 			  }
 		  }
 	  }
+	  
+	
 	  
 	  
 	  $('.action-pop').slideUp();
