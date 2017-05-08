@@ -218,7 +218,7 @@ function cancel(){
               </div>
               <div class="form-group">
                 <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readinly></div>
+                <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly="readonly"></div>
               </div>
               <div class="addtax_table">
               <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />
@@ -310,13 +310,13 @@ function cancel(){
 	
 	<div id="divTaskTd4" style="display: none; float: left;">
        <div class="tbldata-dotdot-100">
-       <input type="text" class="form-control input-sm" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate" >
+       <input type="text" class="form-control input-sm" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"  onblur="totalHoursCalculateAmount(REPLACEROWID);">
        </div>
 	</div>
 
 	<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
+	     <input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="totalHoursCalculateAmount(REPLACEROWID);">
 	     </div>
 	</div>
 	
@@ -372,8 +372,6 @@ function cancel(){
 	    }
 	       	 
 	    	 
-	    	 //===================
-	    		 
 	    
 	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	     
@@ -389,7 +387,6 @@ function cancel(){
 	             var first=parseFloat(tot);
 	             var second=parseFloat(taxTotal); 
 	             var total  = (first+second);
-// 	             $("#grandTotal").val(total);
 		    }
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
@@ -398,7 +395,6 @@ function cancel(){
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
-		
 		
 	
 	}
@@ -622,7 +618,7 @@ function cancel(){
 	        		
 	        		var result ="";
 	        		result = result +'     <h3>Associates List</h3>';
- 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
+	        		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
  	           	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
  	           		result = result +'           <thead>';
  	           		result = result +'           <tr>';
@@ -742,7 +738,7 @@ function pagination(){
   </script>
   
   <script>
-  function calculateAmount(rowId){
+  function totalHoursCalculateAmount(rowId){
 	  var rate = $("#"+rowId+"rate").val();
 	  var totalHours = $("#"+rowId+"totalHours").val();
 	     var split = totalHours.split(':');
@@ -806,15 +802,33 @@ function pagination(){
 	     calTotalamount(rowId,totlalAmount);
   }
   </script>
+ 
   <script>
   function  calTotalamount(rowId,totlalAmount){
 	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
 	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
 	    var arroundGrand = grandTotal.toFixed(2)
-	    $("#inoviceTotal").val(arroundGrand);
-	    $("#hiddenTotal").val(arroundGrand);
-	    $("#grandTotal").val(arroundGrand);
-	    $("#afterDiscountTotal").val(arroundGrand);
+	    
+	    
+	    //--------------------------------
+	    
+	    var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	    var sum = 0;
+	 	    for(var i=0; i< maxRowNum; i++){
+	 	    	 if(document.getElementById(i+"amount")){
+	 	    		 if(document.getElementById(i+"amount").value){
+	 	    			var rowAmount = $('#'+i+'amount').val();
+			 	    	sum = parseFloat(sum) + parseFloat(rowAmount);
+	 	    		 }
+	 	    		
+	 	    	 }
+	 	    }
+	    //-------------------------------------
+	    
+	    $("#inoviceTotal").val(sum.toFixed(2));
+	    $("#hiddenTotal").val(sum.toFixed(2));
+	    $("#grandTotal").val(sum.toFixed(2));
+	    $("#afterDiscountTotal").val(sum.toFixed(2));
 	    
    /* =====================  After adding the rows calculate the discount start  ===================== */
    var discountValue =  $("#discountValue").val();
@@ -824,17 +838,17 @@ function pagination(){
 		var total ='';
 		if(discountType == 'flat'){
 			total = arroundGrand-discountValue;
-			$("#discountTotal").val(discountValue);
-			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#discountTotal").val(discountValue.toFixed(2));
+			$("#grandTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(2));
 			
 		}
 		if(discountType == 'percentage'){
 			var perCentValue = (arroundGrand * discountValue)/100;
 			total = arroundGrand - perCentValue;
-			$("#discountTotal").val(perCentValue);
-			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#grandTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}
    }
    
@@ -849,14 +863,17 @@ function pagination(){
 	         var taxType = $("#"+i+"taxdiscountType").val();
 	         var taxValue = $("#"+i+"taxdiscountvalue").val();
 	         var taxTotal = $("#"+i+"taxTotal").val();
-	         
-	            var tot = $("#grandTotal").val();
-	             
-	            var first=parseFloat(tot);
-	             var second=parseFloat(taxTotal); 
-	             var total  = (first+second);
-              
-// 	             $("#grandTotal").val(total);
+	            
+              if(taxValue == '' && taxTotal==''){
+            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
+              }else{
+            	  var tot = $("#grandTotal").val();
+  	            var first=parseFloat(tot);
+  	             var second=parseFloat(taxTotal); 
+  	             var total  = (first+second);
+  	           $("#grandTotal").val(total.toFixed(2));
+              }
+	            
 	    }
    /* =====================  After adding the rows calculate the tax end  ===================== */
    

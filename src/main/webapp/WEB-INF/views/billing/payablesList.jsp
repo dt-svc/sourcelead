@@ -518,6 +518,7 @@ function getPayableInvoiceList(){
         			invoiceDateStr = "";
         		}
         		
+        		
 				result = result +'       <tr> ';
 				result = result +'         <td>';
 				result = result +'           <div class="tbldata-dotdot_80">'+report.invoiceId+'</div>   ';
