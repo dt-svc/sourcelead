@@ -5,7 +5,6 @@ body {
 :focus, a:focus {
     outline:none;
     }      
-     
 a { cursor:pointer;}
       
 .timesheet_out {
@@ -3618,7 +3617,7 @@ position: relative; padding: 0px 0px 5px 0px;
 	display:block; float: left; width: 70%; padding: 0px 0px 0px 15px;
 }
 .step3 strong p {
-	padding:0px 0px 6px; margin: 0px 0px; font-size: 14px; color: #333;
+	padding: 35px 0px 6px; margin: 0px 0px; font-size: 16px; color: #454545;
 }
 .step3 label {
 	font-size: 13px; color: #545454;
@@ -4146,7 +4145,7 @@ position: relative; padding: 0px 0px 5px 0px;
     position:relative;
     }
 .timesheetRepTab table div i {
-	font-style: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%;
+	font-style: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; text-align: left;
 }
 .timesheetRepTab table div.lg {
 	width: 160px;
@@ -4217,7 +4216,7 @@ margin: 0px auto !important;
 position: fixed !important;
 }
 .ReadTextFli {
-    border: none; background-color: transparent; font-weight: 500; color: #333; text-align: right;
+    border: none; background-color: transparent; font-weight: 500; color: #333; text-align: right; width: 100px;
 }
 .timesheet_container {
 background: #f5f5f5; box-shadow: 0px 0px 3px #707070; -moz-transition: all ease-in-out 0.3s;
@@ -4288,4 +4287,23 @@ float: none !important; padding: 2px 5px; color: #333;
 }
 .welcomeError p {
 	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500;
+}
+.editAA {
+    display: inline-block; padding: 0px 5px; color: #f36767; font-size: 15px;
+}
+.cliColor {
+    background-color: #7fb951 !important;
+}
+.rejColor {
+    background-color: #CB4042 !important;
+}
+.outColor {
+    background-color: #686868 !important;
+}
+.reqAct {
+    position: relative; border-bottom: 3px solid #368ee0; padding: 19px 0px 16px;
+}
+.reqAct:after {
+    top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; border-color: rgba(136, 183, 213, 0);
+    border-top-color: #368ee0; border-width: 10px; margin-left: -10px; z-index: 100;
 }

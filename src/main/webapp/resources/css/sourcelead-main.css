@@ -6530,10 +6530,13 @@ padding: 15px 15px 25px 15px;
  position: absolute; top: 45px; right: 0; background: #ededed;  border: 1px solid #ddd; border-radius: 3px; z-index: 99;
  padding: 10px 15px; display: none; width: 400px;
 }
+<<<<<<< HEAD
 .closeSearch {
     color: #fff; position: relative; top: -19px; padding: 2px 5px;
     background: #e65100; right: -25px; border-radius: 3px; cursor: pointer;
 }
+=======
+>>>>>>> 3451dd0914f0efa52b40c215ce2fbb916fc22e71
 .addinvoiceTable{
 	min-height: 150px;max-height: 400px;overflow: auto;
 }
@@ -6546,6 +6549,7 @@ padding: 15px 15px 25px 15px;
 .addinvoiceTable .dataTables_filter{
 	position: relative !important; top: 0 !important;
 }
+<<<<<<< HEAD
 .addressInvoice {
 
 }
@@ -6559,6 +6563,8 @@ padding: 15px 15px 25px 15px;
 .topfilters ul ul li {
     padding-bottom:5px !important; padding-top:5px !important;
 }
+=======
+>>>>>>> 3451dd0914f0efa52b40c215ce2fbb916fc22e71
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

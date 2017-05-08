@@ -48,6 +48,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Html2PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -70,6 +71,9 @@ public class ContractRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private Html2PdfUtil html2PdfUtil;
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
@@ -134,8 +138,21 @@ public class ContractRestController {
 	@RequestMapping(value = "/viewContractPdf/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void viewContractPdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));		
-  	    byte[] pdfBytes = contract.getDocFile();
+		Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		byte[] pdfBytes = null ;
+	
+		if(contract.getEnvelopId()!=null && contract.getTypeOfContract().equalsIgnoreCase("New")){
+			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+		}
+		if(contract.getTypeOfContract().equalsIgnoreCase("New")&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
+			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+		}
+		if(contract.getEnvelopId()==null && contract.getTypeOfContract().equalsIgnoreCase("Existing")){
+			  pdfBytes = contract.getDocFile();
+		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
   	    response.setContentLength(pdfBytes.length);

@@ -31,12 +31,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -66,6 +68,15 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private TimeZoneService timeZoneService;
+
+	@Autowired
+	private InvoicePaymentService invoicePaymentService;
+	
+	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+
 	
 	@RequestMapping(value = "/getClientContactsByOrgRelationId", method = RequestMethod.GET)
 	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -120,17 +131,29 @@ public class InvoiceRestController {
 		return invoiceSaved;
 	} 
 	
-    @RequestMapping(value = "/getAssociatesList", method = RequestMethod.GET)
- 	public @ResponseBody  String getUserList(HttpServletRequest request, HttpServletResponse response) throws Exception
+    @RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
+ 	public @ResponseBody  String getInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates,HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
      	String resultJson;
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-     	List<Candidate> associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
- 	  resultJson = commonUtil.toJSON(associateList);
- 	  return resultJson;
+     	
+     	List<Long> associateIds = new ArrayList<Long>();
+     	List<Candidate> associateList = null;
+     	
+     	if(!isNullOrEmpty(selectedAssociates)){
+     		String[] selectedAssoicatesIds =  selectedAssociates.split(",");
+         	for(int i=0; i < selectedAssoicatesIds.length; i++){
+         		associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
+         	}
+         	associateList = candidateService.getAllActiveAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(),associateIds);
+     	}else{
+     		associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
+     	}
+     	
+ 	    resultJson = commonUtil.toJSON(associateList);
+ 	    return resultJson;
  	}
     
-//    /getClientProjectsByOrgRelationId 
     
     @RequestMapping(value = "/getClientProjectsByOrgRelationId", method = RequestMethod.GET)
  	public @ResponseBody  String getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -248,6 +271,7 @@ public class InvoiceRestController {
 	}
 	
     
+
     private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
 	{
 		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
@@ -255,5 +279,27 @@ public class InvoiceRestController {
 		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
 		return TZ_DF_TS.parse(startDateString);
 	}
+
+	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
+	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		String invoicePaymentSaved = "failed";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		}
+		InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(jsonObj, user, orgLocation, multiFile,invoiceId);
+		if(null !=invoicePayment){
+			invoicePaymentSaved = "success";
+		}
+		return invoicePaymentSaved;
+	} 
+
     
 }

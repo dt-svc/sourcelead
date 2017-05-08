@@ -114,6 +114,15 @@ public class Org implements Serializable{
 	@Type(type="text")
 	private String modulesId;
 	
+    @Column(name = "CLIENT_ADDRESS")
+	private String clientAddress;
+    
+    @Column(name = "CLIENT_BILLING_ADDRESS")
+	private String clientBillingAddress;
+    
+    @Column(name = "PAYMENT_TERM")
+	private String PaymentTerm;
+	
 	@Transient
 	private String email;
 	
@@ -329,6 +338,30 @@ public class Org implements Serializable{
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getClientAddress() {
+		return clientAddress;
+	}
+
+	public void setClientAddress(String clientAddress) {
+		this.clientAddress = clientAddress;
+	}
+
+	public String getClientBillingAddress() {
+		return clientBillingAddress;
+	}
+
+	public void setClientBillingAddress(String clientBillingAddress) {
+		this.clientBillingAddress = clientBillingAddress;
+	}
+
+	public String getPaymentTerm() {
+		return PaymentTerm;
+	}
+
+	public void setPaymentTerm(String paymentTerm) {
+		PaymentTerm = paymentTerm;
 	}
 
 	

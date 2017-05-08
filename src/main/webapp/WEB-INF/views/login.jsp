@@ -47,7 +47,6 @@
 			         <span><font color="green">${msg}</font></span>
 				</div>
            </c:if> 
-    	<br/>
         	 <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
 	            <span>
 	            	<label>User name</label>
