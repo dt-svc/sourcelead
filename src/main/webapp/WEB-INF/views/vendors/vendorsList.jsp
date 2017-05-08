@@ -53,7 +53,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 
 <div class="timesheet_out timesheet_background">
  <!-- Advanced Search -->
-  <div class="timesheet_bg">
+  <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
@@ -270,7 +270,8 @@ border:none; background-color: none !important; padding:0 5px !important;
 
      
 
-	<div class="timesheet_head datatbl-filters customtimesheet-head">
+	<!-- <div class="timesheet_head datatbl-filters customtimesheet-head"> -->
+	<div class="timesheet_head datatbl-filters topfilters">
         	<ul>
         	
         	<%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|

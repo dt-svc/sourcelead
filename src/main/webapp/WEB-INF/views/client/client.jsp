@@ -204,7 +204,7 @@ window.onload = function () {
             </div>
             
             <div class="form-group">
-              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
                 <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
@@ -218,7 +218,7 @@ window.onload = function () {
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3"></label>
-              <div class="col-md-9 checkbox">
+              <div class="col-md-9 checkBox">
                  <label> <input type="checkbox" value="Y"
 							name="isMailSent" checked="checked"> Send Invitation
 				</label>
