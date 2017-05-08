@@ -80,7 +80,7 @@ public class InvoiceRestController {
 
 	
 	@RequestMapping(value = "/getClientContactsByOrgRelationId", method = RequestMethod.GET)
-	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getClientContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
@@ -108,7 +108,8 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String saveInvoice(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
 		String invoiceSaved = "failed";
@@ -125,7 +126,7 @@ public class InvoiceRestController {
 				attachedfileList.add(multiFile); 
 			}
 		}
-		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList);
+		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
 		if(null !=invoice){
 			invoiceSaved = "success";
 		}
@@ -246,19 +247,20 @@ public class InvoiceRestController {
 		
 		
 		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC);
+
 		for(Invoice invoice :invoiceList){
-			if(invoice.getClientOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getClientOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
 			}
-			if(invoice.getClientOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-				invoice.setClientName(invoice.getClientOrgRelationID().getLocationId().getOrg().getOrgName());
+			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
 			}
 				
 			StringBuilder contactName = new StringBuilder();
-			if(invoice.getContactContactUser().getLastName() != null){
-				invoice.setClientContactName(contactName.append(invoice.getContactContactUser().getFirstName()).append(" ").append(invoice.getContactContactUser().getLastName()).toString());	
+			if(invoice.getContactUser().getLastName() != null){
+				invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
 			}else{
-				invoice.setClientContactName(contactName.append(invoice.getContactContactUser().getFirstName()).toString());
+				invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 			}
 			invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));

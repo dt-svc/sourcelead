@@ -59,6 +59,10 @@ public class Constants {
 	public static final String BILLING_ADDRESS = "BillingAddress";
 	public static final String PAYMENT_TERMS = "PaymentTerms";
 	
+	public static final String INVOICE_RECEIVABLE = "Receivable";
+	
+	public static final String INVOICE_PAYABLES = "Payables";
+	
 	
 	public static final String country = "Country";
 	

@@ -37,12 +37,12 @@ public class Invoice {
 	
 	
 	@ManyToOne
-    @JoinColumn(name="CLIENT_ORG_RELATION_ID", nullable=false )     
-	private OrgRelations clientOrgRelationID;
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
+	private OrgRelations orgRelationID;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "CLIENT_CONTACT_USER_ID")
-	private User contactContactUser;
+	@JoinColumn(name = "CONTACT_USER_ID")
+	private User contactUser;
 	
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
@@ -50,6 +50,9 @@ public class Invoice {
 	
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
+	
+	@Column(name = "INVOICE_TYPE")
+	private String invoiceType;
 	
 	@Column(name = "INVOICE_DATE")
 	private Date invoiceDate;
@@ -145,26 +148,22 @@ public class Invoice {
 		this.id = id;
 	}
 
-	public OrgRelations getClientOrgRelationID()
-	{
-		return clientOrgRelationID;
+
+	public OrgRelations getOrgRelationID() {
+		return orgRelationID;
 	}
 
-	public void setClientOrgRelationID(OrgRelations clientOrgRelationID)
-	{
-		this.clientOrgRelationID = clientOrgRelationID;
+	public void setOrgRelationID(OrgRelations orgRelationID) {
+		this.orgRelationID = orgRelationID;
 	}
 
-	public User getContactContactUser()
-	{
-		return contactContactUser;
+	public User getContactUser() {
+		return contactUser;
 	}
 
-	public void setContactContactUser(User contactContactUser)
-	{
-		this.contactContactUser = contactContactUser;
+	public void setContactUser(User contactUser) {
+		this.contactUser = contactUser;
 	}
-
 
 	public String getInvoiceId()
 	{
@@ -430,6 +429,14 @@ public class Invoice {
 
 	public void setAfterDiscountValue(String afterDiscountValue) {
 		this.afterDiscountValue = afterDiscountValue;
+	}
+
+	public String getInvoiceType() {
+		return invoiceType;
+	}
+
+	public void setInvoiceType(String invoiceType) {
+		this.invoiceType = invoiceType;
 	}
 
 }
