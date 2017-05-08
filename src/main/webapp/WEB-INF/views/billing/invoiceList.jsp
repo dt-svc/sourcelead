@@ -318,14 +318,14 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                  <label>Amount Received</label>               ';
 	result = result +'                  <div class="row">                            ';
 	result = result +'                    <div class="col-md-6">                     ';
-	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked>           ';
+	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked onclick="validMask();"> ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
-	result = result +'                      <input  type="radio" name="paymentAmount" value="custom">     ';
+	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" >       ';
+	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" readonly>       ';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -340,7 +340,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment">                                            ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -550,7 +550,12 @@ function getInvoiceList(){
 				
 				result = result +'         <td> ';
 				 
-				result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+				if(report.paymentStatus == "Paid"){
+					result = result +'           <span class="text-primary receiveBtn primary clearfix" >Receive</span> </td>          ';	
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+				}
+				
 				result = result +'       </tr>                                                                                                           ';
 
     		}
@@ -629,14 +634,14 @@ function cancelbtn(){
         $('.menupop').toggle();
         
     };
-   /*  function receivePaymentPop(){
-       $("#recvPymntpop").fadeIn(200);
-        $('.modal-backdrop').fadeIn(200).addClass('in');
-    } */
-   /*  $(".close").click(function(){
-       $("#recvPymntpop").fadeOut(200);
-        $('.modal-backdrop').fadeOut(200).removeClass('in');
-    }); */
+</script>
+<script>
+function removeMask(){
+	 $("#customeAmount").removeAttr("readonly");
+}
+function validMask(){
+	  $('#customeAmount').attr("readonly","readonly");  
+}
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	
