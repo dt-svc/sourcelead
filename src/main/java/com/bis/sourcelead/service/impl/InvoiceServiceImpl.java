@@ -210,50 +210,54 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 String pattern = "dd-MM-yyyy";
 	     SimpleDateFormat format = new SimpleDateFormat(pattern);
 		
-		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
+		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowAssociatesNum"));
 		 for(int i=1;i<maxRowCount;i++){
-			 if(null != jsonObj.getString(i+"invoiceStartDate") || null != jsonObj.getString(i+"invoiceEndDate") || null != jsonObj.getString(i+"candidate") ||  null != jsonObj.getString(i+"sow") || null != jsonObj.getString(i+"rate") || null != jsonObj.getString(i+"totalHours") ||
-					  !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceStartDate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"invoiceEndDate")) || !"".equalsIgnoreCase(jsonObj.getString(i+"candidate")) || !"".equalsIgnoreCase(jsonObj.getString(i+"sow")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"rate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"totalHours"))){
-				 
-				 InvoiceLineItems  invoiceLineItems = new InvoiceLineItems();
-				 
-				 if(null != jsonObj.getString(i+"invoiceStartDate") && !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceStartDate"))){
-					 Date invoiceStartDate = format.parse(jsonObj.getString(i+"invoiceStartDate"));
-					 invoiceLineItems.setStartDate(invoiceStartDate);
+			 
+			 if(jsonObj.has(i+"invoiceStartDate")){
+			 
+				 if(null != jsonObj.getString(i+"invoiceStartDate") || null != jsonObj.getString(i+"invoiceEndDate") || null != jsonObj.getString(i+"candidate") ||  null != jsonObj.getString(i+"sow") || null != jsonObj.getString(i+"rate") || null != jsonObj.getString(i+"totalHours") ||
+						  !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceStartDate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"invoiceEndDate")) || !"".equalsIgnoreCase(jsonObj.getString(i+"candidate")) || !"".equalsIgnoreCase(jsonObj.getString(i+"sow")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"rate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"totalHours"))){
+					 
+					 InvoiceLineItems  invoiceLineItems = new InvoiceLineItems();
+					 
+					 if(null != jsonObj.getString(i+"invoiceStartDate") && !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceStartDate"))){
+						 Date invoiceStartDate = format.parse(jsonObj.getString(i+"invoiceStartDate"));
+						 invoiceLineItems.setStartDate(invoiceStartDate);
+					 }
+					 if(null != jsonObj.getString(i+"invoiceEndDate") && !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceEndDate"))){
+						 Date invoiceStartDate = format.parse(jsonObj.getString(i+"invoiceEndDate"));
+						 invoiceLineItems.setEndDate(invoiceStartDate);
+					 }
+					 if(null != jsonObj.getString(i+"candidate") && !"".equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
+						 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
+						 invoiceLineItems.setCandidate(candidate);
+					 }
+					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
+						 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"candidate")));
+						 invoiceLineItems.setContract(contract);
+					 }
+					 if(null != jsonObj.getString(i+"rate") && !"".equalsIgnoreCase(jsonObj.getString(i+"rate"))){
+						 invoiceLineItems.setRate(jsonObj.getString(i+"rate"));
+					 }
+					 if(null != jsonObj.getString(i+"totalHours") && !"".equalsIgnoreCase(jsonObj.getString(i+"totalHours"))){
+						 invoiceLineItems.setTotalHours(jsonObj.getString(i+"totalHours"));
+					 }
+					 
+					 if(null != jsonObj.getString(i+"amount") && !"".equalsIgnoreCase(jsonObj.getString(i+"amount"))){
+						 invoiceLineItems.setAmount(jsonObj.getString(i+"amount"));
+					 }
+	
+					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
+						invoiceLineItems.setSeperateInvoice(jsonObj.getString("seperateInvoice"));;
+					}
+						
+					invoiceLineItems.setOrgLocation(orgLocation);
+					 invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
+					 invoiceLineItems.setCreatedBy(user.getUserCode());
+					 invoiceLineItems.setCreatedDate(commonUtil.currentDate());
+					 invoiceLineItems.setInvoice(invoice);
+					 invoiceLineItemsSet.add(invoiceLineItems);
 				 }
-				 if(null != jsonObj.getString(i+"invoiceEndDate") && !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceEndDate"))){
-					 Date invoiceStartDate = format.parse(jsonObj.getString(i+"invoiceEndDate"));
-					 invoiceLineItems.setEndDate(invoiceStartDate);
-				 }
-				 if(null != jsonObj.getString(i+"candidate") && !"".equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
-					 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
-					 invoiceLineItems.setCandidate(candidate);
-				 }
-				 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
-					 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"candidate")));
-					 invoiceLineItems.setContract(contract);
-				 }
-				 if(null != jsonObj.getString(i+"rate") && !"".equalsIgnoreCase(jsonObj.getString(i+"rate"))){
-					 invoiceLineItems.setRate(jsonObj.getString(i+"rate"));
-				 }
-				 if(null != jsonObj.getString(i+"totalHours") && !"".equalsIgnoreCase(jsonObj.getString(i+"totalHours"))){
-					 invoiceLineItems.setTotalHours(jsonObj.getString(i+"totalHours"));
-				 }
-				 
-				 if(null != jsonObj.getString(i+"amount") && !"".equalsIgnoreCase(jsonObj.getString(i+"amount"))){
-					 invoiceLineItems.setAmount(jsonObj.getString(i+"amount"));
-				 }
-
-				if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
-					invoiceLineItems.setSeperateInvoice(jsonObj.getString("seperateInvoice"));;
-				}
-					
-				invoiceLineItems.setOrgLocation(orgLocation);
-				 invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
-				 invoiceLineItems.setCreatedBy(user.getUserCode());
-				 invoiceLineItems.setCreatedDate(commonUtil.currentDate());
-				 invoiceLineItems.setInvoice(invoice);
-				 invoiceLineItemsSet.add(invoiceLineItems);
 			 }
 			 
 		 }
