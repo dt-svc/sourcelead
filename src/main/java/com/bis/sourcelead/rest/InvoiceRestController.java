@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Projects;
@@ -93,7 +95,7 @@ public class InvoiceRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
 		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
 		 final Map files = request.getFileMap();
@@ -104,6 +106,7 @@ public class InvoiceRestController {
 			}
 		}
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList);
+		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
 		if(null !=invoice){
 			invoiceSaved = "success";
 		}
