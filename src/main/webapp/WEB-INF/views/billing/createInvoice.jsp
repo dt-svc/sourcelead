@@ -128,6 +128,7 @@ function cancel(){
         <!-- Table starts here-->
           <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">
           <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />
+           <input type="hidden" id="maxTsRowAssociatesNum" name="maxTsRowAssociatesNum" />
           <table width="100%">
             <thead id="addInvoiceTbl">
               <tr id="divTsRow0">
@@ -414,7 +415,7 @@ function cancel(){
   <script type="text/javascript">
 	function addInvoice() {
 		
-		var oTable = $('#example').dataTable();
+		var oTable = $('#invoiceAssociatesList').dataTable();
 		var rowcollection =  oTable.$("input[name='associates[]']:checked", {"page": "all"});
 		
 		   var internalOutput = "";
@@ -426,6 +427,8 @@ function cancel(){
 			var tbl = document.getElementById("addInvoiceTbl");
 			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+			
+			$("#maxTsRowAssociatesNum").val(maxRowNum+1)
 	  
 			
 			var row = tbl.insertRow(maxRowNum);
@@ -539,21 +542,38 @@ function cancel(){
   
   <script>
   function getAllAssociates(){
+	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	  var maxTsRowAssociatesNum = $("#maxTsRowAssociatesNum").val();
+	  
+	  var selectedAssociates = '';
+	  if(maxTsRowNum > 1){
+		  for(var i=1; i<maxTsRowAssociatesNum; i++){
+			  if(document.getElementById(i+"candidateId")){
+				  var associateId = document.getElementById(i+"candidateId").value;
+				  if(selectedAssociates == ''){
+					  selectedAssociates = associateId;
+				  }else{
+					  selectedAssociates = selectedAssociates+","+associateId;
+				  } 
+			  }
+		  }
+	  }
+	  
+	  
 	  $('.action-pop').slideUp();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getAssociatesList?${_csrf.parameterName}=${_csrf.token}",
+	        url: sourceleadUrl+"/getInvoiceAssociatesList?${_csrf.parameterName}=${_csrf.token}&selectedAssociates="+selectedAssociates,
 	        success: function(data) {
 	        	
 	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	        		
 	        		
 	        		    var result = '';
-	             	    result = result +'<div class="modal-body clearfix">';
-	             		result = result +'     </div>';
-	             		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
-	             	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+	        		    result = result +'     <h3>Associates List</h3>';
+	             		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
+	             	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	             		result = result +'           <thead>';
 	             		result = result +'           <tr>';
 	             		result = result +'             <th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
@@ -605,6 +625,26 @@ function cancel(){
 	                     $("#associatesListDiv").append(result); 
 	                     pagination(); 
 	        		
+	        	}else{
+	        		
+	        		var result ="";
+	        		result = result +'     <h3>Associates List</h3>';
+ 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
+ 	           	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+ 	           		result = result +'           <thead>';
+ 	           		result = result +'           <tr>';
+ 	           		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
+	         		result = result +'             <th>Associate Name</th>';
+	         		result = result +'             <th>Email</th>';
+	         		result = result +'             <th>Phone</th>';
+ 	           		result = result +'           </tr>';
+ 	           		result = result +'           </thead>';
+ 	        		result = result +'           </table>';
+ 	        		result = result +'     </div>';
+ 	        		result = result +'     </div>';
+ 					$("#associatesListDiv").empty();
+ 				    $("#associatesListDiv").append(result); 
+ 				    pagination();  
 	        	}
 	        },
 	        
@@ -617,6 +657,24 @@ function cancel(){
   }
   </script>
   
+  
+  
+ <script>
+	function toggleAssociates(source) {
+	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+	        if (checkboxes[i] != source)
+	            checkboxes[i].checked = source.checked;
+	        
+	    }
+	$('input:checkbox:not(#checkAllAssociates)').click(function() {
+	    if(!this.checked) {
+	        $('#checkAllAssociates').removeAttr('checked');
+	    }
+	});
+	}
+</script>
+  
   <script>
     $(".addApplicant_close, .side_mask").click(function() {
     	$(".new_side_wrap").removeClass("new_side_wrap_active");
@@ -628,9 +686,9 @@ function cancel(){
   
   <script>
 function pagination(){
-    $("#example").DataTable( { 
+    $("#invoiceAssociatesList").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -641,6 +699,8 @@ function pagination(){
     } );
 }
 </script>
+
+
   
   <script>
   function getSow(rowId){

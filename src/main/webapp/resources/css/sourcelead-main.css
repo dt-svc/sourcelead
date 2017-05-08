@@ -6530,6 +6530,18 @@ padding: 15px 15px 25px 15px;
  position: absolute; top: 45px; right: 0; background: #ededed;  border: 1px solid #ddd; border-radius: 3px; z-index: 99;
  padding: 10px 15px; display: none; width: 400px;
 }
+.addinvoiceTable{
+	min-height: 150px;max-height: 400px;overflow: auto;
+}
+.addinvoiceTable table tr th, .addinvoiceTable table tr td{
+	vertical-align: middle;
+}
+.addinvoiceTable .dataTables_info, .addinvoiceTable .paging_simple_numbers{
+	display: none;
+}
+.addinvoiceTable .dataTables_filter{
+	position: relative !important; top: 0 !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

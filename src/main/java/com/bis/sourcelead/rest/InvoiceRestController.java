@@ -62,6 +62,11 @@ public class InvoiceRestController {
 	@Autowired
 	private InvoicePaymentService invoicePaymentService;
 	
+	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	@RequestMapping(value = "/getClientContactsByOrgRelationId", method = RequestMethod.GET)
 	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
@@ -115,17 +120,29 @@ public class InvoiceRestController {
 		return invoiceSaved;
 	} 
 	
-    @RequestMapping(value = "/getAssociatesList", method = RequestMethod.GET)
- 	public @ResponseBody  String getUserList(HttpServletRequest request, HttpServletResponse response) throws Exception
+    @RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
+ 	public @ResponseBody  String getInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates,HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
      	String resultJson;
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-     	List<Candidate> associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
- 	  resultJson = commonUtil.toJSON(associateList);
- 	  return resultJson;
+     	
+     	List<Long> associateIds = new ArrayList<Long>();
+     	List<Candidate> associateList = null;
+     	
+     	if(!isNullOrEmpty(selectedAssociates)){
+     		String[] selectedAssoicatesIds =  selectedAssociates.split(",");
+         	for(int i=0; i < selectedAssoicatesIds.length; i++){
+         		associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
+         	}
+         	associateList = candidateService.getAllActiveAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(),associateIds);
+     	}else{
+     		associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
+     	}
+     	
+ 	    resultJson = commonUtil.toJSON(associateList);
+ 	    return resultJson;
  	}
     
-//    /getClientProjectsByOrgRelationId 
     
     @RequestMapping(value = "/getClientProjectsByOrgRelationId", method = RequestMethod.GET)
  	public @ResponseBody  String getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
