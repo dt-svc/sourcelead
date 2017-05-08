@@ -40,9 +40,18 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) {
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceType) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Invoice invoce  where invoce.orgLocation.id =:orgLocationId and invoce.status = '1' "; 
+		
+		String subQuery = "";
+		
+		if(invoiceType.equalsIgnoreCase("payable")){
+			subQuery = " and invoice.invoiceType = 'Payables' ";
+		}else{
+			subQuery = " and invoice.invoiceType = 'Receivable' ";
+		}
+		
+		String query = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "; 
 		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return departmentList;
 	}

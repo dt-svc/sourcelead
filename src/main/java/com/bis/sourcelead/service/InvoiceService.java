@@ -14,12 +14,12 @@ import com.bis.sourcelead.entity.User;
 public interface InvoiceService {
 	
 
-	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) throws Exception;
+	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceType) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId)throws Exception;
 
-	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList)throws Exception;
+	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType)throws Exception;
 
 }
