@@ -23,13 +23,18 @@ function errRemoveClientContact(){
 }
 
 </script>
-
+  <script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
  <div class="side_mask">
       <div class="proj_close"></div>
  </div>
     
-    
+<div id="popUp"></div>  
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -281,7 +286,7 @@ function errRemoveClientContact(){
       <footer class="form-footer">
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT')">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml">Send</button>
+                  <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
                   <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
               </div>
           </footer>
@@ -316,7 +321,7 @@ function errRemoveClientContact(){
 
 	<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm inline_field" placeholder="HH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
+	     <input type="text" class="form-control input-sm inline_field" placeholder="HHH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
 	     </div>
 	</div>
 	
@@ -334,38 +339,43 @@ function errRemoveClientContact(){
 		 var rate = $("#"+rowId+"rate").val();
 		 var totalHours = $("#"+rowId+"totalHours").val();
 		 var subTotal = $("#inoviceTotal").val();
-		 
-	     var split = totalHours.split(':');
-	     var hours = split[0];
- 	     var minute = split[1];
-		 var hourminits = hours * 60;
-		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
-	     var totlalAmount = (perMinit * finalmin);
-	     var subtractTotal = subTotal - totlalAmount.toFixed(2)
-	     $('#inoviceTotal').val(subtractTotal);
-	    /*  $("#grandTotal").val(subtractTotal); */
-	     $("#hiddenTotal").val(subtractTotal);
-	     
+		 if(totalHours != ''){
+			 var split = totalHours.split(':');
+		     var hours = split[0];
+	 	     var minute = split[1];
+			 var hourminits = hours * 60;
+			 var finalmin = parseInt(hourminits) + parseInt(minute);
+		     var perMinit = rate / 60;
+		     var totlalAmount = (perMinit * finalmin);
+		     var subtractTotal = subTotal - totlalAmount.toFixed(2)
+		     $('#inoviceTotal').val(subtractTotal);
+		    /*  $("#grandTotal").val(subtractTotal); */
+		     $("#hiddenTotal").val(subtractTotal);
+		     
+		 }
+	    
 	     //==============
 	     var discountValue = $("#discountValue").val();
 	     var discountType = $("#disCount").val();
 	     var subtractValueFromRow = $("#hiddenTotal").val();
-	     var total ='';
-	 	 if(discountType == 'flat'){
-	 		total = subtractValueFromRow-discountValue;
-	 		$("#discountTotal").val(discountValue);
-	 		$("#grandTotal").val(total);
-	 		$("#afterDiscountTotal").val(total);
-	 		
-	 	  }
-	 	  if(discountType == 'percentage'){
-	 		var perCentValue = (subtractValueFromRow * discountValue)/100;
-	 		total = subtractValueFromRow - perCentValue;
-	 		$("#discountTotal").val(perCentValue);
-	 		$("#grandTotal").val(total);
-	 		$("#afterDiscountTotal").val(total);
-	 	 }	    	 
+	    if(subtractValueFromRow != ''){
+	    	 var total ='';
+		 	 if(discountType == 'flat'){
+		 		total = subtractValueFromRow-discountValue;
+		 		$("#discountTotal").val(discountValue);
+		 		$("#grandTotal").val(total);
+		 		$("#afterDiscountTotal").val(total);
+		 		
+		 	  }
+		 	  if(discountType == 'percentage'){
+		 		var perCentValue = (subtractValueFromRow * discountValue)/100;
+		 		total = subtractValueFromRow - perCentValue;
+		 		$("#discountTotal").val(perCentValue);
+		 		$("#grandTotal").val(total);
+		 		$("#afterDiscountTotal").val(total);
+		 	 }	 	
+	    }
+	       	 
 	    	 
 	    	 //===================
 	    		 
@@ -376,7 +386,6 @@ function errRemoveClientContact(){
 	     
 	     var afterDiscountTotal = $("#afterDiscountTotal").val();
 	     
-	     
 		    for(var i=0; i< maxRowNum; i++){
 		         var taxType = $("#"+i+"taxdiscountType").val();
 		        
@@ -386,12 +395,8 @@ function errRemoveClientContact(){
 		             
 	             var first=parseFloat(tot);
 	             var second=parseFloat(taxTotal); 
-	             
-	             
 	             var total  = (first+second);
-	             
-                
-	             $("#grandTotal").val(total);
+// 	             $("#grandTotal").val(total);
 		    }
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
@@ -674,24 +679,29 @@ function pagination(){
  	     
  	     var hours1 = hours.charAt(0);
 		 var hours2 = hours.charAt(1);
+		 var hours3 = hours.charAt(2);
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
 		
-		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("0"+hours1+":00");
-			calAddRowAmount("0"+hours1,"00",rowId);
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+			calAddRowAmount("00"+hours1,"00",rowId);
 		 }
-		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("0"+hours2+":00");
-			calAddRowAmount("0"+hours2,"00",rowId);
+		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+			calAddRowAmount("00"+hours2,"00",rowId);
+		 }
+		 if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+			calAddRowAmount("00"+hours3,"00",rowId);
 		 }
 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00:"+min1+"0");
-			calAddRowAmount("00",min1+"0",rowId);
+			 $("#"+rowId+"totalHours").val("000:"+min1+"0");
+			calAddRowAmount("000",min1+"0",rowId);
 		 }
 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00:0"+min2);
-			calAmount("00","0"+min2,rowId);
+			 $("#"+rowId+"totalHours").val("000:0"+min2);
+			calAmount("000","0"+min2,rowId);
 		 }
 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 			 $("#"+rowId+"totalHours").val(hours+":00");
@@ -713,7 +723,9 @@ function pagination(){
   }
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();
-	  var hourminits = hours * 60;
+	  var split = hours.split(':');
+	  var splitHours = split[0];
+	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
 	     var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
@@ -724,16 +736,14 @@ function pagination(){
   </script>
   <script>
   function  calTotalamount(rowId,totlalAmount){
-	  
-   var hiddenTotal = +document.getElementById("hiddenTotal").value;
-   var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
-   var arroundGrand = grandTotal.toFixed(2)
-   $("#inoviceTotal").val(arroundGrand);
-   $("#hiddenTotal").val(arroundGrand);
-   $("#grandTotal").val(arroundGrand);
-   $("#afterDiscountTotal").val(arroundGrand);
-   
-   
+	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
+	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
+	    var arroundGrand = grandTotal.toFixed(2)
+	    $("#inoviceTotal").val(arroundGrand);
+	    $("#hiddenTotal").val(arroundGrand);
+	    $("#grandTotal").val(arroundGrand);
+	    $("#afterDiscountTotal").val(arroundGrand);
+	    
    /* =====================  After adding the rows calculate the discount start  ===================== */
    var discountValue =  $("#discountValue").val();
    var discountType =  $("#disCount").val();
@@ -774,11 +784,11 @@ function pagination(){
 	             var second=parseFloat(taxTotal); 
 	             var total  = (first+second);
               
-	             $("#grandTotal").val(total);
+// 	             $("#grandTotal").val(total);
 	    }
    /* =====================  After adding the rows calculate the tax end  ===================== */
    
-   
+	    
   }
   </script>
   
@@ -811,7 +821,7 @@ function calculateDiscount(){
 	}
 }
 </script>
-
+<!-- 
 <script>
   function singleRowTotalhour(){
 	     var rate = $("#0rate").val();
@@ -873,7 +883,7 @@ function calculateDiscount(){
 	     $("#afterDiscountTotal").val(singleRowTotlalAmount); 
   }
   </script>
-  
+   -->
 
 
   
@@ -1235,38 +1245,53 @@ function saveInvoice(saveType){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          };  */
-	
-	   if ($('#invoice_form').validate(false, validationSettings)){  
-		    var frm = $('#invoice_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var form = $('#invoice_form')[0];
-	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        $.ajax({
-		    	type: "POST",
-		    	 data: formData,
-			      contentType : 'application/json; charset=utf-8',
-			      enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
-		        success: function(result) {
-		     		$("#invoiceLoading").removeAttr("style");
-		     		location.replace(sourceleadUrl+"/invoiceList");
-		     		
-		        },
-		    });  
-	         return true; 
-		
-	   }else{
-		return false;
-	  } 
+         var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+         if ($('#invoice_form').validate(false, validationSettings)){  
+ 		    var frm = $('#invoice_form').serializeFormJSON();
+ 	        var con = JSON.stringify(frm);
+ 	        con = con.replace(/[{}]/g, "");
+ 	        //It will escape all the special characters
+ 	        var jsonData = encodeURIComponent(con);
+ 	        
+ 	        var form = $('#invoice_form')[0];
+ 	 	    var formData = new FormData(form); 
+ 	 	    var sourceleadUrl ='${sourceleadUrl}';
+         if(maxTsRowNum < 2){
+        	 var result = "";
+     		result = result +"	<div class='project_inn_mask'></div>";
+     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+     		result = result +"		<p>At least one Add column Inovoice Line Item</p>";
+     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+     		result = result +"	</div>";
+     		$("#popUp").append(result);
+     		$("#invoice_pop").slideDown(200);
+     		$(".project_inn_mask").fadeIn(200);
+	        }else{
+	        	
+	    	        
+	    	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    	        $.ajax({
+	    		    	 type: "POST",
+	    		    	 data: formData,
+	    			     contentType : 'application/json; charset=utf-8',
+	    			     enctype: 'multipart/form-data',
+	    		         processData: false,
+	    		         contentType:false,
+	    			     dataType : 'json',
+	     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
+	    		        success: function(result) {
+	    		     		$("#invoiceLoading").removeAttr("style");
+	    		     		location.replace(sourceleadUrl+"/invoiceList");
+	    		     		
+	    		        },
+	    		    });  
+	    	         return true; 
+	        }
+         }else{
+	    		return false;
+	    	  } 
+	   
 }
 
 $('body').on('blur', '#invoice_form', function() {
@@ -1289,11 +1314,12 @@ $(document).ready(function() {
 function maskme(){
 	$.mask.definitions['H'] = "[0-9]";
     $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
     $.mask.definitions['M'] = "[0-9]";
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hh:Mm"); 
+    $(".inline_field").mask("Hhh:Mm"); 
 }
 </script>
 <script>
