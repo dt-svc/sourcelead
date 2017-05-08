@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
@@ -35,6 +37,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -59,6 +62,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private PdfUtil pdfUtil;
 	
 	@Override
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) throws Exception {
@@ -266,6 +272,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceLineItemsSet;
 		
 	}
+	@Override
+	public void getPdfFileForInvoice(Invoice invoice,OrgLocations orgLocation,User user, Org org) throws Exception {
+		pdfUtil.createPdfTableForInvoice(invoice,orgLocation,user,org);
+	}
+	
 	@Override
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
 		return invoiceDao.getInvoicetById(invoiceId);

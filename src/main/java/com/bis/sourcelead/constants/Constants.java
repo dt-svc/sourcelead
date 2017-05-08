@@ -654,4 +654,9 @@ public class Constants {
     public static String TWO_MONTHS = "twomonths";
     
     public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
+    
+    //invoice
+    
+    public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)", "Rate", "Total Hours", "Total"};
+    
 }	
