@@ -162,6 +162,10 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private Integer rejectedCount;
+	
+	@Transient
+	private Integer backoutCount;
+
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -505,5 +509,12 @@ public class OrgSpoc implements Serializable{
 	public void setRejectedCount(Integer rejectedCount) {
 		this.rejectedCount = rejectedCount;
 	}
-	
+
+	public Integer getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(Integer backoutCount) {
+		this.backoutCount = backoutCount;
+	}
 }
