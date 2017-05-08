@@ -167,10 +167,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	    	<table id='timesheetReportsPageNation' style='width:100%'>");
 			timesheetApprovalDiv.append("				<thead>");   
 			timesheetApprovalDiv.append("	            	<tr>");
-			timesheetApprovalDiv.append("	                	<th>Emp Id</th>           ");
 			timesheetApprovalDiv.append("	                	<th>Employee</th>           ");
 			timesheetApprovalDiv.append("	                    <th>Project</th>            ");
 			timesheetApprovalDiv.append("	                    <th>Frequency</th>             ");
+			timesheetApprovalDiv.append("	                    <th>Rate</th>            ");
 			
 			LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
 			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
@@ -206,21 +206,32 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			for (ProjectMembers projectMember : projectMembers)
 			{
 				 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
-				 timesheetApprovalDiv.append("<td><div class=''><i title='").append(projectMember.getEmployee().getUser().getId()).append("'>").append(projectMember.getEmployee().getUser().getId()).append("</i></div></td>");
 					 timesheetApprovalDiv.append("  <td>")
 					                       .append("<div class='lg clearfix'>")
 					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(sourceleadUrl).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'/>")
 					                                 .append("</div>")
 					                                 .append("    <div class='Utext'>")
-				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</i>")
-				                                             /*.append("<i title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</i>")*/
-		                                             .append("</div>")
+				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</i>");
+				                                             if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
+				                                            	 timesheetApprovalDiv.append("<i title='").append(projectMember.getEmployee().getUser().getId()).append(" , ").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUser().getId()).append(",").append(projectMember.getEmployee().getUserEmploymentType()).append("</i>");	 
+				                                             }else{
+				                                            	 timesheetApprovalDiv.append("<i title='").append(projectMember.getEmployee().getUser().getId()).append("'>").append(projectMember.getEmployee().getUser().getId()).append("</i>");
+				                                             }
+					 											timesheetApprovalDiv.append("</div>")
 				                               .append("   <div>")
 					                        .append(" </td>");
 				     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
-			    	 timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
-		        
-			    	 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+				     if(null != projectMember.getProjects().getClient() && !"".equalsIgnoreCase(projectMember.getProjects().getClient())){
+			    	 timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append(projectMember.getProjects().getClient()).append("</div></td>");
+				     }else{
+				     timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");	 
+				     }
+				     if(null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
+				     timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>");
+				     }else{
+				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
+				     }
+				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
 			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 				     float monthTotalHours            = 0f;
 					 float monthBillableTotalHours    = 0f;
@@ -384,7 +395,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         	
         }
         else{
-        	timesheetApprovalDiv.append("   <div class='dataTables_empty'>"); 
+        	timesheetApprovalDiv.append("   <div class='dataTables_empty'>");
+        	timesheetApprovalDiv.append("  <input type='hidden' id='hideExport' value='EmptyList'>");
 			timesheetApprovalDiv.append("  </div> "); 
         }
 
@@ -460,7 +472,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    StringBuilder sbTsReports =  new StringBuilder();
 	    sbTsReports.append("timesheetSheet_").append(dateFormat.format(new Date()));
 	    StringBuilder fileSB = new StringBuilder();
-	    file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".pdf");
 	    file.setReadable(true);
 
 	    try {
@@ -669,7 +681,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 column++;
          }
 		 StringBuilder fileSB = new StringBuilder();
-		 file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(dateFormat.format(new Date())).toString(),".xls");
+		 file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".xls");
 		 file.setReadable(true);
 		 FileOutputStream fos = new FileOutputStream(file);
 		 try {
