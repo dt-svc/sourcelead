@@ -78,4 +78,6 @@ public interface CandidateDao {
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
 
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId)throws Exception ;
+
 }
