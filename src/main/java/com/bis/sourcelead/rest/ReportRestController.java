@@ -320,15 +320,16 @@ public class ReportRestController {
 		int interviewsSum = 0;
 		int offeredSum = 0;
 		int rejectedSum = 0;
+		int backoutSum = 0;
 		long vendorLocationId = 0L;
 	    for(OrgRelations orgrel : vendorslist){
-	    	List<Requirement> reqList = requirementService.getAllReleasedJobsForVendor(orgLocations.getId(), orgrel.getId(), null, null);
+	    	List<Requirement> reqList = requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(), orgrel.getId(),startDateUTC,endDateUTC);
 	    	if(orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 	    		vendorLocationId = orgrel.getLocationId().getId();
 			}if(orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				vendorLocationId = orgrel.getResponderLocationId().getId();
 			}
-	    	List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getApplicantCountSubmittedByVendor(orgLocations.getId(),vendorLocationId);
+	    	List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(orgLocations.getId(),vendorLocationId,startDateUTC,endDateUTC);
 	    	orgrel.setSubmittedCount(reqSubmissionList.size());
 	    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
 		    	for(RequirementSubmission reqSub : reqSubmissionList){
@@ -339,6 +340,7 @@ public class ReportRestController {
 					int interviewsCount = 0;
 					int offeredCount = 0;
 					int rejectedCount = 0;
+					int backoutCount = 0;
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
@@ -356,6 +358,8 @@ public class ReportRestController {
 								submitToClientCount++;
 							}else if("rejected".equals(rsh.getToStage())){
 								rejectedCount++;
+							}else if("backout".equals(rsh.getToStage())){
+								backoutCount++;
 							}
 						}
 						 applicantsSum = applicantsSum+applicantsCount;
@@ -365,6 +369,7 @@ public class ReportRestController {
 						 interviewsSum = interviewsSum+interviewsCount;
 						 offeredSum = offeredSum+offeredCount;
 						 rejectedSum = rejectedSum+rejectedCount;
+						 backoutSum = backoutSum + backoutCount;
 					}
 				}
 	    	}
@@ -379,6 +384,7 @@ public class ReportRestController {
 	    	orgrel.setInterviewedCount(interviewsSum);
 	    	orgrel.setOfferedCount(offeredSum);
 	    	orgrel.setRejectedCount(rejectedSum);
+	    	orgrel.setBackoutCount(backoutSum);
 	    }
 	    
 		return commonUtil.toJSON(vendorslist);
@@ -391,6 +397,7 @@ public class ReportRestController {
 			HttpServletRequest request) throws Exception {
 		
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    
 	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -443,12 +450,14 @@ public class ReportRestController {
 		int interviewsSum = 0;
 		int offeredSum = 0;
 		int rejectedSum = 0;
+		int backoutSum = 0;
+		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(relationId, loginUser.getId(),orgLocations.getId(),"Vendor");
 		
-	    List<OrgSpoc> vendorSpocsList = orgSpocService.getSpoclistByDomain(relationId,"");
-	    for(OrgSpoc spoc : vendorSpocsList){
-	    	List<Requirement> reqList = requirementService.getTotalRequirementsReleasedToSpoc(relationId,spoc.getId());
+//	    List<OrgSpoc> vendorSpocsList = orgSpocService.getSpoclistByDomain(relationId,"");
+	    for(OrgSpoc spoc : orgSpocsList){
+	    	List<Requirement> reqList = requirementService.getTotalRequirementsReleasedToSpoc(relationId,spoc.getId(),startDateUTC,endDateUTC);
 	    	spoc.setReqReleasedCount(reqList.size());
-	    	   List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getVendorSpocSubmissions(spoc.getVendorUser().getUserCode(),orgLocations.getId());
+	    	   List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getVendorSpocSubmissions(spoc.getVendorUser().getUserCode(),orgLocations.getId(),startDateUTC,endDateUTC);
 	    	   spoc.setSubmittedCount(reqSubmissionList.size());
 		    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
 			    	for(RequirementSubmission reqSub : reqSubmissionList){
@@ -459,6 +468,7 @@ public class ReportRestController {
 						int interviewsCount = 0;
 						int offeredCount = 0;
 						int rejectedCount = 0;
+						int backoutCount = 0;
 						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 						if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 							for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
@@ -476,6 +486,8 @@ public class ReportRestController {
 									submitToClientCount++;
 								}else if("rejected".equals(rsh.getToStage())){
 									rejectedCount++;
+								}else if("backout".equals(rsh.getToStage())){
+									backoutCount++;
 								}
 							}
 							 applicantsSum = applicantsSum+applicantsCount;
@@ -485,6 +497,7 @@ public class ReportRestController {
 							 interviewsSum = interviewsSum+interviewsCount;
 							 offeredSum = offeredSum+offeredCount;
 							 rejectedSum = rejectedSum+rejectedCount;
+							 backoutSum = backoutSum + backoutCount;
 						}
 					}
 		    	}
@@ -498,9 +511,10 @@ public class ReportRestController {
 		    	spoc.setInterviewedCount(interviewsSum);
 		    	spoc.setOfferedCount(offeredSum);
 		    	spoc.setRejectedCount(rejectedSum);
+		    	spoc.setBackoutCount(backoutSum);
 	    }
 	    
-		return commonUtil.toJSON(vendorSpocsList);
+		return commonUtil.toJSON(orgSpocsList);
 	}
 	
 	

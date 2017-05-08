@@ -11,12 +11,17 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -25,6 +30,9 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 @Component
 public class Html2PdfUtil {
+	
+	@Autowired
+	RequirementService requirementService;
 	
 	public void convertHtml2PdfUsingHtmlWorker(){
 		try {
@@ -61,7 +69,7 @@ public class Html2PdfUtil {
 		}
 	}
 
-	public byte[] getPdfBytes(ContractsTemplate contractsTemplate, Contracts contracts, OrgLocations orgLocation, Org org) throws DocumentException, IOException{
+	public byte[] getPdfBytes(ContractsTemplate contractsTemplate, Contracts contracts, OrgLocations orgLocation, Org org) throws Exception{
 		
 		String templateContent = replacePlaceHolders(contractsTemplate.getTemplateContent(),contracts,orgLocation,org);
 		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
@@ -76,23 +84,20 @@ public class Html2PdfUtil {
 	}
 	
 	
-	 private String replacePlaceHolders(String templateBody, Contracts contracts, OrgLocations orgLocation, Org org) {
-//	        System.out.println("vendor contact "+contracts.getContactUser().getFirstName());
-//	        System.out.println("vendor location "+contracts.getContractOrgLocationId().getCountry());
+	 private String replacePlaceHolders(String templateBody, Contracts contracts, OrgLocations orgLocation, Org org) throws Exception {
 	        
 	        String orgName = "";
 	        if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getLocationId().getOrg().getOrgName();
-	        }if(contracts.getOrgRelations().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+	        }
+	        else if(contracts.getOrgRelations().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getResponderLocationId().getOrg().getOrgName();
 	        }
-//	        System.out.println("vendoe name "+orgName);
 	        
 	         Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
 	            Matcher matchPattern = logEntry.matcher(templateBody);
 	            StringBuffer sb = new StringBuffer();
 	            while(matchPattern.find()) {
-//	                System.out.println(matchPattern.group());
 	                if(matchPattern.group().equalsIgnoreCase("[Client Name]") || matchPattern.group().equalsIgnoreCase("[Vendor Name]")){
 	                    matchPattern.appendReplacement(sb, orgName);
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client location]") || matchPattern.group().equalsIgnoreCase("[Vendor location]")){
@@ -103,8 +108,40 @@ public class Html2PdfUtil {
 	                    matchPattern.appendReplacement(sb, orgLocation.getCountry());
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Name]")){
 	                    matchPattern.appendReplacement(sb, org.getOrgName());
-	                    
+		            }else if(matchPattern.group().equalsIgnoreCase("[Associate Name]")){
+	                    matchPattern.appendReplacement(sb, org.getOrgName());
 	                }
+		            else if(matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
+		            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
+	                    matchPattern.appendReplacement(sb, req.getJobTitle());
+	                }
+	                // need to know about offer rate
+		           /* else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
+	                    matchPattern.appendReplacement(sb, contracts.geto);
+	                }*/
+		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")){
+	                    matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+	                }
+		            else if(matchPattern.group().equalsIgnoreCase("[Overtime]")){
+	                    matchPattern.appendReplacement(sb, contracts.getOverTimeHours());
+	                }
+		            else if(matchPattern.group().equalsIgnoreCase("[Payment Term]")){
+	                    matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
+	                }
+	    			
+		            else if(matchPattern.group().equalsIgnoreCase("[Start Date]")){
+	                    matchPattern.appendReplacement(sb, Constants.DF_DMY.format(contracts.getStartDate()));
+	                }
+		            else if(matchPattern.group().equalsIgnoreCase("[End date]")){
+		            	if(null != contracts.getEndDate()){
+		            		matchPattern.appendReplacement(sb, Constants.DF_DMY.format(contracts.getEndDate()));
+		            	}
+		            }  
+		            else if(matchPattern.group().equalsIgnoreCase("[State Of Jurisdiction]")){
+		            	if(null != contracts.getStateJurisdiction()){
+		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
+		            	}
+		            }  
 	            }
 	            matchPattern.appendTail(sb);
 	        return sb.toString();

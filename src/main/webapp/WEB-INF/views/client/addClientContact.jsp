@@ -107,7 +107,7 @@ function getOrgDetails()
                <div class="modal-content">
                  <div class="modal-header">
                    <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                   <h4 class="modal-title">Select Client</h4>
+                   <h4 class="modal-title">Client Name</h4>
                  </div>
                  <div class="modal-body clearfix">
                    <div class="form-horizontal custom-form clearfix">
@@ -166,7 +166,7 @@ function getOrgDetails()
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
@@ -217,9 +217,9 @@ function getOrgDetails()
 	            </div>
 	            
 	             <div class="form-group">
-	              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
+	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
 		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                </c:forEach>

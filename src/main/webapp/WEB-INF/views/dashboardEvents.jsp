@@ -5,6 +5,9 @@
 .chosen-container {
     width: 100% !important;
 }
+.validationError p.jquery_form_error_message {
+width: 75px; padding: 0 !important;
+}
 </style>
  <!-- Applicant Authorization -->
       <div class="dashboard-widget clearfix mb eventAlert">
@@ -182,7 +185,7 @@ function dashboardAddInterview(){
 	var result = "";
 	result = result + '<div class="add_inter addinterview_dashboard">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
-	result = result + '<div class="add_inter_head"> <span>Add Interview</span>';
+	result = result + '<div class="add_inter_head"> <span>Schedule Interview</span>';
 	result = result + '<div class="clearfix"></div>';   
 	result = result + '</div>';
 	
@@ -190,7 +193,7 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row">';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft">Range<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<span class="col-md-3 paddingLeft">Posted from<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list">';
 	result = result + '<select class="form-control mt10" id="requirementsTimeRange" onchange="getRequirements();">';
 	result = result + '		<option value="today">Today</option>';
@@ -206,7 +209,7 @@ function dashboardAddInterview(){
 	
 	result = result + '<div class="col-md-5">';
 	result = result + '<span class="col-md-3 paddingLeft">Requirement<span class="text-danger">&nbsp;*</span></span>';
-	result = result + '<div class="col-md-9 req_list">';
+	result = result + '<div class="col-md-9 req_list" id="reqDiv">';
 	result = result + '<select class="form-control mt10" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Requirement" data-validation="required">';
 	
 	result = result + '</select>';
@@ -262,11 +265,11 @@ function dashboardAddInterview(){
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<div class="pull-left timeZone" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
+		result = result + '			<div class="pull-left timeZone validationError" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<select class="form-control"  id="1timeZone" name="1timeZone">';
+		result = result + '			<select class="form-control"  id="1timeZone" name="1timeZone" field-name="Timezone" data-validation="required">';
 		result = result + '			</select>';
 		result = result + '		</td>';
 		
@@ -341,12 +344,12 @@ function dashboardAddInterview(){
 function interviewType(id){ 
 	var selectedReqId = $("#1interviewType").val();
 	 if(selectedReqId=="Other"){
-		 document.getElementById("#1interviewTypeCheck").style.display="block";
+		 $("#1interviewTypeCheck").attr("style", "display:block");
 		 $("#1interviewTypeother").removeAttr('data-validation-optional');
 		 $("#1interviewTypeother").attr("data-validation","required validate_length length1-50"); 
 	 }
 	 else{
-		 document.getElementById("#1interviewTypeCheck").style.display="none";
+		 $("#1interviewTypeCheck").attr("style", "display:none");
 		 $("#1interviewTypeother").removeAttr("data-validation");
 		 $("#1interviewTypeother").attr("data-validation-optional","true");
 	 }
@@ -395,7 +398,7 @@ function getSeheduledInterviewsList(){
         				result = result + '<th>Applicant</th>';
         				result = result + '<th>Interview Type</th>';
         				result = result + '<th>Start Date</th>';
-        				result = result + '<th>End Date</th>';	
+        				result = result + '<th>Start time - End time</th>';	
         				result = result + '<th>Time Zone</th>';
         				result = result + '<th>Details</th>';
         				result = result + '<th>Interviewer</th>';
@@ -423,18 +426,23 @@ function getSeheduledInterviewsList(){
 	                 	result = result + '       </td>';
 	                 	
 	                 	result = result + '       <td>';
+	                 	var sTime = "";
 	                 	if(null != opt.interviewTimeZoneStartTimeStr && '' != opt.interviewTimeZoneStartTimeStr && 'undefined' != opt.interviewTimeZoneStartTimeStr){
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneStartTimeStr+'</div>';
+	                 		sTime = opt.interviewTimeZoneStartTimeStr.substr(opt.interviewTimeZoneStartTimeStr.length - 8);
+	                 		var iDate = opt.interviewTimeZoneStartTimeStr.substring(0, 10)
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+iDate+'</div>';
 	                 	}else{
 	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
 	                 	}
 	                 	result = result + '       </td>';
 	                 	
 	                 	result = result + '       <td>';
+	                 	var eTime = "";
 	                 	if(null != opt.interviewTimeZoneEndTimeStr && '' != opt.interviewTimeZoneEndTimeStr && 'undefined' != opt.interviewTimeZoneEndTimeStr){
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+opt.interviewTimeZoneEndTimeStr+'</div>';
+	                 		eTime = opt.interviewTimeZoneEndTimeStr.substr(opt.interviewTimeZoneEndTimeStr.length - 8);
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+sTime+" - "+eTime+'</div>';
 	                 	}else{
-	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">---</div>';
+	                 		result = result + '			<div class="tbldata-dotdot-sm text-center">'+sTime+'</div>';
 	                 	}
 	                 	result = result + '       </td>';
 	                 	
@@ -501,6 +509,8 @@ function getRequirements(){
 	              	$('#requirementsList')
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
+	              	$("#reqDiv").find('p.jquery_form_error_message').remove();
+	              	$("#reqDiv").append("<p class='jquery_form_error_message'>Select requirement</span>");
               }else{
             	  var result = "";
             	  	 result = result + '<option value="">--- Select Requirement ---</option>';
@@ -511,7 +521,12 @@ function getRequirements(){
 	              	$('#requirementsList')
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
+	             $("#reqDiv").find('p.jquery_form_error_message').remove();
+	             $("#reqDiv").append("<p class='jquery_form_error_message'>No requirements found</span>");
               }
+          	$("#1applicant").attr("data-placeholder", "Select Applicants");
+          	$("#1applicant").empty();
+          	$('#1applicant').trigger('chosen:updated');
        },
     });
 
@@ -544,8 +559,11 @@ function getApplicantsForRequirement(){
 		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
+		        	var appCount = json.length;
+		        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
+		        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
 		        	var output = "";
-		        	for (var i=0; i<json.length; i++)
+		        	for (var i=0; i<appCount; i++)
 					{
 		        		var opt = json[i];
 		        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
@@ -663,6 +681,14 @@ function getTimezonesList(){
 				}
 			}
 		}
+</script>
+
+<script>
+function cancelAddInterviewDiv(){
+	 $(".add_inter_wrap").removeClass("add_inter_wrap_active");
+	 $(".side_mask").fadeOut(200);
+ 	 $("body").css('overflow-y', 'auto');
+}
 </script>
 
 

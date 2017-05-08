@@ -36,6 +36,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatesHotListDummy;
 import com.bis.sourcelead.entity.ConsolidatedReport;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -78,6 +80,16 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.docusign.esign.api.AuthenticationApi;
+import com.docusign.esign.api.EnvelopesApi;
+import com.docusign.esign.api.AuthenticationApi.LoginOptions;
+import com.docusign.esign.api.EnvelopesApi.ListStatusChangesOptions;
+import com.docusign.esign.client.ApiClient;
+import com.docusign.esign.client.Configuration;
+import com.docusign.esign.model.Envelope;
+import com.docusign.esign.model.EnvelopesInformation;
+import com.docusign.esign.model.LoginAccount;
+import com.docusign.esign.model.LoginInformation;
 
 /**
 *
@@ -194,6 +206,10 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	TimeZoneDao timeZoneDao;
+	
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
@@ -1659,5 +1675,132 @@ public class EMailJobScheduler {
 		
 	}
 */
+	/**
+	 * @author prasanna
+	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
+	 * @throws Exception 
+	 */
+	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Async
+	public void runContractDocumentStatus() throws Exception {
+				logger.info("##########  E-Mail Job Scheduler started..! ##########");
+				List<Contracts> conList =  contractsTemplateService.getListOfContractsEnvId();
+				
+				
+				String UserName = "rajasekhar@businessintelli.com";
+				String Password = "rajashekar";    
+				String IntegratorKey = "04e0361f-eebe-47ab-b3b2-d5d36c2d4dd4";
 
+				// for production environment update to "www.docusign.net/restapi"
+				String BaseUrl = "https://demo.docusign.net/restapi";
+
+		        // list of user account(s)
+		        List<LoginAccount> loginAccounts = null;
+		        
+		        // initialize the api client
+		        ApiClient apiClient = new ApiClient();
+		        apiClient.setBasePath(BaseUrl);
+		        
+		        // create JSON formatted auth header
+		        String creds = "{\"Username\":\"" +  UserName + "\",\"Password\":\"" +  Password + "\",\"IntegratorKey\":\"" +  IntegratorKey + "\"}";
+		        apiClient.addDefaultHeader("X-DocuSign-Authentication", creds);
+		        
+		        // assign api client to the Configuration object
+		        Configuration.setDefaultApiClient(apiClient);
+		        
+		        //===============================================================================
+		        // Step 1:  Login() API
+		        //===============================================================================
+		        try
+		        {
+		        	// login call available off the AuthenticationApi
+		        	AuthenticationApi authApi = new AuthenticationApi();
+		        	
+		        	// login has some optional parameters we can set
+		            AuthenticationApi.LoginOptions loginOps = authApi.new LoginOptions();
+		            loginOps.setApiPassword("true");
+		            loginOps.setIncludeAccountIdGuid("true");
+		            LoginInformation loginInfo = authApi.login(loginOps);
+		         
+		            // note that a given user may be a member of multiple accounts
+		            loginAccounts = loginInfo.getLoginAccounts();
+		            
+		         //   System.out.println("LoginInformation: " + loginAccounts);
+		        
+		        
+		        //===============================================================================
+		        // Step 2:  List Envelopes API 
+		        //===============================================================================
+		            String accountId = loginAccounts.get(0).getAccountId();
+		            // instantiate a new EnvelopesApi object
+		            EnvelopesApi envelopesApi = new EnvelopesApi();  
+		            
+		            // the list status changes call requires at least a from_date
+		            EnvelopesApi.ListStatusChangesOptions options = envelopesApi.new ListStatusChangesOptions();
+		            
+		            // set from date to filter envelopes (ex: Dec 1, 2015)
+		            //options.setFromDate("2017/04/01");
+		            
+		            // call the listStatusChanges() API
+		           // EnvelopesInformation envelopes = envelopesApi.listStatusChanges(accountId, options);
+		           // List<Envelope> env = envelopes.getEnvelopes();
+		            
+		            
+		            for (Contracts contracts : conList) {
+		            	if(contracts.getEndDate()!=null){
+		            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		            		Date date = new Date();
+		            		String currentTimeStr = TZ_DF_TS.format(date);
+		    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+		            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+		            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			        			if(null != childContarct.getParentContractId()){
+			        				childContarct.setId(childContarct.getId());
+			        				childContarct.setTemplateSubmissionStatus("EXPIRED");
+			        				contracts.setId(contracts.getId());
+			        				contracts.setTemplateSubmissionStatus("EXPIRED");
+		            		}
+		            	 }
+		            	}
+		            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
+		            	if(evp.getStatus().equalsIgnoreCase("completed")){
+		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+		        			if(null != childContarct.getParentContractId()){
+		        				childContarct.setId(childContarct.getId());
+		        				childContarct.setTemplateSubmissionStatus("SEND_FOR_VERIFICATION");
+		        				contracts.setId(contracts.getId());
+		        				contracts.setTemplateSubmissionStatus("WAITING_TO_BE_VERIFY");
+		        				contracts.setContractStatus(evp.getStatus());
+		        			}
+		            	}
+		            	if(evp.getStatus().equalsIgnoreCase("declined")){
+		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+		        			if(null != childContarct.getParentContractId()){
+		        				childContarct.setId(childContarct.getId());
+		        				childContarct.setTemplateSubmissionStatus("REJECTED");
+		        				contracts.setId(contracts.getId());
+		        				contracts.setTemplateSubmissionStatus("REJECTED");
+		        				contracts.setContractStatus(evp.getStatus());
+		        			}
+		            	}
+		            	if(evp.getStatus().equalsIgnoreCase("deleted")){
+		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+		        			if(null != childContarct.getParentContractId()){
+		        				childContarct.setId(childContarct.getId());
+		        				childContarct.setTemplateSubmissionStatus("DELETED");
+		        				contracts.setId(contracts.getId());
+		        				contracts.setTemplateSubmissionStatus("DELETED");
+		        				contracts.setContractStatus(evp.getStatus());
+		        			}
+		            	}
+		            	contractsTemplateService.saveNewContract(contracts);
+					}
+		           
+				
+		        }
+		        catch (com.docusign.esign.client.ApiException ex)
+		        {
+		            System.out.println("Exception: " + ex);
+		        }
+	}
 }

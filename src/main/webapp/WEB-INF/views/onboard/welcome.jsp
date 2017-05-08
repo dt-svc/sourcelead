@@ -51,6 +51,14 @@
 		  </div>
 		  
 			<div class="welCo1">
+			
+				<c:if test="${!empty SourceLeadWeb_candidateOnBoarding.rejectedReason}">
+					<div class="welcomeError">
+							<p>Rejected Reason</p>
+							${SourceLeadWeb_candidateOnBoarding.rejectedReason}
+					</div>
+				</c:if>
+				
 				<h2>Welcome to ${SourceLeadWeb_orgName}</h2>
 				<h3>First and foremost, Welcome to the Company!</h3>
 				<p>Below you can find out brief introduction about the Company and a glance at the manager, your team and support documents, next verify your personal information, documents and take a couple of minutes to view boarding undertakings </p><br>
@@ -113,7 +121,7 @@
 		<br><h4>Support Documents</h4>
 		<div class="docu">
 		<c:forEach var="docFiles" items="${SourceLeadWeb_supportedDocumentsList}">
-					<a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${docFiles.documentUUID}"><i class="fa fa-file-word-o" aria-hidden="true"></i><span class="tbldata-dotdot_80">${docFiles.fileName}</span></a>
+					<a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${docFiles.documentUUID}"><i class="fa fa-file-text" aria-hidden="true"></i><span class="tbldata-dotdot_80">${docFiles.fileName}</span></a>
 		</c:forEach>
 	    </div>	
 	    </c:if>						

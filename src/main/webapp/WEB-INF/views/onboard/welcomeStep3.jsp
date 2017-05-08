@@ -71,7 +71,7 @@
 				<c:if test="${contractDocsListSize > 0}">
 				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
+					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${contractDocs.fileName}</p>
 						
@@ -102,7 +102,7 @@
 				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
+					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${formsDocs.fileName}</p>
 						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
@@ -127,7 +127,7 @@
 				<c:if test="${policiesDocsListSize > 0}">
 				<c:forEach var="policiesDocs" items="${policiesDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-word-o"></a></span>
+					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${policiesDocs.fileName}</p>
 				

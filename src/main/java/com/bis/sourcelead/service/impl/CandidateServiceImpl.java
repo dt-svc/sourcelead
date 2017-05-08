@@ -446,14 +446,20 @@ public class CandidateServiceImpl implements CandidateService {
  * Write candidate data to xls format
  */
 	@Override
-	public File getCandidateExcelFile(List<Candidate> candidatesList,String orgName) throws Exception {
+	public File getCandidateExcelFile(List<Candidate> candidatesList,String orgName,String isAssociate) throws Exception {
 		
 		Workbook createExcelworkbook =  new XSSFWorkbook();
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		 StringBuilder excelSheet = new StringBuilder();
-		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_candidate_").append(dateFormat.format(new Date())).toString());
+		 Sheet createExcelsheet;
+		 if(isAssociate.equalsIgnoreCase(Constants.YES)){
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_Associate_").append(dateFormat.format(new Date())).toString());	 
+		 }else{
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_Candidate_").append(dateFormat.format(new Date())).toString());
+		 }
+		 
     	Row writeRow = null;
 		String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
@@ -464,7 +470,13 @@ public class CandidateServiceImpl implements CandidateService {
 	       	 column++;
 	        }
 	        StringBuilder orgNameSB = new StringBuilder();
-	        File file = File.createTempFile(orgNameSB.append(orgName).append("_candidates_").append(dateFormat.format(new Date())).toString(),".xls");
+	        File file;
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	 file = File.createTempFile(orgNameSB.append(orgName).append("_Associates_").append(dateFormat.format(new Date())).toString(),".xls");	
+	        }else{
+	        	 file = File.createTempFile(orgNameSB.append(orgName).append("_Candidates_").append(dateFormat.format(new Date())).toString(),".xls");
+	        }
+	        
 	        file.setReadable(true);
 	        /*File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");*/
 			 FileOutputStream fos = new FileOutputStream(file);
@@ -499,9 +511,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
 	
-	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+	StringBuilder loc = new StringBuilder();
+	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getCity()).append(",").append(candidate.getState()).append(",").append(candidate.getCountry()).toString());
+	}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getState()).append(",").append(candidate.getCountry()).toString());
+	}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 		writeRow.createCell(4).setCellValue(candidate.getCountry());
+	}else{
+		writeRow.createCell(4).setCellValue("--");
 	}
+	
 	if(candidate.getDesignation() !=null && !"".equalsIgnoreCase(candidate.getDesignation())){
 		writeRow.createCell(5).setCellValue(candidate.getDesignation());
 	}
@@ -544,8 +564,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 }
 
 	@Override
-	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception {
-		return pdfUtil.createCandidatePdfTable(candidatesList,orgName);
+	public File getCandidatePdf(List<Candidate> candidatesList, String orgName,String isAssociate) throws Exception {
+		return pdfUtil.createCandidatePdfTable(candidatesList,orgName,isAssociate);
 	}
 
 	@Override
@@ -919,6 +939,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Long getCandidatesCountByOrgLocationIDAndStatus(Long orgLocationId, String candidateStatus, String isAssociate) throws Exception {
 		return candidateDao.getCandidatesCountByOrgLocationIDAndStatus(orgLocationId, candidateStatus, isAssociate);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllActiveCandidatesByLocation(orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId) throws Exception
+	{
+		return candidateDao.getAllActiveAssociatesByLocation(orgLocationId);
 	}
 
 }

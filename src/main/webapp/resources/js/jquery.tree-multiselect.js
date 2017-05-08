@@ -294,7 +294,7 @@ Tree.prototype.redrawSectionCheckboxes = function ($section) {
 };
 
 Tree.prototype.addCollapsibility = function () {
-  var hideIndicator = "-";
+  var hideIndicator = "--";
   var expandIndicator = "+";
 
   var titleSelector = "div.title";

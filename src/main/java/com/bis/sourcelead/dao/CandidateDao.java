@@ -29,6 +29,8 @@ public interface CandidateDao {
 
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId);
 	
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId);
+	
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 	
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
@@ -75,5 +77,7 @@ public interface CandidateDao {
 	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
+
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId)throws Exception ;
 
 }

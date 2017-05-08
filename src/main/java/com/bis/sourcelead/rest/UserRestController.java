@@ -13,7 +13,6 @@ import java.util.Map;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +31,14 @@ import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -47,8 +48,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -101,10 +104,17 @@ public class UserRestController {
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	private DepartmentService departmentService;
+	
+	@Autowired
 	EmployeesService employeesService;
 	
 	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
 	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
+	
 	
 	@Autowired
 	private UserRoleService userRoleService;
@@ -172,27 +182,41 @@ public class UserRestController {
 		return resultJson;
 	}
 	
+	@RequestMapping(value = "/getDepartmentsList", method = RequestMethod.POST)
+	public @ResponseBody String getDepartmentsList(
+		   @RequestParam(value = "employeementType", required = false) String employeementType, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		resultJson = toJSON(departmentList);
+		return resultJson;
+	}
+	
 	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
-    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId) throws Exception {
-		
+    public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		Candidate candidate   = candidateService.getCandidateById(candidateId);
+		if(null != candidate.getOrgRelationId()){
+			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
+			if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+				candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+			}
+			if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+				candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+			}
 			
-	   /*ArrayList<String> associateList = new ArrayList<String>();
-	   Candidate candidate = null;
-		try {
-			candidate = candidateService.getCandidateById(candidateId);
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		if(null != candidate.getSpocId()){
+			StringBuilder contactName = new StringBuilder();
+			candidate.setVendorSpocId(candidate.getSpocId().getId().toString());
+			if(null != candidate.getSpocId().getClientUser().getLastName()){
+				candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getClientUser().getLastName()).toString());	
+			}else{
+				candidate.setVendorContactName(contactName.append(candidate.getSpocId().getVendorUser().getFirstName()).toString());
+			}
+			
 		}
 		
-		if(null != candidate)
-		{
-			associateList.add(candidate.getFirstName());
-			associateList.add(candidate.getLastName());
-			associateList.add(candidate.getEmail());
-			associateList.add(candidate.getMobilePhone());
-			
-		}*/
 		
 		return commonUtil.toJSON(candidate);
 		
@@ -781,11 +805,15 @@ public class UserRestController {
 		@RequestMapping(value = "/updateEndDateByProjectMemberId", method = RequestMethod.POST)
 		public String updateEndDateByProjectMemberId(@RequestParam(value = "endDate", required = false) String endDate,
 
-				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId) throws Exception {
-
-					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
+				@RequestParam(value = "projectMemberId", required = false) Long projectMemberId,HttpServletRequest request) throws Exception {
 					
+			
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				
+					ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(projectMemberId);
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					
 					if (endDate != null && !"".equals(endDate) && !endDate.equalsIgnoreCase("--")) {
 						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
 						if(pmh == null){
@@ -799,10 +827,14 @@ public class UserRestController {
 
 						if (pmh.getProjectTerminationDate() != null && pmh.getProjectTerminationDate().compareTo(sdf.parse(endDate)) != 0) {
 							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+							
 						}
+						// mail forward to members inline end date edit
+						projectEnddatechangetoEmployee(projectMembers,user, orgLocations, endDate );
 						
 						Date terminationDate = sdf.parse(endDate);
 						Date currentDate = new  Date();
+						
 						if(currentDate.after(terminationDate) && !currentDate.equals(terminationDate)){
 							commonUtil.terminateProjectMemberByProjectMemberId(projectMemberId,Primary.Yes);
 						}
@@ -814,7 +846,69 @@ public class UserRestController {
 		       }
 		
 		
-		
+		 private void projectEnddatechangetoEmployee(ProjectMembers emp, User loginUser,  OrgLocations loginOrgLocation, String changedEndDate) throws Exception {
+			 Projects projects = projectsService.getProjectById(emp.getProjects().getId());
+			 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 StringBuilder fromNameBuilder=new StringBuilder();
+		     EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(emp.getEmployee().getUser().getFirstName());
+			 emailMessage.setLastName(emp.getEmployee().getUser().getLastName());
+			 emailMessage.setToEmail(emp.getEmployee().getUser().getEmail());
+			 emailMessage.setFromEmail(loginUser.getEmail());
+			 emailMessage.setCreatedBy(loginUser.getUserCode());
+			 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			 //setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 globalVarsMap.put("projectStartdate",sdf.format(projects.getStartDate()));
+			 globalVarsMap.put("projectEnddate",changedEndDate);
+			 
+			 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("loginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("loginUser",loginUser.getFirstName());
+				}
+			 if(emailMessage.getFirstName() != null && emailMessage.getLastName()!=null && !"".equalsIgnoreCase(emailMessage.getFirstName()) && !"".equalsIgnoreCase(emailMessage.getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("employeeName",userBuild.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("employeeName",emailMessage.getFirstName());
+				}
+			 globalVarsMap.put("projectName", projects.getProjectName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+			 
+			 //setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 if(null != projects.getOrgLocationsId())
+			 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 
+			//calling the sendNotification method of emailScenerioUtil
+			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			notificationScenario.setBody(notificationBody);
+			//String url = null;
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+		}
 		
 		/**
 		 * to assign the project to the particular user
@@ -1022,7 +1116,26 @@ public class UserRestController {
                 return "updated";
          }
 		
-		
+		@RequestMapping(value = "/getVendorsByOrgLocationId")
+		public String getVendorsByOrgLocationId(
+				HttpServletRequest request) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson = null;
+			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			for(OrgRelations vendors:vendorList){
+				if(vendors.getLocationId().getId() == orgLocations.getId()){
+					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
+				}
+				if(vendors.getResponderLocationId().getId() == orgLocations.getId()){
+					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
+				}
+				
+			}
+			
+			resultJson = toJSON(vendorList);
+			return resultJson;
+
+		}
 		/**
 		 * To get the reporting managers list based on role type
 		 * @author Prasad salina

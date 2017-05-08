@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -67,7 +68,7 @@ public class Contracts {
 	private OrgLocations orgLocationId;
 	
 	@ManyToOne
-    @JoinColumn(name="PARENT_CONTRACT_ID", nullable=false )     
+    @JoinColumn(name="PARENT_CONTRACT_ID")     
 	private Contracts parentContractId;
 	
 	@ManyToOne
@@ -83,12 +84,21 @@ public class Contracts {
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
 	
-	@Column(name = "STATE_OF_JURISDICTION")
-	private String stateOfJurisdiction;
+	/*@Column(name = "STATE_OF_JURISDICTION")
+	private String stateOfJurisdiction;*/
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "APPROVER_USER_ID") 
 	private User approverUser;
+	
+	@Column(name = "CONTRACT_STATUS")
+	private String contractStatus;
+	
+	@Column(name = "DOC_ID",columnDefinition = "TEXT default NULL")
+	private String docId;
+	
+	@Column(name = "ENVELOP_ID",columnDefinition = "TEXT default NULL")
+	private String envelopId;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
@@ -152,6 +162,16 @@ public class Contracts {
 	@Column(name = "STATE_JURISDICTION")
 	private String stateJurisdiction;
 	
+	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
+	private String fileName;
+	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+	
+	@Column(name = "FILE_TYPE")
+	private String fileType;
+	
 	@Transient
 	private String ownerName;
 	
@@ -173,6 +193,76 @@ public class Contracts {
 	@Transient
 	List<Contracts> clientcontractsList;
 	
+	@Transient
+	private String tempEnvId;
+
+	@Transient
+	private String tempdocId;
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public String getTempEnvId() {
+		return tempEnvId;
+	}
+
+	public void setTempEnvId(String tempEnvId) {
+		this.tempEnvId = tempEnvId;
+	}
+
+	public String getTempdocId() {
+		return tempdocId;
+	}
+
+	public void setTempdocId(String tempdocId) {
+		this.tempdocId = tempdocId;
+	}
+
+	public String getContractStatus() {
+		return contractStatus;
+	}
+
+	public void setContractStatus(String contractStatus) {
+		this.contractStatus = contractStatus;
+	}
+
+	public String getDocId() {
+		return docId;
+	}
+
+	public void setDocId(String docId) {
+		this.docId = docId;
+	}
+
+	public String getEnvelopId() {
+		return envelopId;
+	}
+
+	public void setEnvelopId(String envelopId) {
+		this.envelopId = envelopId;
+	}
+
 	public List<Contracts> getVendorcontractsList()
 	{
 		return vendorcontractsList;
@@ -359,13 +449,13 @@ public class Contracts {
 		this.orgRelations = orgRelations;
 	}
 
-	public String getStateOfJurisdiction() {
+	/*public String getStateOfJurisdiction() {
 		return stateOfJurisdiction;
 	}
 
 	public void setStateOfJurisdiction(String stateOfJurisdiction) {
 		this.stateOfJurisdiction = stateOfJurisdiction;
-	}
+	}*/
 
 	public User getApproverUser() {
 		return approverUser;

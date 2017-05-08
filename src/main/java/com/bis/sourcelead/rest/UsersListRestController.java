@@ -26,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,8 +44,10 @@ import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
@@ -61,7 +62,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -101,6 +104,10 @@ public class UsersListRestController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private DepartmentService departmentService;
+	
 
 	@Autowired
 	ProjectsService projectsService;
@@ -142,8 +149,11 @@ public class UsersListRestController {
 	RolesService rolesService;
 
 	@Autowired
-	TabsService tabsService;
+	TabsService tabsService;    
 
+	@Autowired
+	private OrgRelationsService orgRelationsService;
+	
 	@Autowired
 	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
 	
@@ -507,13 +517,40 @@ public class UsersListRestController {
 			userRole.setEmployeeId(employee.getEmployeeId());
 			userRole.setRate(employee.getRate());
 			userRole.setRatePer(employee.getRatePer());
+			userRole.setCurrentCurrency(employee.getCurrentCurrency());
 			if (employee.getHireDate() != null) {
 				userRole.setHireDateStr(com.bis.sourcelead.constants.Constants.DF_DMY.format(employee.getHireDate()));
 			} else {
 				userRole.setHireDateStr("");
 			}
 			userRole.setDailyHours(employee.getDailyHours());
-
+			userRole.setUserEmploymentType(employee.getUserEmploymentType());
+			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			
+			if(null != employee.getDepartmentId()){
+				userRole.setDepartment(employee.getDepartmentId().getId().toString());
+				userRole.setDepartmentName(employee.getDepartmentId().getDepartmentName());
+			}
+			
+			if(null != employee.getOrgRelationId()){
+				userRole.setVendorOrgRelationId(employee.getOrgRelationId().getId().toString());
+				if(employee.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
+					userRole.setVendorName(employee.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+				}
+				if(employee.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
+					userRole.setVendorName(employee.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+				}
+				
+			}
+			if(null != employee.getSpocId()){
+				StringBuilder contactName = new StringBuilder();
+				userRole.setVendorSpocId(employee.getSpocId().getId().toString());
+				if(null != employee.getSpocId().getVendorUser().getLastName()){
+					userRole.setVendorContactName(contactName.append(employee.getSpocId().getVendorUser().getFirstName()).append(" ").append(employee.getSpocId().getVendorUser().getLastName()).toString());	
+				}
+				
+			}
+			
 		}
 		
 		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
@@ -767,26 +804,24 @@ public class UsersListRestController {
 						orgLocations.getId(), "Client");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						/*if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setOwnerUser(clientOwnerOrUser);
-							orgSpoc.set
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setSpocUser(clientOwnerOrUser);
-						}*/
-						if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getClientUser().getId()==orgSpoc.getOwnerUser().getId())){
-							orgSpoc.setOwnerUser(clientOwnerOrUser);
-							orgSpoc.setClientUser(clientOwnerOrUser);
+					
+						boolean flag = orgSpocService.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgSpoc.getOrgRelations().getId(), clientOwnerOrUser.getId());
+						if(flag == false){
+							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getClientUser().getId()==orgSpoc.getOwnerUser().getId())){
+								orgSpoc.setOwnerUser(clientOwnerOrUser);
+								orgSpoc.setClientUser(clientOwnerOrUser);
+							}else{
+								orgSpoc.setClientUser(clientOwnerOrUser);
+							}
 						}else{
-							orgSpoc.setClientUser(clientOwnerOrUser);
+							orgSpoc.setStatus("0");
 						}
 						
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
-						 ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
-						  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
+						ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 					}
 				}
 
@@ -799,24 +834,25 @@ public class UsersListRestController {
 						orgLocations.getId(), "Vendor");
 				if (null != orgSpocList) {
 					for (OrgSpoc orgSpoc : orgSpocList) {
-						/*if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setOwnerUser(vendorOwnerOrUser);
-						} else if (orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocations.getId()
-								.longValue()) {
-							//orgSpoc.setSpocUser(vendorOwnerOrUser);
-						}*/
-						if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getVendorUser().getId()==orgSpoc.getOwnerUser().getId())){
-							orgSpoc.setOwnerUser(vendorOwnerOrUser);
-							orgSpoc.setVendorUser(vendorOwnerOrUser);
+						
+						boolean flag = orgSpocService.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgSpoc.getOrgRelations().getId(), vendorOwnerOrUser.getId());
+						
+						if(flag == false){
+							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getVendorUser().getId()==orgSpoc.getOwnerUser().getId())){
+								orgSpoc.setOwnerUser(vendorOwnerOrUser);
+								orgSpoc.setVendorUser(vendorOwnerOrUser);
+							}else{
+								orgSpoc.setVendorUser(vendorOwnerOrUser);
+							}
 						}else{
-							orgSpoc.setVendorUser(vendorOwnerOrUser);
+							orgSpoc.setStatus("0");
 						}
+						
 						orgSpoc.setUpdatedBy(user.getUserCode());
 						orgSpoc.setUpdatedDate(new Date());
 						orgSpocService.addOrgSpoc(orgSpoc);
-						 ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
-						  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
+						ClientVendorContactsIndex clientVendorContactsIndex = clientVendorContactsIndexHelper.getClientVendorContactIndexFromSpoc(orgSpoc);
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,orgSpoc.getId().toString());
 					}
 				}
 
@@ -1115,6 +1151,7 @@ public class UsersListRestController {
 		String password = "";
 		boolean isUserActive = false;
 
+		
 		if (user != null) {
 			user.setFirstName(jsonObj.getString("FirstName"));
 			user.setLastName(jsonObj.getString("LastName"));
@@ -1154,6 +1191,35 @@ public class UsersListRestController {
 			employees.setRate(jsonObj.getString("Rate"));
 			employees.setRatePer(jsonObj.getString("RatePer"));
 			employees.setDailyHours(jsonObj.getString("DayHours"));
+			employees.setCurrentCurrency(jsonObj.getString("currentCurrency"));
+			
+			if(jsonObj.has("designationType")){
+				employees.setUserEmploymentType(jsonObj.getString("designationType"));
+			}
+			if(jsonObj.has("designationOtherType")){
+				employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+			}
+			
+			if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+				Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+				employees.setDepartmentId(department);
+			}else{
+				employees.setDepartmentId(null);
+			}
+			
+			if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
+				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+				employees.setOrgRelationId(orgRelation);
+			}else{
+				employees.setOrgRelationId(null);
+			}
+			
+			if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
+				OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+				employees.setSpocId(orgspoc);
+			}else{
+				employees.setSpocId(null);
+			}
 			/*
 			 * employees.setInvoiceFrequency(jsonObj.getString(
 			 * "InvoiceFrequency"));

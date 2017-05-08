@@ -12,7 +12,7 @@ public interface ContractsTemplateDao {
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
 
-	ContractsTemplate saveContractTemplate(Long contractTemplateId);
+	//ContractsTemplate saveContractTemplate(Long contractTemplateId);
 
 	List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation)throws Exception;
 
@@ -22,12 +22,16 @@ public interface ContractsTemplateDao {
 
 	Contracts saveNewContract(Contracts contracts)throws Exception;
 
-	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType)throws Exception;
+	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus)throws Exception;
 
 	Contracts getContractById(Long contractId);
 
 	Contracts getChildContractById(Long contractId);
 	
-	ContractsTemplate findByContractTemplateName(String templateName,Long orgLocationId) throws Exception;
+	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception;
+
+	List<Contracts> getListOfContractsEnvId();
+
+	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
 	
 }

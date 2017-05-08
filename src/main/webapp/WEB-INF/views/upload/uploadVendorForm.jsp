@@ -83,7 +83,7 @@ margin:10px 220px 0;
 			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
-			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
+			<i aria-hidden="true" class="fa fa-paperclip" title="Attach file"></i> <br/>
                 <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
             </label>
         	</div>
@@ -117,9 +117,9 @@ margin:10px 220px 0;
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
-			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
-			  </p>
+<!-- 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
+			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
+ -->			  </p>
 			  </span>
             </div>
             <div class="panel-body checkbox div-checkbox hidden">
@@ -133,10 +133,10 @@ margin:10px 220px 0;
 			  <p class="clearfix mt">
 			  According this template, the Users need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
 			  </p>
-			  <p>
-			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
-			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
+			  <p class="text-center">
+			  <label class="paddingRight"><i class="fa fa-user"></i>&nbsp;&nbsp;Vendor Name</label>
+			  <label class="paddingRight"><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
+			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
 			  </p>
 			  </span>
             </div>

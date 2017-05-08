@@ -365,7 +365,7 @@ function addTeam(){
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
-	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">';
+	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" data-placeholder="Select Team Members" data-validation="required validate_Space" field-name="Team Member">';
 		/* outPut = outPut + ' <option disabled >--Select Team Member--</option>';      */   
 		/* <c:forEach var="report" items="${usersList}">
 	         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
@@ -895,8 +895,8 @@ function deleteSelectedTeam(teamId){
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
+   		    		    $("#loading"+teamId).removeAttr("style");
              			document.getElementById("deleteTeam"+teamId).remove();
-             			$("#loading"+teamId).removeAttr("style"); 
    		    	}
    		    }
 	     }); 

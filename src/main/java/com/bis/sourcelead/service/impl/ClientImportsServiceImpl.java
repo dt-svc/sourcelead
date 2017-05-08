@@ -1004,6 +1004,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
                  realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2,"xls"));
                  realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,"xls"));
                  realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,10,"xls"));
+                 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS,14,"xls"));
                  realSheet.addValidationData(validation);
              }
 			
@@ -1105,6 +1106,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
                  realSheet.addValidationData(getDropDownListForCell(Constants.COUNTRY_DROPDOWN,2,"xls"));
                  realSheet.addValidationData(getDropDownListForCell(Constants.LEVEL_DROPDOWN,5,"xls"));
                  realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_CONTACTS_STATUS_DROPDOWN,10,"xls"));
+                 realSheet.addValidationData(getDropDownListForCell(Constants.CLIENT_PAYMENT_TERMS,14,"xls"));
                  realSheet.addValidationData(validation);
              }
                  //realSheet.addValidationData(getDropDownListForCell(ownersList,6,"xls"));
@@ -1137,7 +1139,7 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 
 
 			
-			  String isFileCreated = "failed";
+			  String isFileCreated = "success";
 			  String fn = multipartFile.getOriginalFilename();
 			  String fname = getFileName(fn);
 			  File file = new File(multipartFile.getOriginalFilename());
@@ -1172,7 +1174,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 		      }
 		      Iterator rows = sheet.rowIterator(); // Now we have rows ready from the sheet
 		      createExcelsheet = setClientExcelHeader(createExcelsheet,responderType);
-		     while (rows.hasNext()) 
+		      boolean isValid =  isValidTemplate(rows,responderType);
+		      if(isValid){
+		    	 while (rows.hasNext()) 
 			      { 
 				       Row row = (Row) rows.next();
 				        		 if(row.getRowNum() > 0){
@@ -1212,13 +1216,24 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									   }  
 									   if(row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())){
 										   String status = getCellValueAsString(row.getCell(10),fname);
-										   bulkClientVendors.setStatus(status);;
+										   bulkClientVendors.setStatus(status);
 									   }  
 									   if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 										   bulkClientVendors.setOwnerEmail(row.getCell(11).toString());
 									   }else{
 										   bulkClientVendors.setOwnerEmail(user.getEmail());
-									   }  
+									   }
+									   if(row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())){
+										   bulkClientVendors.setClientAddress(row.getCell(12).toString());
+									   }
+									   if(row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())){
+										   bulkClientVendors.setBillingAddress(row.getCell(13).toString());
+									   }
+									   if(row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())){
+										   String paymentTerms = getCellValueAsString(row.getCell(14),fname);
+										   bulkClientVendors.setPaymentTerm(paymentTerms);
+									   }
+									   
 									   if("Client".equalsIgnoreCase(responderType)){
 										   bulkClientVendors.setType(Constants.CLIENT);
 									   }else{
@@ -1238,10 +1253,59 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 									return "empty";
 						       }*/
 			      }
-			  inp.close();
-			return isFileCreated;
+		    	 inp.close();
+					//return isFileCreated;
+		     }else{
+		    	 isFileCreated = "invalid";
+		     }
+			  
+		     return isFileCreated;
 		
-		
+		}
+		private boolean isValidTemplate(Iterator rows,String responderType) {
+           boolean isValid = false;
+			Row row = (Row) rows.next();
+			String name = "";
+			if(responderType.equalsIgnoreCase(Constants.CLIENT)){
+				name = Constants.CLIENT_NAME;
+			}else{
+				name = Constants.VENDOR_NAME;
+			}
+			
+			 if(row.getRowNum() == 0){
+		    	   if(name.equalsIgnoreCase(row.getCell(0).getStringCellValue())){
+		    		   if(Constants.WEBSITE.equalsIgnoreCase(row.getCell(1).getStringCellValue())){
+		    			   if(Constants.country.equalsIgnoreCase(row.getCell(2).getStringCellValue())){
+		    				   if(Constants.SATATE.equalsIgnoreCase(row.getCell(3).getStringCellValue())){
+		    					   if(Constants.CITY.equalsIgnoreCase(row.getCell(4).getStringCellValue())){
+		    						   if(Constants.LEVEL.equalsIgnoreCase(row.getCell(5).getStringCellValue())){
+		    							   if(Constants.FIRST_NAME.equalsIgnoreCase(row.getCell(6).getStringCellValue())){
+		    								   if(Constants.LAST_NAME.equalsIgnoreCase(row.getCell(7).getStringCellValue())){
+		    									   if(Constants.EMAIL_ID_BULK_IMPORT.equalsIgnoreCase(row.getCell(8).getStringCellValue())){
+		    										   if(Constants.PHONE_NUMBER_BULK_IMPORT.equalsIgnoreCase(row.getCell(9).getStringCellValue())){
+		    											   if(Constants.STATUS.equalsIgnoreCase(row.getCell(10).getStringCellValue())){
+		    												   if(Constants.OWNER.equalsIgnoreCase(row.getCell(11).getStringCellValue())){
+		    													   if(Constants.CLIENT_ADDRESS.equalsIgnoreCase(row.getCell(12).getStringCellValue())){
+		    														   if(Constants.BILLING_ADDRESS.equalsIgnoreCase(row.getCell(13).getStringCellValue())){
+		    															   if(Constants.PAYMENT_TERMS.equalsIgnoreCase(row.getCell(14).getStringCellValue())){
+																		isValid = true;
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+			return isValid;
 		}
 		@Override
 		public List<BulkClientDetails> getbulkClientDetailsByOrgLocationId(OrgLocations orgLocations,User user, Org org, String isMailSent, String responderType) throws Exception
@@ -1535,6 +1599,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 			  }
 			  if(null != mainOrgLocation){
 				  jsonObj.put("orgLocationId",mainOrgLocation.getId()); 
+			  }
+			  if(null != client.getClientAddress() && !"".equalsIgnoreCase(client.getClientAddress())){
+				  jsonObj.put("address",client.getClientAddress()); 
+			  }
+			  if(null != client.getBillingAddress() && !"".equalsIgnoreCase(client.getBillingAddress())){
+				  jsonObj.put("billingAddress",client.getBillingAddress()); 
+			  }
+			  if(null != client.getPaymentTerm() && !"".equalsIgnoreCase(client.getPaymentTerm())){
+				  jsonObj.put("PaymentTerm",client.getPaymentTerm()); 
 			  }
 			 
 			 return jsonObj;

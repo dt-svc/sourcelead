@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
@@ -125,14 +126,14 @@ public class CandidateOnBoardRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		
 		List<OnBoardingTemplate> templatesList = onBoardingTemplateService.getOnBoardingTemplatesList(loginOrgLocation.getId());
-		List<OnBoardingTemplate> onboardintTemplatesList = new ArrayList<OnBoardingTemplate>();
+		List<OnBoardingTemplate> onboardingTemplatesList = new ArrayList<OnBoardingTemplate>();
 		
 		for(OnBoardingTemplate template : templatesList){
 			template.setTemplateCreatedDate(Constants.DMY.format(template.getCreatedDate()));
-			onboardintTemplatesList.add(template);
+			onboardingTemplatesList.add(template);
 		}
 		
-		resultJson = commonUtil.toJSON(onboardintTemplatesList);
+		resultJson = commonUtil.toJSON(onboardingTemplatesList);
 		return resultJson;
 	 }
 	
@@ -258,7 +259,7 @@ public class CandidateOnBoardRestController {
 	
 	
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
-	public @ResponseBody String saveOnboardingTemplateDocuments(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
+	public @ResponseBody String saveOnboardingTemplateDocuments(@RequestParam(value="json", required=false) String json,
 			MultipartHttpServletRequest request) throws Exception {
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -781,6 +782,10 @@ public class CandidateOnBoardRestController {
 					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).append(" ").append(candidateOnBoarding.getLastName()).toString());
 				}else{
 					candidateOnBoarding.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
+				}
+				
+				if(null != candidateOnBoarding.getOnboardingUser()){
+					candidateOnBoarding.setUserEmail(candidateOnBoarding.getOnboardingUser().getEmail());
 				}
 				
 				Integer documentsCount = onBoardingTemplateDocumentsService.getCandidateOnboardingDocumentsCountByCandidateOnboardingIdExpectSupportDocs(candidateOnBoarding.getId());
@@ -1832,8 +1837,8 @@ public class CandidateOnBoardRestController {
 		 }
 		 
 		 
-		 @RequestMapping(value = "/changeTaskStatusByOnboardCandidate" , method = RequestMethod.POST)
-		 public @ResponseBody  String changeTaskStatusByOnboardCandidate(@RequestParam(value="taskId", required=false) Long taskId,
+		 @RequestMapping(value = "/changeTaskStatusForOnboardAndOffboardCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String changeTaskStatusForOnboardAndOffboardCandidate(@RequestParam(value="taskId", required=false) Long taskId,
 				 HttpServletRequest request) throws Exception {
 			 	
 			 	Tasks tasks = taskService.getTasksById(taskId);
@@ -1898,11 +1903,75 @@ public class CandidateOnBoardRestController {
 			 
 			 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 			 candidateOnBoarding.setOnboardSubmitted(Constants.YES);	
+			 candidateOnBoarding.setCandidateOnBoardStatus("Submitted");
 			 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
 			 
 			 return "success";
 			 
 		   }
+		 
+		 
+		 @RequestMapping(value = "/rejectOnboardedCandidate" , method = RequestMethod.POST)
+		 public @ResponseBody  String rejectOnboardedCandidate(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+			 
+			 
+			 json = "{"+json+"}";
+			 
+			 JSONObject jsonObj = new JSONObject(json);
+			 
+			 if(jsonObj.has("onboardCandidateUUID") && !isNullOrEmpty(jsonObj.getString("onboardCandidateUUID"))){
+				 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(jsonObj.getString("onboardCandidateUUID"));
+				 candidateOnBoarding.setOnboardSubmitted(Constants.NO);	
+				 candidateOnBoarding.setRejectedReason(jsonObj.getString("rejectedReason"));
+				 candidateOnBoarding.setCandidateOnBoardStatus("Rejected");
+				 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			 }
+			 
+			 return "success";
+			 
+		   }
+		 
+		 
+		 @RequestMapping(value = "/acceptOnboardingCandiate" , method = RequestMethod.POST)
+		 public @ResponseBody  String acceptOnboardingCandiate(@RequestParam(value="onboardCandidateUUID", required=false) String onboardCandidateUUID,HttpServletRequest request) throws Exception {
+			 
+				 CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onboardCandidateUUID);
+				 candidateOnBoarding.setCandidateOnBoardStatus("Accepted");
+				 candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+			 
+			 return "success";
+			 
+		   }
+		 
+		 
+		 @RequestMapping(value = "/viewCandidateOnboardTasksByOnboardingUUID" , method = RequestMethod.GET)
+		 public @ResponseBody  String viewCandidateOnboardTasksByOnboardingUUID(@RequestParam(value="onBoardingUUID", required=false) String onBoardingUUID,
+				 HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 
+			 
+			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByUUID(onBoardingUUID);
+			 
+			 List<Tasks> tasksList = taskService.getTasksListOnboardingId(onboarding.getId());
+				List<Tasks> taskList = new ArrayList<Tasks>();
+				if(null != tasksList && tasksList.size() > 0){
+					for(Tasks tasks : tasksList){
+						tasks.setTaskDateStr(Constants.DMY.format(tasks.getTaskDate()));
+						
+						StringBuilder userName = new StringBuilder();
+						if(null != tasks.getAssignedUserId().getLastName()){
+							tasks.setAssignedName(userName.append(tasks.getAssignedUserId().getFirstName()).append(" ").append(tasks.getAssignedUserId().getLastName()).toString());
+						}else{
+							tasks.setAssignedName(userName.append(tasks.getAssignedUserId().getFirstName()).toString());
+						}
+						taskList.add(tasks);
+					}
+					
+				}
+			 
+				return commonUtil.toJSON(taskList);
+			 
+		   }
+		 
 		 
 		 
 }

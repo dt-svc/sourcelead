@@ -210,6 +210,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			User reportingManager = new User();
 			reportingManager.setId(Long.valueOf(jsonObj.getString("reportingManager")));
 			candidateOnBoarding.setManagerUserId(reportingManager);
+		}else{
+			candidateOnBoarding.setManagerUserId(null);
 		}
 		
 		if(jsonObj.has("team") && !isNullOrEmpty(jsonObj.getString("team"))){
@@ -354,12 +356,14 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 						 Tasks tasks = null;
 						 User taskUser = userDao.getUserById(Long.valueOf(userIds[i]));
 						 tasks = getTaskDetails(onboardTasks, taskUser, loginUser, orgLocations);
+						 tasks.setOnboardingId(candidateOnBoarding);
 						 taskDao.saveTasks(tasks);
 						 mailToUserTask(tasks);
 					 }
 				 }else{
 					 Tasks tasks = null;
 					 tasks = getTaskDetails(onboardTasks, onboardingUser, loginUser, orgLocations);
+					 tasks.setOnboardingId(candidateOnBoarding);
 					 taskDao.saveTasks(tasks);
 					 mailToUserTask(tasks);
 				 }
@@ -477,7 +481,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
         }
 	    
 	    user.setIsMailSent(Status.Y);
-	    user.setLocation(candidateOnBoarding.getCountry());
+	    user.setLocation(candidateOnBoarding.getAddress1());
 	   
 	    
 	    user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -509,7 +513,18 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	    	userRole.setReportingManager(reportingManager);
 	    }
 	    userRole.setOrgLocations(orgLocations);
-	    userRole.setIsPrimary(1);
+	    
+	    try {
+			boolean isUserActive = userRoleDao.isUserActive(onboardingUser.getId());
+			 if(isUserActive == false){
+				  userRole.setIsPrimary(1);
+			  }else{
+				  userRole.setIsPrimary(0);
+			  }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	   
 	    userRole.setUserState(Status.NOT_LOGGEDIN);
 	    userRole.setCreatedBy(loginUser.getUserCode());
 	    userRole.setCreatedDate(commonUtil.currentDate());

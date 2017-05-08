@@ -85,7 +85,7 @@ margin:10px 220px 0;
 			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
-			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
+			<i aria-hidden="true" class="fa fa-paperclip" title="Attach file"></i> <br/>
                 <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
             </label>
         	</div>
@@ -137,8 +137,8 @@ margin:10px 220px 0;
 			  </p>
 			  <p>
 			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Client Name</label>
-			  <!-- <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label> -->
+			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
+			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
 			  </p>
 			  </span>
             </div>
@@ -228,10 +228,20 @@ if ($('#upload_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/clientExcelFileUpload?${_csrf.parameterName}=${_csrf.token}&responderType=Client", 	   
  		    success : function(data) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
- 		    	if(data == "failure"){
+ 		    	if(data == "empty"){
  		    		$("#selector").removeAttr("style");
  	    			$("#selector").css({ display: "block" });
  		    		$("#msgDiv").html("Mandatory fields are required");
+ 		    		msgFadein();
+ 		    	}else if(data == "invalid"){
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Please import valid Template");
+ 		    		msgFadein();
+ 		    	}else if(data == "success"){
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Inserted successfully");
  		    		msgFadein();
  		    	}else{
  		    		prepareExcelDataDiv(data);

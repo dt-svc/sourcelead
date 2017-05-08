@@ -96,11 +96,6 @@ function getUsersSearchResult(searchValue){
       <div class="pull-left cand-advsrche onboardBtn">
        <input id="searchElement" type="hidden"></input>
        
-       
-              <a href="<c:url value='/candidateOnBoardingList'/>" class="btn btn-primary btn-sm" > 
-			  <i class="fa fa-user paddingRight"></i>ONBOARD & OFFBOARD 
-			  </a>
-			  
 			  <%--<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
@@ -230,7 +225,7 @@ function getUsersSearchResult(searchValue){
 				<option value="ACTIVE" >Active</option>
 				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
-				<option value="NOT_LOGGEDIN">Not Logged IN</option>
+				<option value="NOT_LOGGEDIN">Not Logged in</option>
 			   </select>
           
           </li>
@@ -253,7 +248,7 @@ function getUsersSearchResult(searchValue){
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
-	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
+	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 

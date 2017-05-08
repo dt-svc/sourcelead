@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URLConnection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.Candidate;
@@ -45,6 +48,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Html2PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -67,6 +71,9 @@ public class ContractRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private Html2PdfUtil html2PdfUtil;
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
@@ -109,14 +116,43 @@ public class ContractRestController {
 	public @ResponseBody  void testController(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
+		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
+		String totalBody = header + contractsTemplate.getTemplateContent();
     	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
   	    Document document = new Document();
   	    PdfWriter.getInstance(document, byteArray);
   	    document.open();
   	    HTMLWorker htmlWorker = new HTMLWorker(document);
-  	    htmlWorker.parse(new StringReader(contractsTemplate.getTemplateContent()));
+  	    htmlWorker.parse(new StringReader(totalBody));
   	    document.close();
   	    byte[] pdfBytes = byteArray.toByteArray();
+  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
+  	    response.setContentType("application/pdf");
+  	    response.setContentLength(pdfBytes.length);
+          ServletOutputStream sos = response.getOutputStream();
+          sos.write(pdfBytes);
+          sos.flush();
+          sos.close();
+	}
+	
+	@RequestMapping(value = "/viewContractPdf/{id}", method = RequestMethod.GET)
+	public @ResponseBody  void viewContractPdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		byte[] pdfBytes = null ;
+	
+		if(contract.getEnvelopId()!=null && contract.getTypeOfContract().equalsIgnoreCase("New")){
+			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+		}
+		if(contract.getTypeOfContract().equalsIgnoreCase("New")&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
+			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+		}
+		if(contract.getEnvelopId()==null && contract.getTypeOfContract().equalsIgnoreCase("Existing")){
+			  pdfBytes = contract.getDocFile();
+		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
   	    response.setContentLength(pdfBytes.length);
@@ -161,6 +197,13 @@ public class ContractRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
+			StringBuilder ownersb = new StringBuilder();
+			if(null != orgSpoc.getOwnerUser().getFirstName() && null != orgSpoc.getOwnerUser().getLastName()){
+				ownersb.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName());
+			}else{
+				ownersb.append(orgSpoc.getOwnerUser().getFirstName());
+			}
+			orgSpoc.setOwnerUserName(ownersb.toString());
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
@@ -202,10 +245,13 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,
+			@RequestParam(value = "tabType", required = false) String tabType,
+			@RequestParam(value = "contractsType", required = false) String contractsType,
+			@RequestParam(value = "contractStatus", required = false) String contractStatus, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType);
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus);
 		return commonUtil.toJSON(contracts);
 	} 
 	
@@ -256,7 +302,7 @@ public class ContractRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		Contracts contracts  = contractsTemplateService.getContractById(Long.parseLong(recordId));
-		if("Waiting to be signed".equalsIgnoreCase(status)){
+/*		if("Waiting to be signed".equalsIgnoreCase(status)){
 			Contracts parentContracts  = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
 			if(null != contracts.getParentContractId()){
 				parentContracts.setId(contracts.getParentContractId().getId());
@@ -266,19 +312,15 @@ public class ContractRestController {
 			}
 		 contractsTemplateService.saveNewContract(parentContracts);
 		 contractsTemplateService.saveNewContract(contracts);
-		}
+		}*/
 		
-		
-		
-		
-		
-		if(("Waiting To Be Verify").equalsIgnoreCase(status)){
+		if(("WAITING_TO_BE_VERIFY").equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 			if(null != childContarct.getParentContractId()){
 				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus("Finalized");
+				childContarct.setTemplateSubmissionStatus("FINALIZED");
 				contracts.setId(contracts.getId());
-				contracts.setTemplateSubmissionStatus("Finalized");
+				contracts.setTemplateSubmissionStatus("FINALIZED");
 			}
 			 contractsTemplateService.saveNewContract(childContarct);
 			 contractsTemplateService.saveNewContract(contracts);
@@ -341,11 +383,11 @@ public class ContractRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateContractTemplateName" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateContractTemplateName(@RequestParam(value="templateName", required=false) String templateName,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String validateContractTemplateName(@RequestParam(value="templateName", required=false) String templateName,@RequestParam(value="contractType", required=false) String contractType,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	ContractsTemplate  contractsTemplate = contractsTemplateService.findByContractTemplateName(templateName, orgLocation.getId());
+		 	ContractsTemplate  contractsTemplate = contractsTemplateService.findByContractTemplateName(templateName,contractType,orgLocation.getId());
 		 	
 		 	if (null != contractsTemplate) {
 				result = "true";
@@ -354,4 +396,50 @@ public class ContractRestController {
 			}
 			return result;
 	   }
+	 
+
+
+	 /**
+	  * To  validate Contract title
+	  * @param contract title
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateContractTitle" , method = RequestMethod.POST)
+	 public @ResponseBody  String validateContractTitle(@RequestParam(value="contractTitle", required=false) String contractTitle,@RequestParam(value="contractType", required=false) String contractType,HttpServletRequest request) throws Exception {
+		 	
+		 	String result = null;
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	Contracts  contracts = contractsTemplateService.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocation.getId());
+		 	
+		 	if (null != contracts) {
+				result = "true";
+			}else{
+				result = "false";
+			}
+			return result;
+	   }
+
+	 @RequestMapping(value = "/saveExistigContract", method = RequestMethod.POST)
+		public @ResponseBody boolean saveExistigContract(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
+
+			boolean isContractSaved = false;
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			
+			MultipartFile multiFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if(itrator.hasNext()){
+		        multiFile = request.getFile(itrator.next());
+			}
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Contracts contracts = contractsTemplateService.saveExistigContract(jsonObj,multiFile,orgLocation,user,org);
+		   if(null != contracts){
+			   isContractSaved = true;
+		   }
+			return isContractSaved;
+		}
+
 }

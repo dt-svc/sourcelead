@@ -202,8 +202,18 @@ public class Candidate implements Serializable{
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
 	private String skillsName ;
 	
+	@Column(name = "FACEBOOK_PROFILE_URL")
+	private String facebookUrl;
+	
 	@Column(name = "PRIMARY_SKILL")
 	private String primarySkill;
+	
+	@Column(name = "LINKEDIN_PROFILE_URL")
+	private String linkedUrl;
+	
+	@Column(name = "TWITTER_PROFILE_URL")
+	private String twitterUrl;
+	
 	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -316,6 +326,9 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private  List<String> candidateSkillsList;
+	 
+	 @Transient
+	 private String employer;
 	 
 	 
 	public Long getId() {
@@ -1199,6 +1212,45 @@ public class Candidate implements Serializable{
 
 	public void setCandidateSkillsList(List<String> candidateSkillsList) {
 		this.candidateSkillsList = candidateSkillsList;
+	}
+
+
+	public String getEmployer() {
+		return employer;
+	}
+
+
+	public void setEmployer(String employer) {
+		this.employer = employer;
+	}
+	
+	public String getFacebookUrl() {
+		return facebookUrl;
+	}
+
+
+	public void setFacebookUrl(String facebookUrl) {
+		this.facebookUrl = facebookUrl;
+	}
+
+
+	public String getLinkedUrl() {
+		return linkedUrl;
+	}
+
+
+	public void setLinkedUrl(String linkedUrl) {
+		this.linkedUrl = linkedUrl;
+	}
+
+
+	public String getTwitterUrl() {
+		return twitterUrl;
+	}
+
+
+	public void setTwitterUrl(String twitterUrl) {
+		this.twitterUrl = twitterUrl;
 	}
 	
 }

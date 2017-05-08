@@ -9,6 +9,16 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
+<style type="text/css">
+.onboardLabel p {
+margin-bottom: 0; margin-top: 7px;
+}
+.onboardLabel label.control-label:after{
+content:":";
+padding-left: 25px;	
+}
+</style>
  <script> 
 	$(document).ready(function(){
 		onboardCandidateSummaryDetails();
@@ -20,7 +30,7 @@
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Onboarding Summary </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Candidate Onboarding Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">
@@ -29,11 +39,11 @@
         <div class="tabbable">
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active"> <a href="#details" data-toggle="tab" onclick="onboardCandidateSummaryDetails();"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
-              <small>Employee details &amp; Postion details</small> </a> </li>
+              <small>Employee details &amp; Position details</small> </a> </li>
             <li><a href="#documents" data-toggle="tab" onclick="getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
 
-              <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+              <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
              
           </ul>
@@ -100,11 +110,11 @@
 	        		zipCode = "";
 	        	}
 	        	 var result = "";
-				 result = result +'	 <div class="col-md-12">                                                                                          ';
+				 result = result +'	 <div class="col-md-12 onboardLabel">                                                                                          ';
 				 result = result +'   <div class="form-horizontal">                                                                                   ';
 				 result = result +'     <p><strong>Employee Details</strong></p>                                                                      ';
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>     ';
+				 result = result +'       <label class="col-md-3 control-label">First Name </label>';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'           <label>'+json.firstName+'</label>                                                                      ';
 				 result = result +'       </div>                                                                                                      ';
@@ -130,7 +140,7 @@
 				
 				 
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>';
+				 result = result +'       <label class="col-md-3 control-label">Street Address 1 </label>';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'           <label>'+json.address1+'</label>                                      ';
 				 result = result +'       </div>                                                                                                      ';
@@ -138,7 +148,7 @@
 				
 				 if(json.address2 != null && json.address2 != '' && json.address2 != 'undefined'){
 					 result = result +'     <div class="form-group">                                                                                      ';
-					 result = result +'       <label class="col-md-3 control-label">Street Addess 2</label>';
+					 result = result +'       <label class="col-md-3 control-label">Street Address 2</label>';
 					 result = result +'       <div class="col-md-6">    ';
 					 result = result +'           <label>'+json.address2+'</label> ';
 					 result = result +'       </div>                                                                                                      ';
@@ -147,7 +157,7 @@
 				 
 				 
 				 result = result +'  <div class="form-group">                                                                    ';
-				 result = result +'       <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>        ';
+				 result = result +'       <label class="col-md-3 control-label">Country </label>        ';
 				 result = result +'       <div class="col-md-6">                                   ';
 				 result = result +'           <label>'+json.country+'</label>                                 ';
 				 result = result +'       </div>                                                   ';
@@ -184,7 +194,7 @@
 				 if(json.personalEmail != null && json.personalEmail != '' && json.personalEmail != 'undefined'){
 					 result = result +'                                                                          ';
 					 result = result +'     <div class="form-group">                                             ';
-					 result = result +'       <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label> ';
+					 result = result +'       <label class="col-md-3 control-label">Personal Email </label> ';
 					 result = result +'       <div class="col-md-6">                                                                                      ';
 					 result = result +'           <label>'+json.personalEmail+'</label>                                                            ';
 					 result = result +'       </div>                                                                                                      ';
@@ -193,7 +203,7 @@
 			    
 				if(json.mobileNumber != null && json.mobileNumber != '' && json.mobileNumber != 'undefined'){
 					 result = result +'     <div class="form-group">                                                                                      ';
-					 result = result +'       <label class="col-md-3 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>  ';
+					 result = result +'       <label class="col-md-3 control-label">Mobile number </label>  ';
 					 result = result +'       <div class="col-md-6">                                                                                      ';
 					 result = result +'           <label>'+json.mobileNumber+'</label>                                                                           ';
 					 result = result +'       </div>                                                                                                      ';
@@ -202,7 +212,7 @@
 				
 				 if(json.roleName != null && json.roleName != '' && json.roleName != 'undefined'){
 					 result = result +'   <div class="form-group">                                                                                        ';
-					 result = result +'       <label class="col-md-3 control-label">Role <span class="text-danger paddingLeft">*</span></label>                                                          ';
+					 result = result +'       <label class="col-md-3 control-label">Role </label>                                                          ';
 					 result = result +'       <div class="col-md-6">                                                                                      ';
 					 result = result +'           <label>'+json.roleName+'</label>                                                                                   ';
 					 result = result +'       </div>                                                                                                      ';
@@ -211,7 +221,7 @@
 			     
 				 
 			     result = result +'       <div class="form-group">                                                                                    ';
-				 result = result +'       <label class="col-md-3 control-label">Date Of Join<span class="text-danger paddingLeft">*</span></label>      ';
+				 result = result +'       <label class="col-md-3 control-label">Date Of Join</label>      ';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'         <label>'+json.joiningDateStr+'                                                                                        ';
 				 result = result +'       </label></div>                                                                                              ';
@@ -228,7 +238,7 @@
 				
 				 
 				 result = result +'     <div class="form-group">                                                                                      ';
-				 result = result +'       <label class="col-md-3 control-label">Rate / Salary <span class="text-danger paddingLeft">*</span></label>  ';
+				 result = result +'       <label class="col-md-3 control-label">Rate / Salary </label>  ';
 				 result = result +'       <div class="col-md-6">                                                                                      ';
 				 result = result +'         <label>'+json.salaryRate+'</label>                                                                                  ';
 				 result = result +'       </div>                                                                                                      ';
@@ -302,14 +312,14 @@
 				 }
 			   
 				
-				 if(json.onboardTemplateId != null && json.onboardTemplateId != '' && json.onboardTemplateId != 'undefined'){
+				/*  if(json.onboardTemplateId != null && json.onboardTemplateId != '' && json.onboardTemplateId != 'undefined'){
 					 result = result +'        <div class="form-group">                                                                                   ';
 					 result = result +'            <label class="col-md-3 control-label">Onboard Template </label> ';
 					 result = result +'       <div class="col-md-6">                                                                                    ';
-					 result = result +'             <div id="onboardingTemplate"></div>                                                                                  ';
+					 result = result +'             <p id="onboardingTemplate"></p>                                                                                  ';
 					 result = result +'       </div>                                                                                                    ';
 					 result = result +'     </div>                                                                                                      ';
-				 }
+				 } */
 				 
 				 result = result +'   </div>                                                                                                        ';
 				 result = result +'     </div>';
@@ -324,7 +334,8 @@
 	    });
  }
  </script>
- <script>
+ 
+ <!-- <script>
 function loadOnBoardingTemplates(onboardTemplateId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -345,7 +356,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	    }
    });
 }
-</script>
+</script> -->
 
 
 
@@ -524,69 +535,69 @@ function getOnboardingTasksList(){
 	
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/viewCandidateOnboardTasks?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID,	    	   
+	   	type: "GET",
+	    url: sourceleadUrl+"/viewCandidateOnboardTasksByOnboardingUUID?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID,	    	   
 	    success: function(data) {
 	    	 var json = JSON.parse(data);
         	 var result = "";
         	 
-        	if(json.length > 0){ 
-        		result = result +'	<div class="clearfix">';
-        		result = result +'      <h4 class="pull-left">Task List</h4>';
-        		result = result +'  </div>';
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		
-	        		var prority = '';
-	        		var repeat = '';
-	        		
-	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
-	        			prority = report.priority;
-	        		}else{
-	        			prority = '----';
-	        		}
-	        		
-	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
-	        			repeat = report.taskRepeat;
-	        		}else{
-	        			repeat = '----';
-	        		}
-	        		
-	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	        		result = result +'<div class="media-body">';
-	        		result = result +'<div class="clearfix taskheder">';
-	        		
-	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong></label>";
-	        		
-	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
-	        		result = result +'</div>';
-	        		result = result +'<ul class="list-inline list-description mt10">';
-	        		
-	        		result = result +'<li><span>Assign To:</span>';
-	        		
-	        		if(report.usersList.length > 0){
-	        			for(var j=0; j<report.usersList.length; j++){
-		 					result = result +'<label>'+report.usersList[j]+'</label>';
-		 				}
-	        		}else{
-	 					result = result +'Onboarding Candidate';
-	 				}
-	        		result = result +'</li>';
-	        		
-	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
-	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
-	        		result = result +'</ul>';
-	        		result = result +'</div>';
-	        		result = result +'</div>';
-        		   
-	        		if(report.onboardTaskType != 'Candidate Task'){
-       					result = result +"<input type='hidden' name='savedTemplateTask' id='templateTask"+report.id+"' value='"+report.id+"' />";
-       				}
-				}
-        	}else{
-        		result = result +'<div><h4>No Tasks Found</h4></div>';
-        	}
+
+        	 if(json.length > 0){ 
+         		result = result +'	<div class="clearfix">';
+         		result = result +'      <h4 class="pull-left">Task List</h4>';
+         		result = result +'  </div>';
+ 	        	for (var i=0; i<json.length; i++)
+ 				{
+ 	        		var report = json[i];
+ 	        		
+ 	        		var prority = '';
+ 	        		var repeat = '';
+ 	        		
+ 	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+ 	        			prority = report.priority;
+ 	        		}else{
+ 	        			prority = '----';
+ 	        		}
+ 	        		
+ 	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+ 	        			repeat = report.taskRepeat;
+ 	        		}else{
+ 	        			repeat = '----';
+ 	        		}
+ 	        		
+ 	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+ 	        		result = result +'<div class="media-body">';
+ 	        		result = result +'<div class="clearfix taskheder">';
+ 	        		
+ 	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.subject+"</strong></label>";
+ 	        		
+ 	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.taskDateStr+'</span> </label>';
+ 	        		
+ 	        		
+ 	        		
+ 	        		result = result +'</div>';
+ 	        		
+ 	        		result = result +'<ul class="list-inline list-description mt10">';
+ 	        		
+ 	        		result = result +'<li><span>Assign To:</span>';
+ 	        		
+ 	        		result = result +'<label>'+report.assignedName+'</label>';
+ 	        		
+ 	        		result = result +'</li>';
+ 	        		
+ 	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+ 	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+ 	        		result = result +'<li><span>Status:</span> '+report.taskStatus+'</li>';
+ 	        		
+ 	        		result = result +'</ul>'; 
+ 	        		result = result +'</div>';
+ 	        		result = result +'</div>';
+         		   
+ 	        		
+ 				}
+         	}else{
+         		result = result +'<div><h4>No Tasks Found</h4></div>';
+         	}
         	
     		
     		 $("#onboardTasksListViewId").empty();

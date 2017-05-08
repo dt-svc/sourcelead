@@ -258,9 +258,9 @@
                 </select>
                 
                 </div>
-                 <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
+                 <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="" class="form-control">
                 <div class="input-group-btn tblminwidth-75 ratetype">
-                  <select class="selectpicker" id="currentRateType" name="currentRateType" field-name="Rate Type">
+                  <select class="selectpicker" id="currentRateType" name="currentRateType" field-name="Rate Per">
                     <option value="">Rate Per</option>
                     <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${currentRateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -296,9 +296,9 @@
                 </select>
                 
                 </div>
-                 <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
+                 <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="" class="form-control">
                 <div class="input-group-btn tblminwidth-75 ratetype">
-                  <select class="selectpicker" id="rateType" name="rateType" field-name="Rate Type">
+                  <select class="selectpicker" id="rateType" name="rateType" field-name="Rate Per">
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
                     <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -600,7 +600,6 @@ function getStates(state){
 function getCities(city){
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
-	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
@@ -611,10 +610,12 @@ function getCities(city){
 	        	$('#city').empty();
 	        	$('#city').append('<option value="">---select city---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
-	            		selected = 'selected';
-	            	}
-	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
+	            	
+	            	 if(city != null && city != 'undefined' && json[i] == city){
+	            		$('#city').append('<option value="'+city+'" selected>'+json[i]+'</option>');
+	            	}else{ 
+	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');	
+	            	 } 
 	            }
 	            $('#city').trigger("chosen:updated");
 	        },
@@ -959,56 +960,56 @@ function getDesignationType(designationType){
 <script>
 
 function rateValidations(){
-var rateType = document.getElementById("rateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#rateType').removeAttr('data-validation');
-	 $('#rateType').attr("data-validation-optional","true"); 
-} 
-
-var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	
-	 $('#rateType').removeAttr('data-validation-optional');
-	 $('#rateType').attr("data-validation","required"); 
-}else{
-$('#rateType').removeAttr('data-validation');
-$('#rateType').attr("data-validation-optional","true"); 
-}
-
-
-
-var currentRateType = document.getElementById("currentRateType").value; 
-	if(currentRateType != null && currentRateType != ""){
-		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
+	var rateType = document.getElementById("rateType").value; 
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	}else{
-		$('#currentRate').removeAttr('data-validation');
-	 	$('#currentRate').attr("data-validation-optional","true"); 
-		$('#currentRateType').removeAttr('data-validation');
-	 	$('#currentRateType').attr("data-validation-optional","true"); 
-	} 
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+	}
 
-
-var currentRate = document.getElementById("currentRate").value; 
-	 if(currentRate != null && currentRate != ""){
+	var expectedRate = document.getElementById("expectedRate").value; 
+	if(expectedRate != null && expectedRate != ""){
 		
-		 $('#currentRateType').removeAttr('data-validation-optional');
-		 $('#currentRateType').attr("data-validation","required"); 
+		 $('#rateType').removeAttr('data-validation-optional');
+		 $('#rateType').attr("data-validation","required"); 
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
+	}else{
+	$('#rateType').removeAttr('data-validation');
+	$('#rateType').attr("data-validation-optional","true"); 
+	}
+
+
+
+	var currentRateType = document.getElementById("currentRateType").value; 
+		if(currentRateType != null && currentRateType != ""){
+			$('#currentRate').removeAttr('data-validation-optional');
+			 $('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+
+		}else{
+			$('#currentRate').removeAttr('data-validation');
+		 	$('#currentRate').attr("data-validation-optional","true"); 
+		} 
+
+
+	var currentRate = document.getElementById("currentRate").value; 
+		 if(currentRate != null && currentRate != ""){
+			
+			 $('#currentRateType').removeAttr('data-validation-optional');
+			 $('#currentRateType').attr("data-validation","required"); 
+			 $('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
+
+			 
+		 }else{
+			 
+				 $('#currentRateType').removeAttr('data-validation');
+				 $('#currentRateType').attr("data-validation-optional","true"); 
 		 
-	 }else{
+		 }
 		 
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-	 
-	 }
-	 
-}
-</script>
+	}
+	</script>
 
 
 
@@ -1313,8 +1314,9 @@ function getCandidateDetails(){
 		        		 $("#state").val('').trigger("chosen:updated");
 		        		 $("select[name=state]").val('');
 		        	 }
-		        	 
+
 		        	 if(json['city'] != null && json['city'] != "" && json['city'] != 'undefined'){
+		        		 $("select[name=city]").val(json['city']);
 		        		 getCities(json['city']);
 		        	 }else{
 		        		 $("#city").val('').trigger("chosen:updated");

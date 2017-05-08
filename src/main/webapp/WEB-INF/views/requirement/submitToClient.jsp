@@ -500,7 +500,20 @@ function addEmailtemplate(requirementId){
  }
 		 
  }else{
-	    var result = "";
+	 var selectedShortlists = [];
+	 var selectedShortlistsRate = [];
+	 var selectedShortlistsRatePer = [];
+	 $("input[name='shortlist[]']:checked").each( function (i) {
+		 selectedShortlists[i] = $(this).val();
+		 var rateId = $(this).val();
+		 var selectedRate = $("#submissionRate"+rateId).val();
+		 selectedShortlistsRate[i] = selectedRate;
+		 var rateIdper = $(this).val();
+		 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
+		 selectedShortlistsRatePer[i] = selectedRatePer;
+	  
+		 if(selectedRate != '' && selectedRatePer == ''){
+		 var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
@@ -510,7 +523,21 @@ function addEmailtemplate(requirementId){
 		$("#popUp").append(result);
 		$("#pipeline_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
- }
+		
+		}else if(selectedRate == '' && selectedRatePer != ''){
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Submission Rate is Required</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	 }
+ });	
+}
 }
 </script>
 

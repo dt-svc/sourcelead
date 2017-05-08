@@ -102,7 +102,7 @@ function candDocumentsList(candidateId){
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div><span title="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
+	                    	 result  = result + ' <td><div><span title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -114,14 +114,14 @@ function candDocumentsList(candidateId){
 		                    	 }
 		                    	
 		                   
-		                   result = result+'<td><div class="tblicons"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\"></a>';
+		                   result = result+'<td><div class="tblicons">';
 			           		if(window.candidateStatusGlobal == 0){
 			           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 				           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 			           		}else{
 			           			var docUUID = opt.documentUUID;
-			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');"></a>';
-				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');"></i>';
+			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
+				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
 			           		}
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';
@@ -221,7 +221,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result  +'';
 	
 	result = result + '<div class="col-md-12 documentTypeDiv mb10" id="documentTypeDiv" style="display:none">';
-	result = result + '<input type="text" class="form-control input-sm" name="documentOtherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+	result = result + '<input type="text" class="form-control input-sm" name="documentOtherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="required validate_Space validate_length length1-250">';
 	result = result + '</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
@@ -230,7 +230,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
-	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document Type" data-validation="validate_Space validatedoc">';
+	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
 	result = result+'</div>';
 	result = result+'</div>';  
 	result = result+'</div>'; 
@@ -243,7 +243,7 @@ function addDocument(candidateId, documentUUID) {
 	
 	result = result+'<div class="clearfix mb10 mt25">';
 	result = result+'<div class="col-md-12">';
-	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation="validate_length length2-250" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'<textarea rows="2" placeholder="Description" value="" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"  field-name="Description" class="form-control"></textarea>';
 	result = result+'</div>';
 	result = result+'</div>';  
 	
@@ -331,8 +331,8 @@ function getDocumentType(documentType){
 	 var existingDocumentType = $('#name').val(); 
 	if(documentType.value == 'Other'){
 		 document.getElementById("documentTypeDiv").style.display="block";
-		  $("#documentOtherType").attr("data-validation-optional", "true");
-		  $("#documentOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+		  $("#documentOtherType").attr("data-validation-optional", "false");
+		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
 	}else{
 		document.getElementById("documentTypeDiv").style.display="none";
 		  $("#documentOtherType").attr("data-validation-optional", "true");
@@ -463,7 +463,7 @@ function getDocument(candidateId, documentId){
 function deleteDocument(candidateId, documentId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to delete the resume");
+	var message = confirm("You are choosing to delete the document");
 	if (message == true) {
 		$.ajax({
 		   	type: "POST",
@@ -492,7 +492,7 @@ this script is for remove Document in edit mode to upload new document
 function removeDocNameDiv(){
 	$("#docNameDiv").hide();
 	$("#uploadDocDiv").show();
-	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
+	$("#uploadFile").attr("data-validation", "required validate_Space validate_docimgpdf");
 }
 </script>
 

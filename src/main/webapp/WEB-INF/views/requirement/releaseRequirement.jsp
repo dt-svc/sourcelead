@@ -25,7 +25,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Release Jobs</h2>
+        <h2>Release Requirement</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Jobs</div>
     </section>
@@ -39,7 +39,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
           <h2 id="jobTitle" onclick="openVendors();">Profile</h2>
 
           <div class="content clearfix">
-            <div class="vendor_wrap">
+            <div class="vendor_wrap overflow_Auto">
               <div class="col-md-7 radioInline">
                 <!-- <select class="form-control selectpicker"  id="sele-rel"  onchange="listChange(this);">
                   <option id="cont" value ="releaseByContact">Release By Contact</option>
@@ -333,6 +333,7 @@ function releaseTo(){
 		var contactsIds = new Array();
 		var contactsTable = $('#candidatePagination').DataTable();
 		var contactsRowcollection =  contactsTable.$(".contactscheckbox:checked", {"page": "all"});
+		var requirementUUID = '${requirementUUID}';
 		contactsRowcollection.each(function()		
 		{
 			contactsIds.push($(this).attr('id'));
@@ -378,8 +379,7 @@ function releaseTo(){
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
-	 							location.replace(sourceleadUrl+"/requirementList");
-	 		            },
+	 		            	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);	 		            },
 	 		    });  
 	 	    }else{
 	 	    	$('span.jquery_form_error_message').show();
@@ -390,12 +390,17 @@ function releaseTo(){
 function releaseToOneContact(contactscheckboxId){
 	$('input:checkbox[name="contactscheckbox"]').prop('checked',false);
 	$("#" + contactscheckboxId).prop('checked', true);
+	$("#releaseToClientIconDiv"+contactscheckboxId).empty();
+	$("#releaseToClientIconDiv"+contactscheckboxId).prepend('<i class="fa fa-cog fa-spin"></i>');
 	releaseTo();
 }
 
 function releaseToOneVendor(vendorcheckboxId){
 	$('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
 	$("#" + vendorcheckboxId).prop('checked', true);
+	
+	$("#releaseToVendorIconDiv"+vendorcheckboxId).empty();
+	$("#releaseToVendorIconDiv"+vendorcheckboxId).prepend('<i class="fa fa-cog fa-spin"></i>');
 	releaseTo();
 }
 </script>
@@ -525,7 +530,7 @@ function getContactsLists(){
 			   		    	var json = JSON.parse(data);
 			   	        	var result = "";
 			   	        	var resultVendors = "";
-			                result = result +'<div class="require_wrap_table release-jobs-tbl">';
+			                result = result +'<div class="require_wrap_table release-jobs-tbl overflow_inherint">';
 			                result = result +'<table id="candidatePagination" class="display" cellspacing="0" width="100%">';
 			   	        	result = result +'<thead>';
 			   	        	result = result +'<tr>';
@@ -575,7 +580,7 @@ function getContactsLists(){
 					        		}
 									if(report.releasedRequirement =="false"){
 										'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-											result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
+											result = result +'<div id="releaseToClientIconDiv'+report.id+'"><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
 										'</sec:authorize>';
 										'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 											result = result +'<div class="fa fa-bullhorn"></div>';
@@ -687,7 +692,7 @@ function getVendorLists(){
    		    	/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	               			var json = JSON.parse(data);
 	           	        	var result = "";
-	                        result = result +'<div class="require_wrap_table release-jobs-tbl">';
+	                        result = result +'<div class="require_wrap_table release-jobs-tbl overflow_inherint">';
 	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
 	           	        	result = result +'<thead>';
 	           	        	result = result +'<tr>';
@@ -722,7 +727,7 @@ function getVendorLists(){
 	           	        	 
 	           	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
 	           	        			result = result +'<td>';
-	           	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
+	           	        			result = result +'<div  class="tbldata-dotdot-sm">';
 	           	        			result = result +'<span title='+report.orgName+'>'+report.orgName+'</span>';
 	           	        			result = result +'</div>';
 	           	        			result = result +'</td>';
@@ -732,21 +737,21 @@ function getVendorLists(){
 	           	        		
 	           	        		if(location != null && location  != '' && location  != 'undefined'){
 	           	        			result = result +'<td>';
-	           	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
+	           	        			result = result +'<div  class="tbldata-dotdot-sm">';
 	           	        			result = result +'<span title="'+location+'">'+location+'</span>';
 	           	        			result = result +'</div>';
 	           	        			result = result +'</td>';
 	           	        		}else{
 	           	        			result = result +'<td><div>--</div></td>';
 	           	        		}
-	        	       		result = result +'<td><div class="tbldata-dotdot-sm text-left">'+report.noOfContatcs+'</div></td>';
-	        	       		result = result +' <td><div class="tbldata-dotdot-sm text-left"><span  title="'+report.level+'">'+report.level+'</span></td>';
+	        	       		result = result +'<td><div class="tbldata-dotdot-sm">'+report.noOfContatcs+'</div></td>';
+	        	       		result = result +' <td><div class="tbldata-dotdot-sm"><span  title="'+report.level+'">'+report.level+'</span></td>';
 	        	       		result = result +'<td>';
 	        	       		if(report.noOfNonReleasedContacts == 0){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
 	                		}else if(report.noOfNonReleasedContacts > 0){
 									'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
+										result = result +'<div id="releaseToVendorIconDiv'+report.id+'"><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
 									'</sec:authorize>';
 									'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 										result = result +'<div class="fa fa-bullhorn"></div>';

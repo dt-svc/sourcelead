@@ -14,7 +14,7 @@
           <div class="pull-left">
             <h2>On-board Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='onboardingTemplatesList'/>">Templates List</a> &raquo; Create User </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='onboardingTemplatesList'/>">Templates List</a> &raquo; Create Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -35,6 +35,7 @@
               <small>List of tasks</small> </a></li>
           </ul>
           <input type="hidden" name="templateId" id="templateId" value=""/>
+          <input type="hidden" id="onboardTaskDiv" value="N"/>
           <div class="tab-content"> 
             
             <!-- Employee Details -->
@@ -50,12 +51,12 @@
                   </div>
                   <div class="col-md-6">
                     <label>Description <span class="text-danger paddingLeft">*</span></label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation="required"></textarea>
+                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Description" data-validation="required validate_Space validate_length length2-500"></textarea>
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/onboardingTemplatesList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -128,9 +129,9 @@
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/dashboard/${SourceLeadWeb_orgLocationId}'">
-                    <input type="button" value="Save" id="save_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/onboardingTemplatesList'">
+                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
+                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
                 </div>
                 </form>
@@ -161,7 +162,7 @@
                               <div class="col-md-6">
                                 <div class="row">
                                 
-                                <div class="col-md-12 mb10">
+                                <div class="col-md-12 mb10" id="taskNameDiv">
                                   <label>Subject <span class="text-danger paddingLeft">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
@@ -190,10 +191,10 @@
                                 
                                 <div class="col-md-12 mb10">
                                   <div class="mt">
-                                    <label class="checkbox-inline">
+                                    <label class="paddingRight">
                                       <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
@@ -210,10 +211,10 @@
                                   <label>Assign To <span class="text-danger paddingLeft">*</span></label>
                                   
                                   <div class="">
-                                    <label class="radio-inline">
+                                    <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
                                       Candidate </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
                                   </div>
@@ -255,7 +256,7 @@
 											</div> 
                                       
                                         
-                                        <div class="col-md-6 paddingRight paddingLeft">
+                                        <div class="col-md-6 paddingLeft">
 										<label class="small">Days</label>
 											<div class="select-field">
 												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
@@ -302,7 +303,7 @@
                                     
                                   </div>
                                 </div>
-	                               <div class="col-md-12 mb10">
+	                               <div class="clearfix mb10">
                                   <label>Description</label>
                                   <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
                                 </div>
@@ -368,7 +369,15 @@
   <script>
   function flushOnboardTask(){
 	  document.getElementById("addonboardTask_form").reset();
-	
+	  $('#taskMonths').removeAttr('data-validation-optional');
+	  $("#taskMonths").attr("data-validation", "required");
+	  
+	  $('#dueAfterDiv').find('p.jquery_form_error_message').remove();	
+	  $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+	  document.getElementById("assignToUserDiv").style.display="none";
+	  $('#onboardAssignedTo').removeAttr('data-validation');
+	  $("#onboardAssignedTo").attr("data-validation-optional", "true");
+	  $('#assignToUserDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   
@@ -424,7 +433,8 @@
   	        $("#documentstemplateId").val(templateId);
   	        
   	      document.getElementById("templateDocs").disabled = false;
-  	    document.getElementById("templateTasks").disabled = false;
+  	      document.getElementById("templateTasks").disabled = false;
+  	      $("#onboardTaskDiv").val('Y');
 		}
 		
 		getTemplateDetails();
@@ -788,6 +798,9 @@ function createTemplate(saveType){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
+	    	$("#save_button").attr("disabled", "disabled");
+    		$("#save_continue_button").attr("disabled", "disabled");
+	        
 	       
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
@@ -808,6 +821,10 @@ function createTemplate(saveType){
 	     	        $("#templateId").val(templateId);
 	     	        $("#onboardtemplateId").val(templateId);
 	     	        $("#documentstemplateId").val(templateId);
+	     	        
+	     	        $("#save_button").removeAttr("disabled")
+	        	    $("#save_continue_button").removeAttr("disabled")
+	        	    
 	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
@@ -844,6 +861,8 @@ function createTemplateDocs(saveType){
       
 	   var form = $('#templateDocuments_form')[0];
 	   var formData = new FormData(form); 
+	   $("#save_doc_button").attr("disabled", "disabled");
+	   $("#save_continue_doc_button").attr("disabled", "disabled");
 	
    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
@@ -861,13 +880,17 @@ function createTemplateDocs(saveType){
 	        		var $tabs = $('.tabbable li');
 	     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
 	     	        document.getElementById("templateTasks").disabled = false;
+	     	        $("#onboardTaskDiv").val('Y');
 	     	        getOnboardingTasksList();
 	        	}else{
 	        		getTemplatePolicyDocumentsDetails();
 	        		getTemplateSupportingDocumentsDetails();
-	        		getTemplateContractsDocumentsDetails(templateId);
-	        		getTemplateFormsDocumentsDetails(templateId);
+	        		getTemplateContractsDocumentsDetails();
+	        		getTemplateFormsDocumentsDetails();
 	        	}
+	    	  
+	    	  $("#save_doc_button").removeAttr("disabled");
+      	      $("#save_continue_doc_button").removeAttr("disabled");
 	    	  $("#loading").removeAttr("style");
 	    	  
 	      }
@@ -1228,6 +1251,10 @@ function validateTemplateName(){
 <script>
 function getOnboardingTasksList(){
 	var templateId = document.getElementById("templateId").value;
+	var onboardTaskDiv = document.getElementById("onboardTaskDiv").value;
+	
+	if(onboardTaskDiv == 'Y'){
+	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
@@ -1290,7 +1317,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -1303,6 +1330,7 @@ function getOnboardingTasksList(){
 	
   $("#loading").removeAttr("style");
 	
+ }
 }
 </script>
 
@@ -1329,13 +1357,15 @@ function deleteTask(taskId){
 function saveAndFinishOnboardTemplate(templateId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
+	$("#finish_task").attr("disabled", "disabled");
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(data) {
-       	 
+	    	 $("#finish_task").removeAttr("disabled");
 	    	 $("#loading").removeAttr("style");
+	    	 location.replace(sourceleadUrl+"/onboardingTemplatesList"); 
 	    }
   }); 
 	

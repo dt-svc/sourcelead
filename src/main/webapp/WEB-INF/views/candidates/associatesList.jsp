@@ -1084,13 +1084,7 @@ function cancel(candidateId){
 					 </div>
 						
 						<div class="clearfix">
-						  <div class="col-md-4">
-						    <label>Designation</label>
-						     <div class="clearfix">
-						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
-                                     </select>
-						    </div>
-						</div>
+						  
 						<div class="col-md-8">
 							<div class="row">
 								<div class="col-md-6">
@@ -1115,6 +1109,9 @@ function cancel(candidateId){
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
+								<div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+									</div>
 									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -1127,13 +1124,18 @@ function cancel(candidateId){
 												<option value="Yearly">Yearly</option>
 				                            </select> 
 									</div>
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
+								    
 								</div>
 							</div>
 						 </div>
 						 </div>
+						 <div class="col-md-4">
+						    <label>Designation</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
+                                     </select>
+						    </div>
+						</div>
 						 </div>
 						  <div class="clearfix">
 						  <div class="col-md-4">
@@ -1288,7 +1290,8 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
       </div>
-      <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
+      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
+      <div class="timesheet_head topfilters topfilters2 pull-right">
         <ul>
            <li id="filter2ApprovePop" style="display: none;"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -2223,6 +2226,9 @@ function minMaxExperience(){
 	     $("#excludeKeyWord").empty();
 	     $("#designation").empty();
 	      $("#minRate").val(''); 
+	      $("#country").val(''); 
+	      $("#state").val('');
+	      $("#city").val('');
 	      
 	     $("#currency").val('');
 	     $('.selectpicker').selectpicker('refresh');
@@ -2254,6 +2260,9 @@ function minMaxExperience(){
 	     $("#applicantType").val('');
 	     $("#candidateSkills").val('');
 	     $("#primarySkill").val('');
+	     $("#country").val(''); 
+	     $("#state").val(''); 
+	     $("#city").val(''); 
 	    
 	}
 </script>

@@ -1,9 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -25,7 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
@@ -34,6 +33,7 @@ import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -58,6 +58,7 @@ import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -120,6 +121,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	 
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -270,6 +274,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
+		/*saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template","NDA");
+		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");*/
 		
 		/*
 		 * Saving USER DB data as ElasticSearch Documents
@@ -280,6 +290,22 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	}
 	
+	private void saveDefaultContractTemplate(Org org, OrgLocations orgLocations, User user,String template,String templateType) throws Exception {
+		 StringBuilder templateStringBuilder=new StringBuilder();
+		 ContractsTemplate contractsTemplate = new ContractsTemplate();
+		 contractsTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(template).toString());
+		 contractsTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(template).toString());
+		 contractsTemplate.setOrgLocationId(orgLocations);
+		 contractsTemplate.setTemplateType(templateType);
+		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
+		 contractsTemplate.setUpdatedBy(user.getUserCode());
+		 contractsTemplate.setUpdatedDate(new Date());
+		 contractsTemplate.setCreatedBy(user.getUserCode());
+		 contractsTemplate.setCreatedDate(new Date());
+		 contractsTemplateService.saveContractTemplate(contractsTemplate);
+		
+	}
+
 	private Candidate getCandidateDetails(User user, OrgLocations orgLocations) {
 		Candidate candidate = new Candidate();
 		candidate.setOrgLocationId(orgLocations);
@@ -1190,15 +1216,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception {
 		 String userName = null;
 		 User user = null;
+		 Candidate can = null;
 		 UserRole userRole = null;
 		 OrgLocations orgLocations = null;
 		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 			userName = jsonObj.getString("userName");
 			user = userService.getUserByEmailAndUserType(userName,Constants.PROFESSIONAL);
+			
 		}
 		if(user != null ) {
 			     if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
@@ -1207,20 +1236,25 @@ public class RegistrationServiceImpl implements RegistrationService{
 						String profileUrl = jsonObj.getString("profileUrl");
 						if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
 							user.setGooglePlus(profileUrl);
+							can.setGooglePlus(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
 							user.setFacebook(profileUrl);
+							can.setFacebookUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
-							user.setTwitter(profileUrl);			
+							user.setTwitter(profileUrl);
+							can.setTwitterUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
 							user.setLinkedIn(profileUrl);
+							can.setLinkedUrl(profileUrl);
 						}
 						
 					}
 					userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 					orgLocations = userRole.getOrgLocations();
+					
 		}
 		else {
 			 user = new User();
@@ -1314,6 +1348,23 @@ public class RegistrationServiceImpl implements RegistrationService{
 				if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
 					candidate.setEmail(jsonObj.getString("email"));
 				}
+
+				if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+						  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
+							String service = jsonObj.getString("service");
+							String profileUrl = jsonObj.getString("profileUrl");
+							if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+								candidate.setFacebookUrl(profileUrl);
+							}
+							else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+								candidate.setTwitterUrl(profileUrl);			
+							}
+							else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+								candidate.setLinkedUrl(profileUrl);
+							}
+							
+						}
+				
 				
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 				candidate.setCreatedBy("sladmin");
