@@ -190,7 +190,8 @@ public class InvoiceRestController {
 			@RequestParam(value = "paymentStatus", required = false) String paymentStatus,
 			@RequestParam(value = "dayWisetype", required = false) String reportType,
 			@RequestParam(value = "startDate", required = false) String customStartDate,
-			@RequestParam(value = "endDate", required = false) String customEndDate,HttpServletRequest request) throws Exception {
+			@RequestParam(value = "endDate", required = false) String customEndDate,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request) throws Exception {
 		
     	String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -246,7 +247,7 @@ public class InvoiceRestController {
 		}
 		
 		
-		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC);
+		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 
 		for(Invoice invoice :invoiceList){
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){

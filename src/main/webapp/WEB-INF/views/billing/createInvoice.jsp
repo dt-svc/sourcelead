@@ -213,7 +213,7 @@ function cancel(){
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm" id="discountValue" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
+                      <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
                     </div>
                   </div>
                 </div>
@@ -399,19 +399,12 @@ function cancel(){
 		         }else{
 		        	 taxTotal = taxTotales;
 		         }
-		         var tot = $("#grandTotal").val();
-		             
-		        /*  if(taxValue == '' && taxTotal==''){
-	            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-	              }else{ */
-	            	
-	            	  var tot = $("#grandTotal").val();
-	  	            var first=parseFloat(tot);
-	  	             var second=parseFloat(taxTotal); 
-	  	             var total  = (first+second);
-	  	           $("#grandTotal").val(total.toFixed(2));
-	              /* } */
-		        
+		        var tot = $("#grandTotal").val();
+            	var tot = $("#grandTotal").val();
+  	            var first=parseFloat(tot);
+  	            var second=parseFloat(taxTotal); 
+  	            var total  = (first+second);
+  	            $("#grandTotal").val(total.toFixed(2));
 		    }
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
@@ -442,7 +435,7 @@ function cancel(){
 			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 			
-			
+			$("#discountValue").removeAttr("disabled");
 			
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divTsRow" + maxRowNum);
@@ -892,20 +885,33 @@ function calculateDiscount(){
 	var subTotal = $("#inoviceTotal").val();
 	var discountValue = $("#discountValue").val();
 	var total ='';
-	f
 	if(discountType == 'flat'){
-		total = subTotal-discountValue;
-		$("#discountTotal").val(discountValue.toFixed(2));
-		$("#grandTotal").val(total.toFixed(2));
-		$("#afterDiscountTotal").val(total.toFixed(2));
+		if(discountValue && subTotal > 0){
+			total = subTotal-discountValue;
+			$("#discountTotal").val(discountValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
 		
 	}
+	
 	if(discountType == 'percentage'){
-		var perCentValue = (subTotal * discountValue)/100;
-		total = subTotal - perCentValue;
-		$("#discountTotal").val(perCentValue.toFixed(2));
-		$("#grandTotal").val(total.toFixed(2));
-		$("#afterDiscountTotal").val(total.toFixed(2));
+		if(discountValue && subTotal > 0){
+			var perCentValue = (subTotal * discountValue)/100;
+			total = subTotal - perCentValue;
+			$("#discountTotal").val(perCentValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
 	}
 	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	if(maxRowNum > 1){
@@ -916,6 +922,7 @@ function calculateDiscount(){
 	}
 }
 </script>
+
 <!-- 
 <script>
   function singleRowTotalhour(){
@@ -1333,7 +1340,21 @@ function getProjectsList(){
 </script>
 <script>
 function saveInvoice(saveType){
-         var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+		var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	    var selectedAssociates = '';
+		  if(maxTsRowNum > 1){
+			  for(var i=1; i<maxTsRowNum; i++){
+				  if(document.getElementById(i+"candidateId")){
+					  var associateId = document.getElementById(i+"candidateId").value;
+					  if(selectedAssociates == ''){
+						  selectedAssociates = associateId;
+					  }else{
+						  selectedAssociates = selectedAssociates+","+associateId;
+					  } 
+				  }
+			  }
+		  }
+		  
          if ($('#invoice_form').validate(false, validationSettings)){  
  		    var frm = $('#invoice_form').serializeFormJSON();
  	        var con = JSON.stringify(frm);
@@ -1344,7 +1365,8 @@ function saveInvoice(saveType){
  	        var form = $('#invoice_form')[0];
  	 	    var formData = new FormData(form); 
  	 	    var sourceleadUrl ='${sourceleadUrl}';
-         if(maxTsRowNum < 2){
+ 	 	    
+ 	 	  if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
         	 var result = "";
      		result = result +"	<div class='project_inn_mask'></div>";
      		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
