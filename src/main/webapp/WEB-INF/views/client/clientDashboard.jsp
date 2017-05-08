@@ -261,7 +261,8 @@ overflow-x: auto;
         </div>
 		<!-- Advanced Search Ends -->
 		<div class="clients_wrap vendor_wrap_shadownone">
-				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
+<!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
+ -->				<div class="timesheet_head datatbl-filters topfilters">
 					<ul>
 		                  <%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
