@@ -1290,7 +1290,8 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
       </div>
-      <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
+      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
+      <div class="timesheet_head topfilters topfilters2 pull-right">
         <ul>
            <li id="filter2ApprovePop" style="display: none;"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">

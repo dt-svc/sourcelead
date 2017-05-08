@@ -64,6 +64,8 @@
                   <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template">
                   </select>
               </div>
+              <div class="col-md-8">
+              </div>
             </div>  
             
             <div class="form-group" id="requirementDiv" style="display: none;">
@@ -343,7 +345,7 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right mt">
-            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
             <input type="button" value="Save" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left">
 
             <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:none">
@@ -1130,7 +1132,7 @@ function validateContractTitle(){
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_template" ).addClass('button').val('Save Template');
+		        		 $("#save_template" ).addClass('button').val('Save');
                         $("#save_template").removeAttr("disabled");
 		        	}
 		        	}

@@ -57,7 +57,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return contractsTemplate;
 	}
 
-	@Override
+	/*@Override
 	@Transactional
 	public ContractsTemplate saveContractTemplate(Long contractTemplateId) {
 		
@@ -71,7 +71,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		} else {
 			return null;
 		}
-	}
+	}*/
 
 	@Override
 	@Transactional
@@ -113,7 +113,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (contracts != null) {
-				session.saveOrUpdate(contracts);
+			session.saveOrUpdate(contracts);
 			}
 			logger.debug("contractsTemplate Added Successfully");
 		} catch (Exception exception) {
@@ -240,7 +240,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Contracts> getListOfContractsEnvId() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.parentContractId.id IS NULL").setCacheable(true).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.typeOfContract = 'New' and ct.parentContractId.id IS NULL").setCacheable(true).list();
 		return contractsList;
 	}
 

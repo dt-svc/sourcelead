@@ -2093,7 +2093,10 @@ function rescheduleInterClose(){
 
  <script>
  function rescheduleInterviewUpdate(submissionId){
-	    validateOtherMail();
+	 	if($("#notificationToOthers").prop('checked') == true){
+	 		validateOtherMail();
+		}
+		
 		if ($('#rescheduleInterview_form').validate(false, validationSettings)) {
 			var frm = $('#rescheduleInterview_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -2338,7 +2341,6 @@ function pipelineList(requirementId){
 	filterReq(requirementId,submissionType);
 }
 </script>
-
 
 
 
