@@ -88,6 +88,9 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 					Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
 					Float receivedAmount  = totalAmount - customAmount;
 					invoice.setPaymentStatus("Partial Paid");
+					if(totalAmount.equals(customAmount)){
+						invoice.setPaymentStatus("Paid");
+					}
 					invoice.setDueAmount(receivedAmount.toString());
 				}
 			}
