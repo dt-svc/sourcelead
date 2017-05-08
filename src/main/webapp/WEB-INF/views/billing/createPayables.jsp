@@ -208,7 +208,7 @@ function cancel(){
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm" id="discountValue" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
+                      <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
                     </div>
                   </div>
                 </div>
@@ -388,6 +388,27 @@ function cancel(){
 	             var second=parseFloat(taxTotal); 
 	             var total  = (first+second);
 		    }
+		    
+		    
+		    var selectedAssociates = '';
+			var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+			  if(maxTsRowNum > 1){
+				  for(var i=1; i<maxTsRowNum; i++){
+					  if(document.getElementById(i+"candidateId")){
+						  var associateId = document.getElementById(i+"candidateId").value;
+						  if(selectedAssociates == ''){
+							  selectedAssociates = associateId;
+						  }else{
+							  selectedAssociates = selectedAssociates+","+associateId;
+						  } 
+					  }
+				  }
+			  }
+			  
+			  if(selectedAssociates.length == 1){
+				  $("#discountValue").val('');
+				  $("#discountValue").attr("disabled", "disabled");
+			  }
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addInvoiceTbl').rows[rowId];
@@ -395,6 +416,10 @@ function cancel(){
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
+		
+		
+		  
+		  
 		
 	
 	}
@@ -416,6 +441,7 @@ function cancel(){
 			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 			
+			$("#discountValue").removeAttr("disabled");
 			
 			
 			var row = tbl.insertRow(maxRowNum);
@@ -888,18 +914,32 @@ function calculateDiscount(){
 	var discountValue = $("#discountValue").val();
 	var total ='';
 	if(discountType == 'flat'){
-		total = subTotal-discountValue;
-		$("#discountTotal").val(discountValue);
-		$("#grandTotal").val(total);
-		$("#afterDiscountTotal").val(total);
+		if(discountValue && subTotal > 0){
+			total = subTotal-discountValue;
+			$("#discountTotal").val(discountValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
 		
 	}
+	
 	if(discountType == 'percentage'){
-		var perCentValue = (subTotal * discountValue)/100;
-		total = subTotal - perCentValue;
-		$("#discountTotal").val(perCentValue);
-		$("#grandTotal").val(total);
-		$("#afterDiscountTotal").val(total);
+		if(discountValue && subTotal > 0){
+			var perCentValue = (subTotal * discountValue)/100;
+			total = subTotal - perCentValue;
+			$("#discountTotal").val(perCentValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
 	}
 	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	if(maxRowNum > 1){
@@ -1132,7 +1172,9 @@ function calculateTaxDiscount(rowId){
     var afterDiscountTotal = $("#afterDiscountTotal").val();
     var grandTotal =  $("#grandTotal").val();
      var total ='';
-    if(taxType == 'flat'){
+    
+     if(taxType == 'flat'){
+    	 
     	 var first=parseFloat(taxValue);
          var second=parseFloat(grandTotal);
          total = (first+second);
