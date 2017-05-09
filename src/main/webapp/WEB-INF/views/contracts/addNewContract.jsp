@@ -346,9 +346,9 @@
         <div class="col-lg-12">
           <div class="pull-right mt">
             <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
-            <input type="button" value="Save" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left">
+            <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left">
 
-            <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:none">
+            <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:none">
             <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
