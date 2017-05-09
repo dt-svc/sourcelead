@@ -1417,7 +1417,7 @@ function saveInvoice(saveType){
 	    		         processData: false,
 	    		         contentType:false,
 	    			     dataType : 'json',
-	     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
+	     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=receivable", 
 	    		        success: function(result) {
 	    		     		$("#invoiceLoading").removeAttr("style");
 	    		     		location.replace(sourceleadUrl+"/invoiceList");
