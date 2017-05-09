@@ -620,7 +620,7 @@ function getContractTemplates(){
       success :function(data) {
     	var json = JSON.parse(data);
       	var output = "";
-      	output = output + "<option>Select Template</option>";
+      	output = output + "<option value=''>Select Template</option>";
       	for (var i=0; i<json.length; i++)
 			{
 	        var opt = json[i];

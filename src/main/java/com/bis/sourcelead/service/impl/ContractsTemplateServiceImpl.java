@@ -330,10 +330,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					vendorContracts.setContractType("Client SOW");
 				}
 				else if("NDA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-					vendorContracts.setContractType("NDA");
+					vendorContracts.setContractType("Vendor NDA");
 				}
 				else if("NSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-					vendorContracts.setContractType("NSA");
+					vendorContracts.setContractType("Vendor NSA");
 				}
 				vendorContracts.setInitiatorType("Client");
 				vendorContracts.setContractOrgLocationId(orgLocation);
