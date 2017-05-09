@@ -1,7 +1,10 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+<<<<<<< HEAD
 import java.util.HashSet;
+=======
+>>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 import java.util.List;
 import java.util.Set;
 
@@ -20,8 +23,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "INVOICE", catalog = "sourcelead")
@@ -54,6 +55,9 @@ public class Invoice {
 	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
+	
+	@Column(name = "INVOICE_UUID")
+	private String invoiceUUID;
 	
 	@Column(name = "INVOICE_DATE")
 	private Date invoiceDate;
@@ -143,6 +147,7 @@ public class Invoice {
 	private String dueDateStr;
 	
 	@Transient
+<<<<<<< HEAD
 	List<InvoiceLineItems> invoiceLineItemsList;
 	
 	@Transient
@@ -150,6 +155,24 @@ public class Invoice {
 	
 	@Transient
 	List<InvoiceDocument> invoiceDocumentList;
+=======
+	private Long vendorOrgRelationId;
+	
+	@Transient
+	private Long vendorContactId;
+	
+	@Transient
+	private String orgName;
+	
+	@Transient
+	List<InvoiceLineItems> invoiceLineItemsList;
+	
+	@Transient
+	List<InvoiceDocument> invoiceDocumentsList;
+	
+	@Transient
+	List<InvoiceTax> invoiceTaxList;
+>>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 
 	public Long getId()
 	{
@@ -460,6 +483,44 @@ public class Invoice {
 		this.invoiceType = invoiceType;
 	}
 
+<<<<<<< HEAD
+=======
+	public String getInvoiceUUID() {
+		return invoiceUUID;
+	}
+
+	public void setInvoiceUUID(String invoiceUUID) {
+		this.invoiceUUID = invoiceUUID;
+	}
+
+
+	public Long getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	
+
+	public Long getVendorContactId() {
+		return vendorContactId;
+	}
+
+	public void setVendorContactId(Long vendorContactId) {
+		this.vendorContactId = vendorContactId;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+>>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 	public List<InvoiceLineItems> getInvoiceLineItemsList() {
 		return invoiceLineItemsList;
 	}
@@ -468,6 +529,17 @@ public class Invoice {
 		this.invoiceLineItemsList = invoiceLineItemsList;
 	}
 
+<<<<<<< HEAD
+=======
+	public List<InvoiceDocument> getInvoiceDocumentsList() {
+		return invoiceDocumentsList;
+	}
+
+	public void setInvoiceDocumentsList(List<InvoiceDocument> invoiceDocumentsList) {
+		this.invoiceDocumentsList = invoiceDocumentsList;
+	}
+
+>>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 	public List<InvoiceTax> getInvoiceTaxList() {
 		return invoiceTaxList;
 	}
@@ -476,6 +548,7 @@ public class Invoice {
 		this.invoiceTaxList = invoiceTaxList;
 	}
 
+<<<<<<< HEAD
 	public List<InvoiceDocument> getInvoiceDocumentList() {
 		return invoiceDocumentList;
 	}
@@ -483,4 +556,6 @@ public class Invoice {
 	public void setInvoiceDocumentList(List<InvoiceDocument> invoiceDocumentList) {
 		this.invoiceDocumentList = invoiceDocumentList;
 	}
+=======
+>>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 }

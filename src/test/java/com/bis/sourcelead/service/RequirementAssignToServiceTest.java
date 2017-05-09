@@ -171,6 +171,7 @@ public class RequirementAssignToServiceTest {
 	            		childContarct.setId(childContarct.getId());
 	            		pCt.setId(contracts.getId());
 	            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
+	            	logger.info(evp.getStatus() +"contracts"+contracts.getId());
 	            	if(evp.getStatus().equalsIgnoreCase("completed")){
 	        			if(null != childContarct.getParentContractId()){
 	        				childContarct.setId(childContarct.getId());

@@ -55,13 +55,13 @@ function prepareReportDataDiv(data){
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
-	result = result + '      <th>Title</th>';
+	result = result + '     <th>Title</th>';
 	result = result + '    <th>Client</th>';
 	result = result + '    <th>Employement Type</th>';
 	result = result + '    <th>Location</th>';
 	result = result + '    <th>No.Of positions</th>';
-	result = result + '    <th>owner</th>';
-	result = result + '    <th>status</th>';
+	result = result + '    <th>Owner</th>';
+	result = result + '    <th>Status</th>';
 	result = result + '    <th>No.Of Applicants</th>';
 	result = result + '    <th>Posted On</th>';
 	result = result + '   </tr>';
@@ -256,15 +256,15 @@ function toDate(selector) {
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
-	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
-		 <option value="">select</option>
+	  <div class="reportBtn dropdown-select">
+		<select class="form-control" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
+		 <option value="">-- Select --</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week</option>
+		  <option value="twoweeks">2 Weeks</option>
+		  <option value="month">1 Month</option>
+		  <option value="twomonths">2 Months</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	

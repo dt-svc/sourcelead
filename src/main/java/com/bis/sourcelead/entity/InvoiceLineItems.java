@@ -84,7 +84,10 @@ public class InvoiceLineItems {
 	
 	@Transient
 	private String sowName;
-	
+
+	@Transient
+	private Long candidateId;
+		
 	@Transient
 	private String startDateStr;
 	
@@ -93,7 +96,14 @@ public class InvoiceLineItems {
 	
 	@Transient
 	private String employeeId;
+
+	@Transient
+	private String endDateStr;
 	
+	@Transient
+	private Long contractId;
+	
+
 	public Long getId()
 	{
 		return id;
@@ -264,6 +274,7 @@ public class InvoiceLineItems {
 		this.updatedBy = updatedBy;
 	}
 
+
 	public String getCandidateName() {
 		return candidateName;
 	}
@@ -278,6 +289,13 @@ public class InvoiceLineItems {
 
 	public void setSowName(String sowName) {
 		this.sowName = sowName;
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 
 	public String getStartDateStr() {
@@ -287,6 +305,7 @@ public class InvoiceLineItems {
 	public void setStartDateStr(String startDateStr) {
 		this.startDateStr = startDateStr;
 	}
+
 
 	public String getEndDtaeStr() {
 		return endDtaeStr;
@@ -302,6 +321,21 @@ public class InvoiceLineItems {
 
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
+}
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public Long getContractId() {
+		return contractId;
+	}
+
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
 	}
 	
 }

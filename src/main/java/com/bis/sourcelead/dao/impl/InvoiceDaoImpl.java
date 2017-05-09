@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.InvoiceDao;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 
@@ -98,12 +99,13 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
+	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts> contractsList = null;
-		String query = "from Contracts contract left join fetch contract.requirementSubmission submission where contract.orgLocationId.id = :orgLocationId and contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId";
-	     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		String query = "from Contracts contract left join fetch contract.requirementSubmission submission where contract.orgLocationId.id = :orgLocationId and "
+				+ "contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId and contract.contractType = :contractType ";
+	     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).setCacheable(true).list();
 	  if(null != contractsList){
 		  return contractsList;
 	  }
@@ -128,6 +130,18 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		String query = "from Invoice invoice  where invoice.id = :invoiceId and invoice.orgLocation.id = :orgLocationId ";
 		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return viewInvoiceList;
+}
+	@Override 
+	@Transactional(rollbackFor = { Exception.class })
+	public Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> invoice = session.createQuery("from Invoice invoice  where invoice.invoiceUUID =:invoiceUUID" ).setString( "invoiceUUID", invoiceUUID ).setCacheable(true).list();
+		if (invoice.size() > 0) {
+			return invoice.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

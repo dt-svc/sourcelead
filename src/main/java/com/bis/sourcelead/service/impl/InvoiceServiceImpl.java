@@ -30,6 +30,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService{
@@ -60,9 +61,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 
 	}
-	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
+	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType) throws Exception
 	{
-		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId);
+		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId,contractType);
 	}
 
 	@Override
@@ -83,8 +84,7 @@ public class InvoiceServiceImpl implements InvoiceService{
       		}
       		
       		if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
-      			String[] contact = jsonObj.getString("vendorContact").split(",");
-      			User contactUser = userService.getUserById(Long.parseLong(contact[1]));
+      			User contactUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
       			invoice.setContactUser(contactUser);
       		}
       		
@@ -155,6 +155,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(jsonObj.has("afterDiscountTotal") && !"".equalsIgnoreCase(jsonObj.getString("afterDiscountTotal"))){
 			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
 		}
+		invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		invoice.setPaymentStatus("Unpaid");
 		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
@@ -298,6 +299,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
 		return invoiceDao.getViewInvoiceListByInvoiceIdAndOrglocationId(invoiceId,orgLocationId);
+}
+@Override
+	public Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception {
+		return invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
 	}
 	
 

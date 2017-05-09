@@ -174,12 +174,20 @@ public class InvoiceRestController {
     
     @RequestMapping(value = "/getSowcontractListByAssociateId", method = RequestMethod.GET)
  	public @ResponseBody  String getSowcontractListByAssociateId(@RequestParam(value = "candidateId", required = false) Long candidateId,
- 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
+ 			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+ 			@RequestParam(value = "contractType", required = false) String contractType,
+ 			HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
      	String resultJson = "";
      	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+     	List<Contracts> contractsList = null;
      	if(null != orgRelationId){
-     		List<Contracts> contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId);	
+     		if(contractType.equalsIgnoreCase("vendorSow")){
+     			 contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId,Constants.Vendor_SOW);
+     		}else{
+     			contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId,Constants.Client_SOW);	
+     		}
+     		 	
      		if(null != contractsList){
          		resultJson = commonUtil.toJSON(contractsList);	
          	}

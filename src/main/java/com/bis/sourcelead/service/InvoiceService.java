@@ -18,9 +18,11 @@ public interface InvoiceService {
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	
-	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId)throws Exception;
+	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
 	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType)throws Exception;
+	
+	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId,Long orgLocationId)throws Exception;
 }
