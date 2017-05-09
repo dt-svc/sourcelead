@@ -24,16 +24,20 @@ $(document).ready(function(){
       <div class="onboardDashboard_counts">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons"> <a href="<c:url value='/createPayables'/>"  class="btn btn-primary btn-sm" title="Create payables"> <i class="fa fa-plus paddingRight"></i>Create Payables</a>
-            <div class="pull-right select-field ml">
-              <select class="form-control input-sm">
-                <option class="disabled" selected="">--Select option--</option>
-                <option>1 Month</option>
-                <option>2 Months</option>
-                <option>3 Months</option>
-                <option>6 Months</option>
-                <option>1 Year</option>
-                <option>Custom ... </option>
+           <div class="pull-right select-field ml">
+              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getPayableInvoiceList();customInvoiceList();">
+                <option value="month">1 Month</option>
+                <option value="twomonths">2 Months</option>
+                <option value="threemonths">3 Months</option>
+                <option value="sixmonths">6 Months</option>
+                <option value="oneyear">1 Year</option>
+                <option value="custom">Custom</option>
               </select>
+              
+              <div class="custom_search">
+              <div id="customDateDivId"></id>
+            </div>
+          </div>
             </div>
           </div>
           <ul class="nav nav-tabs" id="tab_bar">
@@ -69,32 +73,55 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li><span id="onboard-pop"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play"></i></span>|
-                        <div class="approved_pop">
+                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Invoice</span><i class="glyphicon glyphicon-play" ></i>|
+                        <div class="approved_pop" id="invoiceTabOne">
                           <ul>
                             <li>
-                              <input type="checkbox" value="" name="onboard" id="onboard1" checked="">
-                              <label for="onboard1">Sent</label>
+                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getPayableInvoiceList();" >
+                              <label for="onboard1">Draft</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard2" name="onboard" checked="">
-                              <label for="onboard2">In progress</label>
+                              <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Sent</label>
+                            </li>
+                            <!-- <li>
+                              <input type="checkbox" id="onboard3" name="invoiceStatus">
+                              <label for="onboard3">Accepted</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard3" name="onboard" checked="">
-                              <label for="onboard3">Completed</label>
+                              <input type="checkbox" id="onboard4" name="invoiceStatus">
+                              <label for="onboard4">Rejected</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard4" name="onboard">
-                              <label for="onboard4">Declain</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="onboard5" name="onboard">
-                              <label for="onboard5">Waiting for approval</label>
-                            </li>
+                              <input type="checkbox" id="onboard5" name="invoiceStatus">
+                              <label for="onboard5">On-Hold</label>
+                            </li> -->
                           </ul>
                         </div>
                       </li>
+                      
+                        <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
+                        <div class="approved_pop" id="paymentTabOne">
+                          <ul>
+                            <li>
+                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getPayableInvoiceList();">
+                              <label for="onboard1">Unpaid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Partial Paid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard3">Paid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard4">OverDue</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </li>  
                       <div class="clearfix"></div>
                     </ul>
                     <div class="clearfix"></div>
@@ -480,9 +507,35 @@ $('body').on('blur', '#invoice_form', function() {
 <script>
 function getPayableInvoiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var invoice = [];
+	var payment = [];
+	var dayWisetype = $("#dayWiseTypeId").val();
+	
+	var startDate = $("#billingStartDate").val();
+	var endDate = $("#billingEndDate").val();
+	
+	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#invoiceStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#invoiceEndDate").empty().append("End Date is Required") ; 
+	} 
+	
+	
+	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+    {
+		invoice.push($(this).val());
+    });
+	
+	$('input:checkbox[name=paymentStatus]:checked').each(function() 
+	 {
+		payment.push($(this).val());
+	 });
+	
+	
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceType=payable",
+        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceType=payable&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate,
         success: function(data) {
         	var json = JSON.parse(data);
         	var result = "";
@@ -630,6 +683,145 @@ function cancelbtn(){
         $('.menupop').toggle();
         
     };
+</script>
+
+<script>
+$(document).ready(function() {
+    $("#invoiceID1").click(function(){
+		$("#invoiceTabOne").slideToggle(0);
+		$("#paymentTabOne").slideUp(200);
+	});
+    $("html").click(function() {
+        $("#invoiceTabOne").slideUp(0);
+    });
+    $("#invoiceTabOne, #invoiceID1").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+
+
+$(document).ready(function() {
+    $("#paymentID1").click(function(){
+		$("#paymentTabOne").slideToggle(0);
+		$("#invoiceTabOne").slideUp(200);
+	});
+    $("html").click(function() {
+        $("#paymentTabOne").slideUp(0);
+    });
+    $("#paymentTabOne, #paymentID1").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+</script>
+
+<script>
+    //search script
+        function customInvoiceList() {
+            var selectVal = $("#dayWiseTypeId").val();
+            if (selectVal == "custom") {
+                $(".custom_search").show();
+                customDate();
+            }else {
+                $(".custom_search").hide();
+            }
+        }
+       
+</script>
+
+<script>
+function customDate(){
+	var result = "";                                                                                                                                  
+	result = result +'	<div class="clearfix row"> <span class="pull-left ml">Custom Search</span>                                                     ';
+	result = result +'   <div class="closeSearch pull-right mr" title="Close Div" onclick="closePopup();">X</div>                                                              ';
+	result = result +'   <div class="clearfix mt10"></div>                                                                                             ';
+	result = result +'   <div class="col-md-5 paddingRight" id="errStartDate">                                                                                           ';
+	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" placeholder="Start Date">                   ';
+	result = result +'                                                                                                                                 ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +'   <div class="col-md-5 paddingLeft" id="errEndDate">                                                                                            ';
+	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" placeholder="End Date">                       ';
+	result = result +'                                                                                                                                 ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +'   <div class="col-md-2 paddingLeft" onclick="searchResults();">                                                                ';
+	result = result +'     <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search paddingRight"></i></button>           ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +' </div>                                                                                                                          ';
+	$("#customDateDivId").empty();
+	$("#customDateDivId").append(result);
+	
+	$('#billingStartDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : 'dd-mm-yy',
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			var dt = toDate("#billingStartDate");
+			dt.setDate(dt.getDate() + 1);
+			$("#billingEndDate").datepicker("option", "minDate", dt);
+			removeStartdateval();
+		}
+	
+	});
+	
+	$('#billingEndDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : 'dd-mm-yy',
+		beforeShow: function(){
+	           this.value='';
+	     },
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			var dt = toDate("#billingEndDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#billingStartDate").datepicker("option", "maxDate", dt);
+			removeEnddateval();
+		}
+	});
+}
+</script>
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<script>
+function closePopup() {
+         $(".custom_search").toggle();
+}
+</script>
+
+<script>
+function removeStartdateval(){
+	$("#errStartDate").find('p.jquery_form_error_message').remove();
+}
+function removeEnddateval(){
+	$("#errEndDate").find('p.jquery_form_error_message').remove();
+}
+
+</script>
+<script>
+function searchResults(){
+	$("#errStartDate").find('p.jquery_form_error_message').remove();
+	$("#errEndDate").find('p.jquery_form_error_message').remove();
+	var startDate =  $('#billingStartDate').val();
+	var endDate =  $('#billingEndDate').val();
+	if(startDate != null && startDate != '' && startDate != 'undefined' && endDate != null && endDate != '' && endDate != 'undefined'){
+		getPayableInvoiceList();
+	}else{
+		if(startDate != null && startDate != '' && startDate != 'undefined'){
+			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+		}else if(endDate != null && endDate != '' && endDate != 'undefined'){
+			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+		}else{
+			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+		}
+	} 
+}
+
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	
