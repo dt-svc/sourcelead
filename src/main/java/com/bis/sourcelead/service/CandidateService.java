@@ -150,4 +150,9 @@ public interface CandidateService {
 	
 	public List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId,Long spocId)throws Exception ;
 	
+    public List<Candidate> getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(Long orgLocationId,List<Long> associatesIds)throws Exception ;
+	
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long orgLocationId)throws Exception ;
+	
+	
 }

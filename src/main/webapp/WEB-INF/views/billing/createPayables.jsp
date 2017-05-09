@@ -104,20 +104,10 @@ function cancel(){
                 <textarea class="form-control" rows="2" id="billingAddress" name="billingAddress" placeholder="Billing Address"></textarea>
               </div>
             </div>
-            
-             
-           <!--  <div class="form-group">
-              <label class="col-md-3">Preojects<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="projectId" name="projectId" onchange="getProjects();">
-                </select>
-              </div>
-            </div> -->
           </div>
         </div>
        
         <div class="clearfix"></div>
-        <!-- Drap and Drop Table Row -->
         
         
         <!-- Table starts here-->
@@ -271,7 +261,6 @@ function cancel(){
             <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
                <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>
-                   <!--  <div  id="grandTotal" name="grandTotal"><span><strong>00.00</strong></span></div> -->
               </div>
             </div>
           </div>
@@ -575,13 +564,13 @@ function cancel(){
 	  
 	  $('.action-pop').slideUp();
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  var vendorContact = $("#vendorContact").val();
+	  var vendorOrgRelationId = $("#vendorOrgRelationId").val();
 	  
-	  if(vendorContact){
+	  if(vendorOrgRelationId){
 	  
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getVendorInvoiceAssociatesList?${_csrf.parameterName}=${_csrf.token}&selectedAssociates="+selectedAssociates+"&vendorContact="+vendorContact,
+	        url: sourceleadUrl+"/getVendorInvoiceAssociatesList?${_csrf.parameterName}=${_csrf.token}&selectedAssociates="+selectedAssociates+"&vendorOrgRelationId="+vendorOrgRelationId,
 	        success: function(data) {
 	        	
 	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -684,7 +673,7 @@ function cancel(){
 	    var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<p>Select Vendor and Vendor Contact</p>";
+		result = result +"		<p>Select Vendor</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 		result = result +"	</div>";
@@ -1330,7 +1319,7 @@ function getVendorContacts(){
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
-	output = output + "<option value='" +opt.id+","+opt.spocUserId+  "'>"+opt.ownerName+"</option>";
+	output = output + "<option value=' "+opt.spocUserId+" '>"+opt.ownerName+"</option>";
 	}
 	$("#vendorContact").empty();
 	$("#vendorContact").append(output);

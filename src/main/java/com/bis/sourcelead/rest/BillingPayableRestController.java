@@ -36,25 +36,22 @@ public class BillingPayableRestController {
 	
 	 @RequestMapping(value = "/getVendorInvoiceAssociatesList", method = RequestMethod.GET)
 	 	public @ResponseBody  String getVendorInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates,
-	 			@RequestParam(value = "vendorContact", required = false) String vendorContact,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
-	     	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	     	
 	     	
 	     	List<Long> associateIds = new ArrayList<Long>();
 	     	List<Candidate> associateList = null;
 	     	
-	     	String[] contact = vendorContact.split(",");
 	     	
 	     	if(!isNullOrEmpty(selectedAssociates)){
 	     		String[] selectedAssoicatesIds =  selectedAssociates.split(",");
 	         	for(int i=0; i < selectedAssoicatesIds.length; i++){
 	         		associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
 	         	}
-	         	associateList = candidateService.getAllActiveVendorAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(),Long.valueOf(contact[0]),associateIds);
+	         	associateList = candidateService.getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(vendorOrgRelationId,associateIds);
 	     	}else{
-	     		associateList = candidateService.getAllActiveVendorAssociatesByLocation(loginOrgLocation.getId(),Long.valueOf(contact[0]));
+	     		associateList = candidateService.getAllActiveVendorAssociatesByOrgLocation(vendorOrgRelationId);
 	     	}
 	     	
 	 	    resultJson = commonUtil.toJSON(associateList);

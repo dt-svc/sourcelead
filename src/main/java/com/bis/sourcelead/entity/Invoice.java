@@ -54,6 +54,9 @@ public class Invoice {
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
+	@Column(name = "INVOICE_UUID")
+	private String invoiceUUID;
+	
 	@Column(name = "INVOICE_DATE")
 	private Date invoiceDate;
 	
@@ -437,6 +440,14 @@ public class Invoice {
 
 	public void setInvoiceType(String invoiceType) {
 		this.invoiceType = invoiceType;
+	}
+
+	public String getInvoiceUUID() {
+		return invoiceUUID;
+	}
+
+	public void setInvoiceUUID(String invoiceUUID) {
+		this.invoiceUUID = invoiceUUID;
 	}
 
 }
