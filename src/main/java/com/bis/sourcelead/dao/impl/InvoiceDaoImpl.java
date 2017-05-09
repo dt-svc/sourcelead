@@ -44,7 +44,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC) {
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String[] invoiceTokens = invoiceStatus.split(",");
@@ -79,9 +79,18 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
 			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
 		} 
-		String query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC"; 
-		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
-		return departmentList;
+		
+		String subQuery2 = "";
+		
+		if(invoiceType.equalsIgnoreCase("payable")){
+			subQuery2 = " and invoice.invoiceType = 'Payables' ";
+		}else{
+			subQuery2 = " and invoice.invoiceType = 'Receivable' ";
+		}
+		
+		String query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC"; 
+		List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		return invoiceList;
 	}
 	
 	

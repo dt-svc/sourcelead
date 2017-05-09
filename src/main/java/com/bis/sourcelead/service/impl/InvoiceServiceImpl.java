@@ -55,8 +55,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private CommonUtil commonUtil;
 	
 	@Override
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC) throws Exception {
-		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC);
+
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+
 	}
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
 	{
@@ -64,23 +66,48 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
-	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList) throws Exception {
+	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType) throws Exception {
 		
 		Invoice invoice = new Invoice();
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
-		if(jsonObj.has("clientOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("clientOrgRelationId"))){
-			
-			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
-			invoice.setClientOrgRelationID(orgRelation);	
-		}
 		
-		if(jsonObj.has("clientContact") && !"".equalsIgnoreCase(jsonObj.getString("clientContact"))){
-			User userContactName = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
-			invoice.setContactContactUser(userContactName);
-		}
-		
+        if(invoiceType.equalsIgnoreCase("payable")){
+        	
+        	 
+        	if(jsonObj.has("vendorOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("vendorOrgRelationId"))){
+      			
+      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendorOrgRelationId")));
+      			invoice.setOrgRelationID(orgRelation);	
+      		}
+      		
+      		if(jsonObj.has("vendorContact") && !"".equalsIgnoreCase(jsonObj.getString("vendorContact"))){
+      			String[] contact = jsonObj.getString("vendorContact").split(",");
+      			User contactUser = userService.getUserById(Long.parseLong(contact[1]));
+      			invoice.setContactUser(contactUser);
+      		}
+      		
+      		invoice.setInvoiceType(Constants.Payables);
+        
+        
+        }else{
+        	 if(jsonObj.has("clientOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("clientOrgRelationId"))){
+     			
+     			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+     			invoice.setOrgRelationID(orgRelation);	
+     		}
+     		
+     		if(jsonObj.has("clientContact") && !"".equalsIgnoreCase(jsonObj.getString("clientContact"))){
+     			User userContactName = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
+     			invoice.setContactUser(userContactName);
+     		}
+     		
+     		invoice.setInvoiceType(Constants.Receivable);
+     		
+        }
+        
+       
 		invoice.setOrgLocation(orgLocation);
 		if(jsonObj.has("invoiceId") && !"".equalsIgnoreCase(jsonObj.getString("invoiceId"))){
 			invoice.setInvoiceId(jsonObj.getString("invoiceId"));
@@ -135,7 +162,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		invoice.setUpdatedBy(user.getUserCode());
 		invoice.setCreatedDate(commonUtil.currentDate());
 	
-		
 		
 		// storing invoive line items
 		Set<InvoiceLineItems> invoiceLineItemSet = getInvoiceLineItems(jsonObj,user,orgLocation,invoice);

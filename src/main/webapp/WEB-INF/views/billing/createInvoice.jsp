@@ -40,7 +40,7 @@ function cancel(){
       <div class="pull-left">
         <h2>Invoice</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="invoiceLoading"></div>
@@ -213,7 +213,7 @@ function cancel(){
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm" id="discountValue" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
+                      <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
                     </div>
                   </div>
                 </div>
@@ -256,7 +256,7 @@ function cancel(){
                                 </td>
                                 <td>
                                     <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">
+                                        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">
                                     </div>
                                 </td>
                                 <td>
@@ -315,7 +315,7 @@ function cancel(){
 	
 	<div id="divTaskTd4" style="display: none; float: left;">
        <div class="tbldata-dotdot-100">
-       <input type="text" class="form-control input-sm" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate" onblur="totalHoursCalculateAmount(REPLACEROWID);">
+       <input type="text" class="form-control input-sm allownumericwithdecimal" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate" onblur="totalHoursCalculateAmount(REPLACEROWID);">
        </div>
 	</div>
 
@@ -399,20 +399,38 @@ function cancel(){
 		         }else{
 		        	 taxTotal = taxTotales;
 		         }
-		         var tot = $("#grandTotal").val();
-		             
-		        /*  if(taxValue == '' && taxTotal==''){
-	            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-	              }else{ */
-	            	
-	            	  var tot = $("#grandTotal").val();
-	  	            var first=parseFloat(tot);
-	  	             var second=parseFloat(taxTotal); 
-	  	             var total  = (first+second);
-	  	           $("#grandTotal").val(total.toFixed(2));
-	              /* } */
-		        
+		        var tot = $("#grandTotal").val();
+            	var tot = $("#grandTotal").val();
+  	            var first=parseFloat(tot);
+  	            var second=parseFloat(taxTotal); 
+  	            var total  = (first+second);
+  	            $("#grandTotal").val(total.toFixed(2));
 		    }
+		    
+		    
+		    var count = 0;
+		    var selectedAssociates = '';
+			var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+			  if(maxTsRowNum > 1){
+				  for(var i=1; i<maxTsRowNum; i++){
+					  if(document.getElementById(i+"candidateId")){
+						  var associateId = document.getElementById(i+"candidateId").value;
+						  if(selectedAssociates == ''){
+							  selectedAssociates = associateId;
+							  count++;
+						  }else{
+							  selectedAssociates = selectedAssociates+","+associateId;
+							  count++
+						  } 
+					  }
+				  }
+			  }
+			  
+			  
+			  if(count == 1){
+				  $("#discountValue").val('');
+				  $("#discountValue").attr("disabled", "disabled");
+			  }
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addInvoiceTbl').rows[rowId];
@@ -442,7 +460,7 @@ function cancel(){
 			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
 			
-			
+			$("#discountValue").removeAttr("disabled");
 			
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divTsRow" + maxRowNum);
@@ -518,6 +536,7 @@ function cancel(){
 	    $(".new_side_wrap").removeClass("new_side_wrap_active");
  		$(".side_mask").fadeOut(200);
  		$("body").css('overflow-y', 'auto')
+ 		
 	}
   </script>
   
@@ -892,20 +911,33 @@ function calculateDiscount(){
 	var subTotal = $("#inoviceTotal").val();
 	var discountValue = $("#discountValue").val();
 	var total ='';
-	f
 	if(discountType == 'flat'){
-		total = subTotal-discountValue;
-		$("#discountTotal").val(discountValue.toFixed(2));
-		$("#grandTotal").val(total.toFixed(2));
-		$("#afterDiscountTotal").val(total.toFixed(2));
+		if(discountValue && subTotal > 0){
+			total = subTotal-discountValue;
+			$("#discountTotal").val(discountValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
 		
 	}
+	
 	if(discountType == 'percentage'){
-		var perCentValue = (subTotal * discountValue)/100;
-		total = subTotal - perCentValue;
-		$("#discountTotal").val(perCentValue.toFixed(2));
-		$("#grandTotal").val(total.toFixed(2));
-		$("#afterDiscountTotal").val(total.toFixed(2));
+		if(discountValue && subTotal > 0){
+			var perCentValue = (subTotal * discountValue)/100;
+			total = subTotal - perCentValue;
+			$("#discountTotal").val(perCentValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
 	}
 	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	if(maxRowNum > 1){
@@ -916,6 +948,7 @@ function calculateDiscount(){
 	}
 }
 </script>
+
 <!-- 
 <script>
   function singleRowTotalhour(){
@@ -1058,7 +1091,7 @@ function calculateDiscount(){
   
   <div id="divTaxTd3" style="display: none; float: left;">
      <div class="tblminwidth-75">
-        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount(REPLACEROWID);">
+        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount(REPLACEROWID);">
     </div>
   </div>
   
@@ -1105,6 +1138,7 @@ function calculateDiscount(){
 				var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
 				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
 				cell4.innerHTML = divTaxTdStr4;
+				 maskme();
 				
 	}			
 </script>
@@ -1153,7 +1187,8 @@ function calculateTaxDiscount(rowId){
         total = (first+second);
         $("#"+rowId+"taxTotal").val(first.toFixed(2));
         $("#grandTotal").val(total.toFixed(2));
-    }   
+    } 
+   
 }
 </script>
 
@@ -1333,7 +1368,21 @@ function getProjectsList(){
 </script>
 <script>
 function saveInvoice(saveType){
-         var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+		var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	    var selectedAssociates = '';
+		  if(maxTsRowNum > 1){
+			  for(var i=1; i<maxTsRowNum; i++){
+				  if(document.getElementById(i+"candidateId")){
+					  var associateId = document.getElementById(i+"candidateId").value;
+					  if(selectedAssociates == ''){
+						  selectedAssociates = associateId;
+					  }else{
+						  selectedAssociates = selectedAssociates+","+associateId;
+					  } 
+				  }
+			  }
+		  }
+		  
          if ($('#invoice_form').validate(false, validationSettings)){  
  		    var frm = $('#invoice_form').serializeFormJSON();
  	        var con = JSON.stringify(frm);
@@ -1344,7 +1393,8 @@ function saveInvoice(saveType){
  	        var form = $('#invoice_form')[0];
  	 	    var formData = new FormData(form); 
  	 	    var sourceleadUrl ='${sourceleadUrl}';
-         if(maxTsRowNum < 2){
+ 	 	    
+ 	 	  if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
         	 var result = "";
      		result = result +"	<div class='project_inn_mask'></div>";
      		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -1408,6 +1458,14 @@ function maskme(){
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
+    
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	     //this.value = this.value.replace(/[^0-9\.]/g,'');
+	 $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+	     if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	         event.preventDefault();
+	     }
+	 });
 }
 </script>
 <script>
@@ -1418,5 +1476,14 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd'
 	};
 </script>
-  
+ <script>
+ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+     //this.value = this.value.replace(/[^0-9\.]/g,'');
+ $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+     if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+         event.preventDefault();
+     }
+ });
+
+ </script> 
  <jsp:include page="../masterFooter.jsp" />	
