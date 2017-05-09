@@ -438,6 +438,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else{
 				contracts.setParentId("");
 			}
+			
+			if(null != contracts.getApproverUser() && null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
+				StringBuilder sb = new StringBuilder();
+				contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+			}else{
+				contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+			}
 		}
 		for(Contracts contracts :clientcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
@@ -464,6 +471,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else{
 				contracts.setParentId("");
 			}
+			
+			if(null != contracts.getApproverUser()){
+				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
+					StringBuilder sb = new StringBuilder();
+					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+				}else{
+					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+				}
+			}
+			
 		}
 		
 		contractsForList.setVendorcontractsList(vendorcontractsList);
