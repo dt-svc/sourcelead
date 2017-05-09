@@ -75,7 +75,7 @@ $(document).ready(function(){
 						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="getTemplateList();"><label>MSA</label></li>
 						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label>SOW</label></li>
 						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label>NDA</label></li>
-						<li><input id="c4" type="checkbox" name="contractType" value="NCA" onclick="getTemplateList();"><label>NCA</label></li>
+						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="getTemplateList();"><label>NSA</label></li>
 					</ul>
 				</div>	                	
 			</li>

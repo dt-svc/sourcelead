@@ -44,7 +44,7 @@
                     <option>Client SOW</option>
                     <option>Vendor SOW</option>
                     <option>NDA</option>
-                    <option>NCA</option>
+                    <option>NSA</option>
                   </select>
             </div>
             </div>				
@@ -605,7 +605,7 @@ function getContractTemplates(){
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
 	}
-	if(contractType == "NDA" || contractType == "NCA"){
+	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";

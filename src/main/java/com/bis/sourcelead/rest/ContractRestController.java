@@ -147,7 +147,7 @@ public class ContractRestController {
 		if(contract.getEnvelopId()!=null && contract.getTypeOfContract().equalsIgnoreCase("New")){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
-		if(contract.getTypeOfContract().equalsIgnoreCase("New")&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
+		if(("New").equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 		if(contract.getEnvelopId()==null && contract.getTypeOfContract().equalsIgnoreCase("Existing")){
