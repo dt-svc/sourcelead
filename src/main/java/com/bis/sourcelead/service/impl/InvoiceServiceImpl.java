@@ -37,6 +37,7 @@ import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -65,6 +66,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	private InvoicePdfHelper invoicePdfHelper;
 	
 	@Override
 	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId) throws Exception {
@@ -274,7 +278,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 	@Override
 	public void getPdfFileForInvoice(Invoice invoice,OrgLocations orgLocation,User user, Org org) throws Exception {
-		pdfUtil.createPdfTableForInvoice(invoice,orgLocation,user,org);
+		invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
 	}
 	
 	@Override
