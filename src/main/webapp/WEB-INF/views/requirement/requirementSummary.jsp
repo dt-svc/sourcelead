@@ -3067,7 +3067,7 @@ function documentpaginationIN(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"aaSorting": [[8,'desc']],
+    	/* "aaSorting": [[8,'desc']], */
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -4792,7 +4792,7 @@ function getRateListDiv(submissionId, candidateId){
 	                     result = result + '      <tr>';
 	                     result = result + '        <th>By</th>';
 	                     result = result + '        <th>Rate</th>';
-	                     result = result + '        <th>Rate per hourly</th>';
+	                     result = result + '        <th>Rate Per Hourly</th>';
 	                     result = result + '        <th>Comment</th>';
 	                     result = result + '        <th>Date</th>';
 	                     result = result + '        <th>Action</th>';

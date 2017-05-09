@@ -87,6 +87,8 @@ public class Constants {
 	public static transient DateFormat Y = new SimpleDateFormat("yyyy");
 	public static transient DateFormat M = new SimpleDateFormat("MMMM");
 	
+	public static transient DateFormat DF_MM = new SimpleDateFormat("MM");
+	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
 	public static DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("ddMMM");
@@ -251,6 +253,9 @@ public class Constants {
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
 	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
+	
+	public static String UPDATED_USER_ROLE_EMAIL="UserRoleChanged";
+	public static String UPDATED_USER_ROLE_NOTIFICATION="UserRoleChanged";
 	
 	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER="updatedRequirementEmailToManager";
 	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER="updatedRequirementNotificationToManager";

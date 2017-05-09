@@ -80,15 +80,15 @@ textarea {
 	content: " "; display: table;
 }
 .main-header {
-	max-height: 100px; position: relative; z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a;
+	max-height: 100px;  z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a;
     position: fixed; width: 100%;
 }
 .main-header span.logo {
-	background: #3081cb; padding: 0 15px; line-height: 50px; width: 230px; box-sizing: border-box; height: 50px; float: left;
+	background: /*#3081cb*/ #f5f5f5; padding: 0 15px; line-height: 51px; width: 230px; box-sizing: border-box; height: 51px; float: left;
 	/*transition: all 0.5s ease-in-out 0s;*/
 }
 .main-header span.logo:hover {
-	background: #2b72b3;
+	background: #fff;
 }
 .main-header span.logo a:hover {
 	text-decoration: none;
@@ -130,7 +130,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
  margin-bottom: 0; margin-left: 0;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
-	transition: all 0.5s ease-in-out 0s; position: relative; padding: 16.5px 14px;
+	transition: all 0.5s ease-in-out 0s; position: relative; padding: 15px 14px;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li a {
 	display: block; /* padding: 16.5px 14px; */ padding: 0;
@@ -5003,6 +5003,9 @@ border-bottom: 1px solid #ededed; line-height:30px;
 .uasrch-selectpicker{
  float: left;
 }
+.uasrch-selectpicker .bootstrap-select .dropdown-toggle:focus {
+    outline:none !important;
+}
 .fa-bullhorn.success {
 color:#4CAF50 !important;
 }
@@ -6499,10 +6502,10 @@ padding: 15px 15px 25px 15px;
     font-size: 20px; text-align: right;
 }
 .billing_dashboard .nav-tabs > li h5{
-    font-size: 14px; font-weight: 400; margin:2px 0; float: right;
+    font-size: 13px; font-weight: 400; margin:2px 0; float: right;
 }
 .billing_dashboard .nav-tabs > li h5 span{
-    font-size: 20px;
+    font-size: 18px;
 }
 .billbg_orange {
     background: #ffb74d;
@@ -6530,13 +6533,10 @@ padding: 15px 15px 25px 15px;
  position: absolute; top: 45px; right: 0; background: #ededed;  border: 1px solid #ddd; border-radius: 3px; z-index: 99;
  padding: 10px 15px; display: none; width: 400px;
 }
-<<<<<<< HEAD
 .closeSearch {
     color: #fff; position: relative; top: -19px; padding: 2px 5px;
     background: #e65100; right: -25px; border-radius: 3px; cursor: pointer;
 }
-=======
->>>>>>> 3451dd0914f0efa52b40c215ce2fbb916fc22e71
 .addinvoiceTable{
 	min-height: 150px;max-height: 400px;overflow: auto;
 }
@@ -6549,10 +6549,6 @@ padding: 15px 15px 25px 15px;
 .addinvoiceTable .dataTables_filter{
 	position: relative !important; top: 0 !important;
 }
-<<<<<<< HEAD
-.addressInvoice {
-
-}
 /* Filter Styles */
 .topfilters ul ul li label {
     position: relative; top: 0px;
@@ -6563,8 +6559,99 @@ padding: 15px 15px 25px 15px;
 .topfilters ul ul li {
     padding-bottom:5px !important; padding-top:5px !important;
 }
-=======
->>>>>>> 3451dd0914f0efa52b40c215ce2fbb916fc22e71
+.invoiceview_area {
+    margin-bottom:15px; padding-top: 15px;
+}
+.invoiceview_area .control-label {
+    color: #616161;
+}
+.invoiceview_area .col-md-6 {
+    margin-bottom: 10px;
+}
+.invoiceview_area .form-horizontal .control-label {
+    padding-top: 0;
+}
+.invoiceGridview {
+    overflow-x: auto;
+}
+.invoiceGridview table {
+ vertical-align: middle; border-collapse: border; 
+}
+.invoiceGridview table tr th {
+text-align: center; padding:10px; border-top: 1px solid #bdbdbd; border-bottom:1px solid #bdbdbd;
+}
+.invoiceGridview table tr td {
+ text-align: center; padding:10px; border: 1px solid #ededed; color: #101010;
+}
+.billsubTotal {
+    padding:10px;
+}
+#bill .row {
+    margin-right: -15px !important; margin-left: -15px !important;
+}
+.client_invoice {
+    padding: 15px;
+}
+.client_invoice .nav > li > a{
+    padding: 0px 25px;
+}
+.client_invoice .tab-content {
+    background: #fff; border: 1px solid #ddd; border-top:none;
+}
+.attachfile_invoice {
+    min-height: 20px; line-height: 20px;
+}
+.attachfile_invoice p {
+    display: inline-block; white-space: nowrap; text-overflow: ellipsis; overflow-x: hidden; width: 350px; margin-bottom: 0; padding: 5px 0;
+}
+.attachfile_invoice .fa-download {
+    padding: 8px 0;
+}
+a.download_attachment, a.memo_text  {
+    color: #333;
+}
+.download_attachment p {
+display: inline-block; white-space: nowrap; text-overflow: ellipsis; overflow-x: hidden; width: 100px; margin-bottom: 0; padding: 5px 0;
+}
+.download_attachment .fa-download, .memo_text .fa-comments {
+    position: relative; top: 5px; color:#0277bd;
+}
+.memo_text p{
+    display: inline-block; white-space: nowrap; text-overflow: ellipsis; overflow-x: hidden; width: 200px; margin-bottom: 0; padding: 5px 0;
+}
+.minHeight_225 {
+    min-height: 225px;
+}
+.timesheet_week_comm.invoiceDocs span{
+	padding: 0;
+}
+.timesheet_week_comm.invoiceDocs span input{
+	width: 65%; float: left;margin-bottom: 10px; padding-left: 20px;
+}
+.timesheet_week_comm.invoiceDocs strong{
+	width: 100%;
+}
+.timesheet_week_comm.invoiceDocs strong input.dele{
+	width: 10% !important; position: relative; top:-2px; padding-left: 0 !important;
+}
+.timesheet_week_comm.invoiceDocs strong a {
+    color: #fff; top: -4px;
+}
+.invoiceDocs_add span i.fa-plus{
+float: left; position: relative;top:5px; width: 10%;
+}
+.billing_count {
+   border: 1px solid #bdbdbd; padding: 5px 10px; border-radius: 3px;
+}
+.billing_count h3{
+    margin: 0 0 5px 0;
+}
+.billing_count h3 .rupee_usd {
+    font-size: 18px; width: 50px; display: inline-block;
+}
+.billing_count .text-info {
+   font-size: 15px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
