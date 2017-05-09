@@ -208,7 +208,7 @@ function cancel(){
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
+                      <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
                     </div>
                   </div>
                 </div>
@@ -251,7 +251,7 @@ function cancel(){
                                 </td>
                                 <td>
                                     <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">
+                                        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">
                                     </div>
                                 </td>
                                 <td>
@@ -282,7 +282,7 @@ function cancel(){
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT')">Save</button>
                   <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
-                  <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
+                  <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/payablesList'/>'">Cancel</button>
               </div>
           </footer>
       </div>
@@ -310,7 +310,7 @@ function cancel(){
 	
 	<div id="divTaskTd4" style="display: none; float: left;">
        <div class="tbldata-dotdot-100">
-       <input type="text" class="form-control input-sm" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"  onblur="totalHoursCalculateAmount(REPLACEROWID);">
+       <input type="text" class="form-control input-sm allownumericwithdecimal" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"  onblur="totalHoursCalculateAmount(REPLACEROWID);">
        </div>
 	</div>
 
@@ -389,7 +389,7 @@ function cancel(){
 	             var total  = (first+second);
 		    }
 		    
-		    
+		    var count = 0;
 		    var selectedAssociates = '';
 			var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			  if(maxTsRowNum > 1){
@@ -398,14 +398,16 @@ function cancel(){
 						  var associateId = document.getElementById(i+"candidateId").value;
 						  if(selectedAssociates == ''){
 							  selectedAssociates = associateId;
+							  count++;
 						  }else{
 							  selectedAssociates = selectedAssociates+","+associateId;
+							  count++
 						  } 
 					  }
 				  }
 			  }
 			  
-			  if(selectedAssociates.length == 1){
+			  if(count == 1){
 				  $("#discountValue").val('');
 				  $("#discountValue").attr("disabled", "disabled");
 			  }
@@ -1092,7 +1094,7 @@ function calculateDiscount(){
   
   <div id="divTaxTd3" style="display: none; float: left;">
      <div class="tblminwidth-75">
-        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount(REPLACEROWID);">
+        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount(REPLACEROWID);">
     </div>
   </div>
   
@@ -1139,6 +1141,7 @@ function calculateDiscount(){
 				var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
 				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
 				cell4.innerHTML = divTaxTdStr4;
+				maskme();
 				
 	}			
 </script>
@@ -1437,8 +1440,25 @@ function maskme(){
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
     $(".inline_field").mask("Hhh:Mm"); 
+    
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
 }
 </script>
+
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+$(this).val($(this).val().replace(/[^0-9\.]/g,''));
+    if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+        event.preventDefault();
+    }
+});
+</script>
+
 <script>
 var validationSettings = {
 		errorMessagePosition : 'element',
