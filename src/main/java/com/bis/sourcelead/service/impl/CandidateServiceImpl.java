@@ -952,4 +952,21 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getAllActiveAssociatesByLocation(orgLocationId);
 	}
 
+	@Override
+	public List<Candidate> getAllActiveAssociatesByLocationAndAssoicatesList(Long orgLocationId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveAssociatesByLocationAndAssoicatesList(orgLocationId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId, Long spocId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByLocationAndAssoicatesList(orgLocationId, spocId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId, Long spocId) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByLocation(orgLocationId, spocId);
+	}
+
 }

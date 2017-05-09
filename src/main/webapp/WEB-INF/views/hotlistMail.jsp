@@ -113,8 +113,8 @@ display: none;
                     <h4 class="modal-title">Select Candidates / Associates</h4>
                   </div>
                   
-                  <div class="modal-body clearfix">
-                    <div class="form-horizontal custom-form">
+                  <div class="modal-body clearfix hotmailSelOut">
+<!--                     <div class="form-horizontal custom-form">
                       <div class="row">
                         <div class="col-xs-12 col-md-4 col-lg-4 selectpicker100 select-field">
                           <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
@@ -125,9 +125,18 @@ display: none;
                           </select>
                         </div>
                       </div>
-                    </div>
-                    <div class="modal-body-custom mailerpopup mt25 clearfix filter-position">
-                     <div id="candidatesList"></div>
+                    </div> -->
+                    
+                    <div class="modal-body-custom clearfix poMail">
+                        <div class="hotmailSel">
+                          <select class="form-control" id="candidatesListType" onchange="candidateListChange();">
+                            <option value="consultants" selected>Associates</option>
+                            <option value="candidates">Candidates</option>
+                             <option value="openHotlist">Open Hotlist</option>
+                            <option value="hotlistConsultants">Hostlist Associates</option>
+                          </select>
+                        </div>                    
+                     <div id="candidatesList" class="mailFil"></div>
                      <div id="candidatesLoading"></div>
                     </div>
                      
@@ -635,9 +644,7 @@ function getCandidates(candidatesListType){
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	                	   
                			    var result = '';
-	                	    result = result +'<div class="modal-body clearfix">';
-	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter">'; 
 	                	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -724,9 +731,7 @@ function getCandidates(candidatesListType){
                  }else{
   	    	         
                  	var result ="";
- 	    	        result = result +'<div class="modal-body clearfix">';
- 	           		result = result +'     </div>';
- 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
+ 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter">'; 
  	           	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
  	           		result = result +'           <thead>';
  	           		result = result +'           <tr>';

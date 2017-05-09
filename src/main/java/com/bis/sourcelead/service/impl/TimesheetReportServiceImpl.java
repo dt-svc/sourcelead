@@ -140,7 +140,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				 prepareTimeSheetDiv.append("</li>");
 		         prepareTimeSheetDiv.append("</ul>");
 				 
-				 prepareTimeSheetDiv.append("<div class='clearfix mb10'></div>");
+				 prepareTimeSheetDiv.append("<div class='clearfix'></div>");
 				 StringBuilder statusDiv = timesheetReportsTableDiv(selectedYear.toString(),selectedMonth.toString(),orgLocations,loginUser);
 				 prepareTimeSheetDiv.append(statusDiv);		
 		prepareTimeSheetDiv.append("</div>");
@@ -167,6 +167,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	    	<table id='timesheetReportsPageNation' style='width:100%'>");
 			timesheetApprovalDiv.append("				<thead>");   
 			timesheetApprovalDiv.append("	            	<tr>");
+			timesheetApprovalDiv.append("	                	<th>Emp Id</th>           ");
 			timesheetApprovalDiv.append("	                	<th>Employee</th>           ");
 			timesheetApprovalDiv.append("	                    <th>Project</th>            ");
 			timesheetApprovalDiv.append("	                    <th>Frequency</th>             ");
@@ -205,13 +206,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			for (ProjectMembers projectMember : projectMembers)
 			{
 				 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
+				 timesheetApprovalDiv.append("<td><div class=''><i title='").append(projectMember.getEmployee().getUser().getId()).append("'>").append(projectMember.getEmployee().getUser().getId()).append("</i></div></td>");
 					 timesheetApprovalDiv.append("  <td>")
 					                       .append("<div class='lg clearfix'>")
 					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(sourceleadUrl).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'/>")
 					                                 .append("</div>")
 					                                 .append("    <div class='Utext'>")
 				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</i>")
-				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</i>")
+				                                             /*.append("<i title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</i>")*/
 		                                             .append("</div>")
 				                               .append("   <div>")
 					                        .append(" </td>");
@@ -425,7 +427,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 weekEndDate = format.parse(v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
-						weekFrequencyDates.append(weekStartDate);
+						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");
 					 }else{
 						 weekFrequencyDates.append((shortormat.format(weekStartDate))).append("-").append(shortormat.format(weekEndDate)).append(",");
 					 }
@@ -472,10 +474,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        PdfPTable table = new PdfPTable(header.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(20);
+	        cell1.setColspan(23);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-	        if(header.length < 20){
+	        if(header.length > 20){
             table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});
 	        }else{
 	        table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});	
@@ -544,7 +546,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }
 			int count = 5;
 			SubmissionApproverHierarchy sah= null;
-			float monthTotalHours = 0f;
+			 float monthTotalHours = 0f;
 			 float weekTotalHours = 0f;
 			 float  weekBillableHours = 0f;
 			 float  monthBillableTotalHours = 0f;
@@ -640,7 +642,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 weekEndDate = format.parse(v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
-						weekFrequencyDates.append(weekStartDate);
+						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");
 					 }else{
 						 weekFrequencyDates.append((shortormat.format(weekStartDate))).append("-").append(shortormat.format(weekEndDate)).append(",");
 					 }

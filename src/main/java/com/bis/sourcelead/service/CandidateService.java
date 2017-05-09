@@ -144,4 +144,10 @@ public interface CandidateService {
 
 	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId)throws Exception ;
 	
+	public List<Candidate> getAllActiveAssociatesByLocationAndAssoicatesList(Long orgLocationId,List<Long> associatesIds)throws Exception ;
+	
+	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId,Long spocId,List<Long> associatesIds)throws Exception ;
+	
+	public List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId,Long spocId)throws Exception ;
+	
 }
