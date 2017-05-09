@@ -263,7 +263,7 @@ function preparedContractList(data,contractSubmissionType){
 		     			result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		     		 else{
-		     			result = result + '<div><span>--</span></div>';
+		     			result = result + '<div><span>---</span></div>';
 			        	  }
 		     	}else{
 		     		if(report.contractStatus == "completed" && report.templateSubmissionStatus != "FINALIZED"){
@@ -273,14 +273,14 @@ function preparedContractList(data,contractSubmissionType){
 		        		  result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 } */
 		        	  
-		        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+		            	 else if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
 		            		//result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
 		            	  result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
 		            		'</sec:authorize>';
 		        	  }
 		        	  else{
-		         	 	result = result + '<div><span>--</span></div>';
+		         	 	result = result + '<div><span>---</span></div>';
 		        	  }
 		          }
 		         result = result + '</div>';
