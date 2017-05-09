@@ -80,15 +80,15 @@ textarea {
 	content: " "; display: table;
 }
 .main-header {
-	max-height: 100px; position: relative; z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a;
+	max-height: 100px;  z-index: 1030; background: #368ee0; box-shadow: 1px 1px 3px #00105a;
     position: fixed; width: 100%;
 }
 .main-header span.logo {
-	background: #3081cb; padding: 0 15px; line-height: 50px; width: 230px; box-sizing: border-box; height: 50px; float: left;
+	background: /*#3081cb*/ #fff; padding: 0 15px; line-height: 50px; width: 230px; box-sizing: border-box; height: 50px; float: left;
 	/*transition: all 0.5s ease-in-out 0s;*/
 }
 .main-header span.logo:hover {
-	background: #2b72b3;
+	background: #fff;
 }
 .main-header span.logo a:hover {
 	text-decoration: none;
@@ -557,7 +557,7 @@ line-height: 39px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 .content-wraper {
 background: #e0e0e0; min-height: 620px; margin-left: 230px; padding: 0 30px 30px;
 -moz-transition: all ease-in-out 0.3s; -ms-transition: all ease-in-out 0.3s; -webkit-transition: all ease-in-out 0.5s;
-transition: all ease-in-out 0.3s; padding-top: 50px;
+transition: all ease-in-out 0.3s; padding-top: 52px;
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -4132,7 +4132,7 @@ import-tranhd  [class*="col-md-"]{
        background-position:90% center; background-color:#337ab7; background-size:8px; height: 30px; padding-left: 5px;
        }
 .cand-advsrch {
-	margin:8px 15px; position: relative; z-index: 100;
+	margin:7px 10px; position: relative; z-index: 100;
 }
 .cand-advsrch .fa-search{
 	color: #fff !important; padding: 0 !important; font-size: 14px !important;
@@ -6529,6 +6529,95 @@ padding: 15px 15px 25px 15px;
 .custom_search {
  position: absolute; top: 45px; right: 0; background: #ededed;  border: 1px solid #ddd; border-radius: 3px; z-index: 99;
  padding: 10px 15px; display: none; width: 400px;
+}
+.closeSearch {
+    color: #fff; position: relative; top: -19px; padding: 2px 5px;
+    background: #e65100; right: -25px; border-radius: 3px; cursor: pointer;
+}
+.addinvoiceTable{
+	min-height: 150px;max-height: 400px;overflow: auto;
+}
+.addinvoiceTable table tr th, .addinvoiceTable table tr td{
+	vertical-align: middle;
+}
+.addinvoiceTable .dataTables_info, .addinvoiceTable .paging_simple_numbers{
+	display: none;
+}
+.addinvoiceTable .dataTables_filter{
+	position: relative !important; top: 0 !important;
+}
+/* Filter Styles */
+.topfilters ul ul li label {
+    position: relative; top: 0px;
+}
+.topfilters2 ul ul li label {
+    top: 3px;
+}
+.topfilters ul ul li {
+    padding-bottom:5px !important; padding-top:5px !important;
+}
+.invoiceview_area {
+    margin-bottom:15px; padding-top: 15px;
+}
+.invoiceview_area .control-label {
+    color: #616161;
+}
+.invoiceview_area .col-md-6 {
+    margin-bottom: 10px;
+}
+.invoiceview_area .form-horizontal .control-label {
+    padding-top: 0;
+}
+.invoiceGridview {
+    overflow-x: auto;
+}
+.invoiceGridview table {
+ vertical-align: middle; border-collapse: border; 
+}
+.invoiceGridview table tr th {
+text-align: center; padding:10px; border-top: 1px solid #bdbdbd; border-bottom:1px solid #bdbdbd;
+}
+.invoiceGridview table tr td {
+ text-align: center; padding:10px; border: 1px solid #ededed; color: #101010;
+}
+.billsubTotal {
+    padding:10px;
+}
+#bill .row {
+    margin-right: -15px !important; margin-left: -15px !important;
+}
+.client_invoice {
+    padding: 15px;
+}
+.client_invoice .nav > li > a{
+    padding: 0px 25px;
+}
+.client_invoice .tab-content {
+    background: #fff; border: 1px solid #ddd; border-top:none;
+}
+.attachfile_invoice {
+    min-height: 20px; line-height: 20px;
+}
+.attachfile_invoice p {
+    display: inline-block; white-space: nowrap; text-overflow: ellipsis; overflow-x: hidden; width: 350px; margin-bottom: 0; padding: 5px 0;
+}
+.attachfile_invoice .fa-download {
+    padding: 8px 0;
+}
+a.download_attachment, a.memo_text  {
+    color: #333;
+}
+.download_attachment p {
+display: inline-block; white-space: nowrap; text-overflow: ellipsis; overflow-x: hidden; width: 100px; margin-bottom: 0; padding: 5px 0;
+}
+.download_attachment .fa-download, .memo_text .fa-comments {
+    position: relative; top: 5px; color:#0277bd;
+}
+.memo_text p{
+    display: inline-block; white-space: nowrap; text-overflow: ellipsis; overflow-x: hidden; width: 200px; margin-bottom: 0; padding: 5px 0;
+}
+.minHeight_225 {
+    min-height: 225px;
 }
 /* media 320px */
 @media (max-width: 320px) {

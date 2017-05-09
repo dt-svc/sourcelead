@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -715,10 +717,12 @@ public  class CalendarUtil {
 	{
 		DateFormatSymbols dfs = new DateFormatSymbols();
 		String[] arrayOfMonthsNames = dfs.getMonths();
-
-		return new LinkedList<String>(Arrays.asList(arrayOfMonthsNames));
+		LinkedList<String> monthsList = new LinkedList<>(Arrays.asList(arrayOfMonthsNames));
+		monthsList.remove(12);
+		return monthsList;
 	}
-
+	
+	
 	public static LinkedHashSet<String> getYearsListFromCurrentDate(int previousYears,int priorYears){
 		LinkedHashSet<String> YearsList = new LinkedHashSet<String>();
 
@@ -734,6 +738,25 @@ public  class CalendarUtil {
 		}
 		return YearsList;
 	}
+	
+	public static LinkedHashSet<String> getYearsListFromCurrentDate(int previousYears){
+		LinkedHashSet<String> YearsList = new LinkedHashSet<String>();
+
+		for(int i =previousYears;i>0;i--){
+			String date = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),-i);
+			YearsList.add(date);
+		}
+		String currentDate = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),0);
+		YearsList.add(currentDate);
+	
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		if(Constants.DF_MM.format(currentCal.getTime()).equalsIgnoreCase("11") || Constants.DF_MM.format(currentCal.getTime()).equalsIgnoreCase("12")){
+			String date = CalendarUtil.getYearPatternByYearPreference(CommonUtil.currentDate(),1);
+			YearsList.add(date);
+		}
+		
+		return YearsList;
+	}
 
 	public static String getCurrentYear()
 	{
@@ -743,7 +766,10 @@ public  class CalendarUtil {
 		return format.format(cal.getTime());
 		//		return Year.now().getValue();
 	}
+	
+	
 
+	
 	public static String getCurrentMonth()
 	{
 		Calendar cal = Calendar.getInstance();
