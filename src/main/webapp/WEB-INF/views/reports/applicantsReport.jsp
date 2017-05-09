@@ -285,7 +285,7 @@ function requirementReportPagination(){
 	
 		<span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart();" title="Graphs"><i class="fa fa-pie-chart"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
 	</span>	
 	
 </div>
