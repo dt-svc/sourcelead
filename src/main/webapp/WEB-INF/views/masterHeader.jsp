@@ -194,7 +194,8 @@ document.onkeydown=function(e){
   <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
   </c:if>
   <i>
- 	<img src="resources/images/SourceLead-logo-white.png" alt="Source Lead" class="img-responsive mt5">
+ 	<!-- <img src="resources/images/SourceLead-logo-white.png" alt="Source Lead" class="img-responsive mt5"> -->
+ 	<img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5">
   </i>
     </a> </span>
     <nav class="header-nav navbar">
