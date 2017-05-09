@@ -28,9 +28,9 @@ $(document).ready(function(){
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
-    <h2>List by status</h2>
+    <h2>Contracts</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; List by status</div>
+   <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Contracts</div>
 </section>
 
 <section class="contrHead"> 
@@ -70,21 +70,21 @@ $(document).ready(function(){
 		</div>
 		<ul>
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
-	           	<div class="statusFiler-1">
+	           	<div class="statusFiler-1 approved_pop">
 					<ul class="list-unstyled">
-						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="getTemplateList();"><label>MSA</label></li>
-						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label>SOW</label></li>
-						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label>NDA</label></li>
-						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="getTemplateList();"><label>NSA</label></li>
+						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="getTemplateList();"><label for="c1">MSA</label></li>
+						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label for="c2">SOW</label></li>
+						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label for="c3">NDA</label></li>
+						<li><input id="c4" type="checkbox" name="contractType" value="NCA" onclick="getTemplateList();"><label for="c4">NCA</label></li>
 					</ul>
 				</div>	                	
 			</li>
-			<!-- <li id="filterContractTypePop-2"><i class="fa fa-filter"></i><span>Contract Type</span><i class="glyphicon glyphicon-play"></i>
-	           	<div class="statusFiler-3">
+			<!-- <li id="filterContractTypePop-2"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i>
+	           	<div class="statusFiler-3 approved_pop">
 					<ul class="list-unstyled">
-						<li>StatusFiler-3</li>
-						<li>StatusFiler-3</li>
-						<li>StatusFiler-4</li>
+						<li><input id="status1" type="checkbox" name="contractStatus" value="PENDING" onclick="getTemplateList();"><label for="status1">Pending</label></li>
+						<li><input id="status2" type="checkbox" name="contractStatus" value="SEND_FOR_VERIFICATION" onclick="getTemplateList();"><label for="status2">Send For Verification</label></li>
+						<li><input id="status2" type="checkbox" name="contractStatus" value="WAITING_TO_BE_SIGNED" onclick="getTemplateList();"><label for="status3">Waiting to be Signed</label></li>
 					</ul>
 				</div>	                	
 			</li> -->
@@ -104,8 +104,8 @@ $(document).ready(function(){
 	</div>
 	<div id="loading"></div>
     <div class="clients_wrap_table">
-    <div id="vendorContractsList"  class="require_wrap_table overflow-data" ></div>
-     <div id="clientContractsList"  class="require_wrap_table overflow-data" style="display: none"></div>
+    <div id="vendorContractsList"  class=" overflow-data" ></div>
+     <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
 	</div>
 	
 </div>
@@ -155,12 +155,6 @@ $(document).ready(function(){
     $(".export_pop, #export-pop").click(function(e) {
         e.stopPropagation();
     });	
-    $("html").click(function() {
-        $(".filterContractType_pop").hide();
-    });
-    $(".filterContractType_pop, #filterContractTypePop, .statusFiler-1, .statusFiler-2").click(function(e) {
-        e.stopPropagation();
-    });
 	$("#filterContractTypePop").click(function(){
 		$(".statusFiler-1").toggle();
 		$(".statusFiler-2, .statusFiler-3").hide();
@@ -169,12 +163,25 @@ $(document).ready(function(){
 		$(".statusFiler-3").toggle();
 		$(".statusFiler-2, .statusFiler-1").hide();
 	});
+	
+    $("html").click(function() {
+        $(".filterContractType_pop").hide();
+    });	
+    $(".filterContractType_pop, #filterContractTypePop, #filterContractTypePop-2, .statusFiler-1, .statusFiler-2, .statusFiler-3").click(function(e) {
+        e.stopPropagation();
+    });	
 
 </script>
 
 <script type="text/javascript">
 function getTemplateList(){
 	var contractSubmissionType = $("#contractStage").val();
+	var contractStatus = [];
+	$('input:checkbox[name=contractStatus]:checked').each(function() 
+    {
+		contractStatus.push($(this).val());
+    });
+	
 	var contractsType = [];
 	$('input:checkbox[name=contractType]:checked').each(function() 
     {
@@ -185,16 +192,16 @@ function getTemplateList(){
 	var selectedContractType = "";
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType+"&contractsType="+contractsType,       
+       url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType+"&contractsType="+contractsType+"&contractStatus="+contractStatus,       
        success :function(data) {
-    	   preparedContractList(data);
+    	   preparedContractList(data,contractSubmissionType);
       },
   }); 
 }
 </script>
 
 <script>
-function preparedContractList(data){
+function preparedContractList(data,contractSubmissionType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
 	 var json = JSON.parse(data);
@@ -395,8 +402,8 @@ function preparedContractList(data){
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
-    //listContractsPagination();	
-   // vendorListContractsPagination();
+    listContractsPagination();	
+   vendorListContractsPagination();
 	
 }
 </script>
@@ -472,7 +479,7 @@ function listContractsPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -485,7 +492,7 @@ function vendorListContractsPagination(){
     	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""

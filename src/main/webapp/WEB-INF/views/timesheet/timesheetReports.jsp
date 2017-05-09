@@ -58,6 +58,10 @@ $(document).ready(function() {
         		    	  	$("#timesheetReportsDiv").append(result);
         		    	  	prepareChosenScripts();
         		    	  	pagination();
+        		    	  	var checkEmptyList = document.getElementById("hideExport").value; 
+        		    		if(checkEmptyList == 'EmptyList'){
+        		    			document.getElementById("mypop").children[0].style.display = "none";
+        		    		}
         		      }
         	    }); 
 	}
@@ -135,6 +139,7 @@ function exportTimeSheetReportsToPdf(type){
 	
 }
 </script>
+
 
 <body>
       <%-- <section class="content-wraper">
