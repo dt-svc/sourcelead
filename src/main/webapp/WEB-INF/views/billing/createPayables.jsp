@@ -1277,7 +1277,7 @@ function calculateDiscount(){
   <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
   
   <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 ">
+  			<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
                 <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
                		 <span> 
                		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>

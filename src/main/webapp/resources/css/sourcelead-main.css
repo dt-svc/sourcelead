@@ -6652,6 +6652,9 @@ float: left; position: relative;top:5px; width: 10%;
 .billing_count .text-info {
    font-size: 15px;
 }
+.timesheet_week_comm.invoiceDocs_add span .fa-times{
+ float:left;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
