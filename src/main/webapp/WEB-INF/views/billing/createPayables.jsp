@@ -51,7 +51,7 @@ function cancel(){
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errVendor">
-                <select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();errRemoveVendor();" data-validation="required" field-name="Client Name">
+                <select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();" data-validation="required" field-name="Client Name">
                  <option value=''>--Select Vendor--</option>
                    <c:forEach var="orgrelations" items="${vendorList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -107,166 +107,10 @@ function cancel(){
           </div>
         </div>
        
-        <div class="clearfix"></div>
+        <div class="clearfix mt"></div>
+        <div id="lineItemAddRows"></div>
         
-        
-        <!-- Table starts here-->
-          <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">
-          <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />
-          <table width="100%">
-            <thead id="addInvoiceTbl">
-              <tr id="divTsRow0">
-                <!-- <th><i class="fa fa-ellipsis-h"></i></th> -->
-                <th>Date</th>
-                <th>Associate</th>
-                <th>Sow</th>
-                <th>Rate</th>
-                <th>Total Hours</th>
-                <th>Amount</th>
-                <th><i class="fa fa-remove"></i></th>
-              </tr>
-            </thead>
-            
-            <tfoot class="table_footer">
-              <tr>
-                <td colspan="4"></td>
-                <td><strong>Subtotal</strong></td>
-                <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>
-                <input type="hidden" value = "" id="hiddenTotal">
-                <td>&nbsp;</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        <!-- Table Ends here-->
-          
-          <!-- Adding Content Starts herer -->
-          <div class="clearfix invoice_other">
-          <div class="col-md-5">
-            <div class="clearfix mb">
-              <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllVendorAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>
-            </div>
-            
-            
-             <div class="new_side_wrap">
-		         <div class="new_side_wrap_inn">
-			         <div class="new_side_wrap_cta">
-			         	<div id="associatesListDiv"></div>
-			         </div>
-		         </div>
-	         </div>
-          
-            <div class="clearfix mb">
-              <label><strong>Message</strong></label>
-              <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
-            </div>
-            
-            
-            <div class="clearfix mb invoiceAttachment">
-            <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='1' />
-            <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">
-            <tbody>
-              <tr id='divAttachmentTsRow0'>
-            	<td>
-              	<label><strong>Attachments</strong></label>
-	              <div class="timesheet_week_comm col-md-12 " >
-	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
-	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
-	                 </span> </div>
-	              </div>
-            	</td>
-            </tr>
-            </tbody>
-            </table>
-            
-            </div>
-          </div>
-          
-          
-           <div class="col-md-7">
-            <div class="form-horizontal">
-              
-              
-              <div class="form-group">
-                <div class="col-md-7 select-field">
-                  <div class="row">
-                    <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount">
-                        <option value="percentage">Discount %</option>
-                        <option value="flat">Discount Value</option>
-                      </select>
-                    </div>
-                    <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-5 text-right">
-                  <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" placeholder="00.00" readonly>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly="readonly"></div>
-              </div>
-              <div class="addtax_table">
-              <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />
-                    <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">
-                        <thead id="addTaxTbl">
-                            <tr>
-                                <th colspan="5">
-                                Add Tax
-                                    <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()">
-                                         <i class="fa fa-plus"></i></button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr id='divTaxTsRow0'>
-                                <td>
-                                   <div class="select-field tblminwidth-75">
-                                       <div class="tblminwidth-50">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">
-                                    </div>
-                                   </div>
-                                </td>
-                                <td>
-                                 <div class="btn-group tblminwidth-75">
-                                 <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">
-									 <option value="percentage">Percentage</option>
-									 <option value="flat">Flat</option>
-							 	</select>
-                                </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="text-danger"><i class="fa fa-remove"></i></span>
-                                </td>
-                            </tr>
-                          
-                        </tbody>
-                    </table>
-                    <!-- AddTax Table Starts here -->
-            </div>
-            <div class="form-group mt">
-                <label class="col-md-7 text-right"><strong>Total</strong></label>
-               <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Adding Content Starts herer -->
-          <!-- Drap and Drop Table Row --> 
+       
       <footer class="form-footer">
               <div class="pull-right mr">
                   <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT')">Save</button>
@@ -317,6 +161,184 @@ function cancel(){
 	<div id="divTaskTd7" style="display: none; float: left;">
 	  <a class="text-danger tblminwidth-50" title="Remove row" onclick="removeRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 	</div>
+	
+	
+	
+	
+	
+	
+	
+	<script>
+	function buildLineItemAndTaxAddRows(){
+		
+		 var result = '';
+		
+		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
+		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
+		 result = result +'  <table width="100%">';
+		 result = result +'  <thead id="addInvoiceTbl">';
+		 result = result +'  <tr id="divTsRow0">';
+		 result = result +'  <th>Date</th>';
+		 result = result +'  <th>Associate</th>';
+		 result = result +'  <th>Sow</th>';
+		 result = result +'  <th>Rate</th>';
+		 result = result +'  <th>Total Hours</th>';
+		 result = result +'  <th>Amount</th>';
+		 result = result +'  <th><i class="fa fa-remove"></i></th>';
+		 result = result +'  </tr>';
+		 result = result +'  </thead>';
+           
+		 result = result +'  <tfoot class="table_footer">';
+		 result = result +'  <tr>';
+		 result = result +'  <td colspan="4"></td>';
+		 result = result +'  <td><strong>Subtotal</strong></td>';
+		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>';
+		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
+		 result = result +'  <td>&nbsp;</td>';
+		 result = result +'  </tr>';
+		 result = result +'  </tfoot>';
+		 result = result +'  </table>';
+		 result = result +'  </div>';
+         
+         result = result +'  <div class="clearfix invoice_other">';
+         result = result +'  <div class="col-md-5">';
+         result = result +'  <div class="clearfix mb">';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllVendorAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
+         result = result +'  </div>';
+           
+           
+         result = result +'  <div class="new_side_wrap">';
+         result = result +'  <div class="new_side_wrap_inn">';
+         result = result +'  <div class="new_side_wrap_cta">';
+         result = result +'  <div id="associatesListDiv"></div>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         
+         result = result +'  <div class="clearfix mb">';
+         result = result +'  <label><strong>Message</strong></label>';
+         result = result +'  <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>';
+         result = result +'  </div>';
+           
+           
+         result = result +'  <div class="clearfix mb invoiceAttachment">';
+         result = result +'  <input type="hidden" name="invoiceAttcahmentMaxRowNumber"  id="invoiceAttcahmentMaxRowNumber" value="1" />';
+         result = result +'  <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">';
+         result = result +'  <tbody>';
+         result = result +'  <tr id="divAttachmentTsRow0">';
+         result = result +'  <td>';
+         result = result +'  <label><strong>Attachments</strong></label>';
+         result = result +'  <div class="timesheet_week_comm col-md-12 " >';
+         result = result +'  <div class="form-group" id="0invoicedocFileuploadFileGroup"> ';
+         result = result +'  <span>';
+         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-plus" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  </span> </div>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  </tr>';
+         result = result +'  </tbody>';
+         result = result +'  </table>';
+           
+         result = result +'  </div>';
+         result = result +'  </div>';
+         
+         
+         result = result +'  <div class="col-md-7">';
+         result = result +'  <div class="form-horizontal">';
+             
+             
+         result = result +'  <div class="form-group">';
+         result = result +'  <div class="col-md-7 select-field">';
+         result = result +'  <div class="row">';
+         result = result +'  <div class="col-md-7 paddingRight">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount">';
+         result = result +'  <option value="percentage">Discount %</option>';
+         result = result +'  <option value="flat">Discount Value</option>';
+         result = result +'  </select>';
+         result = result +'  </div>';
+         result = result +'  <div class="col-md-5 paddingLeft">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  <div class="col-md-5 text-right">';
+         result = result +'  <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" placeholder="00.00" readonly>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  <div class="form-group">';
+         result = result +'  <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>';
+         result = result +'  <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly="readonly"></div>';
+         result = result +'  </div>';
+         result = result +'  <div class="addtax_table">';
+         result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />';
+         result = result +'  <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">';
+         result = result +'  <thead id="addTaxTbl">';
+         result = result +'  <tr>';
+         result = result +'  <th colspan="5">';
+         result = result +'  Add Tax';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()">';
+         result = result +'  <i class="fa fa-plus"></i></button>';
+         result = result +'  </th>';
+         result = result +'  </tr>';
+         result = result +'  </thead>';
+         result = result +'  <tbody>';
+         result = result +'  <tr id="divTaxTsRow0">';
+         result = result +'  <td>';
+         result = result +'  <div class="select-field tblminwidth-75">';
+         result = result +'  <div class="tblminwidth-50">';
+         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <div class="btn-group tblminwidth-75">';
+         result = result +'  <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">';
+         result = result +'  <option value="percentage">Percentage</option>';
+         result = result +'  <option value="flat">Flat</option>';
+         result = result +'  </select>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <div class="tblminwidth-75">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <div class="tblminwidth-75">';
+         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <span class="text-danger"><i class="fa fa-remove"></i></span>';
+         result = result +'  </td>';
+         result = result +'  </tr>';
+                         
+         result = result +'  </tbody>';
+         result = result +'  </table>';
+                   result = result +'  </div>';
+                   result = result +'  <div class="form-group mt">';
+                   result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
+                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>';
+                   result = result +'  </div>';
+                   result = result +'  </div>';
+                   result = result +'  </div>';
+                   result = result +'  </div>';
+                   $("#lineItemAddRows").empty();
+                   $("#lineItemAddRows").append(result);
+		
+	}
+	
+	</script>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 <script type="text/javascript">
 	function removeRow(rowId) {
@@ -1319,7 +1341,7 @@ function getVendorContacts(){
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
-	output = output + "<option value=' "+opt.spocUserId+" '>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
 	}
 	$("#vendorContact").empty();
 	$("#vendorContact").append(output);
