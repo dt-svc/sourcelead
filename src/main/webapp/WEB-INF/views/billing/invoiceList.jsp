@@ -16,14 +16,14 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Billing</h2>
+        <h2>Receivable</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice ListHome » Billing</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Receivable List</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="onboardDashboard_counts">
         <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons"> <a href="<c:url value='/createInvoice'/>"  class="btn btn-primary btn-sm" title="Create invoice"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
+          <div class="onboardcreateButtons"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
             <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
                 <option value="month">1 Month</option>
@@ -304,6 +304,54 @@ $(document).ready(function(){
     </div>
   </section>
   
+  <!-- Add invoice Popup -->
+		   <div class="addcandidate-popup">
+		    <div class="row">
+		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+		      <div class="col-md-4 mt25">
+		        <div class="small-widget bgGreen">
+		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
+		          <div class="clearfix mb10"> 
+		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
+		          </div>
+		          <strong class="clearfix">Custom</strong></a>
+		          </div>
+		      </div>
+		
+		        <div class="col-md-4 mt25">
+		          <div class="small-widget bg-yellow"> <a href="projectbased_receivables.html" title="Create project based invoice">
+		            <div class="clearfix mb10">
+		                <!--<i class="fa fa-usd fa-3x"></i>-->
+		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		            </div>
+		            <strong class="clearfix">Project Based </strong> </a> </div>
+		        </div>
+		          
+		          <div class="col-md-4 mt25">
+		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <div class="clearfix mb10">
+		              <!--<i class="fa fa-usd fa-3x"></i>   -->           
+		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		              </div>
+		            <strong class="clearfix">Other</strong> </a> </div>
+		        </div>
+		
+		      
+		          </div>
+		    </div>
+		  </div>
+		  <div class="pop_mask"></div>
+		  <script>
+		    //addcandidate-popup script
+		    function createBill(){
+		        $('.addcandidate-popup').fadeIn(200);
+		        $('.pop_mask').fadeIn(200);
+		    };
+		       function closeCandidate(){
+		        $('.addcandidate-popup').fadeOut(200);
+		        $('.pop_mask').fadeOut(200);
+		       }
+		    </script> 
   
 <script>
 function receivePaymentPop1(invoiceId,total){
