@@ -1,12 +1,12 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Contracts;
-
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -14,7 +14,7 @@ import com.bis.sourcelead.entity.User;
 public interface InvoiceService {
 	
 
-	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceType) throws Exception;
+	List<Invoice> invoiceListByOrgLocationId(Long orgLocationId, String invoiceStatus, String paymentStatus,Date startDateUTC, Date endDateUTC,String invoiceType) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
 	

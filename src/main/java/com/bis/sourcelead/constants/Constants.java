@@ -666,6 +666,9 @@ public class Constants {
     public static String TWO_WEEKS = "twoweeks";
     public static String ONE_MONTH = "month";
     public static String TWO_MONTHS = "twomonths";
+    public static String THREE_MONTHS = "threemonths";
+    public static String SIX_MONTHS = "sixmonths";
+    public static String ONE_YEAR = "oneyear";
     
     public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
 }	

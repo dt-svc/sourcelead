@@ -1,6 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
@@ -10,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bis.sourcelead.dao.InvoiceDao;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 
@@ -40,20 +44,53 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceType) {
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) {
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String subQuery = "";
+		String[] invoiceTokens = invoiceStatus.split(",");
+		String[] paymentTokens = paymentStatus.split(",");
 		
-		if(invoiceType.equalsIgnoreCase("payable")){
-			subQuery = " and invoice.invoiceType = 'Payables' ";
-		}else{
-			subQuery = " and invoice.invoiceType = 'Receivable' ";
+		String subQuery = "";
+		String subQuery1 = "";
+		if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'DRAFT' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("SENT")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'SENT' or ";
 		}
 		
-		String query = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "; 
-		List<Invoice> departmentList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
-		return departmentList;
+		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
+			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+		} 
+		
+		if (Arrays.asList(paymentTokens).contains("Unpaid")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Unpaid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("Partial Paid")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Partial Paid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("Paid")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Paid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("OverDue")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'OverDue' or ";
+		}
+		
+		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
+			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+		} 
+		
+		String subQuery2 = "";
+		
+		if(invoiceType.equalsIgnoreCase("payable")){
+			subQuery2 = " and invoice.invoiceType = 'Payables' ";
+		}else{
+			subQuery2 = " and invoice.invoiceType = 'Receivable' ";
+		}
+		
+		String query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC"; 
+		List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		return invoiceList;
 	}
 	
 	

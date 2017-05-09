@@ -56,8 +56,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private CommonUtil commonUtil;
 	
 	@Override
-	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceType) throws Exception {
-		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceType);
+
+	public List<Invoice> invoiceListByOrgLocationId(Long orgLocationId,String invoiceStatus, String paymentStatus,Date startDateUTC,Date endDateUTC,String invoiceType) throws Exception {
+		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+
 	}
 	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
 	{
@@ -289,9 +291,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceLineItemsSet;
 		
 	}
+
 	@Override
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
 		return invoiceDao.getInvoicetById(invoiceId);
 	}
 	
+
 }
