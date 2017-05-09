@@ -45,7 +45,6 @@
               <label class="col-md-4">Template Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="contractType" field-name="Template Type"  name="contractType" onchange="contractTemplateType(); validateContractTemplateName();">
-                     <option value="">&nbsp;&nbsp;&nbsp;&nbsp;---Select Template Type---</option>
 	                 <option  ${contractsTemplate.templateType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
@@ -63,7 +62,7 @@
             </div>
             </div>
              
-          <div class="form-group">
+          <!-- <div class="form-group">
               <label class="col-md-4">Letter head</label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="letterHead" name="letterHead">
@@ -71,7 +70,7 @@
                     <option value="Letter head-1">Letter head-1</option>
                   </select>
               </div>
-          </div>             
+          </div>     -->         
                    
             <div class="form-group">
               <label class="col-md-4">Description</label>
