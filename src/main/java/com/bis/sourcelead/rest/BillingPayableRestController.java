@@ -1,11 +1,18 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,20 +20,44 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceDocument;
+import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.InvoiceTax;
+import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoiceLineItemService;
+import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.service.InvoiceTaxService;
+import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 public class BillingPayableRestController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(BillingPayableRestController.class);
+	
 	@Autowired
 	private CandidateService candidateService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	InvoiceService invoiceService;
+	
+	@Autowired
+	InvoiceLineItemService invoiceLineItemService;
+	
+	@Autowired
+	InvoiceDocumentsService invoiceDocumentsService;
+	
+	@Autowired
+	InvoiceTaxService invoiceTaxService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -57,6 +88,107 @@ public class BillingPayableRestController {
 	 	    resultJson = commonUtil.toJSON(associateList);
 	 	    return resultJson;
 	 	}
+	 
+	 
+	 
+	 @RequestMapping(value = "/getInvoiceDetailsByInvoiceUUID")
+	 public String getInvoiceDetailsByInvoiceUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,HttpServletRequest request) throws Exception {
+
+		    String resultJson;
+		 
+		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		    if(null != invoice){
+		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
+		    	invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+		    	invoice.setVendorContactId(invoice.getContactUser().getId());
+		    	invoice.setInvoiceId(invoice.getInvoiceId());
+		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));
+		    	invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));
+		    	
+		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
+		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
+		    	
+		    	for(InvoiceLineItems lineItems : invoiceLineItemsList){
+		    		StringBuilder sb = new StringBuilder();
+		    		Candidate candidate = candidateService.getCandidateByCandidateId(lineItems.getCandidate().getId());
+		    		
+		    		if(null != candidate.getLastName()){
+		    			sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+	    			  }else{
+		    			sb.append(candidate.getFirstName());
+	    			 }
+		    		lineItems.setStartDateStr(Constants.DMY.format(lineItems.getStartDate()));
+		    		lineItems.setEndDateStr(Constants.DMY.format(lineItems.getEndDate()));
+		    		lineItems.setCandidateName(sb.toString());
+		    		lineItems.setCandidateId(lineItems.getCandidate().getId());
+		    		
+		    		if(null != lineItems.getContract()){
+		    			lineItems.setContractId(lineItems.getContract().getId());
+		    		}
+		    		
+		    		lineItemsList.add(lineItems);
+		    	}
+		    	
+		    	invoice.setInvoiceLineItemsList(lineItemsList);
+		    	
+		    	List<InvoiceDocument> invoiceDocumentsList = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getId());
+		    	invoice.setInvoiceDocumentsList(invoiceDocumentsList);
+		    	
+		    	List<InvoiceTax> invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
+		    	invoice.setInvoiceTaxList(invoiceTaxList);
+		    	
+		    	
+		    }
+		    
+		    resultJson = commonUtil.toJSON(invoice);
+			
+			return resultJson;
+	 }
+	 
+	 
+	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
+	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
+			
+			
+				InvoiceDocument	document =	invoiceDocumentsService.getInvoiceDocumentById(documentId);	
+			    
+			    response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(document.getFileName()).append("\"").toString());
+				InputStream inputStream = new ByteArrayInputStream(document.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+
+		}  
+	 
+	 
+	 @RequestMapping(value = "/deleteInvoiceDocumentBydocumentId")
+	 public String deleteInvoiceDocumentBydocumentId(@RequestParam(value="documentId", required=false) Long documentId,HttpServletRequest request) throws Exception {
+
+		 InvoiceDocument document =	invoiceDocumentsService.getInvoiceDocumentById(documentId);	
+		 if(null != document){
+			 document.setStatus("0");
+			 invoiceDocumentsService.saveInvoiceDocument(document);
+		 }
+		 
+		 
+		 return "success";
+	 }
+	 
 	    
 
 }

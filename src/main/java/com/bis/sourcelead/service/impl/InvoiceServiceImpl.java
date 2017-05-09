@@ -61,9 +61,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceDao.invoiceListByOrgLocationId(orgLocationId,invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 
 	}
-	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId) throws Exception
+	public List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType) throws Exception
 	{
-		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId);
+		return invoiceDao.getSowcontractListByAssociateId(candidateId,orgLocationId,orgRelationId,contractType);
 	}
 
 	@Override
@@ -295,6 +295,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
 		return invoiceDao.getInvoicetById(invoiceId);
+	}
+	@Override
+	public Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception {
+		return invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
 	}
 	
 

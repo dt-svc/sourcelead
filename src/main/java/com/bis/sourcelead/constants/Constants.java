@@ -63,6 +63,10 @@ public class Constants {
 	
 	public static final String INVOICE_PAYABLES = "Payables";
 	
+	public static final String Client_SOW = "Client SOW";
+	public static final String Vendor_SOW = "Vendor SOW";
+	
+	
 	
 	public static final String country = "Country";
 	

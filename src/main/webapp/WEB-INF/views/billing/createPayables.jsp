@@ -9,9 +9,19 @@
 
 <script src="resources/js/jquery.mask.min.js"></script>
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+
+
+
+
 <script type="text/javascript">
 $(document).ready(function(){
-	getUserList("0");
+	var invoiceUUID = '${invoiceUUID}';
+	if(invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
+		loadInvoiceDetails(invoiceUUID);
+	}else{
+		getVendors();
+	}
+	
 });
 </script>
 <script>
@@ -52,10 +62,6 @@ function cancel(){
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errVendor">
                 <select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();" data-validation="required" field-name="Client Name">
-                 <option value=''>--Select Vendor--</option>
-                   <c:forEach var="orgrelations" items="${vendorList}">
-                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
-                  </c:forEach>
                 </select>
               </div>
             </div>
@@ -163,11 +169,6 @@ function cancel(){
 	</div>
 	
 	
-	
-	
-	
-	
-	
 	<script>
 	function buildLineItemAndTaxAddRows(){
 		
@@ -220,16 +221,25 @@ function cancel(){
          result = result +'  <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>';
          result = result +'  </div>';
            
-           
+        
          result = result +'  <div class="clearfix mb invoiceAttachment">';
          result = result +'  <input type="hidden" name="invoiceAttcahmentMaxRowNumber"  id="invoiceAttcahmentMaxRowNumber" value="1" />';
          result = result +'  <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">';
          result = result +'  <tbody>';
          result = result +'  <tr id="divAttachmentTsRow0">';
          result = result +'  <td>';
-         result = result +'  <label><strong>Attachments</strong></label>';
-         result = result +'  <div class="timesheet_week_comm col-md-12 " >';
-         result = result +'  <div class="form-group" id="0invoicedocFileuploadFileGroup"> ';
+         result = result +'  <label class="pull-left mb10"><strong>Attachments</strong></label>';
+         
+         result = result +' <div id="timesheetDocumentsId">';
+         result = result +' <div class="timesheet_week_comm invoiceDocs">';
+         result = result +' <span>';
+         result = result +' <div id="savedAttachments"></div>';
+         result = result +' </span>';
+         result = result +' </div>';
+         result = result +' </div>';
+         
+         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
+         result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
          result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-plus" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
@@ -332,12 +342,104 @@ function cancel(){
 	
 	
 	
+	<script>
+	function loadInvoiceDetails(invoiceUUID){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 
+		 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID, 
+		         success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 
+		        	 var result = '';
+		        	 var selected = 'selected';
+		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 $("#vendorOrgRelationId").empty();
+		           	 $("#vendorOrgRelationId").append(result); 
+		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
+		           	 
+		           	getVendorContacts(json['vendorContactId']);
+		           	$("#invoiceId").val(json['invoiceId']);
+		           	
+		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
+		           		$("#paymentFrequency").val(json['paymentFrequency']);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	$("#invoiceDate").val(json['invoiceDateStr']);
+		           	$("#dueDate").val(json['dueDateStr']);
+		           	
+		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
+		           		$("#billingAddress").val(json['billingAddress']);
+		           	}
+		           	
+		           	buildLineItemAndTaxAddRows();
+		           	
+		           	editInvoice(json['invoiceLineItemsList']);
+		        	$("#inoviceTotal").val(json['subTotal']);
+		        	$("#disCount").val(json['discountType']);
+		        	$("#discountValue").val(json['discountAmount']);
+		        	$("#discountTotal").val(json['discountValue']);
+		        	$("#comment").val(json['invoiceComment']);
+		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);
+		        	
+		        	editTax(json['invoiceTaxList'])
+		        	
+		        	getSavedAttachments(json['invoiceDocumentsList']);
+		        	
+		        	$("#grandTotal").val(json['total']);
+		        	
+		        	
+		        	
+		        }
+    		});
+	}
+	</script>
 	
 	
+	<script>
+	function getSavedAttachments(invoiceDocumentsList){
+		var result = '';
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(invoiceDocumentsList.length > 0){
+			
+			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
+				 var opt = invoiceDocumentsList[i]; 
+	    		
+				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+					 result = result +"<input type='button' value='"+opt.fileName+"'>";
+					 result = result +"</a>";
+					 result = result +"<input class='dele' type='button' onClick='deleteInvoiceDocument("+opt.id+");' >";
+					 result = result +"</strong>";
+					
+	    	 }
+			 
+			 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
+		}
+    	
+	}
 	
 	
+	function deleteInvoiceDocument(documentId){
+		
+		if(documentId){
+			var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
+		         success: function(data) {
+		        	 document.getElementById("invoiceDocument"+documentId).remove();
+		         }
+			});
+			
+	     }
+	  }
 	
-	
+	</script>
 	
 	
 <script type="text/javascript">
@@ -438,6 +540,167 @@ function cancel(){
 	}
 </script>
 
+
+<script type="text/javascript">
+	function editInvoice(invoiceLineItemsList) {
+		
+		 for(var i=0; i<invoiceLineItemsList.length; i++){
+			 var opt = invoiceLineItemsList[i];
+			 
+			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
+				var tbl = document.getElementById("addInvoiceTbl");
+				var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+				$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+				
+				$("#discountValue").removeAttr("disabled");
+				
+				
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "divTsRow" + maxRowNum);
+				
+				var text = "";
+				var cell0 = row.insertCell(0);
+				text = text+"<div  class='inputCustom'>";
+				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'invoiceStartDate" placeholder="Start Date">';
+				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'invoiceEndDate" placeholder="End Date">';
+				text = text+'</div>';
+				cell0.innerHTML = text;
+				
+				
+				$( "#"+maxRowNum+"sdate-input" ).datepicker({
+					  changeMonth: true,
+				      changeYear: true,
+				      dateFormat : 'dd-mm-yy',
+				      minDate: 0  ,
+					  onSelect : function(selected) {
+				 	  }
+				    });
+				
+				$( "#"+maxRowNum+"edate-input" ).datepicker({
+					  changeMonth: true,
+				      changeYear: true,
+				      dateFormat : 'dd-mm-yy',
+				      minDate: 0  ,
+					  onSelect : function(selected) {
+				 	  }
+				    });
+				
+				
+				var cell1 = row.insertCell(1);
+				var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+				divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTsTd2Str = divTsTd2Str.replace(/PRICECALCULATION/g,("")); 
+				cell1.innerHTML = divTsTd2Str;
+				
+				var cell1 = row.insertCell(2);
+				var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+				divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd3Str;
+				
+				var cell1 = row.insertCell(3);
+				var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+				divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd4Str;
+				
+				var cell1 = row.insertCell(4);
+				var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+				divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd5Str;
+				
+				
+				var cell1 = row.insertCell(5);
+				var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+				divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd6Str;
+				
+				var cell1 = row.insertCell(6);
+				var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+				divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd7Str;
+				
+				$('#'+maxRowNum+'sdate-input').val(opt.startDateStr);
+				$('#'+maxRowNum+'edate-input').val(opt.endDateStr);
+				
+				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
+				$('#'+maxRowNum+'candidateName').val(opt.candidateName);
+				
+				$('#'+maxRowNum+'rate').val(opt.rate);
+				$('#'+maxRowNum+'totalHours').val(opt.totalHours);
+				$('#'+maxRowNum+'amount').val(opt.amount);
+				
+				
+				getSow(maxRowNum,opt.candidateId);
+				maskme();  
+		 }
+		
+	}
+  </script>
+  
+  
+  <script>
+	function editTax(invoiceTaxList){  
+		
+		
+		for(var i=0; i<invoiceTaxList.length; i++){
+			 
+			var opt = invoiceTaxList[i];
+			
+			if(i == 0){
+				
+				$('#'+i+'taxType').val(opt.taxName);
+				$('#'+i+'taxdiscountType').val(opt.taxType);
+				$('#'+i+'taxdiscountvalue').val(opt.taxValue);
+				$('#'+i+'taxTotal').val(opt.taxAmount);
+			 
+			}else{
+				 
+				 var checkMaxTsRowNum = $("#maxTaxRowNum").val();
+					var tbl = document.getElementById("addTaxTbl");
+					var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+					$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
+					
+					var row = tbl.insertRow(maxRowNum);
+					row.setAttribute("id", "divTaxRow" + maxRowNum);
+					
+					var cell0 = row.insertCell(0);
+					var divTaxTdStr = document.getElementById("divTaxTd1").innerHTML;
+					divTaxTdStr = divTaxTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+					cell0.innerHTML = divTaxTdStr;
+					
+					var cell1 = row.insertCell(1);
+					var divTaxTdStr1 = document.getElementById("divTaxTd2").innerHTML;
+					divTaxTdStr1 = divTaxTdStr1.replace(/REPLACEROWID/g, (maxRowNum));
+					cell1.innerHTML = divTaxTdStr1;
+					
+					var cell2 = row.insertCell(2);
+					var divTaxTdStr2 = document.getElementById("divTaxTd3").innerHTML;
+					divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
+					cell2.innerHTML = divTaxTdStr2;
+					
+					
+					var cell3 = row.insertCell(3);
+					var divTaxTdStr3 = document.getElementById("divTaxTd4").innerHTML;
+					divTaxTdStr3 = divTaxTdStr3.replace(/REPLACEROWID/g, (maxRowNum));
+					cell3.innerHTML = divTaxTdStr3;
+					
+					var cell4 = row.insertCell(4);
+					var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
+					divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
+					cell4.innerHTML = divTaxTdStr4;
+					maskme();
+					
+					$('#'+i+'taxType').val(opt.taxName);
+					$('#'+i+'taxdiscountType').val(opt.taxType);
+					$('#'+i+'taxdiscountvalue').val(opt.taxValue);
+					$('#'+i+'taxTotal').val(opt.taxAmount);
+			 }
+		}
+	}			
+</script>
+
+
+
+
   <script type="text/javascript">
 	function addInvoice() {
 		
@@ -535,34 +798,7 @@ function cancel(){
   </script>
   
   
-  <script>
-  function getUserList(rowId){
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getAssociatesList?${_csrf.parameterName}=${_csrf.token}",
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-Select Associates-</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.lastName != null && opt.lastName != '' && opt.lastName !='undefined'){
-		        			lastName = opt.lastName;
-		        		}else{
-		        			lastName = "";
-		        		}
-		        		
-		        		$('#'+rowId+'candidateId').append('<option value='+opt.id+' >'+opt.firstName+' '+lastName+'</option>');
-				}
-	        	
-	        },
-	        
-	    });
   
-  }
-  </script>
   
   
   
@@ -750,21 +986,27 @@ function pagination(){
 
   
   <script>
-  function getSow(rowId){
+  function getSow(rowId,contractId){
 	  var candidateId = $('#'+rowId+'candidateId').val();
-	  var orgRelationId = $("#clientOrgRelationId").val();
+	  var orgRelationId = $("#vendorOrgRelationId").val();
+	  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
+	        		
+	        		
 		        	 for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		$('#'+rowId+'sow').empty();
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
+			        		var selected = '';
+			        		if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+			        			selected = 'selected';
+			        		}
+			        		$('#'+rowId+'sow').append('<option value='+opt.id+' '+selected+' >'+opt.contractTitle+'</option>');
 					} 
 	        	}else{
 	        		
@@ -1327,25 +1569,56 @@ function errDueDate(){
 	    
 	    
 <!-- added by Rajashekar -->
+
 <script>
-function getVendorContacts(){
+function getVendors(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPayableVendorsList?${_csrf.parameterName}=${_csrf.token}",
+		success :function(data) {
+		var json = JSON.parse(data);
+		var output = "";
+		output = output + "<option value=''>Select Vendor</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		}
+		$("#vendorOrgRelationId").empty();
+		$("#vendorOrgRelationId").append(output);
+		$('#vendorOrgRelationId').trigger("chosen:updated");
+	},
+	});
+
+	}
+</script>
+
+
+<script>
+function getVendorContacts(vendorContactId){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Vendor Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
-	}
-	$("#vendorContact").empty();
-	$("#vendorContact").append(output);
-	$('#vendorContact').trigger("chosen:updated");
+		type : "GET",
+		url: sourceleadUrl+"/getPayableVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+		var json = JSON.parse(data);
+		var output = "";
+		output = output + "<option value=''>Select Vendor Contact</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		
+		var selected = '';
+		if(vendorContactId != null && vendorContactId != "" && vendorContactId !="undefined" && vendorContactId == opt.spocUserId){
+			selected = 'selected';
+		}
+		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+		}
+		$("#vendorContact").empty();
+		$("#vendorContact").append(output);
+		$('#vendorContact').trigger("chosen:updated");
 	},
 	});
 
