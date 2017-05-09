@@ -127,7 +127,6 @@
 				 <li onclick="copyToClipboard('text_element27')"><i></i><p class="copyText" id="text_element27">[Associate Name]</li>
 				 <li onclick="copyToClipboard('text_element28')"><i></i><p class="copyText" id="text_element28">[Client Location]</li>
 				 <li onclick="copyToClipboard('text_element29')"><i></i><p class="copyText" id="text_element29">[Requirement Title]</li>
-				 <li onclick="copyToClipboard('text_element30')"><i></i><p class="copyText" id="text_element30">[Associate Name]</li>
 				 <li onclick="copyToClipboard('text_element31')"><i></i><p class="copyText" id="text_element31">[Offer Rate]</li>
 				 <li onclick="copyToClipboard('text_element32')"><i></i><p class="copyText" id="text_element32">[Billing Rate]]</li>
 				 <li onclick="copyToClipboard('text_element33')"><i></i><p class="copyText" id="text_element33">[Overtime]</li>
@@ -139,12 +138,11 @@
 			</ul>
 			
 			<ul id="vendorsow" style="display:none">
-				 <li onclick="copyToClipboard('text_element39')"><i></i><p class="copyText" id="text_element39">[Client Name]</p></li>
-				 <li onclick="copyToClipboard('text_element40')"><i></i><p class="copyText" id="text_element40">[Client Contact]</li>
+				 <li onclick="copyToClipboard('text_element39')"><i></i><p class="copyText" id="text_element39">[Vendor Name]</p></li>
+				 <li onclick="copyToClipboard('text_element40')"><i></i><p class="copyText" id="text_element40">[Vendor Contact]</li>
 				 <li onclick="copyToClipboard('text_element41')"><i></i><p class="copyText" id="text_element41">[Associate Name]</li>
-				 <li onclick="copyToClipboard('text_element42')"><i></i><p class="copyText" id="text_element42">[Client Location]</li>
+				 <li onclick="copyToClipboard('text_element42')"><i></i><p class="copyText" id="text_element42">[Vendor Location]</li>
 				 <li onclick="copyToClipboard('text_element43')"><i></i><p class="copyText" id="text_element43">[Requirement Title]</li>
-				 <li onclick="copyToClipboard('text_element44')"><i></i><p class="copyText" id="text_element44">[Associate Name]</li>
 				 <li onclick="copyToClipboard('text_element45')"><i></i><p class="copyText" id="text_element45">[Offer Rate]</li>
 				 <li onclick="copyToClipboard('text_element46')"><i></i><p class="copyText" id="text_element46">[Billing Rate]</li>
 				 <li onclick="copyToClipboard('text_element47')"><i></i><p class="copyText" id="text_element47">[Overtime]</li>
