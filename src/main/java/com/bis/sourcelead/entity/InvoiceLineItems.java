@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -77,6 +78,21 @@ public class InvoiceLineItems {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String sowName;
+	
+	@Transient
+	private String startDateStr;
+	
+	@Transient
+	private String endDtaeStr;
+	
+	@Transient
+	private String employeeId;
 	
 	public Long getId()
 	{
@@ -246,6 +262,46 @@ public class InvoiceLineItems {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getSowName() {
+		return sowName;
+	}
+
+	public void setSowName(String sowName) {
+		this.sowName = sowName;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDtaeStr() {
+		return endDtaeStr;
+	}
+
+	public void setEndDtaeStr(String endDtaeStr) {
+		this.endDtaeStr = endDtaeStr;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
 	}
 	
 }

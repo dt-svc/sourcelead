@@ -32,6 +32,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.InvoiceLineItemsService;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -72,6 +74,9 @@ public class InvoiceRestController {
 
 	@Autowired
 	private InvoicePaymentService invoicePaymentService;
+	
+	@Autowired
+	private InvoiceLineItemsService invoiceLineItemsService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -305,5 +310,63 @@ public class InvoiceRestController {
 		return invoicePaymentSaved;
 	} 
 
+	
+	  @RequestMapping(value = "/getViewInvoice", method = RequestMethod.GET)
+	 	public @ResponseBody  String getViewInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	String resultJson;
+	     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     	List<Invoice> viewinvoiceList= invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(invoiceId, orgLocations.getId());
+	     	for(Invoice invoice :viewinvoiceList){
+				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+				}
+					
+				StringBuilder contactName = new StringBuilder();
+				if(invoice.getContactUser().getLastName() != null){
+					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
+				}else{
+					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+				}
+				if(null != invoice.getContactUser()){
+					invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
+				}
+				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
+				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
+				
+				List<InvoiceLineItems> invoiceLineItemsList= invoiceLineItemsService.invoiceLineItemsByInvoiceIdAndOrglocationId(invoiceId, orgLocations.getId());
+				for(InvoiceLineItems inviceLine:invoiceLineItemsList){
+					if(null != inviceLine.getCandidate()){
+						StringBuilder  can = new StringBuilder();
+						if(inviceLine.getCandidate().getLastName() != null){
+							inviceLine.setCandidateName(can.append(inviceLine.getCandidate().getFirstName()).append(" ").append(inviceLine.getCandidate().getLastName()).toString());	
+						}else{
+							inviceLine.setCandidateName(can.append(inviceLine.getCandidate().getFirstName()).toString());
+						}	
+					}
+					if(null != inviceLine.getContract()){
+						inviceLine.setSowName(inviceLine.getContract().getContractTitle());	
+					}
+					inviceLine.setRate(inviceLine.getRate());
+					inviceLine.setTotalHours(inviceLine.getTotalHours());
+					inviceLine.setAmount(inviceLine.getAmount());
+					if(null != inviceLine.getStartDate()){
+						inviceLine.setStartDateStr(Constants.DF_DMY.format(inviceLine.getStartDate()));	
+					}
+					if(null !=inviceLine.getEndDate()){
+						inviceLine.setEndDtaeStr(Constants.DF_DMY.format(inviceLine.getEndDate()));	
+					}
+					
+					invoice.setInvoiceLineItemsList(invoiceLineItemsList);
+				}
+				
+			}
+	 	  resultJson = commonUtil.toJSON(viewinvoiceList);
+	 	  return resultJson;
+	 	}
+	  
     
 }

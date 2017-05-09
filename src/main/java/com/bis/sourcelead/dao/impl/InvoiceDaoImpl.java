@@ -120,4 +120,14 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		return (Invoice) session.get(Invoice.class, invoiceId);
 	}
 
+
+	@Override
+	@Transactional
+	public List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice  where invoice.id = :invoiceId and invoice.orgLocation.id = :orgLocationId ";
+		List<Invoice> viewInvoiceList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return viewInvoiceList;
+	}
+
 }

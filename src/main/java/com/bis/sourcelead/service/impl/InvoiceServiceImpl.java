@@ -295,6 +295,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
 		return invoiceDao.getInvoicetById(invoiceId);
 	}
+	@Override
+	public List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
+		return invoiceDao.getViewInvoiceListByInvoiceIdAndOrglocationId(invoiceId,orgLocationId);
+	}
 	
 
 }

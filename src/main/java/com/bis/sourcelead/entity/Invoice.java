@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -133,10 +134,22 @@ public class Invoice {
 	private String clientContactName;
 	
 	@Transient
+	private String clientContactEmail;
+	
+	@Transient
 	private String invoiceDateStr;
 	
 	@Transient
 	private String dueDateStr;
+	
+	@Transient
+	List<InvoiceLineItems> invoiceLineItemsList;
+	
+	@Transient
+	List<InvoiceTax> invoiceTaxList;
+	
+	@Transient
+	List<InvoiceDocument> invoiceDocumentList;
 
 	public Long getId()
 	{
@@ -375,6 +388,14 @@ public class Invoice {
 		this.clientContactName = clientContactName;
 	}
 
+	public String getClientContactEmail() {
+		return clientContactEmail;
+	}
+
+	public void setClientContactEmail(String clientContactEmail) {
+		this.clientContactEmail = clientContactEmail;
+	}
+
 	public String getInvoiceDateStr() {
 		return invoiceDateStr;
 	}
@@ -439,4 +460,27 @@ public class Invoice {
 		this.invoiceType = invoiceType;
 	}
 
+	public List<InvoiceLineItems> getInvoiceLineItemsList() {
+		return invoiceLineItemsList;
+	}
+
+	public void setInvoiceLineItemsList(List<InvoiceLineItems> invoiceLineItemsList) {
+		this.invoiceLineItemsList = invoiceLineItemsList;
+	}
+
+	public List<InvoiceTax> getInvoiceTaxList() {
+		return invoiceTaxList;
+	}
+
+	public void setInvoiceTaxList(List<InvoiceTax> invoiceTaxList) {
+		this.invoiceTaxList = invoiceTaxList;
+	}
+
+	public List<InvoiceDocument> getInvoiceDocumentList() {
+		return invoiceDocumentList;
+	}
+
+	public void setInvoiceDocumentList(List<InvoiceDocument> invoiceDocumentList) {
+		this.invoiceDocumentList = invoiceDocumentList;
+	}
 }
