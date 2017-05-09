@@ -3067,7 +3067,7 @@ function documentpaginationIN(){
     	"scrollCollapse": false,
     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"aaSorting": [[8,'desc']],
+    	/* "aaSorting": [[8,'desc']], */
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
