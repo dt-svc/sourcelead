@@ -188,6 +188,21 @@ public class BillingPayableRestController {
 		 
 		 return "success";
 	 }
+	
+	 
+	 @RequestMapping(value = "/deleteInvoiceLineItem")
+	 public String deleteInvoiceLineItem(@RequestParam(value="lineItemId", required=false) Long lineItemId,HttpServletRequest request) throws Exception {
+
+		 InvoiceLineItems lineItem = invoiceLineItemService.getInvoiceLineItemsById(lineItemId);	
+		 if(null != lineItem){
+			 lineItem.setStatus("0");
+			 invoiceLineItemService.saveInvoiceLineItems(lineItem);
+		 }
+		 
+		 return "success";
+	 }
+	 
+	 
 	 
 	    
 

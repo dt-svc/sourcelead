@@ -116,6 +116,8 @@ function cancel(){
         <div class="clearfix mt"></div>
         <div id="lineItemAddRows"></div>
         
+        <div id="lineItemPopUp"></div>
+        
        
       <footer class="form-footer">
               <div class="pull-right mr">
@@ -161,11 +163,10 @@ function cancel(){
 	
 	<div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 text-right"  ><input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount" placeholder = "00:00" class="ReadTextFli" > </div>
-<!-- 	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount"><input type="text" value = "00:00" class="ReadTextFli"></div> -->
 	</div>
 	
 	<div id="divTaskTd7" style="display: none; float: left;">
-	  <a class="text-danger tblminwidth-50" title="Remove row" onclick="removeRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
+	  <a class="text-danger tblminwidth-50" title="Remove row"  id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 	</div>
 	
 	
@@ -443,7 +444,7 @@ function cancel(){
 	
 	
 <script type="text/javascript">
-	function removeRow(rowId) {
+	function removeRow(rowId,lineItemId) {
 		 var rate = $("#"+rowId+"rate").val();
 		 var totalHours = $("#"+rowId+"totalHours").val();
 		 var subTotal = $("#inoviceTotal").val();
@@ -457,7 +458,6 @@ function cancel(){
 		     var totlalAmount = (perMinit * finalmin);
 		     var subtractTotal = subTotal - totlalAmount.toFixed(2)
 		     $('#inoviceTotal').val(subtractTotal);
-		    /*  $("#grandTotal").val(subtractTotal); */
 		     $("#hiddenTotal").val(subtractTotal);
 		     
 		 }
@@ -524,6 +524,10 @@ function cancel(){
 				  $("#discountValue").val('');
 				  $("#discountValue").attr("disabled", "disabled");
 			  }
+			  
+		  if(lineItemId != null && lineItemId != '' && lineItemId !='undefined'){
+				removeLineItemRow(lineItemId,subtractTotal);
+			}
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addInvoiceTbl').rows[rowId];
@@ -533,10 +537,8 @@ function cancel(){
 		}
 		
 		
-		  
-		  
 		
-	
+		
 	}
 </script>
 
@@ -628,6 +630,10 @@ function cancel(){
 				$('#'+maxRowNum+'totalHours').val(opt.totalHours);
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				
+				$('#'+maxRowNum+'removeLineItem').removeAttr("onclick");
+				$('#'+maxRowNum+'removeLineItem').attr('onclick','removeLineItem('+opt.id+','+maxRowNum+')');
+				
+				
 				
 				getSow(maxRowNum,opt.candidateId);
 				maskme();  
@@ -635,6 +641,60 @@ function cancel(){
 		
 	}
   </script>
+  
+  
+  <script>
+  function removeLineItem(lineItemId,maxRowNum){
+	    
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Are you sure to delete Line Item</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='removeSelectedLineItem("+lineItemId+","+maxRowNum+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#lineItemPopUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+  }
+  </script>
+  
+  
+<script>
+function removeSelectedLineItem(lineItemId,rowId){
+	removeRow(rowId,lineItemId);
+}
+
+
+function removeLineItemRow(lineItemId,invoiceTotal){
+	
+	 $("#lineItemPopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	 
+	 
+	/* if(lineItemId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+    	type: "POST",
+    	 url: sourceleadUrl+"/deleteInvoiceLineItem?${_csrf.parameterName}=${_csrf.token}&lineItemId="+lineItemId, 
+         success: function(data) {
+        	 $("#lineItemPopUp").empty();
+        	 $(".project_inn_mask").fadeOut(200);
+         }
+	});
+	
+ } */
+}
+</script>
+  
+  
+<script type="text/javascript">
+function cancel(){
+	$("#lineItemPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+  
   
   
   <script>

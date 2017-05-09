@@ -20,4 +20,14 @@ public class InvoiceLineItemServiceImpl implements InvoiceLineItemService{
 		return InvoiceLineItemDao.getInvoiceLineItemsByInvoiceId(invoiceId);
 	}
 
+	@Override
+	public InvoiceLineItems getInvoiceLineItemsById(Long Id) throws Exception {
+		return InvoiceLineItemDao.getInvoiceLineItemsById(Id);
+	}
+
+	@Override
+	public InvoiceLineItems saveInvoiceLineItems(InvoiceLineItems invoiceLineItems) throws Exception {
+		return InvoiceLineItemDao.saveInvoiceLineItems(invoiceLineItems);
+	}
+
 }
