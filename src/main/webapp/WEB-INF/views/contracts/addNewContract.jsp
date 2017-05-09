@@ -44,7 +44,7 @@
                     <option>Client SOW</option>
                     <option>Vendor SOW</option>
                     <option>NDA</option>
-                    <option>NCA</option>
+                    <option>NSA</option>
                   </select>
             </div>
             </div>				
@@ -63,6 +63,8 @@
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template">
                   </select>
+              </div>
+              <div class="col-md-8">
               </div>
             </div>  
             
@@ -274,10 +276,10 @@
                     </div>
             </div>
             <div class="form-group">
-              <label class="col-md-4">Invoice Frequency<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
-                    <option value="">Select Frequency</option>
+                    <option value="">Select Cycle</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Bi-Weekly">Bi-Weekly</option>
                     <option value="Semi-Monthly">Semi-Monthly</option> 
@@ -343,7 +345,7 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right mt">
-            <input type="button" value="Save Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
             <input type="button" value="Save" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left">
 
             <input type="button" value="SubmitToApprover" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:none">
@@ -450,7 +452,7 @@ function getVendorContacts(){
 	        var opt = json[i];
 	            // need to use in edit
        			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+"</option>";
+       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
 			}
        	    $("#vendorContact").empty();
 	        $("#vendorContact").append(output);
@@ -475,7 +477,7 @@ function getClientContacts(){
 	var opt = json[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
@@ -603,7 +605,7 @@ function getContractTemplates(){
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
 	}
-	if(contractType == "NDA" || contractType == "NCA"){
+	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
@@ -618,7 +620,7 @@ function getContractTemplates(){
       success :function(data) {
     	var json = JSON.parse(data);
       	var output = "";
-      	output = output + "<option>Select Template</option>";
+      	output = output + "<option value=''>Select Template</option>";
       	for (var i=0; i<json.length; i++)
 			{
 	        var opt = json[i];
@@ -1130,7 +1132,7 @@ function validateContractTitle(){
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_template" ).addClass('button').val('Save Template');
+		        		 $("#save_template" ).addClass('button').val('Save');
                         $("#save_template").removeAttr("disabled");
 		        	}
 		        	}
