@@ -263,15 +263,15 @@ function preparedContractList(data,contractSubmissionType){
 		     			result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
 		            	 }
 		     		 else{
-			         	 	opt = opt + '<div><span>--</span></div>';
+		     			result = result + '<div><span>--</span></div>';
 			        	  }
 		     	}else{
 		     		if(report.contractStatus == "completed" && report.templateSubmissionStatus != "FINALIZED"){
 		     			result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');">Finalize</a></div>';
 		            	 }
-		        	  if(report.templateSubmissionStatus == "FINALIZED"){
+		        	 /*  if(report.templateSubmissionStatus == "FINALIZED"){
 		        		  result = result + '<div id="removeStatus'+report.id+'">--</a></div>';
-		            	 }
+		            	 } */
 		        	  
 		        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
@@ -288,10 +288,10 @@ function preparedContractList(data,contractSubmissionType){
 		     	 
 		     	 result = result + '<td>';
 		     	if(report.templateSubmissionStatus == "DRAFT" ||report.templateSubmissionStatus =="REJECTED" ){
-	     			opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a> | <a href="#" title="Edit"><i class="fa fa-pencil editAA" onclick="previewContractPDF('+report.id+')"></i></a></div>';
+		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a> | <a href="#" title="Edit"><i class="fa fa-pencil editAA" onclick="previewContractPDF('+report.id+')"></i></a></div>';
 	     	  }
 	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a></div>';
+	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a></div>';
 	     	  }
 		         result = result + '</td>';
 		     	 
@@ -362,7 +362,7 @@ function preparedContractList(data,contractSubmissionType){
 		        	  }
 	     	}else{
 	        	  if(output.templateSubmissionStatus == "FINALIZED"){
-	        		  opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
+	        		 // opt = opt + '<div id="removeStatus'+output.id+'">--</a></div>';
 	            	 }
 	        	  else if(output.contractStatus == "completed" && output.templateSubmissionStatus != "FINALIZED"){
 		     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');">Finalize</a></div>';
@@ -499,7 +499,6 @@ function vendorListContractsPagination(){
        }
     } );
 }
-</script>
 </script>
 
 <script>
