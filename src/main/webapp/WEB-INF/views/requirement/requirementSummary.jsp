@@ -4792,7 +4792,7 @@ function getRateListDiv(submissionId, candidateId){
 	                     result = result + '      <tr>';
 	                     result = result + '        <th>By</th>';
 	                     result = result + '        <th>Rate</th>';
-	                     result = result + '        <th>Rate per hourly</th>';
+	                     result = result + '        <th>Rate Per Hourly</th>';
 	                     result = result + '        <th>Comment</th>';
 	                     result = result + '        <th>Date</th>';
 	                     result = result + '        <th>Action</th>';

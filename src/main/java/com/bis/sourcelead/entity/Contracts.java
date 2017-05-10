@@ -158,6 +158,8 @@ public class Contracts {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "CONTRACT_UUID")
+	private String contractUUID;
 	
 	@Column(name = "STATE_JURISDICTION")
 	private String stateJurisdiction;
@@ -198,6 +200,9 @@ public class Contracts {
 
 	@Transient
 	private String tempdocId;
+	
+	@Transient
+	private String approverUserName;
 	
 	public String getFileName() {
 		return fileName;
@@ -341,6 +346,14 @@ public class Contracts {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getContractUUID() {
+		return contractUUID;
+	}
+
+	public void setContractUUID(String contractUUID) {
+		this.contractUUID = contractUUID;
 	}
 
 	public Long getId()
@@ -634,7 +647,13 @@ public class Contracts {
 	public void setStateJurisdiction(String stateJurisdiction) {
 		this.stateJurisdiction = stateJurisdiction;
 	}
-	
-	
+
+	public String getApproverUserName() {
+		return approverUserName;
+	}
+
+	public void setApproverUserName(String approverUserName) {
+		this.approverUserName = approverUserName;
+	}
 	
 }

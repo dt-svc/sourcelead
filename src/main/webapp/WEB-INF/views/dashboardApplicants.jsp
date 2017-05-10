@@ -51,8 +51,8 @@ function ApplicantAuthorization(status){
 	            				resultToday = resultToday+'	    <th>Requirement</th>';
 	            				resultToday = resultToday+'	    <th>Team Member</th>';
 	            				if(status == 'accepted'){
-	            					resultToday = resultToday+'	    <th>Accepted by</th>';
-		            				resultToday = resultToday+'	    <th>Accepted on</th>';
+	            					resultToday = resultToday+'	    <th>Accepted By</th>';
+		            				resultToday = resultToday+'	    <th>Accepted On</th>';
 	            				}
 	            				if(status == 'requestSent'){
 	            					resultToday = resultToday+'	    <th>Status</th>';

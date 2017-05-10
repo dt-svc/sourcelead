@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -160,8 +162,18 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Override
 	public Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user,Org org) throws Exception
 	{
-		Contracts contracts = new Contracts();
-		Contracts vendorContracts = new Contracts();
+		Contracts contracts;
+		Contracts vendorContracts = null;
+		
+		if(jsonObj.has("contrId") && null != jsonObj.getString("contrId") && !"".equals(jsonObj.getString("contrId"))){
+			contracts = contractsTemplateDao.getContractById(Long.parseLong(jsonObj.getString("contrId")));
+		}else{
+			contracts = new Contracts();
+			vendorContracts = new Contracts();
+		}
+		
+		//Contracts contracts = new Contracts();
+		//Contracts vendorContracts = new Contracts();
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
@@ -324,6 +336,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
+		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 
 		if(null == approverUser && !"DRAFT".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
@@ -430,6 +443,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else{
 				contracts.setParentId("");
 			}
+			
+			if(null != contracts.getApproverUser() && null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
+				StringBuilder sb = new StringBuilder();
+				contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+			}else{
+				contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+			}
 		}
 		for(Contracts contracts :clientcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
@@ -456,6 +476,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else{
 				contracts.setParentId("");
 			}
+			
+			if(null != contracts.getApproverUser()){
+				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
+					StringBuilder sb = new StringBuilder();
+					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+				}else{
+					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+				}
+			}
+			
 		}
 		
 		contractsForList.setVendorcontractsList(vendorcontractsList);
@@ -467,6 +497,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	public Contracts getContractById(Long contractId)
 	{
 		return contractsTemplateDao.getContractById(contractId);
+	}
+	
+	@Override
+	public Contracts getContractByContractUUID(String contractUUID)
+	{
+		return contractsTemplateDao.getContractByContractUUID(contractUUID);
 	}
 
 	@Override
