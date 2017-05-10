@@ -327,8 +327,6 @@ function validateTaskName(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						
-						
 						<div class="form-group">
 		                  <label class="col-md-3">Invoice Frequency <span class="text-danger">*</span></label>
 		                  <div class="col-md-9" id="chosen-frequency">
@@ -675,11 +673,18 @@ function flushProjectTasks(){
 		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			/* var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); */
+			
+			var jsonData = JSON.stringify(frm);
+			
+			
+		    var form = $('#project_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData)
 
 			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
+		//	var jsonData = encodeURIComponent(con);
 			
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_project").attr("disabled", "disabled");
@@ -688,8 +693,13 @@ function flushProjectTasks(){
 
 
 			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+						 type : "POST",
+						 data: formData,
+		  	    	     contentType : 'application/json; charset=utf-8',
+		  		         processData: false,
+		  		         contentType:false, 
+		  	    	     dataType : 'json',
+						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							if (result == 'projectDashboard') {
 								location.replace(sourceleadUrl

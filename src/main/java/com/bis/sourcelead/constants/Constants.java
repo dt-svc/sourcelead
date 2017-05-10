@@ -666,4 +666,6 @@ public class Constants {
     public static String TWO_MONTHS = "twomonths";
     
     public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
+
+	public static String submitForApproval = "SUBMIT FOR APPROVAL";
 }	
