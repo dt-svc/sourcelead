@@ -217,7 +217,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		invoiceDao.saveInvoce(invoice);
 		
-		if(null != invoiceLineItemsIdsList && invoiceTaxItemsIdsList.size() > 0){
+		if(null != invoiceLineItemsIdsList && invoiceLineItemsIdsList.size() > 0){
 			for(Long lineItemsId : invoiceLineItemsIdsList){
 				InvoiceLineItems lineItems = invoiceLineItemDao.getInvoiceLineItemsById(lineItemsId);
 				invoiceLineItemDao.deleteLineItem(lineItems);
