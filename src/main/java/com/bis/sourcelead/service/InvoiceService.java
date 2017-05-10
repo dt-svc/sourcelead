@@ -23,6 +23,8 @@ public interface InvoiceService {
 	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType)throws Exception;
 	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
+	
+	Invoice updateInvoice(Invoice invoice) throws Exception;
 
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId,Long orgLocationId)throws Exception;
 }

@@ -64,6 +64,7 @@ function cancel(){
                 <select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();" data-validation="required" field-name="Client Name">
                 </select>
               </div>
+              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
             </div>
              <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
@@ -116,6 +117,8 @@ function cancel(){
         <div class="clearfix mt"></div>
         <div id="lineItemAddRows"></div>
         
+        <div id="lineItemPopUp"></div>
+        
        
       <footer class="form-footer">
               <div class="pull-right mr">
@@ -136,6 +139,7 @@ function cancel(){
 	<div class="tbldata-dotdot-vsm select-field">
 	   <input type="text" class="form-control input-sm" readonly="readonly" id="REPLACEROWIDcandidateName"  > </inmput>
        <input type="hidden" class="form-control input-sm"  id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate"> </inmput>
+       <input type="hidden" class="form-control input-sm"  id="REPLACEROWIDlineItemId" name="REPLACEROWIDlineItemId"> </inmput>
     </div>
 	</div>
 	
@@ -161,11 +165,10 @@ function cancel(){
 	
 	<div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 text-right"  ><input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount" placeholder = "00:00" class="ReadTextFli" > </div>
-<!-- 	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount"><input type="text" value = "00:00" class="ReadTextFli"></div> -->
 	</div>
 	
 	<div id="divTaskTd7" style="display: none; float: left;">
-	  <a class="text-danger tblminwidth-50" title="Remove row" onclick="removeRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
+	  <a class="text-danger tblminwidth-50" title="Remove row"  id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 	</div>
 	
 	
@@ -297,6 +300,7 @@ function cancel(){
          result = result +'  <div class="select-field tblminwidth-75">';
          result = result +'  <div class="tblminwidth-50">';
          result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">';
+         result = result +'  <input type="hidden" id="0invoiceTaxId" name="0invoiceTaxId">';
          result = result +'  </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -391,6 +395,8 @@ function cancel(){
 		        	
 		        	$("#grandTotal").val(json['total']);
 		        	
+		        	$("#savedInvoiceId").val(json['id']);
+		        	
 		        	
 		        	
 		        }
@@ -412,7 +418,7 @@ function cancel(){
 	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
-					 result = result +"<input class='dele' type='button' onClick='deleteInvoiceDocument("+opt.id+");' >";
+					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
 					 result = result +"</strong>";
 					
 	    	 }
@@ -422,6 +428,20 @@ function cancel(){
 		}
     	
 	}
+	
+     function deleteDocument(id){
+	    
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Are you sure to delete Attachment</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#lineItemPopUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+   }
 	
 	
 	function deleteInvoiceDocument(documentId){
@@ -433,6 +453,8 @@ function cancel(){
 		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
 		         success: function(data) {
 		        	 document.getElementById("invoiceDocument"+documentId).remove();
+		        	 $("#lineItemPopUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
 		         }
 			});
 			
@@ -457,7 +479,6 @@ function cancel(){
 		     var totlalAmount = (perMinit * finalmin);
 		     var subtractTotal = subTotal - totlalAmount.toFixed(2)
 		     $('#inoviceTotal').val(subtractTotal);
-		    /*  $("#grandTotal").val(subtractTotal); */
 		     $("#hiddenTotal").val(subtractTotal);
 		     
 		 }
@@ -500,6 +521,7 @@ function cancel(){
 	             var first=parseFloat(tot);
 	             var second=parseFloat(taxTotal); 
 	             var total  = (first+second);
+	             $("#grandTotal").val(total.toFixed());
 		    }
 		    
 		    var count = 0;
@@ -524,6 +546,7 @@ function cancel(){
 				  $("#discountValue").val('');
 				  $("#discountValue").attr("disabled", "disabled");
 			  }
+			  
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addInvoiceTbl').rows[rowId];
@@ -533,10 +556,8 @@ function cancel(){
 		}
 		
 		
-		  
-		  
 		
-	
+		
 	}
 </script>
 
@@ -623,18 +644,28 @@ function cancel(){
 				
 				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
 				$('#'+maxRowNum+'candidateName').val(opt.candidateName);
+				$('#'+maxRowNum+'lineItemId').val(opt.id);
 				
 				$('#'+maxRowNum+'rate').val(opt.rate);
 				$('#'+maxRowNum+'totalHours').val(opt.totalHours);
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				
 				
-				getSow(maxRowNum,opt.candidateId);
+				getSow(maxRowNum,opt.contractId);
 				maskme();  
 		 }
 		
 	}
   </script>
+  
+  
+<script type="text/javascript">
+function cancel(){
+	$("#lineItemPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+  
   
   
   <script>
@@ -651,6 +682,7 @@ function cancel(){
 				$('#'+i+'taxdiscountType').val(opt.taxType);
 				$('#'+i+'taxdiscountvalue').val(opt.taxValue);
 				$('#'+i+'taxTotal').val(opt.taxAmount);
+				$('#'+i+'invoiceTaxId').val(opt.id);
 			 
 			}else{
 				 
@@ -693,6 +725,8 @@ function cancel(){
 					$('#'+i+'taxdiscountType').val(opt.taxType);
 					$('#'+i+'taxdiscountvalue').val(opt.taxValue);
 					$('#'+i+'taxTotal').val(opt.taxAmount);
+					$('#'+i+'invoiceTaxId').val(opt.id);
+					
 			 }
 		}
 	}			
@@ -1196,13 +1230,37 @@ function calculateDiscount(){
 		}
 		
 	}
-	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	
+	/* var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	if(maxRowNum > 1){
 	    for(var i=1;i<=maxRowNum;i++){
 	         document.getElementById("divTaxRow"+i+"").style.display="none";
 	    }
 	    $("#grandTotal").val(subTotal);
-	}
+	} 
+	 */
+	 
+	  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	  var afterDiscountTotal = $("#afterDiscountTotal").val();
+	  
+	   for(var i=0; i< maxRowNum; i++){
+	        var taxType = $("#"+i+"taxdiscountType").val();
+	        var taxValue = $("#"+i+"taxdiscountvalue").val();
+	        var taxTotal = $("#"+i+"taxTotal").val();
+	           
+	             if(taxValue == '' && taxTotal==''){
+	             $("#grandTotal").val(afterDiscountTotal.toFixed(2));
+	             }else{
+	           	 var tot = $("#grandTotal").val();
+	 	           var first=parseFloat(tot);
+	 	            var second=parseFloat(taxTotal); 
+	 	            var total  = (first+second);
+	 	          $("#grandTotal").val(total.toFixed(2));
+	             }
+	           
+	   } 
+	
+	
 }
 </script>
 <!-- 
@@ -1325,13 +1383,13 @@ function calculateDiscount(){
   
   
   
-  
   <!-- ********************************************* Add Rows AddTax Table functionality start  ************************************************************ -->	
   
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
 		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
+		        <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  </div>
 	 </div>
 </div>
@@ -1686,7 +1744,15 @@ function saveInvoice(saveType){
 		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=payable", 
 		    		        success: function(result) {
 		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     		location.replace(sourceleadUrl+"/payablesList");
+		    		     		
+		    		     		var invoiceUUID = '${invoiceUUID}';
+		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
+		    		     			location.replace(sourceleadUrl+"/getInvoiceByUUID?invoiceUUID="+invoiceUUID);
+		    		     		}else{
+		    		     			location.replace(sourceleadUrl+"/payablesList");
+		    		     		}
+		    		     		
+		    		     		
 		    		     		
 		    		        },
 		    		    }); 

@@ -24,5 +24,25 @@ public class InvoiceLineItemServiceImpl implements InvoiceLineItemService{
 	public List<InvoiceLineItems> invoiceLineItemsByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
 		return InvoiceLineItemDao.getInvoiceLineItemsByInvoiceIdAndOrglocationId(invoiceId,orgLocationId);
 	}
+	
+	@Override
+	public InvoiceLineItems getInvoiceLineItemsById(Long Id) throws Exception {
+		return InvoiceLineItemDao.getInvoiceLineItemsById(Id);
+	}
+
+	@Override
+	public InvoiceLineItems saveInvoiceLineItems(InvoiceLineItems invoiceLineItems) throws Exception {
+		return InvoiceLineItemDao.saveInvoiceLineItems(invoiceLineItems);
+	}
+
+	@Override
+	public void deleteLineItem(InvoiceLineItems invoiceLineItems) throws Exception {
+		InvoiceLineItemDao.deleteLineItem(invoiceLineItems);
+	}
+
+	@Override
+	public List<Long> getInvoiceLineItemsIdsByInvoiceId(Long invoiceId) throws Exception {
+		return InvoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoiceId);
+	}
 
 }
