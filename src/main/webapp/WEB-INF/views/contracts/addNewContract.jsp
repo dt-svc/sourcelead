@@ -391,7 +391,7 @@
             
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
-                <label class="col-md-4">Tax<span class="text-danger">&nbsp;*</span></label>
+                <label class="col-md-4">Tax</label>
                    <div class="clearfix col-md-8" id="errTax">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
