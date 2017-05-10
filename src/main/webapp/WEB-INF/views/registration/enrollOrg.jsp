@@ -49,8 +49,8 @@
              
              <div class="form-group">
 	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-	            <div class="col-md-9">
-	              <select class="form-control select-bg" name="country" id="countryListId" field-name="Country" data-validation="required" value="${country}" onchange="getTimezonesList();" >
+	            <div class="col-md-9 dropdown-select">
+	              <select class="form-control" name="country" id="countryListId" field-name="Country" data-validation="required" value="${country}" onchange="getTimezonesList();" >
 	                <option value="" >Select Location</option>
 	                <option value="Australia">Australia</option>
 	                <option value="France">France</option>
@@ -74,7 +74,7 @@
        
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
-            <div class="col-md-9 checkbox">
+            <div class="col-md-9 checkBox">
 	            <c:forEach var="module" items="${modulesList}">
 	            <ul class="list-unstyled pull-left">
 	                <li>

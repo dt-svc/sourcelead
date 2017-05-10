@@ -8,6 +8,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
+
+
 <script>
 function candidateShortList(requirementId){
 	$('.action-pop').slideUp();
@@ -35,9 +37,9 @@ function candidateShortList(requirementId){
 	           result = result + ' <th><input type="checkbox" onclick="selectAllShortlisted();"  id="selectallSL" ></th>';
 	           result = result + '           <th>Name</th>';
 	           result = result + '           <th>Email</th>';
-	           result = result + '           <th>Ph. No</th>';
+	           result = result + '           <th>Phone</th>';
 	           result = result + '           <th>Resume</th>';
-	           result = result + '           <th>Applied on</th>';
+	           result = result + '           <th>Applied On</th>';
 	           result = result + '           <th>Rate</th>';
 	           result = result + '           <th>Source</th>';
 	           result = result + '           <th>Experience</th>';
