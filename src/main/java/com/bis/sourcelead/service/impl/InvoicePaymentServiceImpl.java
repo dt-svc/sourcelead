@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -113,6 +114,16 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
 		return invoicePaymentDao.saveInvoicePayment(invoicePayment);
+	}
+
+	@Override
+	public List<InvoicePayment> getInvoicePaymentList(Long invoiceId) throws Exception {
+		return invoicePaymentDao.getInvoicePaymentList(invoiceId);
+	}
+
+	@Override
+	public InvoicePayment invoicePaymentById(Long id) throws Exception {
+		return invoicePaymentDao.invoicePaymentById(id);
 	}
 	
 	

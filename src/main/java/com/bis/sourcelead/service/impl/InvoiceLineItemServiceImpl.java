@@ -20,4 +20,9 @@ public class InvoiceLineItemServiceImpl implements InvoiceLineItemService{
 		return InvoiceLineItemDao.getInvoiceLineItemsByInvoiceId(invoiceId);
 	}
 
+	@Override
+	public List<InvoiceLineItems> invoiceLineItemsByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
+		return InvoiceLineItemDao.getInvoiceLineItemsByInvoiceIdAndOrglocationId(invoiceId,orgLocationId);
+	}
+
 }

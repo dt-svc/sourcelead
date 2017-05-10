@@ -32,4 +32,14 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 		return InvoiceLineItemsList;
 	}
 
+
+	@Override
+	@Transactional
+	public List<InvoiceLineItems> getInvoiceLineItemsByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from InvoiceLineItems invoiceItems left join fetch invoiceItems.candidate  where invoiceItems.invoice.id = :invoiceId and invoiceItems.orgLocation.id = :orgLocationId  and invoiceItems.status = '1'";
+		List<InvoiceLineItems> invoiceLineItemsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return invoiceLineItemsList;
+	}
+
 }

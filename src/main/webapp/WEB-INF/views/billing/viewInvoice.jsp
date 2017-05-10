@@ -18,7 +18,7 @@ $(document).ready(function(){
       <div class="pull-left">
           <h2>Inovice Id: <span>002345</span></h2>
       </div>
-      <div class="pull-right brud-crum">Home » Receivables</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="client_invoice">
@@ -31,7 +31,7 @@ $(document).ready(function(){
               </a>
             </li>
             <li class="">
-              <a href="#paymentHistory" data-toggle="tab" title="Payment History" aria-expanded="false">
+              <a href="#paymentHistory" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="paymentHistroy();">
                 <h5>Payment History</h5>
               </a>
             </li>
@@ -42,246 +42,12 @@ $(document).ready(function(){
             <!-- Employee Details -->
             <div class="tab-pane active in" id="bill">
               <div id="viewInvoiceId"></div>
-     
-              
-      <!-- View part total area -->
-      <div class="row"> 
-    
-          <div class="col-md-5">
-              
-              <div class="col-md-12 mt">
-                  <label><strong>Message</strong></label>
-                  <div class="clearfix">
-                      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                  </div>
-              </div>
-              <div class="col-md-12 mt">
-                <label><strong>Attachment:</strong></label>
-                  <div class="clearfix attachfile_invoice">
-                      <p class="pull-left">fileattachment.xls</p>
-                      <span class="pull-right"><i class="fa fa-download"></i></span>
-                  </div>
-                   
-              </div>              
-          </div>
-          
-        <div class="col-md-7">
-            <div class="form-horizontal billsubTotal">
-              <div class="form-group">
-                <label class="control-label col-md-7"><strong>Subtotal</strong></label>
-                <div class="col-md-5 text-right"><span>120000.00</span></div>
-              </div>
-              <!-- Discount UI -->
-              <div class="form-group">
-                <div class="col-md-7 select-field">
-                  <div class="row">
-                    <div class="col-md-7 paddingRight">
-                        <label><strong>Discount %</strong></label>
-                    </div>
-                    <div class="col-md-5 paddingLeft">
-                      <label>5%</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-5 text-right">
-                  <label>210,000.00</label>
-                </div>
-              </div>
-                <div class="addtax_table">
-                    <table class="table-bordered table-striped table-responsive" width="100%" cellspacing="0" cellpadding="0">
-                        <tbody>
-                            <tr>
-                                <td>
-                                   <div class="select-field tblminwidth-75">
-                                       <div class="tblminwidth-50">
-                                        Service Tax
-                                    </div>
-                                   </div>
-                                </td>
-                                <td>
-                                 <div class="btn-group tblminwidth-75">
-                                     <label>Flat</label>
-                                </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                        <label>Flat Discount</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                         <label>Total Value</label>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hide-row">
-                                <td colspan="2">
-                                </td>
-                                <td>
-                                <strong>Total: </strong>
-                                </td>
-                                <td colspan="2" align="right"><strong>120000000.00</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-            </div>
-                <div class="form-group mt">
-                <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right"><span><strong>120000.00</strong></span></div>
-              </div>
-              </div>
-          </div>
-            </div>    
-                <!-- View part total area -->
-            
               </div>
           
             <div class="tab-pane fade positionRelative" id="paymentHistory">
-                <div class="invoiceview_area clearfix candidate_wrap_table">
-                  
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>
-                                   Date 
-                                </th>
-                                <th>
-                                   Payment Method 
-                                </th>
-                                <th>
-                                   Reference No 
-                                </th>
-                                <th>
-                                   Amount Received 
-                                </th>
-                                <th>
-                                   Attachment 
-                                </th>
-                                <th>
-                                   Memo 
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                                <td>
-                                    <div class="tbldata-dotdot-80">
-                                    22/05/2017 
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-50">
-                                        Cash
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-50">
-                                        2020524
-                                    </div>
-                                </td>
-                                <td>
-                                     <div class="tbldata-dotdot-50">
-                                        100250.00
-                                    </div>
-                                </td>
-                            <td>
-                                  <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">
-                                  <p class="pull-left">LoremIpsumhasbeentheindustry.pdf</p>
-                                  <span class="pull-right">
-                                      <i class="fa fa-download"></i>
-                                      </span>
-                  </a>  
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-me">
-                                        <a class="memo_text">
-                                            <p class="pull-left" title="LoremIpsumhasbeentheindustry">LoremIpsumhasbeentheindustry</p>
-                                           <i class="fa fa-comments pull-right" title="Memo"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                                
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="tbldata-dotdot-80">
-                                    22/05/2017 
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-50">
-                                        Cash
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-50">
-                                        2020524
-                                    </div>
-                                </td>
-                                <td>
-                                     <div class="tbldata-dotdot-50">
-                                        100250.00
-                                    </div>
-                                </td>
-                            <td>
-                                  <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">
-                                  <p class="pull-left">LoremIpsumhasbeentheindustry.pdf</p>
-                                  <span class="pull-right">
-                                      <i class="fa fa-download"></i>
-                                      </span>
-                  </a>  
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-me">
-                                        <a class="memo_text">
-                                            <p class="pull-left" title="LoremIpsumhasbeentheindustry">LoremIpsumhasbeentheindustry</p>
-                                           <i class="fa fa-comments pull-right" title="Memo"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                                
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="tbldata-dotdot-80">
-                                    22/05/2017 
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-50">
-                                        Cash
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-50">
-                                        2020524
-                                    </div>
-                                </td>
-                                <td>
-                                     <div class="tbldata-dotdot-50">
-                                        100250.00
-                                    </div>
-                                </td>
-                            <td>
-                                  <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">
-                                  <p class="pull-left">LoremIpsumhasbeentheindustry.pdf</p>
-                                  <span class="pull-right">
-                                      <i class="fa fa-download"></i>
-                                      </span>
-                  </a>  
-                                </td>
-                                <td>
-                                    <div class="tbldata-dotdot-me">
-                                        <a class="memo_text">
-                                            <p class="pull-left" title="LoremIpsumhasbeentheindustry">LoremIpsumhasbeentheindustry</p>
-                                           <i class="fa fa-comments pull-right" title="Memo"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                                
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="invoiceview_area clearfix candidate_wrap_table filter_position">
+                  <div id="paymentHistorytId"></div>
+                    
               </div>
             </div>
             
@@ -385,6 +151,7 @@ function getViewInvoice(){
 					result = result +'      </div>';
 					
 					
+					
 					/* ======================== InvoiceItem List start============================ */
 					result = result +'	     <div class="invoiceGridview clearfix">                                  ';
 					result = result +'         <table width="100%" cellpadding="0" cellspacing="0">                  ';
@@ -416,12 +183,13 @@ function getViewInvoice(){
 						if(items.startDateStr != null && items.startDateStr != '' && items.startDateStr != 'undefined'){
 							startDateStr = items.startDateStr;
 						}else{
-							startDateStr = "--";
+							startDateStr = "-";
 						}
+						
 						if(items.endDtaeStr != null && items.endDtaeStr != '' && items.endDtaeStr != 'undefined'){
 							endDtaeStr = items.endDtaeStr;
 						}else{
-							endDtaeStr = "--";
+							endDtaeStr = "-";
 						}
 						if(items.rate != null && items.rate != '' && items.rate != 'undefined'){
 							rate = items.rate;
@@ -439,10 +207,14 @@ function getViewInvoice(){
 						}else{
 							amount = "--";
 						}
-						
+						if(items.employeeId != null && items.employeeId != '' && items.employeeId != 'undefined'){
+							employeeId = items.employeeId;
+						}else{
+							employeeId = "--";
+						}
 						result = result +'                 <tr>                                                          ';
 						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80">0022557788</div>       ';
+						result = result +'                         <div class="tbldata-dotdot_50" title="'+employeeId+'">'+employeeId+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
 						result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
@@ -451,7 +223,7 @@ function getViewInvoice(){
 						result = result +'                         <div class="tbldata-dotdot_80" tittle="'+sowName+'">'+sowName+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80">'+startDateStr+'</div>       ';
+						result = result +'                         <div class="tbldata-dotdot_80">'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
 						result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
@@ -463,13 +235,169 @@ function getViewInvoice(){
 						result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                 </tr>                                                         ';
-						
-						/* ======================== InvoiceItem List End============================ */
 	    		}
-				
 				result = result +'</tbody>';
 				result = result +'</table>';
 				result = result +' </div>';
+				/* ======================== InvoiceItem List End============================ */
+				
+				if(report.invoiceComment != null && report.invoiceComment != '' && report.invoiceComment != 'undefine'){
+					invoiceComment = report.invoiceComment;
+				}else{
+					invoiceComment = "--";
+				}
+				if(report.discountAmount != null && report.discountAmount != '' && report.discountAmount != 'undefine'){
+					discountAmount = report.discountAmount;
+				}else{
+					discountAmount = "0";
+				}
+				
+				if(report.discountValue != null && report.discountValue != '' && report.discountValue != 'undefine'){
+					discountValue = '-'+report.discountValue;
+				}else{
+					discountValue = "0";
+				}
+				
+				result = result +'			<div class="row">';
+				result = result +'	          <div class="col-md-5">';
+				result = result +'	              <div class="col-md-12 mt">';
+				result = result +'	                  <label><strong>Message</strong></label>  ';
+				result = result +'	                  <div class="clearfix">                   ';
+				result = result +'	                      <p>'+invoiceComment+'</p>   ';
+				result = result +'	                  </div>                                                                                  ';
+				result = result +'	              </div>                                                                                      ';
+				result = result +'	              <div class="col-md-12 mt">                                                                  ';
+				result = result +'	                <label><strong>Attachment:</strong></label>                                               ';
+				if(report.invoiceDocumentsList != null && report.invoiceDocumentsList != '' && report.invoiceDocumentsList != 'undefined'){
+					for (var j=0; j<report.invoiceDocumentsList.length; j++)
+		    		{
+						var doc = report.invoiceDocumentsList[j]; 
+						
+						result = result +'	                  <div class="clearfix attachfile_invoice">                                               ';
+						result = result +'	                      <p class="pull-left" title="'+doc.fileName+'">'+doc.fileName+'</p>                                         ';
+						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+doc.id+"\"></a></i>";
+						result = result +'	                  </div>                                                                                  ';
+		    		}
+				}
+				
+				result = result +'	              </div>                                                                                      ';
+				result = result +'	          </div>                                                                                          ';
+				result = result +'	                                                                                                          ';
+				result = result +'	        <div class="col-md-7">                                                                            ';
+				result = result +'	            <div class="form-horizontal billsubTotal">                                                    ';
+				result = result +'	              <div class="form-group">                                                                    ';
+				result = result +'	                <label class="control-label col-md-7"><strong>Subtotal</strong></label>                   ';
+				result = result +'	                <div class="col-md-5 text-right"><span>'+report.subTotal+'</span></div>                             ';
+				result = result +'	              </div>                                                                                      ';
+				result = result +'	              <!-- Discount UI -->                                                                        ';
+				result = result +'	              <div class="form-group">                                                                    ';
+				result = result +'	                <div class="col-md-7 select-field">                                                       ';
+				result = result +'	                  <div class="row">                                                                       ';
+				result = result +'	                    <div class="col-md-7 paddingRight">                                                   ';
+				if(report.discountType=="percentage"){
+					result = result +'	                        <label><strong>Discount %</strong></label>                                        ';
+					result = result +'	                    </div>                                                                                ';
+					result = result +'	                    <div class="col-md-5 paddingLeft">                                                    ';
+					result = result +'	                      <label>'+discountAmount+'%</label>                                                                   ';
+					result = result +'	                    </div>                                                                                ';
+					result = result +'	                  </div>                                                                                  ';
+				}else{
+					result = result +'	                        <label><strong>Discount Value</strong></label>                                        ';
+					result = result +'	                    </div>                                                                                ';
+					result = result +'	                    <div class="col-md-5 paddingLeft">                                                    ';
+					result = result +'	                      <label>'+discountAmount+'</label>                                                                   ';
+					result = result +'	                    </div>                                                                                ';
+					result = result +'	                  </div>                                                                                  ';
+				}
+				
+				
+				
+				result = result +'	                </div>                                                                                    ';
+				result = result +'	                <div class="col-md-5 text-right">                                                         ';
+				result = result +'	                  <label>'+discountValue+'</label>                                                               ';
+				result = result +'	                </div>                                                                                    ';
+				result = result +'	              </div>                                                                                      ';
+				result = result +'	                <div class="addtax_table">';
+				result = result +'	                    <table class="table-bordered table-striped table-responsive" width="100%" cellspacing="0" cellpadding="0">';
+				
+				result = result +'	                    <thead>';
+				result = result +'	                   <tr>                                                                   ';
+				result = result +'                    	 <th class="text-center">Service Type</th>                                               ';
+				result = result +'                       <th class="text-center">Flat / Percentage</th> ';
+				result = result +'                     	 <th class="text-center">Value</th>           ';
+				result = result +'                    	 <th class="text-center">Amount</th>          ';
+				result = result +'	                  </tr>';
+				result = result +'	                        </thead>';
+				result = result +'	                        <tbody>';
+				
+				for (var k=0; k<report.invoiceTaxList.length; k++)
+	    		{
+					var tax = report.invoiceTaxList[k]; 
+					if(tax.taxName != null && tax.taxName != '' && tax.taxName != 'undefined'){
+						taxName = tax.taxName;
+					}else{
+						taxName = "--";
+					}
+					if(tax.taxValue != null && tax.taxValue !='' && tax.taxValue != 'undefined'){
+						taxValue = tax.taxValue;
+					}else{
+						taxValue = "0"
+					}
+					
+					if(tax.taxAmount != null && tax.taxAmount !='' && tax.taxAmount != 'undefined'){
+						taxAmount = tax.taxAmount;
+					}else{
+						taxAmount = "0"
+					}
+					
+					result = result +'	                            <tr>                                                                   ';
+					result = result +'	                                <td>                                                               ';
+					result = result +'	                                   <div class="select-field tblminwidth-75">                       ';
+					result = result +'	                                       <div class="tblminwidth-50">                                ';
+					result = result +'	                                        '+taxName+'                                               ';
+					result = result +'	                                    </div>                                                         ';
+					result = result +'	                                   </div>                                                          ';
+					result = result +'	                                </td>                                                              ';
+					result = result +'	                                <td>                                                               ';
+					result = result +'	                                 <div class="btn-group tblminwidth-75">                            ';
+					if(tax.taxType =="percentage"){
+						result = result +'	                                        <label>Percentage</label>                               ';
+					}else{
+						result = result +'	                                        <label>Flat</label>                               ';
+					}
+					result = result +'	                                </div>                                                             ';
+					result = result +'	                                </td>                                                              ';
+					result = result +'	                                <td>                                                               ';
+					result = result +'	                                    <div class="tblminwidth-75">                                   ';
+					result = result +'	                                        <label>'+taxValue+'</label>                               ';
+					result = result +'	                                    </div>                                                         ';
+					result = result +'	                                </td>                                                              ';
+					result = result +'	                                <td>                                                               ';
+					result = result +'	                                    <div class="tblminwidth-75">                                   ';
+					result = result +'	                                         <label>'+taxAmount+'</label>                                ';
+					result = result +'	                                    </div>                                                         ';
+					result = result +'	                                </td>                                                              ';
+					result = result +'	                            </tr>                                                                  ';
+					result = result +'	                            <tr class="hide-row">                                                  ';
+					result = result +'	                                <td colspan="2">                                                   ';
+					result = result +'	                                </td>                                                              ';
+					result = result +'	                                <td>                                                               ';
+					result = result +'	                                <strong>Total: </strong>                                           ';
+					result = result +'	                                </td>                                                              ';
+					result = result +'	                                <td colspan="2" align="right"><strong>120000000.00</strong></td>   ';
+					result = result +'	                            </tr>                                                                  ';
+	    		}
+				
+				result = result +'	                        </tbody>                                                                   ';
+				result = result +'	                    </table>                                                                       ';
+				result = result +'	            </div>                                                                                 ';
+				result = result +'	                <div class="form-group mt">                                                        ';
+				result = result +'	                <label class="col-md-7 text-right"><strong>Total</strong></label>                  ';
+				result = result +'	                    <div class="col-md-5 text-right"><span><strong>'+report.total+'</strong></span></div> ';
+				result = result +'	              </div>                                                                               ';
+				result = result +'	              </div>                                                                               ';
+				result = result +'	          </div>                                                                                   ';
+				result = result +'	            </div>   ';
 					
 	    		}
 				$("#viewInvoiceId").empty();  
@@ -479,5 +407,96 @@ function getViewInvoice(){
 	    });
 }
 
+</script>
+
+
+<script>
+function paymentHistroy(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	  var invoiceId ='${invoiceId}';
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId,
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var result = "";                                                                                                
+				result = result +'       	<table width="100%" cellpadding="0" cellspacing="0" id="paymentHistoryPagination"> ';
+				result = result +'           <thead>                                ';
+				result = result +'               <tr>                               ';
+				result = result +'                   <th> Date</th>                 ';
+				result = result +'                   <th>  Payment Method </th>     ';
+				result = result +'                   <th> Reference No </th>        ';
+				result = result +'                   <th> Amount Received </th>     ';
+				result = result +'                   <th> Attachment  </th>         ';
+				result = result +'                   <th> Memo </th>                ';
+				result = result +'               </tr>                              ';
+				result = result +'           </thead>                               ';
+				result = result +'           <tbody>                                ';
+				for (var i=0; i<json.length; i++)
+	    		{  
+	        		var report = json[i];
+	        		if(report.paymentCustomDue != null && report.paymentCustomDue !='' && report.paymentCustomDue != 'undefined'){
+	        			paymentCustomDue = report.paymentCustomDue;
+	        		}else{
+	        			paymentCustomDue = "0"
+	        		}
+	        		if(report.fileName != null && report.fileName != '' && report.fileName != 'undefined'){
+	        			fileName = report.fileName;
+	        		}else{
+	        			fileName = "--"
+	        		}
+	        		if(report.paymentComment != null && report.paymentComment != '' && report.paymentComment != 'undefined'){
+	        			paymentComment = report.paymentComment;
+	        		}else{
+	        			paymentComment = "--";
+	        		}
+					result = result +'           <tr>   ';
+					result = result +'              <td><div class="tbldata-dotdot-100">'+report.paymentDateStr+' </div></td>     ';
+					result = result +'              <td><div class="tbldata-dotdot-50">'+report.paymentMethod+'</div></td>            ';
+					result = result +'              <td><div class="tbldata-dotdot-50" title="'+report.paymentReferenceNumber+'">'+report.paymentReferenceNumber+'</div>              ';
+					result = result +'              </td><td><div class="tbldata-dotdot-50" title="'+paymentCustomDue+'">'+paymentCustomDue+'</div></td> ';
+					result = result +'              <td>                                                          ';
+					result = result +'                <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">      ';
+// 					result = result +'                <p class="pull-left">'+fileName+'</p>                           ';
+					if(report.fileName != null && report.fileName != '' && report.fileName != 'undefined'){
+					result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoicePaymentDocument?paymentHistoryId="+report.id+"\"></a></i>";
+					}else{
+						result = result +" --";	
+					}
+					result = result +'                </a>                                ';
+					result = result +'              </td>                                 ';
+					result = result +'              <td><div class="tbldata-dotdot-me">   ';
+					result = result +'                      <a class="memo_text">         ';
+					result = result +'                          <p class="pull-left" title="LoremIpsumhasbeentheindustry" title="'+paymentComment+'">'+paymentComment+'</p>';
+					result = result +'                         <i class="fa fa-comments pull-right" title="Memo"></i>  ';
+					result = result +'                      </a> ';
+					result = result +'                  </div>   ';
+					result = result +'              </td>        ';
+					result = result +'            </tr>          '; 
+	    		}
+				result = result +'           </tbody>        ';
+				result = result +'       </table>  ';     
+				$("#paymentHistorytId").empty();  
+			    $("#paymentHistorytId").append(result)
+			    paymentHistoryPagination()
+	        }
+	  });
+}
+
+</script>
+<script>
+function paymentHistoryPagination(){  
+    $('#paymentHistoryPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
 </script>
  <jsp:include page="../masterFooter.jsp" />	

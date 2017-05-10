@@ -1,10 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
-<<<<<<< HEAD
 import java.util.HashSet;
-=======
->>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 import java.util.List;
 import java.util.Set;
 
@@ -146,16 +143,8 @@ public class Invoice {
 	@Transient
 	private String dueDateStr;
 	
+
 	@Transient
-<<<<<<< HEAD
-	List<InvoiceLineItems> invoiceLineItemsList;
-	
-	@Transient
-	List<InvoiceTax> invoiceTaxList;
-	
-	@Transient
-	List<InvoiceDocument> invoiceDocumentList;
-=======
 	private Long vendorOrgRelationId;
 	
 	@Transient
@@ -172,7 +161,7 @@ public class Invoice {
 	
 	@Transient
 	List<InvoiceTax> invoiceTaxList;
->>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
+
 
 	public Long getId()
 	{
@@ -483,8 +472,6 @@ public class Invoice {
 		this.invoiceType = invoiceType;
 	}
 
-<<<<<<< HEAD
-=======
 	public String getInvoiceUUID() {
 		return invoiceUUID;
 	}
@@ -520,7 +507,6 @@ public class Invoice {
 		this.orgName = orgName;
 	}
 
->>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 	public List<InvoiceLineItems> getInvoiceLineItemsList() {
 		return invoiceLineItemsList;
 	}
@@ -529,8 +515,6 @@ public class Invoice {
 		this.invoiceLineItemsList = invoiceLineItemsList;
 	}
 
-<<<<<<< HEAD
-=======
 	public List<InvoiceDocument> getInvoiceDocumentsList() {
 		return invoiceDocumentsList;
 	}
@@ -539,7 +523,6 @@ public class Invoice {
 		this.invoiceDocumentsList = invoiceDocumentsList;
 	}
 
->>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 	public List<InvoiceTax> getInvoiceTaxList() {
 		return invoiceTaxList;
 	}
@@ -547,15 +530,4 @@ public class Invoice {
 	public void setInvoiceTaxList(List<InvoiceTax> invoiceTaxList) {
 		this.invoiceTaxList = invoiceTaxList;
 	}
-
-<<<<<<< HEAD
-	public List<InvoiceDocument> getInvoiceDocumentList() {
-		return invoiceDocumentList;
-	}
-
-	public void setInvoiceDocumentList(List<InvoiceDocument> invoiceDocumentList) {
-		this.invoiceDocumentList = invoiceDocumentList;
-	}
-=======
->>>>>>> bdbd2771004931bb041f83e5d96a6318dc4a2939
 }

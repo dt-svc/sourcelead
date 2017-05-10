@@ -289,7 +289,8 @@ public class InvoiceLineItems {
 
 	public void setSowName(String sowName) {
 		this.sowName = sowName;
-
+	}
+	
 	public Long getCandidateId() {
 		return candidateId;
 	}

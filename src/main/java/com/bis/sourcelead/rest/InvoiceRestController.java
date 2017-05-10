@@ -1,5 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +16,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -31,21 +36,27 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.InvoiceLineItemsService;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.service.InvoiceTaxService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -76,7 +87,16 @@ public class InvoiceRestController {
 	private InvoicePaymentService invoicePaymentService;
 	
 	@Autowired
-	private InvoiceLineItemsService invoiceLineItemsService;
+	private InvoiceLineItemService invoiceLineItemService;
+	
+	@Autowired
+	private InvoiceDocumentsService invoiceDocumentsService;
+	
+	@Autowired
+	private EmployeesService employeesService;
+	
+	@Autowired
+	private InvoiceTaxService invoiceTaxService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -345,7 +365,9 @@ public class InvoiceRestController {
 				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
 				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
 				
-				List<InvoiceLineItems> invoiceLineItemsList= invoiceLineItemsService.invoiceLineItemsByInvoiceIdAndOrglocationId(invoiceId, orgLocations.getId());
+				
+				//get the Invoice Items List
+				List<InvoiceLineItems> invoiceLineItemsList= invoiceLineItemService.invoiceLineItemsByInvoiceIdAndOrglocationId(invoiceId, orgLocations.getId());
 				for(InvoiceLineItems inviceLine:invoiceLineItemsList){
 					if(null != inviceLine.getCandidate()){
 						StringBuilder  can = new StringBuilder();
@@ -368,7 +390,32 @@ public class InvoiceRestController {
 						inviceLine.setEndDtaeStr(Constants.DF_DMY.format(inviceLine.getEndDate()));	
 					}
 					
+					if(null != inviceLine.getCandidate()){
+						if(null != inviceLine.getCandidate().getConsultantUser()){
+							Employees employeeId=employeesService.getEmployeeByUserId(inviceLine.getCandidate().getConsultantUser().getId());
+							inviceLine.setEmployeeId(employeeId.getEmployeeId());
+						}
+					}
+					
+					
 					invoice.setInvoiceLineItemsList(invoiceLineItemsList);
+				}
+				
+				//get the InvoiceDocument list 
+				List<InvoiceDocument> invoiceDocumentList =invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoiceId);
+				for(InvoiceDocument invoiceDoc :invoiceDocumentList)
+				{
+					invoiceDoc.setFileName(invoiceDoc.getFileName());
+					invoice.setInvoiceDocumentsList(invoiceDocumentList);
+				}
+				List<InvoiceTax> InvoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoiceId);
+				for(InvoiceTax it:InvoiceTaxList)
+				{
+					it.setTaxName(it.getTaxName());
+					it.setTaxType(it.getTaxType());
+					it.setTaxValue(it.getTaxValue());
+					it.setTaxAmount(it.getTaxAmount());
+					invoice.setInvoiceTaxList(InvoiceTaxList);
 				}
 				
 			}
@@ -376,5 +423,47 @@ public class InvoiceRestController {
 	 	  return resultJson;
 	 	}
 	  
+	  @RequestMapping(value = "/getViewPaymentHistory", method = RequestMethod.GET)
+	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	String resultJson;
+	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoiceId);
+	     	for(InvoicePayment ip :invoicePaymentList){
+	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
+	     		ip.setPaymentMethod(ip.getPaymentMethod());
+	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
+	     		ip.setFileName(ip.getFileName());
+	     		ip.setPaymentComment(ip.getPaymentComment());
+	     		ip.setPaymentCustomDue(ip.getPaymentCustomDue());
+	     	}
+	     	resultJson = commonUtil.toJSON(invoicePaymentList);
+		 	  return resultJson;
+	     	
+	 	}
     
+	  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
+	    public void downloadInvoicePaymentDocument(@RequestParam(value="paymentHistoryId", required=false) Long paymentHistoryId ,HttpServletResponse response) throws Exception {
+		        InvoicePayment payment =invoicePaymentService.invoicePaymentById(paymentHistoryId);
+			    response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(payment.getFileName()).append("\"").toString());
+				InputStream inputStream = new ByteArrayInputStream(payment.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+
+		}  
 }
