@@ -520,7 +520,7 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
-              <div class="input-group attachfile">
+              <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
@@ -2119,11 +2119,11 @@ function getUserList(teamType){
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
-	                		result = result +'             <th>Name</th>';
-	                		result = result +'             <th>Email</th>';
-	                		result = result +'             <th>Role</th>';
-	                		result = result +'             <th>Active Jobs</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Name</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Email</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Role</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Active Jobs</th>';
 	                		result = result +'           </tr>';
 	                		result = result +'           </thead>';
 		                    result = result +"<tbody>"; 
