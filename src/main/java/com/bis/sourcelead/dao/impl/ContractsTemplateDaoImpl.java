@@ -208,6 +208,19 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}
 		return contracts;
 	}
+	
+	@Override
+	@Transactional
+	public Contracts getContractByContractUUID(String contractUUID)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Contracts  contracts =  null;
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.contractUUID =:contractUUID").setString("contractUUID", contractUUID).setCacheable(true).list();
+		if(null != contractsList && contractsList.size() >0){
+			contracts = contractsList.get(0);
+		}
+		return contracts;
+	}
 
 	@Override
 	@Transactional
