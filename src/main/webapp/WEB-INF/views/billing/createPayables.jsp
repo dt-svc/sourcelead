@@ -1237,8 +1237,9 @@ function calculateDiscount(){
 	         document.getElementById("divTaxRow"+i+"").style.display="none";
 	    }
 	    $("#grandTotal").val(subTotal);
-	} */
-	
+	} 
+	 */
+	 
 	  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	  var afterDiscountTotal = $("#afterDiscountTotal").val();
 	  
@@ -1257,7 +1258,7 @@ function calculateDiscount(){
 	 	          $("#grandTotal").val(total.toFixed(2));
 	             }
 	           
-	   }
+	   } 
 	
 	
 }
