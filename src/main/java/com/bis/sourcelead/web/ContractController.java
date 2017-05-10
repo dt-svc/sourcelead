@@ -29,12 +29,14 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -74,6 +76,9 @@ public class ContractController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
 	
 	/**
 	 * display contract template list page
@@ -161,8 +166,21 @@ public class ContractController {
 				
 				List<Requirement> requirementList = null;
 				List<RequirementSubmission> requirementSubmissionsList = null;
+				RequirementOffers requirementOffer = null;
 				if(contract.getContractType().contains("SOW")){
 					requirementList = requirementService.getRequirementsForSOWByOrgLocationId(orgLocation.getId(), contract.getContractType());
+					if(requirementList.size() > 0){
+						for(Requirement requirement : requirementList){
+							if(null != requirement.getSpocId() && (requirement.getSpocId().getClientUser().getFirstName() != null && requirement.getSpocId().getClientUser().getFirstName() != "" && requirement.getSpocId().getClientUser().getLastName() != null && requirement.getSpocId().getClientUser().getLastName() != "" )){
+								StringBuilder spocSB = new StringBuilder();
+								requirement.setSpocName(spocSB.append(" (").append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName()).append(")").toString());
+							}else if(null != requirement.getSpocId()){
+								requirement.setSpocName(" ("+requirement.getSpocId().getClientUser().getFirstName()+")");
+							}else{
+								requirement.setSpocName("");
+							}
+						}
+					}
 					
 					requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType());
 					if(requirementSubmissionsList.size() > 0){
@@ -174,6 +192,10 @@ public class ContractController {
 								requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
 							}
 						}
+					}
+					
+					if(null != contract.getRequirementSubmission()){
+						requirementOffer = requirementOffersService.getRequirementOfferSubmissionById(contract.getRequirementSubmission().getId());
 					}
 				}
 				
@@ -201,6 +223,7 @@ public class ContractController {
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
 				model.addObject("orgSpocList", orgSpocList);
+				model.addObject("requirementOffer", requirementOffer);
 			}
 			
 		}

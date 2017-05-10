@@ -103,7 +103,7 @@
               </div>
             </div>  
             
-            <div class="form-group" id="requirementDiv" style="display: none;">
+            <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
               	<c:choose>
@@ -111,10 +111,10 @@
 	              		<select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
 						    <c:forEach var="element" items="${requirementList}" >
 						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
-							         <option value="${element.id}">${element.jobTitle}</option>
+							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
 							    </c:if>
 							    <c:if test = "${element.id != contract.requirementSubmission.requirement.id}">
-							         <option value="${element.id}">${element.jobTitle}</option>
+							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
 							    </c:if>
 							</c:forEach>
 						</select>
@@ -126,12 +126,12 @@
               </div>
             </div>
             
-            <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
+            <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
+		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
@@ -143,7 +143,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant"></select>
+					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
               	</div>
@@ -263,7 +263,14 @@
                   </c:forEach>
                   </select>
               </div>
-          </div> 
+          </div>
+          
+	        <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+	              <label class="col-md-4">Offer Rate</label>
+	              <div class="col-md-8">
+	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
+	              </div>
+            </div>  
                        
             <div class="form-group">
               <label class="col-md-4">Description</label>
@@ -327,9 +334,11 @@
             </div>
            
             <div class="form-group">
-              <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-                   <div class="clearfix col-md-8" id="errBilling">
+                	<div class="col-lg-8">
+					  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" data-validation="required validate_int validate_length length1-8" field-name="Billing Amount">
+					</div>
+                   <%-- <div class="clearfix col-md-8" id="errBilling">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
                           <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
@@ -360,7 +369,7 @@
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> --%>
             </div>
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
@@ -878,6 +887,9 @@ function hideCommonSOWFields(){
 	$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("offeredSubmissionDiv").style.display="none";
 	
+	$('#offerRate').val("");
+	document.getElementById("offerRateDiv").style.display="none";
+	
 	$('#hoursPerWeek').removeAttr('data-validation');
 	$('#hoursPerWeek').attr('data-validation-optional',"true");
 	$('#hoursPerWeek').val("");
@@ -949,13 +961,16 @@ function hideCommonSOWFields(){
 	            	  result = result + '<option value="">--- Select Requirement ---</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
-	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
 	                  }
 	                  $("#requirementsList").empty();
 	                  $("#requirementsList").append(result);
 	                  $("#requirementsList").chosen();
 	              	  $("#requirementsList").trigger('chosen:update');
 	              }
+	              $('#requirementsList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("requirementDiv").style.display="block";
 	              $('#requirementsList').removeAttr('data-validation-optional');
 	  			  $('#requirementsList').attr("data-validation","required");
@@ -984,9 +999,32 @@ function hideCommonSOWFields(){
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }
+	              $('#submissionOffersList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("offeredSubmissionDiv").style.display="block";
 	              $('#submissionOffersList').removeAttr('data-validation-optional');
 	  			  $('#submissionOffersList').attr("data-validation","required");
+	       },
+	    });
+
+	}
+	
+	function getOfferRate(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	  var json = JSON.parse(data);
+	            	  $("#offerRate").val("");
+	            	  document.getElementById("offerRateDiv").style.display="block";
+	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
+	            	  $("#flatReward").val("");
+	            	  $("#flatReward").val(json.amount);
+	              }
 	       },
 	    });
 
@@ -1021,7 +1059,6 @@ function getRewardType(rewardType){
 	}
 	
 	if(rewardType == 'Flat'){
-		/* document.getElementById("crowd_rate").style.display=""; */
 		document.getElementById("flatReward").style.display="";
 		document.getElementById("flatRateType").style.display="";
 		document.getElementById("percentageReward").style.display="none";
