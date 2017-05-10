@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -54,7 +55,7 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 	public InvoiceLineItems getInvoiceLineItemsById(Long Id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<InvoiceLineItems> lineItem = session.createQuery("from InvoiceLineItems lineItems where lineItems.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<InvoiceLineItems> lineItem = session.createQuery("from InvoiceLineItems lineItems left join fetch lineItems.invoice where lineItems.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
 		if (lineItem.size() > 0) {
 			return lineItem.get(0);
 		} else {
@@ -79,6 +80,41 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return invoiceLineItems;
+	}
+
+
+
+	@Override
+	@Transactional
+	public void deleteLineItem(InvoiceLineItems invoiceLineItems) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (invoiceLineItems != null) {
+				session.delete(invoiceLineItems);
+			}
+			logger.debug("InvoiceLineItems Deleted Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"INVOICE_LINE_ITEMS"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
+
+
+
+	@Override
+	@Transactional
+	public List<Long> getInvoiceLineItemsIdsByInvoiceId(Long invoiceId) throws Exception {
+		
+		logger.debug("In InvoiceLineItemDaoImpl class getInvoiceLineItemsIdsByInvoiceId method");
+		Session session = this.sessionFactory.getCurrentSession();
+			 
+		String query = "select lineItems.id from InvoiceLineItems lineItems where lineItems.invoice.id = :invoiceId ";
+		List<Long> lineItemsIdsList =  session.createQuery(query.toString()).setLong("invoiceId", invoiceId)
+									.setCacheable(true).list();
+		
+		return lineItemsIdsList;
 	}
 
 }

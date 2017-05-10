@@ -30,4 +30,14 @@ public class InvoiceLineItemServiceImpl implements InvoiceLineItemService{
 		return InvoiceLineItemDao.saveInvoiceLineItems(invoiceLineItems);
 	}
 
+	@Override
+	public void deleteLineItem(InvoiceLineItems invoiceLineItems) throws Exception {
+		InvoiceLineItemDao.deleteLineItem(invoiceLineItems);
+	}
+
+	@Override
+	public List<Long> getInvoiceLineItemsIdsByInvoiceId(Long invoiceId) throws Exception {
+		return InvoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoiceId);
+	}
+
 }

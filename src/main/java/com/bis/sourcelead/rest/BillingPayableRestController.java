@@ -117,8 +117,15 @@ public class BillingPayableRestController {
 	    			  }else{
 		    			sb.append(candidate.getFirstName());
 	    			 }
-		    		lineItems.setStartDateStr(Constants.DMY.format(lineItems.getStartDate()));
-		    		lineItems.setEndDateStr(Constants.DMY.format(lineItems.getEndDate()));
+		    		
+		    		if(null != lineItems.getStartDate()){
+		    			lineItems.setStartDateStr(Constants.DMY.format(lineItems.getStartDate()));
+		    		}
+		    		
+		    		if(null != lineItems.getEndDate()){
+		    			lineItems.setEndDateStr(Constants.DMY.format(lineItems.getEndDate()));
+		    		}
+		    		
 		    		lineItems.setCandidateName(sb.toString());
 		    		lineItems.setCandidateId(lineItems.getCandidate().getId());
 		    		
@@ -191,10 +198,23 @@ public class BillingPayableRestController {
 	
 	 
 	 @RequestMapping(value = "/deleteInvoiceLineItem")
-	 public String deleteInvoiceLineItem(@RequestParam(value="lineItemId", required=false) Long lineItemId,HttpServletRequest request) throws Exception {
+	 public String deleteInvoiceLineItem(@RequestParam(value="lineItemId", required=false) Long lineItemId,
+			 @RequestParam(value="invoiceTotal", required=false) String invoiceTotal,
+			 @RequestParam(value="discountTotal", required=false) String discountTotal,
+			 @RequestParam(value="afterDiscountToatal", required=false) String afterDiscountToatal,
+			 @RequestParam(value="grandTotal", required=false) String grandTotal,
+			 HttpServletRequest request) throws Exception {
 
 		 InvoiceLineItems lineItem = invoiceLineItemService.getInvoiceLineItemsById(lineItemId);	
 		 if(null != lineItem){
+			 
+			 Invoice invoice = invoiceService.getInvoicetById(lineItem.getInvoice().getId());
+			 invoice.setSubTotal(invoiceTotal);
+			 invoice.setDiscountValue(discountTotal);
+			 invoice.setAfterDiscountValue(afterDiscountToatal);
+			 invoice.setTotal(grandTotal);
+			 invoiceService.updateInvoice(invoice);
+			 
 			 lineItem.setStatus("0");
 			 invoiceLineItemService.saveInvoiceLineItems(lineItem);
 		 }

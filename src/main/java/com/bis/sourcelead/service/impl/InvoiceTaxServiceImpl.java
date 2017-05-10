@@ -20,4 +20,19 @@ public class InvoiceTaxServiceImpl implements InvoiceTaxService{
 		return invoiceTaxDao.getInvoiceTaxListByInvoiceId(invoiceId);
 	}
 
+	@Override
+	public List<Long> getInvoiceTaxIdsByInvoiceId(Long invoiceId) throws Exception {
+		return invoiceTaxDao.getInvoiceTaxIdsByInvoiceId(invoiceId);
+	}
+
+	@Override
+	public void deleteInvoiceTax(InvoiceTax invoiceTax) throws Exception {
+		invoiceTaxDao.deleteInvoiceTax(invoiceTax);
+	}
+
+	@Override
+	public InvoiceTax getInvoiceTaxById(Long Id) throws Exception {
+		return invoiceTaxDao.getInvoiceTaxById(Id);
+	}
+
 }

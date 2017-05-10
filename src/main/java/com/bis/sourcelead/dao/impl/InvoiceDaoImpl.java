@@ -117,9 +117,14 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
-		logger.debug("In InvoiceDaoImpl getInvoicetById method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Invoice) session.get(Invoice.class, invoiceId);
+		List<Invoice> invoice = session.createQuery("from Invoice invoice  where invoice.id =:invoiceId" ).setLong( "invoiceId", invoiceId ).setCacheable(true).list();
+		if (invoice.size() > 0) {
+			return invoice.get(0);
+		} else {
+			return null;
+		}
 	}
 
 
@@ -134,6 +139,22 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		} else {
 			return null;
 		}
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Invoice updateInvoice(Invoice invoice) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (invoice != null) {
+				session.saveOrUpdate(invoice);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return invoice;
 	}
 
 }

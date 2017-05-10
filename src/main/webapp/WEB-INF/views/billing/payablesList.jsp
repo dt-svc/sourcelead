@@ -13,6 +13,13 @@ $(document).ready(function(){
 });
 </script>
 
+
+<style type="text/css">
+.invoiceId_Anchor a {
+color:#337ab7 !important;
+}
+</style>
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -574,7 +581,7 @@ function getPayableInvoiceList(){
         		
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot_80"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
+				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
