@@ -16,7 +16,7 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-          <h2>Inovice Id: <span>002345</span></h2>
+          <h2>Inovice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
     </section>
@@ -71,6 +71,7 @@ function getViewInvoice(){
 	        	for (var i=0; i<json.length; i++)
 	    		{  
 	        		var report = json[i];
+	        		$("#invoiceIdDiv").val(report.invoiceId)
 	        		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
 	        			dueDateStr = report.dueDateStr;
 	        		}else{
