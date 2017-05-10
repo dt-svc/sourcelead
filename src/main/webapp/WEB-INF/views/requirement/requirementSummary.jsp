@@ -4136,7 +4136,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th>Name</th>';
 		    result = result +'<th>Email</th>';
 		    result = result +'<th>City</th>';
-		    result = result +'<th>Ph. No</th>';
+		    result = result +'<th>Phone</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number Of Requirements</th>';
 		    result = result +'<th>Updated Date</th>';
@@ -4268,9 +4268,9 @@ function requirementRecommendations(requirementId){
 		    result = result +'</div></td>';
 		    
 		    if(report.isCandidateSubmitted == 'N'){
-		    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Apply</a></div>';
+		    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Add</a></div>';
 		    }else{
-		    	result = result +'<td class="text-center"><div class="text-success">Applied</div>';
+		    	result = result +'<td class="text-center"><div class="text-success">Added</div>';
 		    }
 		    
 		  
