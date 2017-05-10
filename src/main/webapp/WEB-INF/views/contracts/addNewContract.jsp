@@ -489,6 +489,7 @@
                   var dt = toDate("#startDate");
                   dt.setDate(dt.getDate() + 1);
                   $("#endDate").datepicker("option", "minDate", dt);
+                  removeValid();
               }
         });
         
@@ -1232,6 +1233,12 @@ function validateContractTitle(){
 	
 }
 
+</script>
+
+<script>
+function removeValid(){
+$('#startDateDiv').find('p.jquery_form_error_message').remove();
+}
 </script>
 
 <!-- Footer Area -->
