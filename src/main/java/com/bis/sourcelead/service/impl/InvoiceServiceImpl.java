@@ -305,8 +305,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 			}
 		 }
 		
-		 updatedtaxLineItems.retainAll(invoiceTaxItemsIdsList);
-		 invoiceTaxItemsIdsList.removeAll(updatedtaxLineItems);
+		 if(null != invoice.getId()){
+			 updatedtaxLineItems.retainAll(invoiceTaxItemsIdsList);
+			 invoiceTaxItemsIdsList.removeAll(updatedtaxLineItems);
+		 }
+		
 		 
 		 return invoiceTaxSet;
 	}
@@ -394,9 +397,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			 
 		 }
 		 
-		 updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
-		 invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
-		 
+		 if(null != invoice.getId()){
+			 updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
+			 invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
+		 }
 		 
 		return invoiceLineItemsSet;
 		
