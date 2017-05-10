@@ -1578,7 +1578,7 @@ function requirementPipeline(requirementId){
   
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head timesheetHead_Custom">
+      <div class="timesheet_head timesheetHead_Custom topfilters">
        
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">

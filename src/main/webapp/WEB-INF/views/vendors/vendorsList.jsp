@@ -40,8 +40,8 @@ border:none; background-color: none !important; padding:0 5px !important;
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
-                  		 <option value="listbyVendor">List by vendor</option>
-                         <option value="listbyContact" selected="selected">List by contact</option> 
+                  		 <option value="listbyVendor" selected="selected">List by vendor</option>
+                         <option value="listbyContact" >List by contact</option> 
                     </select>
                 </span>            	
             </h2>
@@ -266,7 +266,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 
 
 
-<div class="vendor_wrap vendor_wrap_shadownone">
+<div class="vendor_wrap vendor_wrap_shadownone minHeight_225">
 
      
 
@@ -751,15 +751,15 @@ border:none; background-color: none !important; padding:0 5px !important;
 $(document).ready(function(){
 	//getVendorContactLists();
 	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
-    listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact';
+    listChange("listbyVendor");
+	document.getElementById('listOfVendors').value = 'listbyVendor';
 });
 </script>
 
 <!-- Vendors list preparation from ELK result -->
 <script>
 function preparedVendorsListFromElk(data){
-			var json = JSON.parse(data);
+	var json = JSON.parse(data);
 		   	var result = "";
 		   	
 		   	result = result +'<thead>';
@@ -985,7 +985,6 @@ function getVendorListsElk(){
 	closePop();
 	var values = [];
 	var responderType = "Vendor";
-	
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
 			values.push($(this).val());
@@ -1105,7 +1104,6 @@ function getVendorContactListsELK(){
 <!-- contact list preparation from ELK result -->
 <script>
 function preparedVendorContactListFromElk(data){
-	  
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	
@@ -1882,7 +1880,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="block";
+		 //document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 // 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
@@ -1896,7 +1894,6 @@ function listChange(sel){
 	//	 document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
-		
 		 //getVendorContactLists();
 		 getVendorContactListsELK();
 	 }
@@ -2432,10 +2429,12 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
   }else{
 	  if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
 	    	vendorSideBar(responderLocationId,orgRelationId,orgName);
-	    	getVendorContactListsELK();
+	    	//getVendorContactListsELK();
+	    	getVendorListsElk();
 	    }
 	else{
-		getVendorContactListsELK();
+		//getVendorContactListsELK();
+		getVendorListsElk();
 		}
   }
     

@@ -78,17 +78,46 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	@Override
 	public String prepareTimeSheetDiv(String frequencyYear, String frequencyMonth,User loginUser,OrgLocations orgLocations) throws Exception {
 		StringBuilder prepareTimeSheetDiv = new StringBuilder("");
+		StringBuilder prepareMonthsHiddenDiv = new StringBuilder("");
+		StringBuilder currentMonthsHiddenDiv = new StringBuilder("");
 		StringBuilder selectedYear = new StringBuilder("");
 		StringBuilder selectedMonth = new StringBuilder("");
-		
+		frequencyMonth = frequencyMonth.trim();
 		prepareTimeSheetDiv.append("<div class='content-area content-new clearfix'>");
 		prepareTimeSheetDiv.append("<div class='timesheet_head timesheetRep'>");
 		          prepareTimeSheetDiv.append("<div class='timeReFi'>");
-			  	          LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(2, 2);
-				          prepareTimeSheetDiv.append("		                <select id='frequencyYear' name='frequencyYear' class='form-control chosen-select'   >");
+			  	          LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(1);
+			  	          
+			  	         LinkedList<String>  allMonthsList = CalendarUtil.getAllMonths();
+						 LinkedList<String>  tsrMonthsList = new LinkedList<>();
+						 LinkedList<String>  currentMonthsList = new LinkedList<>();
+						 LinkedList<String>  nextyrMonthsList = new LinkedList<>();
+						 
+						 Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+						 int cMonth = Integer.parseInt(Constants.DF_MM.format(currentCal.getTime()));
+						 String currentYear = CalendarUtil.getCurrentYear();
+						 String currentMonth = CalendarUtil.getCurrentMonth();
+						 
+						 if(cMonth> 9){
+							 currentMonthsList.addAll(allMonthsList);
+						 }
+						 else{
+						     for(int i = 0;i< cMonth+2;i++){
+						    	 currentMonthsList.add(allMonthsList.get(i));
+						     }
+						 }
+						
+						 if(cMonth == 11){
+							 nextyrMonthsList.add(allMonthsList.get(0));
+						 }
+						 else if(cMonth == 12){
+							 nextyrMonthsList.add(allMonthsList.get(0));
+							 nextyrMonthsList.add(allMonthsList.get(1));
+						 }
+						 
+				          prepareTimeSheetDiv.append("		                <select id='frequencyYear' name='frequencyYear' class='form-control chosen-select'  onchange='getMonths(this);'  >");
 							for (String yrStr : tsrYearsList) {
 								    StringBuilder isSelected = new StringBuilder("");
-								    String currentYear = CalendarUtil.getCurrentYear();
 								    if(StringUtils.isEmpty(frequencyYear) && currentYear.equalsIgnoreCase(yrStr)){
 								    	isSelected.append("selected='selected'");
 								    	selectedYear.append(yrStr);
@@ -96,19 +125,41 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 								    else if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
 								    	isSelected.append("selected='selected'");
 								    	selectedYear.append(yrStr);
-								    }  
+								    } 
+								    
+								    if(currentYear.equalsIgnoreCase(yrStr)){
+								    	 currentMonthsHiddenDiv.append("<input type='hidden' id='currentYear' value='"+yrStr.trim()+"'>");
+								    }
 								    prepareTimeSheetDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+yrStr+"'>");
 								    prepareTimeSheetDiv.append(yrStr);
 								    prepareTimeSheetDiv.append("		                  </option>");
+								    if(Integer.parseInt(currentYear)>Integer.parseInt(yrStr)){
+								    	if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
+								    		tsrMonthsList.addAll(CalendarUtil.getAllMonths());
+								    	}
+								    		
+								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+CalendarUtil.getAllMonths().toString()+"'>");
+								    }
+								    else if(Integer.parseInt(currentYear)==Integer.parseInt(yrStr)){
+								    	if((StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)) || (StringUtils.isEmpty(frequencyYear))){
+								    		tsrMonthsList.addAll(currentMonthsList);
+								    	}
+								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+currentMonthsList.toString()+"'>");
+								    }
+								    else if(Integer.parseInt(currentYear)<Integer.parseInt(yrStr)){
+								    	if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
+								    		tsrMonthsList.addAll(nextyrMonthsList);
+								    	}
+								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+nextyrMonthsList.toString()+"'>");
+								    }
 							}
 							prepareTimeSheetDiv.append("		                </select>");
+							prepareTimeSheetDiv.append(prepareMonthsHiddenDiv);
 					 prepareTimeSheetDiv.append("	            </div>");
 					 prepareTimeSheetDiv.append("<div class='timeReFi'>");
-					 LinkedList<String>  tsrMonthsList = CalendarUtil.getAllMonths();
 			          prepareTimeSheetDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select'  >");
 						for (String monthStr : tsrMonthsList) {
 							    StringBuilder isSelected = new StringBuilder("");
-							    String currentMonth = CalendarUtil.getCurrentMonth();
 							    if(StringUtils.isEmpty(frequencyMonth) && currentMonth.equalsIgnoreCase(monthStr)){
 							    	isSelected.append("selected='selected'");
 							    	selectedMonth.append(monthStr);
@@ -116,15 +167,23 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 							    else if(StringUtils.isNotEmpty(frequencyMonth) && frequencyMonth.equalsIgnoreCase(monthStr)){
 							    	isSelected.append("selected='selected'");
 							    	selectedMonth.append(monthStr);
-							    }  
+							    } 
+							    
+							    if(currentMonth.equalsIgnoreCase(monthStr)){
+							    	 currentMonthsHiddenDiv.append("<input type='hidden' id='currentMonth' value='"+monthStr.trim()+"'>");
+							    }
+							   
+							    
 							    prepareTimeSheetDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+monthStr+"'>");
 							    prepareTimeSheetDiv.append(monthStr);
 							    prepareTimeSheetDiv.append("		                  </option>");
+							    
 						}
 						prepareTimeSheetDiv.append("		                </select>");
 				prepareTimeSheetDiv.append("	            </div>");
 				 prepareTimeSheetDiv.append("<div class='timeReFi'>");
 					prepareTimeSheetDiv.append("	            <input type='button' onclick='timesheetReportsDiv();' class='btn btn-success' value='View'>	");
+					prepareTimeSheetDiv.append(currentMonthsHiddenDiv);
 				 prepareTimeSheetDiv.append("	            </div>");
 				 
 				 String pdf = "pdf";

@@ -347,7 +347,6 @@ function getOrgDetails()
 {
 	var orgName = document.getElementById("orgName").value;
  	var orgLocationId = document.getElementById("orgLocationId").value; 
- 	alert("orgLocationId"+orgLocationId);
 	var sourceleadUrl = '${sourceleadUrl}';
 	if(orgName){
    	 $.ajax({
