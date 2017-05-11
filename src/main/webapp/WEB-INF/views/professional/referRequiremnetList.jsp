@@ -50,11 +50,11 @@ $(document).ready(function() {
             <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             </li>
             <li id="contactLevel">
-		                  <div id="contactsFilter"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
+		                  <div id="contactsFilter"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="contactsFilterPop" class="approved_pop" style="display: none;">
 		                    	<ul>
-									<li><input id="c6" type="checkbox" name="clinetLevel" value="Tier-1" onclick="getClientDetails();"><label>Accept</label></li>
-									<li><input id="c7" type="checkbox" name="clinetLevel" value="Tier-2" onclick="getClientDetails();"><label>Reject</label></li>
+									<li><input id="c6" type="checkbox" name="clinetLevel" value="Tier-1" onclick="getClientDetails();"><label>Accepted</label></li>
+									<li><input id="c7" type="checkbox" name="clinetLevel" value="Tier-2" onclick="getClientDetails();"><label>Rejected</label></li>
 									<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-3" onclick="getClientDetails();"><label>Sent</label></li>
 		               				<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-4" onclick="getClientDetails();"><label>Received</label></li>
 		               				<li><input id="c9" type="checkbox" name="clinetLevel" value="Tier-5" onclick="getClientDetails();"><label>New</label></li>
