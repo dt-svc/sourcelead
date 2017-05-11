@@ -45,10 +45,25 @@ $(document).ready(function() {
   </section>
   <div class="timesheet_out">
       <div class="vendor_wrap">
-      <div class="timesheet_head candidateHead">
+      <div class="timesheet_head topfilters">
           <ul>
             <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             </li>
+            <li id="contactLevel">
+		                  <div id="contactsFilter"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
+		                	<div id="contactsFilterPop" class="approved_pop" style="display: none;">
+		                    	<ul>
+									<li><input id="c6" type="checkbox" name="clinetLevel" value="Tier-1" onclick="getClientDetails();"><label>Accepted</label></li>
+									<li><input id="c7" type="checkbox" name="clinetLevel" value="Tier-2" onclick="getClientDetails();"><label>Rejected</label></li>
+									<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-3" onclick="getClientDetails();"><label>Sent</label></li>
+		               				<li><input id="c8" type="checkbox" name="clinetLevel" value="Tier-4" onclick="getClientDetails();"><label>Received</label></li>
+		               				<li><input id="c9" type="checkbox" name="clinetLevel" value="Tier-5" onclick="getClientDetails();"><label>New</label></li>
+		                        </ul>
+		                    </div>                	
+		                </li>
+            
+            
+            
             <li><a href="javascript:void(0)" id="imCon"><i class="fa fa-plus"></i>Import Contacts</a></li>
             <li><a id="addPop" href="javascript:void(0)"><i class="fa fa-plus"></i>Add Contact</a>
             
@@ -122,7 +137,7 @@ function refercontactList(){
 			   	 result = result +'          <th class="emailWidth">Email Id</th>';
 			   	 result = result +'          <th>Phone No</th>';
 			   	 result = result +'          <th>Source</th>';
-			   	/*  result = result +'          <th>Action</th>'; */
+			   	 result = result +'          <th>Action</th>'; 
 			   	 result = result +'        </tr>';
 			   	result = result + '	     </thead>';
 			   	 result = result +'      <tbody>';
@@ -134,11 +149,11 @@ function refercontactList(){
 					   contactUserPhone = "--";
 				   }
 				   result = result +'        <tr>';
-				   	 result = result +'          <td><div><span class="mid-span">'+report.firstName+'</span></div></td>';
+				   	 result = result +'          <td><div class="text-left"><img src="resources/images/userprofile-img.png" alt="UserImage" class="pull-left img-responsive paddingRight" width="35px" height="35px"><span class="mid-span"title="User Image">'+report.firstName+'</span></div></td>';
 				   	 result = result +'          <td><div><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
 				   	 result = result +'          <td><div><span class="mid-span">'+contactUserPhone+'</span></div></td>';
 				   	 result = result +'          <td><div><span class="mid-span">'+report.contactSource+'</span></div></td>';
-				   	 /* result = result +'          <td><div><i class="glyphicon glyphicon-edit"></i><i class="glyphicon glyphicon-trash"></i></div></td>'; */
+				   	 result = result +'          <td><div class="bg-blue status_contact paddingRight">Accept</div><i title="Chat" class="fa fa-comments"></i></td>'; 
 				   	 result = result +'        </tr>';
 			   }
 			   	 result = result +'      </tbody>';
@@ -159,7 +174,7 @@ function refercontactpagenation(){
 	
 	  $('#refercontactpagenationid').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[100, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"lengthMenu": [[20, 15, 20, -1], [2, 15, 20, "All"]],
 	    	"bLengthChange": false,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -340,4 +355,17 @@ function flushContactDetails(){
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+</script>
+<script>
+//Filter Script
+$("#contactsFilter").click(function(){
+			$("#contactsFilterPop").slideToggle(200);
+			$(".export_pop").slideUp(200);
+		});
+	    $("html").click(function() {
+	        $("#contactsFilterPop").slideUp(200);
+	    });
+	    $("#contactsFilterPop, #contactsFilter").click(function(e) {  
+	        e.stopPropagation();
+	    });	
 </script>

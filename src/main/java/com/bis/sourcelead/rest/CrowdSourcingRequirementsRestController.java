@@ -1002,7 +1002,6 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/addCrowdSourcingUserContact", method = RequestMethod.POST)
 		public String addCrowdSourcingUserContact(@RequestParam(value = "json", required = false) String json,
 				HttpServletRequest request,HttpServletResponse response)
