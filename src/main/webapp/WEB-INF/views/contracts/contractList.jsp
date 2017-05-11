@@ -204,7 +204,7 @@ function getTemplateList(){
     	   }else if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
     		   preparedContractListWTV(data);
     	   }else if(contractSubmissionType == 'Finalized'){
-    		   preparedContractListFinalized(data);
+    		   preparedContractListFinalize(data);
     	   }else if(contractSubmissionType == 'EXPIRED'){
     		   preparedContractListExpired(data);
     	   }else if(contractSubmissionType == 'REJECTED'){
@@ -960,6 +960,7 @@ function vendorListContractsPaginationWTV(){
 
 <script>
 function preparedContractListFinalize(data){
+	alert("hhh");
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
 	 var json = JSON.parse(data);
@@ -979,6 +980,7 @@ function preparedContractListFinalize(data){
 		result = result + '	</thead>';
 		result = result + '	<tbody>';
 	if(json.vendorcontractsList.length>0){
+		alert("json.vendorcontractsList.length"+json.vendorcontractsList.length);
 		    for (var i = 0; i < json.vendorcontractsList.length; i++) {
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
