@@ -205,7 +205,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setOwnerUserId(ownerUser);
 		
 		
-		String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
+		/*String currentTimeStr = Constants.TZ_DF.format(jsonObj.getString("startDate"));  
 		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
@@ -218,11 +218,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setEndDate(convertedEndDate);
 				vendorContracts.setEndDate(convertedEndDate);
 			}
-		}
+		}*/
 		
 		
 		
-   /*     Date startDate = format.parse(jsonObj.getString("startDate"));
+       Date startDate = format.parse(jsonObj.getString("startDate"));
 		contracts.setStartDate(startDate);
 		vendorContracts.setStartDate(startDate);
 		if(jsonObj.has("endDate")){
@@ -231,7 +231,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setEndDate(endDate);
 				vendorContracts.setEndDate(endDate);
 			}
-		}*/
+		}
 		User approverUser = null;
 		User vendorContactsUser = null;
 		if(jsonObj.has("approver") && null != jsonObj.getString("approver") && !"".equals(jsonObj.getString("approver"))){
