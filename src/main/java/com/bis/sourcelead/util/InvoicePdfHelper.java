@@ -1,8 +1,10 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -39,26 +42,171 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 
 @Component
 public class InvoicePdfHelper {
 	
-	//  public static final String ICC = "resources/data/sRGB_CS_profile.icm";
-
-//	    public static final String FONT = "resources/fonts/OpenSans-Regular.ttf";
-	    Font FONT =new Font(FontFamily.TIMES_ROMAN,50.0f,Font.UNDERLINE,BaseColor.RED);
-
-	   // public static final String FONTB = "resources/fonts/OpenSans-Bold.ttf";
-	
 	private static final Logger logger = LoggerFactory.getLogger(InvoicePdfHelper.class);
+	
+	public static final String FONTB = "/fonts/OpenSans-Bold.ttf";
+	public static final String FONT = "/fonts/OpenSans-Regular.ttf";
+	
+	protected Font font10;
+	protected Font font10b;
+	protected Font font12;
+	protected Font font12b;
+	protected Font font14;
+	
+	public InvoicePdfHelper() throws DocumentException, IOException{
+		BaseFont bf = BaseFont.createFont(FONT, BaseFont.WINANSI, BaseFont.EMBEDDED);
+		BaseFont bfb = BaseFont.createFont(FONTB, BaseFont.WINANSI, BaseFont.EMBEDDED);
+		
+		font10 = new Font(bf,10);
+		font10b = new Font(bfb,10);
+		font12 = new Font(bf,12);
+		font12b = new Font(bfb,12);
+		font14 = new Font(bf,14);
+	}
 	
 	@Autowired
 	EmployeesService employeesService;
 	
 public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception{
 		
-		
-		String[] headers = Constants.INVOICE_PDF_HEADERS;
+	 try {
+         OutputStream file = new FileOutputStream(new File("/root/Desktop/PDF_FILE/Test.pdf"));
+         Document document = new Document();
+         PdfWriter writer = PdfWriter.getInstance(document, file);
+         writer.createXmpMetadata();
+         document.open();
+         Paragraph p;
+         p= new Paragraph("InvoiveID -"+invoice.getInvoiceId(),font14);
+         p.setAlignment(Element.ALIGN_RIGHT);
+         document.add(p);
+         p= new Paragraph("Invoive Date : 8-05-2017 ",font14);
+         p.setAlignment(Element.ALIGN_RIGHT);
+         document.add(p);
+         p= new Paragraph("Payment terms :20 Days",font14);
+         p.setAlignment(Element.ALIGN_RIGHT);
+         document.add(p);
+         p= new Paragraph("Due Date :31-12-2017",font14);
+         p.setAlignment(Element.ALIGN_RIGHT);
+         document.add(p);
+         
+         PdfPTable table = new PdfPTable(2);
+         table.setWidthPercentage(100);
+         
+         PdfPCell from = getAddress("Billing From:","Rajashekar","rajasekhar@businessintelli.com","9959812177","Business Intelli Solurions","Hyderabad");
+         table.addCell(from);
+         
+         PdfPCell to = getAddress("Billing To:","Snigitha","snigitha@businessintelli.com","8888888888","Tata Consultancy","USA");
+         table.addCell(to);
+         document.add(table);
+         
+         table = new PdfPTable(5);
+         table.setWidthPercentage(100);
+         table.setSpacingBefore(10);
+         table.setSpacingAfter(10);
+         table.setWidths(new int[]{5,6,2,4,2});
+         
+         table.addCell(getCell("Associate name",Element.ALIGN_LEFT,font12b));
+         table.addCell(getCell("Duration",Element.ALIGN_LEFT,font12b));
+         table.addCell(getCell("Rate",Element.ALIGN_LEFT,font12b));
+         table.addCell(getCell("Total Hours",Element.ALIGN_LEFT,font12b));
+         table.addCell(getCell("Total",Element.ALIGN_LEFT,font12b));
+         
+         table.addCell(getCell("Rajashekar", Element.ALIGN_LEFT, font12));
+         table.addCell(getCell("1-1-2017 to 12-12-2017", Element.ALIGN_RIGHT, font12));
+         table.addCell(getCell("55000", Element.ALIGN_RIGHT, font12));
+         table.addCell(getCell("812", Element.ALIGN_RIGHT, font12));
+         table.addCell(getCell("800000", Element.ALIGN_RIGHT, font12));
+         document.add(table);
+         
+         String[] type = {"vat","vat"};
+         String[] percentage = {"%","flat"};
+         String currency[] = {"IST","USD"};
+         String basic[] = {"50","50"};
+         String tax[] = {"50","50"};
+         document.add(getTotalsTable(
+       		    "6.5", "5000",
+       		    "8000", "USD",
+       		    type, percentage,
+       		    basic, tax,
+       		    currency));
+         
+         document.add(Chunk.NEWLINE);
+         LineSeparator ls = new LineSeparator();
+         ls.setAlignment(Element.ALIGN_BOTTOM);
+         document.add(new Chunk(ls));
+         
+         document.close();
+		  file.close();
+
+       System.out.println("Pdf created successfully..");
+
+   } catch (Exception e) {
+       e.printStackTrace();
+   }
+
+}
+private PdfPCell getCell(String value, int alignLeft, Font font)
+{
+	PdfPCell cell = new PdfPCell();
+	cell.setUseAscender(true);
+	cell.setUseAscender(true);
+	Paragraph p = new Paragraph(value,font);
+	p.setAlignment(alignLeft);
+	cell.addElement(p);
+	return cell;
+}
+private PdfPCell getAddress(String who, String name, String email, String mobile, String orgName, String address)
+{
+	PdfPCell cell = new PdfPCell();
+	cell.setBorder(cell.NO_BORDER);
+	cell.addElement(new Paragraph(who,font12));
+	cell.addElement(new Paragraph(name,font12));
+	cell.addElement(new Paragraph(email,font12));
+	cell.addElement(new Paragraph(mobile,font12));
+	cell.addElement(new Paragraph(orgName,font12));
+	cell.addElement(new Paragraph(address,font12));
+	return cell;
+}
+
+
+public PdfPTable getTotalsTable(String tBase, String tTax, String tTotal,
+	    String tCurrency, String[] type, String[] percentage, String base[],
+	    String tax[], String currency[]) throws DocumentException {
+	    PdfPTable table = new PdfPTable(6);
+	    table.setWidthPercentage(100);
+	    table.setWidths(new int[]{1, 1, 3, 3, 3, 1});
+	    table.addCell(getCell("TAX", Element.ALIGN_LEFT, font12b));
+	    table.addCell(getCell("%", Element.ALIGN_RIGHT, font12b));
+	    table.addCell(getCell("Base amount:", Element.ALIGN_LEFT, font12b));
+	    table.addCell(getCell("Tax amount:", Element.ALIGN_LEFT, font12b));
+	    table.addCell(getCell("Total:", Element.ALIGN_LEFT, font12b));
+	    table.addCell(getCell("", Element.ALIGN_LEFT, font12b));
+	    int n = type.length;
+	    for (int i = 0; i < n; i++) {
+	        table.addCell(getCell(type[i], Element.ALIGN_RIGHT, font12));
+	        table.addCell(getCell(percentage[i], Element.ALIGN_RIGHT, font12));
+	        table.addCell(getCell(base[i], Element.ALIGN_RIGHT, font12));
+	        table.addCell(getCell(tax[i], Element.ALIGN_RIGHT, font12));
+	        double total = Double.parseDouble(base[i]) + Double.parseDouble(tax[i]);
+	        table.addCell(getCell("5000", Element.ALIGN_RIGHT, font12));
+	        table.addCell(getCell(currency[i], Element.ALIGN_LEFT, font12));
+	    }
+	    PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+	    cell.setColspan(2);
+	    cell.setBorder(PdfPCell.NO_BORDER);
+	    table.addCell(cell);
+	    table.addCell(getCell(tBase, Element.ALIGN_RIGHT, font12b));
+	    table.addCell(getCell(tTax, Element.ALIGN_RIGHT, font12b));
+	    table.addCell(getCell(tTotal, Element.ALIGN_RIGHT, font12b));
+	    table.addCell(getCell(tCurrency, Element.ALIGN_LEFT, font12b));
+	    return table;
+	}
+		/*String[] headers = Constants.INVOICE_PDF_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
@@ -79,7 +227,269 @@ public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
 	        userStyle.append("Invoice");
 	        
 	        StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append("INVOICE").toString());
+            Paragraph para = new Paragraph(orgNameSB.append(" try {
+              OutputStream file = new FileOutputStream(new File("C:\\Users\\Welcome\\Desktop\\JAVA_BOOKS\\Test.pdf"));
+	          Document document = new Document();
+	          PdfWriter writer = PdfWriter.getInstance(document, file);
+	          writer.createXmpMetadata();
+	          document.open();
+	          Paragraph p;
+	          p= new Paragraph("InvoiveID -12345 ",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          p= new Paragraph("Invoive Date : 8-05-2017 ",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          p= new Paragraph("Payment terms :20 Days",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          p= new Paragraph("Due Date :31-12-2017",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          
+	          PdfPTable table = new PdfPTable(2);
+	          table.setWidthPercentage(100);
+	          
+	          PdfPCell from = getAddress("Billing From:","Rajashekar","rajasekhar@businessintelli.com","9959812177","Business Intelli Solurions","Hyderabad");
+	          table.addCell(from);
+	          
+	          PdfPCell to = getAddress("Billing To:","Snigitha","snigitha@businessintelli.com","8888888888","Tata Consultancy","USA");
+	          table.addCell(to);
+	          document.add(table);
+	          
+	          table = new PdfPTable(5);
+	          table.setWidthPercentage(100);
+	          table.setSpacingBefore(10);
+	          table.setSpacingAfter(10);
+	          table.setWidths(new int[]{5,6,2,4,2});
+	          
+	          table.addCell(getCell("Associate name",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Duration",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Rate",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Total Hours",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Total",Element.ALIGN_LEFT,font12b));
+	          
+	          table.addCell(getCell("Rajashekar", Element.ALIGN_LEFT, font12));
+	          table.addCell(getCell("1-1-2017 to 12-12-2017", Element.ALIGN_RIGHT, font12));
+	          table.addCell(getCell("55000", Element.ALIGN_RIGHT, font12));
+	          table.addCell(getCell("812", Element.ALIGN_RIGHT, font12));
+	          table.addCell(getCell("800000", Element.ALIGN_RIGHT, font12));
+	          document.add(table);
+	          
+	          String[] type = {"vat","vat"};
+	          String[] percentage = {"%","flat"};
+	          String currency[] = {"IST","USD"};
+	          String basic[] = {"50","50"};
+	          String tax[] = {"50","50"};
+	          document.add(getTotalsTable(
+	        		    "6.5", "5000",
+	        		    "8000", "USD",
+	        		    type, percentage,
+	        		    basic, tax,
+	        		    currency));
+	          
+	          document.add(Chunk.NEWLINE);
+	          LineSeparator ls = new LineSeparator();
+	          ls.setAlignment(Element.ALIGN_BOTTOM);
+	          document.add(new Chunk(ls));
+	          
+	          document.close();
+			  file.close();
+ 
+            System.out.println("Pdf created successfully..");
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+	}
+	private PdfPCell getCell(String value, int alignLeft, Font font)
+	{
+		PdfPCell cell = new PdfPCell();
+		cell.setUseAscender(true);
+		cell.setUseAscender(true);
+		Paragraph p = new Paragraph(value,font);
+		p.setAlignment(alignLeft);
+		cell.addElement(p);
+		return cell;
+	}
+	private PdfPCell getAddress(String who, String name, String email, String mobile, String orgName, String address)
+	{
+		PdfPCell cell = new PdfPCell();
+		cell.setBorder(cell.NO_BORDER);
+		cell.addElement(new Paragraph(who,font12));
+		cell.addElement(new Paragraph(name,font12));
+		cell.addElement(new Paragraph(email,font12));
+		cell.addElement(new Paragraph(mobile,font12));
+		cell.addElement(new Paragraph(orgName,font12));
+		cell.addElement(new Paragraph(address,font12));
+		return cell;
+	}
+	
+	
+	public PdfPTable getTotalsTable(String tBase, String tTax, String tTotal,
+		    String tCurrency, String[] type, String[] percentage, String base[],
+		    String tax[], String currency[]) throws DocumentException {
+		    PdfPTable table = new PdfPTable(6);
+		    table.setWidthPercentage(100); try {
+              OutputStream file = new FileOutputStream(new File("C:\\Users\\Welcome\\Desktop\\JAVA_BOOKS\\Test.pdf"));
+	          Document document = new Document();
+	          PdfWriter writer = PdfWriter.getInstance(document, file);
+	          writer.createXmpMetadata();
+	          document.open();
+	          Paragraph p;
+	          p= new Paragraph("InvoiveID -12345 ",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          p= new Paragraph("Invoive Date : 8-05-2017 ",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          p= new Paragraph("Payment terms :20 Days",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          p= new Paragraph("Due Date :31-12-2017",font14);
+	          p.setAlignment(Element.ALIGN_RIGHT);
+	          document.add(p);
+	          
+	          PdfPTable table = new PdfPTable(2);
+	          table.setWidthPercentage(100);
+	          
+	          PdfPCell from = getAddress("Billing From:","Rajashekar","rajasekhar@businessintelli.com","9959812177","Business Intelli Solurions","Hyderabad");
+	          table.addCell(from);
+	          
+	          PdfPCell to = getAddress("Billing To:","Snigitha","snigitha@businessintelli.com","8888888888","Tata Consultancy","USA");
+	          table.addCell(to);
+	          document.add(table);
+	          
+	          table = new PdfPTable(5);
+	          table.setWidthPercentage(100);
+	          table.setSpacingBefore(10);
+	          table.setSpacingAfter(10);
+	          table.setWidths(new int[]{5,6,2,4,2});
+	          
+	          table.addCell(getCell("Associate name",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Duration",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Rate",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Total Hours",Element.ALIGN_LEFT,font12b));
+	          table.addCell(getCell("Total",Element.ALIGN_LEFT,font12b));
+	          
+	          table.addCell(getCell("Rajashekar", Element.ALIGN_LEFT, font12));
+	          table.addCell(getCell("1-1-2017 to 12-12-2017", Element.ALIGN_RIGHT, font12));
+	          table.addCell(getCell("55000", Element.ALIGN_RIGHT, font12));
+	          table.addCell(getCell("812", Element.ALIGN_RIGHT, font12));
+	          table.addCell(getCell("800000", Element.ALIGN_RIGHT, font12));
+	          document.add(table);
+	          
+	          String[] type = {"vat","vat"};
+	          String[] percentage = {"%","flat"};
+	          String currency[] = {"IST","USD"};
+	          String basic[] = {"50","50"};
+	          String tax[] = {"50","50"};
+	          document.add(getTotalsTable(
+	        		    "6.5", "5000",
+	        		    "8000", "USD",
+	        		    type, percentage,
+	        		    basic, tax,
+	        		    currency));
+	          
+	          document.add(Chunk.NEWLINE);
+	          LineSeparator ls = new LineSeparator();
+	          ls.setAlignment(Element.ALIGN_BOTTOM);
+	          document.add(new Chunk(ls));
+	          
+	          document.close();
+			  file.close();
+ 
+            System.out.println("Pdf created successfully..");
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+	}
+	private PdfPCell getCell(String value, int alignLeft, Font font)
+	{
+		PdfPCell cell = new PdfPCell();
+		cell.setUseAscender(true);
+		cell.setUseAscender(true);
+		Paragraph p = new Paragraph(value,font);
+		p.setAlignment(alignLeft);
+		cell.addElement(p);
+		return cell;
+	}
+	private PdfPCell getAddress(String who, String name, String email, String mobile, String orgName, String address)
+	{
+		PdfPCell cell = new PdfPCell();
+		cell.setBorder(cell.NO_BORDER);
+		cell.addElement(new Paragraph(who,font12));
+		cell.addElement(new Paragraph(name,font12));
+		cell.addElement(new Paragraph(email,font12));
+		cell.addElement(new Paragraph(mobile,font12));
+		cell.addElement(new Paragraph(orgName,font12));
+		cell.addElement(new Paragraph(address,font12));
+		return cell;
+	}
+	
+	
+	public PdfPTable getTotalsTable(String tBase, String tTax, String tTotal,
+		    String tCurrency, String[] type, String[] percentage, String base[],
+		    String tax[], String currency[]) throws DocumentException {
+		    PdfPTable table = new PdfPTable(6);
+		    table.setWidthPercentage(100);
+		    table.setWidths(new int[]{1, 1, 3, 3, 3, 1});
+		    table.addCell(getCell("TAX", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("%", Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell("Base amount:", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("Tax amount:", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("Total:", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("", Element.ALIGN_LEFT, font12b));
+		    int n = type.length;
+		    for (int i = 0; i < n; i++) {
+		        table.addCell(getCell(type[i], Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(percentage[i], Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(base[i], Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(tax[i], Element.ALIGN_RIGHT, font12));
+		        double total = Double.parseDouble(base[i]) + Double.parseDouble(tax[i]);
+		        table.addCell(getCell("5000", Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(currency[i], Element.ALIGN_LEFT, font12));
+		    }
+		    PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+		    cell.setColspan(2);
+		    cell.setBorder(PdfPCell.NO_BORDER);
+		    table.addCell(cell);
+		    table.addCell(getCell(tBase, Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell(tTax, Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell(tTotal, Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell(tCurrency, Element.ALIGN_LEFT, font12b));
+		    return table;
+		}
+		    table.setWidths(new int[]{1, 1, 3, 3, 3, 1});
+		    table.addCell(getCell("TAX", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("%", Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell("Base amount:", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("Tax amount:", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("Total:", Element.ALIGN_LEFT, font12b));
+		    table.addCell(getCell("", Element.ALIGN_LEFT, font12b));
+		    int n = type.length;
+		    for (int i = 0; i < n; i++) {
+		        table.addCell(getCell(type[i], Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(percentage[i], Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(base[i], Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(tax[i], Element.ALIGN_RIGHT, font12));
+		        double total = Double.parseDouble(base[i]) + Double.parseDouble(tax[i]);
+		        table.addCell(getCell("5000", Element.ALIGN_RIGHT, font12));
+		        table.addCell(getCell(currency[i], Element.ALIGN_LEFT, font12));
+		    }
+		    PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+		    cell.setColspan(2);
+		    cell.setBorder(PdfPCell.NO_BORDER);
+		    table.addCell(cell);
+		    table.addCell(getCell(tBase, Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell(tTax, Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell(tTotal, Element.ALIGN_RIGHT, font12b));
+		    table.addCell(getCell(tCurrency, Element.ALIGN_LEFT, font12b));
+		    return table;
+		}INVOICE").toString());
             para.setAlignment(100);
             
             para.setAlignment(Element.ALIGN_CENTER);
@@ -210,96 +620,8 @@ public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
 	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
 	    } finally {
 	        document.close();
-	    }
+	    }*/
 	  
-	}
 	
 
-private String[] prepareInvoiceStringArray(InvoiceLineItems lineItems, String[] headers) throws Exception {
-	String userArray[] = new String[headers.length];
-		 String val = lineItems.getCandidate().getFirstName();
-		 if(null != lineItems.getCandidate().getConsultantUser()){
-			 Employees emp = employeesService.getEmployeeByUserId(lineItems.getCandidate().getConsultantUser().getId());
-			 val = val+"&"+emp.getEmployeeId();
-		 }
-		 if(lineItems.getCandidate() !=null){
-			 userArray[0] = val;
-		 }else{
-			 userArray[0] = "--";
-		 }
-		 if(lineItems.getStartDate() !=null){
-			 String startDate = Constants.DF_YMD.format(lineItems.getStartDate());
-			 if(lineItems.getEndDate() !=null){
-				 startDate= startDate +"-"+Constants.DF_YMD.format(lineItems.getEndDate());
-			 }
-			 userArray[1] = startDate;
-		 }
-		 else{
-			 userArray[1] = "--";
-		 }
-		 if(lineItems.getRate() !=null){
-			 userArray[2] = lineItems.getRate();
-		 }else{
-			 userArray[2] = "--";
-		 }
-		 if(lineItems.getTotalHours() !=null){
-			 userArray[3] = lineItems.getTotalHours();
-		 }else{
-			 userArray[3] = "--";
-		 }
-		 if(lineItems.getAmount() !=null){
-			 userArray[4] = lineItems.getAmount();
-		 }else{
-			 userArray[4] = "--";
-		 }
-	   
-	return userArray;
-}
-
-
-public PdfPCell getPartyAddress(String who,String name, String email, String mobile, String orgName, String companyAddress) throws DocumentException, IOException {
-	
-//	   BaseFont bf = BaseFont.createFont(FONT, BaseFont.WINANSI, BaseFont.EMBEDDED);
-//
-//     BaseFont bfb = BaseFont.createFont(FONT, BaseFont.WINANSI, BaseFont.EMBEDDED);
-     
-//	    Font font10 = new Font(bf, 10);
-//
-//	    Font font10b = new Font(bfb, 10);
-//
-//	    Font font12 = new Font(bf, 12);
-//
-//	    Font font12b = new Font(bfb, 12);
-//
-//	    Font font14 = new Font(bf, 14);
-	   
-	   PdfPCell cell = new PdfPCell();
-
-     cell.setBorder(PdfPCell.NO_BORDER);
-
-     cell.addElement(new Paragraph(who, FONT));
-     
-     cell.addElement(new Paragraph(name, FONT));
-
-     cell.addElement(new Paragraph(email, FONT));
-
-     cell.addElement(new Paragraph(mobile, FONT));
-
-     cell.addElement(new Paragraph(orgName, FONT));
-
-     cell.addElement(new Paragraph(orgName, FONT));
-
-     return cell;
-
- }
-
-
-private static void headerCellStyle(PdfPCell cell){
-    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-    cell.setPaddingTop(0f);
-    cell.setPaddingBottom(7f);
-    cell.setBackgroundColor(new BaseColor(0,121,182));
-    cell.setBorder(0);
-    cell.setBorderWidthBottom(2f);
-    }
 }
