@@ -375,6 +375,16 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
 	private String lastRateIniType;
+    
+    @Transient
+	private String facebookUrl;
+    
+	@Transient
+	private String linkedInUrl;
+    
+    @Transient
+	private String twitterUrl;
+    
 	
 	
 	public OrgLocations getVendorLocationId() {
@@ -1250,5 +1260,29 @@ public class RequirementSubmission implements Serializable{
 
 	public void setOnboardStatus(String onboardStatus) {
 		this.onboardStatus = onboardStatus;
+	}
+	
+	public String getFacebookUrl() {
+		return facebookUrl;
+	}
+
+	public void setFacebookUrl(String facebookUrl) {
+		this.facebookUrl = facebookUrl;
+	}
+
+	public String getLinkedInUrl() {
+		return linkedInUrl;
+	}
+
+	public void setLinkedInUrl(String linkedInUrl) {
+		this.linkedInUrl = linkedInUrl;
+	}
+
+	public String getTwitterUrl() {
+		return twitterUrl;
+	}
+
+	public void setTwitterUrl(String twitterUrl) {
+		this.twitterUrl = twitterUrl;
 	}
 }

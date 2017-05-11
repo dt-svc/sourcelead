@@ -185,7 +185,7 @@ function dashboardAddInterview(){
 	var result = "";
 	result = result + '<div class="add_inter addinterview_dashboard">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
-	result = result + '<div class="add_inter_head"> <span>Add Interview</span>';
+	result = result + '<div class="add_inter_head"> <span>Schedule Interview</span>';
 	result = result + '<div class="clearfix"></div>';   
 	result = result + '</div>';
 	
@@ -193,7 +193,7 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row">';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft">Range<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<span class="col-md-3 paddingLeft">Posted from<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list">';
 	result = result + '<select class="form-control mt10" id="requirementsTimeRange" onchange="getRequirements();">';
 	result = result + '		<option value="today">Today</option>';
@@ -209,7 +209,7 @@ function dashboardAddInterview(){
 	
 	result = result + '<div class="col-md-5">';
 	result = result + '<span class="col-md-3 paddingLeft">Requirement<span class="text-danger">&nbsp;*</span></span>';
-	result = result + '<div class="col-md-9 req_list">';
+	result = result + '<div class="col-md-9 req_list" id="reqDiv">';
 	result = result + '<select class="form-control mt10" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Requirement" data-validation="required">';
 	
 	result = result + '</select>';
@@ -344,12 +344,12 @@ function dashboardAddInterview(){
 function interviewType(id){ 
 	var selectedReqId = $("#1interviewType").val();
 	 if(selectedReqId=="Other"){
-		 document.getElementById("#1interviewTypeCheck").style.display="block";
+		 $("#1interviewTypeCheck").attr("style", "display:block");
 		 $("#1interviewTypeother").removeAttr('data-validation-optional');
 		 $("#1interviewTypeother").attr("data-validation","required validate_length length1-50"); 
 	 }
 	 else{
-		 document.getElementById("#1interviewTypeCheck").style.display="none";
+		 $("#1interviewTypeCheck").attr("style", "display:none");
 		 $("#1interviewTypeother").removeAttr("data-validation");
 		 $("#1interviewTypeother").attr("data-validation-optional","true");
 	 }
@@ -509,6 +509,8 @@ function getRequirements(){
 	              	$('#requirementsList')
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
+	              	$("#reqDiv").find('p.jquery_form_error_message').remove();
+	              	$("#reqDiv").append("<p class='jquery_form_error_message'>Select requirement</span>");
               }else{
             	  var result = "";
             	  	 result = result + '<option value="">--- Select Requirement ---</option>';
@@ -519,7 +521,12 @@ function getRequirements(){
 	              	$('#requirementsList')
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
+	             $("#reqDiv").find('p.jquery_form_error_message').remove();
+	             $("#reqDiv").append("<p class='jquery_form_error_message'>No requirements found</span>");
               }
+          	$("#1applicant").attr("data-placeholder", "Select Applicants");
+          	$("#1applicant").empty();
+          	$('#1applicant').trigger('chosen:updated');
        },
     });
 
@@ -552,8 +559,11 @@ function getApplicantsForRequirement(){
 		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
+		        	var appCount = json.length;
+		        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
+		        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
 		        	var output = "";
-		        	for (var i=0; i<json.length; i++)
+		        	for (var i=0; i<appCount; i++)
 					{
 		        		var opt = json[i];
 		        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
