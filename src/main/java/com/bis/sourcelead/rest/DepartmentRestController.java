@@ -19,7 +19,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -31,6 +33,9 @@ public class DepartmentRestController {
 	
 	@Autowired
 	public DepartmentService departmentService;
+	
+	@Autowired
+	public UserService userService;
 	
 	 @Autowired
 	 CommonUtil commonUtil;
@@ -131,6 +136,6 @@ public class DepartmentRestController {
     	   }
 		return flag;
 	   }
+
     
-	
 }

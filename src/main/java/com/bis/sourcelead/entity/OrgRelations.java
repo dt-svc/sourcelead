@@ -168,6 +168,9 @@ public class OrgRelations implements Serializable{
 	private Integer rejectedCount;
 	
 	@Transient
+	private Integer backoutCount;
+	
+	@Transient
 	private String vendorName;
 	
 	public String getLevel() {
@@ -558,5 +561,13 @@ public class OrgRelations implements Serializable{
 
 	public void setRejectedCount(Integer rejectedCount) {
 		this.rejectedCount = rejectedCount;
+	}
+
+	public Integer getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(Integer backoutCount) {
+		this.backoutCount = backoutCount;
 	}
 }

@@ -20,6 +20,9 @@
 vendor_wrap {
 overflow-x: auto;
 }
+.dropdown-select.paddingNone select {
+border:none; background-color: none !important; padding:0 5px !important;
+}
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
@@ -37,8 +40,8 @@ overflow-x: auto;
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
-                  		 <option value="listbyVendor">List by vendor</option>
-                         <option value="listbyContact" selected="selected">List by contact</option> 
+                  		 <option value="listbyVendor" selected="selected">List by vendor</option>
+                         <option value="listbyContact" >List by contact</option> 
                     </select>
                 </span>            	
             </h2>
@@ -50,7 +53,7 @@ overflow-x: auto;
 
 <div class="timesheet_out timesheet_background">
  <!-- Advanced Search -->
-  <div class="timesheet_bg">
+  <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
@@ -263,11 +266,12 @@ overflow-x: auto;
 
 
 
-<div class="vendor_wrap vendor_wrap_shadownone">
+<div class="vendor_wrap vendor_wrap_shadownone minHeight_225">
 
      
 
-	<div class="timesheet_head datatbl-filters customtimesheet-head">
+	<!-- <div class="timesheet_head datatbl-filters customtimesheet-head"> -->
+	<div class="timesheet_head datatbl-filters topfilters">
         	<ul>
         	
         	<%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
@@ -280,7 +284,7 @@ overflow-x: auto;
 		                    </div>                	
 		                </li> --%>
 	               
-		                <li id= "filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
+		                <li id= "filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
@@ -291,7 +295,7 @@ overflow-x: auto;
 	                        </ul>
 	                      </div>                	
 	                  </li>
-	                  <li  id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
+	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
@@ -303,7 +307,7 @@ overflow-x: auto;
 	                  </li>
                   
 	                	 
-						<li id="contactLevel" style="display:none">
+						<li id="contactLevel" >
 					   <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
@@ -328,7 +332,7 @@ overflow-x: auto;
                  	   </sec:authorize> 
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
-                       	 <li title="Export" id="vendorImports" style="display:none">
+                       	 <li title="Export" id="vendorImports" >
 		                     <a  id="vendor-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
@@ -340,7 +344,7 @@ overflow-x: auto;
 		          </sec:authorize>
 		           
 		          <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
-		            <li title="Export" id="VendorContactImports">
+		            <li title="Export" id="VendorContactImports" style="display:none">
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
@@ -747,15 +751,15 @@ overflow-x: auto;
 $(document).ready(function(){
 	//getVendorContactLists();
 	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
-    listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact';
+    listChange("listbyVendor");
+	document.getElementById('listOfVendors').value = 'listbyVendor';
 });
 </script>
 
 <!-- Vendors list preparation from ELK result -->
 <script>
 function preparedVendorsListFromElk(data){
-			var json = JSON.parse(data);
+	var json = JSON.parse(data);
 		   	var result = "";
 		   	
 		   	result = result +'<thead>';
@@ -981,7 +985,6 @@ function getVendorListsElk(){
 	closePop();
 	var values = [];
 	var responderType = "Vendor";
-	
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
 			values.push($(this).val());
@@ -1101,7 +1104,6 @@ function getVendorContactListsELK(){
 <!-- contact list preparation from ELK result -->
 <script>
 function preparedVendorContactListFromElk(data){
-	  
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	
@@ -1109,7 +1111,7 @@ function preparedVendorContactListFromElk(data){
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
 		   	result = result +'  <th>Vendor</th>';
 		   	result = result +' <th>Status</th>';
@@ -1207,7 +1209,7 @@ function preparedVendorContactListFromElk(data){
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div class="tblminwidth-50"><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')";></i></div></td>';
+		   	    result = result + '<td><div class="tblminwidth-50"><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove vendor contact"></i></div></td>';
 		   	 '</sec:authorize>';
 		   	 
 		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
@@ -1238,7 +1240,7 @@ function preparedVendorContactList(data){
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
 		   	result = result +'  <th>Vendor</th>';
 		   	result = result +' <th>Status</th>';
@@ -1328,7 +1330,7 @@ function preparedVendorContactList(data){
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+		   	    result = result + '<td><div><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')"; title = "Remove vendor contact"></i></div></td>';
 		   	 '</sec:authorize>';
 		   	 
 		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
@@ -1380,7 +1382,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Do you want to delete this vendor contact?</p>";
+	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
@@ -1878,7 +1880,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="block";
+		 //document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 // 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
@@ -1892,7 +1894,6 @@ function listChange(sel){
 	//	 document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
-		
 		 //getVendorContactLists();
 		 getVendorContactListsELK();
 	 }
@@ -2428,10 +2429,12 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
   }else{
 	  if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
 	    	vendorSideBar(responderLocationId,orgRelationId,orgName);
-	    	getVendorContactListsELK();
+	    	//getVendorContactListsELK();
+	    	getVendorListsElk();
 	    }
 	else{
-		getVendorContactListsELK();
+		//getVendorContactListsELK();
+		getVendorListsElk();
 		}
   }
     

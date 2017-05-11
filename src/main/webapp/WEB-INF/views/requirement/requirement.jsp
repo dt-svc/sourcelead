@@ -22,7 +22,7 @@ min-height: 150px;
 top:-55px !important;
 }
 .dataTable thead th {
-background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px;
+background: #375d81; color:#fff; height: 34px; padding-top: 5px; padding-bottom: 5px; text-align:center;
 }
 .dataTable thead tr th {
 vertical-align: middle;
@@ -307,7 +307,7 @@ $(document).ready(function () {
          <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
              <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-	                 <option value="" disabled selected>------ Select -----</option>
+	                 <option value="" disabled selected>--- Select Employment Type ---</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
@@ -520,7 +520,7 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
-              <div class="input-group attachfile">
+              <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
@@ -623,7 +623,7 @@ $(document).ready(function () {
 								value="" onclick="getTemplateVal();">
 						</c:otherwise>
 					</c:choose>
-					<label>&nbsp;&nbsp;<strong>Save as a template</strong>
+					<label>&nbsp;&nbsp;<strong>Save as a Template</strong>
 						&nbsp;&nbsp;
 					</label>
 				</div>
@@ -903,7 +903,7 @@ $(document).ready(function () {
                 <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'  &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
                 	<input type="checkbox" name="cd" id="apprverReq"  onClick="approvalType('Default');removeApprovers();" checked >
                 </c:if>
-               		 <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
+               		 <label>&nbsp;&nbsp;<strong>Approver Required</strong></label>
                 </div>
                 
                 <!-- Radio buttons for Sequential or Parallel function -->
@@ -1120,9 +1120,9 @@ $(document).ready(function () {
                           <div class="col-xs-12 col-md-12 col-lg-12">
                             <div class="form-group">
                             <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
-                            <div class="col-lg-8">
+                            <div class="col-lg-8" id="teamNameDiv">
                               <!-- <input type="text" class="form-control" value=""> -->
-                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="">
+                              <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">
                               </div>
                             </div>
                             <div class="form-group">
@@ -1565,6 +1565,8 @@ function getCities(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			} */
+			
+			
 			
 		   $("#countryReq").chosen();
 	       $("#state").chosen();
@@ -2098,9 +2100,8 @@ function getUserList(teamType){
 	   $('input[name^="assignUserId"]').each(function() {
 	 		selectedUsersForAssign.push($(this).val());
 	   });
-	   
- 	   $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	   $.ajax({
+ 	   $("#usersGrid").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+ 	   $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getUserList?${_csrf.parameterName}=${_csrf.token}&teamType="+teamType,    
             success :function(data) {
@@ -2118,11 +2119,11 @@ function getUserList(teamType){
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
-	                		result = result +'             <th>Name</th>';
-	                		result = result +'             <th>Email</th>';
-	                		result = result +'             <th>Role</th>';
-	                		result = result +'             <th>Active Jobs</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Name</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Email</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Role</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Active Jobs</th>';
 	                		result = result +'           </tr>';
 	                		result = result +'           </thead>';
 		                    result = result +"<tbody>"; 
@@ -2182,7 +2183,7 @@ function getUserList(teamType){
 		                    		 }
 		                    	 }
 		                    	 
-		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-me" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot" title="'+opt.email+'">'+opt.email+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.userType+'</span></td>';
 		                    	 result = result +'             <td><span class="tbldata-dotdot-100">'+opt.assignJobCount+'</span></td>';
@@ -2795,6 +2796,10 @@ for (var i = 0; i < splitNotice.length; i++) {
 }
 	$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
 }
+$('.chosen-select').each(function() {
+	var $this = $(this);
+	$this.next().css({'width': '100%'});
+})
 </script>
 
 <script>
@@ -2814,6 +2819,35 @@ function getEditRequirementDetails(requirementId){
 	
 }
 </script>
+
+<script type="text/javascript">
+ function validateTeamName() {
+	 var name = $('#name').val(); 
+	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 if(name != null && name != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateTeamName?${_csrf.parameterName}=${_csrf.token}&name="+name, 
+		        success: function(data) {
+		        	if(data == 'true'){
+						  
+		        		  $("input#name").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#add_team").attr("disabled", "disabled");
+						  $("#add_team").addClass('button').val('Processing..');
+		        	}
+		        	else{
+		        		
+		        		 $('input#name').removeAttr("record-exist record-exist-errormsg");
+		        		 $('#teamNameDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#add_team" ).addClass('button').val('Save');
+                         $("#add_team").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 } 
+ }
+ </script> 
 
 <script type="text/javascript">
 $(document).ready(function(){

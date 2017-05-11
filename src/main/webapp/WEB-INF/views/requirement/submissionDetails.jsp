@@ -208,7 +208,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <div class="col-md-6">';
 		       
 		       result = result + ' <div class="row">';
-		       result = result + ' <div class="col-md-12">';
+		       result = result + ' <div class="col-md-8 paddingRight">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
@@ -221,7 +221,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' </div>';
 		       
 		       
-		       result = result + ' <div class="col-md-6">';
+		       result = result + ' <div class="col-md-4">';
 			   
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
@@ -233,7 +233,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	   		if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT'){   
+			    	   		if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT' && json.submissionStatus != 'OFFERREJECTED' && json.submissionStatus != 'OFFERACCEPTED'){   
 								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
@@ -304,7 +304,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 							   		result = result +'<span id= "requestsDiv">';
-							   		if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT' && json.submissionStatus != 'SUBMISSION'){
+							   		if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'OFFERREJECTED' && json.submissionStatus != 'OFFERACCEPTED'){
 							   			result = result + '	<li><i class="glyphicon glyphicon-share-alt labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
@@ -321,7 +321,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -391,7 +391,10 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 
 		       result = result + '<div class="require_wrap_details">';
 		       if(json.submissionStatus == 'REJECTED'){
-		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'reject\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		       }
+		       if(json.submissionStatus == 'BACKOUT'){
+		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
@@ -617,7 +620,6 @@ function getInternalInterviewsList(submissionId){
 	                    	 /* if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
 	                    	 } */
-	                    	 
 	                    	 if(report.interviewId.location != null && report.interviewId.location != 'undefined' && report.interviewId.location != ""){
 	                    		 location = report.interviewId.location;
 	                    	 }
@@ -697,21 +699,21 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
+	                    	 result = result + '<p class="col-md-7" tbldata-dotdot-me" title= "'+location+'">'+location+'</p>';
 	                    	 result = result + '</div>';
 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Type</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewType+'</p>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title= '+interviewType+'>'+interviewType+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Date</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.dateOfInterviewStr+'</p>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.dateOfInterviewStr+'>'+report.dateOfInterviewStr+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
@@ -719,9 +721,9 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<strong>Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.startTimeStr+' to '+report.endTimeStr+'">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
 	                    	 }else{
-	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.startTimeStr+'>'+report.startTimeStr+'</p>';
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
@@ -730,16 +732,15 @@ function getInternalInterviewsList(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Interviewers</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.interviewersList+'</p>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.interviewersList+'">'+report.interviewersList+'</p>';
 		                    	 result = result + '</div>';
 	                    	 }
-	                    	 
 	                    	 if(report.remainderTime != null && report.remainderTime != 'undefined' && report.remainderTime != ""){
 	                    		 result = result + '<div class="row clearfix">';
 		                         result = result + '<label class="col-md-5">';
 		                         result = result + '<strong>Reminder details</strong>';
 		                         result = result + '</label>';
-		                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.remainderTime+'">'+report.remainderTime+'</p>';
 		                         result = result + '</div>';
 	                    	 }
 	                         
@@ -747,7 +748,7 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<label class="col-md-5">';
 	                         result = result + '<strong>Notified to</strong>';
 	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-me"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                         
 	                         if(report.rescheduleComment != null && report.rescheduleComment != '' && report.rescheduleComment != 'undefined'){
@@ -755,7 +756,7 @@ function getInternalInterviewsList(submissionId){
 		                         result = result + '<label class="col-md-5">';
 		                         result = result + '<strong>Reschedule Comment</strong>';
 		                         result = result + '</label>';
-		                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span title="'+report.rescheduleComment+'">'+report.rescheduleComment+'<span></p>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-me"><span title="'+report.rescheduleComment+'">'+report.rescheduleComment+'<span></p>';
 		                         result = result + '</div>';
 	                         }
 	                        
@@ -764,7 +765,7 @@ function getInternalInterviewsList(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Client Name:</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.clientName+'>'+report.clientName+'</p>';
 		                    	 result = result + '</div>';
 	                         }
 	                         
@@ -2090,7 +2091,10 @@ function rescheduleInterClose(){
 
  <script>
  function rescheduleInterviewUpdate(submissionId){
-	    validateOtherMail();
+	 	if($("#notificationToOthers").prop('checked') == true){
+	 		validateOtherMail();
+		}
+		
 		if ($('#rescheduleInterview_form').validate(false, validationSettings)) {
 			var frm = $('#rescheduleInterview_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -2290,7 +2294,7 @@ $("#notMail").click(function(){
 	
 <!-- this script using for interview feedback Ends -->
 <script type="text/javascript">
-function reActivateApplicant(submissionId,candidateId,requirementId){
+function reActivateApplicant(submissionId,candidateId,requirementId,type){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
@@ -2298,7 +2302,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
@@ -2335,7 +2339,6 @@ function pipelineList(requirementId){
 	filterReq(requirementId,submissionType);
 }
 </script>
-
 
 
 

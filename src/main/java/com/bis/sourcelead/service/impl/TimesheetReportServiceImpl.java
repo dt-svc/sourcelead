@@ -78,17 +78,46 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	@Override
 	public String prepareTimeSheetDiv(String frequencyYear, String frequencyMonth,User loginUser,OrgLocations orgLocations) throws Exception {
 		StringBuilder prepareTimeSheetDiv = new StringBuilder("");
+		StringBuilder prepareMonthsHiddenDiv = new StringBuilder("");
+		StringBuilder currentMonthsHiddenDiv = new StringBuilder("");
 		StringBuilder selectedYear = new StringBuilder("");
 		StringBuilder selectedMonth = new StringBuilder("");
-		
+		frequencyMonth = frequencyMonth.trim();
 		prepareTimeSheetDiv.append("<div class='content-area content-new clearfix'>");
 		prepareTimeSheetDiv.append("<div class='timesheet_head timesheetRep'>");
 		          prepareTimeSheetDiv.append("<div class='timeReFi'>");
-			  	          LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(2, 2);
-				          prepareTimeSheetDiv.append("		                <select id='frequencyYear' name='frequencyYear' class='form-control chosen-select'   >");
+			  	          LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(1);
+			  	          
+			  	         LinkedList<String>  allMonthsList = CalendarUtil.getAllMonths();
+						 LinkedList<String>  tsrMonthsList = new LinkedList<>();
+						 LinkedList<String>  currentMonthsList = new LinkedList<>();
+						 LinkedList<String>  nextyrMonthsList = new LinkedList<>();
+						 
+						 Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+						 int cMonth = Integer.parseInt(Constants.DF_MM.format(currentCal.getTime()));
+						 String currentYear = CalendarUtil.getCurrentYear();
+						 String currentMonth = CalendarUtil.getCurrentMonth();
+						 
+						 if(cMonth> 9){
+							 currentMonthsList.addAll(allMonthsList);
+						 }
+						 else{
+						     for(int i = 0;i< cMonth+2;i++){
+						    	 currentMonthsList.add(allMonthsList.get(i));
+						     }
+						 }
+						
+						 if(cMonth == 11){
+							 nextyrMonthsList.add(allMonthsList.get(0));
+						 }
+						 else if(cMonth == 12){
+							 nextyrMonthsList.add(allMonthsList.get(0));
+							 nextyrMonthsList.add(allMonthsList.get(1));
+						 }
+						 
+				          prepareTimeSheetDiv.append("		                <select id='frequencyYear' name='frequencyYear' class='form-control chosen-select'  onchange='getMonths(this);'  >");
 							for (String yrStr : tsrYearsList) {
 								    StringBuilder isSelected = new StringBuilder("");
-								    String currentYear = CalendarUtil.getCurrentYear();
 								    if(StringUtils.isEmpty(frequencyYear) && currentYear.equalsIgnoreCase(yrStr)){
 								    	isSelected.append("selected='selected'");
 								    	selectedYear.append(yrStr);
@@ -96,19 +125,41 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 								    else if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
 								    	isSelected.append("selected='selected'");
 								    	selectedYear.append(yrStr);
-								    }  
+								    } 
+								    
+								    if(currentYear.equalsIgnoreCase(yrStr)){
+								    	 currentMonthsHiddenDiv.append("<input type='hidden' id='currentYear' value='"+yrStr.trim()+"'>");
+								    }
 								    prepareTimeSheetDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+yrStr+"'>");
 								    prepareTimeSheetDiv.append(yrStr);
 								    prepareTimeSheetDiv.append("		                  </option>");
+								    if(Integer.parseInt(currentYear)>Integer.parseInt(yrStr)){
+								    	if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
+								    		tsrMonthsList.addAll(CalendarUtil.getAllMonths());
+								    	}
+								    		
+								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+CalendarUtil.getAllMonths().toString()+"'>");
+								    }
+								    else if(Integer.parseInt(currentYear)==Integer.parseInt(yrStr)){
+								    	if((StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)) || (StringUtils.isEmpty(frequencyYear))){
+								    		tsrMonthsList.addAll(currentMonthsList);
+								    	}
+								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+currentMonthsList.toString()+"'>");
+								    }
+								    else if(Integer.parseInt(currentYear)<Integer.parseInt(yrStr)){
+								    	if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
+								    		tsrMonthsList.addAll(nextyrMonthsList);
+								    	}
+								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+nextyrMonthsList.toString()+"'>");
+								    }
 							}
 							prepareTimeSheetDiv.append("		                </select>");
+							prepareTimeSheetDiv.append(prepareMonthsHiddenDiv);
 					 prepareTimeSheetDiv.append("	            </div>");
 					 prepareTimeSheetDiv.append("<div class='timeReFi'>");
-					 LinkedList<String>  tsrMonthsList = CalendarUtil.getAllMonths();
 			          prepareTimeSheetDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select'  >");
 						for (String monthStr : tsrMonthsList) {
 							    StringBuilder isSelected = new StringBuilder("");
-							    String currentMonth = CalendarUtil.getCurrentMonth();
 							    if(StringUtils.isEmpty(frequencyMonth) && currentMonth.equalsIgnoreCase(monthStr)){
 							    	isSelected.append("selected='selected'");
 							    	selectedMonth.append(monthStr);
@@ -116,15 +167,23 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 							    else if(StringUtils.isNotEmpty(frequencyMonth) && frequencyMonth.equalsIgnoreCase(monthStr)){
 							    	isSelected.append("selected='selected'");
 							    	selectedMonth.append(monthStr);
-							    }  
+							    } 
+							    
+							    if(currentMonth.equalsIgnoreCase(monthStr)){
+							    	 currentMonthsHiddenDiv.append("<input type='hidden' id='currentMonth' value='"+monthStr.trim()+"'>");
+							    }
+							   
+							    
 							    prepareTimeSheetDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+monthStr+"'>");
 							    prepareTimeSheetDiv.append(monthStr);
 							    prepareTimeSheetDiv.append("		                  </option>");
+							    
 						}
 						prepareTimeSheetDiv.append("		                </select>");
 				prepareTimeSheetDiv.append("	            </div>");
 				 prepareTimeSheetDiv.append("<div class='timeReFi'>");
 					prepareTimeSheetDiv.append("	            <input type='button' onclick='timesheetReportsDiv();' class='btn btn-success' value='View'>	");
+					prepareTimeSheetDiv.append(currentMonthsHiddenDiv);
 				 prepareTimeSheetDiv.append("	            </div>");
 				 
 				 String pdf = "pdf";
@@ -140,7 +199,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				 prepareTimeSheetDiv.append("</li>");
 		         prepareTimeSheetDiv.append("</ul>");
 				 
-				 prepareTimeSheetDiv.append("<div class='clearfix mb10'></div>");
+				 prepareTimeSheetDiv.append("<div class='clearfix'></div>");
 				 StringBuilder statusDiv = timesheetReportsTableDiv(selectedYear.toString(),selectedMonth.toString(),orgLocations,loginUser);
 				 prepareTimeSheetDiv.append(statusDiv);		
 		prepareTimeSheetDiv.append("</div>");
@@ -170,6 +229,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	                	<th>Employee</th>           ");
 			timesheetApprovalDiv.append("	                    <th>Project</th>            ");
 			timesheetApprovalDiv.append("	                    <th>Frequency</th>             ");
+			timesheetApprovalDiv.append("	                    <th>Rate</th>            ");
 			
 			LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
 			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(format.format(startDate), format.format(endDate));
@@ -210,15 +270,27 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(sourceleadUrl).append("/displayUserImage/").append(projectMember.getEmployee().getUser().getId()).append("' alt='Profile Image' class='img-circle img-responsive'/>")
 					                                 .append("</div>")
 					                                 .append("    <div class='Utext'>")
-				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</i>")
-				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getEmail()).append("'>").append(projectMember.getEmployee().getUser().getEmail()).append("</i>")
-		                                             .append("</div>")
+				                                             .append("<i title='").append(projectMember.getEmployee().getUser().getFullName()).append("'>").append(projectMember.getEmployee().getUser().getFullName()).append("</i>");
+				                                             if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
+				                                            	 timesheetApprovalDiv.append("<i title='").append(projectMember.getEmployee().getUser().getId()).append(" , ").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUser().getId()).append(",").append(projectMember.getEmployee().getUserEmploymentType()).append("</i>");	 
+				                                             }else{
+				                                            	 timesheetApprovalDiv.append("<i title='").append(projectMember.getEmployee().getUser().getId()).append("'>").append(projectMember.getEmployee().getUser().getId()).append("</i>");
+				                                             }
+					 											timesheetApprovalDiv.append("</div>")
 				                               .append("   <div>")
 					                        .append(" </td>");
 				     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
-			    	 timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
-		        
-			    	 SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+				     if(null != projectMember.getProjects().getClient() && !"".equalsIgnoreCase(projectMember.getProjects().getClient())){
+			    	 timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append(projectMember.getProjects().getClient()).append("</div></td>");
+				     }else{
+				     timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");	 
+				     }
+				     if(null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
+				     timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>");
+				     }else{
+				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
+				     }
+				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
 			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 				     float monthTotalHours            = 0f;
 					 float monthBillableTotalHours    = 0f;
@@ -382,7 +454,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         	
         }
         else{
-        	timesheetApprovalDiv.append("   <div class='dataTables_empty'>"); 
+        	timesheetApprovalDiv.append("   <div class='dataTables_empty'>");
+        	timesheetApprovalDiv.append("  <input type='hidden' id='hideExport' value='EmptyList'>");
 			timesheetApprovalDiv.append("  </div> "); 
         }
 
@@ -425,7 +498,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 weekEndDate = format.parse(v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
-						weekFrequencyDates.append(weekStartDate);
+						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");
 					 }else{
 						 weekFrequencyDates.append((shortormat.format(weekStartDate))).append("-").append(shortormat.format(weekEndDate)).append(",");
 					 }
@@ -458,7 +531,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    StringBuilder sbTsReports =  new StringBuilder();
 	    sbTsReports.append("timesheetSheet_").append(dateFormat.format(new Date()));
 	    StringBuilder fileSB = new StringBuilder();
-	    file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".pdf");
 	    file.setReadable(true);
 
 	    try {
@@ -472,10 +545,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        PdfPTable table = new PdfPTable(header.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(20);
+	        cell1.setColspan(23);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-	        if(header.length < 20){
+	        if(header.length > 20){
             table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});
 	        }else{
 	        table.setWidths(new int[]{3,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});	
@@ -544,7 +617,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }
 			int count = 5;
 			SubmissionApproverHierarchy sah= null;
-			float monthTotalHours = 0f;
+			 float monthTotalHours = 0f;
 			 float weekTotalHours = 0f;
 			 float  weekBillableHours = 0f;
 			 float  monthBillableTotalHours = 0f;
@@ -640,7 +713,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 weekEndDate = format.parse(v.replaceAll("/", "-"));
 					 displayWeeksList.put(weekStartDate, weekEndDate);
 					 if(weekStartDate.equals(weekEndDate)){
-						weekFrequencyDates.append(weekStartDate);
+						weekFrequencyDates.append(shortormat.format(weekStartDate)).append(",");
 					 }else{
 						 weekFrequencyDates.append((shortormat.format(weekStartDate))).append("-").append(shortormat.format(weekEndDate)).append(",");
 					 }
@@ -667,7 +740,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 column++;
          }
 		 StringBuilder fileSB = new StringBuilder();
-		 file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(dateFormat.format(new Date())).toString(),".xls");
+		 file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".xls");
 		 file.setReadable(true);
 		 FileOutputStream fos = new FileOutputStream(file);
 		 try {

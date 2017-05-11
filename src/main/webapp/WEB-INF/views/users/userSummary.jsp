@@ -32,6 +32,10 @@
 .remove_user_pop input{
 	color: #333;
 }
+#editUserDiv .user_summary_edit_cta {
+min-height: 65px;
+}
+
 </style>
 
 <div class="wraper">
@@ -232,7 +236,7 @@ $(document).ready(function(){
 				     
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
-				     result = result + ' <div class="user_summary_edit_cta centerDiv">';
+				     result = result + ' <div class="user_summary_edit_cta">';
 				     result = result + ' <form id="editRole_form"  name="editRole_form" method="post">';
 				     result = result + ' <label>Change Role</label>';
 						 result = result + '<select class="chosen-select" id="userChangeRole"  onchange="getChangeRole('+userId+','+json.roles.id+');" data-validation="required" field-name="Role" name="userChangeRole"  >';
@@ -244,7 +248,7 @@ $(document).ready(function(){
 						  result = result + '<div class="clearfix mb10 mt">';
 						  result = result + '</div>';
 					      result = result + '<div class="clearfix"></div>';
-						  result = result + '<div class="user_summary_edit_cta centerDiv">';
+						  result = result + '<div class="user_summary_edit_cta">';
 						  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
 						  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
 						  result = result + '</div>';
@@ -376,13 +380,13 @@ $(document).ready(function(){
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				<strong>RoleChangeReason:</strong><span class="fix">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>RoleChangeReason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
 				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Reason:</strong><span class="fix">'+json.terminateReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>Reason:</strong><span class="fix" title = "'+json.terminateReason+'">'+json.terminateReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
@@ -666,7 +670,7 @@ function getChangeRole(userId,userRoleId){
 						result = result + '</div>';	
 					  }	
 				
-				 result = result + '<div class="col-md-12" id="reasonDiv">';
+				 result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
 				  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
 				  	result = result + '</div><br/>';
 	        	
@@ -1192,6 +1196,7 @@ $("#editRoleDetailsList").empty();
 				var selected5 = '';
 				var selected6 = '';
 				var selected7 = '';
+				var selected8 = '';
 				
 				if(json.ratePer == 'Hourly'){
 						selected1 = 'selected';
@@ -1220,6 +1225,9 @@ $("#editRoleDetailsList").empty();
 				if(json.ratePer == 'Yearly'){
 						selected7 = 'selected';
 					}
+				if(json.ratePer == 'Bi-Monthly'){
+					selected8 = 'selected';
+				}
 				
 				var employeeId = "";
 			    var lastName = "";
@@ -1390,6 +1398,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <option '+selected3+'>Weekly</option>';
 					result = result + ' <option '+selected4+'>Bi-Weekly</option>';
 					result = result + ' <option '+selected5+'>Semi-Monthly</option>';
+					result = result + ' <option '+selected8+'>Bi-Monthly</option>';
 					result = result + ' <option '+selected6+'>Monthly</option>';
 					result = result + ' <option '+selected7+'>Yearly</option>';
 					result = result + ' </select>';
@@ -1549,6 +1558,7 @@ function getEmployeementType(){
 			document.getElementById("hideVendor").style.display="block";
 			 $('#vendors').attr("data-validation","required"); 
 			 $('#vendorcontact').attr("data-validation","required"); 
+			 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendors').removeAttr("data-validation","required"); 
@@ -2461,3 +2471,4 @@ function editMe(local){
 	 }
 	 }
 	 </script>
+	 

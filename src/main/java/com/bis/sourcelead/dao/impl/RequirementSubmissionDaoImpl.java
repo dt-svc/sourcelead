@@ -668,11 +668,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
              submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
          }else if(submissionStatus.equalsIgnoreCase("REQUESTSENT")){
              submissionStages = "and (reqSub.submissionStatus = 'REQUEST_SENT')";
+         }else if(submissionStatus.equalsIgnoreCase("BACKOUT")){
+             submissionStages = "and (reqSub.submissionStatus = 'BACKOUT')";
          }else if(submissionStatus.equalsIgnoreCase("OFFERED")){
              submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
                      + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
          }
-        
         
 //         Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 //            List<RequirementAssignTo> requirementAssignToList =  requirementAssignToService.getRequirementAssignToListByRequirementId(requirementId);

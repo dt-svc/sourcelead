@@ -61,7 +61,7 @@
         <div id="onboardingPopUp"></div>
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
-              <small>Employee details &amp; Postion details</small> </a> </li>
+              <small>Employee details &amp; Position details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
@@ -416,10 +416,10 @@
                                 
                                 <div class="col-md-12 mb10">
                                   <div class="mt">
-                                    <label class="checkbox-inline">
+                                    <label class="paddingRight">
                                       <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
@@ -436,10 +436,10 @@
                                   <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
-                                    <label class="radio-inline">
+                                    <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
                                       Candidate </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
                                   </div>
@@ -481,7 +481,7 @@
 											</div> 
                                       
                                         
-                                        <div class="col-md-6 paddingRight paddingLeft">
+                                        <div class="col-md-6 paddingLeft">
 										<label class="small">Days</label>
 											<div class="select-field">
 												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
@@ -525,7 +525,7 @@
                                 </div>
 	                           
 	                            <div class="clearfix"></div>    
-                               <div class="col-md-12 mb10">
+                               <div class="clearfix mb10">
                                   <label>Description</label>
                                   <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
                                 </div>

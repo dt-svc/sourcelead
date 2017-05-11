@@ -1677,19 +1677,22 @@ public class EMailJobScheduler {
 */
 	/**
 	 * @author prasanna
-	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
+	 * Fires on every 2 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
-	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	@Scheduled(cron = "0 0/2 * 1/1 * ?")
 	@Async
 	public void runContractDocumentStatus() throws Exception {
-/*				logger.info("##########  E-Mail Job Scheduler started..! ##########");
+				logger.info("##########  E-Mail Job Scheduler started..! ##########");
 				List<Contracts> conList =  contractsTemplateService.getListOfContractsEnvId();
 				
+				String UserName = "prasannavadla9@gmail.com";
+				String Password = "prasanna";    
+				String IntegratorKey = "d5a84b14-1b12-4735-a455-604a8f7c9754";
 				
-				String UserName = "rajasekhar@businessintelli.com";
+				/*String UserName = "rajasekhar@businessintelli.com";
 				String Password = "rajashekar";    
-				String IntegratorKey = "04e0361f-eebe-47ab-b3b2-d5d36c2d4dd4";
+				String IntegratorKey = "04e0361f-eebe-47ab-b3b2-d5d36c2d4dd4";*/
 
 				// for production environment update to "www.docusign.net/restapi"
 				String BaseUrl = "https://demo.docusign.net/restapi";
@@ -1707,10 +1710,6 @@ public class EMailJobScheduler {
 		        
 		        // assign api client to the Configuration object
 		        Configuration.setDefaultApiClient(apiClient);
-		        
-		        //===============================================================================
-		        // Step 1:  Login() API
-		        //===============================================================================
 		        try
 		        {
 		        	// login call available off the AuthenticationApi
@@ -1725,12 +1724,9 @@ public class EMailJobScheduler {
 		            // note that a given user may be a member of multiple accounts
 		            loginAccounts = loginInfo.getLoginAccounts();
 		            
-		            System.out.println("LoginInformation: " + loginAccounts);
+		         //   System.out.println("LoginInformation: " + loginAccounts);
 		        
 		        
-		        //===============================================================================
-		        // Step 2:  List Envelopes API 
-		        //===============================================================================
 		            String accountId = loginAccounts.get(0).getAccountId();
 		            // instantiate a new EnvelopesApi object
 		            EnvelopesApi envelopesApi = new EnvelopesApi();  
@@ -1738,23 +1734,30 @@ public class EMailJobScheduler {
 		            // the list status changes call requires at least a from_date
 		            EnvelopesApi.ListStatusChangesOptions options = envelopesApi.new ListStatusChangesOptions();
 		            
-		            // set from date to filter envelopes (ex: Dec 1, 2015)
-		            options.setFromDate("2017/04/01");
-		            
-		            // call the listStatusChanges() API
-		            EnvelopesInformation envelopes = envelopesApi.listStatusChanges(accountId, options);
-		            List<Envelope> env = envelopes.getEnvelopes();
-		            
-		            
 		            for (Contracts contracts : conList) {
+		            	if(contracts.getEndDate()!=null){
+		            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		            		Date date = new Date();
+		            		String currentTimeStr = TZ_DF_TS.format(date);
+		    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+		            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+		            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			        			if(null != childContarct.getParentContractId()){
+			        				childContarct.setId(childContarct.getId());
+			        				childContarct.setTemplateSubmissionStatus("EXPIRED");
+			        				contracts.setId(contracts.getId());
+			        				contracts.setTemplateSubmissionStatus("EXPIRED");
+		            		}
+		            	 }
+		            	}
 		            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
 		            	if(evp.getStatus().equalsIgnoreCase("completed")){
 		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 		        			if(null != childContarct.getParentContractId()){
 		        				childContarct.setId(childContarct.getId());
-		        				childContarct.setTemplateSubmissionStatus("Send For Verification");
+		        				childContarct.setTemplateSubmissionStatus("SEND_FOR_VERIFICATION");
 		        				contracts.setId(contracts.getId());
-		        				contracts.setTemplateSubmissionStatus("Waiting To Be Verify");
+		        				contracts.setTemplateSubmissionStatus("WAITING_TO_BE_VERIFY");
 		        				contracts.setContractStatus(evp.getStatus());
 		        			}
 		            	}
@@ -1762,9 +1765,9 @@ public class EMailJobScheduler {
 		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 		        			if(null != childContarct.getParentContractId()){
 		        				childContarct.setId(childContarct.getId());
-		        				childContarct.setTemplateSubmissionStatus("Rejected");
+		        				childContarct.setTemplateSubmissionStatus("REJECTED");
 		        				contracts.setId(contracts.getId());
-		        				contracts.setTemplateSubmissionStatus("Rejected");
+		        				contracts.setTemplateSubmissionStatus("REJECTED");
 		        				contracts.setContractStatus(evp.getStatus());
 		        			}
 		            	}
@@ -1772,9 +1775,9 @@ public class EMailJobScheduler {
 		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 		        			if(null != childContarct.getParentContractId()){
 		        				childContarct.setId(childContarct.getId());
-		        				childContarct.setTemplateSubmissionStatus("deleted");
+		        				childContarct.setTemplateSubmissionStatus("DELETED");
 		        				contracts.setId(contracts.getId());
-		        				contracts.setTemplateSubmissionStatus("deleted");
+		        				contracts.setTemplateSubmissionStatus("DELETED");
 		        				contracts.setContractStatus(evp.getStatus());
 		        			}
 		            	}
@@ -1786,6 +1789,6 @@ public class EMailJobScheduler {
 		        catch (com.docusign.esign.client.ApiException ex)
 		        {
 		            System.out.println("Exception: " + ex);
-		        }*/
+		        }
 	}
 }
