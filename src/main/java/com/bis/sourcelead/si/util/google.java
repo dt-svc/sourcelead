@@ -217,6 +217,8 @@ class google {
 							 if(linkobj.has("gd$etag")){
 							 	imgid = linkobj.get("gd$etag").toString().replace("\"", "");
 							 	imageurl = (imgurl + imgid + "?access_token=" + token).replace(".?", "?");
+							 	referContacts.setDocFile(imageurl.getBytes());
+							 	referContacts.setFileContentType("image/png");
 							 }
 						 }
 							 
