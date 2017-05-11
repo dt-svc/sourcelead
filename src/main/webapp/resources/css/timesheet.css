@@ -77,7 +77,7 @@ a { cursor:pointer;}
          
     }  
 .export_pop ul li, .approved_pop ul li, .export_pipline ul li, #exportPop ul li {
-    list-style-type:none; padding:3px 10px !important; margin:0px 0px; width:100%; position:relative;
+    list-style-type:none; padding:4px 10px !important; margin:0px 0px; width:100%; position:relative;
     font-size:13px; font-weight:500; color:#454545; display:inline-flex; cursor: pointer;
     }
 .export_pop ul li, .export_pipline ul li { cursor:pointer;}   
@@ -85,7 +85,7 @@ a { cursor:pointer;}
     margin:0px; width:15px; height:15px; background-color:#FFF;
     }
 .approved_pop ul li label {
-    margin:0px; position:relative; top:-3px; left:5px; font-weight:500; float:left;
+    margin:0px; position:relative; top:-1px; left:5px; font-weight:500; float:left;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -3617,7 +3617,7 @@ position: relative; padding: 0px 0px 5px 0px;
 	display:block; float: left; width: 70%; padding: 0px 0px 0px 15px;
 }
 .step3 strong p {
-	padding:0px 0px 6px; margin: 0px 0px; font-size: 14px; color: #333;
+	padding: 35px 0px 6px; margin: 0px 0px; font-size: 16px; color: #454545;
 }
 .step3 label {
 	font-size: 13px; color: #545454;
@@ -4145,7 +4145,7 @@ position: relative; padding: 0px 0px 5px 0px;
     position:relative;
     }
 .timesheetRepTab table div i {
-	font-style: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%;
+	font-style: normal; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; text-align: left;
 }
 .timesheetRepTab table div.lg {
 	width: 160px;
@@ -4233,7 +4233,7 @@ box-shadow:none;
 
 /* filter styles by srinivas:: May 3rd */
 .statusFiler-1, .statusFiler-2, .statusFiler-3 {
-box-shadow:0px 0px 2px rgba(0,0,0,0.2); position: absolute; background: #fff; min-width: 150px; right: 0; top:25px;
+box-shadow:0px 0px 2px rgba(0,0,0,0.2); position: absolute; background: #fff; min-width: 150px; right: 0; top:35px;
 border-radius:3px; border:1px solid #ccc; display: none; z-index: 99;
 }
 .statusFiler-1:after, .statusFiler-2:after, .statusFiler-3:after {
@@ -4291,3 +4291,31 @@ float: none !important; padding: 2px 5px; color: #333;
 .editAA {
     display: inline-block; padding: 0px 5px; color: #f36767; font-size: 15px;
 }
+.cliColor {
+    background-color: #7fb951 !important;
+}
+.rejColor {
+    background-color: #CB4042 !important;
+}
+.outColor {
+    background-color: #686868 !important;
+}
+.reqAct {
+    position: relative; border-bottom: 3px solid #368ee0; padding: 19px 0px 16px;
+}
+.reqAct:after {
+    top: 100%; left: 50%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute;
+	border-color: rgba(136, 183, 213, 0); border-top-color: #368ee0; border-width: 10px; margin-left: -10px; z-index: 100;
+}
+
+
+.evDaPa {
+	padding: 0px 0px 0px 15px !important;
+}
+.evCheck {
+	display:inline-block; padding: 0px 10% 0px 0px;
+}
+
+
+
+

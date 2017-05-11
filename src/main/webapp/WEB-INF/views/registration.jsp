@@ -135,7 +135,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="popemailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" readonly="readonly">
 		                  <b></b>
 		              </span>
 		            </div>
@@ -217,7 +217,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="poprecruiterEmailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail" readonly="readonly" onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
 		                  <b></b>
 		              </span>
 		            </div>
@@ -269,7 +269,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
+        <div class="company_logo pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>

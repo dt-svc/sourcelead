@@ -307,7 +307,7 @@ $(document).ready(function () {
          <label class="col-md-3">Employment Type</label>
          <div class="col-md-9">
              <select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-	                 <option value="" disabled selected>------ Select -----</option>
+	                 <option value="" disabled selected>--- Select Employment Type ---</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
 	                 <option  ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
@@ -520,7 +520,7 @@ $(document).ready(function () {
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
-              <div class="input-group attachfile">
+              <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
@@ -903,7 +903,7 @@ $(document).ready(function () {
                 <c:if test="${requirement.requirementSubmissionStatus != 'OPEN'  &&  requirement.requirementSubmissionStatus != 'ONHOLD'}">
                 	<input type="checkbox" name="cd" id="apprverReq"  onClick="approvalType('Default');removeApprovers();" checked >
                 </c:if>
-               		 <label>&nbsp;&nbsp;<strong>Approver required</strong></label>
+               		 <label>&nbsp;&nbsp;<strong>Approver Required</strong></label>
                 </div>
                 
                 <!-- Radio buttons for Sequential or Parallel function -->
@@ -1566,6 +1566,8 @@ function getCities(){
 			  '.chosen-select-width'     : {width:"95%"}
 			} */
 			
+			
+			
 		   $("#countryReq").chosen();
 	       $("#state").chosen();
 	       $("#city").chosen();
@@ -2117,11 +2119,11 @@ function getUserList(teamType){
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
-	                		result = result +'             <th>Name</th>';
-	                		result = result +'             <th>Email</th>';
-	                		result = result +'             <th>Role</th>';
-	                		result = result +'             <th>Active Jobs</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Name</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Email</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Role</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Active Jobs</th>';
 	                		result = result +'           </tr>';
 	                		result = result +'           </thead>';
 		                    result = result +"<tbody>"; 
@@ -2794,6 +2796,10 @@ for (var i = 0; i < splitNotice.length; i++) {
 }
 	$("#noticePeriod").val(splitNotice).trigger("chosen:updated");
 }
+$('.chosen-select').each(function() {
+	var $this = $(this);
+	$this.next().css({'width': '100%'});
+})
 </script>
 
 <script>

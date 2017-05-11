@@ -131,7 +131,7 @@
 	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
-			  <label class="col-md-4 control-label">Reason</label>
+			  <label class="col-md-4 control-label">Reason<span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
 				<select class="chosen-select" data-placeholder="Select Reason" name="surveyReason" data-validation="required" field-name="Survey Reason" >
                       <option  selected="selected" value=''>- Select Reason -</option>
