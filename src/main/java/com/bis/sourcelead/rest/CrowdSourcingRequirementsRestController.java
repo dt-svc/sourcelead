@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,8 +20,10 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.PathParam;
 
 import org.apache.commons.lang.StringUtils;
@@ -2103,6 +2110,34 @@ public class CrowdSourcingRequirementsRestController {
 			 	}
 			 	return "Success";
 		 }
+		 
+		 
+		 
+		 @RequestMapping(value = "/displayContactUserImage/{contactUserId}", method = RequestMethod.GET)
+			public void displayContactUserImage(@PathVariable Long contactUserId, HttpServletRequest request, HttpServletResponse response,
+					HttpSession session) {
+
+				ReferContacts referContacts = null;
+				try {
+					referContacts = referContactsService.getReferContactsById(contactUserId);
+
+					if (referContacts != null && referContacts.getDocFile() != null) {
+						InputStream in = new ByteArrayInputStream(referContacts.getDocFile());
+						BufferedImage bi = ImageIO.read(in);
+						OutputStream out = response.getOutputStream();
+						ImageIO.write(bi, "jpg", out);
+						out.close();
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
+			}
 		 
 		 
 		
