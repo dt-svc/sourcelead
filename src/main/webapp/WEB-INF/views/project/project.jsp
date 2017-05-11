@@ -991,7 +991,13 @@ function assignEmployeeCancel(){
                     mm='0'+mm
                 } 
                 var today = yyyy+'-'+mm+'-'+dd;
-				if(dummyDate < today){
+                var proStartDateTP = today.split("-");
+                var d1 = new Date(proStartDateTP[0], proStartDateTP[1] - 1, proStartDateTP[2]);
+                
+                var proEndDateTP = dummyDate.split("-");
+                var d2 = new Date(proEndDateTP[2], proEndDateTP[1] - 1, proEndDateTP[0]);
+                
+				if(d1 > d2){
 					$("#Satatus").empty();
 					$('#Satatus').append('<option >Completed</option>');
 				}else{
