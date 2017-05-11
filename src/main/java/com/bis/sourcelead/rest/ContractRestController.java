@@ -145,9 +145,16 @@ public class ContractRestController {
 		byte[] pdfBytes = null ;
 	
 		if(contract.getEnvelopId()!=null && contract.getTypeOfContract().equalsIgnoreCase("New")){
-			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+			if(null == contract.getContractsTemplate()){
+				Contracts con = contractsTemplateService.getContractById(contract.getParentContractId().getId());
+				pdfBytes = html2PdfUtil.getPdfBytes(con.getContractsTemplate(),contract,orgLocation,org);
+			}
+			else{
+				pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
+			}
+			
 		}
-		if(contract.getTypeOfContract().equalsIgnoreCase("New")&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
+		if(("New").equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 		if(contract.getEnvelopId()==null && contract.getTypeOfContract().equalsIgnoreCase("Existing")){
@@ -197,6 +204,13 @@ public class ContractRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
+			StringBuilder ownersb = new StringBuilder();
+			if(null != orgSpoc.getOwnerUser().getFirstName() && null != orgSpoc.getOwnerUser().getLastName()){
+				ownersb.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName());
+			}else{
+				ownersb.append(orgSpoc.getOwnerUser().getFirstName());
+			}
+			orgSpoc.setOwnerUserName(ownersb.toString());
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
@@ -238,10 +252,13 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,@RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType,
+			@RequestParam(value = "tabType", required = false) String tabType,
+			@RequestParam(value = "contractsType", required = false) String contractsType,
+			@RequestParam(value = "contractStatus", required = false) String contractStatus, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType);
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus);
 		return commonUtil.toJSON(contracts);
 	} 
 	

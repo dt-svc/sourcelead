@@ -939,81 +939,35 @@ function calculateDiscount(){
 		}
 		
 	}
-	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	/* var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	if(maxRowNum > 1){
 	    for(var i=1;i<=maxRowNum;i++){
 	         document.getElementById("divTaxRow"+i+"").style.display="none";
 	    }
 	    $("#grandTotal").val(subTotal);
-	}
+	} */
+	
+	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	   var afterDiscountTotal = $("#afterDiscountTotal").val();
+	   
+		    for(var i=0; i< maxRowNum; i++){
+		         var taxType = $("#"+i+"taxdiscountType").val();
+		         var taxValue = $("#"+i+"taxdiscountvalue").val();
+		         var taxTotal = $("#"+i+"taxTotal").val();
+		            
+	              if(taxValue == '' && taxTotal==''){
+	            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
+	              }else{
+	            	  var tot = $("#grandTotal").val();
+	  	            var first=parseFloat(tot);
+	  	             var second=parseFloat(taxTotal); 
+	  	             var total  = (first+second);
+	  	           $("#grandTotal").val(total.toFixed(2));
+	              }
+		            
+		    }
 }
 </script>
-
-<!-- 
-<script>
-  function singleRowTotalhour(){
-	     var rate = $("#0rate").val();
-	     var totalHours = $("#0totalHours").val(); 
-	     var split = totalHours.split(':');
-	     var hours = split[0];
- 	     var minute = split[1];
- 	     
- 	     var hours1 = hours.charAt(0);
- 		 var hours2 = hours.charAt(1);
- 		 var min1 = minute.charAt(0);
- 		 var min2 = minute.charAt(1);
- 		
- 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("0"+hours1+":00");
- 			calAmount("0"+hours1,"00");
- 		 }
- 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("0"+hours2+":00");
- 			calAmount("0"+hours2,"00");
- 		 }
- 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("00:"+min1+"0");
- 			calAmount("00",min1+"0");
- 		 }
- 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
- 			$("#0totalHours").val("00:0"+min2);
- 			calAmount("00","0"+min2);
- 		 }
- 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val(hours+":00");
- 			calAmount(hours,"00");
- 		 }
- 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val(hours+":"+"0"+min1);
- 			calAmount(hours+":","0"+min1);
- 		 }
- 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
- 			$("#0totalHours").val(hours+":"+"0"+min2);
- 			calAmount(hours+":","0"+min2);
- 		 }
- 		 else if(!isNaN(hours)&& !isNaN(minute)){
- 			calAmount(hours,minute);
- 		 }
- 	     
-		
-  }
-  function calAmount(hours,minute){
-	  var rate = $("#0rate").val();
-	     var parshours = parseInt(hours);
-	     var hourminits = parshours * 60;
-		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit =   rate / 60;
-	     var singleRowTotlalAmount = (perMinit * finalmin).toFixed(2);
-	     $('#0amount').val(singleRowTotlalAmount);
-	     $('#inoviceTotal').val(singleRowTotlalAmount);
-	     $("#hiddenTotal").val(singleRowTotlalAmount);
-	     $("#grandTotal").val(singleRowTotlalAmount);
-	     $("#afterDiscountTotal").val(singleRowTotlalAmount); 
-  }
-  </script>
-   -->
-
-
   
   <!-- ********************************************* Add Rows Invoice Table functionality End  ************************************************************ -->
   

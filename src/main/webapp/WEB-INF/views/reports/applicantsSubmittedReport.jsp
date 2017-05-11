@@ -208,15 +208,15 @@ function requirementReportPagination(){
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
-	  <div class="reportBtn select-field">
+	  <div class="reportBtn dropdown-select">
 		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
-		 <option value="">select</option>
+		 <option value="">-- select --</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week</option>
+		  <option value="twoweeks">2 Weeks</option>
+		  <option value="month">1 Month</option>
+		  <option value="twomonths">2 Months</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
@@ -240,7 +240,7 @@ function requirementReportPagination(){
         <div class="reportA">
           <label>Clients</label>
           <div class="reportAChoo">
-           <select multiple data-placeholder="select client" class="chosen-select" multiple="true"  name="client" id="client" >
+           <select multiple  class="chosen-select" multiple="true"  name="client" id="client" data-placeholder="Select Client">
                 <c:forEach var="report" items="${add_clientList}">
 	                             <c:if test="${report.locationId.id == loginOrgLocId}">  
 	                                <option id="clientName${report.id}" name="clientNameById" value ="${report.id}"">${report.responderLocationId.org.orgName}</option>

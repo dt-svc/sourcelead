@@ -84,8 +84,8 @@ public class Contracts {
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
 	
-	@Column(name = "STATE_OF_JURISDICTION")
-	private String stateOfJurisdiction;
+	/*@Column(name = "STATE_OF_JURISDICTION")
+	private String stateOfJurisdiction;*/
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "APPROVER_USER_ID") 
@@ -198,6 +198,9 @@ public class Contracts {
 
 	@Transient
 	private String tempdocId;
+	
+	@Transient
+	private String approverUserName;
 	
 	public String getFileName() {
 		return fileName;
@@ -449,13 +452,13 @@ public class Contracts {
 		this.orgRelations = orgRelations;
 	}
 
-	public String getStateOfJurisdiction() {
+	/*public String getStateOfJurisdiction() {
 		return stateOfJurisdiction;
 	}
 
 	public void setStateOfJurisdiction(String stateOfJurisdiction) {
 		this.stateOfJurisdiction = stateOfJurisdiction;
-	}
+	}*/
 
 	public User getApproverUser() {
 		return approverUser;
@@ -634,7 +637,13 @@ public class Contracts {
 	public void setStateJurisdiction(String stateJurisdiction) {
 		this.stateJurisdiction = stateJurisdiction;
 	}
-	
-	
+
+	public String getApproverUserName() {
+		return approverUserName;
+	}
+
+	public void setApproverUserName(String approverUserName) {
+		this.approverUserName = approverUserName;
+	}
 	
 }

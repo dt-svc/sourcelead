@@ -85,5 +85,9 @@ public interface CandidateDao {
 	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId,Long spocId,List<Long> associatesIds)throws Exception ;
 	
 	List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId,Long spocId)throws Exception ;
+	
+    public List<Candidate> getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(Long vendorOrgRelationId,List<Long> associatesIds)throws Exception ;
+	
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long vendorOrgRelationId)throws Exception ;
 
 }

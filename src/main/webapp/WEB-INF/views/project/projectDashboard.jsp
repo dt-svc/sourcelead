@@ -101,7 +101,7 @@ overflow-x: auto;
 		</div>
 		</c:if> --%>
 		<%-- <c:if test="${!empty projectsList}"> --%>
-		<div class="project_wrap">
+		<div class="project_wrap minHeight_225">
 		
 		<%-- <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
@@ -251,7 +251,7 @@ overflow-x: auto;
       </div> --%>
 		
 		
-        <div class="timesheet_head">
+        <div class="timesheet_head topfilters">
         	<ul>
 				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">

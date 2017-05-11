@@ -7,6 +7,23 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style type="text/css">
+.invoiceId_Anchor a {
+color:#337ab7 !important;
+}
+.successBtn {
+background-color: #1ab394;
+border-color: #1ab394;
+cursor: pointer;
+    border: 1px solid;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+</style>
+
 <script type="text/javascript">
 $(document).ready(function(){
 	getInvoiceList();
@@ -84,18 +101,6 @@ $(document).ready(function(){
                               <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceList();">
                               <label for="onboard2">Sent</label>
                             </li>
-                            <!-- <li>
-                              <input type="checkbox" id="onboard3" name="invoiceStatus">
-                              <label for="onboard3">Accepted</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="onboard4" name="invoiceStatus">
-                              <label for="onboard4">Rejected</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="onboard5" name="invoiceStatus">
-                              <label for="onboard5">On-Hold</label>
-                            </li> -->
                           </ul>
                         </div>
                       </li>
@@ -623,7 +628,7 @@ function getInvoiceList(){
         		
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot_80">'+report.invoiceId+'</div>   ';
+				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'"/>">'+report.invoiceId+'</a></div>   ';
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
@@ -654,7 +659,7 @@ function getInvoiceList(){
 				result = result +'         <td> ';
 				 
 				if(report.paymentStatus == "Paid"){
-					result = result +'           <span class="text-primary receiveBtn primary clearfix" >Receive</span> </td>          ';	
+					result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
 				}else{
 					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 				}

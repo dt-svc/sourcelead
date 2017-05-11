@@ -14,3 +14,6 @@ REFERENCES `sourcelead`.`ORG_RELATIONS` (`ID`),
 ADD CONSTRAINT `INVOICE_ibfk_2`
 FOREIGN KEY (`CONTACT_USER_ID`)
 REFERENCES `sourcelead`.`USER` (`ID`);
+
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','INVOICE_UUID','VARCHAR(20) NULL AFTER `INVOICE_TYPE`');

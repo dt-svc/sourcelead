@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.itextpdf.text.Document;
@@ -33,6 +34,9 @@ public class Html2PdfUtil {
 	
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
 	
 	public void convertHtml2PdfUsingHtmlWorker(){
 		try {
@@ -112,8 +116,15 @@ public class Html2PdfUtil {
 	                    matchPattern.appendReplacement(sb, org.getOrgName());
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
-		            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
-	                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            	if(null !=contracts.getRequirementSubmission().getRequirement().getId()){
+				            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
+			                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            	}
+		            	else{
+		            		Contracts con = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+		            		Requirement req = requirementService.getRequirementByRequirementId(con.getRequirementSubmission().getRequirement().getId());
+		                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            	}
 	                }
 	                // need to know about offer rate
 		           /* else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
@@ -138,8 +149,8 @@ public class Html2PdfUtil {
 		            	}
 		            }  
 		            else if(matchPattern.group().equalsIgnoreCase("[State Of Jurisdiction]")){
-		            	if(null != contracts.getStateOfJurisdiction()){
-		            		matchPattern.appendReplacement(sb, contracts.getStateOfJurisdiction());
+		            	if(null != contracts.getStateJurisdiction()){
+		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
 		            }  
 	            }

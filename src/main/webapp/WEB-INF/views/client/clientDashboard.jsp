@@ -43,8 +43,8 @@ overflow-x: auto;
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
 				    <select id="listOfVendors" onchange="listChange(this); flushCheckBoxVal();">
-                  		 <option value="listbyVendor">List by client</option>
-                        <option value="listbyContact" selected="selected">List by contact</option> 
+                  		 <option value="listbyVendor" selected="selected">List by client</option>
+                        <option value="listbyContact" >List by contact</option> 
                     </select>
 				</span>
 				</h2>
@@ -260,8 +260,9 @@ overflow-x: auto;
         </div>
         </div>
 		<!-- Advanced Search Ends -->
-		<div class="clients_wrap vendor_wrap_shadownone">
-				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
+		<div class="clients_wrap vendor_wrap_shadownone minHeight_225">
+<!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
+ -->				<div class="timesheet_head datatbl-filters topfilters">
 					<ul>
 		                  <%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
@@ -401,15 +402,17 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 	}else{
 		if(clientKeyword=="clientSearch"){
 			clientSideBar(responderLocationId,orgRelationId,orgName);
-			getVendorContactListsELK();
+			//getVendorContactListsELK();
+			getClientDetailsELK();
 		}
 		
 		/* getVendorContactLists(); */
 		else{
-			getVendorContactListsELK();
+			//getVendorContactListsELK();
+			getClientDetailsELK();
 		}
-		 listChange("listbyContact");
-		document.getElementById('listOfVendors').value = 'listbyContact';
+		 listChange("listbyVendor");
+		document.getElementById('listOfVendors').value = 'listbyVendor';
 	}
 	
 }

@@ -18,7 +18,7 @@ public interface ContractsTemplateService {
 
 	String generatePDFContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception;
 
-	ContractsTemplate getContractTemplateById(Long contractTemplateId);
+	ContractsTemplate getContractTemplateById(Long contractTemplateId) throws Exception;
 
 	List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation)throws Exception;
 
@@ -26,7 +26,7 @@ public interface ContractsTemplateService {
 
 	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user, Org org)throws Exception;
 
-	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType)throws Exception;
+	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus)throws Exception;
 
 	Contracts getContractById(Long contractId);
 

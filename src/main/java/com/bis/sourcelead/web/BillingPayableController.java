@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,20 +79,7 @@ public class BillingPayableController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-
-		if(null != vendorList){
-			for (OrgRelations orgRelations : vendorList) {
-				String orgName = "";
-				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
-				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
-				}
-				orgRelations.setOrgName(orgName);
-			}
-			 model.addObject("vendorList", vendorList);
-		}
+		
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
@@ -107,6 +95,57 @@ public class BillingPayableController {
 		request.getSession().setAttribute("sessionData",sessionData);
 	    return model;
 	}
+	
+	
+	@RequestMapping(value = "/getInvoiceByUUID")
+	public ModelAndView getInvoiceByUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID ,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		model.setViewName("billing/createPayables");
+		model.addObject("invoiceUUID", invoiceUUID);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Payables);
+		request.getSession().setAttribute("sessionData",sessionData);
+	    return model;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getPayableVendorsList", method = RequestMethod.GET)
+	public @ResponseBody String getPayableVendorsList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+		List<OrgRelations> vendorsList = new ArrayList<OrgRelations>();
+
+		if(null != vendorList){
+			for (OrgRelations orgRelations : vendorList) {
+				String orgName = "";
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				}
+				orgRelations.setOrgName(orgName);
+				vendorsList.add(orgRelations);
+			}
+		}
+		
+		return commonUtil.toJSON(vendorsList);
+	} 
+	
 	
 	
 	@RequestMapping(value = "/getPayableVendorContactsByOrgRelationId", method = RequestMethod.GET)

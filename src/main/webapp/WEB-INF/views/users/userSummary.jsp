@@ -236,7 +236,7 @@ $(document).ready(function(){
 				     
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
-				     result = result + ' <div class="user_summary_edit_cta centerDiv">';
+				     result = result + ' <div class="user_summary_edit_cta">';
 				     result = result + ' <form id="editRole_form"  name="editRole_form" method="post">';
 				     result = result + ' <label>Change Role</label>';
 						 result = result + '<select class="chosen-select" id="userChangeRole"  onchange="getChangeRole('+userId+','+json.roles.id+');" data-validation="required" field-name="Role" name="userChangeRole"  >';
@@ -248,7 +248,7 @@ $(document).ready(function(){
 						  result = result + '<div class="clearfix mb10 mt">';
 						  result = result + '</div>';
 					      result = result + '<div class="clearfix"></div>';
-						  result = result + '<div class="user_summary_edit_cta centerDiv">';
+						  result = result + '<div class="user_summary_edit_cta">';
 						  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
 						  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
 						  result = result + '</div>';
@@ -670,7 +670,7 @@ function getChangeRole(userId,userRoleId){
 						result = result + '</div>';	
 					  }	
 				
-				 result = result + '<div class="col-md-12" id="reasonDiv">';
+				 result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
 				  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
 				  	result = result + '</div><br/>';
 	        	
