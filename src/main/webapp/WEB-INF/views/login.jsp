@@ -18,7 +18,9 @@
 </head>
 <body>
 <div class="regis_bg">
-	<div class="regis_logo"><img src="resources/images/logo-regis.png" alt=""/></div>
+	<div class="regis_logo">
+	  <img src="resources/images/SourceLead-logo-white.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
+	</div>
     <div class="regis_wrap">
     	<div class="signin_wrap" id="signin">
         	<h1>Sign In</h1>
@@ -47,7 +49,6 @@
 			         <span><font color="green">${msg}</font></span>
 				</div>
            </c:if> 
-    	<br/>
         	 <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
 	            <span>
 	            	<label>User name</label>

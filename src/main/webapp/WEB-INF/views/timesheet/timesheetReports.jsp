@@ -34,6 +34,35 @@ $(document).ready(function() {
 	timesheetReportsDiv();
 });
 </script>  
+<script>  
+	function getMonths(yr){ 
+		var yrStr = $("#"+yr.value+"MonthList").val().replace("[","").replace("]", "");
+		var frequencyYear = $("#frequencyYear").val();
+		var arr =  yrStr.split(",");
+		 var internalOutput = "";
+			if(arr != null && arr != 'undefined' && arr != ''){
+				for(var i = 0; i < arr.length; i++) {
+					var temp1 = arr[i].replace(' ','');
+					var temp2 = $("#currentMonth").val().replace(' ','');
+					var currentYear = $("#currentYear").val().replace(' ','');
+					if(temp1 == temp2 && currentYear == frequencyYear){
+						internalOutput = internalOutput+"<option value='"+arr[i]+"' selected>"+arr[i]+"</option>";
+					}
+					else{
+						internalOutput = internalOutput+"<option value='"+arr[i]+"'>"+arr[i]+"</option>";
+					}
+				   
+				}
+			}
+			
+			
+		$("#frequencyMonth").empty();
+		$("#frequencyMonth").append(internalOutput);
+ 		$("#frequencyMonth").trigger("chosen:updated");
+		
+	}
+</script> 
+
 
 <script>  
 	function timesheetReportsDiv(){ 
@@ -45,7 +74,6 @@ $(document).ready(function() {
   	           var frequencyMonth = $('#frequencyMonth').val();
   	           if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
   	        	 frequencyMonth = '';
-	           
                $("#timesheetReportsDiv").empty();
                $("#timesheetReportsDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
         	   $.ajax({
@@ -58,6 +86,10 @@ $(document).ready(function() {
         		    	  	$("#timesheetReportsDiv").append(result);
         		    	  	prepareChosenScripts();
         		    	  	pagination();
+        		    	  	var checkEmptyList = document.getElementById("hideExport").value; 
+        		    		if(checkEmptyList == 'EmptyList'){
+        		    			document.getElementById("mypop").children[0].style.display = "none";
+        		    		}
         		      }
         	    }); 
 	}
@@ -135,6 +167,7 @@ function exportTimeSheetReportsToPdf(type){
 	
 }
 </script>
+
 
 <body>
       <%-- <section class="content-wraper">

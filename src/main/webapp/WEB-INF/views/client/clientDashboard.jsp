@@ -43,8 +43,8 @@ overflow-x: auto;
 			<div class="pull-left">
 				<h2>Clients<span class="select-fild">
 				    <select id="listOfVendors" onchange="listChange(this); flushCheckBoxVal();">
-                  		 <option value="listbyVendor">List by client</option>
-                        <option value="listbyContact" selected="selected">List by contact</option> 
+                  		 <option value="listbyVendor" selected="selected">List by client</option>
+                        <option value="listbyContact" >List by contact</option> 
                     </select>
 				</span>
 				</h2>
@@ -228,9 +228,9 @@ overflow-x: auto;
 										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
 											<option value="Active">Active</option>
 											<option value="In-Active">In-Active</option>
-											<option value="New">New</option>
+											<!-- <option value="New">New</option>
 											<option value="Negotiation">Negotiation</option>
-											<option value="Contract">Contract</option>
+											<option value="Contract">Contract</option> -->
 									</select>
 						 </div>  
               	</div>
@@ -260,8 +260,9 @@ overflow-x: auto;
         </div>
         </div>
 		<!-- Advanced Search Ends -->
-		<div class="clients_wrap vendor_wrap_shadownone">
-				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
+		<div class="clients_wrap vendor_wrap_shadownone minHeight_225">
+<!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
+ -->				<div class="timesheet_head datatbl-filters topfilters">
 					<ul>
 		                  <%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play" id="clientsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
@@ -273,18 +274,18 @@ overflow-x: auto;
 		                    </div>                	
 		                </li> --%>
 	               
-		                <li  id="filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
+		                <li  id="filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
 								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
-								<li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
+								<!-- <li><input id="c7" type="checkbox"  name="clientStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
 								<li><input id="c8" type="checkbox"  name="clientStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li>
+	               				<li><input id="c9" type="checkbox"  name="clientStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li> -->
 	                        </ul>
 	                      </div>                	
 	                  </li>
-	                  <li  id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="clientInvitation"></i>|
+	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="clientInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
@@ -295,7 +296,7 @@ overflow-x: auto;
 	                      </div>                	
 	                  </li>
 	                  
-		                  <li id="contactLevel" style="display:none">
+		                  <li id="contactLevel" >
 		                  <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
@@ -319,7 +320,7 @@ overflow-x: auto;
 						 </sec:authorize>
 						
 						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
-						   <li id="clientImports" style="display:none" title="Export">
+						   <li id="clientImports"  title="Export">
 		                      <a  id="client-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                   <ul class="widScr">
@@ -331,7 +332,7 @@ overflow-x: auto;
 		            </sec:authorize>
 		            
 		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
-		            <li id="ContactImports" title="Export">
+		            <li id="ContactImports" title="Export" style="display:none">
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul class="widScr">
@@ -401,15 +402,17 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 	}else{
 		if(clientKeyword=="clientSearch"){
 			clientSideBar(responderLocationId,orgRelationId,orgName);
-			getVendorContactListsELK();
+			//getVendorContactListsELK();
+			getClientDetailsELK();
 		}
 		
 		/* getVendorContactLists(); */
 		else{
-			getVendorContactListsELK();
+			//getVendorContactListsELK();
+			getClientDetailsELK();
 		}
-		 listChange("listbyContact");
-		document.getElementById('listOfVendors').value = 'listbyContact';
+		 listChange("listbyVendor");
+		document.getElementById('listOfVendors').value = 'listbyVendor';
 	}
 	
 }
@@ -983,7 +986,7 @@ function preparedClientContacts(data){
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name </th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
 		   	result = result +'  <th>Client</th>';
 		   	result = result +' <th>Status</th>';
@@ -1022,9 +1025,9 @@ function preparedClientContacts(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 					result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1068,7 +1071,7 @@ function preparedClientContacts(data){
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-		   		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+		   		result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')"; title="Remove client contact"></i></div></td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
@@ -1097,7 +1100,7 @@ function preparedClientContactListFromElk(data){
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
 		   	result = result +'  <th>Client</th>';
 		   	result = result +' <th>Status</th>';
@@ -1150,9 +1153,9 @@ function preparedClientContactListFromElk(data){
 	    			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 	    			result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 					result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-					result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+					/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 					result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+					result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 					result = result + ' </select>';
 					
 					result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1195,7 +1198,7 @@ function preparedClientContactListFromElk(data){
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')";></i></div></td>';
+		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove client contact"></i></div></td>';
 		   	 '</sec:authorize>';
 		   	 
 		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';

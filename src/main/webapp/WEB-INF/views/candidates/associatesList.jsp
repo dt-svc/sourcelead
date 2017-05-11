@@ -1021,7 +1021,7 @@ function cancel(candidateId){
 		
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-X:auto;">
+    <div class="vendor_wrap minHeight_225" style="overflow-X:auto;">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -1290,7 +1290,8 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
       </div>
-      <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
+      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
+      <div class="timesheet_head topfilters topfilters2 pull-right">
         <ul>
            <li id="filter2ApprovePop" style="display: none;"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -2225,6 +2226,9 @@ function minMaxExperience(){
 	     $("#excludeKeyWord").empty();
 	     $("#designation").empty();
 	      $("#minRate").val(''); 
+	      $("#country").val(''); 
+	      $("#state").val('');
+	      $("#city").val('');
 	      
 	     $("#currency").val('');
 	     $('.selectpicker').selectpicker('refresh');
@@ -2256,6 +2260,9 @@ function minMaxExperience(){
 	     $("#applicantType").val('');
 	     $("#candidateSkills").val('');
 	     $("#primarySkill").val('');
+	     $("#country").val(''); 
+	     $("#state").val(''); 
+	     $("#city").val(''); 
 	    
 	}
 </script>

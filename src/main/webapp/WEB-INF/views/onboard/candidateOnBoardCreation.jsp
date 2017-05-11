@@ -61,7 +61,7 @@
         <div id="onboardingPopUp"></div>
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOnboardingCandidate();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
-              <small>Employee details &amp; Postion details</small> </a> </li>
+              <small>Employee details &amp; Position details</small> </a> </li>
             <li onclick="getTemplatePolicyDocumentsDetails();getTemplateSupportingDocumentsDetails();getTemplateContractsDocumentsDetails();getTemplateFormsDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
             <li onclick="getOnboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
@@ -78,14 +78,14 @@
                <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
                 <p><strong>Employee Details</strong></p>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="getCandidateDetails();getOfferDetails();" field-name="Candidate">
                     </select>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">First Name <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">
                   </div>
@@ -97,7 +97,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">
                   </div>
@@ -110,7 +110,7 @@
                 </div>
                   
                  <div class="form-group">
-                  <label class="col-md-3 control-label">Country <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Country <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <select class="chosen-select" data-placeholder="Select Country" id="country" onchange="getStates();" name="country">
                       <option disabled>Select Country</option>
@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile Number <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
                   </div>
@@ -151,7 +151,7 @@
 
                   
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Personal Email <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Personal Email <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="personalEmail" name="personalEmail" readonly="readonly">
                   </div>
@@ -175,7 +175,7 @@
                 </div> -->
 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Role<span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Role<span class="text-danger">*</span></label>
                   <div class="col-md-6">
                       <select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">
                     </select>
@@ -183,7 +183,7 @@
                 </div>
 
                   <div class="form-group">
-                  <label class="col-md-3 control-label">Date Of Join<span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">
                   </div>
@@ -195,7 +195,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Rate / Salary <span class="text-danger paddingLeft">*</span></label>
+                  <label class="col-md-3 control-label">Rate / Salary <span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm" id="salaryRate" name="salaryRate">
                   </div>
@@ -416,10 +416,10 @@
                                 
                                 <div class="col-md-12 mb10">
                                   <div class="mt">
-                                    <label class="checkbox-inline">
+                                    <label class="paddingRight">
                                       <input type="checkbox" id="taskEmail" name="taskEmail" value="N" onclick="validateTaskEmail();">
                                       Email </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="checkbox" id="taskNotification" name="taskNotification" value="N" onclick="validateTaskNotification();">
                                       Notification </label>
                                   </div>
@@ -436,10 +436,10 @@
                                   <label>Assign To <span class="text-danger">*</span></label>
                                   
                                   <div class="">
-                                    <label class="radio-inline">
+                                    <label class="paddingRight">
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToCandidate');">
                                       Candidate </label>
-                                    <label class="checkbox-inline">
+                                    <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
                                       User </label>
                                   </div>
@@ -481,7 +481,7 @@
 											</div> 
                                       
                                         
-                                        <div class="col-md-6 paddingRight paddingLeft">
+                                        <div class="col-md-6 paddingLeft">
 										<label class="small">Days</label>
 											<div class="select-field">
 												<select class="form-control input-sm" id="taskDays" name="taskDays" onchange="validateDueAfter();">
@@ -525,7 +525,7 @@
                                 </div>
 	                           
 	                            <div class="clearfix"></div>    
-                               <div class="col-md-12 mb10">
+                               <div class="clearfix mb10">
                                   <label>Description</label>
                                   <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
                                 </div>
@@ -1436,6 +1436,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    	
 		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
 		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
+		    	}else{
+		    		getReportingManager(json['onBoardRoleId']);
 		    	}
 		    	
 		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){

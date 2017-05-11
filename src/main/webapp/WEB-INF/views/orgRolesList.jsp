@@ -12,7 +12,14 @@ window.onload = function () {
 </script>
 
 
-
+<style type="text/css">
+.dataTables_wrapper .dataTables_filter input {
+background-color: #f5f5f5;
+}
+.role_header {
+padding-right: 254px; padding-top: 10px;
+}
+</style>
 <section class="content-wraper">
 <div id="listLoading"></div>
         <section class="content-header clearfix">
@@ -27,9 +34,11 @@ window.onload = function () {
 			
 			<div class="project_tabs_inn_head">
 			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+			  	 <div class="role_header">
 			  	 <a href="<c:url value='/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
 			     <a href="<c:url value='/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
+                 </div>
               </sec:authorize>
               
 				<!-- Popup Div -->
@@ -203,7 +212,21 @@ var validationSettings = {
 
         
 </script> 
- 
+ <script>
+function rolepagination(){ 
+	$('#rolePagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script> 
  
 
 <script>
@@ -218,6 +241,7 @@ function getRolesList(){
    		    success: function(data) {
    		    	var json = JSON.parse(data);
    	        	var result = "";
+   	         	result = result +"<table id='rolePagination' class='display' cellspacing='0' width='100%' >"; 
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Role Name</th>';
@@ -233,7 +257,7 @@ function getRolesList(){
    		    		
    		    		result = result +'<tr>';
    		    		
-   		    		result = result +'<td align="center"><div class="tbldata-dotdot-me" title="'+report.displayName+'">'+report.displayName+'</div></td>';
+   		    		result = result +'<td align="center"><div class="tbldata-dotdot-big" title="'+report.displayName+'">'+report.displayName+'</div></td>';
    		    		result = result +'<td align="center"><div class="tbldata-dotdot-sm" title="'+report.hierarchyName+'">'+report.hierarchyName+'</div></td>';
    		    		result = result +'<td align="right"><div class="tbldata-dotdot-vsm" title="'+report.actionsCount+'">'+report.actionsCount+'</div></td>';
    		    		result = result +'<td>';
@@ -251,6 +275,7 @@ function getRolesList(){
                 $("#rolesList").empty();  
                 $("#listLoading").removeAttr("style");
    	    	    $("#rolesList").append(result);
+   	    	 	rolepagination();
    		    }
 	 }); 
 	

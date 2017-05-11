@@ -194,8 +194,9 @@ document.onkeydown=function(e){
   <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
   </c:if>
   <i>
- <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
-    <h1>Source Lead</h1>
+ 	<!-- <img src="resources/images/SourceLead-logo-white.png" alt="Source Lead" class="img-responsive mt5"> -->
+ 	<img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5">
+  </i>
     </a> </span>
     <nav class="header-nav navbar">
     <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
@@ -210,10 +211,10 @@ document.onkeydown=function(e){
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option>
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirements</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
-	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option>
+	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
 	           <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
@@ -225,7 +226,7 @@ document.onkeydown=function(e){
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
 			</c:forEach>
-	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associate</option>
+	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 		</select>
 			
 			

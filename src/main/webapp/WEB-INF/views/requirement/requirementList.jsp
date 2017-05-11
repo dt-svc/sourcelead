@@ -127,7 +127,7 @@ max-width:220px;
 display: inline;
 }
 .timesheet_out {
-overflow-x: auto; background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+overflow-x: auto;  background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.3); top:-45px;
 }
 .vendor_wrap {
 box-shadow:none;
@@ -166,7 +166,11 @@ if(universalRequirementSearchList=="universalRequirementList")	 {
      }); 
   }
 	 else{
-		requirementList();
+		  	$("#c6").prop("checked", true);
+		  	$("#c8").prop("checked", true);
+		 	$("#c9").prop("checked", true);
+		 	requirementList();
+		
 	} 
   }
   </script>
@@ -367,7 +371,7 @@ function prepareRequirementData(data){
 				'</sec:authorize>';
 			}
 			else if(opt.requirementSubmissionStatus == "CANCEL"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
 
 			}else if(opt.requirementSubmissionStatus == "OPEN"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -400,11 +404,11 @@ function prepareRequirementData(data){
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
 			}else if(opt.requirementSubmissionStatus == "APPROVED"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			else if(opt.requirementSubmissionStatus == "REJECTED"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			
@@ -463,11 +467,11 @@ function prepareRequirementData(data){
 				}
 				 
 			}else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
 				result = result +"<option value='OPEN'>OPEN</option>";
 				
 			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 
@@ -1299,10 +1303,9 @@ function requirementPipeline(requirementId){
 		</div>  
   </section>
   
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-      <div class="timesheet_head timesheetHead_Custom">
-       <div class="pull-left cand-advsrch advsrch_chosen">
+  
+  <div class="clearfix">
+  <div class="pull-left cand-advsrch advsrch_chosen">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup reqadvsrch candAdvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
@@ -1575,6 +1578,12 @@ function requirementPipeline(requirementId){
           </form:form>
           
         </div>
+  </div>
+  
+  <div class="timesheet_out">
+    <div class="vendor_wrap">
+      <div class="timesheet_head timesheetHead_Custom topfilters">
+       
         <ul>
         <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_EDIT_REQUIREMENT')">
         
@@ -1604,7 +1613,7 @@ function requirementPipeline(requirementId){
 							<li><input id="c8" type="checkbox"  name="requirementStatus"  type="checkbox" value ="submitted"  onclick="requirementList();"><label for="c8">Submitted <span id="submittedRequirementCount"></span></label></li>
                				<li><input id="c9" type="checkbox"  name="requirementStatus"  type="checkbox" value ="open"  onclick="requirementList();"><label for="c9">Open <span id="openRequirementCount"></span></label></li>
                				<li><input id="c10" type="checkbox"  name="requirementStatus"  type="checkbox" value ="onhold"  onclick="requirementList();"><label for="10">On Hold <span id="onHoldRequirementCount"></span></label></li>
-               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c11">cancel <span id="cancelRequirementCount"></span></label></li>
+               				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CANCEL"  onclick="requirementList();"><label for="c11">Cancel <span id="cancelRequirementCount"></span></label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="FILLEDCLOSED"  onclick="requirementList();"><label for="c11">Filled Closed<span id="filledClosedRequirementCount"></span></label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="UNFILLEDCLOSED"  onclick="requirementList();"><label for="c11">UnFilled Closed<span id="unFilledClosedRequirementCount"></span></label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="REJECTED"  onclick="requirementList();"><label for="c11">Rejected<span id="rejectedRequirementCount"></span></label></li>
@@ -1861,16 +1870,15 @@ function changeStatus(requirementId){
 		 
 
 	var status = document.getElementById('changeStatusId' + requirementId).value;
-	
 	/* $("#changeStatusId option[value=status]").remove(); */
 	 var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
          type : "POST",
           url: sourceleadUrl+"/saveChangedStatus?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status,        
           success :function(data) {
-        		  
         		  $("#changeStatusId" +requirementId).val('');
             	  location.replace(sourceleadUrl+"/requirementList");
+            	  
         	  
           }
 }); 

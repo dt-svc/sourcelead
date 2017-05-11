@@ -20,7 +20,7 @@ body{
 	background:#fff;
 }
 .main-header span.logo:hover {
-	background:#0cc2aa;
+	background:#ededed;
 }
 .main-header .navbar .fa-bars:hover{
 	background:rgba(0, 0, 0, 0.2);
@@ -279,10 +279,6 @@ btn-default {
 }
 .search-area .btn {
     border-radius: 20px 0 0 20px;
-}
-.main-header span.logo:hover
-{
-	background: rgba(0, 0, 0, 0.5);
 }
 .main-header span.logo:hover h1
 {
