@@ -45,19 +45,55 @@ $(document).ready(function(){
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
-  <span>Add<i class="fa fa-caret-down"></i></span>
-  <ul>  
+  <span onclick="addContracts();">Add<i class="fa fa-caret-down"></i></span>
+<%--   <ul>  
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
 	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li>
 	  </sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
 	  <li><a href="<c:url value="/addExistingContract" />"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
   	  </sec:authorize>
-  </ul>
+  </ul> --%>
 </div>
 <div class="clearfix"></div>
 </ul>
 </section>
+
+<!-- Add candidate Popup -->
+  <div class="addcandidate-popup addstudent-popup">
+    <div class="row">
+      <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeContract()"><i class="fa fa-close"></i></a>
+      <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
+      <div class="col-md-6 mt25">
+        <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="Import Candidate">
+          <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
+          <strong class="clearfix">New Contract</strong> </a> </div>
+      </div>
+ 	</sec:authorize>
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
+        <div class="col-md-6 mt25">
+          <div class="small-widget bg-yellow"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
+            <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
+            <strong class="clearfix">Existing Contract</strong> </a> </div>
+        </div>
+        </sec:authorize>
+       </div>
+    </div>
+  </div>
+  <div class="pop_mask"></div>
+  <script>
+    //addcandidate-popup script
+    function addContracts(){
+        $('.addcandidate-popup').fadeIn(200);
+        $('.pop_mask').fadeIn(200);
+    };
+       function closeContract(){
+        $('.addcandidate-popup').fadeOut(200);
+        $('.pop_mask').fadeOut(200);
+       }
+    </script> 
+
+
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
@@ -117,6 +153,7 @@ $(document).ready(function(){
   
 </div>
 </section>
+
 <script type="text/javascript">
             $(function () {
                 $('#datetimepicker3').datetimepicker({
@@ -474,10 +511,10 @@ function preparedContractListWFA(data){
 	         	 	result = result + '<div><span>--</span></div>';
 	        	  }
 		     	if(report.templateSubmissionStatus == "DRAFT" ||report.templateSubmissionStatus =="REJECTED" ){
-		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a> | <a href="#" title="Edit"><i class="fa fa-pencil editAA" onclick="previewContractPDF('+report.id+')"></i></a></div>';
+		     		result = result + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a> | <a href="#" title="Edit"><i class="fa fa-pencil editAA" onclick="previewContractPDF('+report.id+')"></i></a></div>';
 	     	  }
 	     	  else{
-	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a></div>';
+	     		 result = result + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+report.id+')"></i></a></div>';
 	     	  }
 		         result = result + '</div></td>';
 		     	 
@@ -559,12 +596,13 @@ function preparedContractListWFA(data){
         	  else{
          	 	opt = opt + '<div><span>--</span></div>';
         	  }
+        	  opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "DRAFT" ||output.templateSubmissionStatus =="REJECTED" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+output.id+')"></i></a> | <a href="#" title="Edit"><i class="fa fa-pencil editAA" onclick="previewContractPDF('+output.id+')"></i></a></div>';
+	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+output.id+')"></i></a> | <a href="#" title="Edit"><i class="fa fa-pencil editAA" onclick="previewContractPDF('+output.id+')"></i></a>';
 	     		//	opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+output.id+')"></i></a></div>';
 	     	  }
 	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+output.id+')"></i></a></div>';
+	     		 opt = opt + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF('+output.id+')"></i></a></div>';
 	     	  }
 	     		opt = opt + '</div></td>';
 	     	
@@ -1655,6 +1693,8 @@ function Check(val){
 }
 
 </script>
+
+
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
