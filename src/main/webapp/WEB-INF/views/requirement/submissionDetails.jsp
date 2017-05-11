@@ -196,11 +196,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '</div>';
                result = result + '<div class="socialnetwork-details">';
                result = result + '<ul class="list-inline list-unstyled">';
-               result = result + '<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-               result = result + '<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-               result = result + '<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-               result = result + '<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-               result = result + ' <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+               if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
+            	   result = result + '<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
+	            }
+               
+               if(json.linkedInUrl != null && json.linkedInUrl != '' && json.linkedInUrl != 'undefined'){
+            	   result = result + '<li class="bg-linked"><a href="'+json.linkedInUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
+  	            }
+               
+               if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
+            	   result = result + '<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
+	            }
+               
                result = result + ' </ul>';
                result = result + ' </div>';
                result = result + ' </div>';
