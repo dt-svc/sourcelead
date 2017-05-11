@@ -120,7 +120,8 @@ public class ContractRestController {
 	@RequestMapping(value = "/testController/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void testController(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
+		//ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));	
+		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(Long.parseLong(id));	
 		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
 		String totalBody = header + contractsTemplate.getTemplateContent();
     	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();

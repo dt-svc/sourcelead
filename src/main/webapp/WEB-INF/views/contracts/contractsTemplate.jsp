@@ -106,7 +106,7 @@ function preparedTemplateList(data){
          result = result + '<td>';
         /*  result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>'; */
          '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF('+report.id+')"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
+         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF('+report.templateUUID+',)"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
          '</sec:authorize>';
          result = result + '</td>';
          result = result + '<td>';

@@ -1201,5 +1201,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 		return savedContracts;
 	}
+
+	@Override
+	public ContractsTemplate getContractTemplateByTemplateUUID(Long tempUUID) {
+		return contractsTemplateDao.getContractTemplateByTemplateUUID(tempUUID);
+	}
 	
 }
