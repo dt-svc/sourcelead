@@ -100,7 +100,7 @@
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
-							  <a href="#" class="tree-view" title="Timesheets">
+							  <a href="#" class="timesheetLi" title="Timesheets">
 								<span><i class="fa fa-clock-o"></i></span>
 							  Timesheets <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
@@ -141,12 +141,12 @@
 	                 
 	                 <c:if test="${userTabs.tabName == 'Finance' }">
 				           <li class="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement' ? 'side-nav-active' : ''}">
-							  <a href="#" class="tree-view-new" title="Back Office">
+							  <a href="#" class="tree-view-backoffice" title="Back Office">
 								<span><i class="fa fa-bank"></i></span>
 							  Back Office <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
-							  <a href="#" class="tree-view" title="Back Office">
+							  <a href="#" class="backofficeLi" title="Back Office">
 								<span><i class="fa fa-bank"></i></span>
 							  Back Office <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
@@ -175,12 +175,12 @@
 	                 
                      <c:if test="${SourceLeadWeb_associatesTabsCount == 2 && userTabs.tabName == 'Associates List'}">
 	                   <li class="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard' ? 'side-nav-active' : ''}">
-							  <a href="#" class="tree-view-new" title="Associates">
+							  <a href="#" class="tree-view-associates" title="Associates">
 								<span><i class="fa fa-black-tie"></i></span>
 							  Associates <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
-							  <a href="#" class="tree-view" title="Associates">
+							  <a href="#" class="associatesLi" title="Associates">
 								<span><i class="fa fa-black-tie"></i></span>
 							  Associates <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
@@ -224,12 +224,12 @@
 	                
 	                <c:if test="${SourceLeadWeb_billingTabsCount == 2 && userTabs.tabName == 'Receivable'}">
 	                   <li class="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables' ? 'side-nav-active' : ''}">
-							  <a href="#" class="tree-view-new" title="Billing">
+							  <a href="#" class="tree-view-billing" title="Billing">
 								<span><i class="fa fa-money"></i></span>
 							  Billing <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
 							  
-							  <a href="#" class="tree-view" title="Billing">
+							  <a href="#" class="billingLi" title="Billing">
 								<span><i class="fa fa-money"></i></span>
 							  Billing <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
@@ -275,5 +275,22 @@
    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>">My Timesheet</a></li>
    <li class="${sessionData.nav == 'TimeSheetApproval' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>">Timesheet Approval</a></li>
  </ul>
+ 
+ <ul class="associates-menu list-unstyled">
+   <li class="${sessionData.nav == 'Associates' ? 'treview-active' : ''}"><a href="<c:url value='/associatesList'/>" title="Associates List">Associates List</a></li>
+   <li class="${sessionData.nav == 'OnAndOffboard' ? 'treview-active' : ''}"><a href="<c:url value='/candidateOnBoardingList'/>" title="On / Off Boarding">On / Off Boarding</a></li>
+ </ul>
+ 
+ <ul class="backoffice-menu list-unstyled">
+   <li class="${sessionData.nav == 'BackOffice' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="Finance">Finance</a></li>
+   <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management">Asset Management</a></li>
+   <li><a href="<c:url value='/quickBookInvoice'/>" title="QuickBook Invoice">QuickBook Customers</a></li>
+ </ul>
+ 
+ <ul class="billing-menu list-unstyled">
+   <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Receivable">Receivable</a></li>
+   <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables">Payables</a></li>
+ </ul>
+ 
   </aside>
   <!-- Side Nav Bar --> 

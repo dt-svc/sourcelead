@@ -157,8 +157,8 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 	@Transactional(rollbackFor = { Exception.class })	
 	public List<ReferContacts> getReferContactsListByUserIdAndOrglocationId(Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId and contacts.orgLocationId.id =:orgLocationId ";
-		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true) .list();
+		String query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId  ";
+		List<ReferContacts> referContactsList  =   session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true) .list();
 		return referContactsList;
 	}
 
