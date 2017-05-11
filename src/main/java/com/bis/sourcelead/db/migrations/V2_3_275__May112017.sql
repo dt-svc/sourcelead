@@ -1,0 +1,5 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','PROJECT_ID','BIGINT NULL AFTER `INVOICE_ID`');
+ALTER TABLE `sourcelead`.`INVOICE` ADD FOREIGN KEY FK1_INVOICE (PROJECT_ID) REFERENCES `sourcelead`.PROJECTS(ID);
+
+
+

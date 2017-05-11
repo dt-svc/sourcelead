@@ -84,7 +84,7 @@ textarea {
     position: fixed; width: 100%;
 }
 .main-header span.logo {
-	background: /*#3081cb*/ #fff; padding: 0 15px; line-height: 50px; width: 230px; box-sizing: border-box; height: 50px; float: left;
+	background: /*#3081cb*/ #f5f5f5; padding: 0 15px; line-height: 51px; width: 230px; box-sizing: border-box; height: 51px; float: left;
 	/*transition: all 0.5s ease-in-out 0s;*/
 }
 .main-header span.logo:hover {
@@ -130,7 +130,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
  margin-bottom: 0; margin-left: 0;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
-	transition: all 0.5s ease-in-out 0s; position: relative; padding: 16.5px 14px;
+	transition: all 0.5s ease-in-out 0s; position: relative; padding: 15px 14px;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li a {
 	display: block; /* padding: 16.5px 14px; */ padding: 0;
@@ -5003,6 +5003,9 @@ border-bottom: 1px solid #ededed; line-height:30px;
 .uasrch-selectpicker{
  float: left;
 }
+.uasrch-selectpicker .bootstrap-select .dropdown-toggle:focus {
+    outline:none !important;
+}
 .fa-bullhorn.success {
 color:#4CAF50 !important;
 }
@@ -6499,10 +6502,10 @@ padding: 15px 15px 25px 15px;
     font-size: 20px; text-align: right;
 }
 .billing_dashboard .nav-tabs > li h5{
-    font-size: 14px; font-weight: 400; margin:2px 0; float: right;
+    font-size: 13px; font-weight: 400; margin:2px 0; float: right;
 }
 .billing_dashboard .nav-tabs > li h5 span{
-    font-size: 20px;
+    font-size: 18px;
 }
 .billbg_orange {
     background: #ffb74d;
@@ -6618,6 +6621,39 @@ display: inline-block; white-space: nowrap; text-overflow: ellipsis; overflow-x:
 }
 .minHeight_225 {
     min-height: 225px;
+}
+.timesheet_week_comm.invoiceDocs span{
+	padding: 0;
+}
+.timesheet_week_comm.invoiceDocs span input{
+	width: 65%; float: left;margin-bottom: 10px; padding-left: 20px;
+}
+.timesheet_week_comm.invoiceDocs strong{
+	width: 100%;
+}
+.timesheet_week_comm.invoiceDocs strong input.dele{
+	width: 10% !important; position: relative; top:-2px; padding-left: 0 !important;
+}
+.timesheet_week_comm.invoiceDocs strong a {
+    color: #fff; top: -4px;
+}
+.invoiceDocs_add span i.fa-plus{
+float: left; position: relative;top:5px; width: 10%;
+}
+.billing_count {
+   border: 1px solid #bdbdbd; padding: 5px 10px; border-radius: 3px;
+}
+.billing_count h3{
+    margin: 0 0 5px 0;
+}
+.billing_count h3 .rupee_usd {
+    font-size: 18px; width: 50px; display: inline-block;
+}
+.billing_count .text-info {
+   font-size: 15px;
+}
+.timesheet_week_comm.invoiceDocs_add span .fa-times{
+ float:left;
 }
 /* media 320px */
 @media (max-width: 320px) {

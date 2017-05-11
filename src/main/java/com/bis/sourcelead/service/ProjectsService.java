@@ -110,5 +110,7 @@ public interface ProjectsService {
 		ProjectMembers getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status) throws Exception ;
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
+
+		List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId)throws Exception ;
 		
 }

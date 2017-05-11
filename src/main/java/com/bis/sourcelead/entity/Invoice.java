@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -19,8 +20,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "INVOICE", catalog = "sourcelead")
@@ -37,12 +36,12 @@ public class Invoice {
 	
 	
 	@ManyToOne
-    @JoinColumn(name="CLIENT_ORG_RELATION_ID", nullable=false )     
-	private OrgRelations clientOrgRelationID;
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )     
+	private OrgRelations orgRelationID;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "CLIENT_CONTACT_USER_ID")
-	private User contactContactUser;
+	@JoinColumn(name = "CONTACT_USER_ID")
+	private User contactUser;
 	
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
@@ -50,6 +49,16 @@ public class Invoice {
 	
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
+	
+	@ManyToOne
+    @JoinColumn(name="PROJECT_ID", nullable=false ) 
+	private Projects projectID;
+	
+	@Column(name = "INVOICE_TYPE")
+	private String invoiceType;
+	
+	@Column(name = "INVOICE_UUID")
+	private String invoiceUUID;
 	
 	@Column(name = "INVOICE_DATE")
 	private Date invoiceDate;
@@ -130,11 +139,36 @@ public class Invoice {
 	private String clientContactName;
 	
 	@Transient
+	private String clientContactEmail;
+	
+	@Transient
 	private String invoiceDateStr;
 	
 	@Transient
 	private String dueDateStr;
+	
 
+	@Transient
+	private Long vendorOrgRelationId;
+	
+	@Transient
+	private Long vendorContactId;
+	
+	@Transient
+	private String orgName;
+	
+	@Transient
+	List<InvoiceLineItems> invoiceLineItemsList;
+	
+	@Transient
+	List<InvoiceDocument> invoiceDocumentsList;
+	
+	@Transient
+	List<InvoiceTax> invoiceTaxList;
+
+	@Transient
+	private String projectId;
+	
 	public Long getId()
 	{
 		return id;
@@ -145,26 +179,32 @@ public class Invoice {
 		this.id = id;
 	}
 
-	public OrgRelations getClientOrgRelationID()
+
+	public Projects getProjectID()
 	{
-		return clientOrgRelationID;
+		return projectID;
 	}
 
-	public void setClientOrgRelationID(OrgRelations clientOrgRelationID)
+	public void setProjectID(Projects projectID)
 	{
-		this.clientOrgRelationID = clientOrgRelationID;
+		this.projectID = projectID;
 	}
 
-	public User getContactContactUser()
-	{
-		return contactContactUser;
+	public OrgRelations getOrgRelationID() {
+		return orgRelationID;
 	}
 
-	public void setContactContactUser(User contactContactUser)
-	{
-		this.contactContactUser = contactContactUser;
+	public void setOrgRelationID(OrgRelations orgRelationID) {
+		this.orgRelationID = orgRelationID;
 	}
 
+	public User getContactUser() {
+		return contactUser;
+	}
+
+	public void setContactUser(User contactUser) {
+		this.contactUser = contactUser;
+	}
 
 	public String getInvoiceId()
 	{
@@ -376,6 +416,14 @@ public class Invoice {
 		this.clientContactName = clientContactName;
 	}
 
+	public String getClientContactEmail() {
+		return clientContactEmail;
+	}
+
+	public void setClientContactEmail(String clientContactEmail) {
+		this.clientContactEmail = clientContactEmail;
+	}
+
 	public String getInvoiceDateStr() {
 		return invoiceDateStr;
 	}
@@ -432,4 +480,78 @@ public class Invoice {
 		this.afterDiscountValue = afterDiscountValue;
 	}
 
+	public String getInvoiceType() {
+		return invoiceType;
+	}
+
+	public void setInvoiceType(String invoiceType) {
+		this.invoiceType = invoiceType;
+	}
+
+	public String getInvoiceUUID() {
+		return invoiceUUID;
+	}
+
+	public void setInvoiceUUID(String invoiceUUID) {
+		this.invoiceUUID = invoiceUUID;
+	}
+
+
+	public Long getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(Long vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	
+
+	public Long getVendorContactId() {
+		return vendorContactId;
+	}
+
+	public void setVendorContactId(Long vendorContactId) {
+		this.vendorContactId = vendorContactId;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public List<InvoiceLineItems> getInvoiceLineItemsList() {
+		return invoiceLineItemsList;
+	}
+
+	public void setInvoiceLineItemsList(List<InvoiceLineItems> invoiceLineItemsList) {
+		this.invoiceLineItemsList = invoiceLineItemsList;
+	}
+
+	public List<InvoiceDocument> getInvoiceDocumentsList() {
+		return invoiceDocumentsList;
+	}
+
+	public void setInvoiceDocumentsList(List<InvoiceDocument> invoiceDocumentsList) {
+		this.invoiceDocumentsList = invoiceDocumentsList;
+	}
+
+	public List<InvoiceTax> getInvoiceTaxList() {
+		return invoiceTaxList;
+	}
+
+	public void setInvoiceTaxList(List<InvoiceTax> invoiceTaxList) {
+		this.invoiceTaxList = invoiceTaxList;
+	}
+
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
 }
