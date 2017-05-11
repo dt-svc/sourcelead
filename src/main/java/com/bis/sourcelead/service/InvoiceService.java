@@ -22,7 +22,7 @@ public interface InvoiceService {
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
-	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType)throws Exception;
+	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType,Org loginOrg)throws Exception;
 	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 	

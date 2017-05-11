@@ -64,10 +64,10 @@ public class InvoicePdfHelper {
 	@Autowired
 	private OrgRelationsService orgRelationsService; 
 	
-public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception{
-		
+public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception{
+	File invoiceFile = new File(invoice.getInvoiceId()+".pdf");
+	OutputStream file = new FileOutputStream(invoiceFile);
 	 try {
-         OutputStream file = new FileOutputStream(new File("C:/Users/BIS115/Desktop/New folder/Test.pdf"));
          Document document = new Document();
          PdfWriter writer = PdfWriter.getInstance(document, file);
          writer.createXmpMetadata();
@@ -141,6 +141,7 @@ public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
         		table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_LEFT, font10));	
         	}
         	StringBuffer startAndEndDate = new StringBuffer();
+        	if(null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()){
         	String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
     		String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
         	if(null != StartDate && !"".equalsIgnoreCase(StartDate) && null != endDate && !"".equalsIgnoreCase(endDate)){
@@ -149,6 +150,7 @@ public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
         		table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_RIGHT, font10));
         	}else{
         		table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_RIGHT, font10));
+        	}
         	}
         	if(null != invoiceLineItems.getRate() && !"".equalsIgnoreCase(invoiceLineItems.getRate())){
         		table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_RIGHT, font10));	
@@ -184,6 +186,7 @@ public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
    } catch (Exception e) {
        e.printStackTrace();
    }
+	return invoiceFile;
 
 }
 private PdfPCell getCell(String value, int alignLeft, Font font)
