@@ -105,7 +105,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
-			contractsTemplate.setDescription(jsonObj.getString("description"));
+			contractsTemplate.setDescription(jsonObj.getString("description").trim());
 		}
 		
 		if(jsonObj.has("templateContent") && !isNullOrEmpty(jsonObj.getString("templateContent"))){
@@ -222,8 +222,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setOvertimeRateType(jsonObj.getString("overtimeRateType"));
 		}
 		
-		contracts.setContractTitle(jsonObj.getString("contractTitle"));
-		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
+		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+		vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
 		vendorContracts.setContractsTemplate(contractsTemplate);
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
@@ -318,8 +318,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		
 		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
-			contracts.setDescription(jsonObj.getString("description"));
-			vendorContracts.setDescription(jsonObj.getString("description"));
+			contracts.setDescription(jsonObj.getString("description").trim());
+			vendorContracts.setDescription(jsonObj.getString("description").trim());
 		}
 		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
 			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
@@ -809,8 +809,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		contracts.setTypeOfContract("Existing");
 		vendorContracts.setTypeOfContract("Existing");
-		contracts.setContractTitle(jsonObj.getString("contractTitle"));
-		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
+		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+		vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
 		Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
@@ -902,10 +902,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		
-		
 		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
-			contracts.setDescription(jsonObj.getString("description"));
-			vendorContracts.setDescription(jsonObj.getString("description"));
+			contracts.setDescription(jsonObj.getString("description").trim());
+			vendorContracts.setDescription(jsonObj.getString("description").trim());
 		}
 		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
 			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
