@@ -4,8 +4,13 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery.dataTables.min.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link rel="stylesheet" href="resources/css/chosen.min.css">
+<script src="resources/js/chosen.jquery.min.js"></script> 
+<script src="resources/js/jquery-fun.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <script>
 $(document).ready(function() {
 	socialInviterScripts();
@@ -148,13 +153,19 @@ function refercontactList(){
 				   }else{
 					   contactUserPhone = "--";
 				   }
-				   result = result +'        <tr>';
-				   	 result = result +'          <td><div class="text-left"><img src="resources/images/userprofile-img.png" alt="UserImage" class="pull-left img-responsive paddingRight" width="35px" height="35px"><span class="mid-span"title="User Image">'+report.firstName+'</span></div></td>';
-				   	 result = result +'          <td><div><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
-				   	 result = result +'          <td><div><span class="mid-span">'+contactUserPhone+'</span></div></td>';
-				   	 result = result +'          <td><div><span class="mid-span">'+report.contactSource+'</span></div></td>';
-				   	 result = result +'          <td><div class="bg-blue status_contact paddingRight">Accept</div><i title="Chat" class="fa fa-comments"></i></td>'; 
-				   	 result = result +'        </tr>';
+				   
+				   if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
+					   contactUserName = report.firstName+" "+report.lastName;
+				   }else{
+					   contactUserName = report.firstName;
+				   }
+				     result = result +'<tr>';
+				     result = result +'<td><div class="text-left tbldata-dotdot-big"><img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayContactUserImage/'+report.id+'" class="img-circle pull-left img-responsive paddingRight" width="35px" height="35px"><span class="mid-span"title="User Image">'+contactUserName+'</span></div></td>';
+				   	 result = result +'<td><div class="text-left"><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
+				   	 result = result +'<td><div  class="tbldata-dotdot"><span>'+contactUserPhone+'</span></div></td>';
+				   	 result = result +'<td><div class="tbldata-dotdot-100"><span>'+report.contactSource+'</span></div></td>';
+				   	 result = result +'<td><div class="tbldata-dotdot-100"><span class="bg-blue status_contact paddingRight">Accepted</span><b title="Chat" class="text-success fa fa-comments"></b></div></td>'; 
+				   	 result = result +'</tr>';
 			   }
 			   	 result = result +'      </tbody>';
 			   	 result = result +'    </table>';
@@ -167,6 +178,12 @@ function refercontactList(){
 	
 }
 
+</script>
+
+<script>
+	function predefineProfileImage(imageId){
+		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+	}
 </script>
 
 <script>
