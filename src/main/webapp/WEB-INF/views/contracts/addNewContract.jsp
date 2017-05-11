@@ -71,10 +71,10 @@
               <div class="col-md-8" id="titleDiv">
 	              <c:choose>
 				    <c:when test="${!empty contract.contractTitle}">
-				        <input type="text" readonly class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+				        <input type="text" readonly class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_length length1-250" field-name="Contract Title">
 				    </c:when>
 				    <c:otherwise>
-				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
+				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
 				    </c:otherwise>
 				 </c:choose>
               </div>
@@ -1296,6 +1296,7 @@ function validateContractTitle(){
 </script>
 
 <script>
+
 function removeValidation(){
 	$('#errorTemp').find('p.jquery_form_error_message').remove();
 }
@@ -1322,6 +1323,12 @@ function removeBillCycleValidation(){
 <script>
 function removePaymentvalidation(){
 	$('#errPayment').find('p.jquery_form_error_message').remove();
+
+</script>
+<script>
+function removeValid(){
+$('#startDateDiv').find('p.jquery_form_error_message').remove();
+
 }
 </script>
 

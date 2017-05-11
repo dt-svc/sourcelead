@@ -55,7 +55,7 @@
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
 	                        </div>
               </div>
             </div>  			
@@ -67,7 +67,7 @@
           	<div class="form-group">
               <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title">
               </div>
             </div>
                        
@@ -150,7 +150,7 @@
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
-                  </select>
+                   <option value=''>Select Vendor Contact</option></select>
               </div>
             </div>
             
@@ -158,7 +158,7 @@
              <div class="form-group" id="clientDiv" style="display: none;">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Vendor Name">
+                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -170,8 +170,8 @@
             <div class="form-group" id="clientContactDiv" style="display: none;">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact">
-                  </select>
+                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+                  <option value=''>Select Client Contact</option></select>
               </div>
             </div>
         
@@ -180,7 +180,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250"></textarea>
+					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"></textarea>
               </div>
             </div>    
             
@@ -241,7 +241,10 @@
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-                   <div class="clearfix col-md-8" id="errBilling">
+                <div class="col-lg-8">
+					  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="" placeholder="Billing Amount" data-validation="required validate_int validate_length length1-8" field-name="Billing Amount">
+					</div>
+            <%--        <div class="clearfix col-md-8" id="errBilling">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
                           <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
@@ -272,7 +275,7 @@
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> --%>
             </div>
             <div class="form-group">
               <label class="col-md-4">invoice frequency<span class="text-danger">&nbsp;*</span></label>
@@ -468,7 +471,7 @@ function getVendorContacts(){
 	        var opt = json[i];
 	            // need to use in edit
        			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+"</option>";
+	        output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
 			}
        	    $("#vendorContact").empty();
 	        $("#vendorContact").append(output);
@@ -493,7 +496,7 @@ function getClientContacts(){
 	var opt = json[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
@@ -657,115 +660,131 @@ function getContractTemplates(){
 <script>
 function contractTypeLabels(){
 	var contractType = $("#contractType").val();
-	if(contractType == ""){
-		$('#orgRelationId').removeAttr('data-validation');
-		$('#orgRelationId').attr('data-validation-optional',"true");
-		$('#vendorContact').removeAttr('data-validation');
-		$('#vendorContact').attr('data-validation-optional',"true");
-		
-		hideCommonSOWFields();
-	}
-	if(contractType == "Client MSA"){
-		$('#orgRelationId').removeAttr('data-validation');
-		$('#orgRelationId').attr('data-validation-optional',"true");
-		$('#vendorContact').removeAttr('data-validation');
-		$('#vendorContact').attr('data-validation-optional',"true");
-		
-		hideCommonSOWFields();
-	}
-	if(contractType == "Vendor MSA"){
-		$('#clientOrgRelationId').removeAttr('data-validation');
-		$('#clientOrgRelationId').attr('data-validation-optional',"true");
-		$('#clientContact').removeAttr('data-validation');
-		$('#clientContact').attr('data-validation-optional',"true");
-		
-		hideCommonSOWFields();
-	}
-	if(contractType == "Client SOW"){
-		$('#orgRelationId').removeAttr('data-validation');
-		$('#orgRelationId').attr('data-validation-optional',"true");
-		$('#vendorContact').removeAttr('data-validation');
-		$('#vendorContact').attr('data-validation-optional',"true");
-		hideCommonSOWFields();
-		showCommonSOWFields();
-		getRequirements("Client SOW");
-	}
-	if(contractType == "Vendor SOW"){
-		$('#clientOrgRelationId').removeAttr('data-validation');
-		$('#clientOrgRelationId').attr('data-validation-optional',"true");
-		$('#clientContact').removeAttr('data-validation');
-		$('#clientContact').attr('data-validation-optional',"true");
-		hideCommonSOWFields();
-		showCommonSOWFields();
-		getRequirements("Vendor SOW");
-	}
-	if(contractType == "NDA" || contractType == "NSA"){
+	/* 	if(contractType == ""){
+			$('#orgRelationId').removeAttr('data-validation');
+			$('#orgRelationId').attr('data-validation-optional',"true");
+			$('#vendorContact').removeAttr('data-validation');
+			$('#vendorContact').attr('data-validation-optional',"true");
+			
+			
+			
+			hideCommonSOWFields();
+		} */
+		if(contractType == "Client MSA"){
+			$('#orgRelationId').removeAttr('data-validation');
+			$('#orgRelationId').attr('data-validation-optional',"true");
+			$('#vendorContact').removeAttr('data-validation');
+			$('#vendorContact').attr('data-validation-optional',"true");
+			
+			$('#clientOrgRelationId').removeAttr('data-validation-optional');
+			$('#clientOrgRelationId').attr("data-validation","required");
+			
+			$('#clientContact').removeAttr('data-validation-optional');
+			$('#clientContact').attr("data-validation","required");
+			
+			hideCommonSOWFields();
+		}
+		if(contractType == "Vendor MSA"){
+			$('#clientOrgRelationId').removeAttr('data-validation');
+			$('#clientOrgRelationId').attr('data-validation-optional',"true");
+			$('#clientContact').removeAttr('data-validation');
+			$('#clientContact').attr('data-validation-optional',"true");
+			
+			$('#orgRelationId').removeAttr('data-validation-optional');
+			$('#orgRelationId').attr("data-validation","required");
+			
+			$('#vendorContact').removeAttr('data-validation-optional');
+			$('#vendorContact').attr("data-validation","required");
+			hideCommonSOWFields();
+		}
+		if(contractType == "Client SOW"){
+			$('#orgRelationId').removeAttr('data-validation');
+			$('#orgRelationId').attr('data-validation-optional',"true");
+			$('#vendorContact').removeAttr('data-validation');
+			$('#vendorContact').attr('data-validation-optional',"true");
+			hideCommonSOWFields();
+			showCommonSOWFields();
+			getRequirements("Client SOW");
+		}
+		if(contractType == "Vendor SOW"){
+			$('#clientOrgRelationId').removeAttr('data-validation');
+			$('#clientOrgRelationId').attr('data-validation-optional',"true");
+			$('#clientContact').removeAttr('data-validation');
+			$('#clientContact').attr('data-validation-optional',"true");
+			hideCommonSOWFields();
+			showCommonSOWFields();
+			getRequirements("Vendor SOW");
+		}
+		if(contractType == "NDA" || contractType == "NSA"){
 
-		$('#percentageRewardValue').removeAttr('data-validation');
-		$('#flatRewardValue').removeAttr('data-validation');
-		$('#invoiceFrequency').removeAttr('data-validation');
-		$('#paymentFrequency').removeAttr('data-validation');
-		$('#taxPercentageRewardValue').removeAttr('data-validation');
-		$('#taxFlatRewardValue').removeAttr('data-validation');
-		
-		
-		$('#percentageRewardValue').attr('data-validation-optional',"true");
-		$('#flatRewardValue').attr('data-validation-optional',"true");
-		$('#invoiceFrequency').attr('data-validation-optional',"true");
-		$('#paymentFrequency').attr('data-validation-optional',"true");
-		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
-		$('#taxFlatRewardValue').attr('data-validation-optional',"true");
-		
-		
-		$('#clientOrgRelationId').removeAttr('data-validation');
-		$('#clientOrgRelationId').attr('data-validation-optional',"true");
-		$('#clientContact').removeAttr('data-validation');
-		$('#clientContact').attr('data-validation-optional',"true");
-		
-		$('#orgRelationId').removeAttr('data-validation');
-		$('#orgRelationId').attr('data-validation-optional',"true");
-		$('#vendorContact').removeAttr('data-validation');
-		$('#vendorContact').attr('data-validation-optional',"true");
-		
-		
-		
-		$('#requirementsList').removeAttr('data-validation');
-		$('#requirementsList').attr('data-validation-optional',"true");
-		$('#requirementDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("requirementDiv").style.display="none";
-		
-		$('#submissionOffersList').removeAttr('data-validation');
-		$('#submissionOffersList').attr('data-validation-optional',"true");
-		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("offeredSubmissionDiv").style.display="none";
-		
-		$('#hoursPerWeek').removeAttr('data-validation');
-		$('#hoursPerWeek').attr('data-validation-optional',"true");
-		$('#hoursPerWeek').val("");
-		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("hoursPerWeekDiv").style.display="none";
-		
-		$('#overTimeHours').removeAttr('data-validation');
-		$('#overTimeHours').attr('data-validation-optional',"true");
-		$('#overTimeHours').val("");
-		$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("overTimeHoursDiv").style.display="none";
-		
-		$('#totalHoursEstimated').removeAttr('data-validation');
-		$('#totalHoursEstimated').attr('data-validation-optional',"true");
-		$('#totalHoursEstimated').val("");
-		$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
-		document.getElementById("totalHoursEstimatedDiv").style.display="none";
-		
-		$('#overtimeRate').removeAttr('data-validation');
-		$('#overtimeRate').attr('data-validation-optional',"true");
-		$('#overtimeRate').val("");
-		$('#overtimeRateType').removeAttr('data-validation');
-		$('#overtimeRateType').attr('data-validation-optional',"true");
-		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
-		
+			$('#percentageRewardValue').removeAttr('data-validation');
+			$('#flatRewardValue').removeAttr('data-validation');
+			$('#invoiceFrequency').removeAttr('data-validation');
+			$('#paymentFrequency').removeAttr('data-validation');
+			$('#taxPercentageRewardValue').removeAttr('data-validation');
+			$('#taxFlatRewardValue').removeAttr('data-validation');
+			
+			
+			$('#percentageRewardValue').attr('data-validation-optional',"true");
+			$('#flatRewardValue').attr('data-validation-optional',"true");
+			$('#invoiceFrequency').attr('data-validation-optional',"true");
+			$('#paymentFrequency').attr('data-validation-optional',"true");
+			$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
+			$('#taxFlatRewardValue').attr('data-validation-optional',"true");
+			
+			$('#flatReward').removeAttr('data-validation');
+			$('#flatReward').attr('data-validation-optional',"true");
+			
+			
+			$('#clientOrgRelationId').removeAttr('data-validation');
+			$('#clientOrgRelationId').attr('data-validation-optional',"true");
+			$('#clientContact').removeAttr('data-validation');
+			$('#clientContact').attr('data-validation-optional',"true");
+			
+			/* $('#orgRelationId').removeAttr('data-validation');
+			$('#orgRelationId').attr('data-validation-optional',"true"); */
+			/* $('#vendorContact').removeAttr('data-validation');
+			$('#vendorContact').attr('data-validation-optional',"true"); */
+			
+			
+			
+			$('#requirementsList').removeAttr('data-validation');
+			$('#requirementsList').attr('data-validation-optional',"true");
+			$('#requirementDiv').find('p.jquery_form_error_message').remove();
+			document.getElementById("requirementDiv").style.display="none";
+			
+			$('#submissionOffersList').removeAttr('data-validation');
+			$('#submissionOffersList').attr('data-validation-optional',"true");
+			$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
+			document.getElementById("offeredSubmissionDiv").style.display="none";
+			
+			$('#hoursPerWeek').removeAttr('data-validation');
+			$('#hoursPerWeek').attr('data-validation-optional',"true");
+			$('#hoursPerWeek').val("");
+			$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+			document.getElementById("hoursPerWeekDiv").style.display="none";
+			
+			$('#overTimeHours').removeAttr('data-validation');
+			$('#overTimeHours').attr('data-validation-optional',"true");
+			$('#overTimeHours').val("");
+			$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+			document.getElementById("overTimeHoursDiv").style.display="none";
+			
+			$('#totalHoursEstimated').removeAttr('data-validation');
+			$('#totalHoursEstimated').attr('data-validation-optional',"true");
+			$('#totalHoursEstimated').val("");
+			$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+			document.getElementById("totalHoursEstimatedDiv").style.display="none";
+			
+			$('#overtimeRate').removeAttr('data-validation');
+			$('#overtimeRate').attr('data-validation-optional',"true");
+			$('#overtimeRate').val("");
+			$('#overtimeRateType').removeAttr('data-validation');
+			$('#overtimeRateType').attr('data-validation-optional',"true");
+			$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+			
+		}
 	}
-}
 </script>
 
 <script>
