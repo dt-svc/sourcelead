@@ -253,16 +253,18 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String firstWord="";
 		String lastWord="";
 		String subQuery8="";
-		if(userName.contains(" "))
+		
+		String s1 =userName;
+		String withoutWhitespace = s1.trim();
+		if(!"".equalsIgnoreCase(withoutWhitespace) && withoutWhitespace.contains(" "))
 		{
-			 String s1 =userName;
-			 String[] words =s1.split("\\s");
+			 
+			 String[] words =withoutWhitespace.split("\\s");
 				 firstWord = words[0];
 				 lastWord = words[1];
 		
 		
 		}
-		
 		
 		if(!firstWord.equals("") && !lastWord.equals("")){
 			 subQuery8 = " and ((userRole.user.firstName LIKE '" + firstWord + "%') OR (userRole.user.firstName LIKE '" + lastWord + "%') OR  (userRole.user.lastName LIKE '"+ firstWord + "%') OR  (userRole.user.lastName LIKE '"+ lastWord + "%'))";
@@ -276,8 +278,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		 /*
 		  *  to check the if the search  parameter is given or not
 		 */
-		 if(!"".equalsIgnoreCase(userName) && !userName.contains(" ")){
-			 subQuery3 = " and ((userRole.user.firstName LIKE '" + userName + "%') OR  (userRole.user.lastName LIKE '"+ userName + "%') OR (userRole.user.email LIKE '" + userName + "'))";
+		
+		 if(!"".equalsIgnoreCase(withoutWhitespace) && !withoutWhitespace.contains(" ")){
+			 subQuery3 = " and ((userRole.user.firstName LIKE '" + withoutWhitespace + "%') OR  (userRole.user.lastName LIKE '"+ withoutWhitespace + "%') OR (userRole.user.email LIKE '" + withoutWhitespace + "'))";
 			 subquerys.add(subQuery3);
 		
 		

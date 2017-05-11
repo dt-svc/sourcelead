@@ -284,7 +284,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 		                    </div>                	
 		                </li> --%>
 	               
-		                <li id= "filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
+		                <li id= "filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
@@ -295,7 +295,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 	                        </ul>
 	                      </div>                	
 	                  </li>
-	                  <li  id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
+	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
@@ -307,7 +307,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 	                  </li>
                   
 	                	 
-						<li id="contactLevel" style="display:none">
+						<li id="contactLevel" >
 					   <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
@@ -332,7 +332,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                  	   </sec:authorize> 
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
-                       	 <li title="Export" id="vendorImports" style="display:none">
+                       	 <li title="Export" id="vendorImports" >
 		                     <a  id="vendor-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
@@ -344,7 +344,7 @@ border:none; background-color: none !important; padding:0 5px !important;
 		          </sec:authorize>
 		           
 		          <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
-		            <li title="Export" id="VendorContactImports">
+		            <li title="Export" id="VendorContactImports" style="display:none">
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
