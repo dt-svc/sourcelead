@@ -381,7 +381,11 @@
     <script>
     $("#uasrch").selectpicker('refresh');
     </script>
-
+<script>
+function removeValid(){
+$('#startDateDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
 
 <script>
 	$(function() {
@@ -394,7 +398,8 @@
                   var dt = toDate("#startDate");
                   dt.setDate(dt.getDate() + 1);
                   $("#endDate").datepicker("option", "minDate", dt);
-              }
+                  removeValid();  
+            }
         });
         
         $('#endDate').datepicker({
