@@ -82,7 +82,7 @@
                        
             <div class="form-group">
               <label class="col-md-4">Select Template<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errorTemp">
               	<c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template">
@@ -97,7 +97,7 @@
 						</select>
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template"></select>
+				        <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template" onchange="removeValidation();"></select>
 				    </c:otherwise>
 				 </c:choose>
               </div>
@@ -182,7 +182,7 @@
           
          <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errorVendor">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
                     <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
@@ -194,7 +194,7 @@
                       
             <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errorvendorContact">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
@@ -210,7 +210,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact" onchange="removeVendorContactValidation();">
 					        <option value=''>Select Vendor Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
@@ -220,7 +220,7 @@
             
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errorClient">
                   <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
@@ -232,7 +232,7 @@
                       
             <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="errorClientContact">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
@@ -247,7 +247,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="removeValidationClientContact();">
 					        <option value=''>Select Client Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
@@ -377,7 +377,7 @@
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
-                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
+                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency" onchange="removeBillCycleValidation();">
                     <option value="">Select Cycle</option>
                     <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
                     <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -390,7 +390,7 @@
               <div class="form-group">
               <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errPayment">
-                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
+                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency" onchange="removePaymentvalidation();">
                     <option value="">Select Frequency</option>
                     <option ${contract.paymentTerm == '10 days' ? 'selected' : ''} value="10 days">10 days</option>
                     <option ${contract.paymentTerm == '15 days' ? 'selected' : ''} value="15 days">15 days</option>
@@ -543,7 +543,8 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 
 <script>
 function getVendorContacts(){
-	 var orgRelationId = $("#orgRelationId").val();
+	$('#errorVendor').find('p.jquery_form_error_message').remove();
+	var orgRelationId = $("#orgRelationId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "GET",
@@ -568,6 +569,8 @@ function getVendorContacts(){
 }
 
 function getClientContacts(){
+	
+	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -1290,6 +1293,36 @@ function validateContractTitle(){
 	
 }
 
+</script>
+
+<script>
+function removeValidation(){
+	$('#errorTemp').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeValidationClientContact(){
+	$('#errorClientContact').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeVendorContactValidation(){
+	$('#errorvendorContact').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeBillCycleValidation(){
+	$('#errInvoice').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removePaymentvalidation(){
+	$('#errPayment').find('p.jquery_form_error_message').remove();
+}
 </script>
 
 <!-- Footer Area -->
