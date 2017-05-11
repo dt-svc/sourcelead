@@ -119,6 +119,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contractsTemplate.setUpdatedDate(new Date());
 		contractsTemplate.setUpdatedBy(user.getUserCode());
 		// for active templates status is 0
+		contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		contractsTemplate.setTemplateStatus("0");
 		return contractsTemplateDao.saveContractTemplate(contractsTemplate);
 	}
@@ -167,6 +168,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if(jsonObj.has("contrId") && null != jsonObj.getString("contrId") && !"".equals(jsonObj.getString("contrId"))){
 			contracts = contractsTemplateDao.getContractById(Long.parseLong(jsonObj.getString("contrId")));
+			if(null != contracts && null != contracts.getParentContractId()){
+				vendorContracts = contractsTemplateDao.getChildContractById(contracts.getParentContractId().getId());
+			}
 		}else{
 			contracts = new Contracts();
 			vendorContracts = new Contracts();
@@ -191,6 +195,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setContractsTemplate(contractsTemplate);
 		}
 		contracts.setTypeOfContract("New");
+		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		vendorContracts.setTypeOfContract("New");
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
@@ -396,6 +401,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
+			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 			  if(null != vendorContactsUser && null == approverUser && !"DRAFT".equalsIgnoreCase(saveType)){
 		            Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
@@ -447,16 +453,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else{
 				contracts.setParentId("");
 			}
-			
-			if(null != contracts.getApproverUser()){
-			if(null != contracts.getApproverUser() && null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
-				StringBuilder sb = new StringBuilder();
-				contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
-			}else{
-				contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+
+			if(null != contracts.getApproverUser() ){
+				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
+					StringBuilder sb = new StringBuilder();
+					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+				}else{
+					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+				}
 			}
 			}
-		}
 		for(Contracts contracts :clientcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
@@ -1147,6 +1153,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
+		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Vendor SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
 				if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
@@ -1191,6 +1198,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
+			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 		return savedContracts;
 	}

@@ -295,8 +295,8 @@ $(document).ready(function () {
 	 </div>
 </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
-           <div class="form-group" id="jobTitleDiv">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+           <div class="form-group pras req-title" id="jobTitleDiv">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
 	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length1-250"   value="" class="form-control" onblur="getTemplateVal();">
@@ -383,7 +383,7 @@ $(document).ready(function () {
               </div>
             </div>
             
-         <div class="form-group" >
+         <div class="form-group pras req-title" >
             <label class="col-md-3">Experience</label>
             <div class="col-md-9">
               <div class="row">
@@ -421,7 +421,7 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group" >
+          <div class="form-group pras" >
             <label class="col-md-3">Pay Rate/Salary</label>
             <div class="col-md-9">
              <div class="input-group payrate_p">
@@ -515,12 +515,12 @@ $(document).ready(function () {
               </div>
             </div>
             
-          <div class="form-group">
+          <div class="form-group pras">
             <input type="hidden" name="templateId" id="templateId" value="" />
             <label class="col-md-3">Attachment</label>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
             <div class="col-md-9">
-              <div class="input-group attachfile">
+              <div class="input-group attachfile" id= "uploadFileGroup">
                 <label class="input-group-btn">
                 <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                        <input type="file" name="uploadBtn" id="uploadBtn"  class="hidden upload">
@@ -2119,11 +2119,11 @@ function getUserList(teamType){
 	                		result = result +'       <table id="example" class="display table table-stripped table-bordered" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
-	                		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
-	                		result = result +'             <th>Name</th>';
-	                		result = result +'             <th>Email</th>';
-	                		result = result +'             <th>Role</th>';
-	                		result = result +'             <th>Active Jobs</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;"><input type="checkbox" id="checkAll" onclick="toggle(this); handleClick();"></th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Name</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Email</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Role</th>';
+	                		result = result +'             <th style="padding:2px 15px !important;">Active Jobs</th>';
 	                		result = result +'           </tr>';
 	                		result = result +'           </thead>';
 		                    result = result +"<tbody>"; 

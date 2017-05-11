@@ -192,15 +192,16 @@ window.onload = function () {
                   <label>Experience</label>
                   <div class="clearfix row">
                     <div class="col-md-6">
-                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
+                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years" onblur="minMaxExperienceOfProfessional();">
                        <option value="" selected>Min Years</option>
                        <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
                       </select>
                     </div>
+                     
                     <div class="col-md-6">
-                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
+                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years" onblur="minMaxExperienceOfProfessional();">
                          <option value="" selected>Max Years</option>
                          <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
@@ -208,7 +209,11 @@ window.onload = function () {
                       </select>
                     </div>
                   </div>
+                  <div class="row" id="experienceId">
+		  <input type="hidden" name="expValidationId" id="expValidationId">
+		 </div>
                 </div>
+                
                 <div class="col-md-4">
                   <label>Notice Period</label>
                   <div class="clearfix">
@@ -289,6 +294,7 @@ window.onload = function () {
               </div>
             </div>
           </div>
+          
           </form:form>
         </div> 
 		  	  		  	  
@@ -333,6 +339,27 @@ window.onload = function () {
 
 <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
 
+
+<script>
+//Function to validate if maxExpYears  value is more the minExpYears  value
+function minMaxExperienceOfProfessional(){
+	var maxExpYears = ($('#maxExp').val());
+     var minExpYears = ($('#minExp').val());
+    
+    if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
+        $('#experienceId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidationId').attr('class','error signin_fild');
+		$("input#expValidationId").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$('input#expValidationId').attr('record-exist','yes');
+		$('input#expValidationId').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+    }  else{
+    	$('#experienceId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidationId').removeAttr( "class record-exist record-exist-errormsg");
+		$('#experienceId').find('p.jquery_form_error_message').remove();
+    } 
+}
+
+</script>
 
 <script type="text/javascript">
     	   var config = {
@@ -428,7 +455,15 @@ window.onload = function () {
 		        }
 		    });
 		    
-		    
+		 // here call experience validation
+		       $("#maxExp").on('change', function (e) {
+		    	   minMaxExperienceOfProfessional();
+		       });
+		       
+		       $("#minExp").on('change', function (e) {
+		    	   minMaxExperienceOfProfessional();
+		       });
+		       
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       });
