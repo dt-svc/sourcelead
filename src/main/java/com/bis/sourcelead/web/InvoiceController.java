@@ -107,7 +107,11 @@ public class InvoiceController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		model.setViewName("billing/createInvoice");
+		if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId)){
+			model.setViewName("billing/createProjectReceivableInvoice");
+		}else{
+			model.setViewName("billing/createInvoice");
+		}
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
