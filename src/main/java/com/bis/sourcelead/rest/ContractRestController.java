@@ -162,6 +162,7 @@ public class ContractRestController {
 		if(("New").equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
+
 		if(null == contract.getEnvelopId()&& ("Existing").equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
@@ -209,13 +210,12 @@ public class ContractRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
-			StringBuilder ownersb = new StringBuilder();
-			if(null != orgSpoc.getOwnerUser().getFirstName() && null != orgSpoc.getOwnerUser().getLastName()){
-				ownersb.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName());
-			}else{
-				ownersb.append(orgSpoc.getOwnerUser().getFirstName());
-			}
-			orgSpoc.setOwnerUserName(ownersb.toString());
+			if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
+                orgSpoc.setOwnerUserName(clientSb.toString());
+            }
+            if(orgSpoc.getClientUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
+                orgSpoc.setOwnerUserName(sb.toString());
+            }
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
