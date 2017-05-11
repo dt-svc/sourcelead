@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','CONTRACT_UUID','VARCHAR(20) NULL AFTER `UPDATED_BY`');

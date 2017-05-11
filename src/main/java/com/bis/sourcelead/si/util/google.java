@@ -1,11 +1,15 @@
 package com.bis.sourcelead.si.util;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -217,6 +221,8 @@ class google {
 							 if(linkobj.has("gd$etag")){
 							 	imgid = linkobj.get("gd$etag").toString().replace("\"", "");
 							 	imageurl = (imgurl + imgid + "?access_token=" + token).replace(".?", "?");
+							 	referContacts.setDocFile(fetchRemoteFile(imageurl));
+							 	referContacts.setFileContentType("image/png");
 							 }
 						 }
 							 
@@ -365,7 +371,23 @@ class google {
 	}
 	
 	   
-   
+	private byte[] fetchRemoteFile(String location) throws Exception {
+		  URL url = new URL(location);
+		  InputStream is = null;
+		  byte[] bytes = null;
+		  try {
+		    is = url.openStream ();
+		    bytes = IOUtils.toByteArray(is);
+		  } catch (IOException e) {
+		    //handle errors
+		  }
+		  finally {
+		    if (is != null) is.close();
+		  }
+		  return bytes;
+		}
+	
+	
 	/*
 	 * GET FRIENDS
 	 */

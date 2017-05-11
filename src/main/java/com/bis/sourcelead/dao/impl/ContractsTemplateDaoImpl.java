@@ -20,7 +20,9 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Repository
 public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
@@ -126,8 +128,19 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType, String contractsType,String contractStatus) throws Exception
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType, String contractsType,String contractStatus, User user, String userRoleName) throws Exception
 	{
+		
+		
+		String userRoleCondition = "";
+		Long userId = user.getId();
+		String userCode = user.getUserCode();
+		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+			userRoleCondition = "";
+		}else{
+			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.ownerUserId.id =:userId OR contracts.createdBy =:userCode) ";
+		}
+		
 		String[] type = contractsType.split(",");
 		
 		String subQuery = "";
@@ -177,8 +190,12 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+tabType+"%' "+subQuery+" and contracts.templateSubmissionStatus IN (:contractStatus)";
-			ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setCacheable(true).list();
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition+" and contracts.templateSubmissionStatus IN (:contractStatus)";
+			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setCacheable(true).list();
+			}else{
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setLong("userId", userId).setString("userCode", userCode).setCacheable(true).list();
+			}
 		}else{
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
@@ -189,8 +206,12 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contractOrgLocationId "
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%' "+subQuery;
-			ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
+			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setCacheable(true).list();
+			}else{
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setLong("userId", userId).setString("userCode", userCode).setCacheable(true).list();
+			}
 		}
 		
 		return ContractsList;
@@ -203,6 +224,19 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Contracts  contracts =  null;
 		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.id =:contractId").setLong("contractId", contractId).setCacheable(true).list();
+		if(null != contractsList && contractsList.size() >0){
+			contracts = contractsList.get(0);
+		}
+		return contracts;
+	}
+	
+	@Override
+	@Transactional
+	public Contracts getContractByContractUUID(String contractUUID)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Contracts  contracts =  null;
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.contractUUID =:contractUUID").setString("contractUUID", contractUUID).setCacheable(true).list();
 		if(null != contractsList && contractsList.size() >0){
 			contracts = contractsList.get(0);
 		}
@@ -256,6 +290,18 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		ContractsTemplate  contractsTemplate =  null;
+		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.templateUUID =:tempUUID").setString("tempUUID", tempUUID).setCacheable(true).list();
+		if(null != contractsTemplateList && contractsTemplateList.size() >0){
+			contractsTemplate = contractsTemplateList.get(0);
+		}
+		return contractsTemplate;
 	}
 
 }
