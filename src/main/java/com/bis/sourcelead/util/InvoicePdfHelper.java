@@ -1,43 +1,32 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
-import com.itextpdf.text.BaseColor;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.List;
-import com.itextpdf.text.ListItem;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
-import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -72,35 +61,62 @@ public class InvoicePdfHelper {
 	@Autowired
 	EmployeesService employeesService;
 	
+	@Autowired
+	private OrgRelationsService orgRelationsService; 
+	
 public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception{
 		
 	 try {
-         OutputStream file = new FileOutputStream(new File("/root/Desktop/PDF_FILE/Test.pdf"));
+         OutputStream file = new FileOutputStream(new File("C:/Users/BIS115/Desktop/New folder/Test.pdf"));
          Document document = new Document();
          PdfWriter writer = PdfWriter.getInstance(document, file);
          writer.createXmpMetadata();
          document.open();
          Paragraph p;
-         p= new Paragraph("InvoiveID -"+invoice.getInvoiceId(),font14);
+         p= new Paragraph("InvoiveID :"+invoice.getInvoiceId(),font10);
          p.setAlignment(Element.ALIGN_RIGHT);
          document.add(p);
-         p= new Paragraph("Invoive Date : 8-05-2017 ",font14);
+         String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
+         p= new Paragraph("Invoive Date :"+createdDate,font10);
          p.setAlignment(Element.ALIGN_RIGHT);
          document.add(p);
-         p= new Paragraph("Payment terms :20 Days",font14);
+         p= new Paragraph("Payment terms :"+invoice.getPaymentFrequency(),font10);
          p.setAlignment(Element.ALIGN_RIGHT);
          document.add(p);
-         p= new Paragraph("Due Date :31-12-2017",font14);
+         String dueDate = Constants.DF_DMY.format(invoice.getDueDate());
+         p= new Paragraph("Due Date :"+dueDate,font10);
          p.setAlignment(Element.ALIGN_RIGHT);
          document.add(p);
          
          PdfPTable table = new PdfPTable(2);
          table.setWidthPercentage(100);
          
-         PdfPCell from = getAddress("Billing From:","Rajashekar","rajasekhar@businessintelli.com","9959812177","Business Intelli Solurions","Hyderabad");
+		         OrgRelations orgRel = orgRelationsService.getOrRelationsById(invoice.getOrgRelationID().getId());
+		         StringBuilder address = new StringBuilder();
+		         if(null != orgLocation.getCity()){
+		         address.append(orgLocation.getCountry()).append(orgLocation.getState()).append(orgLocation.getCity()).toString();
+		         }else if(null != orgLocation.getState()){
+		         address.append(orgLocation.getCountry()).append(orgLocation.getState()).toString();	 
+		         }else{
+		         address.append(orgLocation.getCountry()).toString();	 
+		         }
+		         
+         PdfPCell from = getAddress("Billing From:",user.getFullName(),user.getEmail(),user.getMobilePhone(),orgLocation.getOrg().getOrgName(),address.toString());
          table.addCell(from);
          
-         PdfPCell to = getAddress("Billing To:","Snigitha","snigitha@businessintelli.com","8888888888","Tata Consultancy","USA");
+         
+		         StringBuilder clientAddress = new StringBuilder();
+		         if(null != orgRel.getResponderLocationId().getCity()){
+		         clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(orgRel.getResponderLocationId().getState()).append(orgRel.getResponderLocationId().getCity()).toString();
+		         }else if(null != orgRel.getResponderLocationId().getState()){
+		         clientAddress.append(orgRel.getResponderLocationId().getCountry()).append(orgRel.getResponderLocationId().getState()).toString();	 
+		         }else{
+		         clientAddress.append(orgRel.getResponderLocationId().getCountry()).toString();	 
+		         }
+         
+         
+         
+         PdfPCell to = getAddress("Billing To:",invoice.getContactUser().getFullName(),invoice.getContactUser().getEmail(),invoice.getContactUser().getMobilePhone(),orgRel.getResponderLocationId().getOrg().getOrgName(),clientAddress.toString());
          table.addCell(to);
          document.add(table);
          
@@ -116,25 +132,45 @@ public void createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
          table.addCell(getCell("Total Hours",Element.ALIGN_LEFT,font12b));
          table.addCell(getCell("Total",Element.ALIGN_LEFT,font12b));
          
-         table.addCell(getCell("Rajashekar", Element.ALIGN_LEFT, font12));
-         table.addCell(getCell("1-1-2017 to 12-12-2017", Element.ALIGN_RIGHT, font12));
-         table.addCell(getCell("55000", Element.ALIGN_RIGHT, font12));
-         table.addCell(getCell("812", Element.ALIGN_RIGHT, font12));
-         table.addCell(getCell("800000", Element.ALIGN_RIGHT, font12));
+        Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
+        for(InvoiceLineItems invoiceLineItems : invoiveAssociateData){
+        	StringBuffer name = new StringBuffer();
+        	if(null != invoiceLineItems.getCandidate().getLastName()){
+        		table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_LEFT, font10));	
+        	}else{
+        		table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_LEFT, font10));	
+        	}
+        	StringBuffer startAndEndDate = new StringBuffer();
+        	String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
+    		String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
+        	if(null != StartDate && !"".equalsIgnoreCase(StartDate) && null != endDate && !"".equalsIgnoreCase(endDate)){
+        		table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_RIGHT, font10));
+        	}else if(null != StartDate && !"".equalsIgnoreCase(StartDate)){
+        		table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_RIGHT, font10));
+        	}else{
+        		table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_RIGHT, font10));
+        	}
+        	if(null != invoiceLineItems.getRate() && !"".equalsIgnoreCase(invoiceLineItems.getRate())){
+        		table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_RIGHT, font10));	
+        	}else{
+        		table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+        	}
+        	if(null != invoiceLineItems.getTotalHours() && !"".equalsIgnoreCase(invoiceLineItems.getTotalHours())){
+        		table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_RIGHT, font10));
+        	}else{
+        		table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));	
+        	}
+        	if(null != invoiceLineItems.getAmount() && !"".equalsIgnoreCase(invoiceLineItems.getAmount())){
+        		 table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_RIGHT, font10));
+        	}else{
+        		table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+        	}
+           
+        }
+         
          document.add(table);
-         
-         String[] type = {"vat","vat"};
-         String[] percentage = {"%","flat"};
-         String currency[] = {"IST","USD"};
-         String basic[] = {"50","50"};
-         String tax[] = {"50","50"};
-         document.add(getTotalsTable(
-       		    "6.5", "5000",
-       		    "8000", "USD",
-       		    type, percentage,
-       		    basic, tax,
-       		    currency));
-         
+        
+         document.add(getTotalsTable(invoice));
          document.add(Chunk.NEWLINE);
          LineSeparator ls = new LineSeparator();
          ls.setAlignment(Element.ALIGN_BOTTOM);
@@ -164,48 +200,59 @@ private PdfPCell getAddress(String who, String name, String email, String mobile
 {
 	PdfPCell cell = new PdfPCell();
 	cell.setBorder(cell.NO_BORDER);
-	cell.addElement(new Paragraph(who,font12));
-	cell.addElement(new Paragraph(name,font12));
-	cell.addElement(new Paragraph(email,font12));
-	cell.addElement(new Paragraph(mobile,font12));
-	cell.addElement(new Paragraph(orgName,font12));
-	cell.addElement(new Paragraph(address,font12));
+	cell.addElement(new Paragraph(who,font12b));
+	cell.addElement(new Paragraph(name,font10));
+	cell.addElement(new Paragraph(email,font10));
+	cell.addElement(new Paragraph(mobile,font10));
+	cell.addElement(new Paragraph(orgName,font10));
+	cell.addElement(new Paragraph(address,font10));
 	return cell;
 }
 
 
-public PdfPTable getTotalsTable(String tBase, String tTax, String tTotal,
-	    String tCurrency, String[] type, String[] percentage, String base[],
-	    String tax[], String currency[]) throws DocumentException {
-	    PdfPTable table = new PdfPTable(6);
+public PdfPTable getTotalsTable(Invoice invoice) throws DocumentException {
+	    PdfPTable table = new PdfPTable(5);
 	    table.setWidthPercentage(100);
-	    table.setWidths(new int[]{1, 1, 3, 3, 3, 1});
+	    table.setWidths(new int[]{1, 1, 3, 3, 3});
 	    table.addCell(getCell("TAX", Element.ALIGN_LEFT, font12b));
 	    table.addCell(getCell("%", Element.ALIGN_RIGHT, font12b));
 	    table.addCell(getCell("Base amount:", Element.ALIGN_LEFT, font12b));
 	    table.addCell(getCell("Tax amount:", Element.ALIGN_LEFT, font12b));
-	    table.addCell(getCell("Total:", Element.ALIGN_LEFT, font12b));
-	    table.addCell(getCell("", Element.ALIGN_LEFT, font12b));
-	    int n = type.length;
-	    for (int i = 0; i < n; i++) {
-	        table.addCell(getCell(type[i], Element.ALIGN_RIGHT, font12));
-	        table.addCell(getCell(percentage[i], Element.ALIGN_RIGHT, font12));
-	        table.addCell(getCell(base[i], Element.ALIGN_RIGHT, font12));
-	        table.addCell(getCell(tax[i], Element.ALIGN_RIGHT, font12));
-	        double total = Double.parseDouble(base[i]) + Double.parseDouble(tax[i]);
-	        table.addCell(getCell("5000", Element.ALIGN_RIGHT, font12));
-	        table.addCell(getCell(currency[i], Element.ALIGN_LEFT, font12));
+	    table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));
+	    
+	    Set<InvoiceTax> invoiveTaxDetails = invoice.getInvoiceTax();
+        for(InvoiceTax InvoiceTax:invoiveTaxDetails){
+	        table.addCell(getCell(InvoiceTax.getTaxName(), Element.ALIGN_RIGHT, font10));
+	        table.addCell(getCell(InvoiceTax.getTaxType(), Element.ALIGN_RIGHT, font10));
+	        table.addCell(getCell(InvoiceTax.getTaxValue(), Element.ALIGN_RIGHT, font10));
+	        table.addCell(getCell(InvoiceTax.getTaxAmount(), Element.ALIGN_RIGHT, font10));
+	        table.addCell(getCell("currency", Element.ALIGN_LEFT, font10));
 	    }
-	    PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
-	    cell.setColspan(2);
+        
+        table = grandTotaltable(invoice);
+	    /*PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
 	    cell.setBorder(PdfPCell.NO_BORDER);
 	    table.addCell(cell);
-	    table.addCell(getCell(tBase, Element.ALIGN_RIGHT, font12b));
-	    table.addCell(getCell(tTax, Element.ALIGN_RIGHT, font12b));
-	    table.addCell(getCell(tTotal, Element.ALIGN_RIGHT, font12b));
-	    table.addCell(getCell(tCurrency, Element.ALIGN_LEFT, font12b));
+	    table.setWidths(new int[]{5,3});
+	    table.addCell(getCell("GrandTotal"+invoice.getTotal(), Element.ALIGN_LEFT, font12b));
+	    table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));*/
 	    return table;
 	}
+private PdfPTable grandTotaltable(Invoice invoice) throws DocumentException {
+	 PdfPTable table = new PdfPTable(2);
+	 PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+	 cell.setBorder(PdfPCell.NO_BORDER);
+	 table.addCell(cell);
+	 table.setWidthPercentage(100);
+	 table.setWidths(new int[]{5, 3});
+	 table.addCell(getCell("GrandTotal:"+invoice.getTotal(), Element.ALIGN_LEFT, font12b));
+	 table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));
+	 table.getDefaultCell().setBorder(0);
+	return table;
+}
+
+
+
 		/*String[] headers = Constants.INVOICE_PDF_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
