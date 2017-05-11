@@ -16,12 +16,12 @@ body{
 	background: #629794;
 	box-shadow:none;
 }
-.main-header span.logo {
+/* main-header span.logo {
 	background:none;
 }
-.main-header span.logo:hover {
+main-header span.logo:hover {
 	background:#5B908D;
-}
+} */
 .main-header .navbar .fa-bars:hover{
 	background:rgba(0, 0, 0, 0.2);
 }

@@ -222,6 +222,13 @@ public class Constants {
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	
 	public static String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
+	
+	public static String APPROVE_CONTRACT = "Approve Contract";
+	
+	public static String REJECT_CONTRACT = "Reject Contract";
+	
+	public static String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
+	
 	public static String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	
 	public static String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
