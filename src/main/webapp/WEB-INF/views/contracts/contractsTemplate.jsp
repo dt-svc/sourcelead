@@ -106,7 +106,7 @@ function preparedTemplateList(data){
          result = result + '<td>';
         /*  result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>'; */
          '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF('+report.templateUUID+',)"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
+         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\')"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
          '</sec:authorize>';
          result = result + '</td>';
          result = result + '<td>';
@@ -142,9 +142,10 @@ function listTemplatePagination(){
 </script>
 
 <script type="text/javascript">
-function previewPDF(id) {
+function previewPDF(id,tempName) {
+	alert(tempName);
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/testController/'+id+'','_newtab');
+	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
 }</script>
 
  <script>

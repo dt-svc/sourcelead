@@ -1203,7 +1203,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public ContractsTemplate getContractTemplateByTemplateUUID(Long tempUUID) {
+	public ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID) {
 		return contractsTemplateDao.getContractTemplateByTemplateUUID(tempUUID);
 	}
 	

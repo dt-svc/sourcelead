@@ -49,7 +49,7 @@ public interface ContractsTemplateService {
 
 	Contracts saveExistigContract(JSONObject jsonObj, MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception;
 
-	ContractsTemplate getContractTemplateByTemplateUUID(Long tempUUID);
+	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
 
 	
 }
