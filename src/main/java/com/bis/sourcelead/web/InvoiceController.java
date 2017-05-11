@@ -47,8 +47,11 @@ public class InvoiceController {
 	@Autowired
 	OrgRelationsService orgRelationsService;
 	
-	 @Autowired
-	 CommonUtil commonUtil;
+	@Autowired
+	CommonUtil commonUtil;
+	 
+	@Autowired
+	private ProjectsService projectsService;
 	 
 /**
  * @author Laxman
@@ -188,6 +191,51 @@ public class InvoiceController {
 		// TODO Auto-generated method stub
 		
 		return false;
+	}
+	
+	
+	
+	@RequestMapping(value = "/createInvoiceProjectBased")
+	public ModelAndView createInvoiceProjectBased(HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+
+		if(null != clientList){
+			for (OrgRelations orgRelations : clientList) {
+				String orgName = "";
+				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				}
+				orgRelations.setOrgName(orgName);
+			}
+			 model.addObject("clientList", clientList);
+		}
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+/*		
+		List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
+		if(null != projectsList){
+			 model.addObject("projectsList", projectsList);
+		}*/
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		model.setViewName("billing/createProjectReceivableInvoice");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Receivable);
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
 	}
 
 }

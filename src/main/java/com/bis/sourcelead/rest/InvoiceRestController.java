@@ -1,13 +1,18 @@
 package com.bis.sourcelead.rest;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import java.io.File;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -33,17 +38,27 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.beans.TimesheetHours;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
+
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
+
+
+import com.bis.sourcelead.entity.Org;
+
+import com.bis.sourcelead.entity.InvoicePayment;
+
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -54,11 +69,13 @@ import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @RestController
 public class InvoiceRestController {
@@ -87,6 +104,7 @@ public class InvoiceRestController {
 	private InvoicePaymentService invoicePaymentService;
 	
 	@Autowired
+
 	private InvoiceLineItemService invoiceLineItemService;
 	
 	@Autowired
@@ -97,6 +115,14 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private InvoiceTaxService invoiceTaxService;
+
+	@Autowired
+	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -141,7 +167,7 @@ public class InvoiceRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
 		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
 		 final Map files = request.getFileMap();
@@ -151,7 +177,9 @@ public class InvoiceRestController {
 				attachedfileList.add(multiFile); 
 			}
 		}
+
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
+		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
 		if(null !=invoice){
 			invoiceSaved = "success";
 		}
@@ -339,6 +367,7 @@ public class InvoiceRestController {
 		return invoicePaymentSaved;
 	} 
 
+
 	
 	  @RequestMapping(value = "/getViewInvoice", method = RequestMethod.GET)
 	 	public @ResponseBody  String getViewInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -467,4 +496,88 @@ public class InvoiceRestController {
 				} 
 
 		}  
+
+	//******************* Added By Rajashekar
+	
+	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
+	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
+		
+		Projects projects = projectsService.getProjectById(projectId);
+		List<String> frequencyDates = new ArrayList<>();
+		
+		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+		
+				for (Map.Entry<String, String> entry : map.entrySet())
+				{
+					StringBuffer sb = new StringBuffer();
+				    sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
+				    frequencyDates.add(sb.toString());
+				}
+		return commonUtil.toJSON(frequencyDates);
+	} 
+	
+	
+	
+	@RequestMapping(value = "/getAllProjectAssignedMembers", method = RequestMethod.GET)
+	public @ResponseBody String getAllProjectAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,@RequestParam(value = "frequency", required = false) String frequency,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String frequencyArray[] = frequency.split("/");
+		String startDateStr = frequencyArray[0];
+		String endDateStr = frequencyArray[1];
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        
+        Date startDate = format.parse(startDateStr);
+		Date endDate = format.parse(endDateStr);
+		
+		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
+		
+		for(ProjectMembers projectMember :projectMembersList){
+			Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
+			StringBuilder empName =new StringBuilder();
+			if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
+				empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+			}else{
+				empName.append(projectMember.getEmployee().getUser().getFirstName());
+			}
+			projectMember.setEmpName(empName.toString());
+			projectMember.setUserId(projectMember.getEmployee().getUser().getId().toString());
+			projectMember.setStartDate(startDateStr);
+			projectMember.setEndDate(endDateStr);
+			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+		}
+		return commonUtil.toJSON(projectMembersList);
+	} 
+	
+//	
+	@RequestMapping(value = "/saveProjectInvoice", method = RequestMethod.POST)
+	public @ResponseBody String saveProjectInvoice(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,MultipartHttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		String invoiceSaved = "failed";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
+		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
+		 final Map files = request.getFileMap();
+		for(int i=0;i<attcahmentMaxRowNumber;i++){
+			MultipartFile  multiFile = (MultipartFile)files.get(i+"invoicedocFile");
+			if(multiFile != null && !multiFile.isEmpty()){
+				attachedfileList.add(multiFile); 
+			}
+		}
+		Invoice invoice = invoiceService.saveProjectInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
+		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
+		if(null !=invoice){
+			invoiceSaved = "success";
+		}
+		return "";
+}
+	//******************* End By Rajashekar
+
 }

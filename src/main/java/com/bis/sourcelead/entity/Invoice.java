@@ -50,6 +50,10 @@ public class Invoice {
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
+	@ManyToOne
+    @JoinColumn(name="PROJECT_ID", nullable=false ) 
+	private Projects projectID;
+	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
@@ -173,6 +177,16 @@ public class Invoice {
 		this.id = id;
 	}
 
+
+	public Projects getProjectID()
+	{
+		return projectID;
+	}
+
+	public void setProjectID(Projects projectID)
+	{
+		this.projectID = projectID;
+	}
 
 	public OrgRelations getOrgRelationID() {
 		return orgRelationID;
