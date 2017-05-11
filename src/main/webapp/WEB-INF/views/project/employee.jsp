@@ -354,7 +354,8 @@
 	 		             var projectEndDate = jsonData.endDate;
 	 		             var endDate = "";
 	 		             if(projectEndDate != null && projectEndDate != "" && projectEndDate != 'undefined'){
-	 		            	 endDate = new Date(projectEndDate);
+	 		            	 var fromEnd = projectEndDate.split("-");
+	 		            	 endDate = new Date(fromEnd[2], fromEnd[1] - 1, fromEnd[0]);
 	 	 		             endDate.setDate(endDate.getDate()); 
 	 		             }
 	 		             
