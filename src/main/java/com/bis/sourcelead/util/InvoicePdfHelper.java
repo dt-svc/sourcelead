@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,14 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -65,13 +70,20 @@ public class InvoicePdfHelper {
 	private OrgRelationsService orgRelationsService; 
 	
 public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception{
+	
+	
+	
 	File invoiceFile = new File(invoice.getInvoiceId()+".pdf");
 	OutputStream file = new FileOutputStream(invoiceFile);
 	 try {
+		 
          Document document = new Document();
          PdfWriter writer = PdfWriter.getInstance(document, file);
          writer.createXmpMetadata();
          document.open();
+         
+         document = addLogoToPdfFile(document,org);
+
          Paragraph p;
          p= new Paragraph("InvoiveID :"+invoice.getInvoiceId(),font10);
          p.setAlignment(Element.ALIGN_RIGHT);
@@ -141,16 +153,18 @@ public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
         		table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_LEFT, font10));	
         	}
         	StringBuffer startAndEndDate = new StringBuffer();
+        	
+        	
+        	
         	if(null != invoiceLineItems.getStartDate() && null != invoiceLineItems.getEndDate()){
-        	String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-    		String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
-        	if(null != StartDate && !"".equalsIgnoreCase(StartDate) && null != endDate && !"".equalsIgnoreCase(endDate)){
+        		String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
+        		String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
         		table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_RIGHT, font10));
-        	}else if(null != StartDate && !"".equalsIgnoreCase(StartDate)){
+        	}else if(null != invoiceLineItems.getStartDate()){
+        		String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
         		table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_RIGHT, font10));
         	}else{
         		table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_RIGHT, font10));
-        	}
         	}
         	if(null != invoiceLineItems.getRate() && !"".equalsIgnoreCase(invoiceLineItems.getRate())){
         		table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_RIGHT, font10));	
@@ -189,6 +203,22 @@ public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
 	return invoiceFile;
 
 }
+private Document addLogoToPdfFile(Document document, Org org) throws MalformedURLException, IOException, DocumentException
+{
+    Image image = Image.getInstance(org.getDocFile());
+    image.scalePercent(300f);
+    image.setAbsolutePosition(0, (float) (PageSize.A4.getHeight() - 25.0));
+    System.out.println(image.getScaledHeight());
+    image.setAbsolutePosition(100, 500);
+    //Fixed Positioning
+    image.setAbsolutePosition(40f, 780f);
+    //Scale to new height and new width of image
+    image.scaleAbsolute(100, 50);
+    document.add(image);
+	return document;
+}
+
+
 private PdfPCell getCell(String value, int alignLeft, Font font)
 {
 	PdfPCell cell = new PdfPCell();
