@@ -204,7 +204,7 @@ function getTemplateList(){
     	   }else if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
     		   preparedContractListWTV(data);
     	   }else if(contractSubmissionType == 'Finalized'){
-    		   preparedContractListFinalized(data);
+    		   preparedContractListFinalize(data);
     	   }else if(contractSubmissionType == 'EXPIRED'){
     		   preparedContractListExpired(data);
     	   }else if(contractSubmissionType == 'REJECTED'){
