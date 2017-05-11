@@ -117,10 +117,11 @@ public class ContractRestController {
 		
 	} 
 	
-	@RequestMapping(value = "/testController/{id}", method = RequestMethod.GET)
-	public @ResponseBody  void testController(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/testController/{id}/{tempName}", method = RequestMethod.GET)
+	public @ResponseBody  void testController(@PathVariable("id") String id,@PathVariable("tempName") String tempName,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
+		//ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));	
+		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(id);	
 		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
 		String totalBody = header + contractsTemplate.getTemplateContent();
     	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
@@ -143,7 +144,8 @@ public class ContractRestController {
 	@RequestMapping(value = "/viewContractPdf/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void viewContractPdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
+		//Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
+		Contracts contract =	contractsTemplateService.getContractByContractUUID(id);		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
