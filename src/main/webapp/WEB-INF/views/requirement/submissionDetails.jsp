@@ -718,7 +718,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Time</strong>';
+	                    	 result = result + '<strong>Local Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
                             	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.startTimeStr+' to '+report.endTimeStr+'">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
