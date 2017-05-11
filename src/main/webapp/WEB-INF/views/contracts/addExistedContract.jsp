@@ -55,7 +55,7 @@
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
 	                        </div>
               </div>
             </div>  			
@@ -67,7 +67,7 @@
           	<div class="form-group">
               <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title">
               </div>
             </div>
                        
@@ -150,7 +150,7 @@
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
-                  </select>
+                   <option value=''>Select Vendor Contact</option></select>
               </div>
             </div>
             
@@ -158,7 +158,7 @@
              <div class="form-group" id="clientDiv" style="display: none;">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Vendor Name">
+                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -170,8 +170,8 @@
             <div class="form-group" id="clientContactDiv" style="display: none;">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact">
-                  </select>
+                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+                  <option value=''>Select Client Contact</option></select>
               </div>
             </div>
         
@@ -180,7 +180,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250"></textarea>
+					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"></textarea>
               </div>
             </div>    
             
@@ -381,7 +381,11 @@
     <script>
     $("#uasrch").selectpicker('refresh');
     </script>
-
+<script>
+function removeValid(){
+$('#startDateDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
 
 <script>
 	$(function() {
@@ -394,7 +398,8 @@
                   var dt = toDate("#startDate");
                   dt.setDate(dt.getDate() + 1);
                   $("#endDate").datepicker("option", "minDate", dt);
-              }
+                  removeValid();  
+            }
         });
         
         $('#endDate').datepicker({
@@ -463,7 +468,7 @@ function getVendorContacts(){
 	        var opt = json[i];
 	            // need to use in edit
        			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+"</option>";
+	        output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
 			}
        	    $("#vendorContact").empty();
 	        $("#vendorContact").append(output);
@@ -488,7 +493,7 @@ function getClientContacts(){
 	var opt = json[i];
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
