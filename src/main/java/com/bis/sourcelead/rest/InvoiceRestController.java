@@ -329,6 +329,10 @@ public class InvoiceRestController {
 			invoice.setTotal(invoice.getTotal());
 			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
 			invoice.setPaymentStatus(invoice.getPaymentStatus());
+			if(null != invoice.getProjectID()){
+				invoice.setProjectId(invoice.getProjectID().getId().toString());	
+			}
+			
 			
 		}
 	    resultJson = commonUtil.toJSON(invoiceList);

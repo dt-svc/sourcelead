@@ -166,7 +166,9 @@ public class Invoice {
 	@Transient
 	List<InvoiceTax> invoiceTaxList;
 
-
+	@Transient
+	private String projectId;
+	
 	public Long getId()
 	{
 		return id;
@@ -543,5 +545,13 @@ public class Invoice {
 
 	public void setInvoiceTaxList(List<InvoiceTax> invoiceTaxList) {
 		this.invoiceTaxList = invoiceTaxList;
+	}
+
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
 	}
 }

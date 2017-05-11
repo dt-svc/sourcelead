@@ -625,10 +625,19 @@ function getInvoiceList(){
         		}else{
         			invoiceDateStr = "";
         		}
-        		
+        		if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+        			projectId = report.projectId;
+        		}else{
+        			projectId = "";
+        		}
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'"/>">'+report.invoiceId+'</a></div>   ';
+				if(report.invoiceStatus == "DRAFT"){
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+projectId+'">'+report.invoiceId+'</a></div>   ';
+				}
+				if(report.invoiceStatus == "SENT"){
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'"/>">'+report.invoiceId+'</a></div>   ';				
+				}
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
@@ -658,7 +667,7 @@ function getInvoiceList(){
 				
 				result = result +'         <td> ';
 				 
-				if(report.paymentStatus == "Paid"){
+				if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 					result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
 				}else{
 					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
