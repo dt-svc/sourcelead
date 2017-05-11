@@ -82,6 +82,7 @@ public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
          writer.createXmpMetadata();
          document.open();
          
+         // save image file in pdf
          document = addLogoToPdfFile(document,org);
 
          Paragraph p;
