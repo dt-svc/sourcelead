@@ -71,10 +71,10 @@
               <div class="col-md-8" id="titleDiv">
 	              <c:choose>
 				    <c:when test="${!empty contract.contractTitle}">
-				        <input type="text" readonly class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+				        <input type="text" readonly class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_length length1-250" field-name="Contract Title">
 				    </c:when>
 				    <c:otherwise>
-				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
+				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
 				    </c:otherwise>
 				 </c:choose>
               </div>
@@ -198,6 +198,7 @@
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+							    <option value=''>Select Vendor Contact</option>
 							    <c:forEach var="element" items="${orgSpocList}" >
 							    	<c:if test = "${element.tempOwnerId == contract.orgRelations.id}">
 								         <option value="${element.tempOwnerId}">${element.spocName}</option>
@@ -209,7 +210,8 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact"></select>
+					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+					        <option value=''>Select Vendor Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
               </div>
@@ -219,7 +221,7 @@
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Vendor Name">
+                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
@@ -233,7 +235,7 @@
               <div class="col-md-8">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
-		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact">
+		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
 							    <c:forEach var="element" items="${orgSpocList}" >
 							    	<c:if test = "${element.spocUserId == contract.orgRelations.id}">
 								         <option value="${element.spocUserId}">${element.ownerName}</option>
@@ -245,7 +247,8 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact"></select>
+					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+					        <option value=''>Select Client Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
               </div>
@@ -275,7 +278,7 @@
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250">${contract.description}</textarea>
+					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
             
@@ -495,6 +498,7 @@
                   var dt = toDate("#startDate");
                   dt.setDate(dt.getDate() + 1);
                   $("#endDate").datepicker("option", "minDate", dt);
+                  removeValid();
               }
         });
         
@@ -518,7 +522,11 @@ function toDate(selector) {
 }
 </script>
 
-
+<script>
+function removeValid(){
+$('#startDateDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
 <!-- <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("startDate").value;
@@ -738,19 +746,27 @@ function getContractTemplates(){
 <script>
 function contractTypeLabels(){
 	var contractType = $("#contractType").val();
-	if(contractType == ""){
+/* 	if(contractType == ""){
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
+		
+		
 		hideCommonSOWFields();
-	}
+	} */
 	if(contractType == "Client MSA"){
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		$('#clientOrgRelationId').removeAttr('data-validation-optional');
+		$('#clientOrgRelationId').attr("data-validation","required");
+		
+		$('#clientContact').removeAttr('data-validation-optional');
+		$('#clientContact').attr("data-validation","required");
 		
 		hideCommonSOWFields();
 	}
@@ -760,6 +776,11 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
 		
+		$('#orgRelationId').removeAttr('data-validation-optional');
+		$('#orgRelationId').attr("data-validation","required");
+		
+		$('#vendorContact').removeAttr('data-validation-optional');
+		$('#vendorContact').attr("data-validation","required");
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -796,6 +817,9 @@ function contractTypeLabels(){
 		$('#paymentFrequency').attr('data-validation-optional',"true");
 		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
 		$('#taxFlatRewardValue').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation');
+		$('#flatReward').attr('data-validation-optional',"true");
 		
 		
 		$('#clientOrgRelationId').removeAttr('data-validation');
@@ -1266,6 +1290,12 @@ function validateContractTitle(){
 	
 }
 
+</script>
+
+<script>
+function removeValid(){
+$('#startDateDiv').find('p.jquery_form_error_message').remove();
+}
 </script>
 
 <!-- Footer Area -->
