@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <script src="resources/js/formvalidator.js"></script>
 <!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
@@ -37,15 +38,29 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
-                    <option value=''>Contract Type</option>
-                    <option>Client MSA</option>
-                    <option>Vendor MSA</option>
-                    <option>Client SOW</option>
-                    <option>Vendor SOW</option>
-                    <option>NDA</option>
-                    <option>NSA</option>
-                  </select>
+              	<c:choose>
+				    <c:when test="${!empty contract.contractType}">
+				        <select class="chosen-select form-control" disabled="true" id="contractType" name="contractType" data-validation="required" field-name="Contract Type">
+		                    <option ${contract.contractType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+		                    <option ${contract.contractType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+		                    <option ${contract.contractType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+		                    <option ${contract.contractType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+		                    <option ${contract.contractType  == 'NDA' ? 'selected' : ''}>NDA</option>
+		                    <option ${contract.contractType  == 'NCA' ? 'selected' : ''}>NCA</option>
+		                 </select>
+				    </c:when>
+				    <c:otherwise>
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option>Client MSA</option>
+		                    <option>Vendor MSA</option>
+		                    <option>Client SOW</option>
+		                    <option>Vendor SOW</option>
+		                    <option>NDA</option>
+		                    <option>NCA</option>
+		                 </select>
+				    </c:otherwise>
+				 </c:choose>
             </div>
             </div>				
 			</div>
@@ -54,34 +69,84 @@
           	<div class="form-group">
               <label class="col-md-4">Contract Title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="titleDiv">
-                <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
+	              <c:choose>
+				    <c:when test="${!empty contract.contractTitle}">
+				        <input type="text" readonly class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title">
+				    </c:when>
+				    <c:otherwise>
+				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_Space validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
+				    </c:otherwise>
+				 </c:choose>
               </div>
             </div>
                        
             <div class="form-group">
               <label class="col-md-4">Select Template<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template">
-                  </select>
-              </div>
-              <div class="col-md-8">
+              	<c:choose>
+				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
+				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template">
+						    <c:forEach var="element" items="${contractsTemplateList}" >
+						    	<c:if test = "${element.id == contract.contractsTemplate.id}">
+							         <option selected value="${element.id}">${element.templateName}</option>
+							    </c:if>
+							    <c:if test = "${element.id != contract.contractsTemplate.id}">
+							         <option value="${element.id}">${element.templateName}</option>
+							    </c:if>
+							</c:forEach>
+						</select>
+				    </c:when>
+				    <c:otherwise>
+				        <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template"></select>
+				    </c:otherwise>
+				 </c:choose>
               </div>
             </div>  
             
-            <div class="form-group" id="requirementDiv" style="display: none;">
+            <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
-                  </select>
+              	<c:choose>
+              		<c:when test="${fn:length(requirementList) gt 0}">
+	              		<select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
+						    <c:forEach var="element" items="${requirementList}" >
+						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
+							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
+							    </c:if>
+							    <c:if test = "${element.id != contract.requirementSubmission.requirement.id}">
+							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
+							    </c:if>
+							</c:forEach>
+						</select>
+				    </c:when>
+				    <c:otherwise>
+				        <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement"></select>
+				    </c:otherwise>
+				 </c:choose>
               </div>
             </div>
             
-            <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
+            <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
-                  </select>
-              </div>
+	              <c:choose>
+	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
+		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant">
+							    <c:forEach var="element" items="${requirementSubmissionsList}" >
+							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
+								         <option value="${element.id}">${element.candidateName}</option>
+								    </c:if>
+								    <c:if test = "${element.id != contract.requirementSubmission.id}">
+								         <option value="${element.id}">${element.candidateName}</option>
+								    </c:if>
+								</c:forEach>
+							</select>
+					    </c:when>
+					    <c:otherwise>
+					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant"></select>
+					    </c:otherwise>
+					 </c:choose>
+              	</div>
             </div>
                      
              
@@ -91,12 +156,8 @@
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
                   <option value=''>Select Owner</option>
                   <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                     <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
                   </c:forEach>
-                   <!--  <option>Select Owner</option>ER
-                    <option>Owner-1</option>
-                    <option>Owner-2</option>
-                    <option>Owner-3</option> -->
                   </select>
               </div>
           </div>             
@@ -107,60 +168,86 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
-						  <input type="text" class="form-control calendar" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date" readonly="readonly">
+						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date" readonly="readonly">
 						</div>
 					  </div>
 					  <div class="col-lg-6">
 						<div id="endDateDiv">
-						  <input type="text" class="form-control calendar" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
+						  <input type="text" class="form-control calendar" value="${contract.endDateStr}" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
 						</div>
 					  </div>
 					</div>
               </div>
             </div>
           
-         <div class="form-group" id="vendorDiv" style="display: none;">
+         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="required" field-name="Vendor Name">
+                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
                     <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
-                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
+                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
-                  
-                   <!--  <option>Vendor-1</option>
-                    <option>Vendor-2</option>
-                    <option>Vendor-3</option> -->
                   </select>
               </div>
           </div>                      
                       
-            <div class="form-group" id="vendorContactDiv"  style="display: none;">
+            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
-                  </select>
+              		<c:choose>
+	              		<c:when test="${fn:length(orgSpocList) gt 0}">
+		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+							    <c:forEach var="element" items="${orgSpocList}" >
+							    	<c:if test = "${element.tempOwnerId == contract.orgRelations.id}">
+								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+								    </c:if>
+								    <c:if test = "${element.tempOwnerId != contract.orgRelations.id}">
+								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+								    </c:if>
+								</c:forEach>
+							</select>
+					    </c:when>
+					    <c:otherwise>
+					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact"></select>
+					    </c:otherwise>
+					 </c:choose>
               </div>
             </div>
             
             
-             <div class="form-group" id="clientDiv" style="display: none;">
+             <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Vendor Name">
+                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Vendor Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
-                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
+                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
                   </select>
               </div>
           </div>                      
                       
-            <div class="form-group" id="clientContactDiv" style="display: none;">
+            <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact">
-                  </select>
+              		<c:choose>
+	              		<c:when test="${fn:length(orgSpocList) gt 0}">
+		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact">
+							    <c:forEach var="element" items="${orgSpocList}" >
+							    	<c:if test = "${element.spocUserId == contract.orgRelations.id}">
+								         <option value="${element.spocUserId}">${element.ownerName}</option>
+								    </c:if>
+								    <c:if test = "${element.spocUserId != contract.orgRelations.id}">
+								         <option value="${element.spocUserId}">${element.ownerName}</option>
+								    </c:if>
+								</c:forEach>
+							</select>
+					    </c:when>
+					    <c:otherwise>
+					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact"></select>
+					    </c:otherwise>
+					 </c:choose>
               </div>
             </div>
         
@@ -172,23 +259,30 @@
                   <option value=''>--Select Approver--</option>
                   <c:forEach var="user" items="${userList}">
                    <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
-	                     <option value="${user.id}">${user.firstName} ${user.lastName}</option>
+	                     <option value="${user.id}" ${user.id  == contract.approverUser.id ? 'selected' : ''}>${user.firstName} ${user.lastName}</option>
                   </c:forEach>
                   </select>
               </div>
-          </div> 
+          </div>
+          
+	        <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+	              <label class="col-md-4">Offer Rate</label>
+	              <div class="col-md-8">
+	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
+	              </div>
+            </div>  
                        
             <div class="form-group">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250"></textarea>
+					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_Space validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
             
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+                <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
               </div>
             </div>         
             
@@ -196,43 +290,43 @@
       </div>
       
       
-<div class="row newContrBill">
+	<div class="row newContrBill">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm" id="billingDiv" >
            <h2>Billing Details</h2>
            
-           <div class="form-group" id="hoursPerWeekDiv" style="display: none;">
+           <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Hours Per Week<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-8">
-				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="" placeholder="Enter Hours" field-name="Hours Per Week">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${contract.hoursPerWeek}" placeholder="Enter Hours" field-name="Hours Per Week">
 	              </div>
             </div>
             
-            <div class="form-group" id="overTimeHoursDiv" style="display: none;">
+            <div class="form-group" id="overTimeHoursDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Overtime Hours<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="" placeholder="Enter Hours" field-name="Overtime Hours">
+					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" placeholder="Enter Hours" field-name="Overtime Hours">
               	</div> 
             </div>
             
-            <div class="form-group" id="totalHoursEstimatedDiv" style="display: none;">
+            <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Total Hours Estimated<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
-           <div class="form-group" id="overtimeRateDiv" style="display: none;">
+           <div class="form-group" id="overtimeRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Overtime Rate<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
               		<div class="row">
 					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="" placeholder="Overtime Rate" field-name="Overtime Rate">
+					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" placeholder="Overtime Rate" field-name="Overtime Rate">
 					  </div>
 					  <div class="col-lg-4">
 						<select class="form-control selectpicker" id="overtimeRateType" name="overtimeRateType" field-name="Overtime Rate Type">
 						  <option value="">Select Type</option>
-						  <option value="FLAT">Flat</option>
-						  <option value="PERCENTAGE">Percentage</option>
+						  <option ${contract.overtimeRateType == 'FLAT' ? 'selected' : ''} value="FLAT">Flat</option>
+						  <option ${contract.overtimeRateType == 'PERCENTAGE' ? 'selected' : ''} value="PERCENTAGE">Percentage</option>
 						</select>
 					  </div>
 					</div>
@@ -240,9 +334,11 @@
             </div>
            
             <div class="form-group">
-              <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-                   <div class="clearfix col-md-8" id="errBilling">
+                	<div class="col-lg-8">
+					  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" data-validation="required validate_int validate_length length1-8" field-name="Billing Amount">
+					</div>
+                   <%-- <div class="clearfix col-md-8" id="errBilling">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
                           <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
@@ -252,7 +348,7 @@
                       </div>
                       <div class="col-md-7 paddingLeft" id="percentageReward">
                         <div class="form-group positionRelative iconHolder percentage fullWid" >
-                          <input type="text" class="form-control input-sm" field-name="Percentage" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
+                          <input type="text" class="form-control input-sm" field-name="Percentage" value="${contract.billingAmount}" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
                         </div>
@@ -273,17 +369,17 @@
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> --%>
             </div>
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
                   <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
                     <option value="">Select Cycle</option>
-                    <option value="Weekly">Weekly</option>
-                    <option value="Bi-Weekly">Bi-Weekly</option>
-                    <option value="Semi-Monthly">Semi-Monthly</option> 
-                    <option value="Monthly">Monthly</option>
+                    <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
+                    <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
+                    <option ${contract.invoiceFrequency == 'Semi-Monthly' ? 'selected' : ''} value="Semi-Monthly">Semi-Monthly</option> 
+                    <option ${contract.invoiceFrequency == 'Monthly' ? 'selected' : ''} value="Monthly">Monthly</option>
                   </select>
               </div>
             </div>
@@ -293,18 +389,18 @@
               <div class="col-md-8" id="errPayment">
                   <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
                     <option value="">Select Frequency</option>
-                    <option value="10 days">10 days</option>
-                    <option value="15 days">15 days</option>
-                    <option value="30 days">30 days</option>
-                    <option value="45 days">45 days</option>
-                     <option value="60 days">60 days</option>
+                    <option ${contract.paymentTerm == '10 days' ? 'selected' : ''} value="10 days">10 days</option>
+                    <option ${contract.paymentTerm == '15 days' ? 'selected' : ''} value="15 days">15 days</option>
+                    <option ${contract.paymentTerm == '30 days' ? 'selected' : ''} value="30 days">30 days</option>
+                    <option ${contract.paymentTerm == '45 days' ? 'selected' : ''} value="45 days">45 days</option>
+                    <option ${contract.paymentTerm == '60 days' ? 'selected' : ''} value="60 days">60 days</option>
                   </select>
               </div>
             </div>
             
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
-                <label class="col-md-4">Tax<span class="text-danger">&nbsp;*</span></label>
+                <label class="col-md-4">Tax</label>
                    <div class="clearfix col-md-8" id="errTax">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
@@ -315,7 +411,7 @@
                       </div>
                       <div class="col-md-7 paddingLeft" id="taxPercentageReward">
                         <div class="form-group positionRelative iconHolder percentage fullWid" > 
-                          <input type="text" class="form-control input-sm" field-name="Percentage" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
+                          <input type="text" class="form-control input-sm" field-name="Percentage" value="${contract.tax}" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
                         </div>
@@ -345,10 +441,11 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right mt">
-            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary pull-left">
-            <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left">
+          <input type="hidden" name="contrId" id="contrId" value="${contract.id}"/>
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary ml10 pull-left">
+            <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
 
-            <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:none">
+            <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
             <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
@@ -790,6 +887,9 @@ function hideCommonSOWFields(){
 	$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("offeredSubmissionDiv").style.display="none";
 	
+	$('#offerRate').val("");
+	document.getElementById("offerRateDiv").style.display="none";
+	
 	$('#hoursPerWeek').removeAttr('data-validation');
 	$('#hoursPerWeek').attr('data-validation-optional',"true");
 	$('#hoursPerWeek').val("");
@@ -861,13 +961,16 @@ function hideCommonSOWFields(){
 	            	  result = result + '<option value="">--- Select Requirement ---</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
-	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
 	                  }
 	                  $("#requirementsList").empty();
 	                  $("#requirementsList").append(result);
 	                  $("#requirementsList").chosen();
 	              	  $("#requirementsList").trigger('chosen:update');
 	              }
+	              $('#requirementsList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("requirementDiv").style.display="block";
 	              $('#requirementsList').removeAttr('data-validation-optional');
 	  			  $('#requirementsList').attr("data-validation","required");
@@ -896,9 +999,32 @@ function hideCommonSOWFields(){
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }
+	              $('#submissionOffersList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("offeredSubmissionDiv").style.display="block";
 	              $('#submissionOffersList').removeAttr('data-validation-optional');
 	  			  $('#submissionOffersList').attr("data-validation","required");
+	       },
+	    });
+
+	}
+	
+	function getOfferRate(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	  var json = JSON.parse(data);
+	            	  $("#offerRate").val("");
+	            	  document.getElementById("offerRateDiv").style.display="block";
+	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
+	            	  $("#flatReward").val("");
+	            	  $("#flatReward").val(json.amount);
+	              }
 	       },
 	    });
 
@@ -933,7 +1059,6 @@ function getRewardType(rewardType){
 	}
 	
 	if(rewardType == 'Flat'){
-		/* document.getElementById("crowd_rate").style.display=""; */
 		document.getElementById("flatReward").style.display="";
 		document.getElementById("flatRateType").style.display="";
 		document.getElementById("percentageReward").style.display="none";
@@ -1132,7 +1257,7 @@ function validateContractTitle(){
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_template" ).addClass('button').val('Save');
+		        		 $("#save_template" ).addClass('button').val('Send');
                         $("#save_template").removeAttr("disabled");
 		        	}
 		        	}
