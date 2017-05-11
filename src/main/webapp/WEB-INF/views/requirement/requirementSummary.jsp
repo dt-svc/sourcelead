@@ -7,6 +7,7 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
 <script src="resources/js/bootstrap-select.min.js"></script>
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -4502,11 +4503,19 @@ function clientSideBar(candidateId){
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
 			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
+			            	 result = result+'<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
+			            	 }
+			             if(json.linkedUrl != null && json.linkedUrl != '' && json.linkedUrl != 'undefined'){
+			            	 result = result+'<li class="bg-linked"><a href="'+json.linkedUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
+			            	 }
+			             if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
+			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
+			            	 }
+// 			             if(json.web != null && json.web != '' && json.web != 'undefined'){
+// 			            	 result = result+'<li class="bg-web"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-globe"></i></a></li>';
+// 			            	 }
+			             
 			             result = result+'                               </ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
