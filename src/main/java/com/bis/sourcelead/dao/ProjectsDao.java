@@ -74,4 +74,6 @@ public interface ProjectsDao {
 
 	public List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception;
 
+	public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId)throws Exception;
+
 }

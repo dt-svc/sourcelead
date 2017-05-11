@@ -576,6 +576,7 @@ public class Constants {
     
     public static int PREVIOUS_MONTH =-1;
     public static int NEXT_MONTH =1;
+    public static int TWELVE_MONTH =1;
     public static int CURRENT_MONTH =0;
     
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
@@ -680,4 +681,9 @@ public class Constants {
     public static String ONE_YEAR = "oneyear";
     
     public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
+    
+    //invoice
+    
+    public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)", "Rate", "Total Hours", "Total"};
+    
 }	

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -26,5 +28,12 @@ public interface InvoiceService {
 	
 	Invoice updateInvoice(Invoice invoice) throws Exception;
 
+
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId,Long orgLocationId)throws Exception;
+
+	void getPdfFileForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws Exception;
+
+	Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType)throws Exception;
+
+
 }
