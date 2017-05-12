@@ -1377,7 +1377,6 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 function pagination(){ 
     $('#example').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
