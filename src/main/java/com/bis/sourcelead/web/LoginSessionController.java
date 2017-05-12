@@ -324,9 +324,28 @@ public class LoginSessionController {
 			List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 			
 			Collection<Tabs> tabsList = null;
+			Integer associatesTabsCount = 0;
+			Integer billingTabsCount = 0;
+			
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				for(Tabs tabs : tabsList){
+					
+					if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
+						associatesTabsCount = associatesTabsCount+1;
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
+						billingTabsCount = billingTabsCount+1;
+					}
+				}
+				
 			}
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
+			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
+			
 			
 			String[] modules = org.getModulesId().split(",");
 			for(int i = 0 ; i< modules.length ; i++){
@@ -345,7 +364,6 @@ public class LoginSessionController {
 			
 			String userName = (String) authentication.getPrincipal();
 			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
-			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			setLoginSession(request, authentication,user,userRole);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
