@@ -566,7 +566,7 @@ $(document).ready(function () {
             </div>
           
           <div class="form-group">
-	         <label class="col-md-3">Cooling-Off Period</label>
+	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for requirement, because of applied recently."></i></label>
 	         <div class="col-md-9">
 	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             
