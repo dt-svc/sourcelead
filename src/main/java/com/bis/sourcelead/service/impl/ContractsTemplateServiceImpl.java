@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SignatureRequestUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -103,7 +105,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		if(jsonObj.has("description") && !isNullOrEmpty(jsonObj.getString("description"))){
-			contractsTemplate.setDescription(jsonObj.getString("description"));
+			contractsTemplate.setDescription(jsonObj.getString("description").trim());
 		}
 		
 		if(jsonObj.has("templateContent") && !isNullOrEmpty(jsonObj.getString("templateContent"))){
@@ -117,6 +119,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contractsTemplate.setUpdatedDate(new Date());
 		contractsTemplate.setUpdatedBy(user.getUserCode());
 		// for active templates status is 0
+		contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		contractsTemplate.setTemplateStatus("0");
 		return contractsTemplateDao.saveContractTemplate(contractsTemplate);
 	}
@@ -160,24 +163,42 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Override
 	public Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user,Org org) throws Exception
 	{
-		Contracts contracts = new Contracts();
-		Contracts vendorContracts = new Contracts();
+		Contracts contracts;
+		Contracts vendorContracts = null;
+		
+		if(jsonObj.has("contrId") && null != jsonObj.getString("contrId") && !"".equals(jsonObj.getString("contrId"))){
+			contracts = contractsTemplateDao.getContractById(Long.parseLong(jsonObj.getString("contrId")));
+			if(null != contracts && null != contracts.getParentContractId()){
+				vendorContracts = contractsTemplateDao.getChildContractById(contracts.getParentContractId().getId());
+			}
+		}else{
+			contracts = new Contracts();
+			vendorContracts = new Contracts();
+		}
+		
+		//Contracts contracts = new Contracts();
+		//Contracts vendorContracts = new Contracts();
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
         Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-        
-		contracts.setContractType(jsonObj.getString("contractType"));
+		if("NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+			contracts.setContractType("Vendor "+jsonObj.getString("contractType"));
+		}
+		else{
+			contracts.setContractType(jsonObj.getString("contractType"));
+        }
+		
 		ContractsTemplate contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
 		if(null != contractsTemplate){
 			contracts.setContractsTemplate(contractsTemplate);
 			vendorContracts.setContractsTemplate(contractsTemplate);
 		}
 		contracts.setTypeOfContract("New");
+		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		vendorContracts.setTypeOfContract("New");
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
-			//rs.setId(Long.parseLong(jsonObj.getString("requirementsList")));
 			contracts.setRequirementSubmission(rs);
 		}
 		
@@ -201,8 +222,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setOvertimeRateType(jsonObj.getString("overtimeRateType"));
 		}
 		
-		contracts.setContractTitle(jsonObj.getString("contractTitle"));
-		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
+		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+		vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
 		vendorContracts.setContractsTemplate(contractsTemplate);
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
@@ -212,6 +233,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 		contracts.setStartDate(convertedDate);
+		vendorContracts.setStartDate(convertedDate);
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
 				Date endTimeStr = commonUtil.getDateFormat(jsonObj.getString("endDate"));  
@@ -222,19 +244,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setEndDate(convertedEndDate);
 			}
 		}
-	
-		
-		
- /*      Date startDate = format.parse(jsonObj.getString("startDate"));
-		contracts.setStartDate(startDate);
-		vendorContracts.setStartDate(startDate);
-		if(jsonObj.has("endDate")){
-			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
-				Date endDate = format.parse(jsonObj.getString("endDate"));
-				contracts.setEndDate(endDate);
-				vendorContracts.setEndDate(endDate);
-			}
-		}*/
 		User approverUser = null;
 		User vendorContactsUser = null;
 		if(jsonObj.has("approver") && null != jsonObj.getString("approver") && !"".equals(jsonObj.getString("approver"))){
@@ -242,7 +251,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setApproverUser(approverUser);
 		}
 
-		if(("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))|| "NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType")))){
+		if(("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))|| "Vendor SOW".equalsIgnoreCase(jsonObj.getString("contractType"))|| "NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType")))){
 			contracts.setInitiatorType("Client");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
@@ -253,12 +262,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
 			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
-//			if(null != vendorUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
-//				signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
-//			}
 			contracts.setContactUser(vendorContactsUser);
 		}
-		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType")) ||  "Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			contracts.setInitiatorType("Vendor");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
@@ -269,9 +275,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setContractOrgLocationId(orgRelations.getResponderLocationId());
 			}
 			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
-			/*if(null != vendorUser && null != approverUser && !"draft".equalsIgnoreCase(saveType)){
-				signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
-			}*/
 			contracts.setContactUser(vendorContactsUser);
 		}
 		
@@ -315,14 +318,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		
 		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
-			contracts.setDescription(jsonObj.getString("description"));
-			vendorContracts.setDescription(jsonObj.getString("description"));
+			contracts.setDescription(jsonObj.getString("description").trim());
+			vendorContracts.setDescription(jsonObj.getString("description").trim());
 		}
 		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
 			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
 		}
 		contracts.setStatus("0");
-//		contracts.setTemplateSubmissionStatus("pending");
 		vendorContracts.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 		vendorContracts.setStatus("0");
 		if(null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
@@ -339,12 +341,29 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
+		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
-
+		
+		if(null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
+			if(!jsonObj.has("approver") && ownerUser.getId().longValue() != user.getId().longValue()){
+				sendMailToOwner(savedContracts,user,org,orgLocation);
+			}
+		}
+		
 		if(null == approverUser && !"DRAFT".equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
 			vendorContracts.setParentContractId(savedContracts);
-			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-				vendorContracts.setContractType("Client MSA");
+			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Vendor SOW".equalsIgnoreCase(jsonObj.getString("contractType"))|| "NDA".equalsIgnoreCase(jsonObj.getString("contractType")) || "NSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Client MSA");	
+				}else if("Vendor SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Client SOW");
+				}
+				else if("NDA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Vendor NDA");
+				}
+				else if("NSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Vendor NSA");
+				}
 				vendorContracts.setInitiatorType("Client");
 				vendorContracts.setContractOrgLocationId(orgLocation);
 				vendorContracts.setParentContractId(savedContracts);
@@ -357,9 +376,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 				
 				User vendorUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
-				/*if(null != vendorUser && !"draft".equalsIgnoreCase(saveType)){
-					signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
-				}*/
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
@@ -385,6 +401,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
+			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 			  if(null != vendorContactsUser && null == approverUser && !"DRAFT".equalsIgnoreCase(saveType)){
 		            Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
@@ -403,13 +420,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 	}
 
-	
-
 	@Override
-	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus) throws Exception
+	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
 	{
-		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus);
-		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus);
+		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus, user, userRoleName);
+		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus, user, userRoleName);
 		
 		Contracts contractsForList = new Contracts();
 		
@@ -438,7 +453,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else{
 				contracts.setParentId("");
 			}
-		}
+
+			if(null != contracts.getApproverUser() ){
+				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
+					StringBuilder sb = new StringBuilder();
+					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+				}else{
+					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+				}
+			}
+			}
 		for(Contracts contracts :clientcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
@@ -464,10 +488,49 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else{
 				contracts.setParentId("");
 			}
+			
+			if(null != contracts.getApproverUser()){
+				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
+					StringBuilder sb = new StringBuilder();
+					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
+				}else{
+					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
+				}
+			}
+			
 		}
 		
 		contractsForList.setVendorcontractsList(vendorcontractsList);
 		contractsForList.setClientcontractsList(clientcontractsList);
+		return contractsForList;
+	}
+	
+	@Override
+	public Contracts getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
+	{
+		Integer totalDraftCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "DRAFT", user, userRoleName);
+		Integer totalWTACount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "WAITING_FOR_APPROVER", user, userRoleName);
+		Integer totalWTSCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "WAITING_TO_BE_SIGNED", user, userRoleName);
+		Integer totalWTVCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "WAITING_TO_BE_VERIFY", user, userRoleName);
+		Integer totalFinalizedCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "Finalized", user, userRoleName);
+		Integer totalExpiredCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "EXPIRED", user, userRoleName);
+		Integer totalRejectedCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "REJECTED", user, userRoleName);
+		
+		Integer totalDraftVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, "DRAFT", user, userRoleName);
+		Integer totalDraftClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, "DRAFT", user, userRoleName);
+		
+		Contracts contractsForList = new Contracts();
+		
+		contractsForList.setTotalDraftCount(totalDraftCount);
+		contractsForList.setTotalWTACount(totalWTACount);
+		contractsForList.setTotalWTSCount(totalWTSCount);
+		contractsForList.setTotalWTVCount(totalWTVCount);
+		contractsForList.setTotalFinalizedCount(totalFinalizedCount);
+		contractsForList.setTotalExpiredCount(totalExpiredCount);
+		contractsForList.setTotalRejectedCount(totalRejectedCount);
+		
+		contractsForList.setTotalDraftVendorCount(totalDraftVendorCount);
+		contractsForList.setTotalDraftClientCount(totalDraftClientCount);
 		return contractsForList;
 	}
 
@@ -475,6 +538,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	public Contracts getContractById(Long contractId)
 	{
 		return contractsTemplateDao.getContractById(contractId);
+	}
+	
+	@Override
+	public Contracts getContractByContractUUID(String contractUUID)
+	{
+		return contractsTemplateDao.getContractByContractUUID(contractUUID);
 	}
 
 	@Override
@@ -496,6 +565,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		Contracts upadatedContracts = null;
 		if(!"REJECTED".equalsIgnoreCase(status)){
 			contracts.setTemplateSubmissionStatus("PENDING");
+			//upadatedContracts.setTypeOfContract("New");
 			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
 			Contracts childContract = new Contracts();
 			childContract.setContractTitle(contracts.getContractTitle());
@@ -512,9 +582,19 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			childContract.setDescription(contracts.getDescription());
 			childContract.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 			childContract.setStatus("0");
-			
-				if("Vendor MSA".equalsIgnoreCase(contracts.getContractType())){
-					childContract.setContractType("Client MSA");
+			childContract.setTypeOfContract("New");
+				if("Vendor MSA".equalsIgnoreCase(contracts.getContractType()) || "Vendor SOW".equalsIgnoreCase(contracts.getContractType())|| "NDA".equalsIgnoreCase(contracts.getContractType()) || "NSA".equalsIgnoreCase(contracts.getContractType())){
+					if("Vendor MSA".equalsIgnoreCase(contracts.getContractType())){
+						childContract.setContractType("Client MSA");	
+					}else if("Vendor SOW".equalsIgnoreCase(contracts.getContractType())){
+						childContract.setContractType("Client SOW");
+					}
+					else if("NDA".equalsIgnoreCase(contracts.getContractType())){
+						childContract.setContractType("Vendor NDA");
+					}
+					else if("NSA".equalsIgnoreCase(contracts.getContractType())){
+						childContract.setContractType("Vendor NSA");
+					}
 					childContract.setInitiatorType("Client");
 					childContract.setContractOrgLocationId(orgLocation);
 					childContract.setParentContractId(upadatedContracts);
@@ -522,20 +602,20 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					childContract.setOrgRelations(orgRelations);
 					if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 						childContract.setOrgLocationId(orgRelations.getLocationId());
-					}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+					}else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 						childContract.setOrgLocationId(orgRelations.getResponderLocationId());
 					}
 					
-//					User vendorUser = userService.getUserById(Long.parseLong(approveContracts.getContactUser()));
-//					if(null != vendorUser && !"draft".equalsIgnoreCase(saveType)){
-//						signatureRequestUtil.sendDocumentForSignatureRequest(vendorUser,contractsTemplate,orgLocation,user);
-//					}
 					childContract.setOwnerUserId(contracts.getContactUser());
 					childContract.setContactUser(contracts.getOwnerUserId());
 				}
 				
-				if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
-					childContract.setContractType("Vendor MSA");
+				if("Client MSA".equalsIgnoreCase(contracts.getContractType()) || "Client SOW".equalsIgnoreCase(contracts.getContractType())){
+					if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
+						childContract.setContractType("Vendor MSA");	
+					}else{
+						childContract.setContractType("Vendor SOW");
+					}
 					childContract.setInitiatorType("Vendor");
 					childContract.setParentContractId(upadatedContracts);
 					childContract.setContractOrgLocationId(orgLocation);
@@ -552,16 +632,166 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				
 				Contracts savedChildContracts = contractsTemplateDao.saveNewContract(childContract);
 				  if(null != upadatedContracts.getContactUser()){
-			            signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
-			        }
+					  Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
+					  upadatedContracts.setDocId(con.getTempdocId());
+					  upadatedContracts.setEnvelopId(con.getTempEnvId());
+					  upadatedContracts.setContractStatus(con.getContractStatus());
+					  savedChildContracts.setDocId(con.getTempdocId());
+					  savedChildContracts.setEnvelopId(con.getTempEnvId());
+					  savedChildContracts.setContractStatus(con.getContractStatus());
+					  contractsTemplateDao.saveNewContract(upadatedContracts);
+			        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedChildContracts);
+				  }
+				contractApproveEmail(contracts,user,org,orgLocation);
+				sendMailToOwner(contracts,user,org,orgLocation);
 		}else{
 			contracts.setTemplateSubmissionStatus("REJECTED");
 			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
+			 contractRejectEmail(contracts,user,org,orgLocation);
 		}
 		
 		return upadatedContracts;
 	}
 	
+	private void contractRejectEmail(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception {
+		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(createdUser.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 
+		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder msgBuild = new StringBuilder();
+			 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString()); 
+		 }else{
+			 emailMessage.setFromName(loginUser.getFirstName()); 
+		 }
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+			 globalVarsMap.put("ContractTitle", contracts.getContractTitle());
+			 }else{
+				 globalVarsMap.put("ContractTitle","--");
+			 }
+		
+		if(createdUser.getFirstName()!= null && !"".equalsIgnoreCase(createdUser.getFirstName()) && createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
+			StringBuilder creatorSb = new StringBuilder();
+			globalVarsMap.put("ContractCreator", creatorSb.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+		}else if(createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
+			globalVarsMap.put("ContractCreator",createdUser.getFirstName());
+		}else{
+			globalVarsMap.put("ContractCreator","--");
+		}
+		
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("ApproverUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("ApproverUser",loginUser.getFirstName());
+			}
+		 
+			 globalVarsMap.put("LoginOrg",org.getOrgName());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+//		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVER_UPDATED_CONTRACT,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);*/
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 String actionLink="";
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+//		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
+		
+		
+	}
+
+	private void contractApproveEmail(Contracts contracts, User loginUser, Org org,OrgLocations orgLocation) throws Exception {
+		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(createdUser.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 
+		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder msgBuild = new StringBuilder();
+			 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString()); 
+		 }else{
+			 emailMessage.setFromName(loginUser.getFirstName()); 
+		 }
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+			 globalVarsMap.put("ContractTitle", contracts.getContractTitle());
+			 }else{
+				 globalVarsMap.put("ContractTitle","--");
+			 }
+		
+		if(createdUser.getFirstName()!= null && !"".equalsIgnoreCase(createdUser.getFirstName()) && createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
+			StringBuilder creatorSb = new StringBuilder();
+			globalVarsMap.put("ContractCreator", creatorSb.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+		}else if(createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
+			globalVarsMap.put("ContractCreator",createdUser.getFirstName());
+		}else{
+			globalVarsMap.put("ContractCreator","--");
+		}
+		
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("ApproverUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("ApproverUser",loginUser.getFirstName());
+			}
+		 
+			 globalVarsMap.put("LoginOrg",org.getOrgName());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVE_CONTRACT,Constants.ENTITY_TYPE_EMAIL);
+//		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVER_UPDATED_CONTRACT,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);*/
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 String actionLink="";
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+//		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
+		
+	}
+
 	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts, OrgLocations orgLocation) throws Exception
 	{
 		
@@ -695,6 +925,94 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
 		
 	}
+	
+	private void sendMailToOwner(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception {
+		User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(owner.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 
+		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder msgBuild = new StringBuilder();
+			 emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString()); 
+		 }else{
+			 emailMessage.setFromName(loginUser.getFirstName()); 
+		 }
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+			 globalVarsMap.put("ContractTitle", contracts.getContractTitle());
+			 }else{
+				 globalVarsMap.put("ContractTitle","--");
+			 }
+		 
+		 if(contracts.getContractType()!= null && !"".equalsIgnoreCase(contracts.getContractType())){
+			 globalVarsMap.put("ContractType", contracts.getContractType());
+			 }else{
+				 globalVarsMap.put("ContractType","--");
+			 }
+		
+		 if(contracts.getEndDate()!= null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
+			 globalVarsMap.put("EndDate", contracts.getEndDate().toString());
+			 }else{
+				 globalVarsMap.put("EndDate","--");
+			 }
+		 
+		 if(contracts.getStartDate()!= null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
+			 globalVarsMap.put("StartDate", contracts.getStartDate().toString());
+			 }else{
+				 globalVarsMap.put("StartDate","--");
+			 }
+		 
+		if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+			StringBuilder creatorSb = new StringBuilder();
+			globalVarsMap.put("OwnerUser", creatorSb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+		}else if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+			globalVarsMap.put("OwnerUser",owner.getFirstName());
+		}else{
+			globalVarsMap.put("OwnerUser","--");
+		}
+		
+		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder userBuild = new StringBuilder();
+			 globalVarsMap.put("ContractCreator",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			 }else{
+				 globalVarsMap.put("ContractCreator",loginUser.getFirstName());
+			}
+		 
+			 globalVarsMap.put("LoginOrg",org.getOrgName());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_MAIL_TO_OWNER,Constants.ENTITY_TYPE_EMAIL);
+//		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVER_UPDATED_CONTRACT,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);*/
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 String actionLink="";
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+//		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario);
+		
+	}
+
 
 	@Override
 	public ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception {
@@ -755,8 +1073,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		contracts.setTypeOfContract("Existing");
 		vendorContracts.setTypeOfContract("Existing");
-		contracts.setContractTitle(jsonObj.getString("contractTitle"));
-		vendorContracts.setContractTitle(jsonObj.getString("contractTitle"));
+		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+		vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
 		Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
@@ -777,7 +1095,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		User approverUser = null;
 		User vendorContactsUser = null;
-		if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))||"Vendor SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			contracts.setInitiatorType("Client");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
@@ -790,7 +1108,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContactsUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
 			contracts.setContactUser(vendorContactsUser);
 		}
-		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+		if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))||"Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
 			contracts.setInitiatorType("Vendor");
 			contracts.setOrgLocationId(orgLocation);
 			OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
@@ -848,10 +1166,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		
-		
 		if(jsonObj.has("description") && null != jsonObj.getString("description") && !"".equals(jsonObj.getString("description"))){
-			contracts.setDescription(jsonObj.getString("description"));
-			vendorContracts.setDescription(jsonObj.getString("description"));
+			contracts.setDescription(jsonObj.getString("description").trim());
+			vendorContracts.setDescription(jsonObj.getString("description").trim());
 		}
 		if(jsonObj.has("jurisdiction") && null != jsonObj.getString("jurisdiction") && !"".equals(jsonObj.getString("jurisdiction"))){
 			contracts.setStateJurisdiction(jsonObj.getString("jurisdiction"));
@@ -864,8 +1181,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setCreatedBy(user.getUserCode());
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
+		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
-			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+			if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType")) || "Vendor SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Client MSA");	
+				}else{
+					vendorContracts.setContractType("Client SOW");
+				}
 				vendorContracts.setContractType("Client MSA");
 				vendorContracts.setInitiatorType("Client");
 				vendorContracts.setContractOrgLocationId(orgLocation);
@@ -882,9 +1205,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
-			
-			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-				vendorContracts.setContractType("Vendor MSA");
+			if("Client MSA".equalsIgnoreCase(jsonObj.getString("contractType"))||"Client SOW".equalsIgnoreCase(jsonObj.getString("contractType"))){
+				if("Vendor MSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
+					vendorContracts.setContractType("Vendor MSA");
+				}
+				else{
+					vendorContracts.setContractType("Vendor SOW");
+				}
 				vendorContracts.setInitiatorType("Vendor");
 				vendorContracts.setParentContractId(savedContracts);
 				vendorContracts.setContractOrgLocationId(orgLocation);
@@ -899,8 +1226,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setOwnerUserId(vendorUser);
 				vendorContracts.setContactUser(ownerUser);
 			}
+			vendorContracts.setContractUUID(contracts.getContractUUID());
 			Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
 		return savedContracts;
+	}
+
+	@Override
+	public ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID) {
+		return contractsTemplateDao.getContractTemplateByTemplateUUID(tempUUID);
 	}
 	
 }

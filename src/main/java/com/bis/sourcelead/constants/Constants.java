@@ -222,6 +222,13 @@ public class Constants {
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	
 	public static String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
+	
+	public static String APPROVE_CONTRACT = "Approve Contract";
+	
+	public static String REJECT_CONTRACT = "Reject Contract";
+	
+	public static String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
+	
 	public static String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	
 	public static String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
@@ -249,6 +256,9 @@ public class Constants {
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
 	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
+	
+	public static String UPDATED_USER_ROLE_EMAIL="UserRoleChanged";
+	public static String UPDATED_USER_ROLE_NOTIFICATION="UserRoleChanged";
 	
 	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER="updatedRequirementEmailToManager";
 	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER="updatedRequirementNotificationToManager";

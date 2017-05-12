@@ -7,6 +7,7 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
 <script src="resources/js/bootstrap-select.min.js"></script>
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
@@ -4136,7 +4137,7 @@ function requirementRecommendations(requirementId){
 		    result = result +'<th>Name</th>';
 		    result = result +'<th>Email</th>';
 		    result = result +'<th>City</th>';
-		    result = result +'<th>Ph. No</th>';
+		    result = result +'<th>Phone</th>';
 		    result = result +'<th style="width:50px;">Resume</th>';
 		    result = result +'<th>Number Of Requirements</th>';
 		    result = result +'<th>Updated Date</th>';
@@ -4268,9 +4269,9 @@ function requirementRecommendations(requirementId){
 		    result = result +'</div></td>';
 		    
 		    if(report.isCandidateSubmitted == 'N'){
-		    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Apply</a></div>';
+		    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Add</a></div>';
 		    }else{
-		    	result = result +'<td class="text-center"><div class="text-success">Applied</div>';
+		    	result = result +'<td class="text-center"><div class="text-success">Added</div>';
 		    }
 		    
 		  
@@ -4502,11 +4503,19 @@ function clientSideBar(candidateId){
 			             result = result+'                 <div class="clearfix">';
 			             result = result+'                 <div class="socialnetwork-details">';
 			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             result = result+'                                 <li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-			             result = result+'                                 <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+			             if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
+			            	 result = result+'<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
+			            	 }
+			             if(json.linkedUrl != null && json.linkedUrl != '' && json.linkedUrl != 'undefined'){
+			            	 result = result+'<li class="bg-linked"><a href="'+json.linkedUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
+			            	 }
+			             if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
+			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
+			            	 }
+// 			             if(json.web != null && json.web != '' && json.web != 'undefined'){
+// 			            	 result = result+'<li class="bg-web"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-globe"></i></a></li>';
+// 			            	 }
+			             
 			             result = result+'                               </ul>';
 			             result = result+'                 </div>';
 			             result = result+'                 </div>';
@@ -4792,7 +4801,7 @@ function getRateListDiv(submissionId, candidateId){
 	                     result = result + '      <tr>';
 	                     result = result + '        <th>By</th>';
 	                     result = result + '        <th>Rate</th>';
-	                     result = result + '        <th>Rate per hourly</th>';
+	                     result = result + '        <th>Rate Per Hourly</th>';
 	                     result = result + '        <th>Comment</th>';
 	                     result = result + '        <th>Date</th>';
 	                     result = result + '        <th>Action</th>';

@@ -26,6 +26,16 @@
 <script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+
+<style type="text/css">
+.timesheet_head .glyphicon-play {
+right: 15px;
+}
+.vendor_wrap .timesheet_head ul li b{
+color: #333;
+}
+</style>
+
 <!-- ends files of export -->
 <!-- Content Area -->
 <script type="text/javascript">
@@ -337,15 +347,14 @@ function getRequirementStageList(){
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
 		<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getRequirementStageCounts();"><i class="fa fa-pie-chart"></i></a>
+		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="getRequirementStageCounts();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
 	</span>
-	
 </div>
                      
         <ul style="padding: 2px 300px 2px 0px;">
         <li>
-        	<b id="filter2ApprovePop"><i class="fa fa-filter"></i> <span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
+        	<b id="filter2ApprovePop"><i class="fa fa-filter paddingRight"></i>Status<span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
         	<div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
                 		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementStageList();">New</li>

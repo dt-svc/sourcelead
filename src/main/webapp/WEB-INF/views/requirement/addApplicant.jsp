@@ -932,7 +932,7 @@ $('body').on('submit', '#submitRecomendedApplicant_form', function(e){
 	        	$(".new_side_wrap").removeClass("new_side_wrap_active");
 	    		$(".side_mask").fadeOut(200);
 	    		$("body").css('overflow-y', 'auto');
-	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Applied</font>");
+	    		$("#recommendedCandidate"+candidateId).html("<font color='green'>Added</font>");
 	        },
 	    }); 
       return true; 

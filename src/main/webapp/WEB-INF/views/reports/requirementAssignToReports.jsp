@@ -66,8 +66,8 @@ function prepareReportDataDiv(data){
 	result = result + '   <tr>';
 	result = result + '    <th>Requirement Title</th>';
 	result = result + '    <th>Posted on</th>';
-	result = result + '    <th>client</th>';
-	result = result + '    <th>owner</th>';
+	result = result + '    <th>Client</th>';
+	result = result + '    <th>Owner</th>';
 	result = result + '    <th>Assigned To</th>';
 	result = result + '    <th>Assigned On</th>';
 	result = result + '    <th>Team Name</th>';
@@ -241,15 +241,15 @@ function requirementReportPagination(){
 <form:form id="assign_requirement_form" name="assign_requirement_form" method="get">     
    <div class="timesheet_head">
       <div class="pull-left reportBtns">
-	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" name="reportType" onChange="custDates(); flushCustomDates();">
-		 <option value="">select</option>
+	  <div class="reportBtn dropdown_select">
+		<select class="form-control" id="reportTypeId" name="reportType" onChange="custDates(); flushCustomDates();">
+		 <option value="">-- Select --</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week</option>
+		  <option value="twoweeks">2 Weeks</option>
+		  <option value="month">1 Month</option>
+		  <option value="twomonths">2 Months</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
@@ -276,7 +276,7 @@ function requirementReportPagination(){
       <div class="reportA">
           <label>Assign To</label>
           <div class="reportAChoo">
-           <select multiple data-placeholder="select member" class="chosen-select" multiple="true"  name="user" id="user" >
+           <select multiple data-placeholder="Select Member" class="chosen-select" multiple="true"  name="user" id="user" >
                 <c:forEach var="user" items="${userList}">
 	                     <%-- <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option> --%>
             			  <option value="${user.id}">${user.firstName} ${user.lastName}</option>

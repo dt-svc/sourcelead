@@ -204,7 +204,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3">Mail to </label>
 							<div class="col-md-5">
-								<div class="checkbox">
+								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
 									Project Manager
 									</label>
@@ -214,7 +214,7 @@ function validateTaskName(){
 							
 						<sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 							<div class="col-md-4">
-								<div class="checkbox">
+								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"  checked="checked"
 										name="isMailToTeamMembers">Team Members
 									</label>
@@ -343,7 +343,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
-								<div class="checkbox">
+								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"  
 										name="isTimesheetAttachmentRequired"> Timesheet Attachment Required
 									</label>
