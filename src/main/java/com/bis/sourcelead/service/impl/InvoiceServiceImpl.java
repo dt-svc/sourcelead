@@ -284,8 +284,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setAfterDiscountValue(invoice.getAfterDiscountValue());
 		parentInvoice.setSubTotal(invoice.getSubTotal());
 		parentInvoice.setInvoiceComment(invoice.getInvoiceComment());
-		parentInvoice.setInvoiceStatus(invoice.getInvoiceStatus());
-		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
 		parentInvoice.setTotal(invoice.getTotal());

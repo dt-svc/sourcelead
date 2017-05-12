@@ -433,7 +433,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>  ';
 	result = result +'            <div class="col-md-4">  ';
 	result = result +'              <label>Reference No<span class="text-danger paddingLeft">*</span></label> ';
-	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required" field-name="Reference No"> ';
+	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250"  field-name="Reference No"> ';
 	result = result +'            </div>        ';
 	result = result +'          </div>          ';
 	result = result +'          <div class="row mt">                                 ';
@@ -448,9 +448,9 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
-	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
+	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();" >     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" readonly>       ';
+	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -498,6 +498,8 @@ function receivePaymentPop1(invoiceId,total){
 			removeValidate();
 		}
 	});
+    
+    
 }
 
 </script>  
@@ -747,12 +749,11 @@ function getInvoiceList(){
 		    
 		    $("#draftInvoiceCount").html(draftCount);
 		    $("#unbilledAmoumt").html(draftTotalAmount);
-		    
-		    
+		    		    
 		    $("#paidInvoiceCount").html(paidCount);
 		    $("#paidInvoiceAmount").html(paidTotalAmount);
-		    
-		    
+		    	    
+
 		    invoicePagination()
         },
         
@@ -828,12 +829,28 @@ function cancelbtn(){
 <script>
 function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
+	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	                event.preventDefault();
+	            }
+	        });
+	 
+	 
 }
 function validMask(){
 	  $('#customeAmount').attr("readonly","readonly");  
+	  
 }
+/* function amountCal(){
+	var totalAmount =  $("#totalAmount").val();
+	var customAmount =  $("#customeAmount").val();
+	if(totalAmount <= customAmount){
+		var exceededAmount = customAmount - totalAmount
+		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
+	}
+} */
 </script>
-
 
 <script>
 $(document).ready(function() {
