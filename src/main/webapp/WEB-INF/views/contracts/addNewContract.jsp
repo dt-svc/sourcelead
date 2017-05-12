@@ -83,7 +83,22 @@
             <div class="form-group">
               <label class="col-md-4">Select Template<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-              	<c:choose>
+                <div class="form-icon">
+                <span class="icon-inside">
+				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template">
+						    <c:forEach var="element" items="${contractsTemplateList}" >
+						    	<c:if test = "${element.id == contract.contractsTemplate.id}">
+							         <option selected value="${element.id}">${element.templateName}</option>
+							    </c:if>
+							    <c:if test = "${element.id != contract.contractsTemplate.id}">
+							         <option value="${element.id}">${element.templateName}</option>
+							    </c:if>
+							</c:forEach>
+						</select>                
+                  </span>
+                  <span title="Title text"> <i class="fa fa-eye btn btn-default formic1"></i> </span>
+                  </div>              
+<%--               	<c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template">
 						    <c:forEach var="element" items="${contractsTemplateList}" >
@@ -99,8 +114,9 @@
 				    <c:otherwise>
 				        <select class="chosen-select form-control" id="template" name="template"  data-validation="required" field-name="Template"></select>
 				    </c:otherwise>
-				 </c:choose>
-              </div>
+				 </c:choose> --%>
+              </div>             
+              
             </div>  
             
             <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">

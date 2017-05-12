@@ -113,7 +113,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (contracts != null) {
-			session.saveOrUpdate(contracts);
+			//session.saveOrUpdate(contracts);
 			}
 			logger.debug("contractsTemplate Added Successfully");
 		} catch (Exception exception) {

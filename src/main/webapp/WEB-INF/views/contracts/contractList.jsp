@@ -60,23 +60,30 @@ $(document).ready(function(){
 </section>
 
 <!-- Add candidate Popup -->
-  <div class="addcandidate-popup addstudent-popup">
+  <div class="addcandidate-popup">
     <div class="row">
       <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeContract()"><i class="fa fa-close"></i></a>
       <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-      <div class="col-md-6 mt25">
+      <div class="col-md-4 mt25">
         <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="Import Candidate">
           <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
           <strong class="clearfix">New Contract</strong> </a> </div>
       </div>
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
-        <div class="col-md-6 mt25">
+        <div class="col-md-4 mt25">
           <div class="small-widget bg-yellow"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
+            <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
+            <strong class="clearfix">Custom Contract</strong> </a> </div>
+        </div>
+        </sec:authorize>
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
+        <div class="col-md-4 mt25">
+          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
             <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Existing Contract</strong> </a> </div>
         </div>
-        </sec:authorize>
+        </sec:authorize>        
        </div>
     </div>
   </div>
@@ -153,6 +160,102 @@ $(document).ready(function(){
   
 </div>
 </section>
+
+<div class="mask_time"></div> 
+<section class="contPopup">
+	<div class="contPopupHead clearfix">
+    	<h4>Contract Details Contract Details Contract Details Contract Details Contract Details Contract Details</h4>
+    	<span>
+    		<i class="fa fa-pencil"></i><i class="fa fa-times" onclick="contPopClose();"></i>
+    	</span>
+    </div>
+	
+	<div class="modal-body clearfix">
+		<div class="col-xs-12 col-md-12 col-lg-12 noPad clearfix mt10">
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>
+			<div class="col-md-6 col-sm-6 noPad clearfix mb">
+				<div class="col-md-4 col-sm-4">Heading</div>
+				<div class="col-md-8 col-sm-8">: Deatils deatils</div>
+			</div>			
+		</div>
+		<div class="col-xs-12 col-md-12 col-lg-12 noPad clearfix mb">
+			<div class="col-md-2 col-sm-2">Descrption</div>
+			<div class="col-md-10 col-sm-10">: Descrption Descrption Descrption Descrption DescrptionDescrption 
+			Descrption DescrptionDescrption DescrptionDescrption Descrption Descrption Descrption Descrption
+			DescrptionDescrption Descrption DescrptionDescrption DescrptionDescrption </div>		
+		</div>
+	</div>    
+</section>
+
+<script>
+function PopUp(){
+	$(".mask_time").fadeIn(200);
+	$(".contPopup").fadeIn(100);
+}
+function contPopClose(){
+	$(".mask_time").fadeOut(200);
+	$(".contPopup").fadeOut(100);
+}
+</script>
 
 <script type="text/javascript">
             $(function () {
@@ -293,7 +396,7 @@ function preparedContractListDraft(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp();"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
