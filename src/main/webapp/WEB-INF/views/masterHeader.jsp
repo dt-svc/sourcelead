@@ -225,8 +225,12 @@ document.onkeydown=function(e){
 	           <c:if test="${userTabs.tabName == 'Projects'}">
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
+	           
+	           <c:if test="${userTabs.tabName == 'Associates List'}">
+	           <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
+	           </c:if>
 			</c:forEach>
-	             <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
+	             
 		</select>
 			
 			
