@@ -36,13 +36,13 @@ $(document).ready(function(){
 
 <section class="contrHead"> 
 <ul> 
-<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList();">Draft</a></li>
-<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Approve</a></li> 
-<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
-<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized</a></li>
-<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired</a></li>
-<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected</a></li>
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList();">Draft (${contractsCount.totalDraftCount})</a></li>
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Approve (${contractsCount.totalWTACount})</a></li> 
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired (${contractsCount.totalExpiredCount})</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
   <span onclick="addContracts();">Add<i class="fa fa-caret-down"></i></span>
@@ -102,8 +102,8 @@ $(document).ready(function(){
 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Clients</a> -->
-			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');">Vendors</a>
-			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients</a>
+			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');">Vendors (${contractsCount.totalDraftVendorCount})</a>
+			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients (${contractsCount.totalDraftClientCount})</a>
 		</div>
 		<ul>
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
@@ -402,6 +402,14 @@ function preparedContractListDraft(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var draftCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#draft").html('Draft ('+draftCount+')');
+	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
@@ -614,6 +622,14 @@ function preparedContractListWFA(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var approveCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Approve ('+approveCount+')');
+	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
@@ -789,6 +805,14 @@ function preparedContractListWTS(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var signCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#sign").html('<i class="fa fa-clock-o fa-2"></i>Sign ('+signCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -973,6 +997,14 @@ function preparedContractListWTV(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var verifyCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Verify ('+verifyCount+')');
+	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
@@ -1137,6 +1169,14 @@ function preparedContractListFinalize(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var finalisedCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#finalised").html('Finalized ('+finalisedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -1311,6 +1351,14 @@ function preparedContractListExpired(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var expiredCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#expired").html('Expired ('+expiredCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -1496,6 +1544,14 @@ function preparedContractListRejected(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var rejectedCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#rejected").html('Rejected ('+rejectedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);

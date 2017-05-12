@@ -290,7 +290,7 @@ function requirementReportPagination(){
 	
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;" class="Pra11">
+      <!--   <ul style="padding: 2px 300px 2px 0px;" class="Pra11">
           <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>
             <div class="export_pop">
               <ul>
@@ -302,7 +302,7 @@ function requirementReportPagination(){
           </li>
 
           <div class="clearfix"></div>
-        </ul>
+        </ul> -->
         <div class="clearfix"></div>
       </div>
  
