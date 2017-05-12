@@ -646,20 +646,17 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			int count = 4;
 			SubmissionApproverHierarchy sah= null;
 			 float monthTotalHours = 0f;
-			 float weekTotalHours = 0f;
-			 float  weekBillableHours = 0f;
 			 float  monthBillableTotalHours = 0f;
-			 float weekNonBillableHours = 0f;
 			 float monthNonBillableTotalHours = 0f;
 			 Submission_ApprovalStatus combinedApprovalStatus = null; 
 			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
 			if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 	    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 	    	    	 //String approvalClass = "class='draft'";
-	    	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
-		    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
-		    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
-	    	    	
+	    	    	 float weekTotalHours = 0f;
+	    	    	 float  weekBillableHours = 0f;
+	    	    	 float weekNonBillableHours = 0f;
+	    	    	 
 		    	     Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
 		    	    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
 		    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
@@ -709,6 +706,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	        	}
 	 					
 	 				}
+	    	    	
+	    	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
+		    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
+		    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
+		    	     
 	    	    	 StringBuilder listSb = new StringBuilder();
 	    	         timeSheetReportsArray[count] = listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).toString();
 	    	         timeSheetReportsArray[count+1] = listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours)).toString();
