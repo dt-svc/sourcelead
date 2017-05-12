@@ -2057,7 +2057,7 @@ function getOnboardingTasksList(){
 	        		result = result +'<div class="media-body">';
 	        		result = result +'<div class="clearfix taskheder">';
 	        		
-	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.onboardTaskType+"\");'></i></label>";
+	        		result = result +"<label> <span class='paddingRight'>Subject:</span> <strong class='text-primary'>"+report.taskName+"</strong<a href='#'><i class='fa fa-trash text-danger paddingLeft' onClick='deleteTask("+report.id+",\""+report.onboardTaskType+"\");'></i></a></label>";
 	        		
 	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
 	        		result = result +'</div>';
