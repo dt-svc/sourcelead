@@ -57,10 +57,10 @@ public class InvoiceServiceTest {
 		Invoice invoice = new Invoice();
 		OrgRelations orgRelations = new OrgRelations();
 		orgRelations.setId(5l);
-		invoice.setClientOrgRelationID(orgRelations);
+//		invoice.setClientOrgRelationID(orgRelations);
 		User user = new User();
 		user.setId(12l);
-		invoice.setContactContactUser(user);
+//		invoice.setContactContactUser(user);
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(5l);
 		invoice.setOrgLocation(orgLocations);
