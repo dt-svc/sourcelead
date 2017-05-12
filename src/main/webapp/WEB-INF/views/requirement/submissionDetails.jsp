@@ -196,11 +196,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '</div>';
                result = result + '<div class="socialnetwork-details">';
                result = result + '<ul class="list-inline list-unstyled">';
-               result = result + '<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-               result = result + '<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-               result = result + '<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-               result = result + '<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-               result = result + ' <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+               if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
+            	   result = result + '<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
+	            }
+               
+               if(json.linkedInUrl != null && json.linkedInUrl != '' && json.linkedInUrl != 'undefined'){
+            	   result = result + '<li class="bg-linked"><a href="'+json.linkedInUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
+  	            }
+               
+               if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
+            	   result = result + '<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
+	            }
+               
                result = result + ' </ul>';
                result = result + ' </div>';
                result = result + ' </div>';
@@ -321,7 +328,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -620,7 +627,6 @@ function getInternalInterviewsList(submissionId){
 	                    	 /* if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
 	                    	 } */
-	                    	 
 	                    	 if(report.interviewId.location != null && report.interviewId.location != 'undefined' && report.interviewId.location != ""){
 	                    		 location = report.interviewId.location;
 	                    	 }
@@ -700,31 +706,31 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
+	                    	 result = result + '<p class="col-md-7" tbldata-dotdot-me" title= "'+location+'">'+location+'</p>';
 	                    	 result = result + '</div>';
 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Type</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewType+'</p>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title= '+interviewType+'>'+interviewType+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Date</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.dateOfInterviewStr+'</p>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.dateOfInterviewStr+'>'+report.dateOfInterviewStr+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Time</strong>';
+	                    	 result = result + '<strong>Local Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.startTimeStr+' to '+report.endTimeStr+'">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
 	                    	 }else{
-	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.startTimeStr+'>'+report.startTimeStr+'</p>';
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
@@ -733,16 +739,15 @@ function getInternalInterviewsList(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Interviewers</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.interviewersList+'</p>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.interviewersList+'">'+report.interviewersList+'</p>';
 		                    	 result = result + '</div>';
 	                    	 }
-	                    	 
 	                    	 if(report.remainderTime != null && report.remainderTime != 'undefined' && report.remainderTime != ""){
 	                    		 result = result + '<div class="row clearfix">';
 		                         result = result + '<label class="col-md-5">';
 		                         result = result + '<strong>Reminder details</strong>';
 		                         result = result + '</label>';
-		                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.remainderTime+'">'+report.remainderTime+'</p>';
 		                         result = result + '</div>';
 	                    	 }
 	                         
@@ -750,7 +755,7 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<label class="col-md-5">';
 	                         result = result + '<strong>Notified to</strong>';
 	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-me"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                         
 	                         if(report.rescheduleComment != null && report.rescheduleComment != '' && report.rescheduleComment != 'undefined'){
@@ -758,7 +763,7 @@ function getInternalInterviewsList(submissionId){
 		                         result = result + '<label class="col-md-5">';
 		                         result = result + '<strong>Reschedule Comment</strong>';
 		                         result = result + '</label>';
-		                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span title="'+report.rescheduleComment+'">'+report.rescheduleComment+'<span></p>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-me"><span title="'+report.rescheduleComment+'">'+report.rescheduleComment+'<span></p>';
 		                         result = result + '</div>';
 	                         }
 	                        
@@ -767,7 +772,7 @@ function getInternalInterviewsList(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Client Name:</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.clientName+'>'+report.clientName+'</p>';
 		                    	 result = result + '</div>';
 	                         }
 	                         

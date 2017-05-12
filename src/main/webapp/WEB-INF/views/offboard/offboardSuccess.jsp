@@ -25,7 +25,7 @@
             <div class="content-area mt clearfix">
               <div class="blank-pages-tech">
                 <p class="text-center text-danger permissondenied mb">
-                    <img src="resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">
+                    <img src="resources/images/SourceLead-logo.png" alt="Source Lead" title="Source Lead">
                 </p>
                 <p class="big-txt mt">Your offboard sucessfully done.</p>
                 <p class="positionRelative move-btn btn-group mt">

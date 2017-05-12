@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -40,29 +41,12 @@ public class ReferContacts implements Serializable{
     @JoinColumn(name="CONTACT_USER_ID")        
     private User contactUser;
 	
-	public String getJsonOutPut() {
-		return jsonOutPut;
-	}
-
-	public void setJsonOutPut(String jsonOutPut) {
-		this.jsonOutPut = jsonOutPut;
-	}
-
-	public String getContactUserPhone2() {
-		return contactUserPhone2;
-	}
-
-	public void setContactUserPhone2(String contactUserPhone2) {
-		this.contactUserPhone2 = contactUserPhone2;
-	}
-
-	public String getContactUserEmail2() {
-		return contactUserEmail2;
-	}
-
-	public void setContactUserEmail2(String contactUserEmail2) {
-		this.contactUserEmail2 = contactUserEmail2;
-	}
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
 
 	@ManyToOne
     @JoinColumn(name="ORGLOCATION_ID")        
@@ -230,5 +214,46 @@ public class ReferContacts implements Serializable{
 	public void setContactSource(Contact_Source contactSource) {
 		this.contactSource = contactSource;
 	}
+	
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+	
+	public String getJsonOutPut() {
+		return jsonOutPut;
+	}
+
+	public void setJsonOutPut(String jsonOutPut) {
+		this.jsonOutPut = jsonOutPut;
+	}
+
+	public String getContactUserPhone2() {
+		return contactUserPhone2;
+	}
+
+	public void setContactUserPhone2(String contactUserPhone2) {
+		this.contactUserPhone2 = contactUserPhone2;
+	}
+
+	public String getContactUserEmail2() {
+		return contactUserEmail2;
+	}
+
+	public void setContactUserEmail2(String contactUserEmail2) {
+		this.contactUserEmail2 = contactUserEmail2;
+	}
+	
 
 }
