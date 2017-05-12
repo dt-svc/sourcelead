@@ -204,6 +204,33 @@ public class Contracts {
 	@Transient
 	private String approverUserName;
 	
+	@Transient
+	private Integer totalDraftCount;
+	
+	@Transient
+	private Integer totalWTACount;
+	
+	@Transient
+	private Integer totalWTSCount;
+	
+	@Transient
+	private Integer totalWTVCount;
+	
+	@Transient
+	private Integer totalFinalizedCount;
+	
+	@Transient
+	private Integer totalExpiredCount;
+	
+	@Transient
+	private Integer totalRejectedCount;
+	
+	@Transient
+	private Integer totalDraftVendorCount;
+	
+	@Transient
+	private Integer totalDraftClientCount;
+	
 	public String getFileName() {
 		return fileName;
 	}
@@ -654,6 +681,78 @@ public class Contracts {
 
 	public void setApproverUserName(String approverUserName) {
 		this.approverUserName = approverUserName;
+	}
+
+	public Integer getTotalDraftCount() {
+		return totalDraftCount;
+	}
+
+	public void setTotalDraftCount(Integer totalDraftCount) {
+		this.totalDraftCount = totalDraftCount;
+	}
+
+	public Integer getTotalWTACount() {
+		return totalWTACount;
+	}
+
+	public void setTotalWTACount(Integer totalWTACount) {
+		this.totalWTACount = totalWTACount;
+	}
+
+	public Integer getTotalWTSCount() {
+		return totalWTSCount;
+	}
+
+	public void setTotalWTSCount(Integer totalWTSCount) {
+		this.totalWTSCount = totalWTSCount;
+	}
+
+	public Integer getTotalWTVCount() {
+		return totalWTVCount;
+	}
+
+	public void setTotalWTVCount(Integer totalWTVCount) {
+		this.totalWTVCount = totalWTVCount;
+	}
+
+	public Integer getTotalFinalizedCount() {
+		return totalFinalizedCount;
+	}
+
+	public void setTotalFinalizedCount(Integer totalFinalizedCount) {
+		this.totalFinalizedCount = totalFinalizedCount;
+	}
+
+	public Integer getTotalExpiredCount() {
+		return totalExpiredCount;
+	}
+
+	public void setTotalExpiredCount(Integer totalExpiredCount) {
+		this.totalExpiredCount = totalExpiredCount;
+	}
+
+	public Integer getTotalRejectedCount() {
+		return totalRejectedCount;
+	}
+
+	public void setTotalRejectedCount(Integer totalRejectedCount) {
+		this.totalRejectedCount = totalRejectedCount;
+	}
+
+	public Integer getTotalDraftVendorCount() {
+		return totalDraftVendorCount;
+	}
+
+	public void setTotalDraftVendorCount(Integer totalDraftVendorCount) {
+		this.totalDraftVendorCount = totalDraftVendorCount;
+	}
+
+	public Integer getTotalDraftClientCount() {
+		return totalDraftClientCount;
+	}
+
+	public void setTotalDraftClientCount(Integer totalDraftClientCount) {
+		this.totalDraftClientCount = totalDraftClientCount;
 	}
 	
 }
