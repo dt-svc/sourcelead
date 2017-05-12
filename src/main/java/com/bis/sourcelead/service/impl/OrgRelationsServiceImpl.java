@@ -271,7 +271,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				 
 				 if("Vendor".equalsIgnoreCase(relationType)){
 					 StringBuilder spocNameSB = new StringBuilder();
-					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
+					 if(null != orgSpoc.getClientUser() ){
+					   orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail()); 
+					 }
 					 if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
 						spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString(); 
 					 }else{

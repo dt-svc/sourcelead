@@ -136,7 +136,7 @@ function getNotificationtLists(){
 					
 		 			 result = result +'	<td>';
 					result = result +'		<div class="mailbox-name tbldata-dotdot-me">';
-					result = result +		report.notificationFirstName;
+					result = result +'		'+report.notificationFirstName+' '+report.notificationLastName+' 					';
 					result = result +'		</div>';
 				    result = result +'  </td>';
 				    
