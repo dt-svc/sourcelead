@@ -309,8 +309,11 @@ public class InvoiceRestController {
 		
 		
 		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
-
+		
 		for(Invoice invoice :invoiceList){
+			Integer draftCount = 0;
+			Integer paidCount = 0;
+			
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
 			}
@@ -337,6 +340,24 @@ public class InvoiceRestController {
 			if(null != invoice.getProjectID()){
 				invoice.setProjectId(invoice.getProjectID().getId().toString());	
 			}
+			
+			
+			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
+				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
+					draftCount = draftCount+1;
+					invoice.setDraftInvoiceAmount(invoice.getDueAmount());
+				}
+				
+				if(invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")){
+					paidCount = paidCount+1;
+					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+					invoice.setPaidInvoiceAmount(paidAmount.toString());
+				}
+				
+			}
+			
+			invoice.setDraftInvoiceCount(draftCount);
+			invoice.setPaidInvoiceCount(paidCount);
 			
 			
 		}

@@ -181,6 +181,21 @@ public class Invoice {
 	@Transient
 	private String projectId;
 	
+	
+	@Transient
+	private Integer draftInvoiceCount;
+	
+	@Transient
+	private Integer paidInvoiceCount;
+	
+	@Transient
+	private String draftInvoiceAmount;
+	
+	@Transient
+	private String paidInvoiceAmount;
+	
+	
+	
 	public Long getId()
 	{
 		return id;
@@ -589,5 +604,37 @@ public class Invoice {
 
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
+	}
+
+	public Integer getDraftInvoiceCount() {
+		return draftInvoiceCount;
+	}
+
+	public void setDraftInvoiceCount(Integer draftInvoiceCount) {
+		this.draftInvoiceCount = draftInvoiceCount;
+	}
+
+	public String getDraftInvoiceAmount() {
+		return draftInvoiceAmount;
+	}
+
+	public void setDraftInvoiceAmount(String draftInvoiceAmount) {
+		this.draftInvoiceAmount = draftInvoiceAmount;
+	}
+
+	public String getPaidInvoiceAmount() {
+		return paidInvoiceAmount;
+	}
+
+	public void setPaidInvoiceAmount(String paidInvoiceAmount) {
+		this.paidInvoiceAmount = paidInvoiceAmount;
+	}
+
+	public Integer getPaidInvoiceCount() {
+		return paidInvoiceCount;
+	}
+
+	public void setPaidInvoiceCount(Integer paidInvoiceCount) {
+		this.paidInvoiceCount = paidInvoiceCount;
 	}
 }
