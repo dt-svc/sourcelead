@@ -421,10 +421,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus) throws Exception
+	public Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
 	{
-		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus);
-		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus);
+		List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus, user, userRoleName);
+		List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus, user, userRoleName);
 		
 		Contracts contractsForList = new Contracts();
 		
@@ -502,6 +502,35 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		contractsForList.setVendorcontractsList(vendorcontractsList);
 		contractsForList.setClientcontractsList(clientcontractsList);
+		return contractsForList;
+	}
+	
+	@Override
+	public Contracts getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
+	{
+		Integer totalDraftCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "DRAFT", user, userRoleName);
+		Integer totalWTACount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "WAITING_FOR_APPROVER", user, userRoleName);
+		Integer totalWTSCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "WAITING_TO_BE_SIGNED", user, userRoleName);
+		Integer totalWTVCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "WAITING_TO_BE_VERIFY", user, userRoleName);
+		Integer totalFinalizedCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "Finalized", user, userRoleName);
+		Integer totalExpiredCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "EXPIRED", user, userRoleName);
+		Integer totalRejectedCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "REJECTED", user, userRoleName);
+		
+		Integer totalDraftVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, "DRAFT", user, userRoleName);
+		Integer totalDraftClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, "DRAFT", user, userRoleName);
+		
+		Contracts contractsForList = new Contracts();
+		
+		contractsForList.setTotalDraftCount(totalDraftCount);
+		contractsForList.setTotalWTACount(totalWTACount);
+		contractsForList.setTotalWTSCount(totalWTSCount);
+		contractsForList.setTotalWTVCount(totalWTVCount);
+		contractsForList.setTotalFinalizedCount(totalFinalizedCount);
+		contractsForList.setTotalExpiredCount(totalExpiredCount);
+		contractsForList.setTotalRejectedCount(totalRejectedCount);
+		
+		contractsForList.setTotalDraftVendorCount(totalDraftVendorCount);
+		contractsForList.setTotalDraftClientCount(totalDraftClientCount);
 		return contractsForList;
 	}
 

@@ -265,7 +265,10 @@ public class ContractRestController {
 			@RequestParam(value = "contractStatus", required = false) String contractStatus, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus);
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus,user,userRoleName);
 		return commonUtil.toJSON(contracts);
 	} 
 	
