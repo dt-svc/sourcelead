@@ -300,11 +300,16 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 											timesheetApprovalDiv.append("</div>")
 				                               .append("   <div>")
 					                        .append(" </td>");
-				     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
+				     
 				     if(null != projectMember.getProjects().getClient() && !"".equalsIgnoreCase(projectMember.getProjects().getClient())){
-			    	 timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append(projectMember.getProjects().getClient()).append("</div></td>");
+			    	 timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append(projectMember.getProjects().getClient()).append("'>").append(projectMember.getProjects().getProjectName()).append(projectMember.getProjects().getClient()).append("</i></div></td>");
 				     }else{
-				     timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");	 
+				     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
+				     }
+				     if(null != projectMember.getProjects().getInvoiceFrequency()){
+				     timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
+				     }else{
+				     timesheetApprovalDiv.append("<td><div class='sm'>").append("--").append("</div></td>"); 
 				     }
 				     if(null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
 				     timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>");
@@ -532,7 +537,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String hed = weekFrequencyDates.toString();
 		String[] dateHeaders =hed.split(",");
 		LinkedList<String> headersLinkedList = new LinkedList<>();
-		String[] firstheaders = {"Employee Name","Employee Email","Project","Frequency"};
+		String[] firstheaders = {"Employee Name","Employee Email","Phnone No","Emp Type","Rate","Project","Client","Vendor","Frequency"};
 		String[] secondHeader ={"Total","Total Billable","Total Non-Billable","ProjectToDate","Project Hours Billable","Project Hours Non-Billable","LastMonth","LastMonth Billable","LastMonth  Non-Billable","Stage"};
 		
 		
@@ -546,7 +551,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String [] head = new String[headderList.size()];
 		String [] header = headderList.toArray(head);
 		
-	    Document document = new Document(PageSize.A3.rotate());
+	    Document document = new Document(PageSize.A2.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 	    
 	    StringBuilder sbTsReports =  new StringBuilder();
@@ -574,13 +579,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        PdfPTable table = new PdfPTable(header.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(23);
+	        cell1.setColspan(26);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-	        if(header.length > 20){
-            table.setWidths(new int[]{5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});
+	        if(header.length > 24){
+            table.setWidths(new int[]{5,5,5,5,5,5,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});
 	        }else{
-	        table.setWidths(new int[]{5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});	
+	        table.setWidths(new int[]{5,5,5,5,5,5,5,5,5,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5});	
 	        }
             table.addCell(cell1);
             for (int i = 0; i < header.length; i++) {
@@ -633,17 +638,45 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				timeSheetReportsArray[1] = projectMember.getEmployee().getUser().getEmail();
 			 }else{
 				 timeSheetReportsArray[1] = "--";
-			 }if(projectMember.getProjects().getProjectName() !=null){
-				timeSheetReportsArray[2] = projectMember.getProjects().getProjectName();
+			 }if(projectMember.getEmployee().getUser().getMobilePhone() !=null){
+				 timeSheetReportsArray[2] = projectMember.getEmployee().getUser().getMobilePhone();
 			 }else{
 				 timeSheetReportsArray[2] = "--";
 			 }
-			if(projectMember.getProjects().getInvoiceFrequency() !=null){
-				timeSheetReportsArray[3] = projectMember.getProjects().getInvoiceFrequency();
+			 if(projectMember.getEmployee().getUserEmploymentType() !=null){
+				 timeSheetReportsArray[3] = projectMember.getEmployee().getUserEmploymentType();
 			 }else{
 				 timeSheetReportsArray[3] = "--";
 			 }
-			int count = 4;
+			 if(projectMember.getEmployee().getRate() !=null){
+				 StringBuilder rateString = new StringBuilder();
+				 timeSheetReportsArray[4] = rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString();
+			 }else{
+				 timeSheetReportsArray[4] = "--";
+			 }
+			if(projectMember.getProjects().getProjectName() !=null){
+				timeSheetReportsArray[5] = projectMember.getProjects().getProjectName();
+			 }else{
+				 timeSheetReportsArray[5] = "--";
+			 }
+			
+			if(projectMember.getProjects().getClient() !=null){
+				timeSheetReportsArray[6] = projectMember.getProjects().getClient();
+			 }else{
+				 timeSheetReportsArray[6] = "--";
+			 }
+			if(null != projectMember.getEmployee().getUserEmploymentType() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
+				timeSheetReportsArray[7] = projectMember.getEmployee().getSpocId().getOrgName();
+			 }else{
+				 timeSheetReportsArray[7] = "--";
+			 }
+			
+			if(projectMember.getProjects().getInvoiceFrequency() !=null){
+				timeSheetReportsArray[8] = projectMember.getProjects().getInvoiceFrequency();
+			 }else{
+				 timeSheetReportsArray[8] = "--";
+			 }
+			int count = 9;
 			SubmissionApproverHierarchy sah= null;
 			 float monthTotalHours = 0f;
 			 float  monthBillableTotalHours = 0f;
@@ -825,7 +858,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String hed = weekFrequencyDates.toString();
 		String[] dateHeaders =hed.split(",");
 		LinkedList<String> headersLinkedList = new LinkedList<>();
-		String[] firstheaders = {"Employee Name","Employee Email","Project","Frequency"};
+		String[] firstheaders = {"Emp Id","Employee Name","Employee Email","Phnone No","Emp Type","Rate","Project","Client","Vendor","Frequency"};
 		String[] secondHeader ={"Total","Total Billable","Total Non-Billable","ProjectToDate","Project Hours Billable","Project Hours Non-Billable","LastMonth","LastMonth Billable","LastMonth  Non-Billable","Stage"};
 				headersLinkedList.addAll(Arrays.asList(firstheaders));
 				headersLinkedList.addAll(Arrays.asList(dateHeaders));
@@ -844,31 +877,50 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow, Date startDate, Date endDate) throws Exception {
 		createExcelsheet.getDefaultRowHeight();
 		StringBuilder sb = new StringBuilder();
-		if(null != projectMember.getEmployee().getUser().getFullName() && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getFullName()) && null != (projectMember.getEmployee().getEmployeeId()) && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
-			
-			 writeRow.createCell(0).setCellValue(sb.append(projectMember.getEmployee().getUser().getFullName()).append("-").append(projectMember.getEmployee().getEmployeeId()).toString()); 
+		if(null != (projectMember.getEmployee().getEmployeeId()) && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
+			 writeRow.createCell(0).setCellValue(sb.append(projectMember.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
-		}else{
-			writeRow.createCell(0).setCellValue(sb.append(projectMember.getEmployee().getUser().getFullName()).toString());
-			createExcelsheet.autoSizeColumn(0);
 		}
-		if(projectMember.getEmployee().getUser().getEmail() != null){
-			 writeRow.createCell(1).setCellValue(projectMember.getEmployee().getUser().getEmail());
+		if(null != projectMember.getEmployee().getUser().getFullName() && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getFullName())){
+			 writeRow.createCell(1).setCellValue(sb.append(projectMember.getEmployee().getUser().getFullName()).toString()); 
 			 createExcelsheet.autoSizeColumn(1);
 		}
-		if(null != projectMember.getProjects().getProjectName()){
-			 writeRow.createCell(2).setCellValue(projectMember.getProjects().getProjectName()); 
+		if(projectMember.getEmployee().getUser().getEmail() != null){
+			 writeRow.createCell(2).setCellValue(projectMember.getEmployee().getUser().getEmail());
 			 createExcelsheet.autoSizeColumn(2);
 		}
-		if(null != projectMember.getProjects().getInvoiceFrequency()){
-			 writeRow.createCell(3).setCellValue(projectMember.getProjects().getInvoiceFrequency()); 
+		if(null != projectMember.getEmployee().getUser().getMobilePhone()){
+			 writeRow.createCell(3).setCellValue(projectMember.getEmployee().getUser().getMobilePhone());
 			 createExcelsheet.autoSizeColumn(3);
 		}
-		int count = 4;
+		if(null != projectMember.getEmployee().getUserEmploymentType()){
+			 writeRow.createCell(4).setCellValue(projectMember.getEmployee().getUserEmploymentType());
+			 createExcelsheet.autoSizeColumn(4);
+		}
+		if(null != projectMember.getEmployee().getRate()){
+			StringBuilder rateString = new StringBuilder();
+			 writeRow.createCell(5).setCellValue(rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
+			 createExcelsheet.autoSizeColumn(5);
+		}
+		
+		if(null != projectMember.getProjects().getProjectName()){
+			 writeRow.createCell(6).setCellValue(projectMember.getProjects().getProjectName()); 
+			 createExcelsheet.autoSizeColumn(6);
+		}
+		if(null != projectMember.getProjects().getClient()){
+			 writeRow.createCell(7).setCellValue(projectMember.getProjects().getClient()); 
+			 createExcelsheet.autoSizeColumn(7);
+		}
+		if(null != projectMember.getEmployee().getUserEmploymentType() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
+			 writeRow.createCell(8).setCellValue(projectMember.getEmployee().getSpocId().getOrgName()); 
+			 createExcelsheet.autoSizeColumn(8);
+		}
+		if(null != projectMember.getProjects().getInvoiceFrequency()){
+			 writeRow.createCell(9).setCellValue(projectMember.getProjects().getInvoiceFrequency()); 
+			 createExcelsheet.autoSizeColumn(9);
+		}
+		int count = 10;
 		SubmissionApproverHierarchy sah = null;
-		 Float weekTotalHours = 0f;
-    	 Float weekBillableHours = 0f;
-    	 Float weekNonBillableHours = 0f;
     	 float monthTotalHours =0f; 
     	 float monthBillableTotalHours =0f;
     	 float monthNonBillableTotalHours  =0f;
@@ -876,10 +928,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
 		if(displayWeeksList != null && !displayWeeksList.isEmpty()){
     	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
-    	    	 
-    	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
-	    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
-	    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
+    	     float weekTotalHours = 0f;
+   	    	 float  weekBillableHours = 0f;
+   	    	 float weekNonBillableHours = 0f;
+    	    	
 	    	     Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
 	    	    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
 	    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
@@ -929,6 +981,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     	        	}
  					
  				}
+    	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
+	    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
+	    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
+    	    	
     	    	 StringBuilder listSb = new StringBuilder();
     	    	 writeRow.createCell(count).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours)).toString());
     	    	 writeRow.createCell(count+1).setCellValue( listSb.append(CommonUtil.getHoursDisplayFormat(weekBillableHours)).toString());
