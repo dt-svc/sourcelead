@@ -448,7 +448,7 @@ function saveReceivePayment(invoiceId){
 			      dataType : 'json',
 		    	 url: sourceleadUrl+"/saveInvoicePayment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&invoiceId="+invoiceId, 
 		        success: function(result) {
-		     		location.replace(sourceleadUrl+"/invoiceList");
+		     		location.replace(sourceleadUrl+"/payablesList");
 		     		
 		        },
 		    });  
@@ -581,7 +581,13 @@ function getPayableInvoiceList(){
         		
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
+				if(report.invoiceStatus == "DRAFT"){
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
+				}
+				if(report.invoiceStatus == "SENT"){
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Payables"/>">'+report.invoiceId+'</a></div>   ';				
+				}
+				
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';

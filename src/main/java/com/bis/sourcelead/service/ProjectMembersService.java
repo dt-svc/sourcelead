@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,5 +80,9 @@ public interface ProjectMembersService {
 	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 	
 	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status) throws Exception;
+	
+	List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId) throws Exception;
+
+	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception;
 	
 }

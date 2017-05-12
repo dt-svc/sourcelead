@@ -1,9 +1,18 @@
 package com.bis.sourcelead.rest;
 
+
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import java.io.File;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -28,24 +38,44 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.beans.TimesheetHours;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
+
+import com.bis.sourcelead.entity.InvoiceDocument;
+import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.InvoiceTax;
+
+
+import com.bis.sourcelead.entity.Org;
+
+import com.bis.sourcelead.entity.InvoicePayment;
+
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.service.InvoiceTaxService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @RestController
 public class InvoiceRestController {
@@ -72,6 +102,27 @@ public class InvoiceRestController {
 
 	@Autowired
 	private InvoicePaymentService invoicePaymentService;
+	
+	@Autowired
+
+	private InvoiceLineItemService invoiceLineItemService;
+	
+	@Autowired
+	private InvoiceDocumentsService invoiceDocumentsService;
+	
+	@Autowired
+	private EmployeesService employeesService;
+	
+	@Autowired
+	private InvoiceTaxService invoiceTaxService;
+
+	@Autowired
+	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+
+	
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -116,7 +167,7 @@ public class InvoiceRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
 		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
 		 final Map files = request.getFileMap();
@@ -126,7 +177,9 @@ public class InvoiceRestController {
 				attachedfileList.add(multiFile); 
 			}
 		}
+
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
+		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
 		if(null !=invoice){
 			invoiceSaved = "success";
 		}
@@ -271,11 +324,20 @@ public class InvoiceRestController {
 			}else{
 				invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 			}
-			invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
-			invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
+			if(null != invoice.getDueDate()){
+				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));	
+			}
+			if(null != invoice.getInvoiceDate()){
+				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));	
+			}
+			
 			invoice.setTotal(invoice.getTotal());
 			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
 			invoice.setPaymentStatus(invoice.getPaymentStatus());
+			if(null != invoice.getProjectID()){
+				invoice.setProjectId(invoice.getProjectID().getId().toString());	
+			}
+			
 			
 		}
 	    resultJson = commonUtil.toJSON(invoiceList);
@@ -313,5 +375,249 @@ public class InvoiceRestController {
 		return invoicePaymentSaved;
 	} 
 
+
+	
+	  @RequestMapping(value = "/getViewInvoice", method = RequestMethod.GET)
+	 	public @ResponseBody  String getViewInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	String resultJson;
+	     	OrgLocations orgLocations = null;
+	     	orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     	Long Id = null;
+	     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId);
+	     	if(parentInvoice.getParentInvoiceId() != null){
+	     		Id = parentInvoice.getParentInvoiceId().getId();
+	     		orgLocations = parentInvoice.getParentInvoiceId().getOrgLocation();
+	     	}else{
+	     		Id = invoiceId;
+	     		orgLocations = orgLocations;
+	     	}
+	     	
+	     	List<Invoice> viewinvoiceList= invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
+	     	for(Invoice invoice :viewinvoiceList){
+	     		OrgLocations  LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	     		 if(invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
+					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
+					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+				}
+				if(invoice.getOwnerUserId().getId().longValue() == user.getId().longValue()){
+					StringBuilder contactName = new StringBuilder();
+					if(invoice.getContactUser().getLastName() != null){
+						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
+					}else{
+						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+					}
+					if(null != invoice.getContactUser()){
+						invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
+					}
+				}
+				if(invoice.getContactUser().getId().longValue()  == user.getId().longValue()){
+					StringBuilder contactName = new StringBuilder();
+					if(invoice.getContactUser().getLastName() != null){
+						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
+					}else{
+						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
+					}
+					if(null != invoice.getContactUser()){
+						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
+					}
+				}
+				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
+				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
+				
+				
+				//get the Invoice Items List
+				List<InvoiceLineItems> invoiceLineItemsList= invoiceLineItemService.invoiceLineItemsByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
+				for(InvoiceLineItems inviceLine:invoiceLineItemsList){
+					if(null != inviceLine.getCandidate()){
+						StringBuilder  can = new StringBuilder();
+						if(inviceLine.getCandidate().getLastName() != null){
+							inviceLine.setCandidateName(can.append(inviceLine.getCandidate().getFirstName()).append(" ").append(inviceLine.getCandidate().getLastName()).toString());	
+						}else{
+							inviceLine.setCandidateName(can.append(inviceLine.getCandidate().getFirstName()).toString());
+						}	
+					}
+					if(null != inviceLine.getContract()){
+						inviceLine.setSowName(inviceLine.getContract().getContractTitle());	
+					}
+					inviceLine.setRate(inviceLine.getRate());
+					inviceLine.setTotalHours(inviceLine.getTotalHours());
+					inviceLine.setAmount(inviceLine.getAmount());
+					if(null != inviceLine.getStartDate()){
+						inviceLine.setStartDateStr(Constants.DF_DMY.format(inviceLine.getStartDate()));	
+					}
+					if(null !=inviceLine.getEndDate()){
+						inviceLine.setEndDtaeStr(Constants.DF_DMY.format(inviceLine.getEndDate()));	
+					}
+					
+					if(null != inviceLine.getCandidate()){
+						if(null != inviceLine.getCandidate().getConsultantUser()){
+							Employees employeeId=employeesService.getEmployeeByUserId(inviceLine.getCandidate().getConsultantUser().getId());
+							inviceLine.setEmployeeId(employeeId.getEmployeeId());
+						}
+					}
+					
+					
+					invoice.setInvoiceLineItemsList(invoiceLineItemsList);
+				}
+				
+				//get the InvoiceDocument list 
+				List<InvoiceDocument> invoiceDocumentList =invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(Id);
+				for(InvoiceDocument invoiceDoc :invoiceDocumentList)
+				{
+					invoiceDoc.setFileName(invoiceDoc.getFileName());
+					invoice.setInvoiceDocumentsList(invoiceDocumentList);
+				}
+				List<InvoiceTax> InvoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(Id);
+				for(InvoiceTax it:InvoiceTaxList)
+				{
+					it.setTaxName(it.getTaxName());
+					it.setTaxType(it.getTaxType());
+					it.setTaxValue(it.getTaxValue());
+					it.setTaxAmount(it.getTaxAmount());
+					invoice.setInvoiceTaxList(InvoiceTaxList);
+				}
+				
+			}
+	 	  resultJson = commonUtil.toJSON(viewinvoiceList);
+	 	  return resultJson;
+	 	}
+	  
+	  @RequestMapping(value = "/getViewPaymentHistory", method = RequestMethod.GET)
+	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	String resultJson;
+	     	Long Id = null;
+	     	Invoice invoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId);
+	     	if(invoice.getParentInvoiceId() != null){
+	     		Id = invoice.getParentInvoiceId().getId();
+	     	}else{
+	     		Id = invoiceId;
+	     	}
+	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
+	     	for(InvoicePayment ip :invoicePaymentList){
+	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
+	     		ip.setPaymentMethod(ip.getPaymentMethod());
+	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
+	     		ip.setFileName(ip.getFileName());
+	     		ip.setPaymentComment(ip.getPaymentComment());
+	     		ip.setPaymentCustomDue(ip.getPaymentCustomDue());
+	     	}
+	     	resultJson = commonUtil.toJSON(invoicePaymentList);
+		 	  return resultJson;
+	     	
+	 	}
     
+	  @RequestMapping(value = "/downloadInvoicePaymentDocument", method = RequestMethod.GET)
+	    public void downloadInvoicePaymentDocument(@RequestParam(value="paymentHistoryId", required=false) Long paymentHistoryId ,HttpServletResponse response) throws Exception {
+		        InvoicePayment payment =invoicePaymentService.invoicePaymentById(paymentHistoryId);
+			    response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(payment.getFileName()).append("\"").toString());
+				InputStream inputStream = new ByteArrayInputStream(payment.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+
+		}  
+
+	//******************* Added By Rajashekar
+	
+	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
+	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
+		
+		Projects projects = projectsService.getProjectById(projectId);
+		List<String> frequencyDates = new ArrayList<>();
+		
+		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+		
+				for (Map.Entry<String, String> entry : map.entrySet())
+				{
+					StringBuffer sb = new StringBuffer();
+				    sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
+				    frequencyDates.add(sb.toString());
+				}
+		return commonUtil.toJSON(frequencyDates);
+	} 
+	
+	
+	
+	@RequestMapping(value = "/getAllProjectAssignedMembers", method = RequestMethod.GET)
+	public @ResponseBody String getAllProjectAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,@RequestParam(value = "frequency", required = false) String frequency,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String frequencyArray[] = frequency.split("/");
+		String startDateStr = frequencyArray[0];
+		String endDateStr = frequencyArray[1];
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        
+        Date startDate = format.parse(startDateStr);
+		Date endDate = format.parse(endDateStr);
+		
+		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
+		
+		for(ProjectMembers projectMember :projectMembersList){
+			Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
+			StringBuilder empName =new StringBuilder();
+			if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
+				empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+			}else{
+				empName.append(projectMember.getEmployee().getUser().getFirstName());
+			}
+			projectMember.setEmpName(empName.toString());
+			projectMember.setUserId(projectMember.getEmployee().getUser().getId().toString());
+			projectMember.setStartDate(startDateStr);
+			projectMember.setEndDate(endDateStr);
+			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+		}
+		return commonUtil.toJSON(projectMembersList);
+	} 
+	
+//	
+	@RequestMapping(value = "/saveProjectInvoice", method = RequestMethod.POST)
+	public @ResponseBody String saveProjectInvoice(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,MultipartHttpServletRequest request) throws Exception {
+
+		String json1 = "{" + json + "}";
+		String invoiceSaved = "failed";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
+		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
+		 final Map files = request.getFileMap();
+		for(int i=0;i<attcahmentMaxRowNumber;i++){
+			MultipartFile  multiFile = (MultipartFile)files.get(i+"invoicedocFile");
+			if(multiFile != null && !multiFile.isEmpty()){
+				attachedfileList.add(multiFile); 
+			}
+		}
+		Invoice invoice = invoiceService.saveProjectInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
+		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
+		if(null !=invoice){
+			invoiceSaved = "success";
+		}
+		return "";
+}
+	//******************* End By Rajashekar
+
 }

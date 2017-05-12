@@ -167,6 +167,4 @@ public class BillingPayableController {
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
-	
-	
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,11 +47,27 @@ public class Invoice {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
 	
+	@ManyToOne
+    @JoinColumn(name="OWNER_USER_ID", nullable=false )     
+	private User ownerUserId;
+	
+	@ManyToOne
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
+	private OrgLocations responderLocationId;
+	
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
+	@ManyToOne
+    @JoinColumn(name="PROJECT_ID", nullable=false ) 
+	private Projects projectID;
+	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
+	
+	@ManyToOne
+    @JoinColumn(name="PARENT_INVOICE_ID")        
+	private Invoice parentInvoiceId;
 	
 	@Column(name = "INVOICE_UUID")
 	private String invoiceUUID;
@@ -134,11 +151,15 @@ public class Invoice {
 	private String clientContactName;
 	
 	@Transient
+	private String clientContactEmail;
+	
+	@Transient
 	private String invoiceDateStr;
 	
 	@Transient
 	private String dueDateStr;
 	
+
 	@Transient
 	private Long vendorOrgRelationId;
 	
@@ -157,6 +178,9 @@ public class Invoice {
 	@Transient
 	List<InvoiceTax> invoiceTaxList;
 
+	@Transient
+	private String projectId;
+	
 	public Long getId()
 	{
 		return id;
@@ -167,6 +191,16 @@ public class Invoice {
 		this.id = id;
 	}
 
+
+	public Projects getProjectID()
+	{
+		return projectID;
+	}
+
+	public void setProjectID(Projects projectID)
+	{
+		this.projectID = projectID;
+	}
 
 	public OrgRelations getOrgRelationID() {
 		return orgRelationID;
@@ -360,6 +394,22 @@ public class Invoice {
 		this.orgLocation = orgLocation;
 	}
 
+	public User getOwnerUserId() {
+		return ownerUserId;
+	}
+
+	public void setOwnerUserId(User ownerUserId) {
+		this.ownerUserId = ownerUserId;
+	}
+
+	public OrgLocations getResponderLocationId() {
+		return responderLocationId;
+	}
+
+	public void setResponderLocationId(OrgLocations responderLocationId) {
+		this.responderLocationId = responderLocationId;
+	}
+
 	public String getInvoiceStatus()
 	{
 		return invoiceStatus;
@@ -392,6 +442,14 @@ public class Invoice {
 
 	public void setClientContactName(String clientContactName) {
 		this.clientContactName = clientContactName;
+	}
+
+	public String getClientContactEmail() {
+		return clientContactEmail;
+	}
+
+	public void setClientContactEmail(String clientContactEmail) {
+		this.clientContactEmail = clientContactEmail;
 	}
 
 	public String getInvoiceDateStr() {
@@ -448,6 +506,14 @@ public class Invoice {
 
 	public void setAfterDiscountValue(String afterDiscountValue) {
 		this.afterDiscountValue = afterDiscountValue;
+	}
+
+	public Invoice getParentInvoiceId() {
+		return parentInvoiceId;
+	}
+
+	public void setParentInvoiceId(Invoice parentInvoiceId) {
+		this.parentInvoiceId = parentInvoiceId;
 	}
 
 	public String getInvoiceType() {
@@ -517,4 +583,11 @@ public class Invoice {
 		this.invoiceTaxList = invoiceTaxList;
 	}
 
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
 }

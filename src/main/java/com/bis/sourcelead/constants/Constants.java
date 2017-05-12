@@ -230,6 +230,13 @@ public class Constants {
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	
 	public static String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
+	
+	public static String APPROVE_CONTRACT = "Approve Contract";
+	
+	public static String REJECT_CONTRACT = "Reject Contract";
+	
+	public static String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
+	
 	public static String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	
 	public static String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
@@ -576,6 +583,7 @@ public class Constants {
     
     public static int PREVIOUS_MONTH =-1;
     public static int NEXT_MONTH =1;
+    public static int TWELVE_MONTH =1;
     public static int CURRENT_MONTH =0;
     
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
@@ -680,4 +688,9 @@ public class Constants {
     public static String ONE_YEAR = "oneyear";
     
     public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
+    
+    //invoice
+    
+    public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)", "Rate", "Total Hours", "Total"};
+    
 }	

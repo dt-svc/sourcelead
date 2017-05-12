@@ -971,15 +971,18 @@ public class UsersListRestController {
 			userRole.setTerminateReason(jsonObj.getString("reason"));
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-
-			UserRole updateUserRole = userRoleService.addUserRole(userRole);
-
-			// to assign primary role to another user
+			
+			
 			UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
 			if (existinguserRole != null) {
 				existinguserRole.setIsPrimary(1);
 				userRoleService.addUserRole(existinguserRole);
 			}
+
+			UserRole updateUserRole = userRoleService.addUserRole(userRole);
+
+			// to assign primary role to another user
+			
 			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(),
 					orgLocations.getId());
 			userService.saveOrUpdateUserElkDocument(updateUserRole, employee, user.getUserCode());
