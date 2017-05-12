@@ -178,8 +178,8 @@ public class InvoiceRestController {
 			}
 		}
 
-		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
-		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
+		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org);
+		
 		if(null !=invoice){
 			invoiceSaved = "success";
 		}

@@ -52,6 +52,9 @@ public class ContractsTemplate {
 	@Column(name = "TEMPLATE_CONTENT",columnDefinition = "TEXT default NULL")
 	private String templateContent;
 	
+	@Column(name = "TEMPLATE_UUID")
+	private String templateUUID;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -66,6 +69,15 @@ public class ContractsTemplate {
 	
 	@Column(name = "TEMPLATE_STATUS")
 	private String templateStatus;
+
+	
+	public String getTemplateUUID() {
+		return templateUUID;
+	}
+
+	public void setTemplateUUID(String templateUUID) {
+		this.templateUUID = templateUUID;
+	}
 
 	public Long getId()
 	{

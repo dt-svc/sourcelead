@@ -158,6 +158,8 @@ public class Contracts {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "CONTRACT_UUID")
+	private String contractUUID;
 	
 	@Column(name = "STATE_JURISDICTION")
 	private String stateJurisdiction;
@@ -344,6 +346,14 @@ public class Contracts {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getContractUUID() {
+		return contractUUID;
+	}
+
+	public void setContractUUID(String contractUUID) {
+		this.contractUUID = contractUUID;
 	}
 
 	public Long getId()

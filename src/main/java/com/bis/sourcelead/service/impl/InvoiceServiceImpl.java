@@ -42,7 +42,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -105,9 +105,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
-	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType) throws Exception {
+	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType,Org loginOrg) throws Exception {
 		
-		
+
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
@@ -247,7 +247,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			Set<InvoiceDocument> invoiceDocumentsSet = getInvoiceDocuments(jsonObj,user,orgLocation,invoice,attachedfileList);	
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
-		
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,loginOrg);
+		invoice.setFileName(file.getName());
+		byte[] bytesArray = new byte[(int) file.length()];
+		invoice.setDocFile(bytesArray);
 		invoiceDao.saveInvoce(invoice);
 		
 		if(null != invoiceLineItemsIdsList && invoiceLineItemsIdsList.size() > 0){

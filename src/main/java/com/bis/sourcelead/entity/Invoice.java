@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -57,6 +58,10 @@ public class Invoice {
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+	
 	@Column(name = "INVOICE_UUID")
 	private String invoiceUUID;
 	
@@ -65,6 +70,9 @@ public class Invoice {
 	
 	@Column(name = "DUE_DATE")
 	private Date dueDate;
+	
+	@Column(name = "DOC_FILENAME")
+	private String fileName;
 	
 	@Column(name = "BILLING_ADDRESS",columnDefinition = "TEXT default NULL")
 	private String billingAddress;
@@ -568,5 +576,27 @@ public class Invoice {
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
+
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+	
 
 }
