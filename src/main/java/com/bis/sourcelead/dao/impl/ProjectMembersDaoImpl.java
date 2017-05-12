@@ -379,7 +379,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
 				+ " where  projects.orgLocationsId.id = :locationsId  "
 				    + dateQuery
-					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE') and pm.id='"+1196+"'"
+					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE') "
 					+ " and ( "
 					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2') OR (pah.level = '1' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""

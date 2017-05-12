@@ -893,7 +893,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				/*
 				 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 				 */
-				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.status = '1' and subsah.submissionId.projectMembers.id = pm.id  and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.status = '1' and subsah.submissionId.projectMembers.id = pm.id  and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR sah.frequencyStartDate BETWEEN :startDate and :endDate OR sah.frequencyEndDate BETWEEN :startDate and :endDate)) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
 				+ "   ) ";
 		@SuppressWarnings("unchecked")
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList =session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list(); 
@@ -1184,18 +1184,19 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		    			float weekBillableTotalHours    = 0f;
 		    			float weekNonBillableTotalHours = 0f;
 		    			 
-	    				int dayOfWeek = CalendarUtil.getDayOfTheDate(endDate);
-	    				Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
-    					for(TimesheetEntries te : timesheetEntries){
-    						if(te.getProjectTask()!= null && te.getProjectTask().getBillableType()!= null && te.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)){
-    							weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
-    						}
-    						else{
-    							weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
-    						}
-    					}
-    					 weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,weekNonBillableTotalHours);
-    					
+		    			if(sah.getSubmissionId().getStartDate().before(endDate)){
+		    				int dayOfWeek = CalendarUtil.getDayOfTheDate(endDate);
+		    				Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
+	    					for(TimesheetEntries te : timesheetEntries){
+	    						if(te.getProjectTask()!= null && te.getProjectTask().getBillableType()!= null && te.getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)){
+	    							weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
+	    						}
+	    						else{
+	    							weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
+	    						}
+	    					}
+	    					 weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,weekNonBillableTotalHours);
+		    			}
     					monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours,weekTotalHours);
    	    		  	    monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours,weekBillableTotalHours);
    	    			    monthNonBillableTotalHours = CommonUtil.getCombinedHours(monthNonBillableTotalHours,weekNonBillableTotalHours);
@@ -1232,47 +1233,55 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	
 	private Float getDayHours(TimesheetEntries te,int flag){
-		
+		float weekhours = 0f;
 		switch(flag){
 		 case 1:  if(StringUtils.isNotEmpty(te.getSunHours())){
 	                  String hours = te.getSunHours().replaceAll(":", ".");
-	                   return Float.parseFloat(hours);
+	                  weekhours= Float.parseFloat(hours);
 	               }
+		             break;
 	 	  case 2:  if(StringUtils.isNotEmpty(te.getMonHours())){
 	 		          String hours = te.getMonHours().replaceAll(":", ".");
-				      return Float.parseFloat(hours);
+	 		         weekhours= Float.parseFloat(hours);
 			       }
+	 	             break;
 	 		  
 	 	  case 3:  if(StringUtils.isNotEmpty(te.getTueHours())){
 	 		          String hours = te.getTueHours().replaceAll(":", ".");
-				      return Float.parseFloat(hours);
+	 		         weekhours= Float.parseFloat(hours);
 			       }
+	 	            break;
 	 		  
 		  case 4:  if(StringUtils.isNotEmpty(te.getWedHours())){
 			           String hours = te.getWedHours().replaceAll(":", ".");
-			           return Float.parseFloat(hours);
+			           weekhours= Float.parseFloat(hours);
 		            }
-			  
+		            break;
 		  case 5:  if(StringUtils.isNotEmpty(te.getThuHours())){
 			           String hours = te.getThuHours().replaceAll(":", ".");
-			           return Float.parseFloat(hours);
+			           weekhours= Float.parseFloat(hours);
 		            }
+		             break;
 		  case 6:  if(StringUtils.isNotEmpty(te.getFriHours())){
 			            String hours = te.getFriHours().replaceAll(":", ".");
-			            return Float.parseFloat(hours);
+			            weekhours= Float.parseFloat(hours);
 		            }
+		            break;
 	  
 		  case 7:  if(StringUtils.isNotEmpty(te.getSatHours())){
 			             String hours = te.getSatHours().replaceAll(":", ".");
-					     return Float.parseFloat(hours);
+			             weekhours= Float.parseFloat(hours);
 				    }
+		             break;
 		  case 8:  if(StringUtils.isNotEmpty(te.getSunHours())){
               String hours = te.getSunHours().replaceAll(":", ".");
-               return Float.parseFloat(hours);
+              weekhours= Float.parseFloat(hours);
            }
+		            break;
 			
-			default: return 0f;
+			default: weekhours= 0f;
 		}
+		return weekhours;
 	}
 	
 	@Override
