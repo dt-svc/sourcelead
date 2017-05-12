@@ -117,10 +117,11 @@ public class ContractRestController {
 		
 	} 
 	
-	@RequestMapping(value = "/testController/{id}", method = RequestMethod.GET)
-	public @ResponseBody  void testController(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/testController/{id}/{tempName}", method = RequestMethod.GET)
+	public @ResponseBody  void testController(@PathVariable("id") String id,@PathVariable("tempName") String tempName,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
+		//ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));	
+		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(id);	
 		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
 		String totalBody = header + contractsTemplate.getTemplateContent();
     	ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
@@ -143,7 +144,8 @@ public class ContractRestController {
 	@RequestMapping(value = "/viewContractPdf/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void viewContractPdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
+		//Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
+		Contracts contract =	contractsTemplateService.getContractByContractUUID(id);		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -162,6 +164,7 @@ public class ContractRestController {
 		if(("New").equalsIgnoreCase(contract.getTypeOfContract())&& "DRAFT".equalsIgnoreCase(contract.getTemplateSubmissionStatus())){
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
+
 		if(null == contract.getEnvelopId()&& ("Existing").equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
@@ -209,13 +212,12 @@ public class ContractRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
-			StringBuilder ownersb = new StringBuilder();
-			if(null != orgSpoc.getOwnerUser().getFirstName() && null != orgSpoc.getOwnerUser().getLastName()){
-				ownersb.append(orgSpoc.getOwnerUser().getFirstName()).append(" ").append(orgSpoc.getOwnerUser().getLastName());
-			}else{
-				ownersb.append(orgSpoc.getOwnerUser().getFirstName());
-			}
-			orgSpoc.setOwnerUserName(ownersb.toString());
+			if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
+                orgSpoc.setOwnerUserName(clientSb.toString());
+            }
+            if(orgSpoc.getClientUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
+                orgSpoc.setOwnerUserName(sb.toString());
+            }
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
@@ -263,7 +265,10 @@ public class ContractRestController {
 			@RequestParam(value = "contractStatus", required = false) String contractStatus, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus);
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		
+		Contracts contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,tabType, contractsType,contractStatus,user,userRoleName);
 		return commonUtil.toJSON(contracts);
 	} 
 	

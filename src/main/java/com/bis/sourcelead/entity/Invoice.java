@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -48,6 +47,14 @@ public class Invoice {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
 	
+	@ManyToOne
+    @JoinColumn(name="OWNER_USER_ID", nullable=false )     
+	private User ownerUserId;
+	
+	@ManyToOne
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
+	private OrgLocations responderLocationId;
+	
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
@@ -58,9 +65,9 @@ public class Invoice {
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
+	@ManyToOne
+    @JoinColumn(name="PARENT_INVOICE_ID")        
+	private Invoice parentInvoiceId;
 	
 	@Column(name = "INVOICE_UUID")
 	private String invoiceUUID;
@@ -70,9 +77,6 @@ public class Invoice {
 	
 	@Column(name = "DUE_DATE")
 	private Date dueDate;
-	
-	@Column(name = "DOC_FILENAME")
-	private String fileName;
 	
 	@Column(name = "BILLING_ADDRESS",columnDefinition = "TEXT default NULL")
 	private String billingAddress;
@@ -130,10 +134,6 @@ public class Invoice {
 	@Column(name = "IS_SEPARATE_INVOICE")
 	private String isSeparateInvoice;
 	
-	@Column(name = "INVOICE_FREQUENCY")
-	private String invoiceFrequency;
-	
-	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
@@ -180,6 +180,21 @@ public class Invoice {
 
 	@Transient
 	private String projectId;
+	
+	
+	@Transient
+	private Integer draftInvoiceCount;
+	
+	@Transient
+	private Integer paidInvoiceCount;
+	
+	@Transient
+	private String draftInvoiceAmount;
+	
+	@Transient
+	private String paidInvoiceAmount;
+	
+	
 	
 	public Long getId()
 	{
@@ -394,6 +409,22 @@ public class Invoice {
 		this.orgLocation = orgLocation;
 	}
 
+	public User getOwnerUserId() {
+		return ownerUserId;
+	}
+
+	public void setOwnerUserId(User ownerUserId) {
+		this.ownerUserId = ownerUserId;
+	}
+
+	public OrgLocations getResponderLocationId() {
+		return responderLocationId;
+	}
+
+	public void setResponderLocationId(OrgLocations responderLocationId) {
+		this.responderLocationId = responderLocationId;
+	}
+
 	public String getInvoiceStatus()
 	{
 		return invoiceStatus;
@@ -492,6 +523,14 @@ public class Invoice {
 		this.afterDiscountValue = afterDiscountValue;
 	}
 
+	public Invoice getParentInvoiceId() {
+		return parentInvoiceId;
+	}
+
+	public void setParentInvoiceId(Invoice parentInvoiceId) {
+		this.parentInvoiceId = parentInvoiceId;
+	}
+
 	public String getInvoiceType() {
 		return invoiceType;
 	}
@@ -563,40 +602,39 @@ public class Invoice {
 		return projectId;
 	}
 
-	public String getInvoiceFrequency()
-	{
-		return invoiceFrequency;
-	}
-
-	public void setInvoiceFrequency(String invoiceFrequency)
-	{
-		this.invoiceFrequency = invoiceFrequency;
-	}
-
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
-
-	public byte[] getDocFile()
-	{
-		return docFile;
+	public Integer getDraftInvoiceCount() {
+		return draftInvoiceCount;
 	}
 
-	public void setDocFile(byte[] docFile)
-	{
-		this.docFile = docFile;
+	public void setDraftInvoiceCount(Integer draftInvoiceCount) {
+		this.draftInvoiceCount = draftInvoiceCount;
 	}
 
-	public String getFileName()
-	{
-		return fileName;
+	public String getDraftInvoiceAmount() {
+		return draftInvoiceAmount;
 	}
 
-	public void setFileName(String fileName)
-	{
-		this.fileName = fileName;
+	public void setDraftInvoiceAmount(String draftInvoiceAmount) {
+		this.draftInvoiceAmount = draftInvoiceAmount;
 	}
-	
 
+	public String getPaidInvoiceAmount() {
+		return paidInvoiceAmount;
+	}
+
+	public void setPaidInvoiceAmount(String paidInvoiceAmount) {
+		this.paidInvoiceAmount = paidInvoiceAmount;
+	}
+
+	public Integer getPaidInvoiceCount() {
+		return paidInvoiceCount;
+	}
+
+	public void setPaidInvoiceCount(Integer paidInvoiceCount) {
+		this.paidInvoiceCount = paidInvoiceCount;
+	}
 }

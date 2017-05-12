@@ -98,8 +98,7 @@ public class BillingPayableController {
 	
 	
 	@RequestMapping(value = "/getInvoiceByUUID")
-	public ModelAndView getInvoiceByUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID ,
-			@RequestParam(value="projectId", required=false) String projectId,HttpServletRequest request) throws Exception {
+	public ModelAndView getInvoiceByUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID ,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
@@ -114,11 +113,7 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId)){
-			model.setViewName("billing/createProjectPayableInvoice");
-		}else{
-			model.setViewName("billing/createPayables");
-		}
+		model.setViewName("billing/createPayables");
 		model.addObject("invoiceUUID", invoiceUUID);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Payables);
@@ -172,6 +167,4 @@ public class BillingPayableController {
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
-	
-	
 }

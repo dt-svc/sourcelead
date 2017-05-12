@@ -38,7 +38,7 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Receivable List</div>
     </section>
     <div class="content-area content-new clearfix">
-      <div class="onboardDashboard_counts">
+      <div class="billing_dashboard">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
             <div class="pull-right select-field ml">
@@ -57,19 +57,62 @@ $(document).ready(function(){
           </div>
             </div>
           </div>
-          <ul class="nav nav-tabs" id="tab_bar">
-            <li class="active"> <a href="#unbilled" data-toggle="tab" class="onboardCount" title="Current onboard count" aria-expanded="true">
-              <div class="count"> 1 </div>
-              <h4>Unbilled invoice</h4>
-              </a> </li>
-            <li class=""> <a href="#unpaid" data-toggle="tab" title="Current offboard count" aria-expanded="false">
-              <div class="count"> 10 </div>
-              <h4>Unpaid invoice</h4>
-              </a> </li>
-            <li class=""> <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" aria-expanded="false">
-              <div class="count"> 100 </div>
-              <h4>Paid invoice</h4>
-              </a> </li>
+         
+         <ul class="nav nav-tabs" id="tab_bar">
+            
+               <li class="active">
+                        <h4>Unbilled</h4>
+                        <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Current onboard count">
+                            <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="unbilledAmoumt"></div>
+                                <h5>Draft Invoice<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                </div>
+                        </a>
+                    </li>
+                    <li>
+                        <h4>Un Paid</h4>
+                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbg_red">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count">Rs: 55588 </div>
+                        <h5>Overdue Invoice<span class="paddingLeft">10</span></h5>
+                            </div>
+                        
+                        </a>
+                    </li>
+                    <li>
+                        <h4>&nbsp;</h4>
+                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbgRed">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count">
+                            Rs: 55588
+                        </div>
+                        <h5>Open Invoice<span class="paddingLeft">10</span></h5>
+                        </div>
+                        </a>
+                    </li>
+                    <li class="billingbg_greens">
+                        <h4>Paid</h4>
+                        <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" class="billbg_green">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="paidInvoiceAmount"></div>
+                        <h5>Paid Invoice<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                            </div>
+                        </a>
+                    </li>
+            
+            
             <div class="pull-right mt40 select-field hidden">
               <select class="form-control">
                 <option class="disabled" selected="">--Select option--</option>
@@ -86,7 +129,7 @@ $(document).ready(function(){
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt">
+              <div class="timesheet_out mt" style="overflow-x:auto;">
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
@@ -390,7 +433,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>  ';
 	result = result +'            <div class="col-md-4">  ';
 	result = result +'              <label>Reference No<span class="text-danger paddingLeft">*</span></label> ';
-	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required" field-name="Reference No"> ';
+	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250"  field-name="Reference No"> ';
 	result = result +'            </div>        ';
 	result = result +'          </div>          ';
 	result = result +'          <div class="row mt">                                 ';
@@ -405,9 +448,9 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
-	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
+	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();" >     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" readonly>       ';
+	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -455,6 +498,8 @@ function receivePaymentPop1(invoiceId,total){
 			removeValidate();
 		}
 	});
+    
+    
 }
 
 </script>  
@@ -593,6 +638,14 @@ function getInvoiceList(){
         url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable",
         success: function(data) {
         	var json = JSON.parse(data);
+        	
+        	var draftCount = 0;
+        	var draftTotalAmount = 0;
+        	
+
+        	var paidCount = 0;
+        	var paidTotalAmount = 0;
+        	
         	var result = "";
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
@@ -614,6 +667,19 @@ function getInvoiceList(){
         	for (var i=0; i<json.length; i++)
     		{  
         		var report = json[i];
+        		
+				draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
+       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
+       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
+       			}
+       			
+       			
+				paidCount = parseInt(paidCount) + parseInt(report.paidInvoiceCount);
+       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
+       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
+       			}
+        		
+        		
         		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
         			dueDateStr = report.dueDateStr;
         		}else{
@@ -633,10 +699,10 @@ function getInvoiceList(){
 				result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+projectId+'">'+report.invoiceId+'</a></div>   ';
 				}
 				if(report.invoiceStatus == "SENT"){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'"/>">'+report.invoiceId+'</a></div>   ';				
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
 				}
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
@@ -679,7 +745,15 @@ function getInvoiceList(){
         	result = result +'     </tbody>                                                                                                          ';
 			result = result +'   </table>                                                                                                            ';
 			$("#invoiceList").empty();  
-		    $("#invoiceList").append(result)
+		    $("#invoiceList").append(result);
+		    
+		    $("#draftInvoiceCount").html(draftCount);
+		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    		    
+		    $("#paidInvoiceCount").html(paidCount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    	    
+
 		    invoicePagination()
         },
         
@@ -755,12 +829,28 @@ function cancelbtn(){
 <script>
 function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
+	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	                event.preventDefault();
+	            }
+	        });
+	 
+	 
 }
 function validMask(){
 	  $('#customeAmount').attr("readonly","readonly");  
+	  
 }
+/* function amountCal(){
+	var totalAmount =  $("#totalAmount").val();
+	var customAmount =  $("#customeAmount").val();
+	if(totalAmount <= customAmount){
+		var exceededAmount = customAmount - totalAmount
+		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
+	}
+} */
 </script>
-
 
 <script>
 $(document).ready(function() {

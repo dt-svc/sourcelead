@@ -34,7 +34,6 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
-import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -42,7 +41,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -77,7 +76,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -105,9 +103,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
-	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType,Org loginOrg) throws Exception {
+	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType) throws Exception {
 		
-
+		
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
@@ -122,11 +120,13 @@ public class InvoiceServiceImpl implements InvoiceService{
         
 		
         if(invoiceType.equalsIgnoreCase("payable")){
-        	
-        	 
         	if(jsonObj.has("vendorOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("vendorOrgRelationId"))){
-      			
       			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendorOrgRelationId")));
+      			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getLocationId());
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getResponderLocationId());
+      			}
       			invoice.setOrgRelationID(orgRelation);	
       		}
       		
@@ -134,14 +134,15 @@ public class InvoiceServiceImpl implements InvoiceService{
       			User contactUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
       			invoice.setContactUser(contactUser);
       		}
-      		
       		invoice.setInvoiceType(Constants.Payables);
-        
-        
         }else{
         	 if(jsonObj.has("clientOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("clientOrgRelationId"))){
-     			
      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+     			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getLocationId());
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getResponderLocationId());
+      			}
      			invoice.setOrgRelationID(orgRelation);	
      		}
      		
@@ -149,12 +150,10 @@ public class InvoiceServiceImpl implements InvoiceService{
      			User userContactName = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
      			invoice.setContactUser(userContactName);
      		}
-     		
      		invoice.setInvoiceType(Constants.Receivable);
-     		
         }
         
-       
+        invoice.setOwnerUserId(user);
 		invoice.setOrgLocation(orgLocation);
 		if(jsonObj.has("invoiceId") && !"".equalsIgnoreCase(jsonObj.getString("invoiceId"))){
 			invoice.setInvoiceId(jsonObj.getString("invoiceId"));
@@ -208,15 +207,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(jsonObj.has("afterDiscountTotal") && !"".equalsIgnoreCase(jsonObj.getString("afterDiscountTotal"))){
 			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
 		}
-		//Storing Prohect Id
-		if(jsonObj.has("projectId") && !"".equalsIgnoreCase(jsonObj.getString("projectId"))){
-			Projects projects = projectsService.getProjectById(Long.parseLong(jsonObj.getString("projectId")));
-			invoice.setProjectID(projects);
-		}
-		// Frequency storing only for to show in edit invoice
-		if(jsonObj.has("frequency") && !"".equalsIgnoreCase(jsonObj.getString("frequency"))){
-		 invoice.setInvoiceFrequency(jsonObj.getString("frequency"));
-		 }
+		
 		invoice.setPaymentStatus("Unpaid");
 		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
@@ -247,11 +238,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 			Set<InvoiceDocument> invoiceDocumentsSet = getInvoiceDocuments(jsonObj,user,orgLocation,invoice,attachedfileList);	
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,loginOrg);
-		invoice.setFileName(file.getName());
-		byte[] bytesArray = new byte[(int) file.length()];
-		invoice.setDocFile(bytesArray);
+		
 		invoiceDao.saveInvoce(invoice);
+		if(saveType.equalsIgnoreCase("SENT")){
+			saveParentInvoice(invoice);	
+		}
+		
 		
 		if(null != invoiceLineItemsIdsList && invoiceLineItemsIdsList.size() > 0){
 			for(Long lineItemsId : invoiceLineItemsIdsList){
@@ -270,6 +262,39 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		
 		return invoice;
+	}
+	private void saveParentInvoice(Invoice invoice) throws Exception {
+		Invoice parentInvoice = new Invoice();
+		if(invoice.getInvoiceType().equalsIgnoreCase("payable")){
+			parentInvoice.setInvoiceType(Constants.Receivable);
+		}else{
+			parentInvoice.setInvoiceType(Constants.Payables);
+		}
+		parentInvoice.setInvoiceId(invoice.getInvoiceId());
+		parentInvoice.setParentInvoiceId(invoice);
+		parentInvoice.setOrgRelationID(invoice.getOrgRelationID());
+		parentInvoice.setContactUser(invoice.getOwnerUserId());
+		parentInvoice.setOrgLocation(invoice.getResponderLocationId());
+		parentInvoice.setOwnerUserId(invoice.getContactUser());
+		parentInvoice.setResponderLocationId(invoice.getOrgLocation());
+		parentInvoice.setInvoiceDate(invoice.getInvoiceDate());
+		parentInvoice.setBillingAddress(invoice.getBillingAddress());
+		parentInvoice.setDiscountAmount(invoice.getDiscountAmount());
+		parentInvoice.setDiscountValue(invoice.getDiscountValue());
+		parentInvoice.setAfterDiscountValue(invoice.getAfterDiscountValue());
+		parentInvoice.setSubTotal(invoice.getSubTotal());
+		parentInvoice.setInvoiceComment(invoice.getInvoiceComment());
+		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
+		parentInvoice.setDiscountType(invoice.getDiscountType());
+		parentInvoice.setTotal(invoice.getTotal());
+		parentInvoice.setInvoiceStatus(invoice.getInvoiceStatus());
+		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
+		parentInvoice.setDueDate(invoice.getDueDate());
+		parentInvoice.setDueAmount(invoice.getDueAmount());
+		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
+		parentInvoice.setCreatedDate(invoice.getCreatedDate());
+		parentInvoice.setCreatedBy(invoice.getCreatedBy());
+		invoiceDao.saveInvoce(parentInvoice);
 	}
 	private Set<InvoiceDocument> getInvoiceDocuments(JSONObject jsonObj, User user, OrgLocations orgLocation,Invoice invoice, List<MultipartFile> attachedfileList) throws Exception {
 		
@@ -360,7 +385,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-		 for(int i=0;i<maxRowCount;i++){
+		 for(int i=1;i<maxRowCount;i++){
 			 
 			 if(jsonObj.has(i+"invoiceStartDate")){
 			 
@@ -468,18 +493,35 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType) throws Exception
 	{
-//		Invoice invoice = new Invoice();
+		Invoice invoice = new Invoice();
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
-
-       Invoice invoice = null;
         
-        if(jsonObj.has("savedInvoiceId") && !isNullOrEmpty(jsonObj.getString("savedInvoiceId"))){
-        	invoice = invoiceDao.getInvoicetById(Long.valueOf(jsonObj.getString("savedInvoiceId")));
-        }else{
-        	invoice = new Invoice();
-        	invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-        }
+        
+        //-----------------------------
+        
+        
+       /* "":"5",
+        "":"12",
+        "":"23456",
+        "":"31-05-2017",
+        "":"30 days",
+        "":"31-05-2017",
+        "projectId":"9",
+        "":"Hyderabad",
+        "maxRowNum":"7"
+        
+        "rowTotal":"2800.00",
+        "":"Y",
+        "":"project invoice",
+        "invoiceAttcahmentMaxRowNumber":"1",
+        "":"2620",
+        "_csrf":"1a98ab78-21f6-4db8-b933-9091179589db"*/
+        
+        
+        
+        
+		//--------------------------------
         if(invoiceType.equalsIgnoreCase("payable")){
         	
         	 
@@ -514,6 +556,7 @@ public class InvoiceServiceImpl implements InvoiceService{
      		
         }
         
+       
 		invoice.setOrgLocation(orgLocation);
 		if(jsonObj.has("invoiceId") && !"".equalsIgnoreCase(jsonObj.getString("invoiceId"))){
 			invoice.setInvoiceId(jsonObj.getString("invoiceId"));
@@ -565,11 +608,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(jsonObj.has("afterDiscountTotal") && !"".equalsIgnoreCase(jsonObj.getString("afterDiscountTotal"))){
 			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
 		}
-
-		// Frequency storing only for to show in edit invoice
-		if(jsonObj.has("frequency") && !"".equalsIgnoreCase(jsonObj.getString("frequency"))){
-			invoice.setInvoiceFrequency(jsonObj.getString("frequency"));
-		}
 		invoice.setPaymentStatus("Unpaid");
 		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
@@ -580,21 +618,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 		
 		// storing invoive line items
-		List<Long> invoiceLineItemsIdsList = null;
-		 if(null != invoice.getId()){
-	    	  invoiceLineItemsIdsList = invoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoice.getId());
-	     }
-		 
-		Set<InvoiceLineItems> invoiceLineItemSet = getProjectInvoiceLineItems(jsonObj,user,orgLocation,invoice,invoiceLineItemsIdsList);
+		Set<InvoiceLineItems> invoiceLineItemSet = getProjectInvoiceLineItems(jsonObj,user,orgLocation,invoice);
 		invoice.setInvoiceLineItems(invoiceLineItemSet);
 		
 		//Store Tax
-		
-		List<Long> invoiceTaxItemsIdsList = null;
-		 if(null != invoice.getId()){
-			 invoiceTaxItemsIdsList = invoiceTaxDao.getInvoiceTaxIdsByInvoiceId(invoice.getId());
-	     }
-		Set<InvoiceTax> invoiceTax = getProjectInvoiceTax(jsonObj,user,orgLocation,invoice,invoiceTaxItemsIdsList);
+		Set<InvoiceTax> invoiceTax = getProjectInvoiceTax(jsonObj,user,orgLocation,invoice);
 		invoice.setInvoiceTax(invoiceTax);
 		
 		//store attached Documents
@@ -608,14 +636,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 
 	
 	
-	private Set<InvoiceLineItems> getProjectInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice, List<Long> invoiceLineItemsIdsList) throws Exception {
+	private Set<InvoiceLineItems> getProjectInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice) throws Exception {
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
 		 String pattern = "dd-MM-yyyy";
 	     SimpleDateFormat format = new SimpleDateFormat(pattern);
-	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
+	     
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRowNum"));
-		 for(int i=0;i<maxRowCount;i++){
+		 for(int i=1;i<maxRowCount;i++){
 			 
 			 if(jsonObj.has(i+"sdate")){
 			 
@@ -623,11 +651,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 				!"".equalsIgnoreCase(jsonObj.getString(i+"sdate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"edate")) || !"".equalsIgnoreCase(jsonObj.getString(i+"candidateId")) || !"".equalsIgnoreCase(jsonObj.getString(i+"sow")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"rate")) ||!"".equalsIgnoreCase(jsonObj.getString(i+"totalHours"))){
 					 
 					 InvoiceLineItems  invoiceLineItems = new InvoiceLineItems();
-					 
-					 if(jsonObj.has(i+"lineItemId") &&  null != jsonObj.getString(i+"lineItemId") && !"".equalsIgnoreCase(jsonObj.getString(i+"lineItemId"))){
-						 invoiceLineItems.setId(Long.valueOf(jsonObj.getString(i+"lineItemId")));
-						 updatedInvoiceLineItems.add(Long.valueOf(jsonObj.getString(i+"lineItemId")));
-					 }
 					 
 					 if(null != jsonObj.getString(i+"sdate") && !"".equalsIgnoreCase(jsonObj.getString(i+"sdate"))){
 						 Date invoiceStartDate = format.parse(jsonObj.getString(i+"sdate"));
@@ -674,20 +697,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 	}
 	
-	private Set<InvoiceTax> getProjectInvoiceTax(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice, List<Long> invoiceTaxItemsIdsList)throws Exception {
+	private Set<InvoiceTax> getProjectInvoiceTax(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice)throws Exception {
 		 Set<InvoiceTax> invoiceTaxSet = new HashSet<>();
 		 int maxTaxRowCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
-		 List<Long> updatedtaxLineItems = new ArrayList<>();
 		 for(int i=0;i<maxTaxRowCount;i++){
 			 if(null != jsonObj.getString(i+"taxType") || null != jsonObj.getString(i+"taxdiscountType") || null != jsonObj.getString(i+"taxdiscountvalue") || null != jsonObj.getString(i+"taxTotal") ||
 					 !"".equalsIgnoreCase(jsonObj.getString(i+"taxType")) ||  !"".equalsIgnoreCase(jsonObj.getString(i+"taxdiscountType")) ||  !"".equalsIgnoreCase(jsonObj.getString(i+"taxdiscountvalue")) ||  !"".equalsIgnoreCase(jsonObj.getString(i+"taxTotal")) ){
 				 InvoiceTax invoiceTax = new InvoiceTax();
-				
-				 if(jsonObj.has(i+"invoiceTaxId") &&  null != jsonObj.getString(i+"invoiceTaxId") && !"".equalsIgnoreCase(jsonObj.getString(i+"invoiceTaxId"))){
-					 invoiceTax.setId(Long.valueOf(jsonObj.getString(i+"invoiceTaxId")));
-					 updatedtaxLineItems.add(Long.valueOf(jsonObj.getString(i+"invoiceTaxId")));
-				 }
-				 
 				 if(null != jsonObj.getString(i+"taxType") && !"".equalsIgnoreCase(jsonObj.getString(i+"taxType"))){
 					 invoiceTax.setTaxName(jsonObj.getString(i+"taxType"));
 				 }
@@ -709,5 +725,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			 }
 		 }
 		return invoiceTaxSet;
+	}
+	
+	@Override
+	public Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentInvoiceId(parentInvoiceId);
 	}
 }

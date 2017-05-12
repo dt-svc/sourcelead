@@ -30,7 +30,7 @@ color:#337ab7 !important;
     <div class="content-area content-new clearfix">
       <div class="onboardDashboard_counts">
         <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons"> <a href="javascript:void(0)"  class="btn btn-primary btn-sm" title="Create payables" onclick="createPayBill();"> <i class="fa fa-plus paddingRight" ></i>Create Payables</a>
+          <div class="onboardcreateButtons"> <a href="<c:url value='/createPayables'/>"  class="btn btn-primary btn-sm" title="Create payables"> <i class="fa fa-plus paddingRight"></i>Create Payables</a>
            <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getPayableInvoiceList();customInvoiceList();">
                 <option value="month">1 Month</option>
@@ -310,56 +310,6 @@ color:#337ab7 !important;
     </div>
   </section>
   
-  <!-- Add invoice Popup -->
-		   <div class="addcandidate-popup">
-		    <div class="row">
-		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-		      <div class="col-md-4 mt25">
-		        <div class="small-widget bgGreen">
-		            <a  href="<c:url value='/createPayables'/>" title="Create custom invoice">
-		          <div class="clearfix mb10"> 
-		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
-		          </div>
-		          <strong class="clearfix">Custom</strong></a>
-		          </div>
-		      </div>
-		
-		        <div class="col-md-4 mt25">
-		          <div class="small-widget bg-yellow"> 
-		          <a href="<c:url value='/createInvoiceProjectPayableBased'/>" title="Create project based invoice">
-		            <div class="clearfix mb10">
-		                <!--<i class="fa fa-usd fa-3x"></i>-->
-		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
-		            </div>
-		            <strong class="clearfix">Project Based </strong> </a> </div>
-		        </div>
-		          
-		          <div class="col-md-4 mt25">
-		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
-		            <div class="clearfix mb10">
-		              <!--<i class="fa fa-usd fa-3x"></i>   -->           
-		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
-		              </div>
-		            <strong class="clearfix">Other</strong> </a> </div>
-		        </div>
-		
-		      
-		          </div>
-		    </div>
-		  </div>
-		  <div class="pop_mask"></div>
-		  <script>
-		    //addcandidate-popup script
-		    function createPayBill(){
-		        $('.addcandidate-popup').fadeIn(200);
-		        $('.pop_mask').fadeIn(200); 
-		    };
-		       function closeCandidate(){
-		        $('.addcandidate-popup').fadeOut(200);
-		        $('.pop_mask').fadeOut(200);
-		       } 
-		    </script> 
-  
   
 <script>
 function receivePaymentPop1(invoiceId,total){
@@ -369,7 +319,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'    <div class="modal-content">                                                     ';
 	result = result +'      <div class="modal-header">                                                    ';
 	result = result +'        <button type="button" class="close" data-dismiss="modal" onclick="cancelbtn();">×</button>         ';
-	result = result +'        <h4 class="modal-title">Receive payment</h4>                                ';
+	result = result +'        <h4 class="modal-title">Payment</h4>                                ';
 	result = result +'      </div>                                                                        ';
 	result = result +'      <div class="modal-body clearfix">                                             ';
 
@@ -392,7 +342,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>  ';
 	result = result +'            <div class="col-md-4">  ';
 	result = result +'              <label>Reference No<span class="text-danger paddingLeft">*</span></label> ';
-	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required" field-name="Reference No"> ';
+	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250" field-name="Reference No"> ';
 	result = result +'            </div>        ';
 	result = result +'          </div>          ';
 	result = result +'          <div class="row mt">                                 ';
@@ -402,14 +352,14 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                  <label>Amount Received</label>               ';
 	result = result +'                  <div class="row">                            ';
 	result = result +'                    <div class="col-md-6">                     ';
-	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked>           ';
+	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked onclick="validMask();">           ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
-	result = result +'                      <input  type="radio" name="paymentAmount" value="custom">     ';
+	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" >       ';
+	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -467,13 +417,35 @@ function removeValidate(){
 function removeErr(){
 	$('#errPaymethod').find('p.jquery_form_error_message').remove(); 
 }
+function removeMask(){
+	 $("#customeAmount").removeAttr("readonly");
+}
+function validMask(){
+	  $('#customeAmount').attr("readonly","readonly");  
+}
+/* function amountCal(){
+	var totalAmount =  $("#totalAmount").val();
+	var customAmount =  $("#customeAmount").val();
+	if(totalAmount > customAmount){
+		var exceededAmount = customAmount - totalAmount
+		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
+	}
+} */
 </script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
 <div id="recvPymntpop" class="modal" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
 
+</script>
 
 <!-- modal pop --> 
 <script>
@@ -498,7 +470,7 @@ function saveReceivePayment(invoiceId){
 			      dataType : 'json',
 		    	 url: sourceleadUrl+"/saveInvoicePayment?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&invoiceId="+invoiceId, 
 		        success: function(result) {
-		     		location.replace(sourceleadUrl+"/invoiceList");
+		     		location.replace(sourceleadUrl+"/payablesList");
 		     		
 		        },
 		    });  
@@ -596,6 +568,12 @@ function getPayableInvoiceList(){
         success: function(data) {
         	var json = JSON.parse(data);
         	var result = "";
+        	var draftCount = 0;
+        	var draftTotalAmount = 0;
+        	
+        	var paidCount = 0;
+        	var paidTotalAmount = 0;
+        	
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
@@ -629,15 +607,28 @@ function getPayableInvoiceList(){
         		}
         		
         		
+        		draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
+        		
+       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
+       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
+       			}
+       			
+       			paidCount = parseInt(paidCount) + parseInt(report.paidCount);
+       			
+       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
+       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
+       			}
+        		
+        		
 				result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
-					/* result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   '; */
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
 				}
 				if(report.invoiceStatus == "SENT"){
-	 				/* result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'"/>">'+report.invoiceId+'</a></div>   '; */				
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Payables"/>">'+report.invoiceId+'</a></div>   ';				
 				}
+				
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
@@ -667,14 +658,19 @@ function getPayableInvoiceList(){
 				
 				result = result +'         <td> ';
 				 
-				result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+				if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+					result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>          ';
+				}
+				
 				result = result +'       </tr>                                                                                                           ';
 
     		}
         	result = result +'     </tbody>                                                                                                          ';
 			result = result +'   </table>                                                                                                            ';
 			$("#invoiceList").empty();  
-		    $("#invoiceList").append(result)
+		    $("#invoiceList").append(result);
 		    invoicePagination()
         },
         

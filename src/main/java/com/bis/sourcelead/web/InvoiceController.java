@@ -35,7 +35,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @Controller
 public class InvoiceController {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
-	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -129,7 +128,7 @@ public class InvoiceController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/viewInvoice")
-	public ModelAndView viewInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId ,HttpServletRequest request) throws Exception {
+	public ModelAndView viewInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
@@ -145,7 +144,11 @@ public class InvoiceController {
 		model.setViewName("billing/viewInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("invoiceId", invoiceId);
-		sessionData.setNav(Constants.Receivable);
+		if(invoiceType.equalsIgnoreCase("Receivable")){
+			sessionData.setNav(Constants.Receivable);
+		}else{
+			sessionData.setNav(Constants.Payables);
+		}
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
 	}
@@ -206,7 +209,7 @@ public class InvoiceController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		/*List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
+		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 
 		if(null != clientList){
 			for (OrgRelations orgRelations : clientList) {
@@ -219,11 +222,17 @@ public class InvoiceController {
 				orgRelations.setOrgName(orgName);
 			}
 			 model.addObject("clientList", clientList);
-		}*/
+		}
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
 		}
+		
+/*		
+		List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
+		if(null != projectsList){
+			 model.addObject("projectsList", projectsList);
+		}*/
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
@@ -237,29 +246,4 @@ public class InvoiceController {
 	return model;
 	}
 
-	
-	@RequestMapping(value = "/createInvoiceProjectPayableBased")
-	public ModelAndView createInvoiceProjectPayableBased(HttpServletRequest request) throws Exception {
-		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ModelAndView model = new ModelAndView();
-		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		
-		
-		
-		if(null != countries){
-        model.addObject("loginCountryName", countries.getName());
-        model.addObject("currencyCode", countries.getCurrency());
-		}
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(null == sessionData)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		model.setViewName("billing/createProjectPayableInvoice");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		sessionData.setNav(Constants.Receivable);
-		request.getSession().setAttribute("sessionData",sessionData);
-	return model;
-	}
 }

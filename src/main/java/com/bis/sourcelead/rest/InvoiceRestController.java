@@ -178,8 +178,8 @@ public class InvoiceRestController {
 			}
 		}
 
-		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org);
-		
+		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
+		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
 		if(null !=invoice){
 			invoiceSaved = "success";
 		}
@@ -309,8 +309,11 @@ public class InvoiceRestController {
 		
 		
 		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
-
+		
 		for(Invoice invoice :invoiceList){
+			Integer draftCount = 0;
+			Integer paidCount = 0;
+			
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
 			}
@@ -324,14 +327,37 @@ public class InvoiceRestController {
 			}else{
 				invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
 			}
-			invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
-			invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
+			if(null != invoice.getDueDate()){
+				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));	
+			}
+			if(null != invoice.getInvoiceDate()){
+				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));	
+			}
+			
 			invoice.setTotal(invoice.getTotal());
 			invoice.setInvoiceStatus(invoice.getInvoiceStatus());
 			invoice.setPaymentStatus(invoice.getPaymentStatus());
 			if(null != invoice.getProjectID()){
 				invoice.setProjectId(invoice.getProjectID().getId().toString());	
 			}
+			
+			
+			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
+				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
+					draftCount = draftCount+1;
+					invoice.setDraftInvoiceAmount(invoice.getDueAmount());
+				}
+				
+				if(invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")){
+					paidCount = paidCount+1;
+					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
+					invoice.setPaidInvoiceAmount(paidAmount.toString());
+				}
+				
+			}
+			
+			invoice.setDraftInvoiceCount(draftCount);
+			invoice.setPaidInvoiceCount(paidCount);
 			
 			
 		}
@@ -349,10 +375,7 @@ public class InvoiceRestController {
 		return TZ_DF_TS.parse(startDateString);
 	}
 
-	/*
-	 * Commented By Rajashekar will remove after everything goes fine
-	 * Date : 12-05-2017
-	 * @RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
+	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
@@ -371,7 +394,7 @@ public class InvoiceRestController {
 			invoicePaymentSaved = "success";
 		}
 		return invoicePaymentSaved;
-	} */
+	} 
 
 
 	
@@ -379,31 +402,56 @@ public class InvoiceRestController {
 	 	public @ResponseBody  String getViewInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
-	     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	     	List<Invoice> viewinvoiceList= invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(invoiceId, orgLocations.getId());
+	     	OrgLocations orgLocations = null;
+	     	orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     	Long Id = null;
+	     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId);
+	     	if(parentInvoice.getParentInvoiceId() != null){
+	     		Id = parentInvoice.getParentInvoiceId().getId();
+	     		orgLocations = parentInvoice.getParentInvoiceId().getOrgLocation();
+	     	}else{
+	     		Id = invoiceId;
+	     		orgLocations = orgLocations;
+	     	}
+	     	
+	     	List<Invoice> viewinvoiceList= invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 	     	for(Invoice invoice :viewinvoiceList){
-				if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+	     		OrgLocations  LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	     		 if(invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
 					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
 				}
-				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
 				}
-					
-				StringBuilder contactName = new StringBuilder();
-				if(invoice.getContactUser().getLastName() != null){
-					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
-				}else{
-					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+				if(invoice.getOwnerUserId().getId().longValue() == user.getId().longValue()){
+					StringBuilder contactName = new StringBuilder();
+					if(invoice.getContactUser().getLastName() != null){
+						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
+					}else{
+						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+					}
+					if(null != invoice.getContactUser()){
+						invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
+					}
 				}
-				if(null != invoice.getContactUser()){
-					invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
+				if(invoice.getContactUser().getId().longValue()  == user.getId().longValue()){
+					StringBuilder contactName = new StringBuilder();
+					if(invoice.getContactUser().getLastName() != null){
+						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
+					}else{
+						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).toString());
+					}
+					if(null != invoice.getContactUser()){
+						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
+					}
 				}
 				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
 				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
 				
 				
 				//get the Invoice Items List
-				List<InvoiceLineItems> invoiceLineItemsList= invoiceLineItemService.invoiceLineItemsByInvoiceIdAndOrglocationId(invoiceId, orgLocations.getId());
+				List<InvoiceLineItems> invoiceLineItemsList= invoiceLineItemService.invoiceLineItemsByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 				for(InvoiceLineItems inviceLine:invoiceLineItemsList){
 					if(null != inviceLine.getCandidate()){
 						StringBuilder  can = new StringBuilder();
@@ -438,13 +486,13 @@ public class InvoiceRestController {
 				}
 				
 				//get the InvoiceDocument list 
-				List<InvoiceDocument> invoiceDocumentList =invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoiceId);
+				List<InvoiceDocument> invoiceDocumentList =invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(Id);
 				for(InvoiceDocument invoiceDoc :invoiceDocumentList)
 				{
 					invoiceDoc.setFileName(invoiceDoc.getFileName());
 					invoice.setInvoiceDocumentsList(invoiceDocumentList);
 				}
-				List<InvoiceTax> InvoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoiceId);
+				List<InvoiceTax> InvoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(Id);
 				for(InvoiceTax it:InvoiceTaxList)
 				{
 					it.setTaxName(it.getTaxName());
@@ -463,7 +511,14 @@ public class InvoiceRestController {
 	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
-	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(invoiceId);
+	     	Long Id = null;
+	     	Invoice invoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId);
+	     	if(invoice.getParentInvoiceId() != null){
+	     		Id = invoice.getParentInvoiceId().getId();
+	     	}else{
+	     		Id = invoiceId;
+	     	}
+	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
 	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
@@ -548,11 +603,8 @@ public class InvoiceRestController {
 			}else{
 				empName.append(projectMember.getEmployee().getUser().getFirstName());
 			}
-			projectMember.setCandidateName(empName.toString());
-			Candidate candidate = candidateService.getCandidateByConsultantUserId(orgLocation.getId(),projectMember.getEmployee().getUser().getId());
-			if(null != candidate){
-				projectMember.setCandidateId(candidate.getId());
-			}
+			projectMember.setEmpName(empName.toString());
+			projectMember.setUserId(projectMember.getEmployee().getUser().getId().toString());
 			projectMember.setStartDate(startDateStr);
 			projectMember.setEndDate(endDateStr);
 			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
@@ -587,70 +639,6 @@ public class InvoiceRestController {
 		}
 		return "";
 }
-	
-	  @RequestMapping(value = "/getAllProjectsByOrgRelationId", method = RequestMethod.GET)
-	 	public @ResponseBody  String getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
-	 	{
-	     	String resultJson;
-	     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	     	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
-	 	    resultJson = commonUtil.toJSON(projectList);
-	 	    return resultJson;
-	 	}
 	//******************* End By Rajashekar
 
-	  
-	  @RequestMapping(value = "/getAllProjectVendorAssignedMembers", method = RequestMethod.GET)
-		public @ResponseBody String getAllProjectVendorAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request) throws Exception {
-			
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			String frequencyArray[] = frequency.split("/");
-			String startDateStr = frequencyArray[0];
-			String endDateStr = frequencyArray[1];
-			String pattern = "dd-MM-yyyy";
-	        SimpleDateFormat format = new SimpleDateFormat(pattern);
-	        
-	        Date startDate = format.parse(startDateStr);
-			Date endDate = format.parse(endDateStr);
-			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
-			
-			for(ProjectMembers projectMember :projectMembersList){
-				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
-				if(null != candidate){
-					Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
-					StringBuilder empName =new StringBuilder();
-					if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
-						empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
-					}else{
-						empName.append(projectMember.getEmployee().getUser().getFirstName());
-					}
-					projectMember.setCandidateName(empName.toString());
-					if(null != candidate){
-						projectMember.setCandidateId(candidate.getId());
-					}
-					projectMember.setStartDate(startDateStr);
-					projectMember.setEndDate(endDateStr);
-					projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
-				}
-			}
-//			for(ProjectMembers projectMember :projectMembersList){
-//				Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
-//				StringBuilder empName =new StringBuilder();
-//				if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
-//					empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
-//				}else{
-//					empName.append(projectMember.getEmployee().getUser().getFirstName());
-//				}
-//				projectMember.setCandidateName(empName.toString());
-//				Candidate candidate = candidateService.getCandidateByConsultantUserId(orgLocation.getId(),projectMember.getEmployee().getUser().getId());
-//				if(null != candidate){
-//					projectMember.setCandidateId(candidate.getId());
-//				}
-//				projectMember.setStartDate(startDateStr);
-//				projectMember.setEndDate(endDateStr);
-//				projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
-//			}
-			return commonUtil.toJSON(projectMembersList);
-		} 
 }

@@ -968,33 +968,5 @@ public class CandidateDaoImpl implements CandidateDao {
         return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setCacheable(true).list();
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Candidate getCandidateByConsultantUserId(Long orgLocationId, Long consultantUserId) throws Exception
-	{
-		Session session = this.sessionFactory.getCurrentSession();
-		Candidate candidate = null;
-		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
-        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setCacheable(true).list();
-		if(null != candidateList && candidateList.size() >0){
-			candidate = candidateList.get(0);
-		}
-        return candidate;
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId) throws Exception
-	{
-		Session session = this.sessionFactory.getCurrentSession();
-		Candidate candidate = null;
-		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId and candidate.orgRelationId.id= :orgRelationId";
-        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
-		if(null != candidateList && candidateList.size() >0){
-			candidate = candidateList.get(0);
-		}
-        return candidate;
-	}
-
 }
 

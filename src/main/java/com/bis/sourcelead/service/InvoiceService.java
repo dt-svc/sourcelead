@@ -22,12 +22,13 @@ public interface InvoiceService {
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
-	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType,Org loginOrg)throws Exception;
+	Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList,String invoiceType)throws Exception;
 	
 	Invoice getInvoicetByInvoiceUUID(String invoiceUUID) throws Exception;
 	
 	Invoice updateInvoice(Invoice invoice) throws Exception;
 
+	Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception;
 
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId,Long orgLocationId)throws Exception;
 

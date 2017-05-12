@@ -92,8 +92,6 @@ public class ProjectMembers implements Serializable{
     @Transient
     private String empName;
     @Transient
-    private String candidateName;
-    @Transient
     private String empEmail;
     @Transient
     private String startDate;
@@ -138,9 +136,6 @@ public class ProjectMembers implements Serializable{
 	
     @Transient
 	private List<ProjectMembers> projectMembersList;
-    
-    @Transient
-	private Long candidateId;
     
 	public Date getProjectAssignedDate() {
 		return projectAssignedDate;
@@ -417,26 +412,6 @@ public class ProjectMembers implements Serializable{
 	public void setTotalHours(String totalHours)
 	{
 		this.totalHours = totalHours;
-	}
-
-	public String getCandidateName()
-	{
-		return candidateName;
-	}
-
-	public void setCandidateName(String candidateName)
-	{
-		this.candidateName = candidateName;
-	}
-
-	public Long getCandidateId()
-	{
-		return candidateId;
-	}
-
-	public void setCandidateId(Long candidateId)
-	{
-		this.candidateId = candidateId;
 	}
 
 }
