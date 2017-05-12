@@ -751,7 +751,7 @@ function flushProjectTasks(){
 							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
 							output = output + ' <thead>';
 							output = output + ' <tr>';
-							output = output + ' <th>&nbsp;&nbsp;</th>';
+				            output = output+' <th><input type="checkbox" name="emp" id="projectChekId" onclick="totalCheck();"></th>';
 							output = output + ' <th>Name</th>';
 							output = output + ' <th>Email</th>';
 							output = output + ' <th>Role</th>';
@@ -875,7 +875,21 @@ function flushProjectTasks(){
 </script>
 <!-- this script is for Get the TeamMembers functionality Ends -->
 
-
+<script>
+function totalCheck() {
+	var checked = document.getElementById("projectChekId").checked  
+	
+    if(checked) {
+        $('.myCheckbox').each(function() {
+            this.checked = true;   
+        });
+    }else{
+        $('.myCheckbox').each(function() {
+            this.checked = false;      
+        });         
+    } 
+}
+</script>
 
 <script>
 function assignEmployeespagination(){  
