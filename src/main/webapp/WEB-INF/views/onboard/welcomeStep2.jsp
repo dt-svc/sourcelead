@@ -237,7 +237,7 @@
                 <div class="form-group">
                   <label class="col-md-4 control-label">Employment Type</label>
                   <div class="col-md-8">
-                    <input type="text" class="form-control input-sm" id="employmentType" name="employmentType" readonly="readonly" value="${SourceLeadWeb_candidateOnBoarding.employmentType}">
+                    <input type="text" class="form-control input-sm" id="employmentType" name="employmentType" readonly="readonly" value="${SourceLeadWeb_candidateOnBoarding.employmentType == 'Other' ? SourceLeadWeb_candidateOnBoarding.employmentOtherType : SourceLeadWeb_candidateOnBoarding.employmentType}">
                   </div>
                 </div>
 		</div>
