@@ -115,11 +115,7 @@ function pagination(){
     $('#timesheetReportsPageNation').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-		"aaSorting": [[7,'desc']],
+    	
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -186,7 +182,7 @@ function exportTimeSheetReportsToPdf(type){
   		<div class="pull-left">
     	<h2>Timesheet Reports</h2>
  		</div>
- 		<div class="pull-right brud-crum">Home &raquo; List by status</div>
+ 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; TimeSheet Reports</div>
 		</section>
         <div id="timesheetReportsDiv" class="timesheet_container"></div>
         </section>   
