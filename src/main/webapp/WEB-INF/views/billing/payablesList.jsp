@@ -319,7 +319,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'    <div class="modal-content">                                                     ';
 	result = result +'      <div class="modal-header">                                                    ';
 	result = result +'        <button type="button" class="close" data-dismiss="modal" onclick="cancelbtn();">×</button>         ';
-	result = result +'        <h4 class="modal-title">Receive payment</h4>                                ';
+	result = result +'        <h4 class="modal-title">Payment</h4>                                ';
 	result = result +'      </div>                                                                        ';
 	result = result +'      <div class="modal-body clearfix">                                             ';
 
@@ -342,7 +342,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'            </div>  ';
 	result = result +'            <div class="col-md-4">  ';
 	result = result +'              <label>Reference No<span class="text-danger paddingLeft">*</span></label> ';
-	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required" field-name="Reference No"> ';
+	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250" field-name="Reference No"> ';
 	result = result +'            </div>        ';
 	result = result +'          </div>          ';
 	result = result +'          <div class="row mt">                                 ';
@@ -352,14 +352,14 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                  <label>Amount Received</label>               ';
 	result = result +'                  <div class="row">                            ';
 	result = result +'                    <div class="col-md-6">                     ';
-	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked>           ';
+	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked onclick="validMask();">           ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
-	result = result +'                      <input  type="radio" name="paymentAmount" value="custom">     ';
+	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" >       ';
+	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -417,13 +417,35 @@ function removeValidate(){
 function removeErr(){
 	$('#errPaymethod').find('p.jquery_form_error_message').remove(); 
 }
+function removeMask(){
+	 $("#customeAmount").removeAttr("readonly");
+}
+function validMask(){
+	  $('#customeAmount').attr("readonly","readonly");  
+}
+/* function amountCal(){
+	var totalAmount =  $("#totalAmount").val();
+	var customAmount =  $("#customeAmount").val();
+	if(totalAmount > customAmount){
+		var exceededAmount = customAmount - totalAmount
+		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
+	}
+} */
 </script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
 <div id="recvPymntpop" class="modal" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
 
+</script>
 
 <!-- modal pop --> 
 <script>
@@ -617,14 +639,19 @@ function getPayableInvoiceList(){
 				
 				result = result +'         <td> ';
 				 
-				result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+				if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+					result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>          ';
+				}
+				
 				result = result +'       </tr>                                                                                                           ';
 
     		}
         	result = result +'     </tbody>                                                                                                          ';
 			result = result +'   </table>                                                                                                            ';
 			$("#invoiceList").empty();  
-		    $("#invoiceList").append(result)
+		    $("#invoiceList").append(result);
 		    invoicePagination()
         },
         

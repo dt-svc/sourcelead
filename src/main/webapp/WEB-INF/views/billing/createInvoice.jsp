@@ -1592,6 +1592,9 @@ function singleRowTaxDiscount(){
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
+			var dt = toDate("#invoiceDate");
+			dt.setDate(dt.getDate() + 1);
+			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
 			}
 		});
@@ -1600,11 +1603,20 @@ function singleRowTaxDiscount(){
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
+			var dt = toDate("#dueDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#invoiceDate").datepicker("option", "maxDate", dt);
 				errDueDate();
 			}
 		});
 		
 	});
+</script>
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
 </script>
 <script>
 function errInvoiceDate(){
