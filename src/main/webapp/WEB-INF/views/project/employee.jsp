@@ -171,8 +171,8 @@
 		result = result +'<div class="" id="exportPop" style="display:none;">';
 		result = result +'<ul>';
 		if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
-			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');">PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
- 		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');">Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
+			result = result +'<li onclick="exportToPdf(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>';
+ 		result = result +'<li onclick="exportToExcel(\''+projectId+'\',\''+projectName+'\');"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel</li>';
 		}else{
 			result = result +'<li>PDF &nbsp;&nbsp;<i class="fa fa-file-pdf-o"></i></li>';
  		result = result +'<li>Excel &nbsp;&nbsp;<i class="fa fa-file-excel-o"></i></li>';
@@ -292,7 +292,7 @@
 		                	result = result + '	<td><div>';
 		                	if(status != 'COMPLETED'){
 		                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
-		                		result = result + '<i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i>';
+		                		result = result + '<span title="delete employee"><i class="glyphicon glyphicon-trash" onClick="deleteProject('+opt.id+'\,\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\')";></i></span>';
 		                		'</sec:authorize>';
 		                		
 		                		'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
@@ -646,10 +646,10 @@ function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Employee delete message here</p>";
+	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Terminate" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
