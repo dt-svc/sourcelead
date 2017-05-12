@@ -196,11 +196,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '</div>';
                result = result + '<div class="socialnetwork-details">';
                result = result + '<ul class="list-inline list-unstyled">';
-               result = result + '<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-               result = result + '<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-               result = result + '<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-               result = result + '<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-               result = result + ' <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+               if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
+            	   result = result + '<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
+	            }
+               
+               if(json.linkedInUrl != null && json.linkedInUrl != '' && json.linkedInUrl != 'undefined'){
+            	   result = result + '<li class="bg-linked"><a href="'+json.linkedInUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
+  	            }
+               
+               if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
+            	   result = result + '<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
+	            }
+               
                result = result + ' </ul>';
                result = result + ' </div>';
                result = result + ' </div>';
@@ -718,7 +725,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Time</strong>';
+	                    	 result = result + '<strong>Local Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
                             	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.startTimeStr+' to '+report.endTimeStr+'">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';

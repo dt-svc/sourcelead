@@ -109,9 +109,10 @@ public class ContractController {
 	/**
 	 * display contract template list page
 	 * @return model
+	 * @throws Exception 
 	 */
 	@RequestMapping(value = "/contractListbyStatus")
-	public ModelAndView contractListbyStatus(HttpServletRequest request) {
+	public ModelAndView contractListbyStatus(HttpServletRequest request) throws Exception {
 		logger.debug("display contract template page");
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -121,8 +122,14 @@ public class ContractController {
 		}
 		sessionData.setNav(Constants.Contract);
 		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
+		
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("contractsCount", contractsCount);
 		model.setViewName("contracts/contractList");
 		return model;
 	}
