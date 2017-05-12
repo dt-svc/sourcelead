@@ -17,7 +17,7 @@ a { cursor:pointer;}
     height:auto;
     }
 .timesheet_head ul {
-    margin:0px 0px; padding: 2px 245px 2px 0px; float:right; height:auto;
+    margin:0px 0px; padding: 2px 235px 2px 0px; float:right; height:auto;
     }
 .timesheet_head ul.no_search {
     padding: 2px 15px 2px 0px;
@@ -41,7 +41,7 @@ a { cursor:pointer;}
     font-size:17px; color:#545454; cursor:pointer;
     }
 .timesheet_head .glyphicon-export {
-    font-size: 16px; color:#666; display: inline-block; padding: 0px 2px;
+    font-size: 16px; color:#666; display: inline-block; padding: 0px 2px; position: relative; top: 3px;
     }
 .timesheet_head .fa-filter {
     font-size:18px; color:#545454; padding:0px 10px 0px 0px;
@@ -580,7 +580,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     font-size: 14px; font-weight: 500; color: #333;
     }
 .project_wrap .timesheet_head ul li a .fa-plus {
-    font-size:15px; padding:0px 10px 0px 0px;
+    font-size:16px; padding:2px 10px 0px 0px;
     }
 .project_wrap .timesheet_head ul li a:hover {
     color:#368ee0;
@@ -723,11 +723,11 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .project_tabs_inn_table table tr:nth-child(even) {background: #fff;}
 .project_tabs_inn_table table tr:nth-child(odd) {background: #eef1fc;}         
 .project_tabs_inn_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:40px;
-    border-right:1px solid #4576a4; font-size:14px;
+	background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; height:40px;
+    border-right:1px solid #4576a4; font-size:14px; text-align:center;
     }
 .project_tabs_inn_table table tr th:last-child { text-align:center;}
-.project_tabs_inn_table.project_tabs_inn_table_a table tr th:last-child { text-align:left;}
+.project_tabs_inn_table.project_tabs_inn_table_a table tr th:last-child { text-align:center;}
 .project_tabs_inn_table table tr td {
     color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400;
     }
@@ -1082,7 +1082,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .user_summ_wrap_table table tr:nth-child(even) {background: #fff;}
 .user_summ_wrap_table table tr:nth-child(odd) {background: #eef1fc;}           
 .user_summ_wrap_table table tr th {
-    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:left; height:35px;
+    background-color:#375d81 !important; font-weight:500; color:#FFF; padding:0px 10px; text-align:center; height:35px;
     border-right:1px solid #4576a4; font-size:14px;
     }
 .user_summ_wrap_table table tr th:last-child { text-align:center;} 
@@ -2308,7 +2308,7 @@ margin-bottom:15px !important;
     width:10%; padding:4px 10px; border-left: 1px solid #447eb4;
     }
 .timesheet_tableNew table tr th:first-child {
-    width:17%; border-left: none; text-align: left;
+    width:17%; border-left: none;
     }
 .timesheet_tableNew table tr th i {
     display:block; font-style:normal; font-size:12px; line-height:14px;
@@ -2810,18 +2810,19 @@ margin: 6px 0px 0px 0px;
 .timeNewSe b.proj_closed { background-color:#d94747;  border: 1px solid #c3762b;}
 .timeNewSe b.proj_draft { background-color:#656565; border: 1px solid  #333;}
     
-    
-/*.app_error_mes {
-    width:300px; background-color:#FFF; border-radius:3px; position:absolute; left: 0px;  top:23px; z-index:1000;
-    padding:15px 20px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #368ee0;
-    transition:0.3s all ease-in-out; -webkit-transition:0.3s all ease-in-out; -moz-transition:0.3s all ease-in-out;
-     display:none;
-    }
+   
+.app_error_mes {
+   width:300px; background-color:#d94747; border-radius:3px; position:fixed; z-index:1000; margin: 0px auto; left: 0px; right: 0px;
+   padding:10px 15px; box-shadow:0px 0px 8px rgba(0,0,0,0.5); font-size:14px; border:1px solid #d94747; top: 30%;
+   transition:0.2s all ease-in-out; -webkit-transition:0.2s all ease-in-out; -moz-transition:0.2s all ease-in-out;
+   min-height: 50px; display: none; opacity: 0; font-family: 'Roboto', Arial, Helvetica, sans-serif; font-weight:400;
+	line-height: 18px; text-align: left; color:#fff;
+   }
         
 .app_error_mes.app_error_mes_active {
      right:160px; 
     display:block;
-    }*/
+    }
     
 .ts_app_error_mes {
     width: 300px; background-color: #FFF; border-radius: 3px;position: absolute;right: 0px; top: 15px;z-index: 1000;
@@ -3389,9 +3390,9 @@ border: 1px solid rgb(204, 204, 204);
 .PrDate b {
     font-weight: normal; float: left; width: auto; font-size: 15px; padding: 6px 0px 0px 15px; color: #000;
 }
-.tab-pane .row {
+/*.tab-pane .row {
     margin: 0px !important;
-}
+}*/
 .prBG {
     background-color: #eceff1; padding: 15px !important; width: 56.33333%;
 }
@@ -3847,6 +3848,9 @@ position: relative; padding: 0px 0px 5px 0px;
 	display: block; padding: 8px 21px 8px 20px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
 	margin: 0px 6px 0px 0px; font-size: 14px; font-weight: 400; color: #666; position: relative;
 }
+.contrHead ul li a span {
+	position:absolute; top: -10px; right: 10px; background-color: #454545; padding: 1px 10px; border-radius: 10px; color: #fff;
+}
 .contrHead ul li i {
 	display:inline-block; padding: 0px 10px 0px 0px; color: #787878;
 }
@@ -4185,7 +4189,7 @@ position: relative; padding: 0px 0px 5px 0px;
 	/*background-color: #f17c38;*/ color: #f17c38;
 }
 .timesheetRepTab .progress {
-	margin: 0px; height: 14px;
+	margin: 0px; height: 14px; cursor: pointer;
 } 
 .timesheetRepTab .progress-bar-info { background-color: #0f9fa1;}
 .timesheetRepTab .progress-bar-warning { background-color: #e58339;}
@@ -4217,6 +4221,9 @@ position: fixed !important;
 }
 .ReadTextFli {
     border: none; background-color: transparent; font-weight: 500; color: #333; text-align: right; width: 100px;
+}
+.ReadTextFliA {
+   border: none; background-color: transparent; font-weight: 500; color: #333; text-align: left; width: 100px;
 }
 .timesheet_container {
 background: #f5f5f5; box-shadow: 0px 0px 3px #707070; -moz-transition: all ease-in-out 0.3s;
@@ -4315,27 +4322,91 @@ float: none !important; padding: 2px 5px; color: #333;
 .evCheck {
 	display:inline-block; padding: 0px 10% 0px 0px;
 }
+.addstudent-popup {
+	width: 640px !important; margin: 0px auto; left: 0px !important; right: 0px;
+}
 
-
+.contPopup {
+    width:800px; background-color: #fff; position: fixed; border-radius:5px; z-index: 100000; margin:0px auto;
+    left: 0px; right: 0px; top: 10%; max-height: 80%; overflow-y: auto; box-shadow:0px 0px 5px rgba(0,0,0,0.5);
+    display: none;
+}
+.contPopup .modal-footer {
+    background-color: #ededed;
+}
+.noPad {
+    padding:0px 0px;
+}
+.contPopupHead {
+    border-bottom: 1px solid #ccc; padding: 15px;
+}
+.contPopupHead h4 {
+    display: inline-block; width: 88%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    padding: 3px 0px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #454545;
+}
+.contPopupHead span {
+    display: block; float: right;
+}
+.contPopupHead i {
+    font-size: 19px; padding: 3px 5px; cursor: pointer; color: #368ee0; margin: 0px 0px 0px 5px;
+}
+.contPopupHead i.fa-times {
+    color: #ff7474; font-size: 20px;
+}
 .offOrg{
-	float: right; position: relative; z-index: 1000; margin: 11px 25px 0px 0px;
-} 
+    float: right; position: relative; z-index: 1000; margin: 11px 25px 0px 0px;
+}
 .offOrg a {
-	font-size: 25px;color: #888; display: inline-block; padding: 5px;
+    font-size: 25px;color: #888; display: inline-block; padding: 5px;
 }
 .offOrg a:hover, .offOrg a:focus, .offOrg a:active{
-	color:#3081cb;
+    color:#3081cb;
 }
 .offOrg ul {
-	float: none; padding: 0px;
+    float: none; padding: 0px;
 }
 .offOrg ul li {
-	float: none; width: 100%; text-align: left;
+    float: none; width: 100%; text-align: left;
 }
 .offOrg ul li p {
-	font-size: 14px;
+    font-size: 14px;
 }
 .offOrg .spoclinks-area {
-	top:35px;
+    top:35px;
 }
 
+.notification-table {}
+.notification-table tr th {
+       text-align: center; border-right: 1px solid #4576a4 !important;
+}
+.notification-table tr td {
+       text-align: center; border-left: 1px solid #eae6e6 !important;
+}
+.notification-table tr td:first-child {
+      text-align: left;
+}
+
+.notificationUser {
+       width: 250px;
+}
+.notification-table .table .notifi-image {
+       float: left;
+}
+.notification-table .table .mailbox-name {
+       float: left; width: 204px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; display: block;
+       padding: 8px 0px 0px 10px;
+}
+.notification-table .table .notifi-image img {
+       max-height: 35px; width: 100%;
+}
+.notiRej {
+        width: 46px; text-align: right; margin: 0px auto;
+}
+.notiRej .mailbox-trash {
+        display: inline-block; padding: 0px 5px;
+}
+
+
+.hePad {
+       height: 30px; padding: 4px 12px;
+}
