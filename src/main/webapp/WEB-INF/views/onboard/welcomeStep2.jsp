@@ -79,7 +79,7 @@
 		</div>
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
-			  <label class="col-md-4 control-label">Last Name <span class="text-danger paddingLeft">*</span></label>
+			  <label class="col-md-4 control-label">Last Name</label>
 			  <div class="col-md-8">
 				<input type="text" class="form-control input-sm" name="lastName" id="lastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100" value="${SourceLeadWeb_user.lastName}">
 			  </div>
