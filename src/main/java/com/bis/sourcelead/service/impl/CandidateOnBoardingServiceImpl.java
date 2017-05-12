@@ -226,6 +226,17 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setEmploymentType(jsonObj.getString("employmentType"));
 		}else{
 			candidateOnBoarding.setEmploymentType(null);
+			candidateOnBoarding.setEmploymentOtherType(null);
+		}
+		
+		if(jsonObj.has("employmentOtherType") && !isNullOrEmpty(jsonObj.getString("employmentOtherType"))){
+			
+			if(jsonObj.has("employmentType") && !isNullOrEmpty(jsonObj.getString("employmentType")) && jsonObj.getString("employmentType").equalsIgnoreCase("Other")){
+				candidateOnBoarding.setEmploymentOtherType(jsonObj.getString("employmentOtherType"));
+			}else{
+				candidateOnBoarding.setEmploymentOtherType(null);
+			}
+			
 		}
 		
 		
