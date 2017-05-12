@@ -28,6 +28,7 @@ public interface InvoiceService {
 	
 	Invoice updateInvoice(Invoice invoice) throws Exception;
 
+	Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception;
 
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId,Long orgLocationId)throws Exception;
 

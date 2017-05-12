@@ -27,7 +27,7 @@ $(document).ready(function(){
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active">
               <a href="#bill" data-toggle="tab" title="Bill" aria-expanded="true">
-                <h5>Bill</h5>
+                <h5>Details</h5>
               </a>
             </li>
             <li class="">
@@ -101,7 +101,12 @@ function getViewInvoice(){
 					result = result +'		<div class="invoiceview_area clearfix">                                      ';
 					result = result +'          <div class="form-horizontal row">                                        ';
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Client </label>                ';
+					if(report.invoiceType == "Receivable"){
+						result = result +'              <label class="col-md-4 control-label">Client</label>                ';
+					}
+					if(report.invoiceType == "Payables"){
+						result = result +'              <label class="col-md-4 control-label">Vendor</label>                ';
+					}
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                  <label><strong>'+report.clientName+'</strong></label>  ';
 					result = result +'              </div>                                                               ';

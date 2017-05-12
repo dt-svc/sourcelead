@@ -47,6 +47,14 @@ public class Invoice {
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )     
 	private OrgLocations orgLocation;
 	
+	@ManyToOne
+    @JoinColumn(name="OWNER_USER_ID", nullable=false )     
+	private User ownerUserId;
+	
+	@ManyToOne
+    @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )     
+	private OrgLocations responderLocationId;
+	
 	@Column(name = "INVOICE_ID")
 	private String invoiceId;
 	
@@ -56,6 +64,10 @@ public class Invoice {
 	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
+	
+	@ManyToOne
+    @JoinColumn(name="PARENT_INVOICE_ID")        
+	private Invoice parentInvoiceId;
 	
 	@Column(name = "INVOICE_UUID")
 	private String invoiceUUID;
@@ -382,6 +394,22 @@ public class Invoice {
 		this.orgLocation = orgLocation;
 	}
 
+	public User getOwnerUserId() {
+		return ownerUserId;
+	}
+
+	public void setOwnerUserId(User ownerUserId) {
+		this.ownerUserId = ownerUserId;
+	}
+
+	public OrgLocations getResponderLocationId() {
+		return responderLocationId;
+	}
+
+	public void setResponderLocationId(OrgLocations responderLocationId) {
+		this.responderLocationId = responderLocationId;
+	}
+
 	public String getInvoiceStatus()
 	{
 		return invoiceStatus;
@@ -478,6 +506,14 @@ public class Invoice {
 
 	public void setAfterDiscountValue(String afterDiscountValue) {
 		this.afterDiscountValue = afterDiscountValue;
+	}
+
+	public Invoice getParentInvoiceId() {
+		return parentInvoiceId;
+	}
+
+	public void setParentInvoiceId(Invoice parentInvoiceId) {
+		this.parentInvoiceId = parentInvoiceId;
 	}
 
 	public String getInvoiceType() {

@@ -636,7 +636,7 @@ function getInvoiceList(){
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+projectId+'">'+report.invoiceId+'</a></div>   ';
 				}
 				if(report.invoiceStatus == "SENT"){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'"/>">'+report.invoiceId+'</a></div>   ';				
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
 				}
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';

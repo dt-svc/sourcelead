@@ -120,11 +120,13 @@ public class InvoiceServiceImpl implements InvoiceService{
         
 		
         if(invoiceType.equalsIgnoreCase("payable")){
-        	
-        	 
         	if(jsonObj.has("vendorOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("vendorOrgRelationId"))){
-      			
       			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendorOrgRelationId")));
+      			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getLocationId());
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getResponderLocationId());
+      			}
       			invoice.setOrgRelationID(orgRelation);	
       		}
       		
@@ -132,14 +134,15 @@ public class InvoiceServiceImpl implements InvoiceService{
       			User contactUser = userService.getUserById(Long.parseLong(jsonObj.getString("vendorContact")));
       			invoice.setContactUser(contactUser);
       		}
-      		
       		invoice.setInvoiceType(Constants.Payables);
-        
-        
         }else{
         	 if(jsonObj.has("clientOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("clientOrgRelationId"))){
-     			
      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
+     			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getLocationId());
+      			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				invoice.setResponderLocationId(orgRelation.getResponderLocationId());
+      			}
      			invoice.setOrgRelationID(orgRelation);	
      		}
      		
@@ -147,12 +150,10 @@ public class InvoiceServiceImpl implements InvoiceService{
      			User userContactName = userService.getUserById(Long.parseLong(jsonObj.getString("clientContact")));
      			invoice.setContactUser(userContactName);
      		}
-     		
      		invoice.setInvoiceType(Constants.Receivable);
-     		
         }
         
-       
+        invoice.setOwnerUserId(user);
 		invoice.setOrgLocation(orgLocation);
 		if(jsonObj.has("invoiceId") && !"".equalsIgnoreCase(jsonObj.getString("invoiceId"))){
 			invoice.setInvoiceId(jsonObj.getString("invoiceId"));
@@ -239,6 +240,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		invoiceDao.saveInvoce(invoice);
+		if(saveType.equalsIgnoreCase("SENT")){
+			saveParentInvoice(invoice);	
+		}
+		
 		
 		if(null != invoiceLineItemsIdsList && invoiceLineItemsIdsList.size() > 0){
 			for(Long lineItemsId : invoiceLineItemsIdsList){
@@ -257,6 +262,41 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		
 		return invoice;
+	}
+	private void saveParentInvoice(Invoice invoice) throws Exception {
+		Invoice parentInvoice = new Invoice();
+		if(invoice.getInvoiceType().equalsIgnoreCase("payable")){
+			parentInvoice.setInvoiceType(Constants.Receivable);
+		}else{
+			parentInvoice.setInvoiceType(Constants.Payables);
+		}
+		parentInvoice.setInvoiceId(invoice.getInvoiceId());
+		parentInvoice.setParentInvoiceId(invoice);
+		parentInvoice.setOrgRelationID(invoice.getOrgRelationID());
+		parentInvoice.setContactUser(invoice.getOwnerUserId());
+		parentInvoice.setOrgLocation(invoice.getResponderLocationId());
+		parentInvoice.setOwnerUserId(invoice.getContactUser());
+		parentInvoice.setResponderLocationId(invoice.getOrgLocation());
+		parentInvoice.setInvoiceDate(invoice.getInvoiceDate());
+		parentInvoice.setBillingAddress(invoice.getBillingAddress());
+		parentInvoice.setDiscountAmount(invoice.getDiscountAmount());
+		parentInvoice.setDiscountValue(invoice.getDiscountValue());
+		parentInvoice.setAfterDiscountValue(invoice.getAfterDiscountValue());
+		parentInvoice.setSubTotal(invoice.getSubTotal());
+		parentInvoice.setInvoiceComment(invoice.getInvoiceComment());
+		parentInvoice.setInvoiceStatus(invoice.getInvoiceStatus());
+		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
+		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
+		parentInvoice.setDiscountType(invoice.getDiscountType());
+		parentInvoice.setTotal(invoice.getTotal());
+		parentInvoice.setInvoiceStatus(invoice.getInvoiceStatus());
+		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
+		parentInvoice.setDueDate(invoice.getDueDate());
+		parentInvoice.setDueAmount(invoice.getDueAmount());
+		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
+		parentInvoice.setCreatedDate(invoice.getCreatedDate());
+		parentInvoice.setCreatedBy(invoice.getCreatedBy());
+		invoiceDao.saveInvoce(parentInvoice);
 	}
 	private Set<InvoiceDocument> getInvoiceDocuments(JSONObject jsonObj, User user, OrgLocations orgLocation,Invoice invoice, List<MultipartFile> attachedfileList) throws Exception {
 		
@@ -687,5 +727,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			 }
 		 }
 		return invoiceTaxSet;
+	}
+	
+	@Override
+	public Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception {
+		return invoiceDao.getInvoicetByParentInvoiceId(parentInvoiceId);
 	}
 }
