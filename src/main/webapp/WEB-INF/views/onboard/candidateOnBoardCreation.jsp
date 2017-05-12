@@ -214,17 +214,27 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
+                
+                <div class="form-group" id="employmentTypeDiv">
                   <label class="col-md-3 control-label">Employment Type</label>
                   <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" name="employmentType">
-                      <option value="" disabled selected="selected">Select Employment Type</option>
+                    <select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" onchange="getEmploymentType();" name="employmentType">
+                      <option value=""  selected="selected">Select Employment Type</option>
                       <option value="C2C">C2C</option>
                       <option value="W-2">W-2</option>
                       <option value="C2H">C2H</option>
                       <option value="Part Time">Part Time</option>
                       <option value="Full Time">Full Time</option>
+                      <option value="Contract">Contract</option>
+                      <option value="Other">Other</option>
                     </select>
+                  </div>
+                </div>
+                
+                <div class="form-group" id="otherEmploymentTypeDiv" style="display: none">
+                  <label class="col-md-3 control-label">Other Type<span class="text-danger">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="employmentOtherType" field-name="Other Type" name="employmentOtherType" >
                   </div>
                 </div>
                   
@@ -593,6 +603,25 @@
 	  			<i class="fa fa-times" onclick="removeFormsAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
+
+
+<script>
+function getEmploymentType(){
+	var employmentType = $("#employmentType").val();
+	if(employmentType == 'Other'){
+		document.getElementById("otherEmploymentTypeDiv").style.display="block";
+		$("#employmentOtherType").attr("data-validation", "required");
+		$("#employmentOtherType").removeAttr("data-validation-optional");
+	}else{
+		document.getElementById("otherEmploymentTypeDiv").style.display="none";
+		$("#employmentOtherType").removeAttr("data-validation");
+		$("#employmentOtherType").attr("data-validation-optional", "true");
+		$('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+	}
+}
+</script>
+
+
 
 <script>
 function addPoliciesAttachment(){  
@@ -1015,8 +1044,23 @@ function validateUploadFile(id)
 			    	 }
 			    	 
 			    	 if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
-			    		 $("#employmentType").val(json['positionType']);
-			    		 $('#employmentType').trigger("chosen:updated");
+			    		 
+			    		 if(json['positionType'] == 'Other'){
+			    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+			    			 $("#employmentOtherType").attr("data-validation", "required");
+			    			 $("#employmentOtherType").removeAttr("data-validation-optional");
+			    		 }else{
+			    			 $("#employmentOtherType").removeAttr("data-validation");
+			    			 $("#employmentOtherType").attr("data-validation-optional","true");
+			    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+			    		 }
+			    		
+		    		     $("#employmentType").val(json['positionType']);
+				    	 $('#employmentType').trigger("chosen:updated");
+			    		
+			    	 }else{
+			    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+			    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
 			    	 }
 			    	 
 			    }
@@ -1444,10 +1488,29 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    		loadTeams(json['onBoardTeamId']);
 		    	}
 		    	
-		    	if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] !="undefined"){
-		    		$("#employmentType").val(json['employmentType']);
-			    	$('#employmentType').trigger("chosen:updated");
-		    	}
+		    	
+		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
+		    		 
+		    		 if(json['employmentType'] == 'Other'){
+		    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+		    			 $("#employmentOtherType").val(json['employmentOtherType']);
+		    			 $("#employmentOtherType").attr("data-validation", "required");
+		    			 $("#employmentOtherType").removeAttr("data-validation-optional");
+		    		 }else{
+		    			 $("#employmentOtherType").removeAttr("data-validation");
+		    			 $("#employmentOtherType").attr("data-validation-optional","true");
+		    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+		    		 }
+		    		
+	    		     $("#employmentType").val(json['employmentType']);
+			    	 $('#employmentType').trigger("chosen:updated");
+		    		
+		    	 }else{
+		    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+		    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+		    	 }
+		    	 
+		    	 
 		    	
 		    	if(json['probationNotice'] != null && json['probationNotice'] != "" && json['probationNotice'] !="undefined"){
 		    		$("#probationNotice").val(json['probationNotice']);
