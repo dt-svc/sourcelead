@@ -317,3 +317,24 @@ background-color: #fff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,
 	min-height: 100px; max-height: 85%; overflow-Y: auto;
 }
 /* checkbox styles added on 19th April, srinivas lankalapalli */
+.employee_trail {
+	min-width: 450px; min-height: 250px;
+}
+.employee_trail h4 {
+	font-size: 30px !important; color: #007BB6; margin-bottom: 15px !important;; margin-top: 15px !important;
+}
+.employee_trail p {
+	margin-bottom: 20px !important; font-size: 16px;
+}
+.employee_trail p a{
+	color:#333;
+}
+.employee_trail p span {
+	padding-right: 10px;
+}
+.employee_trail p:nth-child(3) a {
+	color:#007BB6 !important; font-size: 18px !important;
+}
+.employee_trail p:nth-child(4) a {
+	color:#5b8200 !important; font-size: 18px !important;
+}

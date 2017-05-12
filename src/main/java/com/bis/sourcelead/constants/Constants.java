@@ -687,10 +687,11 @@ public class Constants {
     public static String SIX_MONTHS = "sixmonths";
     public static String ONE_YEAR = "oneyear";
     
-    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
-    
+    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;    
     //invoice
-    
+   
     public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)", "Rate", "Total Hours", "Total"};
     
+	public static String submitForApproval = "SUBMIT FOR APPROVAL";
+
 }	

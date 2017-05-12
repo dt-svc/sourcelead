@@ -1952,7 +1952,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(initiatorUser.getEmail());
+		emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		StringBuilder msgBuild = new StringBuilder();
@@ -1965,10 +1965,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		} else {
 			globalVarsMap.put("reason", "--");
 		}
-		if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getUserName())) {
-			globalVarsMap.put("loginUserName", loginUser.getFirstName());
+		if (loginUser.getLastName() != null && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder loginName = new StringBuilder();
+			globalVarsMap.put("loginUserName", loginName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		} else {
-			globalVarsMap.put("loginUserName", "--");
+			globalVarsMap.put("loginUserName", loginUser.getFirstName());
 		}
 		StringBuilder userBuild = new StringBuilder();
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null	&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
@@ -1998,10 +1999,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		}else{
 			globalVarsMap.put("requirementId-Name", requirement.getJobId());
 		}
-		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
-			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
+		if (requirement.getManagerUserId().getLastName() != null && !"".equalsIgnoreCase(requirement.getManagerUserId().getLastName()) ) {
+			StringBuilder managerName = new StringBuilder();
+			globalVarsMap.put("jobInitiatorName", managerName.append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).toString());
 		} else {
-			globalVarsMap.put("jobInitiatorName", "--");
+			globalVarsMap.put("jobInitiatorName", requirement.getManagerUserId().getFirstName());
 		}
 		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
 			globalVarsMap.put("requirementName", requirement.getJobTitle());
@@ -2043,7 +2045,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
 	}
 	
 	@Override
