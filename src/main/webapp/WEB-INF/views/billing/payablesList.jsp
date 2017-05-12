@@ -546,6 +546,12 @@ function getPayableInvoiceList(){
         success: function(data) {
         	var json = JSON.parse(data);
         	var result = "";
+        	var draftCount = 0;
+        	var draftTotalAmount = 0;
+        	
+        	var paidCount = 0;
+        	var paidTotalAmount = 0;
+        	
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
@@ -577,6 +583,19 @@ function getPayableInvoiceList(){
         		}else{
         			invoiceDateStr = "";
         		}
+        		
+        		
+        		draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
+        		
+       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
+       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
+       			}
+       			
+       			paidCount = parseInt(paidCount) + parseInt(report.paidCount);
+       			
+       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
+       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
+       			}
         		
         		
 				result = result +'       <tr> ';
@@ -624,7 +643,8 @@ function getPayableInvoiceList(){
         	result = result +'     </tbody>                                                                                                          ';
 			result = result +'   </table>                                                                                                            ';
 			$("#invoiceList").empty();  
-		    $("#invoiceList").append(result)
+		    $("#invoiceList").append(result);
+		    
 		    invoicePagination()
         },
         
