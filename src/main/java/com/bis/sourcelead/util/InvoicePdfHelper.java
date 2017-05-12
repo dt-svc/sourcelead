@@ -206,6 +206,7 @@ public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, 
 }
 private Document addLogoToPdfFile(Document document, Org org) throws MalformedURLException, IOException, DocumentException
 {
+	if(null != org.getDocFile()){
     Image image = Image.getInstance(org.getDocFile());
     image.scalePercent(300f);
     image.setAbsolutePosition(0, (float) (PageSize.A4.getHeight() - 25.0));
@@ -216,6 +217,7 @@ private Document addLogoToPdfFile(Document document, Org org) throws MalformedUR
     //Scale to new height and new width of image
     image.scaleAbsolute(100, 50);
     document.add(image);
+	}
 	return document;
 }
 
