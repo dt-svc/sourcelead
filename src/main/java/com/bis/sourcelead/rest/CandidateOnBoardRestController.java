@@ -1300,22 +1300,26 @@ public class CandidateOnBoardRestController {
 		     List<OnboardTasks> candidateTasksList = onboardTasksService.getOnBoardTasksListByCandidateOnBoardingId(onboardId);
 		     tasksList.addAll(candidateTasksList);
 		 
-			 CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
-			 List<Long> templateIdsList = new ArrayList<Long>();
 			 
-			 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
-				 for (String s : onboarding.getOnboardTemplateId().split(",")){
-					 templateIdsList.add(Long.parseLong(s));
-				 }
-				
-				 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
-				 if(null != templateTasksList){
-					 tasksList.addAll(templateTasksList);
-				 }
+		     
+		     if(candidateTasksList.size() == 0){
+		    	 
+			     CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingById(onboardId);
+				 List<Long> templateIdsList = new ArrayList<Long>();
 				 
-			 }
-			 
-			 
+				 if(!isNullOrEmpty(onboarding.getOnboardTemplateId())){
+					 for (String s : onboarding.getOnboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					
+					 templateTasksList = onboardTasksService.getOnboardTasksByTemplateIdList(templateIdsList);
+					 if(null != templateTasksList){
+						 tasksList.addAll(templateTasksList);
+					 }
+					 
+				 }
+		     }
+	
 			 List<OnboardTasks> onboardtasksList = new ArrayList<OnboardTasks>();
 			 
 			 for(OnboardTasks tasks : tasksList){
