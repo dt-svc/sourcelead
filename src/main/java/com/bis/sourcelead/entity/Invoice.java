@@ -122,6 +122,10 @@ public class Invoice {
 	@Column(name = "IS_SEPARATE_INVOICE")
 	private String isSeparateInvoice;
 	
+	@Column(name = "INVOICE_FREQUENCY")
+	private String invoiceFrequency;
+	
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
 	
@@ -551,7 +555,18 @@ public class Invoice {
 		return projectId;
 	}
 
+	public String getInvoiceFrequency()
+	{
+		return invoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency)
+	{
+		this.invoiceFrequency = invoiceFrequency;
+	}
+
 	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
+
 }

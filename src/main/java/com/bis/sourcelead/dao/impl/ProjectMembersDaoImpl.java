@@ -113,7 +113,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ " ) ";
 		}
 		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user user "
-			+ " where projects.orgLocationsId.id = :locationsId and projects.id = :projectId " + dateQuery;
+			+ " where projects.orgLocationsId.id = :locationsId and projects.id = :projectId and pm.status='1'" + dateQuery;
 		Query query = session.createQuery(queryStr.toString());
 		if (startDate != null && endDate != null) {
 			query.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);

@@ -349,7 +349,10 @@ public class InvoiceRestController {
 		return TZ_DF_TS.parse(startDateString);
 	}
 
-	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
+	/*
+	 * Commented By Rajashekar will remove after everything goes fine
+	 * Date : 12-05-2017
+	 * @RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
 
 		String json1 = "{" + json + "}";
@@ -368,7 +371,7 @@ public class InvoiceRestController {
 			invoicePaymentSaved = "success";
 		}
 		return invoicePaymentSaved;
-	} 
+	} */
 
 
 	
@@ -545,8 +548,11 @@ public class InvoiceRestController {
 			}else{
 				empName.append(projectMember.getEmployee().getUser().getFirstName());
 			}
-			projectMember.setEmpName(empName.toString());
-			projectMember.setUserId(projectMember.getEmployee().getUser().getId().toString());
+			projectMember.setCandidateName(empName.toString());
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(orgLocation.getId(),projectMember.getEmployee().getUser().getId());
+			if(null != candidate){
+				projectMember.setCandidateId(candidate.getId());
+			}
 			projectMember.setStartDate(startDateStr);
 			projectMember.setEndDate(endDateStr);
 			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
@@ -581,6 +587,70 @@ public class InvoiceRestController {
 		}
 		return "";
 }
+	
+	  @RequestMapping(value = "/getAllProjectsByOrgRelationId", method = RequestMethod.GET)
+	 	public @ResponseBody  String getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	String resultJson;
+	     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
+	 	    resultJson = commonUtil.toJSON(projectList);
+	 	    return resultJson;
+	 	}
 	//******************* End By Rajashekar
 
+	  
+	  @RequestMapping(value = "/getAllProjectVendorAssignedMembers", method = RequestMethod.GET)
+		public @ResponseBody String getAllProjectVendorAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request) throws Exception {
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String frequencyArray[] = frequency.split("/");
+			String startDateStr = frequencyArray[0];
+			String endDateStr = frequencyArray[1];
+			String pattern = "dd-MM-yyyy";
+	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+	        
+	        Date startDate = format.parse(startDateStr);
+			Date endDate = format.parse(endDateStr);
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
+			
+			for(ProjectMembers projectMember :projectMembersList){
+				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
+				if(null != candidate){
+					Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
+					StringBuilder empName =new StringBuilder();
+					if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
+						empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+					}else{
+						empName.append(projectMember.getEmployee().getUser().getFirstName());
+					}
+					projectMember.setCandidateName(empName.toString());
+					if(null != candidate){
+						projectMember.setCandidateId(candidate.getId());
+					}
+					projectMember.setStartDate(startDateStr);
+					projectMember.setEndDate(endDateStr);
+					projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+				}
+			}
+//			for(ProjectMembers projectMember :projectMembersList){
+//				Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
+//				StringBuilder empName =new StringBuilder();
+//				if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
+//					empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+//				}else{
+//					empName.append(projectMember.getEmployee().getUser().getFirstName());
+//				}
+//				projectMember.setCandidateName(empName.toString());
+//				Candidate candidate = candidateService.getCandidateByConsultantUserId(orgLocation.getId(),projectMember.getEmployee().getUser().getId());
+//				if(null != candidate){
+//					projectMember.setCandidateId(candidate.getId());
+//				}
+//				projectMember.setStartDate(startDateStr);
+//				projectMember.setEndDate(endDateStr);
+//				projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+//			}
+			return commonUtil.toJSON(projectMembersList);
+		} 
 }

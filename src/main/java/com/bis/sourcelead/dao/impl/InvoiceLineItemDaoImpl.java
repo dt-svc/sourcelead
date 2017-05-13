@@ -43,7 +43,7 @@ public class InvoiceLineItemDaoImpl implements InvoiceLineItemDao{
 	public List<InvoiceLineItems> getInvoiceLineItemsByInvoiceId(Long invoiceId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from InvoiceLineItems lineItems left join fetch lineItems.invoice  left join fetch lineItems.candidate where lineItems.invoice.id = :invoiceId and lineItems.status = '1' ";
+		String query = "from InvoiceLineItems lineItems left join fetch lineItems.invoice  left join fetch lineItems.candidate left join fetch lineItems.contract where lineItems.invoice.id = :invoiceId and lineItems.status = '1' ";
 		List<InvoiceLineItems> InvoiceLineItemsList = session.createQuery(query.toString()).setLong("invoiceId", invoiceId).setCacheable(true).list();
 		return InvoiceLineItemsList;
 	}

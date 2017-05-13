@@ -19,5 +19,4 @@ public interface InvoiceLineItemService {
 	
 	List<Long> getInvoiceLineItemsIdsByInvoiceId(Long invoiceId) throws Exception;
 
-
 }

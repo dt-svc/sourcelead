@@ -104,6 +104,10 @@ public class BillingPayableRestController {
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));
 		    	invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));
+		    	if(null != invoice.getProjectID()){
+		    		invoice.setProjectId(invoice.getProjectID().getProjectName());
+		    		invoice.setInvoiceFrequency(invoice.getInvoiceFrequency());
+		    	}
 		    	
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
