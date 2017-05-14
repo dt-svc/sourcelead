@@ -176,7 +176,14 @@
 						result = result + '</div>';
 						
 						result = result + '<div class="clearfix"></div>';
-						result = result	+ '<p><strong>Description:</strong></p>'+ description + '<div class="clearfix"></div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result	+ '<strong>Description:</strong>';
+						result = result + '<span>'+ description +'</span><div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="clearfix"></div>';
+						
 						result = result	+ '<div class="user_summary_edit user_summary_edit_a" id="editProjectDetailsDiv"></div>';
 						result = result + '</div>';
 						result = result + '</div>';

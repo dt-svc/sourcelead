@@ -7,6 +7,23 @@
 <script src="resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style type="text/css">
+.invoiceId_Anchor a {
+color:#337ab7 !important;
+}
+.successBtn {
+background-color: #1ab394;
+border-color: #1ab394;
+cursor: pointer;
+    border: 1px solid;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+</style>
+
 <script type="text/javascript">
 $(document).ready(function(){
 	getInvoiceList();
@@ -16,39 +33,86 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Billing</h2>
+        <h2>Receivable</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice ListHome » Billing</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Receivable List</div>
     </section>
     <div class="content-area content-new clearfix">
-      <div class="onboardDashboard_counts">
+      <div class="billing_dashboard">
         <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons"> <a href="<c:url value='/createInvoice'/>"  class="btn btn-primary btn-sm" title="Create invoice"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
+          <div class="onboardcreateButtons"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
             <div class="pull-right select-field ml">
-              <select class="form-control input-sm">
-                <option class="disabled" selected="">--Select option--</option>
-                <option>1 Month</option>
-                <option>2 Months</option>
-                <option>3 Months</option>
-                <option>6 Months</option>
-                <option>1 Year</option>
-                <option>Custom ... </option>
+              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
+                <option value="month">1 Month</option>
+                <option value="twomonths">2 Months</option>
+                <option value="threemonths">3 Months</option>
+                <option value="sixmonths">6 Months</option>
+                <option value="oneyear">1 Year</option>
+                <option value="custom">Custom</option>
               </select>
+              
+              <div class="custom_search">
+              <div id="customDateDivId"></id>
             </div>
           </div>
-          <ul class="nav nav-tabs" id="tab_bar">
-            <li class="active"> <a href="#unbilled" data-toggle="tab" class="onboardCount" title="Current onboard count" aria-expanded="true">
-              <div class="count"> 1 </div>
-              <h4>Unbilled invoice</h4>
-              </a> </li>
-            <li class=""> <a href="#unpaid" data-toggle="tab" title="Current offboard count" aria-expanded="false">
-              <div class="count"> 10 </div>
-              <h4>Unpaid invoice</h4>
-              </a> </li>
-            <li class=""> <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" aria-expanded="false">
-              <div class="count"> 100 </div>
-              <h4>Paid invoice</h4>
-              </a> </li>
+            </div>
+          </div>
+         
+         <ul class="nav nav-tabs" id="tab_bar">
+            
+               <li class="active">
+                        <h4>Unbilled</h4>
+                        <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Current onboard count">
+                            <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="unbilledAmoumt"></div>
+                                <h5>Draft Invoice<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                </div>
+                        </a>
+                    </li>
+                    <li>
+                        <h4>Un Paid</h4>
+                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbg_red">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count">Rs: 55588 </div>
+                        <h5>Overdue Invoice<span class="paddingLeft">10</span></h5>
+                            </div>
+                        
+                        </a>
+                    </li>
+                    <li>
+                        <h4>&nbsp;</h4>
+                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbgRed">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count">
+                            Rs: 55588
+                        </div>
+                        <h5>Open Invoice<span class="paddingLeft">10</span></h5>
+                        </div>
+                        </a>
+                    </li>
+                    <li class="billingbg_greens">
+                        <h4>Paid</h4>
+                        <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" class="billbg_green">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="paidInvoiceAmount"></div>
+                        <h5>Paid Invoice<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                            </div>
+                        </a>
+                    </li>
+            
+            
             <div class="pull-right mt40 select-field hidden">
               <select class="form-control">
                 <option class="disabled" selected="">--Select option--</option>
@@ -65,36 +129,48 @@ $(document).ready(function(){
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt">
+              <div class="timesheet_out mt" style="overflow-x:auto;">
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li><span id="onboard-pop"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play"></i></span>|
-                        <div class="approved_pop">
+                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Invoice</span><i class="glyphicon glyphicon-play" ></i>|
+                        <div class="approved_pop" id="invoiceTabOne">
                           <ul>
                             <li>
-                              <input type="checkbox" value="" name="onboard" id="onboard1" checked="">
-                              <label for="onboard1">Sent</label>
+                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceList();" >
+                              <label for="onboard1">Draft</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard2" name="onboard" checked="">
-                              <label for="onboard2">In progress</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="onboard3" name="onboard" checked="">
-                              <label for="onboard3">Completed</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="onboard4" name="onboard">
-                              <label for="onboard4">Declain</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="onboard5" name="onboard">
-                              <label for="onboard5">Waiting for approval</label>
+                              <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Sent</label>
                             </li>
                           </ul>
                         </div>
                       </li>
+                      
+                      <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
+                        <div class="approved_pop" id="paymentTabOne">
+                          <ul>
+                            <li>
+                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
+                              <label for="onboard1">Unpaid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Partial Paid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard3">Paid</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard4">OverDue</label>
+                            </li>
+                          </ul>
+                        </div>
+                      </li>                      
+                      
                       <div class="clearfix"></div>
                     </ul>
                     <div class="clearfix"></div>
@@ -117,7 +193,7 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li><span id="offboard-pop"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play"></i></span>|
+                      <li id="payment-ID1"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play"></i>|
                         <div class="approved_pop">
                           <ul>
                             <li>
@@ -276,6 +352,55 @@ $(document).ready(function(){
     </div>
   </section>
   
+  <!-- Add invoice Popup -->
+		   <div class="addcandidate-popup">
+		    <div class="row">
+		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+		      <div class="col-md-4 mt25">
+		        <div class="small-widget bgGreen">
+		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
+		          <div class="clearfix mb10"> 
+		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
+		          </div>
+		          <strong class="clearfix">Custom</strong></a>
+		          </div>
+		      </div>
+		
+		        <div class="col-md-4 mt25">
+		          <div class="small-widget bg-yellow"> 
+		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create project based invoice">
+		            <div class="clearfix mb10">
+		                <!--<i class="fa fa-usd fa-3x"></i>-->
+		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		            </div>
+		            <strong class="clearfix">Project Based </strong> </a> </div>
+		        </div>
+		          
+		          <div class="col-md-4 mt25">
+		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <div class="clearfix mb10">
+		              <!--<i class="fa fa-usd fa-3x"></i>   -->           
+		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		              </div>
+		            <strong class="clearfix">Other</strong> </a> </div>
+		        </div>
+		
+		      
+		          </div>
+		    </div>
+		  </div>
+		  <div class="pop_mask"></div>
+		  <script>
+		    //addcandidate-popup script
+		    function createBill(){
+		        $('.addcandidate-popup').fadeIn(200);
+		        $('.pop_mask').fadeIn(200);
+		    };
+		       function closeCandidate(){
+		        $('.addcandidate-popup').fadeOut(200);
+		        $('.pop_mask').fadeOut(200);
+		       }
+		    </script> 
   
 <script>
 function receivePaymentPop1(invoiceId,total){
@@ -293,13 +418,13 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'        <div class="col-md-12 clearfix">                                            ';
 	result = result +'        <form class="form-horizontal clearfix" id="receivePayment-form" name="receivePayment-form" enctype="multipart/form-data">                                     ';
 	result = result +'          <div class="row mt">                                                      ';
-	result = result +'            <div class="col-md-4">     ';
+	result = result +'            <div class="col-md-4" id="errPaymentDate">     ';
 	result = result +'              <label>Payment Date<span class="text-danger paddingLeft">*</span></label>    ';
-	result = result +'              <input class="form-control input-sm calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate"> ';
+	result = result +'              <input class="form-control input-sm calendar" placeholder="Payment Date" type="text" id="paymentDate" name="paymentDate" data-validation="required" field-name="Payment Date"> ';
 	result = result +'            </div>';
-	result = result +'            <div class="col-md-4 select-field">';
-	result = result +'              <label>Payment Method</label> ';
-	result = result +'              <select class="form-control" id="paymentMethod" name="paymentMethod"> ';
+	result = result +'            <div class="col-md-4 select-field" id="errPaymethod">';
+	result = result +'              <label>Payment Method<span class="text-danger paddingLeft">*</span></label> ';
+	result = result +'              <select class="form-control" id="paymentMethod" name="paymentMethod" data-validation="required" field-name="Payment Method" onchange="removeErr();"> ';
 	result = result +'                <option selected="" disabled="">-- Select Method --</option>';
 	result = result +'                <option value="Cash">Cash</option>   ';
 	result = result +'                <option value="Cheque">Cheque</option> ';
@@ -307,8 +432,8 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              </select>   ';
 	result = result +'            </div>  ';
 	result = result +'            <div class="col-md-4">  ';
-	result = result +'              <label>Reference No</label> ';
-	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber"> ';
+	result = result +'              <label>Reference No<span class="text-danger paddingLeft">*</span></label> ';
+	result = result +'              <input class="form-control input-sm" placeholder="Reference No" type="text" id="referenceNumber" name="referenceNumber" data-validation="required validate_length length2-250"  field-name="Reference No"> ';
 	result = result +'            </div>        ';
 	result = result +'          </div>          ';
 	result = result +'          <div class="row mt">                                 ';
@@ -318,14 +443,14 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                  <label>Amount Received</label>               ';
 	result = result +'                  <div class="row">                            ';
 	result = result +'                    <div class="col-md-6">                     ';
-	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked>           ';
+	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked onclick="validMask();"> ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
-	result = result +'                      <input  type="radio" name="paymentAmount" value="custom">     ';
+	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();" >     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10" id="customeAmount" name="customeAmount" >       ';
+	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -340,7 +465,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment">                                            ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -369,11 +494,23 @@ function receivePaymentPop1(invoiceId,total){
 		dateFormat : 'dd-mm-yy',
 		changeMonth: true,
 		changeYear: true, 
+		onSelect : function(selected) {
+			removeValidate();
+		}
 	});
+    
+    
 }
 
 </script>  
-  
+<script>
+function removeValidate(){
+	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
+}
+function removeErr(){
+	$('#errPaymethod').find('p.jquery_form_error_message').remove(); 
+}
+</script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
 <div id="recvPymntpop" class="modal" style="display: none;">
@@ -414,6 +551,10 @@ function saveReceivePayment(invoiceId){
 		return false;
 	  } 
 }
+$('body').on('blur', '#receivePayment-form', function() {
+	$("#receivePayment-form").showHelpOnFocus();
+	$("#receivePayment-form").validateOnBlur(false, validationSettings);  
+});
 </script>
 
 <!-- <script>
@@ -465,12 +606,46 @@ $('body').on('blur', '#invoice_form', function() {
 </script> -->
 <script>
 function getInvoiceList(){
+	$(".custom_search").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
+	var invoice = [];
+	var payment = [];
+	var dayWisetype = $("#dayWiseTypeId").val();
+	
+	var startDate = $("#billingStartDate").val();
+	var endDate = $("#billingEndDate").val();
+	
+	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#invoiceStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#invoiceEndDate").empty().append("End Date is Required") ; 
+	}
+	
+	
+	$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+    {
+		invoice.push($(this).val());
+    });
+	
+	$('input:checkbox[name=paymentStatus]:checked').each(function() 
+	 {
+		payment.push($(this).val());
+	 });
+	
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}",
+        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable",
         success: function(data) {
         	var json = JSON.parse(data);
+        	
+        	var draftCount = 0;
+        	var draftTotalAmount = 0;
+        	
+
+        	var paidCount = 0;
+        	var paidTotalAmount = 0;
+        	
         	var result = "";
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
@@ -492,6 +667,19 @@ function getInvoiceList(){
         	for (var i=0; i<json.length; i++)
     		{  
         		var report = json[i];
+        		
+				draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
+       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
+       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
+       			}
+       			
+       			
+				paidCount = parseInt(paidCount) + parseInt(report.paidInvoiceCount);
+       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
+       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
+       			}
+        		
+        		
         		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
         			dueDateStr = report.dueDateStr;
         		}else{
@@ -503,10 +691,19 @@ function getInvoiceList(){
         		}else{
         			invoiceDateStr = "";
         		}
-        		
+        		if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+        			projectId = report.projectId;
+        		}else{
+        			projectId = "";
+        		}
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot_80">'+report.invoiceId+'</div>   ';
+				if(report.invoiceStatus == "DRAFT"){
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+projectId+'">'+report.invoiceId+'</a></div>   ';
+				}
+				if(report.invoiceStatus == "SENT"){
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+				}
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
@@ -536,14 +733,27 @@ function getInvoiceList(){
 				
 				result = result +'         <td> ';
 				 
-				result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+				if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+					result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+				}
+				
 				result = result +'       </tr>                                                                                                           ';
 
     		}
         	result = result +'     </tbody>                                                                                                          ';
 			result = result +'   </table>                                                                                                            ';
 			$("#invoiceList").empty();  
-		    $("#invoiceList").append(result)
+		    $("#invoiceList").append(result);
+		    
+		    $("#draftInvoiceCount").html(draftCount);
+		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    		    
+		    $("#paidInvoiceCount").html(paidCount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    	    
+
 		    invoicePagination()
         },
         
@@ -615,14 +825,169 @@ function cancelbtn(){
         $('.menupop').toggle();
         
     };
-   /*  function receivePaymentPop(){
-       $("#recvPymntpop").fadeIn(200);
-        $('.modal-backdrop').fadeIn(200).addClass('in');
-    } */
-   /*  $(".close").click(function(){
-       $("#recvPymntpop").fadeOut(200);
-        $('.modal-backdrop').fadeOut(200).removeClass('in');
-    }); */
+</script>
+<script>
+function removeMask(){
+	 $("#customeAmount").removeAttr("readonly");
+	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	                event.preventDefault();
+	            }
+	        });
+	 
+	 
+}
+function validMask(){
+	  $('#customeAmount').attr("readonly","readonly");  
+	  
+}
+/* function amountCal(){
+	var totalAmount =  $("#totalAmount").val();
+	var customAmount =  $("#customeAmount").val();
+	if(totalAmount <= customAmount){
+		var exceededAmount = customAmount - totalAmount
+		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
+	}
+} */
+</script>
+
+<script>
+$(document).ready(function() {
+    $("#invoiceID1").click(function(){
+		$("#invoiceTabOne").slideToggle(0);
+		$("#paymentTabOne").slideUp(200);
+	});
+    $("html").click(function() {
+        $("#invoiceTabOne").slideUp(0);
+    });
+    $("#invoiceTabOne, #invoiceID1").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+
+
+$(document).ready(function() {
+    $("#paymentID1").click(function(){
+		$("#paymentTabOne").slideToggle(0);
+		$("#invoiceTabOne").slideUp(200);
+	});
+    $("html").click(function() {
+        $("#paymentTabOne").slideUp(0);
+    });
+    $("#paymentTabOne, #paymentID1").click(function(e) {
+        e.stopPropagation();
+    });	
+});
+</script>
+
+<script>
+    //search script
+        function customInvoiceList() {
+            var selectVal = $("#dayWiseTypeId").val();
+            if (selectVal == "custom") {
+                $(".custom_search").show();
+                customDate();
+            }else {
+                $(".custom_search").hide();
+            }
+        }
+       
+</script>
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<script>
+function closePopup() {
+         $(".custom_search").toggle();
+}
+</script>
+
+<script>
+function customDate(){
+	var result = "";                                                                                                                                  
+	result = result +'	<div class="clearfix row"> <span class="pull-left ml">Custom Search</span>                                                     ';
+	result = result +'   <div class="closeSearch pull-right mr" title="Close Div" onclick="closePopup();">X</div>                                                              ';
+	result = result +'   <div class="clearfix mt10"></div>                                                                                             ';
+	result = result +'   <div class="col-md-5 paddingRight" id="errStartDate">                                                                                           ';
+	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" placeholder="Start Date">                   ';
+	result = result +'                                                                                                                                 ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +'   <div class="col-md-5 paddingLeft" id="errEndDate">                                                                                            ';
+	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" placeholder="End Date">                       ';
+	result = result +'                                                                                                                                 ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +'   <div class="col-md-2 paddingLeft" onclick="searchResults();">                                                                ';
+	result = result +'     <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search paddingRight"></i></button>           ';
+	result = result +'   </div>                                                                                                                        ';
+	result = result +' </div>                                                                                                                          ';
+	$("#customDateDivId").empty();
+	$("#customDateDivId").append(result);
+	
+	$('#billingStartDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : 'dd-mm-yy',
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			var dt = toDate("#billingStartDate");
+			dt.setDate(dt.getDate() + 1);
+			$("#billingEndDate").datepicker("option", "minDate", dt);
+			removeStartdateval();
+		}
+	
+	});
+	
+	$('#billingEndDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : 'dd-mm-yy',
+		beforeShow: function(){
+	           this.value='';
+	     },
+		onSelect : function(selected) {
+			var dt = new Date(selected);
+			var dt = toDate("#billingEndDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#billingStartDate").datepicker("option", "maxDate", dt);
+			removeEnddateval();
+		}
+	});
+}
+</script>
+<script>
+function removeStartdateval(){
+	$("#errStartDate").find('p.jquery_form_error_message').remove();
+}
+function removeEnddateval(){
+	$("#errEndDate").find('p.jquery_form_error_message').remove();
+}
+
+</script>
+<script>
+function searchResults(){
+	$("#errStartDate").find('p.jquery_form_error_message').remove();
+	$("#errEndDate").find('p.jquery_form_error_message').remove();
+	var startDate =  $('#billingStartDate').val();
+	var endDate =  $('#billingEndDate').val();
+	if(startDate != null && startDate != '' && startDate != 'undefined' && endDate != null && endDate != '' && endDate != 'undefined'){
+		getInvoiceList();
+	}else{
+		if(startDate != null && startDate != '' && startDate != 'undefined'){
+			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+		}else if(endDate != null && endDate != '' && endDate != 'undefined'){
+			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+		}else{
+			$("input#billingStartDate") .after( "<p class='jquery_form_error_message'>Start Date is Required</span>");
+			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
+		}
+	} 
+}
+
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	

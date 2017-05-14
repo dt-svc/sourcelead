@@ -15,7 +15,7 @@ var postdatavalues = { title: "", link: "", picture: "", description: "", commen
 function setPostValues(title,link,picture,description,comment){
 	 if (title) {
          postdatavalues.title = title;
-     }
+     } 4 Months
      if (link) {
          postdatavalues.link = link;
      }
@@ -223,7 +223,6 @@ window.onload = function () {
                       <option>1 Month</option>
                       <option>2 Months</option>
                       <option>3 Months</option>
-                      <option>4 Months</option>
                     </select>
                   </div>
                 </div>

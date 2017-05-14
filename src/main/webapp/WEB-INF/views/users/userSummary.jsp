@@ -192,7 +192,7 @@ $(document).ready(function(){
 			    	    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
-		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Approval<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
 					    
 			    }
@@ -1337,6 +1337,8 @@ $("#editRoleDetailsList").empty();
 						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
 						result = result + '</div>'; 
 					
+						result = result + '<input type="hidden" value="'+json.userEmploymentType+'" id="hiddenId" >';
+
 						
 					   result = result + '<div class="user_summary_edit_cta">';
  					   result = result + ' <label>Employment type</label>';
@@ -1553,19 +1555,39 @@ function getCalendar(){
 
 <script>
 function getEmployeementType(){
-	 var employementType = $('#designationType').val(); 
+	
+	var employementType = $('#designationType').val(); 
+	//var abc = document.getElementById('hiddenId').value();
+	var preval = document.getElementById("hiddenId").value;
+	
 		if(employementType == 'C2C' || employementType == 'C2C-1099'){
-			document.getElementById("hideVendor").style.display="block";
+			if(employementType == preval){
+				document.getElementById("hideVendor").style.display="block";
+				 $('#vendors').attr("data-validation","required"); 
+				 $('#vendorcontact').attr("data-validation","required");
+				 getVendorsByOrgLocationId();
+			}else{
+				document.getElementById("hideVendor").style.display="block";
 			 $('#vendors').attr("data-validation","required"); 
 			 $('#vendorcontact').attr("data-validation","required"); 
+			  $('#vendors').val(''); 
 			 
+	            $('#vendors').trigger("chosen:updated");
+	            $('#vendorcontact').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontact').trigger("chosen:updated");
+			} 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendors').removeAttr("data-validation","required"); 
 			 $('#vendorcontact').removeAttr("data-validation","required"); 
 			 
 			 $('#vendors').val(''); 
-			 $('#vendorcontact').val(''); 
+	            $('#vendors').trigger("chosen:updated");
+	            $('#vendorcontact').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontact').trigger("chosen:updated");
+
 			 
 		}
 		$('#designationType + p').remove();
