@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -73,6 +74,12 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 			
 		}
 		
+		
+		
+		
+		
+		
+		
 		if(jsonObj.has("paymentAmount") && !"".equalsIgnoreCase(jsonObj.getString("paymentAmount"))){
 			if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
 				if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
@@ -88,10 +95,40 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 					Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
 					Float receivedAmount  = totalAmount - customAmount;
 					invoice.setPaymentStatus("Partial Paid");
+					if(totalAmount.equals(customAmount)){
+						invoice.setPaymentStatus("Paid");
+					}
 					invoice.setDueAmount(receivedAmount.toString());
+					
 				}
 			}
-			invoiceDao.saveInvoce(invoice);
+			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+			if(null != childInvoice){
+				Invoice parentInvoice =  invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+				
+				if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
+					if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
+						invoicePayment.setPaymentTotalDue(jsonObj.getString("totalAmount"));
+						parentInvoice.setPaymentStatus("Paid");
+						parentInvoice.setDueAmount("00.00");
+					}
+				}
+				if(jsonObj.getString("paymentAmount").equalsIgnoreCase("custom")){
+					if(jsonObj.has("customeAmount") && !"".equalsIgnoreCase(jsonObj.getString("customeAmount"))){
+						invoicePayment.setPaymentCustomDue(jsonObj.getString("customeAmount"));
+						Float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
+						Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
+						Float receivedAmount  = totalAmount - customAmount;
+						parentInvoice.setPaymentStatus("Partial Paid");
+						if(totalAmount.equals(customAmount)){
+							parentInvoice.setPaymentStatus("Paid");
+						}
+						parentInvoice.setDueAmount(receivedAmount.toString());
+						
+					}
+				}
+			  invoiceDao.saveInvoce(parentInvoice);
+			}
 		}
 		
 		 
@@ -105,11 +142,26 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 	
 		}
 		invoicePayment.setOrgLocation(orgLocation);
-		invoicePayment.setInvoiceId(invoice);
+		if(invoice.getParentInvoiceId().getId() != null){
+			invoicePayment.setInvoiceId(invoice.getParentInvoiceId());	
+		}else{
+			invoicePayment.setInvoiceId(invoice);
+		}
+		
 		invoicePayment.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoicePayment.setCreatedBy(user.getUserCode());
 		invoicePayment.setCreatedDate(commonUtil.currentDate());
 		return invoicePaymentDao.saveInvoicePayment(invoicePayment);
+	}
+
+	@Override
+	public List<InvoicePayment> getInvoicePaymentList(Long invoiceId) throws Exception {
+		return invoicePaymentDao.getInvoicePaymentList(invoiceId);
+	}
+
+	@Override
+	public InvoicePayment invoicePaymentById(Long id) throws Exception {
+		return invoicePaymentDao.invoicePaymentById(id);
 	}
 	
 	

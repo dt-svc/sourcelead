@@ -241,6 +241,7 @@ function getAddApplicant(requirementId){
     	 $("#newUploadFile").focus();
     	 if(validate_fileupload(this.value)){
     		 var docSize = this.files[0].size;
+    		 alert(docSize);
    	      $("#uploadFileGroup1").find('p.jquery_form_error_message').remove();
    	      if(docSize > 2097152){
    	    	  document.getElementById("newUploadFile").value = '';
@@ -258,6 +259,31 @@ function getAddApplicant(requirementId){
 	document.getElementById("newUploadBtn").onchange = function () {
 		$('#newUploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
+	
+	
+	/* var selectedFile = document.getElementById("uploadBtn");
+	 selectedFile.addEventListener("change", function() {
+	 	 $("#uploadFile").focus();
+	 	 if(validate_fileupload(this.value)){
+	 		 var docSize = this.files[0].size;
+	 		 alert(docSize);
+		      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+		      if(docSize > 2097152){
+		    	  document.getElementById("uploadFile").value = '';
+		    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+				  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+				  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+				  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+		      }else{
+		    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+	   		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
+	 	    }
+	 	 }
+	 });
+		
+		document.getElementById("uploadBtn").onchange = function () {
+			$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+		}; */
 	
 }
 </script>
@@ -1664,7 +1690,33 @@ function setRateTypesByLocation(){
  $(document.body).on('change', '#uploadBtn' ,function(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
- 	 if(validate_fileupload(this.value)){
+	 if(validate_fileupload(this.value)){
+	 var docFileSize = $('#uploadFile');
+ 		 var docSize = this.files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  
+	    	  $("input[name=FirstName]").val('');
+	        	 $("input[name=LastName]").val('');
+	        	 $("input[name=EmailId]").val('');
+	        	 $("input[name=PhoneNumber]").val('');
+	        	 $("#candidateSkills").empty();
+	        	 
+	        	 $("#candidateSkills").append('');
+	        	 $("#candidateSkills").trigger("chosen:updated");
+	    	  
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+			  
+			 	
+			  
+	      }else{
+	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+   		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+ 	 
  		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		var form = $('#addApplicant_form')[0];
   		var formData = new FormData(form); 
@@ -1720,6 +1772,7 @@ function setRateTypesByLocation(){
 					},
 				});
  	 }
+	}
  });
 
 </script> 
