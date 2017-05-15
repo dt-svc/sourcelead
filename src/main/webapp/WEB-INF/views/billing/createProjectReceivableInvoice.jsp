@@ -17,7 +17,7 @@
       <div class="pull-left">
         <h2>Create Bill</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Bill</div>
+      <div class="pull-right brud-crum">Home » Invoice</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
@@ -115,7 +115,7 @@
             <div class="form-group">
               <label class="col-md-3">Invoice Address</label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress" name="billingAddress"></textarea>
               </div>
             </div>
           </div>
