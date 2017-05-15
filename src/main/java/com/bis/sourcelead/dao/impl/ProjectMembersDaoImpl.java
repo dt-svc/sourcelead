@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -24,10 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -41,6 +47,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Autowired
     CommonUtil commonUtil;
+	
+	@Autowired
+	TimesheetEntriesDao timesheetEntriesDao;
 	
 	
 	
@@ -78,6 +87,40 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		return projectMembers;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId) throws Exception{
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if (startDate != null) {
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		java.sql.Date sqlEndDate = null;
+		if (endDate != null) {
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		String dateQuery = "";
+		if (startDate != null && endDate != null) {
+			dateQuery = " and pm.id IN ( "
+					+ " select pmh.projectMemberId.id from ProjectMembersHistory pmh where "
+					+ " ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+					+ " ( pmh.projectTerminationDate IS NOT NULL and :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+					+ " ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
+					+ " ) ";
+		}
+		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user user "
+			+ " where projects.orgLocationsId.id = :locationsId and projects.id = :projectId " + dateQuery;
+		Query query = session.createQuery(queryStr.toString());
+		if (startDate != null && endDate != null) {
+			query.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		}
+		@SuppressWarnings("unchecked")
+		List<ProjectMembers> projectMemberList = query.setLong("locationsId", locationsId).setLong("projectId", projectId).setCacheable(true).list();
+		return projectMemberList;
 	}
 
 	/**
@@ -379,7 +422,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String queryStr = "from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.employee emp left join fetch emp.user  user "
 				+ " where  projects.orgLocationsId.id = :locationsId  "
 				    + dateQuery
-					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE')  "
+					+ " and user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE') "
 					+ " and ( "
 					+  "      (  projects.id IN ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId and ((pah.level = '2') OR (pah.level = '1' and user.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))))"
 					 + "       OR "+Constants.loginUserAsAdminForProjects+""
@@ -634,8 +677,201 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return projectsMembersList;
 	
 	}
+
+
+	@Override
+    @Transactional(rollbackFor = { Exception.class })
+	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception
+	{
+		
+//	    public Map<String,Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId, Date startDate, Date endDate) throws Exception {
+
+	        Session session = this.sessionFactory.getCurrentSession();
+	        java.sql.Date sqlStartDate = null;
+	        java.sql.Timestamp tsStartDate = null;
+	        if (startDate != null) {
+	            sqlStartDate = new java.sql.Date(startDate.getTime());
+	            tsStartDate = new java.sql.Timestamp(startDate.getTime());
+	        }
+
+	        java.sql.Date sqlEndDate = null;
+	        java.sql.Timestamp tsEndDate = null;
+	        if (endDate != null) {
+	            sqlEndDate = new java.sql.Date(endDate.getTime());
+	            tsEndDate = new java.sql.Timestamp(endDate.getTime());
+	        }
+
+	        // Getting Max Hierarchy Level for which employee is Assigned
+	        String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where  subsah.submissionId.projectMembers.id = :projectMemberId ";
+	        String query = "from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
+	                + " where pm.id = :projectMemberId and (sah.submissionId.startDate = :startDate OR sah.submissionId.endDate = :endDate OR sah.submissionId.startDate BETWEEN :startDate and :endDate OR sah.submissionId.endDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'"
+	                /*
+	                 * For getting approved timesheet hours list
+	                 */
+
+	                + " and ( hierarchy.level IN(" + subQueryForMaxLevel
+	                + ")) and sah.submissionApprovalStatus = :approvalStatus ";
+
+	        @SuppressWarnings("unchecked")
+	        List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString())
+	                .setLong("projectMemberId", projectMemberId).setParameter("approvalStatus", Submission_Status.APPROVED)
+	                .setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
+	        LinkedHashMap<String, Float> monthTotals = new LinkedHashMap<>();
+	        float totalHours = 0f;
+	        float billableTotalHours = 0f;
+	        float nonBillableTotalHours = 0f;
+	        if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
+	            for (SubmissionApproverHierarchy sah : submissionApproverHierarchyList) {
+	                if ((sah.getSubmissionId().getStartDate().equals(tsStartDate)
+	                        && sah.getSubmissionId().getEndDate().before(tsEndDate))
+	                        || (sah.getSubmissionId().getStartDate().after(tsStartDate)
+	                                && sah.getSubmissionId().getEndDate().before(tsEndDate))
+	                        || sah.getSubmissionId().getEndDate().equals(tsEndDate)) {
+
+	                    float weekTotalHours = 0f;
+	                    float weekBillableTotalHours = 0f;
+	                    float weekNonBillableTotalHours = 0f;
+
+	                    if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
+	                        weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
+	                    }
+	                    if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
+	                        weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
+	                    }
+	                    if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
+	                        weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
+	                    }
+
+	                    
+	                    totalHours = CommonUtil.getCombinedHours(totalHours, weekTotalHours);
+	                    billableTotalHours = CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours);
+	                    nonBillableTotalHours = CommonUtil.getCombinedHours(nonBillableTotalHours,
+	                            weekNonBillableTotalHours);
+	                } else {
+	                    if (sah.getSubmissionId().getEndDate().equals(tsStartDate)
+	                            || (sah.getSubmissionId().getStartDate().before(tsStartDate)
+	                                    && sah.getSubmissionId().getEndDate().after(tsStartDate))) {
+	                        float weekTotalHours = 0f;
+	                        float weekBillableTotalHours = 0f;
+	                        float weekNonBillableTotalHours = 0f;
+
+	                        int dayOfWeek = CalendarUtil.getDayOfTheDate(tsStartDate);
+	                        Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao
+	                                .getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
+	                        for (TimesheetEntries te : timesheetEntries) {
+	                            if (te.getProjectTask() != null && te.getProjectTask().getBillableType() != null && te
+	                                    .getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)) {
+	                                weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,
+	                                        getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek));
+	                            } else {
+	                                weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,
+	                                        getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(te, dayOfWeek));
+	                            }
+	                        }
+	                        weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours, weekNonBillableTotalHours);
+
+	                        totalHours = CommonUtil.getCombinedHours(totalHours, weekTotalHours);
+	                        billableTotalHours = CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours);
+	                        nonBillableTotalHours = CommonUtil.getCombinedHours(nonBillableTotalHours,
+	                                weekNonBillableTotalHours);
+	                    }
+
+	                    else {
+	                        float weekTotalHours = 0f;
+	                        float weekBillableTotalHours = 0f;
+	                        float weekNonBillableTotalHours = 0f;
+
+	                        int dayOfWeek = CalendarUtil.getDayOfTheDate(endDate);
+	                        Collection<TimesheetEntries> timesheetEntries = timesheetEntriesDao
+	                                .getAllTimesheetEntriesBySubmissionId(sah.getSubmissionId().getId());
+	                        for (TimesheetEntries te : timesheetEntries) {
+	                            if (te.getProjectTask() != null && te.getProjectTask().getBillableType() != null && te
+	                                    .getProjectTask().getBillableType().equalsIgnoreCase(Constants.TASK_NON_BILLABLE)) {
+	                                weekNonBillableTotalHours = CommonUtil.getCombinedHours(weekNonBillableTotalHours,
+	                                        getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
+	                            } else {
+	                                weekBillableTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours,
+	                                        getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(te, dayOfWeek));
+	                            }
+	                        }
+	                        weekTotalHours = CommonUtil.getCombinedHours(weekBillableTotalHours, weekNonBillableTotalHours);
+
+	                        totalHours = CommonUtil.getCombinedHours(totalHours, weekTotalHours);
+	                        billableTotalHours = CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours);
+	                        nonBillableTotalHours = CommonUtil.getCombinedHours(nonBillableTotalHours,
+	                                weekNonBillableTotalHours);
+
+	                    }
+
+	                }
+	            }
+
+	        }
+	        monthTotals.put("TOTAL_HOURS", totalHours);
+	        monthTotals.put("BILLABLE_HOURS", billableTotalHours);
+	        monthTotals.put("NONBILLABLE_HOURS", nonBillableTotalHours);
+	        return monthTotals;
+	}
 	
-
-
+	private Float getTotalHoursBasedOnDayOfTheWeekBasedOnStartDate(TimesheetEntries te,int dayofweek){
+        Float weekTotalHours = 0f;
+        for(int i = 8;i>= dayofweek;i--){
+            weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, getDayHours(te,i));
+        }
+       
+       return weekTotalHours;
+   }
+   
+   private Float getTotalHoursBasedOnDayOfTheWeekBasedOnEndDate(TimesheetEntries te,int dayofweek){
+        Float weekTotalHours = 0f;
+        for(int i = 2;i<= dayofweek;i++){
+            weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, getDayHours(te,i));
+        }
+       
+       return weekTotalHours;
+   }
+   private Float getDayHours(TimesheetEntries te,int flag){
+       
+       switch(flag){
+        case 1:  if(StringUtils.isNotEmpty(te.getSunHours())){
+                     String hours = te.getSunHours().replaceAll(":", ".");
+                      return Float.parseFloat(hours);
+                  }
+          case 2:  if(StringUtils.isNotEmpty(te.getMonHours())){
+                      String hours = te.getMonHours().replaceAll(":", ".");
+                     return Float.parseFloat(hours);
+                  }
+              
+          case 3:  if(StringUtils.isNotEmpty(te.getTueHours())){
+                      String hours = te.getTueHours().replaceAll(":", ".");
+                     return Float.parseFloat(hours);
+                  }
+              
+         case 4:  if(StringUtils.isNotEmpty(te.getWedHours())){
+                      String hours = te.getWedHours().replaceAll(":", ".");
+                      return Float.parseFloat(hours);
+                   }
+             
+         case 5:  if(StringUtils.isNotEmpty(te.getThuHours())){
+                      String hours = te.getThuHours().replaceAll(":", ".");
+                      return Float.parseFloat(hours);
+                   }
+         case 6:  if(StringUtils.isNotEmpty(te.getFriHours())){
+                       String hours = te.getFriHours().replaceAll(":", ".");
+                       return Float.parseFloat(hours);
+                   }
+     
+         case 7:  if(StringUtils.isNotEmpty(te.getSatHours())){
+                        String hours = te.getSatHours().replaceAll(":", ".");
+                        return Float.parseFloat(hours);
+                   }
+         case 8:  if(StringUtils.isNotEmpty(te.getSunHours())){
+             String hours = te.getSunHours().replaceAll(":", ".");
+              return Float.parseFloat(hours);
+          }
+           
+           default: return 0f;
+       }
+   }
 }
 

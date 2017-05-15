@@ -106,6 +106,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "EMPLOYMENT_TYPE")
 	private String employmentType;
 	
+	@Column(name = "EMPLOYMENT_OTHER_TYPE")
+	private String employmentOtherType;
+	
 	@Column(name = "PROBATION_NOTICE")
 	private String probationNotice;
 	
@@ -656,5 +659,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+
+	public String getEmploymentOtherType() {
+		return employmentOtherType;
+	}
+
+	public void setEmploymentOtherType(String employmentOtherType) {
+		this.employmentOtherType = employmentOtherType;
 	}
 }

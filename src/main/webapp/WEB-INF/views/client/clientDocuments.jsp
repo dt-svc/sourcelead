@@ -112,6 +112,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                 	 result  = result + '           <th>Start date</th>';
 	                 	 result  = result + '           <th>End date</th>';
 	                 	 result  = result + '           <th>Owner</th>';
+	                 	 result  = result + '           <th>Description</th>';
 	                 	 result  = result + '           <th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -157,6 +158,11 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 
 	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
 	                    	      result  = result + ' <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
+	                    	      result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }

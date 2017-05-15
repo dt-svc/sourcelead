@@ -653,6 +653,18 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			Long locationsId, Long approverUserId) {
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate,endDate,locationsId,approverUserId);
 	}
+
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate, Date endDate, Long locationsId, Long projectId) throws Exception
+	{
+		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,locationsId,projectId);
+	}
+
+	@Override
+	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate) throws Exception
+	{
+		return projectMembersDao.getTotalHours(projectMemberId, startDate, endDate);
+	}
 	
 
 }

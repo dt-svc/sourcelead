@@ -1,9 +1,11 @@
 package com.bis.sourcelead.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -21,18 +23,18 @@ import com.bis.sourcelead.entity.User;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
 import com.docusign.esign.client.ApiClient;
-import com.docusign.esign.client.ApiException;
 import com.docusign.esign.client.Configuration;
 import com.docusign.esign.model.Document;
 import com.docusign.esign.model.EnvelopeDefinition;
-import com.docusign.esign.model.EnvelopeSummary;
 import com.docusign.esign.model.LoginAccount;
 import com.docusign.esign.model.LoginInformation;
 import com.docusign.esign.model.Recipients;
 import com.docusign.esign.model.SignHere;
 import com.docusign.esign.model.Signer;
 import com.docusign.esign.model.Tabs;
-import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfWriter;
 
 @Component
 public class SignatureRequestUtil {
@@ -118,6 +120,10 @@ public class SignatureRequestUtil {
 		List<Document> docs = new ArrayList<Document>();
 		docs.add(doc);
 		envDef.setDocuments(docs);
+		
+	        PdfReader pdfReader = new PdfReader(fileBytes);
+	        Integer numberOfPages = pdfReader.getNumberOfPages();
+		
 
 		// add a recipient to sign the document, identified by name, email, and recipientId
 		Signer signer = new Signer();
@@ -129,7 +135,7 @@ public class SignatureRequestUtil {
 		// default unit of measurement is pixels, can be mms, cms, inches also
 		SignHere signHere = new SignHere();
 		signHere.setDocumentId(doc.getDocumentId());
-		signHere.setPageNumber("1");
+		signHere.setPageNumber(numberOfPages.toString());
 		signHere.setRecipientId("1");
 		signHere.setXPosition("100");
 		signHere.setYPosition("150");
@@ -157,11 +163,11 @@ public class SignatureRequestUtil {
 			EnvelopesApi envelopesApi = new EnvelopesApi();
 			
 			// call the createEnvelope() API to send the signature request!
-			EnvelopeSummary envelopeSummary = envelopesApi.createEnvelope(accountId, envDef);
+		//	EnvelopeSummary envelopeSummary = envelopesApi.createEnvelope(accountId, envDef);
 			
 			Contracts con  = new Contracts();
 			con.setTempdocId(doc.getDocumentId());
-			con.setTempEnvId(envelopeSummary.getEnvelopeId());
+			//con.setTempEnvId(envelopeSummary.getEnvelopeId());
 			con.setContractStatus(envDef.getStatus());
 			//logger.info("EnvelopeSummary: " + envelopeSummary);
 		
