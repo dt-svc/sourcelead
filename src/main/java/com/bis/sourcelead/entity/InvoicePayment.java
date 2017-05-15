@@ -54,11 +54,8 @@ public class InvoicePayment {
 	@Column(name = "PAYMENT_REFERENCE_NUMBER")
 	private String paymentReferenceNumber;
 	
-	@Column(name = "PAYMENT_TOTAL_DUE")
-	private String paymentTotalDue;
-	
-	@Column(name = "PAYMENT_CUSTOM_DUE")
-	private String paymentCustomDue;
+	@Column(name = "PAYMENT_AMOUNT")
+	private String paymentAmount;
 	
 	@Column(name = "PAYMENT_COMMENT",columnDefinition = "TEXT default NULL")
 	private String paymentComment;
@@ -140,20 +137,12 @@ public class InvoicePayment {
 		this.paymentReferenceNumber = paymentReferenceNumber;
 	}
 
-	public String getPaymentTotalDue() {
-		return paymentTotalDue;
+	public String getPaymentAmount() {
+		return paymentAmount;
 	}
 
-	public void setPaymentTotalDue(String paymentTotalDue) {
-		this.paymentTotalDue = paymentTotalDue;
-	}
-
-	public String getPaymentCustomDue() {
-		return paymentCustomDue;
-	}
-
-	public void setPaymentCustomDue(String paymentCustomDue) {
-		this.paymentCustomDue = paymentCustomDue;
+	public void setPaymentAmount(String paymentAmount) {
+		this.paymentAmount = paymentAmount;
 	}
 
 	public String getPaymentComment() {

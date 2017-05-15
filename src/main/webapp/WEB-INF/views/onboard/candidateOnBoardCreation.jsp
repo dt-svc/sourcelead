@@ -182,13 +182,13 @@
                   </div>
                 </div>
 
-                  <div class="form-group">
+                  <div class="form-group" id="dojDiv">
                   <label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">
                   </div>
                 </div>
-                  <div class="form-group">
+                  <div class="form-group" id="endDateDiv">
                   <label class="col-md-3 control-label">End Date</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">
@@ -264,7 +264,7 @@
                 </div>
                   
                   
-                  <div class="form-group">
+                  <div class="form-group" id="dueDateDiv">
                   <label class="col-md-3 control-label">Due Date</label>
                   <div class="col-md-6">
                    <input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">
@@ -312,7 +312,7 @@
                   <label class="col-md-4 control-label mt10">These contracts will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedContractsAttachments"></div>
 				        </span>
                       </div>
@@ -326,7 +326,7 @@
                   <label class="col-md-4 control-label mt10">These forms will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedFormsAttachments"></div>
 				        </span>
                       </div>
@@ -340,7 +340,7 @@
                   <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedPociliesAttachments"></div>
 				        </span>
                       </div>
@@ -353,7 +353,7 @@
                   <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
                   <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			             <div id="savedSupportedAttachments"></div>
 				        </span>
                       </div>
@@ -1041,6 +1041,9 @@ function validateUploadFile(id)
 			    	 
 			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
 			    		 $("#startDate").val(json['dateOfJoiningStr']);
+			    		 var dt = toDate("#startDate");
+			 			 dt.setDate(dt.getDate() + 1);
+			 			 $("#endDate").datepicker("option", "minDate", dt);
 			    	 }
 			    	 
 			    	 if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
@@ -1329,21 +1332,71 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  
+	  	   onSelect : function(selected) {
+			var dt = toDate("#startDate");
+			dt.setDate(dt.getDate() + 1);
+			$("#endDate").datepicker("option", "minDate", dt);
+			$("#dueDate").datepicker("option", "minDate", dt);
+			addValidClass();
+		}
 	  });
 	  
 	  $('#endDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  
+	  	   onSelect : function(selected) {
+	  		var dt = toDate("#endDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#startDate").datepicker("option", "maxDate", dt);
+			addValidClass();
+			}
+	  	
 	  });
 	  
 	  $('#dueDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
-	  	  changeYear: true, 
+	  	  changeYear: true,
+	  	  
+	  	  onSelect : function(selected) {
+	  		var dt = toDate("#dueDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#startDate").datepicker("option", "maxDate", dt);
+			addValidClass();
+			}
 	  });
 	  
   } );
+</script>
+
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var startDate = document.getElementById("startDate").value;
+		 if(startDate){
+			 $('#dojDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var endDate = document.getElementById("endDate").value;
+		 if(endDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var dueDate = document.getElementById("dueDate").value;
+		 if(dueDate){
+			 $('#dueDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
 </script>
   
   
@@ -1471,6 +1524,11 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    	
 		    	loadCandidateRoles(json['onBoardRoleId']);
 		    	$("#startDate").val(json['joiningDateStr']);
+		    	
+		    	 var dt = toDate("#startDate");
+	 			 dt.setDate(dt.getDate() + 1);
+	 			 $("#endDate").datepicker("option", "minDate", dt);
+	 			 $("#dueDate").datepicker("option", "minDate", dt);
 		    	
 		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
 		    		$("#endDate").val(json['endDateStr']);
