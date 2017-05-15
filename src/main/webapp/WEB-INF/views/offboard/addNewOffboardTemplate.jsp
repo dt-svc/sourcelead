@@ -507,7 +507,7 @@ function addOffboardPackAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateResignationUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'resignationdocFile').val();
@@ -532,7 +532,7 @@ function validateResignationUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -573,7 +573,7 @@ function addOffboardPackAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateOffboardPackUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'offboardPackdocFile').val();
@@ -598,7 +598,7 @@ function validateOffboardPackUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
