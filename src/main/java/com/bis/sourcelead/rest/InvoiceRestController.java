@@ -362,7 +362,7 @@ public class InvoiceRestController {
 					
 					if(dueAmount > 0){
 					
-						if(invoiceDueDate.equals(todayDate) || todayDate.after(invoiceDueDate)){
+						if(todayDate.after(invoiceDueDate)){
 							overDueInvoiceCount = overDueInvoiceCount+1;
 							invoice.setDueAfterInvoiceAmount(invoice.getDueAmount());
 						}else{
