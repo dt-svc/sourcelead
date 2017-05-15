@@ -74,23 +74,17 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 			
 		}
 		
-		
-		
-		
-		
-		
-		
 		if(jsonObj.has("paymentAmount") && !"".equalsIgnoreCase(jsonObj.getString("paymentAmount"))){
 			if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
 				if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
-					invoicePayment.setPaymentTotalDue(jsonObj.getString("totalAmount"));
+					invoicePayment.setPaymentAmount(jsonObj.getString("totalAmount"));
 					invoice.setPaymentStatus("Paid");
 					invoice.setDueAmount("00.00");
 				}
 			}
 			if(jsonObj.getString("paymentAmount").equalsIgnoreCase("custom")){
 				if(jsonObj.has("customeAmount") && !"".equalsIgnoreCase(jsonObj.getString("customeAmount"))){
-					invoicePayment.setPaymentCustomDue(jsonObj.getString("customeAmount"));
+					invoicePayment.setPaymentAmount(jsonObj.getString("customeAmount"));
 					Float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
 					Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
 					Float receivedAmount  = totalAmount - customAmount;
@@ -104,30 +98,33 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 			}
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 			if(null != childInvoice){
-				Invoice parentInvoice =  invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
-				
-				if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
-					if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
-						invoicePayment.setPaymentTotalDue(jsonObj.getString("totalAmount"));
-						parentInvoice.setPaymentStatus("Paid");
-						parentInvoice.setDueAmount("00.00");
-					}
-				}
-				if(jsonObj.getString("paymentAmount").equalsIgnoreCase("custom")){
-					if(jsonObj.has("customeAmount") && !"".equalsIgnoreCase(jsonObj.getString("customeAmount"))){
-						invoicePayment.setPaymentCustomDue(jsonObj.getString("customeAmount"));
-						Float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
-						Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
-						Float receivedAmount  = totalAmount - customAmount;
-						parentInvoice.setPaymentStatus("Partial Paid");
-						if(totalAmount.equals(customAmount)){
+				if(null != invoice.getParentInvoiceId()){
+					Invoice parentInvoice =  invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+					
+					if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
+						if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
+							invoicePayment.setPaymentAmount(jsonObj.getString("totalAmount"));
 							parentInvoice.setPaymentStatus("Paid");
+							parentInvoice.setDueAmount("00.00");
 						}
-						parentInvoice.setDueAmount(receivedAmount.toString());
-						
 					}
+					if(jsonObj.getString("paymentAmount").equalsIgnoreCase("custom")){
+						if(jsonObj.has("customeAmount") && !"".equalsIgnoreCase(jsonObj.getString("customeAmount"))){
+							invoicePayment.setPaymentAmount(jsonObj.getString("customeAmount"));
+							Float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
+							Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
+							Float receivedAmount  = totalAmount - customAmount;
+							parentInvoice.setPaymentStatus("Partial Paid");
+							if(totalAmount.equals(customAmount)){
+								parentInvoice.setPaymentStatus("Paid");
+							}
+							parentInvoice.setDueAmount(receivedAmount.toString());
+							
+						}
+					}
+				  invoiceDao.saveInvoce(parentInvoice);
 				}
-			  invoiceDao.saveInvoce(parentInvoice);
+				
 			}
 		}
 		
@@ -142,7 +139,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 	
 		}
 		invoicePayment.setOrgLocation(orgLocation);
-		if(invoice.getParentInvoiceId().getId() != null){
+		if(invoice.getParentInvoiceId() != null){
 			invoicePayment.setInvoiceId(invoice.getParentInvoiceId());	
 		}else{
 			invoicePayment.setInvoiceId(invoice);

@@ -28,7 +28,7 @@
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();flushValues();" data-validation="required" field-name="Client Name">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();flushValues();" data-validation="required" field-name="Client Name">
                    <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -41,7 +41,7 @@
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 select-field">					   
-                <select class="form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact Name">
+                <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact Name">
                 </select>
               </div>
             </div>
@@ -62,7 +62,7 @@
            <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="paymentFrequency" name="paymentFrequency">
+                <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency">
                   <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
@@ -338,7 +338,6 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	alert(invoiceFrequency);
 	var projectId = $("#projectId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -1233,7 +1232,6 @@ function getClients(){
  <!--show tax values in Edit mode  -->
 <script>
 	function editTax(invoiceTaxList){  
-		alert(invoiceTaxList.length);
 		for(var i=0; i<invoiceTaxList.length; i++){
 			var opt = invoiceTaxList[i];
 			if(i == 0){
