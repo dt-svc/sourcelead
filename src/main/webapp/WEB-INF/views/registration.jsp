@@ -276,6 +276,7 @@ window.onload = function () {
           <c:if test="${empty contactUUID}">
           <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
           </c:if>
+          <li><a data-toggle="tab" href="#employee"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employee</a></li>
           <input type="hidden" id="tabType" />
       </ul>
        <!--  <div class="regis_wrap_styles registered_widget_styles"> -->
@@ -466,6 +467,15 @@ window.onload = function () {
 	            </div>
 	             </div>
         </form:form> --%>
+        </div>
+        <div id="employee" class="tab-pane fade">
+        <div class="text-center employee_trail">
+        <h4>FREE TRIAL</h4>
+        <p>We are so glad for your interest in <strong>SourceLead</strong>. <br> Please reach us on</p>
+        <p><a href="mailto:info@sourcelead.com" title="Mail Us"><span class="fa fa-envelope"></span>info@sourcelead.com</a></p>
+        <p><a href="tel:040-6700-7676"><span class="fa fa-phone" title="Call Us"></span>IND : +91 40-6700-7676</b></a></p>
+        <p>We will get back to you as soon as possible.</p>
+        </div>
         </div>
       </div>
         </div>

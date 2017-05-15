@@ -197,10 +197,12 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					}
 				
 					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
-					
-					 orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
+					if(null != orgSpoc.getClientUser()){
+						orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());	
+					}
+					if(null != orgSpoc.getVendorUser()){
 					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());
-					
+					}
 					 orgSpoc.setSpocLocationId(orgSpoc.getClientLocationId().getId());
 					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
 					 

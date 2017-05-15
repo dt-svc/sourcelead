@@ -66,6 +66,8 @@ public interface UserRoleService {
 	public Boolean isUserAdmin(Long userId);
 	
 	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
+	
+	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId);
 
 
 	

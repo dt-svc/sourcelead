@@ -761,11 +761,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(null == orgUser){
 			orgUser = new User();
 			orgUser.setFirstName(jsonObj.getString("firstName"));
-			
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				orgUser.setLastName(jsonObj.getString("lastName"));
-			}
-			
+			orgUser.setLastName(jsonObj.getString("lastName"));
 			orgUser.setEmail(jsonObj.getString("userEmail"));
 			orgUser.setCreatedBy(user.getUserCode());
 			orgUser.setCreatedDate(new Date());
