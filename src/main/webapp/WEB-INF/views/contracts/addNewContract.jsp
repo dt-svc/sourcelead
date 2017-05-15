@@ -45,26 +45,25 @@
 		                    <option ${contract.contractType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option ${contract.contractType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
 		                    <option ${contract.contractType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option ${contract.contractType  == 'NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType  == 'NCA' ? 'selected' : ''}>NCA</option>
+		                    <option ${contract.contractType  == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
+		                    <option ${contract.contractType  == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
 		                 </select>
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
 		                    <option>Client SOW</option>
 		                    <option>Vendor SOW</option>
 		                    <option>NDA</option>
-		                    <option>NCA</option>
+		                    <option>NSA</option>
 		                 </select>
 				    </c:otherwise>
 				 </c:choose>
             </div>
             </div>				
-			</div>
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+			
           	
           	<div class="form-group">
               <label class="col-md-4">Contract Title<span class="text-danger">&nbsp;*</span></label>
@@ -85,7 +84,7 @@
               <div class="col-md-8">
                 <div class="form-icon">
                 <span class="icon-inside">
-				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template">
+				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template" onchange="previewTemplateEye()">
 						    <c:forEach var="element" items="${contractsTemplateList}" >
 						    	<c:if test = "${element.id == contract.contractsTemplate.id}">
 							         <option selected value="${element.id}">${element.templateName}</option>
@@ -96,7 +95,15 @@
 							</c:forEach>
 						</select>                
                   </span>
-                  <span title="Title text"> <i class="fa fa-eye btn btn-default formic1"></i> </span>
+                  <c:choose>
+				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
+				    	<span title="Title text" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				    </c:when>
+				    <c:otherwise>
+				        <span title="Title text" id="tempEye" style="display:none"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				    </c:otherwise>
+				 </c:choose>
+                  
                   </div>              
 <%--               	<c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
@@ -119,7 +126,7 @@
               
             </div>             
               
-            </div>  
+              
             
             <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
@@ -311,46 +318,42 @@
       </div>
       
       
-	<div class="row newContrBill">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm" id="billingDiv" >
+	<div class="newContrBill col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+          <div id="billingDiv" >
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Hours Per Week<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Hours Per Week</label>
 	              <div class="col-md-8">
-				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${contract.hoursPerWeek}" placeholder="Enter Hours" field-name="Hours Per Week">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${contract.hoursPerWeek == '' ? '40' : 'contract.hoursPerWeek'}" placeholder="Enter Hours" field-name="Hours Per Week">
 	              </div>
             </div>
             
             <div class="form-group" id="overTimeHoursDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Overtime Hours<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Overtime Hours</label>
               	<div class="col-md-8">
 					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" placeholder="Enter Hours" field-name="Overtime Hours">
               	</div> 
             </div>
             
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Total Hours Estimated<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Total Hours Estimated</label>
               	<div class="col-md-8">
 					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
            <div class="form-group" id="overtimeRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Overtime Rate<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Overtime Rate</label>
               	<div class="col-md-8">
-              		<div class="row">
-					  <div class="col-lg-8">
 					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" placeholder="Overtime Rate" field-name="Overtime Rate">
-					  </div>
-					  <div class="col-lg-4">
+					  <%-- <div class="col-lg-4">
 						<select class="form-control selectpicker" id="overtimeRateType" name="overtimeRateType" field-name="Overtime Rate Type">
 						  <option value="">Select Type</option>
 						  <option ${contract.overtimeRateType == 'FLAT' ? 'selected' : ''} value="FLAT">Flat</option>
 						  <option ${contract.overtimeRateType == 'PERCENTAGE' ? 'selected' : ''} value="PERCENTAGE">Percentage</option>
 						</select>
-					  </div>
-					</div>
+					  </div> --%>
               	</div>
             </div>
            
@@ -457,7 +460,10 @@
             </div>
         </div>
         <!-- billing end -->
+      </div> 
       </div>      
+      
+      </div>
       
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
@@ -612,6 +618,23 @@ function getClientContacts(){
 	});
 
 	}
+	
+function previewTemplateEye(){
+	var id = $("#template").val();
+	if(id != null && id != ""){
+		$("#tempEye").show();
+	}else{
+		$("#tempEye").hide();
+	}
+}
+	
+function previewTemplatePDF(){
+	var id = $("#template").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(id != null && id != ""){
+		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+id+'','_newtab');
+	}
+}
 </script>
 
 <script type="text/javascript">
@@ -684,7 +707,6 @@ function selectTaxType(){
 <script>
 function getContractTemplates(){
 	var contractType = $("#contractType").val();
-	
 	if(contractType == ""){
 		$("#clientOrgRelationId option:selected").removeAttr("selected");
 		$('#clientOrgRelationId').trigger("chosen:updated");
@@ -758,14 +780,17 @@ function getContractTemplates(){
 	        $("#template").append(output);
 	        $('#template').trigger("chosen:updated"); 
      },
+     complete: function (data) {
+    	 flush(); 
+    }
  }); 
-	
 }
 
 </script>
 
 <script>
 function contractTypeLabels(){
+	$("#tempEye").hide();
 	var contractType = $("#contractType").val();
 /* 	if(contractType == ""){
 		$('#orgRelationId').removeAttr('data-validation');
@@ -865,54 +890,55 @@ function contractTypeLabels(){
 		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("offeredSubmissionDiv").style.display="none";
 		
-		$('#hoursPerWeek').removeAttr('data-validation');
-		$('#hoursPerWeek').attr('data-validation-optional',"true");
+		//$('#hoursPerWeek').removeAttr('data-validation');
+		//$('#hoursPerWeek').attr('data-validation-optional',"true");
 		$('#hoursPerWeek').val("");
 		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("hoursPerWeekDiv").style.display="none";
 		
-		$('#overTimeHours').removeAttr('data-validation');
-		$('#overTimeHours').attr('data-validation-optional',"true");
+		//$('#overTimeHours').removeAttr('data-validation');
+		//$('#overTimeHours').attr('data-validation-optional',"true");
 		$('#overTimeHours').val("");
 		$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("overTimeHoursDiv").style.display="none";
 		
-		$('#totalHoursEstimated').removeAttr('data-validation');
-		$('#totalHoursEstimated').attr('data-validation-optional',"true");
+		//$('#totalHoursEstimated').removeAttr('data-validation');
+		//$('#totalHoursEstimated').attr('data-validation-optional',"true");
 		$('#totalHoursEstimated').val("");
 		$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("totalHoursEstimatedDiv").style.display="none";
 		
-		$('#overtimeRate').removeAttr('data-validation');
-		$('#overtimeRate').attr('data-validation-optional',"true");
+		//$('#overtimeRate').removeAttr('data-validation');
+		//$('#overtimeRate').attr('data-validation-optional',"true");
 		$('#overtimeRate').val("");
-		$('#overtimeRateType').removeAttr('data-validation');
-		$('#overtimeRateType').attr('data-validation-optional',"true");
+		//$('#overtimeRateType').removeAttr('data-validation');
+		//$('#overtimeRateType').attr('data-validation-optional',"true");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 		
 	}
+	getContractTemplates();
 }
 </script>
 
 <script>
 function showCommonSOWFields(){
 	document.getElementById("hoursPerWeekDiv").style.display="block";
-    $('#hoursPerWeek').removeAttr('data-validation-optional');
-	$('#hoursPerWeek').attr("data-validation","required");
+    // $('#hoursPerWeek').removeAttr('data-validation-optional');
+	//$('#hoursPerWeek').attr("data-validation","required");
 	
 	document.getElementById("overTimeHoursDiv").style.display="block";
-    $('#overTimeHours').removeAttr('data-validation-optional');
-	$('#overTimeHours').attr("data-validation","required");
+    //$('#overTimeHours').removeAttr('data-validation-optional');
+	//$('#overTimeHours').attr("data-validation","required");
 	
 	document.getElementById("totalHoursEstimatedDiv").style.display="block";
-    $('#totalHoursEstimated').removeAttr('data-validation-optional');
-	$('#totalHoursEstimated').attr("data-validation","required");
+    //$('#totalHoursEstimated').removeAttr('data-validation-optional');
+	//$('#totalHoursEstimated').attr("data-validation","required");
 	
 	document.getElementById("overtimeRateDiv").style.display="block";
-    $('#overtimeRate').removeAttr('data-validation-optional');
-	$('#overtimeRate').attr("data-validation","required");
-	$('#overtimeRateType').removeAttr('data-validation-optional');
-	$('#overtimeRateType').attr("data-validation","required");
+    //$('#overtimeRate').removeAttr('data-validation-optional');
+	//$('#overtimeRate').attr("data-validation","required");
+	//$('#overtimeRateType').removeAttr('data-validation-optional');
+	//$('#overtimeRateType').attr("data-validation","required");
 }
 </script>
 
@@ -935,31 +961,31 @@ function hideCommonSOWFields(){
 	$('#offerRate').val("");
 	document.getElementById("offerRateDiv").style.display="none";
 	
-	$('#hoursPerWeek').removeAttr('data-validation');
-	$('#hoursPerWeek').attr('data-validation-optional',"true");
+	//$('#hoursPerWeek').removeAttr('data-validation');
+	//$('#hoursPerWeek').attr('data-validation-optional',"true");
 	$('#hoursPerWeek').val("");
 	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("hoursPerWeekDiv").style.display="none";
 	
-	$('#overTimeHours').removeAttr('data-validation');
-	$('#overTimeHours').attr('data-validation-optional',"true");
+	//$('#overTimeHours').removeAttr('data-validation');
+	//$('#overTimeHours').attr('data-validation-optional',"true");
 	$('#overTimeHours').val("");
 	$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("overTimeHoursDiv").style.display="none";
 	
-	$('#totalHoursEstimated').removeAttr('data-validation');
-	$('#totalHoursEstimated').attr('data-validation-optional',"true");
+	//$('#totalHoursEstimated').removeAttr('data-validation');
+	//$('#totalHoursEstimated').attr('data-validation-optional',"true");
 	$('#totalHoursEstimated').val("");
 	$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("totalHoursEstimatedDiv").style.display="none";
 	
-	$('#overtimeRate').removeAttr('data-validation');
-	$('#overtimeRate').attr('data-validation-optional',"true");
+	//$('#overtimeRate').removeAttr('data-validation');
+	//$('#overtimeRate').attr('data-validation-optional',"true");
 	$('#overtimeRate').val("");
-	$("#overtimeRateType option:selected").removeAttr("selected");
-	$('#overtimeRateType').trigger("chosen:updated");
-	$('#overtimeRateType').removeAttr('data-validation');
-	$('#overtimeRateType').attr('data-validation-optional',"true");
+	//$("#overtimeRateType option:selected").removeAttr("selected");
+	//$('#overtimeRateType').trigger("chosen:updated");
+	//$('#overtimeRateType').removeAttr('data-validation');
+	//$('#overtimeRateType').attr('data-validation-optional',"true");
 	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("overtimeRateDiv").style.display="none";
 }
@@ -1265,7 +1291,7 @@ function flush(){
 	document.getElementById("overTimeHours").value="";
 	document.getElementById("totalHoursEstimated").value="";
 	document.getElementById("overtimeRate").value="";
-	document.getElementById("overtimeRateType").value="";
+	//document.getElementById("overtimeRateType").value="";
 	
 	document.getElementById("invoiceFrequency").value="";
 	document.getElementById("taxFlatRateType").value="";
@@ -1341,7 +1367,7 @@ function removeBillCycleValidation(){
 <script>
 function removePaymentvalidation(){
 	$('#errPayment').find('p.jquery_form_error_message').remove();
-
+}
 </script>
 <script>
 function removeValid(){

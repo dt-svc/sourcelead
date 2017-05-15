@@ -15,7 +15,7 @@ $(document).ready(function(){
 
 <section class="content-wraper">
     <section class="content-header clearfix">
-      <div class="pull-left">
+      <div class="pull-left" id="invoiceIdHidden">
           <h2>Inovice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
@@ -62,6 +62,7 @@ $(document).ready(function(){
 function getViewInvoice(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
+	  var invoiceType = '${invoiceType}';
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
@@ -123,18 +124,34 @@ function getViewInvoice(){
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Id</label>             ';
-					result = result +'              <div class="col-md-8">                                               ';
-					result = result +'                <label>'+report.invoiceId+'</label>                                          ';
-					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Date</label>           ';
-					result = result +'              <div class="col-md-8">                                               ';
-					result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
-					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
+					if(report.invoiceType == "Payables"){
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Bill Id</label>             ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Bill Date</label>           ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+					}else{
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Id</label>             ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Date</label>           ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+					}
+					
 					result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Payment Term</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
@@ -147,12 +164,22 @@ function getViewInvoice(){
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Address</label>        ';
-					result = result +'              <div class="col-md-8 addressInvoice">                                ';
-					result = result +'                <p>'+billingAddress+'</p>';
-					result = result +'              </div>';
-					result = result +'            </div>';
+					if(report.invoiceType == "Payables"){
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Billing Address</label>        ';
+						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'                <p>'+billingAddress+'</p>';
+						result = result +'              </div>';
+						result = result +'            </div>';
+					}else{
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Address</label>        ';
+						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'                <p>'+billingAddress+'</p>';
+						result = result +'              </div>';
+						result = result +'            </div>';
+					}
+				
 					result = result +'          </div>';
 					result = result +'      </div>';
 					
