@@ -208,7 +208,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
 		}
 		
-		invoice.setPaymentStatus("Unpaid");
+		invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
 		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
@@ -287,7 +287,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
 		parentInvoice.setTotal(invoice.getTotal());
-		parentInvoice.setInvoiceStatus(invoice.getInvoiceStatus());
+		parentInvoice.setInvoiceStatus(Constants.INVOICE_RECEIVED);
+		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
 		parentInvoice.setDueAmount(invoice.getDueAmount());

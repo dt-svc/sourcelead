@@ -619,14 +619,13 @@ function getPayableInvoiceList(){
        				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
        			}
         		
-        		
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-				if(report.invoiceStatus == "DRAFT"){
+				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
 				}
-				if(report.invoiceStatus == "SENT"){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Payables"/>">'+report.invoiceId+'</a></div>   ';				
+				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>">'+report.invoiceId+'</a></div>   ';				
 				}
 				
 				result = result +'         </td>  ';
@@ -657,12 +656,32 @@ function getPayableInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				 
-				if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-					result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
-				}else{
-					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>          ';
+				
+				if(report.invoiceType=="Payables"){
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
+					}else{
+						if(report.invoiceStatus == "Accepted"){
+							result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+						}else{
+							if(report.invoiceStatus == "Rejected"){
+								result = result +'           <span class="text-danger successBtn primary clearfix" >Rejected</span> </td>          ';	
+							}else{
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+							}
+							
+						}
+					}
 				}
+				if(report.invoiceType=="Receivable"){
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
+					}else{
+						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+					}
+				}
+				 
+				
 				
 				result = result +'       </tr>                                                                                                           ';
 
@@ -694,7 +713,36 @@ function invoicePagination(){
     } );
 }
 </script>
+<script>
+function acceptedInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    });  
+}
 
+</script>
+<script>
+function rejectInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    }); 
+}
+
+</script>
 <script>
 function cancelbtn(){
 	  $("#recvPymntpop").fadeOut(200);

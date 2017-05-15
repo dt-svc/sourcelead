@@ -25,7 +25,7 @@
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="orgRelationId" name="orgRelationId" onchange="getClientContacts();" field-name="Client Name">
+                <select class="chosen-select  form-control" id="orgRelationId" name="orgRelationId" onchange="getClientContacts();" field-name="Client Name">
                     <option value=''>--Select Clinet--</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -37,7 +37,7 @@
             <div class="form-group">
               <label class="col-md-3">Client Contact</label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="clientContact" name="clientContact" field-name="Client Contact Name">
+                <select class=" chosen-select form-control" id="clientContact" name="clientContact" field-name="Client Contact Name">
                 </select>
               </div>
             </div>
@@ -58,7 +58,7 @@
            <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="paymentTerm" name="paymentTerm">
+                <select class=" chosen-select form-control" id="paymentTerm" name="paymentTerm">
                   <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
