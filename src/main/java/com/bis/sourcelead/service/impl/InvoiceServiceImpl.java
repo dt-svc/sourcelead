@@ -103,7 +103,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
-	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType) throws Exception {
+	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType,Org org) throws Exception {
 		
 		
 		String pattern = "dd-MM-yyyy";
@@ -208,6 +208,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
 		}
 		
+		if(jsonObj.has("projectId") && !"".equalsIgnoreCase(jsonObj.getString("projectId"))){
+			Projects projects = projectsService.getProjectById(Long.parseLong(jsonObj.getString("projectId")));
+			invoice.setProjectID(projects);
+		}
+		
+		if(jsonObj.has("frequency") && !"".equalsIgnoreCase(jsonObj.getString("frequency"))){
+			invoice.setInvoiceFrequency(jsonObj.getString("frequency"));
+		}
 		invoice.setPaymentStatus("Unpaid");
 		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
@@ -238,6 +246,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 			Set<InvoiceDocument> invoiceDocumentsSet = getInvoiceDocuments(jsonObj,user,orgLocation,invoice,attachedfileList);	
 			invoice.setInvoiceDocumentSet(invoiceDocumentsSet);
 		}
+		
+		//store attached Documents (after)
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
+		        invoice.setFileName(file.getName());
+		        byte[] bytesArray = new byte[(int) file.length()];
+		        invoice.setDocFile(bytesArray);
+		        invoiceDao.saveInvoce(invoice);
 		
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
@@ -607,6 +622,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		if(jsonObj.has("afterDiscountTotal") && !"".equalsIgnoreCase(jsonObj.getString("afterDiscountTotal"))){
 			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
+		}
+		if(jsonObj.has("invoiceFerquency") && !"".equalsIgnoreCase(jsonObj.getString("invoiceFerquency"))){
+			invoice.setInvoiceFrequency(jsonObj.getString("invoiceFerquency"));
 		}
 		invoice.setPaymentStatus("Unpaid");
 		invoice.setCreatedBy(user.getUserCode());

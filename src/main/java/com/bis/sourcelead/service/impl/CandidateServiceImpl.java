@@ -980,4 +980,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getAllActiveVendorAssociatesByOrgLocation(orgLocationId);
 	}
 
+	@Override
+	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		return candidateDao.getCandidateByConsultantUserIdOrgRelationId(consultantUserId,orgLocationId,orgRelationId);
+	}
+
+	@Override
+	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId) throws Exception
+	{
+		return candidateDao.getCandidateByConsultantUserId(consultantUserId,orgLocationId);
+	}
+
 }

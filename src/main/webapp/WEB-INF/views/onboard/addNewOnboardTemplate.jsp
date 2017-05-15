@@ -579,7 +579,7 @@ function addContractsAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateContractsUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'contractsdocFile').val();
@@ -605,7 +605,7 @@ function validateContractsUploadFile(id)
 	
 }
 </script>
-
+ -->
 
 
 <script>
@@ -645,7 +645,7 @@ function addFormsAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateFormsUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'formsdocFile').val();
@@ -670,7 +670,7 @@ function validateFormsUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -722,7 +722,7 @@ function validate_fileupload(fileName)
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateSupportingUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'supportingdocFile').val();
@@ -747,11 +747,11 @@ function validateSupportingUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'docFile').val();
@@ -776,7 +776,7 @@ function validateUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 <script>
 function createTemplate(saveType){

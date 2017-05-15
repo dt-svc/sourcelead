@@ -302,7 +302,7 @@ padding-left: 25px;
 
 				 if(json.specialConditions != null && json.specialConditions != '' && json.specialConditions != 'undefined'){
 					  result = result +'       <div class="form-group">                                                                                    ';
-						 result = result +'       <label class="col-md-3 control-label">Speical Conditions</label>                                            ';
+						 result = result +'       <label class="col-md-3 control-label">Special Conditions</label>                                            ';
 						 result = result +'       <div class="col-md-6">                                                                                      ';
 						 result = result +'           <p>                                                                                                     ';
 						 result = result +'           '+json.specialConditions+'                              ';
