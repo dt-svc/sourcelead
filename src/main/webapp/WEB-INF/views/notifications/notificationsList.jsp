@@ -107,9 +107,7 @@ function getNotificationtLists(){
         	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result +'	<th>';
-	        	
 	        	result = result +'</th>';
-	        	result = result +'	<th></th>';
 	        	result = result +'	<th>Recived From</th>';
 	        	result = result +'	<th>Notification</th>';
 	        	result = result +'	<th>Recived On</th>';
@@ -128,18 +126,14 @@ function getNotificationtLists(){
 					result = result +'			</label>';
 					result = result +'	  </td>';
 					
-					result = result +'		<td>';
-					result = result +'		<div class="notifi-image pull-left">';
+					result = result +'		<td><div class="notificationUser clearfix">';
+					result = result +'		<div class="notifi-image">';
 					result = result +'			<img class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="'+sourceleadUrl+'/displayUserImage/'+report.notificationFormId+'" ">';
-					result = result +'		</div>';
-					result = result +'		</td>';
-					
-		 			 result = result +'	<td>';
-					result = result +'		<div class="mailbox-name tbldata-dotdot-me">';
+					result = result +'		</div>';					
+					result = result +'		<div class="mailbox-name">';
 					result = result +'		'+report.notificationFirstName+' '+report.notificationLastName+' 					';
-					result = result +'		</div>';
-				    result = result +'  </td>';
-				    
+					result = result +'		</div>';					
+					result = result +'		</div></td>';
 				   result = result +'   <td>';
 					result = result +'			<div class="mailbox-subject tbldata-dotdot-big">';
 
@@ -152,13 +146,14 @@ function getNotificationtLists(){
 				    result = result +'   </td>';
 				    
 				    result = result +'   <td><div class="mailbox-date tbldata-dotdot-vsm">'+report.calDays+' </div></td>';
-				    result = result +'   <td>';
+				    
+				    result = result +'   <td><div class="notiRej">';
 				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"){
 				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept"><i class="text-muted fa fa-check-circle"></i></a></span>';
 				     }
 				  
 				    if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Accepted' && report.rejectActionLink != null && report.rejectActionLink != "" && report.rejectActionLink != "undefined"){
-				    	result = result +'&nbsp;|&nbsp;<span class="mailbox-trash"><a href="'+report.rejectActionLink+'" title="Reject"><i class="text-muted fa fa-times"></i></a></span>';
+				    	result = result +'<span class="mailbox-trash"><a href="'+report.rejectActionLink+'" title="Reject"><i class="text-muted fa fa-times"></i></a></span>';
 				    }
 				  
 				   if(report.userNotificationStatus == 'Accepted'){
@@ -168,8 +163,8 @@ function getNotificationtLists(){
 				   if(report.userNotificationStatus == 'Rejected'){
 				    	result = result +'   &nbsp;<span class="mailbox-trash"><font color="red">Rejected</font></span>';
 				   }
-				    result = result +'<span class="mailbox-trash"><a href="javascript:void(0);"  onclick="deleteNotification('+report.id+');">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="text-danger fa fa-trash-o"></i></a></span>';
-				    result = result +'   </td>';
+				    result = result +'<span class="mailbox-trash"><a href="javascript:void(0);"  onclick="deleteNotification('+report.id+');"><i class="text-danger fa fa-trash-o"></i></a></span>';
+				    result = result +'   </div></td>';
 				    result = result +' </tr>';
 				}
         	result = result +'</tbody>';

@@ -125,6 +125,9 @@ public class ProjectMembers implements Serializable{
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
     
+    @Transient
+    private String totalHours;
+    
     @JsonIgnore
     @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonBackReference
@@ -399,6 +402,16 @@ public class ProjectMembers implements Serializable{
 
 	public void setProjectMembersList(List<ProjectMembers> projectMembersList) {
 		this.projectMembersList = projectMembersList;
+	}
+
+	public String getTotalHours()
+	{
+		return totalHours;
+	}
+
+	public void setTotalHours(String totalHours)
+	{
+		this.totalHours = totalHours;
 	}
 
 }

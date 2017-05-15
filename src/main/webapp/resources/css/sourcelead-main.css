@@ -331,7 +331,7 @@ line-height: 35px; height: 35px; padding: 0 !important; margin: 0; border-bottom
 	padding-right: 10px;
 }
 .setting-area ul li a {
-position: relative; display: block; padding: 0 15px !important; transition: all ease-in-out 0.5s;
+position: relative; display: block; padding: 0 15px !important; transition: all ease-in-out 0.5s; text-align: left;
 }
 .setting-area ul li a:hover {
 	background: #2970B1;
@@ -542,8 +542,7 @@ border: 1px solid #50a1eb; padding: 5px; line-height: 20px; display: block;
 width: 55px; height: auto; float: left; text-align: center; text-shadow: 1px 1px 1px #2e4e6c;
 }
 .side-bar .side-nav ul li {
-	/* height:39px; */
-line-height: 39px; border-bottom: 1px solid #325475; transition: all 0.5s ease-in-out 0s; position: relative;
+line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-in-out 0s; position: relative;
 }
 .side-bar .side-nav ul li:hover {
 	background: #3081cb;
@@ -1172,7 +1171,7 @@ padding: 10px; margin: 0; margin-bottom: 15px; font-size: 18px; color: #ff8f00;
 	display: none;
 }
 .side-bar .side-nav ul li ul li {
-	border-bottom: 1px solid #456185;
+	border-bottom: 1px solid #456185; line-height: 32px;
 }
 
 .side-bar .side-nav ul li ul li:hover {

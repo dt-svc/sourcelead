@@ -88,6 +88,9 @@ public class InvoicePayment {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String paymentDateStr;
 
 	public Long getId() {
 		return id;
@@ -223,5 +226,13 @@ public class InvoicePayment {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getPaymentDateStr() {
+		return paymentDateStr;
+	}
+
+	public void setPaymentDateStr(String paymentDateStr) {
+		this.paymentDateStr = paymentDateStr;
 	}
 }
