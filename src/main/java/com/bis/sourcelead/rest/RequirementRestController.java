@@ -310,11 +310,14 @@ public class RequirementRestController {
 									}
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
-									
+									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 									requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, location ,orgLocation);
+									}
 								} else if (status.equalsIgnoreCase("REJECTED")) {
+									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
-								}
+									}
+									}
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
 						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
@@ -332,7 +335,9 @@ public class RequirementRestController {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									if (null != level1approver) {
 										// this is for sending email to second level approver
+										if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 										requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, location,	orgLocation);
+									}
 									}
 									requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 									requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
@@ -341,7 +346,9 @@ public class RequirementRestController {
 									requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 									requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 									requirementApproverHierarchy.setRejectedReason(reason);
+									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+									}
 									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 									
 									// This is  to update  the level2 Approver Record For RejectedS
