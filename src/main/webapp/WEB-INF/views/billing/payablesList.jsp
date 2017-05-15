@@ -52,50 +52,50 @@ color:#337ab7 !important;
             
             <li class="active">
                         <h4>Unbilled</h4>
-                        <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Current onboard count">
+                        <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Draft Bills">
                             <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="unbilledAmoumt"></div>
-                                <h5>Draft Invoice<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                <h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
                                 </div>
                         </a>
                     </li>
                     <li>
                         <h4>Un Paid</h4>
-                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbg_red">
+                        <a href="#unpaid" data-toggle="tab" title="UnPaid Overdue Bills" class="billingbg_red">
                         <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
-                        <h5>Overdue Invoice<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                        <h5>Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
                             </div>
                         
                         </a>
                     </li>
                     <li>
                         <h4>&nbsp;</h4>
-                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbgRed">
+                        <a href="#unpaid" data-toggle="tab" title="UnPaid Open Bills" class="billingbgRed">
                         <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
-                        <h5>Open Invoice<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
+                        <h5>Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
                         </div>
                         </a>
                     </li>
                     <li class="billingbg_greens">
                         <h4>Paid</h4>
-                        <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" class="billbg_green">
+                        <a href="#paid" data-toggle="tab" title="Paid Bills" class="billbg_green">
                         <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="paidInvoiceAmount"></div>
-                        <h5>Paid Invoice<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                        <h5>Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
                             </div>
                         </a>
                     </li>
@@ -677,7 +677,7 @@ function getPayableInvoiceList(){
 			result = result +'         <th>Vendor Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
 			result = result +'         <th>Due date</th>              ';
-			result = result +'         <th>Invoice Date</th>               ';
+			result = result +'         <th>Bill Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
 			result = result +'         <th>Status</th>                ';
