@@ -374,15 +374,15 @@ color:#337ab7 !important;
 		            <strong class="clearfix">Project Based </strong> </a> </div>
 		        </div>
 		          
-		          <div class="col-md-4 mt25">
+		          <!-- <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
 		            <div class="clearfix mb10">
-		              <!--<i class="fa fa-usd fa-3x"></i>   -->           
+		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
-		
+		 -->
 		      
 		          </div>
 		    </div>

@@ -28,7 +28,7 @@
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-								<select class="form-control" id="vendorOrgRelationId"
+								<select class="chosen-select form-control" id="vendorOrgRelationId"
 									name="vendorOrgRelationId"
 									onchange="getVendorContacts();flushValues();"
 									data-validation="required" field-name="Client Name">
@@ -40,7 +40,7 @@
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact Name">
+                <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact Name">
                 </select>
               </div>
             </div>
@@ -61,7 +61,7 @@
            <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="paymentFrequency" name="paymentFrequency">
+                <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency">
                   <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
