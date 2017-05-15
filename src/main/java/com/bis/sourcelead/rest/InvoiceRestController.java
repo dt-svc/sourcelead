@@ -340,19 +340,19 @@ public class InvoiceRestController {
 			
 			
 			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
-				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
+				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") || invoice.getInvoiceStatus().equalsIgnoreCase("Rejected")){
 					draftCount = draftCount+1;
 					invoice.setDraftInvoiceAmount(invoice.getDueAmount());
 				}
 				
-				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && (invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) && 
+				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") && (invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) && 
 						!invoice.getPaymentStatus().equalsIgnoreCase("Unpaid")){
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
 					invoice.setPaidInvoiceAmount(paidAmount.toString());
 				}
 				
-				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && 
+				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
 						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
 					
 					String dueDate = sdf.format(invoice.getDueDate());

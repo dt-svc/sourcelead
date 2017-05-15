@@ -88,9 +88,11 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 					Float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
 					Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
 					Float receivedAmount  = totalAmount - customAmount;
-					invoice.setPaymentStatus("Partial Paid");
-					if(totalAmount.equals(customAmount)){
+					
+					if(totalAmount.equals(customAmount) || (customAmount > totalAmount)){
 						invoice.setPaymentStatus("Paid");
+					}else{
+						invoice.setPaymentStatus("Partial Paid");
 					}
 					invoice.setDueAmount(receivedAmount.toString());
 					
@@ -114,10 +116,13 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 							Float totalAmount = Float.parseFloat(jsonObj.getString("totalAmount"));
 							Float customAmount = Float.parseFloat(jsonObj.getString("customeAmount"));
 							Float receivedAmount  = totalAmount - customAmount;
-							parentInvoice.setPaymentStatus("Partial Paid");
-							if(totalAmount.equals(customAmount)){
+							
+							if(totalAmount.equals(customAmount) || (customAmount > totalAmount)){
 								parentInvoice.setPaymentStatus("Paid");
+							}else{
+								parentInvoice.setPaymentStatus("Partial Paid");
 							}
+							
 							parentInvoice.setDueAmount(receivedAmount.toString());
 							
 						}

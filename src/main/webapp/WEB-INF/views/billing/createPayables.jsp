@@ -50,9 +50,9 @@ function cancel(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Bill</h2>
+			<h2>Bills</h2>
 		</div>
-		<div class="pull-right brud-crum">Home » Bill</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Bills</div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
