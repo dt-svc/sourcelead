@@ -79,8 +79,8 @@ $(document).ready(function(){
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
-                            <div class="count">Rs: 55588 </div>
-                        <h5>Overdue Invoice<span class="paddingLeft">10</span></h5>
+                            <div class="count" id="dueAfterInvoiceAmount"></div>
+                        <h5>Overdue Invoice<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
                             </div>
                         
                         </a>
@@ -92,10 +92,8 @@ $(document).ready(function(){
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
-                            <div class="count">
-                            Rs: 55588
-                        </div>
-                        <h5>Open Invoice<span class="paddingLeft">10</span></h5>
+                            <div class="count" id="dueBeforeInvoiceAmount"></div>
+                        <h5>Open Invoice<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
                         </div>
                         </a>
                     </li>
@@ -642,9 +640,14 @@ function getInvoiceList(){
         	var draftCount = 0;
         	var draftTotalAmount = 0;
         	
-
         	var paidCount = 0;
         	var paidTotalAmount = 0;
+        	
+        	var dueAfterInvoiceCount = 0;
+        	var dueAfterInvoiceAmount = 0;
+        	
+        	var dueBeforeInvoiceCount = 0;
+        	var dueBeforeInvoiceAmount = 0;
         	
         	var result = "";
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
@@ -677,6 +680,16 @@ function getInvoiceList(){
 				paidCount = parseInt(paidCount) + parseInt(report.paidInvoiceCount);
        			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
        				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
+       			}
+       			
+       			dueAfterInvoiceCount = parseInt(dueAfterInvoiceCount) + parseInt(report.dueAfterInvoiceCount);
+       			if(report.dueAfterInvoiceAmount != null && report.dueAfterInvoiceAmount != '' && report.dueAfterInvoiceAmount != 'undefined'){
+       				dueAfterInvoiceAmount = parseFloat(dueAfterInvoiceAmount) + parseFloat(report.dueAfterInvoiceAmount);
+       			}
+       			
+       			dueBeforeInvoiceCount = parseInt(dueBeforeInvoiceCount) + parseInt(report.dueBeforeInvoiceCount);
+       			if(report.dueBeforeInvoiceAmount != null && report.dueBeforeInvoiceAmount != '' && report.dueBeforeInvoiceAmount != 'undefined'){
+       				dueBeforeInvoiceAmount = parseFloat(dueBeforeInvoiceAmount) + parseFloat(report.dueBeforeInvoiceAmount);
        			}
         		
         		
@@ -752,7 +765,13 @@ function getInvoiceList(){
 		    		    
 		    $("#paidInvoiceCount").html(paidCount);
 		    $("#paidInvoiceAmount").html(paidTotalAmount);
-		    	    
+		    
+		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    
+		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
+		    
 
 		    invoicePagination()
         },

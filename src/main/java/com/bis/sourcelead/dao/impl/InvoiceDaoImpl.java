@@ -83,7 +83,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		String subQuery2 = "";
 		
-		if(invoiceType.equalsIgnoreCase("payable")){
+		if(invoiceType.equalsIgnoreCase("payables")){
 			subQuery2 = " and invoice.invoiceType = 'Payables' ";
 		}else{
 			subQuery2 = " and invoice.invoiceType = 'Receivable' ";
