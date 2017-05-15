@@ -128,7 +128,7 @@ public class InvoiceController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/viewInvoice")
-	public ModelAndView viewInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
+	public ModelAndView viewInvoice(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
@@ -143,7 +143,7 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/viewInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("invoiceId", invoiceId);
+		model.addObject("invoiceUUID", invoiceUUID);
 		if(invoiceType.equalsIgnoreCase("Receivable")){
 			sessionData.setNav(Constants.Receivable);
 		}else{
@@ -203,36 +203,18 @@ public class InvoiceController {
 	
 	
 	
+
 	@RequestMapping(value = "/createInvoiceProjectBased")
 	public ModelAndView createInvoiceProjectBased(HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
-		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
-
-		if(null != clientList){
-			for (OrgRelations orgRelations : clientList) {
-				String orgName = "";
-				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getLocationId().getOrg().getOrgName();
-				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
-				}
-				orgRelations.setOrgName(orgName);
-			}
-			 model.addObject("clientList", clientList);
-		}
+		
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
         model.addObject("currencyCode", countries.getCurrency());
 		}
-		
-/*		
-		List<Projects> projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
-		if(null != projectsList){
-			 model.addObject("projectsList", projectsList);
-		}*/
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
@@ -240,6 +222,31 @@ public class InvoiceController {
 			sessionData = new SessionMaintainanceData();
 		}
 		model.setViewName("billing/createProjectReceivableInvoice");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Receivable);
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
+	}
+
+	
+	@RequestMapping(value = "/createInvoiceProjectPayableBased")
+	public ModelAndView createInvoiceProjectPayableBased(HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		
+		
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		model.setViewName("billing/createProjectPayableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);

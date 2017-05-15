@@ -90,4 +90,8 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long vendorOrgRelationId)throws Exception ;
 
+	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId)throws Exception ;
+
+	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId)throws Exception ;
+
 }
