@@ -712,7 +712,7 @@ function getInvoiceList(){
 				result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+projectId+'">'+report.invoiceId+'</a></div>   ';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 				}
 				if(report.invoiceStatus == "SENT"){
 	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
