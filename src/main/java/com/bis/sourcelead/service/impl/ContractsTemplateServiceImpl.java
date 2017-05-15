@@ -604,6 +604,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			childContract.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 			childContract.setStatus("0");
 			childContract.setTypeOfContract("New");
+			childContract.setContractUUID(contracts.getContractUUID());
 				if("Vendor MSA".equalsIgnoreCase(contracts.getContractType()) || "Vendor SOW".equalsIgnoreCase(contracts.getContractType())|| "Vendor NDA".equalsIgnoreCase(contracts.getContractType()) || "Vendor NSA".equalsIgnoreCase(contracts.getContractType())){
 					if("Vendor MSA".equalsIgnoreCase(contracts.getContractType())){
 						childContract.setContractType("Client MSA");	
