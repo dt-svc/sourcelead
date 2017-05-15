@@ -112,7 +112,7 @@
                  <div class="form-group">
                   <label class="col-md-3 control-label">Country <span class="text-danger">*</span></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select Country" id="country" onchange="getStates();" name="country">
+                    <select class="chosen-select" data-placeholder="--Select Country--" id="country" onchange="getStates();" name="country">
                       <option disabled>Select Country</option>
                     </select>
                   </div>
@@ -121,7 +121,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">State</label>
                   <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select State" onchange="getCities();" id="state" name="state">
+                    <select class="chosen-select" data-placeholder="--Select State--" onchange="getCities();" id="state" name="state">
                       <option disabled>Select State</option>
                       
                     </select>
@@ -130,7 +130,7 @@
                 <div class="form-group">
                   <label class="col-md-3 control-label">City</label>
                   <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select City" id="city" name="city">
+                    <select class="chosen-select" data-placeholder="--Select City--" id="city" name="city">
                       <option disabled>Select City</option>
                     </select>
                   </div>
@@ -242,11 +242,11 @@
                   <label class="col-md-3 control-label">Probation Notice</label>
                   <div class="col-md-6">
                     <select class="chosen-select" data-placeholder="Select Probation Notice" id="probationNotice" name="probationNotice">
-                      <option disabled selected="selected">Select Probation Notice</option>
-                      <option>15 Days</option>
-                      <option>1 Month</option>
-                      <option>2 Months</option>
-                      <option>3 Months</option>
+                      <option selected="selected" value="">Select Probation Notice</option>
+                      <option value="15 Days">15 Days</option>
+                      <option value="1 Month">1 Month</option>
+                      <option value="2 Months">2 Months</option>
+                      <option value="3 Months">3 Months</option>
                     </select>
                   </div>
                 </div>
@@ -254,11 +254,11 @@
                   <label class="col-md-3 control-label">Termination Notice</label>
                   <div class="col-md-6">
                     <select class="chosen-select" data-placeholder="Select Termination Notice" id="terminationNotice" name="terminationNotice">
-                      <option disabled selected="selected">Select Termination Notice</option>
-                      <option>15 Days</option>
-                      <option>1 Month</option>
-                      <option>2 Months</option>
-                      <option>3 Months</option>
+                      <option selected="selected" value="">Select Termination Notice</option>
+                      <option value="15 Days">15 Days</option>
+                      <option value="1 Month">1 Month</option>
+                      <option value="2 Months">2 Months</option>
+                      <option value="3 Months">3 Months</option>
                     </select>
                   </div>
                 </div>
@@ -734,7 +734,7 @@ function addContractsAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateContractsUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'contractsdocFile').val();
@@ -759,7 +759,7 @@ function validateContractsUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -800,7 +800,7 @@ function addFormsAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateFormsUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'formsdocFile').val();
@@ -825,7 +825,7 @@ function validateFormsUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -849,7 +849,7 @@ function validate_fileupload(fileName)
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateSupportingUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'supportingdocFile').val();
@@ -874,11 +874,11 @@ function validateSupportingUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'docFile').val();
@@ -903,7 +903,7 @@ function validateUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
   
   
   
@@ -1192,7 +1192,7 @@ function loadCandidateRoles(onBoardRoleId){
 	    	 var json = JSON.parse(data);
         	 var result = "";
         	
-        	result = result +'<option disabled selected>--Select Role--</option>';
+        	result = result +'<option  selected value="">--Select Role--</option>';
         	for (var i=0; i<json.length; i++)
 			{
         		var report = json[i];
@@ -1222,7 +1222,7 @@ function loadTeams(onboardTeamId){
 	    	 var json = JSON.parse(data);
         	 var result = "";
         	
-        	result = result +'<option disabled selected>--Select Team--</option>';
+        	result = result +'<option selected value="">--Select Team--</option>';
         	for (var i=0; i<json.length; i++)
 			{
         		var report = json[i];
