@@ -219,7 +219,7 @@
                   </label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedResignationAttachments"></div>
 				        </span>
                       </div>
@@ -232,7 +232,7 @@
                   </label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedOffboardPackAttachments"></div>
 				        </span>
                       </div>
@@ -541,7 +541,7 @@ function addOffboardPackAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateResignationUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'resignationdocFile').val();
@@ -566,7 +566,7 @@ function validateResignationUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -607,7 +607,7 @@ function addOffboardPackAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateOffboardPackUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'offboardPackdocFile').val();
@@ -632,7 +632,7 @@ function validateOffboardPackUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 <script type="text/javascript">
 function validate_fileupload(fileName)

@@ -5,14 +5,10 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import java.io.File;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -38,24 +34,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.bis.sourcelead.beans.TimesheetHours;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
-
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
-
-
 import com.bis.sourcelead.entity.Org;
-
-import com.bis.sourcelead.entity.InvoicePayment;
-
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -122,7 +111,8 @@ public class InvoiceRestController {
 	@Autowired
 	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
 
-	
+	@Autowired
+	private InvoiceDao invoiceDao;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -178,7 +168,7 @@ public class InvoiceRestController {
 			}
 		}
 
-		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
+		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org);
 		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
 		if(null !=invoice){
 			invoiceSaved = "success";
@@ -310,9 +300,16 @@ public class InvoiceRestController {
 		
 		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String currentDate = sdf.format(new Date());
+		Date todayDate = sdf.parse(currentDate);
+		
+		
 		for(Invoice invoice :invoiceList){
 			Integer draftCount = 0;
 			Integer paidCount = 0;
+			Integer overDueInvoiceCount = 0;
+			Integer openInvoiceCount = 0;
 			
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
@@ -343,21 +340,46 @@ public class InvoiceRestController {
 			
 			
 			if(!isNullOrEmpty(invoice.getInvoiceStatus())){
-				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT")){
+				if(invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") || invoice.getInvoiceStatus().equalsIgnoreCase("Rejected")){
 					draftCount = draftCount+1;
 					invoice.setDraftInvoiceAmount(invoice.getDueAmount());
 				}
 				
-				if(invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")){
+				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") && (invoice.getPaymentStatus().equalsIgnoreCase("Paid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid")) && 
+						!invoice.getPaymentStatus().equalsIgnoreCase("Unpaid")){
 					paidCount = paidCount+1;
 					Float paidAmount = Float.parseFloat(invoice.getTotal()) - Float.parseFloat(invoice.getDueAmount());
 					invoice.setPaidInvoiceAmount(paidAmount.toString());
+				}
+				
+				if(!invoice.getInvoiceStatus().equalsIgnoreCase("DRAFT") && !invoice.getInvoiceStatus().equalsIgnoreCase("Rejected") &&
+						(invoice.getPaymentStatus().equalsIgnoreCase("Unpaid") || invoice.getPaymentStatus().equalsIgnoreCase("Partial Paid"))){
+					
+					String dueDate = sdf.format(invoice.getDueDate());
+					Date invoiceDueDate = sdf.parse(dueDate);
+					
+					Float dueAmount = Float.parseFloat(invoice.getDueAmount());
+					
+					if(dueAmount > 0){
+					
+						if(todayDate.after(invoiceDueDate)){
+							overDueInvoiceCount = overDueInvoiceCount+1;
+							invoice.setDueAfterInvoiceAmount(invoice.getDueAmount());
+						}else{
+							openInvoiceCount = openInvoiceCount+1;
+							invoice.setDueBeforeInvoiceAmount(invoice.getDueAmount());
+						}
+					}
+					
+					
 				}
 				
 			}
 			
 			invoice.setDraftInvoiceCount(draftCount);
 			invoice.setPaidInvoiceCount(paidCount);
+			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
+			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
 			
 			
 		}
@@ -399,18 +421,19 @@ public class InvoiceRestController {
 
 	
 	  @RequestMapping(value = "/getViewInvoice", method = RequestMethod.GET)
-	 	public @ResponseBody  String getViewInvoice(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	public @ResponseBody  String getViewInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
 	     	OrgLocations orgLocations = null;
+	     	Invoice invoiceId =  invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 	     	orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	     	Long Id = null;
-	     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId);
+	     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId.getId());
 	     	if(parentInvoice.getParentInvoiceId() != null){
 	     		Id = parentInvoice.getParentInvoiceId().getId();
 	     		orgLocations = parentInvoice.getParentInvoiceId().getOrgLocation();
 	     	}else{
-	     		Id = invoiceId;
+	     		Id = invoiceId.getId();
 	     		orgLocations = orgLocations;
 	     	}
 	     	
@@ -420,11 +443,6 @@ public class InvoiceRestController {
 	     		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	     		 if(invoice.getOrgRelationID().getLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
 					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
-				}
-				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
-					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
-				}
-				if(invoice.getOwnerUserId().getId().longValue() == user.getId().longValue()){
 					StringBuilder contactName = new StringBuilder();
 					if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
@@ -435,7 +453,8 @@ public class InvoiceRestController {
 						invoice.setClientContactEmail(invoice.getContactUser().getEmail());	
 					}
 				}
-				if(invoice.getContactUser().getId().longValue()  == user.getId().longValue()){
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == LoginOrgLocations.getId().longValue()){
+					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
 					StringBuilder contactName = new StringBuilder();
 					if(invoice.getContactUser().getLastName() != null){
 						invoice.setClientContactName(contactName.append(invoice.getOwnerUserId().getFirstName()).append(" ").append(invoice.getOwnerUserId().getLastName()).toString());	
@@ -446,6 +465,7 @@ public class InvoiceRestController {
 						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
 					}
 				}
+				
 				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
 				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
 				
@@ -508,15 +528,16 @@ public class InvoiceRestController {
 	 	}
 	  
 	  @RequestMapping(value = "/getViewPaymentHistory", method = RequestMethod.GET)
-	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceId", required = false) Long invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
 	     	Long Id = null;
-	     	Invoice invoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId);
+	     	Invoice invoiceId =  invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+	     	Invoice invoice  = invoiceService.getInvoicetByParentInvoiceId(invoiceId.getId());
 	     	if(invoice.getParentInvoiceId() != null){
 	     		Id = invoice.getParentInvoiceId().getId();
 	     	}else{
-	     		Id = invoiceId;
+	     		Id = invoiceId.getId();
 	     	}
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
@@ -525,7 +546,7 @@ public class InvoiceRestController {
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
 	     		ip.setPaymentComment(ip.getPaymentComment());
-	     		ip.setPaymentCustomDue(ip.getPaymentCustomDue());
+	     		ip.setPaymentAmount(ip.getPaymentAmount());
 	     	}
 	     	resultJson = commonUtil.toJSON(invoicePaymentList);
 		 	  return resultJson;
@@ -603,8 +624,11 @@ public class InvoiceRestController {
 			}else{
 				empName.append(projectMember.getEmployee().getUser().getFirstName());
 			}
-			projectMember.setEmpName(empName.toString());
-			projectMember.setUserId(projectMember.getEmployee().getUser().getId().toString());
+			projectMember.setCandidateName(empName.toString());
+			if(null != projectMember.getEmployee().getUser().getId()){
+				Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(),orgLocation.getId());
+				projectMember.setCandidateId(candidate.getId());
+			}
 			projectMember.setStartDate(startDateStr);
 			projectMember.setEndDate(endDateStr);
 			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
@@ -612,8 +636,9 @@ public class InvoiceRestController {
 		return commonUtil.toJSON(projectMembersList);
 	} 
 	
-//	
-	@RequestMapping(value = "/saveProjectInvoice", method = RequestMethod.POST)
+//	commented by Rajashekar if if everything goes fine will delete later
+	
+	/*@RequestMapping(value = "/saveProjectInvoice", method = RequestMethod.POST)
 	public @ResponseBody String saveProjectInvoice(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,
 			@RequestParam(value = "invoiceType", required = false) String invoiceType,MultipartHttpServletRequest request) throws Exception {
 
@@ -638,7 +663,96 @@ public class InvoiceRestController {
 			invoiceSaved = "success";
 		}
 		return "";
-}
+}*/
+	
+	@RequestMapping(value = "/getAllProjectVendorAssignedMembers", method = RequestMethod.GET)
+	public @ResponseBody String getAllProjectVendorAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String frequencyArray[] = frequency.split("/");
+		String startDateStr = frequencyArray[0];
+		String endDateStr = frequencyArray[1];
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        
+        Date startDate = format.parse(startDateStr);
+		Date endDate = format.parse(endDateStr);
+		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
+		
+		for(ProjectMembers projectMember :projectMembersList){
+			Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
+			if(null != candidate){
+				Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
+				StringBuilder empName =new StringBuilder();
+				if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
+					empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+				}else{
+					empName.append(projectMember.getEmployee().getUser().getFirstName());
+				}
+				projectMember.setCandidateName(empName.toString());
+				if(null != candidate){
+					projectMember.setCandidateId(candidate.getId());
+				}
+				projectMember.setStartDate(startDateStr);
+				projectMember.setEndDate(endDateStr);
+				projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+			}
+		}
+		return commonUtil.toJSON(projectMembersList);
+	} 
+	
+	
+	@RequestMapping(value = "/getAllProjectsByOrgRelationId", method = RequestMethod.GET)
+ 	public @ResponseBody  String getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	{
+     	String resultJson;
+     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+     	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocations.getId());
+ 	    resultJson = commonUtil.toJSON(projectList);
+ 	    return resultJson;
+ 	}
 	//******************* End By Rajashekar
 
+	@RequestMapping(value = "/acceptedInvoice", method = RequestMethod.POST)
+	public @ResponseBody String acceptedInvoice(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
+		invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
+		invoice.setCreatedBy(user.getUserCode());
+		invoice.setCreatedDate(commonUtil.currentDate());
+		Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+		if(null != childInvoice){
+			if(null != invoice.getParentInvoiceId()){
+				Invoice parentInvoice =  invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+				parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
+				invoice.setCreatedBy(user.getUserCode());
+				parentInvoice.setCreatedDate(commonUtil.currentDate());
+				invoiceDao.saveInvoce(parentInvoice);
+			}
+		}
+		return "success";
+	} 
+	
+	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
+	public @ResponseBody String rejectInvoice(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
+		invoice.setInvoiceStatus(Constants.INVOICE_REJECTED);
+		invoice.setCreatedBy(user.getUserCode());
+		invoice.setCreatedDate(commonUtil.currentDate());
+		Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+		if(null != childInvoice){
+			if(null != invoice.getParentInvoiceId()){
+				Invoice parentInvoice =  invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+				parentInvoice.setInvoiceStatus(Constants.INVOICE_REJECTED);
+				invoice.setCreatedBy(user.getUserCode());
+				parentInvoice.setCreatedDate(commonUtil.currentDate());
+				invoiceDao.saveInvoce(parentInvoice);
+			}
+		}
+		return "success";
+	} 
+	
+	
 }
