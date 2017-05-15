@@ -687,6 +687,12 @@ public class Constants {
     public static String SIX_MONTHS = "sixmonths";
     public static String ONE_YEAR = "oneyear";
     
+    public static String INVOICE_ACCEPETED = "Accepted";
+    public static String INVOICE_REJECTED = "Rejected";
+    public static String INVOICE_RECEIVED = "Received";
+    
+    public static String INVOICE_STATUS_UNPAID = "Unpaid";
+    
     public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;    
     //invoice
    

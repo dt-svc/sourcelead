@@ -374,14 +374,14 @@ $(document).ready(function(){
 		            <strong class="clearfix">Project Based </strong> </a> </div>
 		        </div>
 		          
-		          <div class="col-md-4 mt25">
+		          <!-- <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
 		            <div class="clearfix mb10">
-		              <!--<i class="fa fa-usd fa-3x"></i>   -->           
+		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
-		        </div>
+		        </div> -->
 		
 		      
 		          </div>
@@ -711,11 +711,13 @@ function getInvoiceList(){
         		}
 				result = result +'       <tr> ';
 				result = result +'         <td>';
-				if(report.invoiceStatus == "DRAFT"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+projectId+'">'+report.invoiceId+'</a></div>   ';
+
+				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+
 				}
-				if(report.invoiceStatus == "SENT"){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
 				}
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
@@ -745,11 +747,29 @@ function getInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				 
-				if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-					result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
-				}else{
-					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+				if(report.invoiceType=="Receivable"){
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
+					}else{
+						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+					}
+				}
+
+				if(report.invoiceType=="Payables"){
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
+					}else{
+						if(report.invoiceStatus == "Accepted"){
+							result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+						}else{
+							if(report.invoiceStatus == "Rejected"){
+								result = result +'           <span class="text-primary successBtn primary clearfix" >Rejected</span> </td>          ';	
+							}else{
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+							}
+							
+						}
+					}
 				}
 				
 				result = result +'       </tr>                                                                                                           ';
