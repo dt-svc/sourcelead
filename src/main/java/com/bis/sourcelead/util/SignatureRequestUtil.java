@@ -26,6 +26,7 @@ import com.docusign.esign.client.ApiClient;
 import com.docusign.esign.client.Configuration;
 import com.docusign.esign.model.Document;
 import com.docusign.esign.model.EnvelopeDefinition;
+import com.docusign.esign.model.EnvelopeSummary;
 import com.docusign.esign.model.LoginAccount;
 import com.docusign.esign.model.LoginInformation;
 import com.docusign.esign.model.Recipients;
@@ -135,7 +136,7 @@ public class SignatureRequestUtil {
 		// default unit of measurement is pixels, can be mms, cms, inches also
 		SignHere signHere = new SignHere();
 		signHere.setDocumentId(doc.getDocumentId());
-		signHere.setPageNumber(numberOfPages.toString());
+		signHere.setPageNumber("1");
 		signHere.setRecipientId("1");
 		signHere.setXPosition("100");
 		signHere.setYPosition("150");
@@ -163,11 +164,11 @@ public class SignatureRequestUtil {
 			EnvelopesApi envelopesApi = new EnvelopesApi();
 			
 			// call the createEnvelope() API to send the signature request!
-		//	EnvelopeSummary envelopeSummary = envelopesApi.createEnvelope(accountId, envDef);
+			EnvelopeSummary envelopeSummary = envelopesApi.createEnvelope(accountId, envDef);
 			
 			Contracts con  = new Contracts();
 			con.setTempdocId(doc.getDocumentId());
-			//con.setTempEnvId(envelopeSummary.getEnvelopeId());
+			con.setTempEnvId(envelopeSummary.getEnvelopeId());
 			con.setContractStatus(envDef.getStatus());
 			//logger.info("EnvelopeSummary: " + envelopeSummary);
 		

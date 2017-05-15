@@ -151,7 +151,7 @@ public class ContractRestController {
 		
 		byte[] pdfBytes = null ;
 	
-		if(contract.getEnvelopId()!=null && contract.getTypeOfContract().equalsIgnoreCase("New")){
+		if(null != contract.getEnvelopId()&& contract.getTypeOfContract().equalsIgnoreCase("New")){
 			if(null == contract.getContractsTemplate()){
 				Contracts con = contractsTemplateService.getContractById(contract.getParentContractId().getId());
 				pdfBytes = html2PdfUtil.getPdfBytes(con.getContractsTemplate(),contract,orgLocation,org);

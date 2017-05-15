@@ -380,10 +380,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					vendorContracts.setContractType("Client SOW");
 				}
 				else if("NDA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-					vendorContracts.setContractType("Vendor NDA");
+					vendorContracts.setContractType("Client NDA");
 				}
 				else if("NSA".equalsIgnoreCase(jsonObj.getString("contractType"))){
-					vendorContracts.setContractType("Vendor NSA");
+					vendorContracts.setContractType("Client NSA");
 				}
 				vendorContracts.setInitiatorType("Client");
 				vendorContracts.setContractOrgLocationId(orgLocation);
@@ -604,17 +604,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			childContract.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 			childContract.setStatus("0");
 			childContract.setTypeOfContract("New");
-				if("Vendor MSA".equalsIgnoreCase(contracts.getContractType()) || "Vendor SOW".equalsIgnoreCase(contracts.getContractType())|| "NDA".equalsIgnoreCase(contracts.getContractType()) || "NSA".equalsIgnoreCase(contracts.getContractType())){
+				if("Vendor MSA".equalsIgnoreCase(contracts.getContractType()) || "Vendor SOW".equalsIgnoreCase(contracts.getContractType())|| "Vendor NDA".equalsIgnoreCase(contracts.getContractType()) || "Vendor NSA".equalsIgnoreCase(contracts.getContractType())){
 					if("Vendor MSA".equalsIgnoreCase(contracts.getContractType())){
 						childContract.setContractType("Client MSA");	
 					}else if("Vendor SOW".equalsIgnoreCase(contracts.getContractType())){
 						childContract.setContractType("Client SOW");
 					}
-					else if("NDA".equalsIgnoreCase(contracts.getContractType())){
-						childContract.setContractType("Vendor NDA");
+					else if("Vendor NDA".equalsIgnoreCase(contracts.getContractType())){
+						childContract.setContractType("Client NDA");
 					}
-					else if("NSA".equalsIgnoreCase(contracts.getContractType())){
-						childContract.setContractType("Vendor NSA");
+					else if("Vendor NSA".equalsIgnoreCase(contracts.getContractType())){
+						childContract.setContractType("Client NSA");
 					}
 					childContract.setInitiatorType("Client");
 					childContract.setContractOrgLocationId(orgLocation);
