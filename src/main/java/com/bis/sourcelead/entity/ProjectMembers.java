@@ -128,6 +128,14 @@ public class ProjectMembers implements Serializable{
     @Transient
     private String totalHours;
     
+    @Transient
+    private String candidateName;
+    
+    @Transient
+    private Long candidateId;
+    
+    
+    
     @JsonIgnore
     @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonBackReference
@@ -412,6 +420,26 @@ public class ProjectMembers implements Serializable{
 	public void setTotalHours(String totalHours)
 	{
 		this.totalHours = totalHours;
+	}
+
+	public String getCandidateName()
+	{
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName)
+	{
+		this.candidateName = candidateName;
+	}
+
+	public Long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId)
+	{
+		this.candidateId = candidateId;
 	}
 
 }
