@@ -28,7 +28,7 @@ color:#337ab7 !important;
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payables List </div>
     </section>
     <div class="content-area content-new clearfix">
-      <div class="onboardDashboard_counts">
+      <div class="billing_dashboard">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons"> <a href="<c:url value='/createPayables'/>"  class="btn btn-primary btn-sm" title="Create payables"> <i class="fa fa-plus paddingRight"></i>Create Payables</a>
            <div class="pull-right select-field ml">
@@ -48,18 +48,58 @@ color:#337ab7 !important;
             </div>
           </div>
           <ul class="nav nav-tabs" id="tab_bar">
-            <li class="active"> <a href="#unbilled" data-toggle="tab" class="onboardCount" title="Current onboard count" aria-expanded="true">
-              <div class="count"> 1 </div>
-              <h4>Unbilled payables</h4>
-              </a> </li>
-            <li class=""> <a href="#unpaid" data-toggle="tab" title="Current offboard count" aria-expanded="false">
-              <div class="count"> 10 </div>
-              <h4>Unpaid payables</h4>
-              </a> </li>
-            <li class=""> <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" aria-expanded="false">
-              <div class="count"> 100 </div>
-              <h4>Paid payables</h4>
-              </a> </li>
+            
+            
+            <li class="active">
+                        <h4>Unbilled</h4>
+                        <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Current onboard count">
+                            <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="unbilledAmoumt"></div>
+                                <h5>Draft Invoice<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                </div>
+                        </a>
+                    </li>
+                    <li>
+                        <h4>Un Paid</h4>
+                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbg_red">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="dueAfterInvoiceAmount"></div>
+                        <h5>Overdue Invoice<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                            </div>
+                        
+                        </a>
+                    </li>
+                    <li>
+                        <h4>&nbsp;</h4>
+                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbgRed">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="dueBeforeInvoiceAmount"></div>
+                        <h5>Open Invoice<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
+                        </div>
+                        </a>
+                    </li>
+                    <li class="billingbg_greens">
+                        <h4>Paid</h4>
+                        <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" class="billbg_green">
+                        <div class="pull-left">
+                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            </div>
+                            <div class="pull-right">
+                            <div class="count" id="paidInvoiceAmount"></div>
+                        <h5>Paid Invoice<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                            </div>
+                        </a>
+                    </li>
+            
             <div class="pull-right mt40 select-field hidden">
               <select class="form-control">
                 <option class="disabled" selected="">--Select option--</option>
@@ -76,7 +116,7 @@ color:#337ab7 !important;
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt">
+              <div class="timesheet_out mt" style="overflow-x:auto;">
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
@@ -564,15 +604,22 @@ function getPayableInvoiceList(){
 	
 	$.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceType=payable&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate,
+        url: sourceleadUrl+"/getInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate,
         success: function(data) {
         	var json = JSON.parse(data);
         	var result = "";
+        	
         	var draftCount = 0;
         	var draftTotalAmount = 0;
         	
         	var paidCount = 0;
         	var paidTotalAmount = 0;
+        	
+        	var dueAfterInvoiceCount = 0;
+        	var dueAfterInvoiceAmount = 0;
+        	
+        	var dueBeforeInvoiceCount = 0;
+        	var dueBeforeInvoiceAmount = 0;
         	
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
@@ -594,6 +641,32 @@ function getPayableInvoiceList(){
         	for (var i=0; i<json.length; i++)
     		{  
         		var report = json[i];
+        		
+        		
+        		
+        		draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
+       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
+       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
+       			}
+       			
+       			
+				paidCount = parseInt(paidCount) + parseInt(report.paidInvoiceCount);
+       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
+       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
+       			}
+       			
+       			dueAfterInvoiceCount = parseInt(dueAfterInvoiceCount) + parseInt(report.dueAfterInvoiceCount);
+       			if(report.dueAfterInvoiceAmount != null && report.dueAfterInvoiceAmount != '' && report.dueAfterInvoiceAmount != 'undefined'){
+       				dueAfterInvoiceAmount = parseFloat(dueAfterInvoiceAmount) + parseFloat(report.dueAfterInvoiceAmount);
+       			}
+       			
+       			dueBeforeInvoiceCount = parseInt(dueBeforeInvoiceCount) + parseInt(report.dueBeforeInvoiceCount);
+       			if(report.dueBeforeInvoiceAmount != null && report.dueBeforeInvoiceAmount != '' && report.dueBeforeInvoiceAmount != 'undefined'){
+       				dueBeforeInvoiceAmount = parseFloat(dueBeforeInvoiceAmount) + parseFloat(report.dueBeforeInvoiceAmount);
+       			}
+        		
+        		
+        		
         		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
         			dueDateStr = report.dueDateStr;
         		}else{
@@ -671,6 +744,21 @@ function getPayableInvoiceList(){
 			result = result +'   </table>                                                                                                            ';
 			$("#invoiceList").empty();  
 		    $("#invoiceList").append(result);
+		    
+		    $("#draftInvoiceCount").html(draftCount);
+		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    		    
+		    $("#paidInvoiceCount").html(paidCount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    
+		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    
+		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
+		    
+		    
+		    
 		    invoicePagination()
         },
         

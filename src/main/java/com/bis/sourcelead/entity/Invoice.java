@@ -194,6 +194,20 @@ public class Invoice {
 	@Transient
 	private String paidInvoiceAmount;
 	
+	@Transient
+	private String dueAfterInvoiceAmount;
+	
+	@Transient
+	private String dueBeforeInvoiceAmount;
+	
+	@Transient
+	private Integer dueAfterInvoiceCount;
+	
+	@Transient
+	private Integer dueBeforeInvoiceCount;
+	
+	
+	
 	
 	
 	public Long getId()
@@ -636,5 +650,37 @@ public class Invoice {
 
 	public void setPaidInvoiceCount(Integer paidInvoiceCount) {
 		this.paidInvoiceCount = paidInvoiceCount;
+	}
+
+	public String getDueAfterInvoiceAmount() {
+		return dueAfterInvoiceAmount;
+	}
+
+	public void setDueAfterInvoiceAmount(String dueAfterInvoiceAmount) {
+		this.dueAfterInvoiceAmount = dueAfterInvoiceAmount;
+	}
+
+	public String getDueBeforeInvoiceAmount() {
+		return dueBeforeInvoiceAmount;
+	}
+
+	public void setDueBeforeInvoiceAmount(String dueBeforeInvoiceAmount) {
+		this.dueBeforeInvoiceAmount = dueBeforeInvoiceAmount;
+	}
+
+	public Integer getDueAfterInvoiceCount() {
+		return dueAfterInvoiceCount;
+	}
+
+	public void setDueAfterInvoiceCount(Integer dueAfterInvoiceCount) {
+		this.dueAfterInvoiceCount = dueAfterInvoiceCount;
+	}
+
+	public Integer getDueBeforeInvoiceCount() {
+		return dueBeforeInvoiceCount;
+	}
+
+	public void setDueBeforeInvoiceCount(Integer dueBeforeInvoiceCount) {
+		this.dueBeforeInvoiceCount = dueBeforeInvoiceCount;
 	}
 }
