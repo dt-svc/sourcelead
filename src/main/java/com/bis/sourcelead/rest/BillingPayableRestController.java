@@ -93,13 +93,21 @@ public class BillingPayableRestController {
 	 
 	 @RequestMapping(value = "/getInvoiceDetailsByInvoiceUUID")
 	 public String getInvoiceDetailsByInvoiceUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,HttpServletRequest request) throws Exception {
-
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    String resultJson;
 		 
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		    if(null != invoice){
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
-		    	invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+		    	
+		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+				}
+				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+				}
+				
+//		    	invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
 		    	invoice.setVendorContactId(invoice.getContactUser().getId());
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));

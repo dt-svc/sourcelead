@@ -28,7 +28,7 @@
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();flushValues();" data-validation="required" field-name="Client Name">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();flushValues();" data-validation="required" field-name="Client Name">
                    <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -41,7 +41,7 @@
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 select-field">					   
-                <select class="form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact Name">
+                <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact Name">
                 </select>
               </div>
             </div>
@@ -62,7 +62,7 @@
            <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="paymentFrequency" name="paymentFrequency">
+                <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency">
                   <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
@@ -82,7 +82,7 @@
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field"> 
-                <select class="form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
                   <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="projects" items="${projectsList}">
                          <option value="${projects.id}">${projects.projectName}</option>
@@ -93,7 +93,7 @@
            <div class="form-group">
               <label class="col-md-3">Frequency</label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
+                <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
                  <!--  <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
@@ -338,7 +338,6 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	alert(invoiceFrequency);
 	var projectId = $("#projectId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -447,7 +446,7 @@ function populateInlineItemsGrid(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	/*  getSow(i) */
+    	getSow(i,opt.candidateId);
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -544,7 +543,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	/*  getSow(i) */
+    	getSow(i,opt.candidateId);
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -584,8 +583,8 @@ function populateInlineItemsGrid1(data){
 
 <!-- Get contract sow between client and the associate -->
   <script>
-  function getSow(rowId){
-	  var candidateId = $('#'+rowId+'candidate').val();
+  function getSow(rowId,candidateId){
+	 /*  var candidateId = $('#'+rowId+'candidate').val(); */
 	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -599,6 +598,8 @@ function populateInlineItemsGrid1(data){
 			        		var opt = json[i];
 			        		$('#'+rowId+'sow').empty();
 			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
+			        		$('#'+id+'rate').val(opt.billingAmount);
+			        		calculateTotalAmount(id);
 					} 
 	        	}else{
 	        		
@@ -1233,7 +1234,6 @@ function getClients(){
  <!--show tax values in Edit mode  -->
 <script>
 	function editTax(invoiceTaxList){  
-		alert(invoiceTaxList.length);
 		for(var i=0; i<invoiceTaxList.length; i++){
 			var opt = invoiceTaxList[i];
 			if(i == 0){
