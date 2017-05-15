@@ -77,7 +77,7 @@
                   </label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedResignationAttachments"></div>
 				        </span>
                       </div>
@@ -90,7 +90,7 @@
                   </label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedOffboardPackAttachments"></div>
 				        </span>
                       </div>
