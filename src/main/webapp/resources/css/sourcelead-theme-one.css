@@ -324,6 +324,13 @@ float: none; display: inline-block; width: 100%;
 /* open class */
 /* Menu styles */
 
+.side-bar .user-panel .media .media-body .text-logo{
+	width: 55px;
+}
+.side-bar .side-nav ul ul.collapses{
+	display: none;
+}
+
 @media (max-width: 1024px){
 	.content-wraper, .footer-area {
 	margin-left: 0;

@@ -30,14 +30,14 @@ color:#337ab7 !important;
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons"> <a href="javascript:void(0)"  class="btn btn-primary btn-sm" title="Create payables" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Payables</a>
+          <div class="onboardcreateButtons"> <a href="javascript:void(0)"  class="btn btn-primary btn-sm" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>
            <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getPayableInvoiceList();customInvoiceList();">
-                <option value="month">1 Month</option>
-                <option value="twomonths">2 Months</option>
-                <option value="threemonths">3 Months</option>
-                <option value="sixmonths">6 Months</option>
-                <option value="oneyear">1 Year</option>
+                <option value="month">Last 30 days</option>
+                <option value="twomonths">Last 60 Days</option>
+                <option value="threemonths">Last 90 days</option>
+                <option value="sixmonths">Last 180 days</option>
+                <option value="oneyear">Last 365 days</option>
                 <option value="custom">Custom</option>
               </select>
               
@@ -120,7 +120,7 @@ color:#337ab7 !important;
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Invoice</span><i class="glyphicon glyphicon-play" ></i>|
+                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                         <div class="approved_pop" id="invoiceTabOne">
                           <ul>
                             <li>
@@ -131,18 +131,18 @@ color:#337ab7 !important;
                               <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getPayableInvoiceList();">
                               <label for="onboard2">Sent</label>
                             </li>
-                            <!-- <li>
-                              <input type="checkbox" id="onboard3" name="invoiceStatus">
-                              <label for="onboard3">Accepted</label>
+                            <li>
+                              <input type="checkbox" id="" value="RECEIVED" name="invoiceStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Received</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard4" name="invoiceStatus">
-                              <label for="onboard4">Rejected</label>
+                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Accepted</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard5" name="invoiceStatus">
-                              <label for="onboard5">On-Hold</label>
-                            </li> -->
+                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Rejected</label>
+                            </li>
                           </ul>
                         </div>
                       </li>
@@ -150,21 +150,21 @@ color:#337ab7 !important;
                         <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
                         <div class="approved_pop" id="paymentTabOne">
                           <ul>
-                            <li>
-                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getPayableInvoiceList();">
-                              <label for="onboard1">Unpaid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Partial Paid</label>
-                            </li>
-                            <li>
+                             <li>
                               <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
                               <label for="onboard3">Paid</label>
+                            </li>
+                             <li>
+                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Partially Paid</label>
                             </li>
                             <li>
                               <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getPayableInvoiceList();">
                               <label for="onboard4">OverDue</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getPayableInvoiceList();">
+                              <label for="onboard1">Unpaid</label>
                             </li>
                           </ul>
                         </div>
@@ -767,7 +767,7 @@ function getPayableInvoiceList(){
 				
 				result = result +'         <td> ';
 				
-				if(report.invoiceType=="Payables"){
+				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
 					}else{
@@ -782,7 +782,10 @@ function getPayableInvoiceList(){
 							
 						}
 					}
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 				}
+				
 				if(report.invoiceType=="Receivable"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
@@ -830,6 +833,7 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"aaSorting": [[0,'desc']],
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
@@ -846,7 +850,7 @@ function acceptedInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     });  
@@ -861,7 +865,7 @@ function rejectInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     }); 

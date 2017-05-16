@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoicePaymentService;
@@ -113,7 +114,9 @@ public class InvoiceRestController {
 
 	@Autowired
 	private InvoiceDao invoiceDao;
-	
+
+	@Autowired
+	private ContractsTemplateService contractsTemplateService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -253,6 +256,7 @@ public class InvoiceRestController {
      		}
      		 	
      		if(null != contractsList){
+     			System.out.println("================="+contractsList.size());
          		resultJson = commonUtil.toJSON(contractsList);	
          	}
      	}
@@ -401,7 +405,9 @@ public class InvoiceRestController {
 				}
 				
 			}
-			
+			if(null != invoice.getParentInvoiceId()){
+				invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());	
+			}
 			invoice.setDraftInvoiceCount(draftCount);
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
@@ -605,7 +611,6 @@ public class InvoiceRestController {
 
 		}  
 
-	//******************* Added By Rajashekar
 	
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
@@ -657,7 +662,20 @@ public class InvoiceRestController {
 			}
 			projectMember.setStartDate(startDateStr);
 			projectMember.setEndDate(endDateStr);
-			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+			String billableHours = String.valueOf(totalHours.get("BILLABLE_HOURS"));;
+			String arr[] = billableHours.split("\\.");
+			StringBuilder sb = new StringBuilder();
+			if(arr[0].length()==2){
+				sb.append("0").append(arr[0]);
+			}else if(arr[0].length()==1){
+				sb.append("00").append(arr[0]);	
+			}
+			if(arr[1].length()==1){
+				sb.append(":").append("0").append(arr[1]);
+			}else{
+				sb.append(":").append(arr[1]);
+			}
+			projectMember.setTotalHours(sb.toString());
 		}
 		return commonUtil.toJSON(projectMembersList);
 	} 
@@ -722,7 +740,20 @@ public class InvoiceRestController {
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+				String billableHours = String.valueOf(totalHours.get("BILLABLE_HOURS"));;
+				String arr[] = billableHours.split("\\.");
+				StringBuilder sb = new StringBuilder();
+				if(arr[0].length()==2){
+					sb.append("0").append(arr[0]);
+				}else if(arr[0].length()==1){
+					sb.append("00").append(arr[0]);	
+				}
+				if(arr[1].length()==1){
+					sb.append(":").append("0").append(arr[1]);
+				}else{
+					sb.append(":").append(arr[1]);
+				}
+				projectMember.setTotalHours(sb.toString());
 			}
 		}
 		return commonUtil.toJSON(projectMembersList);
@@ -738,7 +769,18 @@ public class InvoiceRestController {
  	    resultJson = commonUtil.toJSON(projectList);
  	    return resultJson;
  	}
-	//******************* End By Rajashekar
+	
+	
+	
+	@RequestMapping(value = "/getSowRateByContractId", method = RequestMethod.GET)
+ 	public @ResponseBody  String getSowRateByContractId(@RequestParam(value = "contractId", required = false) Long contractId,
+ 			HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	{
+		  String resultJson;
+         Contracts contractsList = contractsTemplateService.getContractById(contractId);
+         resultJson = commonUtil.toJSON(contractsList);	
+         return resultJson;
+ 	}
 
 	@RequestMapping(value = "/acceptedInvoice", method = RequestMethod.POST)
 	public @ResponseBody String acceptedInvoice(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
