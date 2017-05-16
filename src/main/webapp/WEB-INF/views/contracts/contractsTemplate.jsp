@@ -143,7 +143,6 @@ function listTemplatePagination(){
 
 <script type="text/javascript">
 function previewPDF(id,tempName) {
-	alert(tempName);
 	var sourceleadUrl ='${sourceleadUrl}';
 	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
 }</script>

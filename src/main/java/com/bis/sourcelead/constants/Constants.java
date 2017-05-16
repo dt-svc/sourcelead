@@ -144,7 +144,7 @@ public class Constants {
 	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	
 	public static String CUSTOM_USER_EMAIL = "customUserEmail";
-	
+	public static String INVOICE_CLIENT_ACCEPT_MAIL="InvoiceClientAcceptEmail";
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 	public static String NOTIFICATION_TO_CLIENT = "Notification To Client";
@@ -686,6 +686,12 @@ public class Constants {
     public static String THREE_MONTHS = "threemonths";
     public static String SIX_MONTHS = "sixmonths";
     public static String ONE_YEAR = "oneyear";
+    
+    public static String INVOICE_ACCEPETED = "Accepted";
+    public static String INVOICE_REJECTED = "Rejected";
+    public static String INVOICE_RECEIVED = "Received";
+    
+    public static String INVOICE_STATUS_UNPAID = "Unpaid";
     
     public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;    
     //invoice

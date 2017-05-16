@@ -50,9 +50,9 @@ function cancel(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Invoice</h2>
+			<h2>Bills</h2>
 		</div>
-		<div class="pull-right brud-crum">Home » Invoice</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Bills</div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
@@ -85,21 +85,21 @@ function cancel(){
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-3">Invoice Id<span
+							<label class="col-md-3">Bill Id<span
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="invoiceId"
-									name="invoiceId" value="" placeholder="Invoice Id"
+									name="invoiceId" value="" placeholder="Bill Id"
 									data-validation="required" field-name="Invoice Id">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Invoice Date<span
+							<label class="col-md-3">Bill Date<span
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 select-field" id="errInvoiceDate">
 								<input type="text" class="form-control calendar"
 									id="invoiceDate" name="invoiceDate" value=""
-									placeholder="Invoice Date" id="invoiceDate" readonly
+									placeholder="Bill Date" id="invoiceDate" readonly
 									data-validation="required" field-name="Invoice Date">
 							</div>
 						</div>
@@ -121,7 +121,7 @@ function cancel(){
 							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
-									name="dueDate" value="" placeholder="Invoice Date" id="dueDate"
+									name="dueDate" value="" placeholder="Due Date" id="dueDate"
 									readonly data-validation="required" field-name="Due Date">
 							</div>
 						</div>
@@ -226,7 +226,7 @@ function cancel(){
 		 result = result +'  <tr id="divTsRow0">';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
-		 result = result +'  <th>Sow</th>';
+		 result = result +'  <th>SOW</th>';
 		 result = result +'  <th>Rate</th>';
 		 result = result +'  <th>Total Hours</th>';
 		 result = result +'  <th>Amount</th>';

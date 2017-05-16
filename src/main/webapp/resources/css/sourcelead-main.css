@@ -74,7 +74,7 @@ textarea {
 /* Maring Styles ends*/
 
 .wraper {
-	min-height: 100%; overflow: hidden; position: relative; width: 100%;
+	min-height: 100%; position: relative; width: 100%; /*overflow: hidden;*/
 }
 .wrapper::before, .wrapper::after {
 	content: " "; display: table;
@@ -340,7 +340,7 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 .side-bar {
 background-color: #375d81; left: 0; min-height: 100%; position: fixed; top: 0; width: 230px; z-index: 810;
 padding-top: 50px; box-shadow: 1px 1px 2px #707070; transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
--webkit-transition: 0.3s ease-in-out; overflow-x:hidden; overflow-y:auto; overflow: hidden;
+-webkit-transition: 0.3s ease-in-out; /*overflow-x:hidden; overflow-y:auto; overflow: hidden;*/
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -609,7 +609,7 @@ background: -moz-linear-gradient(#fff, #eff4ff); background: linear-gradient(#ff
 border: 1px solid #c9cee2; border-radius: 4px;
 }
 .section-action-btns ul {
-	margin: 5px 10px;
+	margin: 5px 10px; position: relative;
 }
 .section-action-btns ul li {
 transition: all 0.5s ease-in-out 0s; margin:5px 6px; padding:0px !important; position: relative;
@@ -4608,10 +4608,10 @@ min-height: 50px;
     margin-right: -15px !important; margin-left: -15px !important;
 }
 .onboardDocs strong a {
-    color: #fff;left: -10px; top: 10px;
+    color: #fff;left: -10px; top: 0px;
 }
 .onboardDocs strong input.dele{
-width: 7%; top: 10px;	
+width: 7%; top: 0px;	
 }
 .skillsView  ul li { float: left; border-radius:3px; list-style-type:none; margin-right: 5px;
 padding: 0px 5px; border: 1px solid #ccc; margin-bottom: 5px; background: #ededed; font-size: 13px;
@@ -5195,6 +5195,44 @@ float: left; position: relative;top:5px; width: 10%;
 .status_contact {
 	min-width: 60px;padding: 1px 3px;font-size: 13px; border-radius:5px;float: left;
 }
+.onboardDocs .uploadAttachments strong {
+    clear: both; display: inline-flex;
+}
+/* Menu styles */
+.side-nav i.subMenu {
+    font-style: normal;
+}
+.side-bar-active .side-bar-inner, .side-bar-active .side-nav {
+    width: 55px;
+}
+.side-bar-active .side-nav ul li, .side-bar-active .side-nav ul li a {
+    float: left; line-height: 35px;
+}
+.side-bar-active .side-nav ul ul{
+    display: none; border-radius: 0 5px 5px 0;
+}
+.side-bar-active .side-nav ul li {
+    line-height: inherit; position: relative;
+}
+.side-bar-active .side-nav ul ul.collapses {
+    position: absolute; left: 55px;
+}
+.side-bar-active .side-nav ul li ul li{
+    width: 200px; list-style-type: none;
+}
+.side-bar-active .side-nav ul li ul li:last-of-type {
+    border-bottom:none;
+}
+.side-bar-active .side-nav ul li ul li a{
+    margin-left:0; padding: 0 10px; list-style-type: none;
+}
+.side-bar-active .subMenu{
+    display: none;
+}
+.side-bar-active .fa-fw {
+  position: absolute !important; right: 0 !important;
+}
+/* Menu styles */
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -5387,24 +5425,54 @@ margin-top:0px; width: 79%;
 .table {
  max-width: 850px !important; width: 850px;
 }
-.tree-view.tree-view-active {
- display: block !important;
-}
-.tree-view-new {
-	display: none !important;
-}
-.tree-view-new.tree-view-new-active {
-	display: none !important;
-}
 .side-bar .user-panel.user-panel-active .media .media-body .text-logo {
-	width:200px; font-size: 15px;
+        width:200px; font-size: 15px;
 }
 .side-bar .user-panel.user-panel-active {
-padding: 10px 15px; width: 230px; height: 80px;
+    padding: 10px 15px; width: 230px; height: 80px;
 }
 .side-bar .user-panel.user-panel-active .image img {
-	width: auto;
+        width: auto;
+} 
+    /* .tree-view.tree-view-active {
+     display: block !important;
+    }
+    .tree-view-new {
+        display: none !important;
+    }
+    .tree-view-new.tree-view-new-active {
+        display: none !important;
+    }
+    */
+    
+/* open class */
+.side-bar.side-bar-active .subMenu{
+    display: block;
 }
+.side-bar.side-bar-active .side-bar-inner{
+    width: 230px;   
+}
+.side-bar.side-bar-active .side-nav ul{
+    display: none; border-radius: 0 5px 5px 0; width: 100%; clear: both; display: inline-block;
+}
+.side-bar.side-bar-active .side-nav ul li{
+float: none; display: inline-block; width: 100%;
+}
+
+.side-bar.side-bar-active .side-nav ul li a{
+float: none; display: inline-block; width: 100%;
+}
+.side-bar.side-bar-active .side-nav ul ul.collapses {
+    position: relative; left: 0px; border: none; border-top:1px solid #ccc; border-radius:0;
+}
+.side-bar.side-bar-active .side-nav ul ul.collapses li a{
+    padding-left: 25px;
+}
+.side-bar.side-bar-active .side-bar-inner, .side-bar.side-bar-active .side-nav {
+    width: 230px; clear: both; display: inline-block;
+}
+/* open class */    
+    
 .footer-area {
 	margin: 0;
 }
