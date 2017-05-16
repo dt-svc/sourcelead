@@ -86,6 +86,9 @@ textarea {
 	background: /*#3081cb*/ #eeeeee; padding: 0 15px; line-height: 52px; width: 230px; box-sizing: border-box; height: 52px; float: left;
 	/*transition: all 0.5s ease-in-out 0s;*/
 }
+.main-header span.logo img {
+	/*width:100%;*/ width: 200px;
+}
 .main-header span.logo:hover {
  background: #eeeeee;
 }
@@ -562,7 +565,7 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 .content-wraper {
 background: #e0e0e0; min-height: 620px; margin-left: 230px; padding: 0 30px 30px;
 -moz-transition: all ease-in-out 0.3s; -ms-transition: all ease-in-out 0.3s; -webkit-transition: all ease-in-out 0.5s;
-transition: all ease-in-out 0.3s; padding-top: 52px;
+transition: all ease-in-out 0.3s; padding-top: 53px;
 }
 .content-wraper.content-wraper-active {
 	margin-left: 50px;
@@ -575,7 +578,7 @@ box-shadow: 0px 0px 3px #707070; -webkit-box-shadowbox-shadow: 0px 0px 3px #7070
 position: relative;
 }
 .inner-content {
- clear: both; display: inline-block; margin-top: 30px; width: 100%;
+ clear: both; display: inline-block; margin-top: 25px; width: 100%;
 }
 .content-dashboard {
 min-height: 100%; border-radius: 5px; min-height:100px; padding: 0; -moz-transition: all ease-in-out 0.3s;
@@ -4546,7 +4549,7 @@ background: #0277BD;
     border: transparent;
 }
 .onboardcreateButtons {
-    position: absolute; right: 0; top: 0; z-index: 99;
+    position: absolute; right: 0; top: 0; z-index: 1;
 }
 .width300px {
     width: 300px;
@@ -5198,6 +5201,7 @@ float: left; position: relative;top:5px; width: 10%;
 .onboardDocs .uploadAttachments strong {
     clear: both; display: inline-flex;
 }
+
 /* Menu styles */
 .side-nav i.subMenu {
     font-style: normal;
@@ -5380,7 +5384,7 @@ border-bottom: 1px solid #f60; position: inherit; top: 0; right: 0px; width: 100
 	margin-left: 0;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
-    display: inline-block; padding: 16.5px 9px;
+    display: inline-block; padding: 16.5px 7.5px;
 }
 .flag-image {
 	position: fixed !important; top:0; right:10px; z-index: 9;
@@ -5388,6 +5392,9 @@ border-bottom: 1px solid #f60; position: inherit; top: 0; right: 0px; width: 100
 .brud-crum {
 	display: none;
 	}
+    .login-user .image img {
+        margin: 0% auto 0;
+    }
 }
 @media (max-width: 1210px) {
 .searchArea_mrgn{
