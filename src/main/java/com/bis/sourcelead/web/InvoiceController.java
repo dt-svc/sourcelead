@@ -144,6 +144,7 @@ public class InvoiceController {
 		model.setViewName("billing/viewInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("invoiceUUID", invoiceUUID);
+		model.addObject("invoiceType", invoiceType);
 		if(invoiceType.equalsIgnoreCase("Receivable")){
 			sessionData.setNav(Constants.Receivable);
 		}else{

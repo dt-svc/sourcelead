@@ -1735,55 +1735,84 @@ public class EMailJobScheduler {
 		            EnvelopesApi.ListStatusChangesOptions options = envelopesApi.new ListStatusChangesOptions();
 		            
 		            for (Contracts contracts : conList) {
-		            	if(contracts.getEndDate()!=null){
-		            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		            		Date date = new Date();
-		            		String currentTimeStr = TZ_DF_TS.format(date);
-		    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
-		            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
-		            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+		            	if(null != contracts.getEnvelopId() ){
+			            	if(contracts.getEndDate()!=null){
+			            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			            		Date date = new Date();
+			            		String currentTimeStr = TZ_DF_TS.format(date);
+			    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+			            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+			            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+				        			if(null != childContarct.getParentContractId()){
+				        				childContarct.setId(childContarct.getId());
+				        				childContarct.setTemplateSubmissionStatus("EXPIRED");
+				        				contracts.setId(contracts.getId());
+				        				contracts.setTemplateSubmissionStatus("EXPIRED");
+				        				contractsTemplateService.saveNewContract(childContarct);
+			            		}
+			            	 }
+			            	}
+			            	
+			            	if(contracts.getEndDate()!=null){
+			            		if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+					            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					            		Date date = new Date();
+					            		String currentTimeStr = TZ_DF_TS.format(date);
+					    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+					            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+					            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+						        			if(null != childContarct.getParentContractId()){
+						        				childContarct.setId(childContarct.getId());
+						        				childContarct.setTemplateSubmissionStatus("EXPIRED");
+						        				contracts.setId(contracts.getId());
+						        				contracts.setTemplateSubmissionStatus("EXPIRED");
+						        				contractsTemplateService.saveNewContract(childContarct);
+					            		}
+					            	 }
+			            		}
+			            	}
+			            	
+			            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
+			            	if(evp.getStatus().equalsIgnoreCase("completed")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+			            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			            		if(null != childContarct.getParentContractId()){
+			        				childContarct.setId(childContarct.getId());
+			        				childContarct.setTemplateSubmissionStatus("SEND_FOR_VERIFICATION");
+			        				contracts.setId(contracts.getId());
+			        				contracts.setTemplateSubmissionStatus("WAITING_TO_BE_VERIFY");
+			        				contracts.setContractStatus(evp.getStatus());
+			        				childContarct.setContractStatus(evp.getStatus());
+			        				contractsTemplateService.saveNewContract(childContarct);
+			        			}
+			            	}
+			            	if(evp.getStatus().equalsIgnoreCase("declined")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+			            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 			        			if(null != childContarct.getParentContractId()){
 			        				childContarct.setId(childContarct.getId());
-			        				childContarct.setTemplateSubmissionStatus("EXPIRED");
+			        				childContarct.setTemplateSubmissionStatus("REJECTED");
 			        				contracts.setId(contracts.getId());
-			        				contracts.setTemplateSubmissionStatus("EXPIRED");
-		            		}
-		            	 }
-		            	}
-		            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
-		            	if(evp.getStatus().equalsIgnoreCase("completed")){
-		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-		        			if(null != childContarct.getParentContractId()){
-		        				childContarct.setId(childContarct.getId());
-		        				childContarct.setTemplateSubmissionStatus("SEND_FOR_VERIFICATION");
-		        				contracts.setId(contracts.getId());
-		        				contracts.setTemplateSubmissionStatus("WAITING_TO_BE_VERIFY");
-		        				contracts.setContractStatus(evp.getStatus());
-		        			}
-		            	}
-		            	if(evp.getStatus().equalsIgnoreCase("declined")){
-		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-		        			if(null != childContarct.getParentContractId()){
-		        				childContarct.setId(childContarct.getId());
-		        				childContarct.setTemplateSubmissionStatus("REJECTED");
-		        				contracts.setId(contracts.getId());
-		        				contracts.setTemplateSubmissionStatus("REJECTED");
-		        				contracts.setContractStatus(evp.getStatus());
-		        			}
-		            	}
-		            	if(evp.getStatus().equalsIgnoreCase("deleted")){
-		            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-		        			if(null != childContarct.getParentContractId()){
-		        				childContarct.setId(childContarct.getId());
-		        				childContarct.setTemplateSubmissionStatus("DELETED");
-		        				contracts.setId(contracts.getId());
-		        				contracts.setTemplateSubmissionStatus("DELETED");
-		        				contracts.setContractStatus(evp.getStatus());
-		        			}
-		            	}
-		            	contractsTemplateService.saveNewContract(contracts);
-					}
-		           
+			        				contracts.setTemplateSubmissionStatus("REJECTED");
+			        				contracts.setContractStatus(evp.getStatus());
+			        				childContarct.setContractStatus(evp.getStatus());
+			        				contractsTemplateService.saveNewContract(childContarct);
+			        			}
+			            	}
+			            	if(evp.getStatus().equalsIgnoreCase("deleted")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+			            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			        			if(null != childContarct.getParentContractId()){
+			        				childContarct.setId(childContarct.getId());
+			        				childContarct.setTemplateSubmissionStatus("DELETED");
+			        				contracts.setId(contracts.getId());
+			        				contracts.setTemplateSubmissionStatus("DELETED");
+			        				contracts.setContractStatus(evp.getStatus());
+			        				childContarct.setContractStatus(evp.getStatus());
+			        				contractsTemplateService.saveNewContract(childContarct);
+			        			}
+			            	}
+			            	contractsTemplateService.saveNewContract(contracts);
+			            	
+						}
+		            }
 				
 		        }
 		        catch (com.docusign.esign.client.ApiException ex)
