@@ -849,7 +849,7 @@ function acceptedInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/payableList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     });  
@@ -864,7 +864,7 @@ function rejectInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/payableList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     }); 

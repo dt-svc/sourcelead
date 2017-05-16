@@ -66,7 +66,7 @@ function cancel(){
 							<div class="col-md-9 select-field" id="errVendor">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();"
+									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();getPaymentTerms();"
 									data-validation="required" field-name="Client Name">
 								</select>
 							</div>
@@ -1769,9 +1769,37 @@ function getVendorContacts(vendorContactId){
 	}
 </script>
 
-
-
-
+<script> 
+function getPaymentTerms(){
+	var orgRelationId = $("#vendorOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+			 var json = JSON.parse(data);
+			 for (var i=0; i<json.length; i++)
+				{
+				var repot = json[i];
+				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
+		           		$("#paymentFrequency").val(repot.paymentTerms);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}else{
+		           		$("#paymentFrequency").val('');
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	if(repot.billingAddress != null && repot.billingAddress != '' && repot.billingAddress != 'undefined'){
+		           		$("#billingAddress").val(repot.billingAddress);
+		           	}else{
+		           		$("#billingAddress").val('');
+		           	}
+				}
+			
+		}
+	});
+}
+</script>
 <script>
 function saveInvoice(saveType){
          

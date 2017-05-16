@@ -754,7 +754,16 @@ function getInvoiceList(){
 						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 					}
 				}else{
-					result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+					if(report.invoiceStatus == "Accepted"){
+						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+					}else{
+						if(report.invoiceStatus == "Rejected"){
+							result = result +'           <span class="text-primary successBtn primary clearfix" >Rejected</span> </td>          ';	
+						}else{
+							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+						}
+						
+					}
 				}
 
 				if(report.invoiceType=="Payables" ){
