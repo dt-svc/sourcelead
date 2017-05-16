@@ -103,11 +103,14 @@ public class ContractRestController {
 	UserService userService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody String saveClient(
 			HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
+		/*String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);*/
+		
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -179,6 +182,10 @@ public class ContractRestController {
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 
+		if(null != contract.getEnvelopId()&& ("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
+			  pdfBytes = contract.getDocFile();
+		}
+		
 		if(null == contract.getEnvelopId()&& ("Existing").equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
@@ -284,7 +291,32 @@ public class ContractRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user,org);
+		
+		MultipartFile multiFile = null;
+		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user,org,"",multiFile);
+	   if(null != contracts){
+		   isContractSaved = true;
+	   }
+		return isContractSaved;
+	}
+	
+	
+	@RequestMapping(value = "/saveCustomContract", method = RequestMethod.POST)
+	public @ResponseBody boolean saveCustomContract(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,@RequestParam(value = "conType1", required = false) String conType,MultipartHttpServletRequest request) throws Exception {
+
+		boolean isContractSaved = false;
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		MultipartFile multiFile = null;
+		Iterator<String> itrator = request.getFileNames();
+		if(itrator.hasNext()){
+	        multiFile = request.getFile(itrator.next());
+		} 
+		Contracts contracts = contractsTemplateService.saveNewContract(jsonObj,orgLocation,saveType,user,org,conType,multiFile);
 	   if(null != contracts){
 		   isContractSaved = true;
 	   }

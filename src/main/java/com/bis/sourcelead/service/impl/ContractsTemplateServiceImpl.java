@@ -161,7 +161,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user,Org org) throws Exception
+	public Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType,User user,Org org,String contractType, MultipartFile multiFile) throws Exception
 	{
 		Contracts contracts;
 		Contracts vendorContracts = null;
@@ -190,16 +190,31 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		else{
 			contracts.setContractType(jsonObj.getString("contractType"));
         }
-		
-		ContractsTemplate contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
-		if(null != contractsTemplate){
-			contracts.setContractsTemplate(contractsTemplate);
-			if(null != vendorContracts){
-				vendorContracts.setContractsTemplate(contractsTemplate);
+		ContractsTemplate contractsTemplate = null;
+		if(jsonObj.has("template")){
+			contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
+			if(null != contractsTemplate){
+				contracts.setContractsTemplate(contractsTemplate);
+				if(null != vendorContracts){
+					vendorContracts.setContractsTemplate(contractsTemplate);
+				}
 			}
 		}
-		contracts.setTypeOfContract("New");
-		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		
+		if(multiFile != null){
+			contracts.setDocFile(multiFile.getBytes());
+			contracts.setFileName(multiFile.getOriginalFilename());
+			contracts.setFileType(multiFile.getContentType());
+		 }
+		
+		if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
+			contracts.setTypeOfContract("Custom");
+			vendorContracts.setTypeOfContract("Custom");
+		}else{
+			contracts.setTypeOfContract("New");
+			vendorContracts.setTypeOfContract("New");
+		}
+		
 		if(null != vendorContracts){
 			vendorContracts.setTypeOfContract("New");
 		}
@@ -403,6 +418,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		vendorContracts.setContractUUID(contracts.getContractUUID());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
 		if(null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
@@ -484,7 +500,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			
 			  if(null != vendorContactsUser && null == approverUser && !"DRAFT".equalsIgnoreCase(saveType)){
-		            Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
+				  Contracts con = null;
+				  if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
+					  con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(vendorContactsUser,contracts,orgLocation,user,savedContracts,org);
+				  }else{
+					  con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
+				  }
+		            
 		            savedContracts.setDocId(con.getTempdocId());
 		            savedContracts.setEnvelopId(con.getTempEnvId());
 		            savedContracts.setContractStatus(con.getContractStatus());
