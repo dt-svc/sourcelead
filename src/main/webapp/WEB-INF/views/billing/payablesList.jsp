@@ -731,7 +731,13 @@ function getPayableInvoiceList(){
         		result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					
+					if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					}else{
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
+					}
+					
 
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){

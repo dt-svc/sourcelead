@@ -353,7 +353,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 Set<InvoiceTax> invoiceTaxSet = new HashSet<>();
 		 List<Long> updatedtaxLineItems = new ArrayList<Long>();
 		 int maxTaxRowCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
-		 for(int i=0;i<maxTaxRowCount;i++){
+		 for(int i=1;i<maxTaxRowCount;i++){
 			 if(jsonObj.has(i+"taxType")){
 				 if(null != jsonObj.getString(i+"taxType") || null != jsonObj.getString(i+"taxdiscountType") || null != jsonObj.getString(i+"taxdiscountvalue") || null != jsonObj.getString(i+"taxTotal") ||
 						 !"".equalsIgnoreCase(jsonObj.getString(i+"taxType")) ||  !"".equalsIgnoreCase(jsonObj.getString(i+"taxdiscountType")) ||  !"".equalsIgnoreCase(jsonObj.getString(i+"taxdiscountvalue")) ||  !"".equalsIgnoreCase(jsonObj.getString(i+"taxTotal")) ){
