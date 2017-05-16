@@ -52,50 +52,50 @@ color:#337ab7 !important;
             
             <li class="active">
                         <h4>Unbilled</h4>
-                        <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Current onboard count">
+                        <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Draft Bills">
                             <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="unbilledAmoumt"></div>
-                                <h5>Draft Invoice<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                <h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
                                 </div>
                         </a>
                     </li>
                     <li>
                         <h4>Un Paid</h4>
-                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbg_red">
+                        <a href="#unpaid" data-toggle="tab" title="UnPaid Overdue Bills" class="billingbg_red">
                         <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
-                        <h5>Overdue Invoice<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
+                        <h5>Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
                             </div>
                         
                         </a>
                     </li>
                     <li>
                         <h4>&nbsp;</h4>
-                        <a href="#unpaid" data-toggle="tab" title="Current offboard count" class="billingbgRed">
+                        <a href="#unpaid" data-toggle="tab" title="UnPaid Open Bills" class="billingbgRed">
                         <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
-                        <h5>Open Invoice<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
+                        <h5>Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
                         </div>
                         </a>
                     </li>
                     <li class="billingbg_greens">
                         <h4>Paid</h4>
-                        <a href="#paid" data-toggle="tab" title="Incomplete Tasks count" class="billbg_green">
+                        <a href="#paid" data-toggle="tab" title="Paid Bills" class="billbg_green">
                         <div class="pull-left">
                             <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
                             </div>
                             <div class="pull-right">
                             <div class="count" id="paidInvoiceAmount"></div>
-                        <h5>Paid Invoice<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
+                        <h5>Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
                             </div>
                         </a>
                     </li>
@@ -374,15 +374,15 @@ color:#337ab7 !important;
 		            <strong class="clearfix">Project Based </strong> </a> </div>
 		        </div>
 		          
-		          <div class="col-md-4 mt25">
+		          <!-- <div class="col-md-4 mt25">
 		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
 		            <div class="clearfix mb10">
-		              <!--<i class="fa fa-usd fa-3x"></i>   -->           
+		              <i class="fa fa-usd fa-3x"></i>             
 		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
 		              </div>
 		            <strong class="clearfix">Other</strong> </a> </div>
 		        </div>
-		
+		 -->
 		      
 		          </div>
 		    </div>
@@ -677,7 +677,7 @@ function getPayableInvoiceList(){
 			result = result +'         <th>Vendor Name</th>           ';
 			result = result +'         <th>Contact</th>               ';
 			result = result +'         <th>Due date</th>              ';
-			result = result +'         <th>Invoice Date</th>               ';
+			result = result +'         <th>Bill Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
 			result = result +'         <th>Status</th>                ';
@@ -727,15 +727,15 @@ function getPayableInvoiceList(){
         		}else{
         			invoiceDateStr = "";
         		}
-        		
-        		
-				result = result +'       <tr> ';
+  		    		
+        		result = result +'       <tr> ';
 				result = result +'         <td>';
-				if(report.invoiceStatus == "DRAFT"){
+				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+
 				}
-				if(report.invoiceStatus == "SENT"){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Payables"/>">'+report.invoiceId+'</a></div>   ';				
+				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>">'+report.invoiceId+'</a></div>   ';				
 				}
 				
 				result = result +'         </td>  ';
@@ -766,12 +766,32 @@ function getPayableInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				 
-				if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-					result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
-				}else{
-					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>          ';
+				
+				if(report.invoiceType=="Payables"){
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
+					}else{
+						if(report.invoiceStatus == "Accepted"){
+							result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+						}else{
+							if(report.invoiceStatus == "Rejected"){
+								result = result +'           <span class="text-danger successBtn primary clearfix" >Rejected</span> </td>          ';	
+							}else{
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+							}
+							
+						}
+					}
 				}
+				if(report.invoiceType=="Receivable"){
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
+					}else{
+						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+					}
+				}
+				 
+				
 				
 				result = result +'       </tr>                                                                                                           ';
 
@@ -818,7 +838,36 @@ function invoicePagination(){
     } );
 }
 </script>
+<script>
+function acceptedInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    });  
+}
 
+</script>
+<script>
+function rejectInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    }); 
+}
+
+</script>
 <script>
 function cancelbtn(){
 	  $("#recvPymntpop").fadeOut(200);

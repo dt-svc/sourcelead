@@ -128,7 +128,7 @@ public class InvoiceController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/viewInvoice")
-	public ModelAndView viewInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
+	public ModelAndView viewInvoice(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID,@RequestParam(value="invoiceType", required=false) String invoiceType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
@@ -143,7 +143,8 @@ public class InvoiceController {
 		}
 		model.setViewName("billing/viewInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("invoiceId", invoiceId);
+		model.addObject("invoiceUUID", invoiceUUID);
+		model.addObject("invoiceType", invoiceType);
 		if(invoiceType.equalsIgnoreCase("Receivable")){
 			sessionData.setNav(Constants.Receivable);
 		}else{

@@ -1,19 +1,22 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +26,9 @@ import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
@@ -34,14 +40,13 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -65,6 +70,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 	CandidateService candidateService;
 	
 	@Autowired
+	private EmailScenarioService emailScenarioService;
+	@Autowired
 	ContractsTemplateService contractsTemplateService;
 	
 	@Autowired
@@ -72,6 +79,12 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	InvoiceTaxDao invoiceTaxDao;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+	
+	@Autowired
+	private EmailScenerioUtil emailScenerioUtil;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -207,7 +220,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(jsonObj.has("afterDiscountTotal") && !"".equalsIgnoreCase(jsonObj.getString("afterDiscountTotal"))){
 			invoice.setAfterDiscountValue(jsonObj.getString("afterDiscountTotal"));
 		}
-		
+		invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
 		if(jsonObj.has("projectId") && !"".equalsIgnoreCase(jsonObj.getString("projectId"))){
 			Projects projects = projectsService.getProjectById(Long.parseLong(jsonObj.getString("projectId")));
 			invoice.setProjectID(projects);
@@ -216,7 +229,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(jsonObj.has("frequency") && !"".equalsIgnoreCase(jsonObj.getString("frequency"))){
 			invoice.setInvoiceFrequency(jsonObj.getString("frequency"));
 		}
-		invoice.setPaymentStatus("Unpaid");
 		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
@@ -275,12 +287,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 			}
 		}
 		
+		//mail scenario for client accept or reject
+		invoiceClientAcceptMail(user,orgLocation,invoice);
 		
 		return invoice;
 	}
 	private void saveParentInvoice(Invoice invoice) throws Exception {
 		Invoice parentInvoice = new Invoice();
-		if(invoice.getInvoiceType().equalsIgnoreCase("payable")){
+		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)){
 			parentInvoice.setInvoiceType(Constants.Receivable);
 		}else{
 			parentInvoice.setInvoiceType(Constants.Payables);
@@ -302,7 +316,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
 		parentInvoice.setTotal(invoice.getTotal());
-		parentInvoice.setInvoiceStatus(invoice.getInvoiceStatus());
+		parentInvoice.setInvoiceStatus(Constants.INVOICE_RECEIVED);
+		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
 		parentInvoice.setDueAmount(invoice.getDueAmount());
@@ -482,7 +497,63 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 	}
 	
-	
+	private void invoiceClientAcceptMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
+
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(invoice.getContactUser().getEmail());
+		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		 emailMessage.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+		 String date = (Constants.DF_DMY.format(invoice.getDueDate()));
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
+		 globalVarsMap.put("LoginUser",user.getFirstName());
+		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+		 globalVarsMap.put("grandTotal",invoice.getTotal());
+		 globalVarsMap.put("dueDate",date); 
+		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
+		 globalVarsMap.put("address",invoice.getBillingAddress());
+		 StringBuilder attachmentLinkBuilder=new StringBuilder();
+	        if(invoice.getFileName() != null){
+	            globalVarsMap.put("attachement",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("/downloadInvoiceAttachment?invoiceId=").append(invoice.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
+	        }
+		 
+		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_ACCEPT_MAIL,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_ACCEPT_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orglocations.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
+	}
+
 
 	@Override
 	public void getPdfFileForInvoice(Invoice invoice,OrgLocations orgLocation,User user, Org org) throws Exception {

@@ -80,7 +80,7 @@
                   <label class="col-md-4 control-label mt10">These contracts will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedContractsAttachments"></div>
 				        </span>
                       </div>
@@ -94,7 +94,7 @@
                   <label class="col-md-4 control-label mt10">These forms will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedFormsAttachments"></div>
 				        </span>
                       </div>
@@ -108,7 +108,7 @@
                   <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedPociliesAttachments"></div>
 				        </span>
                       </div>
@@ -121,7 +121,7 @@
                   <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
                   <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			             <div id="savedSupportedAttachments"></div>
 				        </span>
                       </div>
