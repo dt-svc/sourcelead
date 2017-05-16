@@ -218,7 +218,8 @@ public class Invoice {
 	@Transient
 	private Integer dueBeforeInvoiceCount;
 	
-	
+	@Transient
+	private Long invoiceParentId;
 	
 	
 	
@@ -736,6 +737,12 @@ public class Invoice {
 		this.fileName = fileName;
 	}
 
-	
+	public Long getInvoiceParentId() {
+		return invoiceParentId;
+	}
+
+	public void setInvoiceParentId(Long invoiceParentId) {
+		this.invoiceParentId = invoiceParentId;
+	}
 	
 }

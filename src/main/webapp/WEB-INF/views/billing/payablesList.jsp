@@ -767,7 +767,7 @@ function getPayableInvoiceList(){
 				
 				result = result +'         <td> ';
 				
-				if(report.invoiceType=="Payables"){
+				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
 					}else{
@@ -782,7 +782,10 @@ function getPayableInvoiceList(){
 							
 						}
 					}
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 				}
+				
 				if(report.invoiceType=="Receivable"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
@@ -830,6 +833,7 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"aaSorting": [[0,'desc']],
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
@@ -846,7 +850,7 @@ function acceptedInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     });  
@@ -861,7 +865,7 @@ function rejectInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     }); 
