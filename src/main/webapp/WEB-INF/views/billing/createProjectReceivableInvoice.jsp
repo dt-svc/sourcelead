@@ -427,7 +427,7 @@ function populateInlineItemsGrid(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow">';
+    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
     	 result = result +'<option>Sow</option>';
     	 result = result +' </select>';
     	 result = result +'</div>';
@@ -525,7 +525,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow">';
+    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
     	 result = result +'<option>Sow</option>';
     	 result = result +' </select>';
     	 result = result +'</div>';
@@ -548,7 +548,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	getSow(i,opt.candidateId);
+    	getSow(i,opt.candidateId,opt.contractId);
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -588,25 +588,33 @@ function populateInlineItemsGrid1(data){
 </script>
 
 <!-- Get contract sow between client and the associate -->
-  <script>
-  function getSow(rowId,candidateId){
-	 /*  var candidateId = $('#'+rowId+'candidate').val(); */
-	  var orgRelationId = $("#clientOrgRelationId").val();
+ <script>
+  function getSow(id,candidateId,opt,contractId){
+	 /*  var candidateId = $('#'+id+'candidate').val(); */
+	  var orgRelationId = $("#vendorOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 	        success: function(data) {
+	        	var result = "";
+	        	result = result + "<option value='' >select sow</option>"
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
 		        	 for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		$('#'+rowId+'sow').empty();
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
-			        		$('#'+id+'rate').val(opt.billingAmount);
-			        		calculateTotalAmount(id);
+			        		var selected = '';
+			        		
+			        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+			        			selected = 'selected';
+			        		} 
+			        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
 					} 
+		        	 $('#'+id+'sow').empty();
+		        	 $('#'+id+'sow').append(result);
+		        	 /*$ ('#'+id+'rate').val(opt.billingAmount);
+		        		calculateTotalAmount(id); */
 	        	}else{
 	        		
 	        	}
@@ -614,8 +622,27 @@ function populateInlineItemsGrid1(data){
 	        
 	    });
   }
-  
   </script>
+  
+  
+  <script>
+function getSowRate(id){
+	var contractId = $("#"+id+'sow').val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "GET",
+    	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
+        success: function(data) {
+        	 if(data != null && data != ''){
+        		var json = JSON.parse(data);
+	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 calculateTotalAmount(id);
+        	} 
+        },
+        
+    });
+}
+</script>
   
   <!-- calculating row total with rate and total hours -->
   <script>
