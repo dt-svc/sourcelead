@@ -50,9 +50,9 @@ function cancel(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Invoice</h2>
+			<h2>Custom Based Invoice</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Receivable</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
@@ -64,7 +64,8 @@ function cancel(){
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
 				              <div class="col-md-9 select-field" id="errClient">
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();" data-validation="required" field-name="Client Name">
+
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
 				              </div>
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -72,7 +73,7 @@ function cancel(){
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
 				              <div class="col-md-9" id="errClientContact">
-				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact" onchange="errRemoveClientContact();">
+				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
 				              </div>
 				            </div>
@@ -113,7 +114,7 @@ function cancel(){
 							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
-									name="dueDate" value="" placeholder="Invoice Date" id="dueDate"
+									name="dueDate" value="" placeholder="Due Date" id="dueDate"
 									readonly data-validation="required" field-name="Due Date">
 							</div>
 						</div>
@@ -140,7 +141,7 @@ function cancel(){
 						<button type="button" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+							onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -1838,7 +1839,37 @@ function getClientContacts(clientContactId){
 	}
 </script>
 
-
+<script> 
+function getPaymentTerms(){
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+			 var json = JSON.parse(data);
+			 for (var i=0; i<json.length; i++)
+				{
+				var repot = json[i];
+				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
+		           		$("#paymentFrequency").val(repot.paymentTerms);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}else{
+		           		$("#paymentFrequency").val('');
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	if(repot.billingAddress != null && repot.billingAddress != '' && repot.billingAddress != 'undefined'){
+		           		$("#billingAddress").val(repot.billingAddress);
+		           	}else{
+		           		$("#billingAddress").val('');
+		           	}
+				}
+			
+		}
+	});
+}
+</script>
 
 
 <script>
@@ -1899,16 +1930,7 @@ function saveInvoice(saveType){
 		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=Receivable", 
 		    		        success: function(result) {
 		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     		
-		    		     		var invoiceUUID = '${invoiceUUID}';
-		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
-		    		     			location.replace(sourceleadUrl+"/getReceivableInvoiceByUUID?invoiceUUID="+invoiceUUID);
-		    		     		}else{
 		    		     			location.replace(sourceleadUrl+"/invoiceList");
-		    		     		}
-		    		     		
-		    		     		
-		    		     		
 		    		        },
 		    		    }); 
 		    	         return true; 

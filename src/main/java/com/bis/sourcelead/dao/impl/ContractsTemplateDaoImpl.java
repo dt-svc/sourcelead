@@ -89,6 +89,13 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	@Transactional
 	public List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType) throws Exception
 	{
+		if(contractType.equalsIgnoreCase("Vendor NSA")){
+			contractType = "NSA";
+		}
+		if(contractType.equalsIgnoreCase("Vendor NDA")){
+			contractType = "NDA";
+		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateType = :contractType and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setString("contractType", contractType).setCacheable(true).list();
 		return contractsTemplateList;

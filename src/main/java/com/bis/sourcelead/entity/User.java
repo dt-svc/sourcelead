@@ -204,6 +204,9 @@ public class User implements Serializable{
 	@Transient
 	private String dateOfJoin;
 	
+	@Transient
+	private String noticePeriod;
+	
 	
 
 	public Status getPreviousUserState() {
@@ -630,6 +633,14 @@ public class User implements Serializable{
 
 	public void setDateOfJoin(String dateOfJoin) {
 		this.dateOfJoin = dateOfJoin;
+	}
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
 	}
 
 	
