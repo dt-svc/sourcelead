@@ -40,14 +40,7 @@
               <div class="col-md-8">
               	<c:choose>
 				    <c:when test="${!empty contract.contractType}">
-				        <select class="chosen-select form-control" disabled="true" id="contractType" name="contractType" data-validation="required" field-name="Contract Type">
-		                    <option ${contract.contractType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
-		                    <option ${contract.contractType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
-		                    <option ${contract.contractType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
-		                    <option ${contract.contractType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option ${contract.contractType  == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType  == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
-		                 </select>
+				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
 				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
@@ -205,7 +198,7 @@
               </div>
             </div>
           
-         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorVendor">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
@@ -217,7 +210,7 @@
               </div>
           </div>                      
                       
-            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorvendorContact">
               		<c:choose>
@@ -225,11 +218,11 @@
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
 							    <option value=''>Select Vendor Contact</option>
 							    <c:forEach var="element" items="${orgSpocList}" >
-							    	<c:if test = "${element.tempOwnerId == contract.orgRelations.id}">
-								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+							    	<c:if test = "${element.tempOwnerId == contract.contactUser.id}">
+								         <option selected value="${element.tempOwnerId}">${element.spocName}  ${element.ownerUserName}</option>
 								    </c:if>
-								    <c:if test = "${element.tempOwnerId != contract.orgRelations.id}">
-								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+								    <c:if test = "${element.tempOwnerId != contract.contactUser.id}">
+								         <option value="${element.tempOwnerId}">${element.spocName}   ${element.ownerUserName}</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -319,13 +312,13 @@
       
       
 	<div class="newContrBill col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-          <div id="billingDiv" >
+          <div id="billingDiv" style="display: ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'none' : 'block'};">
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Hours Per Week</label>
 	              <div class="col-md-8">
-				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${contract.hoursPerWeek == '' ? '40' : 'contract.hoursPerWeek'}" placeholder="Enter Hours" field-name="Hours Per Week">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${!empty contract && !empty contract.hoursPerWeek  ? contract.hoursPerWeek : contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? '' : '40' }" placeholder="Enter Hours" field-name="Hours Per Week">
 	              </div>
             </div>
             
@@ -360,7 +353,7 @@
             <div class="form-group">
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
                 	<div class="col-lg-8">
-					  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" data-validation="required validate_int validate_length length1-8" field-name="Billing Amount">
+					  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
 					</div>
                    <%-- <div class="clearfix col-md-8" id="errBilling">
                       <div class="col-md-5 paddingLeft">
@@ -397,8 +390,8 @@
             </div>
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errInvoice">
-                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency" onchange="removeBillCycleValidation();">
+              <div class="col-md-8 dropdown-select" id="errInvoice">
+                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Invoice Frequency" onchange="removeBillCycleValidation();">
                     <option value="">Select Cycle</option>
                     <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
                     <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -410,8 +403,8 @@
             
               <div class="form-group">
               <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errPayment">
-                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency" onchange="removePaymentvalidation();">
+              <div class="col-md-8 dropdown-select" id="errPayment">
+                  <select class="form-control" id="paymentFrequency" name="paymentFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Payment Frequency" onchange="removePaymentvalidation();">
                     <option value="">Select Frequency</option>
                     <option ${contract.paymentTerm == '10 days' ? 'selected' : ''} value="10 days">10 days</option>
                     <option ${contract.paymentTerm == '15 days' ? 'selected' : ''} value="15 days">15 days</option>
@@ -444,7 +437,7 @@
                           <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
                             <input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">
                             <i class="fa fa-money" id="taxFlatRewardIcon"></i> </div>
-                          <div class="form-group select-field col-md-4 paddingLeft"> 
+                          <div class="form-group dropdown-select col-md-4 paddingLeft"> 
                             <select class="form-control input-sm" id="taxFlatRateType" name="taxFlatRateType"  style="display: none">
                               <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
                               <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
@@ -463,7 +456,7 @@
       </div> 
       </div>      
       
-      </div>
+      
       
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
@@ -477,7 +470,7 @@
           </div>
         </div>
       </div>
-      
+      </div>
       <!-- Content Area Ends--> 
     </div>
     </form:form>

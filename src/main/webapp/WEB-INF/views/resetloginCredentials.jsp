@@ -33,7 +33,8 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion">
-        <div class="regis_logo"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
+        <div class="pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" class="img-responsive" width="300"></div>
+      <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="javascript:void(0)"><i class="fa fa-retweet"></i>&nbsp;&nbsp;Reset Credentials</a></li>
       </ul>
