@@ -113,7 +113,7 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		if(null != projectId && !"".equals(projectId)){
+		if(null != projectId && !"".equals(projectId) && !projectId.equalsIgnoreCase("undefined")){
 			model.setViewName("billing/createProjectPayableInvoice");
 		}else{
 			model.setViewName("billing/createPayables");			
