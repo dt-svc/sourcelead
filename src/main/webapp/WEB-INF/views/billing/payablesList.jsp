@@ -30,7 +30,7 @@ color:#337ab7 !important;
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons"> <a href="<c:url value='/createPayables'/>"  class="btn btn-primary btn-sm" title="Create payables"> <i class="fa fa-plus paddingRight"></i>Create Payables</a>
+          <div class="onboardcreateButtons"> <a href="javascript:void(0)"  class="btn btn-primary btn-sm" title="Create payables" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Payables</a>
            <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getPayableInvoiceList();customInvoiceList();">
                 <option value="month">1 Month</option>
@@ -350,6 +350,55 @@ color:#337ab7 !important;
     </div>
   </section>
   
+   <!-- Add invoice Popup -->
+		   <div class="addcandidate-popup">
+		    <div class="row">
+		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+		      <div class="col-md-4 mt25">
+		        <div class="small-widget bgGreen">
+		            <a  href="<c:url value='/createPayables'/>" title="Create custom invoice">
+		          <div class="clearfix mb10"> 
+		              <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">
+		          </div>
+		          <strong class="clearfix">Custom</strong></a>
+		          </div>
+		      </div>
+		
+		        <div class="col-md-4 mt25">
+		          <div class="small-widget bg-yellow"> 
+		          <a href="<c:url value='/createInvoiceProjectPayableBased'/>" title="Create project based invoice">
+		            <div class="clearfix mb10">
+		                <!--<i class="fa fa-usd fa-3x"></i>-->
+		                <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		            </div>
+		            <strong class="clearfix">Project Based </strong> </a> </div>
+		        </div>
+		          
+		          <div class="col-md-4 mt25">
+		          <div class="small-widget bg-purple"> <a href="other_receivables.html" title="Create other invoice">
+		            <div class="clearfix mb10">
+		              <!--<i class="fa fa-usd fa-3x"></i>   -->           
+		             <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">
+		              </div>
+		            <strong class="clearfix">Other</strong> </a> </div>
+		        </div>
+		
+		      
+		          </div>
+		    </div>
+		  </div>
+		  <div class="pop_mask"></div>
+		  <script>
+		    //addcandidate-popup script
+		    function createBill(){
+		        $('.addcandidate-popup').fadeIn(200);
+		        $('.pop_mask').fadeIn(200);
+		    };
+		       function closeCandidate(){
+		        $('.addcandidate-popup').fadeOut(200);
+		        $('.pop_mask').fadeOut(200);
+		       }
+		    </script> 
   
 <script>
 function receivePaymentPop1(invoiceId,total){
@@ -680,23 +729,10 @@ function getPayableInvoiceList(){
         		}
         		
         		
-        		draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
-        		
-       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
-       				draftTotalAmount = parseFloat(draftTotalAmount) + parseFloat(report.draftInvoiceAmount);
-       			}
-       			
-       			paidCount = parseInt(paidCount) + parseInt(report.paidCount);
-       			
-       			if(report.paidInvoiceAmount != null && report.paidInvoiceAmount != '' && report.paidInvoiceAmount != 'undefined'){
-       				paidTotalAmount = parseFloat(paidTotalAmount) + parseFloat(report.paidInvoiceAmount);
-       			}
-        		
-        		
 				result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 				}
 				if(report.invoiceStatus == "SENT"){
 	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceId='+report.id+'&invoiceType=Payables"/>">'+report.invoiceId+'</a></div>   ';				
