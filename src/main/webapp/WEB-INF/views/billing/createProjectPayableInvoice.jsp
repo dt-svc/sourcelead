@@ -183,12 +183,12 @@
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input class="form-control input-sm" id="discountValue" name="discountValue" type="text" onblur="calculateDisCount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" name="discountValue" placeholder="Flat / Discount" type="text" onblur="calculateDisCount();">
                     </div>
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text">
+                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text" placeholder="00.00" readonly>
                 </div>
 
               </div>
@@ -406,12 +406,16 @@ function populateInlineItemsGrid(data){
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
-    	 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    	 }else{
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -431,7 +435,7 @@ function populateInlineItemsGrid(data){
     result = result +' </table>';
     $("#tableBody").empty();
     $("#tableBody").append(result)
-    
+    maskme();
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
 			dateFormat : 'dd-mm-yy',
@@ -500,16 +504,16 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
     	 }
     	 /* result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; */
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -529,7 +533,7 @@ function populateInlineItemsGrid1(data){
     result = result +' </table>';
     $("#tableBody").empty();
     $("#tableBody").append(result)
-    
+    maskme();
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
 			dateFormat : 'dd-mm-yy',
@@ -558,7 +562,6 @@ function populateInlineItemsGrid1(data){
   <script>
   function getSow(id,candidateId){
 	 /*  var candidateId = $('#'+id+'candidate').val(); */
-	  alert(candidateId);
 	  var orgRelationId = $("#vendorOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -589,6 +592,7 @@ function populateInlineItemsGrid1(data){
   <!-- calculating row total with rate and total hours -->
   <script>
   function calculateTotalAmount(rowId){
+	  totalHoursCalculateAmount(rowId);
 	 var totalHours =  $('#'+rowId+'totalHours').val();
 	 var rate =  $('#'+rowId+'rate').val();
 	 if(totalHours != ''){
@@ -607,6 +611,164 @@ function populateInlineItemsGrid1(data){
 	 
   }
   
+  </script>
+  
+  
+  <script>
+  function totalHoursCalculateAmount(rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var totalHours = $("#"+rowId+"totalHours").val();
+	     var split = totalHours.split(':');
+	     var hours = split[0];
+ 	     var minute = split[1];
+ 	     
+ 	     var hours1 = hours.charAt(0);
+		 var hours2 = hours.charAt(1);
+		 var hours3 = hours.charAt(2);
+		 var min1 = minute.charAt(0);
+		 var min2 = minute.charAt(1);
+		
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+				 calAddRowAmount("00"+hours1,"00",rowId); 
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min1);
+				 calAddRowAmount("00"+hours1,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min2);
+				 calAddRowAmount("00"+hours1,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours1+":"+minute);
+				 calAddRowAmount("00"+hours1,minute,rowId);
+			 }
+		 }
+		 else if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+				 calAddRowAmount("00"+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min1);
+				 calAddRowAmount("00"+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min2);
+				 calAddRowAmount("00"+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours2+":"+minute);
+				 calAddRowAmount("00"+hours2,minute,rowId);
+			 }
+		 }
+		 else if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+				 calAddRowAmount("00"+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min1);
+				 calAddRowAmount("00"+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min2);
+				 calAddRowAmount("00"+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours3+":"+minute);
+				 calAddRowAmount("00"+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":00");
+				 calAddRowAmount("0"+hours1+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":"+minute);
+				 calAddRowAmount("0"+hours1+hours2,minute,rowId);
+			 }
+			
+		 }
+		 else if(isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":00");
+				 calAddRowAmount("0"+hours2+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":"+minute);
+				 calAddRowAmount("0"+hours2+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":00");
+				 calAddRowAmount("0"+hours1+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":"+minute);
+				 calAddRowAmount("0"+hours1+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":00");
+				 calAddRowAmount(hours,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min1);
+				 calAddRowAmount(hours,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min2);
+				 calAddRowAmount(hours,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val(hours+":"+minute);
+				 calAddRowAmount(hours,minute,rowId);
+			 }
+		 }
+  }
+  
+  function calAddRowAmount(hours,minute,rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var split = hours.split(':');
+	  var splitHours = split[0];
+	  var hourminits = splitHours * 60;
+		 var finalmin = parseInt(hourminits) + parseInt(minute);
+	     var perMinit = rate / 60;
+	     var totlalAmount = (perMinit * finalmin);
+	     $('#'+rowId+'amount').empty();
+	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
+	     calculateSum();
+  }
   </script>
 	
 	<!-- calculating sub total with all row total amount -->
@@ -1336,6 +1498,7 @@ function addTaxDivs(){
     result = result +'  </div>';
     $("#lineItemAddRows").empty();
     $("#lineItemAddRows").append(result);
+    maskme();
 }
 </script>
 <script>
@@ -1394,4 +1557,29 @@ function getVendorContacts(vendorContactId){
 	}
 </script>
 
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+<script>
+function maskme(){
+
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hhh:Mm"); 
+	
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+}
+</script>
  <jsp:include page="../masterFooter.jsp" />	

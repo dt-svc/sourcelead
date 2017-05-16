@@ -64,7 +64,8 @@ function cancel(){
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
 				              <div class="col-md-9 select-field" id="errClient">
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();" data-validation="required" field-name="Client">
+
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
 				              </div>
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -140,7 +141,7 @@ function cancel(){
 						<button type="button" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+							onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -371,6 +372,7 @@ function cancel(){
                    result = result +'  </div>';
                    $("#lineItemAddRows").empty();
                    $("#lineItemAddRows").append(result);
+                   maskme();
 		
 	}
 	
@@ -801,8 +803,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"sdate-input");
+						dt.setDate(dt.getDate() + 1);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			 	  }
 			    });
 			
@@ -810,8 +814,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"edate-input");
+						dt.setDate(dt.getDate() - 1);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			 	  }
 			    });
 			
@@ -862,10 +868,6 @@ function cancel(){
  		$("body").css('overflow-y', 'auto')
 	}
   </script>
-
-
-
-
 
 
 <script>
@@ -1093,43 +1095,133 @@ function pagination(){
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
 		
-		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours1+":00");
-			calAddRowAmount("00"+hours1,"00",rowId);
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+				 calAddRowAmount("00"+hours1,"00",rowId); 
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min1);
+				 calAddRowAmount("00"+hours1,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min2);
+				 calAddRowAmount("00"+hours1,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours1+":"+minute);
+				 calAddRowAmount("00"+hours1,minute,rowId);
+			 }
 		 }
-		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours2+":00");
-			calAddRowAmount("00"+hours2,"00",rowId);
+		 else if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+				 calAddRowAmount("00"+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min1);
+				 calAddRowAmount("00"+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min2);
+				 calAddRowAmount("00"+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours2+":"+minute);
+				 calAddRowAmount("00"+hours2,minute,rowId);
+			 }
 		 }
-		 if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours3+":00");
-			calAddRowAmount("00"+hours3,"00",rowId);
+		 else if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+				 calAddRowAmount("00"+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min1);
+				 calAddRowAmount("00"+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min2);
+				 calAddRowAmount("00"+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours3+":"+minute);
+				 calAddRowAmount("00"+hours3,minute,rowId);
+			 }
 		 }
-		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("000:"+min1+"0");
-			calAddRowAmount("000",min1+"0",rowId);
+		 else if(!isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":00");
+				 calAddRowAmount("0"+hours1+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":"+minute);
+				 calAddRowAmount("0"+hours1+hours2,minute,rowId);
+			 }
+			
 		 }
-		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("000:0"+min2);
-			calAmount("000","0"+min2,rowId);
+		 else if(isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":00");
+				 calAddRowAmount("0"+hours2+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":"+minute);
+				 calAddRowAmount("0"+hours2+hours3,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":00");
-			calAddRowAmount(hours,"00",rowId);
+		 else if(!isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":00");
+				 calAddRowAmount("0"+hours1+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":"+minute);
+				 calAddRowAmount("0"+hours1+hours3,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min1);
-			calAddRowAmount(hours+":","0"+min1,rowId);
+		 else if(!isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":00");
+				 calAddRowAmount(hours,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min1);
+				 calAddRowAmount(hours,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min2);
+				 calAddRowAmount(hours,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val(hours+":"+minute);
+				 calAddRowAmount(hours,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min2);
-			calAddRowAmount(hours+":","0"+min2,rowId);
-		 }
-		 else if(!isNaN(hours)&& !isNaN(minute)){
-			 calAddRowAmount(hours,minute,rowId);
-		 }
-	    
-	  
   }
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();
@@ -1747,7 +1839,37 @@ function getClientContacts(clientContactId){
 	}
 </script>
 
-
+<script> 
+function getPaymentTerms(){
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+			 var json = JSON.parse(data);
+			 for (var i=0; i<json.length; i++)
+				{
+				var repot = json[i];
+				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
+		           		$("#paymentFrequency").val(repot.paymentTerms);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}else{
+		           		$("#paymentFrequency").val('');
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	if(repot.billingAddress != null && repot.billingAddress != '' && repot.billingAddress != 'undefined'){
+		           		$("#billingAddress").val(repot.billingAddress);
+		           	}else{
+		           		$("#billingAddress").val('');
+		           	}
+				}
+			
+		}
+	});
+}
+</script>
 
 
 <script>
@@ -1808,16 +1930,7 @@ function saveInvoice(saveType){
 		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=Receivable", 
 		    		        success: function(result) {
 		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     		
-		    		     		var invoiceUUID = '${invoiceUUID}';
-		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
-		    		     			location.replace(sourceleadUrl+"/getReceivableInvoiceByUUID?invoiceUUID="+invoiceUUID);
-		    		     		}else{
 		    		     			location.replace(sourceleadUrl+"/invoiceList");
-		    		     		}
-		    		     		
-		    		     		
-		    		     		
 		    		        },
 		    		    }); 
 		    	         return true; 
