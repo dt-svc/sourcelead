@@ -649,6 +649,9 @@ function cancel(){
 				    });
 				
 				
+				
+				
+				
 				var cell1 = row.insertCell(1);
 				var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 				divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -811,8 +814,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"sdate-input");
+						dt.setDate(dt.getDate() + 1);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			 	  }
 			    });
 			
@@ -820,8 +825,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"edate-input");
+						dt.setDate(dt.getDate() - 1);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			 	  }
 			    });
 			

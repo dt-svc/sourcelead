@@ -747,15 +747,17 @@ function getInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				if(report.invoiceType=="Receivable"){
+				if(report.invoiceType=="Receivable" &&( report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
 					}else{
 						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 					}
+				}else{
+					result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 				}
 
-				if(report.invoiceType=="Payables"){
+				if(report.invoiceType=="Payables" ){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
 					}else{
@@ -816,7 +818,36 @@ function invoicePagination(){
     } );
 }
 </script>
+<script>
+function acceptedInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    });  
+}
 
+</script>
+<script>
+function rejectInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    }); 
+}
+
+</script>
 <script>
 function cancelbtn(){
 	  $("#recvPymntpop").fadeOut(200);

@@ -401,7 +401,9 @@ public class InvoiceRestController {
 				}
 				
 			}
-			
+			if(null != invoice.getParentInvoiceId()){
+				invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());	
+			}
 			invoice.setDraftInvoiceCount(draftCount);
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
