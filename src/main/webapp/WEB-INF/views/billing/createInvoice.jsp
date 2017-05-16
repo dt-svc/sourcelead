@@ -50,9 +50,9 @@ function cancel(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Invoice</h2>
+			<h2>Custom Based Invoice</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Receivable</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
@@ -64,7 +64,8 @@ function cancel(){
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
 				              <div class="col-md-9 select-field" id="errClient">
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Client Name">
+
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
 				              </div>
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -72,7 +73,7 @@ function cancel(){
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
 				              <div class="col-md-9" id="errClientContact">
-				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact" onchange="errRemoveClientContact();">
+				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
 				              </div>
 				            </div>
@@ -113,7 +114,7 @@ function cancel(){
 							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
-									name="dueDate" value="" placeholder="Invoice Date" id="dueDate"
+									name="dueDate" value="" placeholder="Due Date" id="dueDate"
 									readonly data-validation="required" field-name="Due Date">
 							</div>
 						</div>

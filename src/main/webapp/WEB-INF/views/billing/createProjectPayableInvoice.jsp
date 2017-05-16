@@ -15,9 +15,9 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Create Bill</h2>
+        <h2>Project Based Bill</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Bill</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Project Based Bill</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
@@ -31,7 +31,7 @@
 								<select class="chosen-select form-control" id="vendorOrgRelationId"
 									name="vendorOrgRelationId"
 									onchange="getVendorContacts();flushValues();"
-									data-validation="required" field-name="Client Name">
+									data-validation="required" field-name="Vendor">
 								</select>
 							</div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -40,7 +40,7 @@
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 select-field">
-                <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact Name">
+                <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
               </div>
             </div>
@@ -48,13 +48,13 @@
             <div class="form-group">
               <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Invoice Id">
+                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Bill Id">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-3">Bill Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
-                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date"  type="text" data-validation="required" field-name="Invoice Date" readonly>
+                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date"  type="text" data-validation="required" field-name="Bill Date" readonly>
               </div>
             </div>
               

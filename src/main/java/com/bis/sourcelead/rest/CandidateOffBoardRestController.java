@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.OnboardStatus;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
+import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OffBoardingDocumentsService;
 import com.bis.sourcelead.service.OffBoardingTemplateService;
@@ -92,6 +93,9 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
     
     @Autowired
     TaskService taskService;
+    
+    @Autowired
+    CandidateOnBoardingService candidateOnBoardingService;
      
     protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -142,6 +146,12 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		}
 		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 		user.setRole(userRole.getRoles().getDisplayName());
+		
+		CandidateOnBoarding onboarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(offboardUserId, loginOrgLocation.getId());
+		if(null != onboarding){
+			user.setNoticePeriod(onboarding.getTerminationNotice());
+		}
+		
 		
 		return commonUtil.toJSON(user);
 	 }

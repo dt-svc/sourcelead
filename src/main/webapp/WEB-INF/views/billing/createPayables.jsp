@@ -50,9 +50,9 @@ function cancel(){
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Bills</h2>
+			<h2>Custom Based Bill</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Bills</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Custom Based Bill</div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
@@ -66,8 +66,7 @@ function cancel(){
 							<div class="col-md-9 select-field" id="errVendor">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();getPaymentTerms();"
-									data-validation="required" field-name="Vendor">
+									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Vendor">
 								</select>
 							</div>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -90,7 +89,7 @@ function cancel(){
 							<div class="col-md-9">
 								<input type="text" class="form-control" id="invoiceId"
 									name="invoiceId" value="" placeholder="Bill Id"
-									data-validation="required" field-name="Invoice Id">
+									data-validation="required" field-name="Bill Id">
 							</div>
 						</div>
 						<div class="form-group">
@@ -100,7 +99,7 @@ function cancel(){
 								<input type="text" class="form-control calendar"
 									id="invoiceDate" name="invoiceDate" value=""
 									placeholder="Bill Date" id="invoiceDate" readonly
-									data-validation="required" field-name="Invoice Date">
+									data-validation="required" field-name="Bill Date">
 							</div>
 						</div>
 						<div class="form-group">
