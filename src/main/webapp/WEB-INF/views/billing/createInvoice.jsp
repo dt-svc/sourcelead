@@ -1094,43 +1094,133 @@ function pagination(){
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
 		
-		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours1+":00");
-			calAddRowAmount("00"+hours1,"00",rowId);
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+				 calAddRowAmount("00"+hours1,"00",rowId); 
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min1);
+				 calAddRowAmount("00"+hours1,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min2);
+				 calAddRowAmount("00"+hours1,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours1+":"+minute);
+				 calAddRowAmount("00"+hours1,minute,rowId);
+			 }
 		 }
-		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours2+":00");
-			calAddRowAmount("00"+hours2,"00",rowId);
+		 else if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+				 calAddRowAmount("00"+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min1);
+				 calAddRowAmount("00"+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min2);
+				 calAddRowAmount("00"+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours2+":"+minute);
+				 calAddRowAmount("00"+hours2,minute,rowId);
+			 }
 		 }
-		 if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours3+":00");
-			calAddRowAmount("00"+hours3,"00",rowId);
+		 else if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+				 calAddRowAmount("00"+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min1);
+				 calAddRowAmount("00"+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min2);
+				 calAddRowAmount("00"+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours3+":"+minute);
+				 calAddRowAmount("00"+hours3,minute,rowId);
+			 }
 		 }
-		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("000:"+min1+"0");
-			calAddRowAmount("000",min1+"0",rowId);
+		 else if(!isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":00");
+				 calAddRowAmount("0"+hours1+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":"+minute);
+				 calAddRowAmount("0"+hours1+hours2,minute,rowId);
+			 }
+			
 		 }
-		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("000:0"+min2);
-			calAmount("000","0"+min2,rowId);
+		 else if(isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":00");
+				 calAddRowAmount("0"+hours2+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":"+minute);
+				 calAddRowAmount("0"+hours2+hours3,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":00");
-			calAddRowAmount(hours,"00",rowId);
+		 else if(!isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":00");
+				 calAddRowAmount("0"+hours1+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":"+minute);
+				 calAddRowAmount("0"+hours1+hours3,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min1);
-			calAddRowAmount(hours+":","0"+min1,rowId);
+		 else if(!isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":00");
+				 calAddRowAmount(hours,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min1);
+				 calAddRowAmount(hours,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min2);
+				 calAddRowAmount(hours,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val(hours+":"+minute);
+				 calAddRowAmount(hours,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min2);
-			calAddRowAmount(hours+":","0"+min2,rowId);
-		 }
-		 else if(!isNaN(hours)&& !isNaN(minute)){
-			 calAddRowAmount(hours,minute,rowId);
-		 }
-	    
-	  
   }
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();

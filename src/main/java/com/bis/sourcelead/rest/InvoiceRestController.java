@@ -659,7 +659,20 @@ public class InvoiceRestController {
 			}
 			projectMember.setStartDate(startDateStr);
 			projectMember.setEndDate(endDateStr);
-			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+			String billableHours = String.valueOf(totalHours.get("BILLABLE_HOURS"));;
+			String arr[] = billableHours.split("\\.");
+			StringBuilder sb = new StringBuilder();
+			if(arr[0].length()==2){
+				sb.append("0").append(arr[0]);
+			}else if(arr[0].length()==1){
+				sb.append("00").append(arr[0]);	
+			}
+			if(arr[1].length()==1){
+				sb.append(":").append("0").append(arr[1]);
+			}else{
+				sb.append(":").append(arr[1]);
+			}
+			projectMember.setTotalHours(sb.toString());
 		}
 		return commonUtil.toJSON(projectMembersList);
 	} 
@@ -724,7 +737,20 @@ public class InvoiceRestController {
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+				String billableHours = String.valueOf(totalHours.get("BILLABLE_HOURS"));;
+				String arr[] = billableHours.split("\\.");
+				StringBuilder sb = new StringBuilder();
+				if(arr[0].length()==2){
+					sb.append("0").append(arr[0]);
+				}else if(arr[0].length()==1){
+					sb.append("00").append(arr[0]);	
+				}
+				if(arr[1].length()==1){
+					sb.append(":").append("0").append(arr[1]);
+				}else{
+					sb.append(":").append(arr[1]);
+				}
+				projectMember.setTotalHours(sb.toString());
 			}
 		}
 		return commonUtil.toJSON(projectMembersList);
