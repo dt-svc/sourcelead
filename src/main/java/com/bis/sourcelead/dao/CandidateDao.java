@@ -79,5 +79,19 @@ public interface CandidateDao {
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
 
 	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId)throws Exception ;
+	
+	public List<Candidate> getAllActiveAssociatesByLocationAndAssoicatesList(Long orgLocationId,List<Long> associatesIds)throws Exception ;
+	
+	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId,Long spocId,List<Long> associatesIds)throws Exception ;
+	
+	List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId,Long spocId)throws Exception ;
+	
+    public List<Candidate> getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(Long vendorOrgRelationId,List<Long> associatesIds)throws Exception ;
+	
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long vendorOrgRelationId)throws Exception ;
+
+	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId)throws Exception ;
+
+	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId)throws Exception ;
 
 }

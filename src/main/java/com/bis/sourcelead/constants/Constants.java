@@ -59,6 +59,14 @@ public class Constants {
 	public static final String BILLING_ADDRESS = "BillingAddress";
 	public static final String PAYMENT_TERMS = "PaymentTerms";
 	
+	public static final String INVOICE_RECEIVABLE = "Receivable";
+	
+	public static final String INVOICE_PAYABLES = "Payables";
+	
+	public static final String Client_SOW = "Client SOW";
+	public static final String Vendor_SOW = "Vendor SOW";
+	
+	
 	
 	public static final String country = "Country";
 	
@@ -136,7 +144,7 @@ public class Constants {
 	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	
 	public static String CUSTOM_USER_EMAIL = "customUserEmail";
-	
+	public static String INVOICE_CLIENT_ACCEPT_MAIL="InvoiceClientAcceptEmail";
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 	public static String NOTIFICATION_TO_CLIENT = "Notification To Client";
@@ -575,6 +583,7 @@ public class Constants {
     
     public static int PREVIOUS_MONTH =-1;
     public static int NEXT_MONTH =1;
+    public static int TWELVE_MONTH =1;
     public static int CURRENT_MONTH =0;
     
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
@@ -674,6 +683,21 @@ public class Constants {
     public static String TWO_WEEKS = "twoweeks";
     public static String ONE_MONTH = "month";
     public static String TWO_MONTHS = "twomonths";
+    public static String THREE_MONTHS = "threemonths";
+    public static String SIX_MONTHS = "sixmonths";
+    public static String ONE_YEAR = "oneyear";
     
-    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
+    public static String INVOICE_ACCEPETED = "Accepted";
+    public static String INVOICE_REJECTED = "Rejected";
+    public static String INVOICE_RECEIVED = "Received";
+    
+    public static String INVOICE_STATUS_UNPAID = "Unpaid";
+    
+    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;    
+    //invoice
+   
+    public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)", "Rate", "Total Hours", "Total"};
+    
+	public static String submitForApproval = "SUBMIT FOR APPROVAL";
+
 }	

@@ -36,13 +36,13 @@ $(document).ready(function(){
 
 <section class="contrHead"> 
 <ul> 
-<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList();">Draft</a></li>
-<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Approve</a></li> 
-<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify</a></li>
-<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized</a></li>
-<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired</a></li>
-<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected</a></li>
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList();">Draft (${contractsCount.totalDraftCount})</a></li>
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Approve (${contractsCount.totalWTACount})</a></li> 
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired (${contractsCount.totalExpiredCount})</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
   <span onclick="addContracts();">Add<i class="fa fa-caret-down"></i></span>
@@ -60,23 +60,30 @@ $(document).ready(function(){
 </section>
 
 <!-- Add candidate Popup -->
-  <div class="addcandidate-popup addstudent-popup">
+  <div class="addcandidate-popup">
     <div class="row">
       <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeContract()"><i class="fa fa-close"></i></a>
       <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-      <div class="col-md-6 mt25">
+      <div class="col-md-4 mt25">
         <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="Import Candidate">
           <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
           <strong class="clearfix">New Contract</strong> </a> </div>
       </div>
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
-        <div class="col-md-6 mt25">
+        <div class="col-md-4 mt25">
           <div class="small-widget bg-yellow"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
+            <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
+            <strong class="clearfix">Custom Contract</strong> </a> </div>
+        </div>
+        </sec:authorize>
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
+        <div class="col-md-4 mt25">
+          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
             <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Existing Contract</strong> </a> </div>
         </div>
-        </sec:authorize>
+        </sec:authorize>        
        </div>
     </div>
   </div>
@@ -102,8 +109,8 @@ $(document).ready(function(){
 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Clients</a> -->
-			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');">Vendors</a>
-			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients</a>
+			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');">Vendors (${contractsCount.totalDraftVendorCount})</a>
+			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients (${contractsCount.totalDraftClientCount})</a>
 		</div>
 		<ul>
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
@@ -112,7 +119,7 @@ $(document).ready(function(){
 						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="getTemplateList();"><label for="c1">MSA</label></li>
 						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label for="c2">SOW</label></li>
 						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label for="c3">NDA</label></li>
-						<li><input id="c4" type="checkbox" name="contractType" value="NCA" onclick="getTemplateList();"><label for="c4">NCA</label></li>
+						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="getTemplateList();"><label for="c4">NSA</label></li>
 					</ul>
 				</div>	                	
 			</li>
@@ -153,6 +160,225 @@ $(document).ready(function(){
   
 </div>
 </section>
+
+<div class="mask_time"></div> 
+<section class="contPopup" id="viewPopupDiv"> </section>
+
+
+
+<script>
+function PopUp(contractUUID){
+	$(".mask_time").fadeIn(200);
+	$(".contPopup").fadeIn(100);
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
+       success :function(data) {
+    	    var result = '';
+    	    var json = JSON.parse(data);
+			result = result +	'<div class="contPopupHead clearfix">';
+			result = result +	'<h4>'+json.contractTitle+'</h4>';
+			result = result +	'<span>';
+			result = result +	'	<i class="fa fa-pencil"></i><i class="fa fa-times" onclick="contPopClose();"></i>';
+			result = result +	'</span>';
+			result = result +	'</div>';
+		
+			result = result +	'<div class="modal-body clearfix">';
+			result = result +	'<div class="col-xs-12 col-md-12 col-lg-12 noPad clearfix mt10">';
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Contract Title</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractTitle+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Contract Type</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractType+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i class="fa fa-eye" onclick="previewTemplatePDF(\''+json.contractsTemplate.id+'\')"></i></a></div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">End Date</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.endDateStr+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
+			result = result +	'	</div>';
+			
+			if(null != json.approverUserName && "" != json.approverUserName && 'undefined' != json.approverUserName){
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Approver</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUserName+'</div>';
+			result = result +	'	</div>';
+			}
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Applicant Name</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.applicantName+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.offerValue+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Duration</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: </div>';
+				result = result +	'	</div>';
+			}
+			
+			
+			
+			if(null != json.initiatorType && "Client" == json.initiatorType){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.initiatorType && "Vendor" == json.initiatorType){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUser.firstName+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">State of Jurisdiction</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.stateJurisdiction+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'<div class="clearfix"/>';
+			
+			result = result +	'<h4>Billing Details</h4>';
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Hours Per Week</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.hoursPerWeek+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Overtime Hours</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overTimeHours+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Overtime rate</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overtimeRate+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Total Estimated Hours</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.totalHours+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Billing Amount</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingAmount+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Billing Cycle</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.invoiceFrequency+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Tax</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'<div class="clearfix"/>';
+			result = result +	'<h4>Basic Details</h4>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Updated On</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.updatedDateStr+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Updated By</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.updatedByName+'</div>';
+			result = result +	'	</div>';
+			
+			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+			result = result +	'		<div class="col-md-4 col-sm-4">Contract Type</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.typeOfContract+'</div>';
+			result = result +	'	</div>';
+			
+			
+			result = result +	'</div>';
+			result = result +	'</div>';
+			$("#viewPopupDiv").empty();
+			$("#viewPopupDiv").append(result);
+       },
+	  }); 
+}
+
+function contPopClose(){
+	$("#viewPopupDiv").empty();
+	$(".mask_time").fadeOut(200);
+	$(".contPopup").fadeOut(100);
+}
+
+function previewTemplatePDF(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	if(id != null && id != ""){
+		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+id+'','_newtab');
+	}
+}
+</script>
 
 <script type="text/javascript">
             $(function () {
@@ -293,7 +519,7 @@ function preparedContractListDraft(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -324,7 +550,7 @@ function preparedContractListDraft(data){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		'</sec:authorize>';
-		     		result = result + '</div>';
+		     		//result = result + '</div>';
 	     	  }
 	     	  else{
 	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
@@ -356,7 +582,7 @@ function preparedContractListDraft(data){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	       		 opt = opt + '<div class="tbldata-dotdot-sm"><span>'+output.contractTitle+'</span></div>';
+	       		 opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -385,9 +611,9 @@ function preparedContractListDraft(data){
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 	     		'</sec:authorize>';
-	     		opt = opt + '</div>';
+	     		//opt = opt + '</div>';
 	     	  }
 	     	  else{
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
@@ -401,6 +627,14 @@ function preparedContractListDraft(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var draftCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#draft").html('Draft ('+draftCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -468,7 +702,7 @@ function preparedContractListWFA(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -511,14 +745,15 @@ function preparedContractListWFA(data){
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
 	            		//result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
-	            	  result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
-	            		'</sec:authorize>';
+	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
+	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
+	            	  '</sec:authorize>';
 	        	  }
 	        	  else{
-	         	 	result = result + '<div><span>--</span></div>';
+	        		  result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 	        	  }
 	        	  
-		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
+		     		 //result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
 		     	  
 		         result = result + '</div></td>';
 		     	 
@@ -550,7 +785,7 @@ function preparedContractListWFA(data){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	       		 opt = opt + '<div class="tbldata-dotdot-sm"><span>'+output.contractTitle+'</span></div>';
+	       		 opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -595,14 +830,16 @@ function preparedContractListWFA(data){
         		   '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
             		//opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
             		opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
+            		opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
             		'</sec:authorize>';
         	  }
         	  else{
-         	 	opt = opt + '<div><span>--</span></div>';
+         	 	//opt = opt + '<div><span>--</span></div>';
+        		  opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
         	  }
-        	  opt = opt + '<div class="tbldata-dotdot_80">';
+        	 // opt = opt + '<div class="tbldata-dotdot_80">';
 	     	 
-	     		 opt = opt + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
+	     		 //opt = opt + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
 	     	 
 	     		opt = opt + '</div></td>';
 	     	
@@ -613,6 +850,14 @@ function preparedContractListWFA(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var approveCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Approve ('+approveCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -680,7 +925,7 @@ function preparedContractListWTS(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -745,7 +990,7 @@ function preparedContractListWTS(data){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	       		 opt = opt + '<div class="tbldata-dotdot-sm"><span>'+output.contractTitle+'</span></div>';
+	       		 opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -789,6 +1034,14 @@ function preparedContractListWTS(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var signCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#sign").html('<i class="fa fa-clock-o fa-2"></i>Sign ('+signCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -855,7 +1108,7 @@ function preparedContractListWTV(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -892,9 +1145,9 @@ function preparedContractListWTV(data){
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
 	     		 if(report.contractStatus == "completed" && report.templateSubmissionStatus != "FINALIZED"){
-	     			result = result + '<div id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');">Finalize</a></div>';
+	     			result = result + '<div id="removeStatus'+report.id+'"><a class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a></div>|';
 	            	 }
-	     		 result = result + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
+	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 		         result = result + '</div></td>';
 		        result = result + '</tr>';
 		    }
@@ -923,7 +1176,7 @@ function preparedContractListWTV(data){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	       		 opt = opt + '<div class="tbldata-dotdot-sm"><span>'+output.contractTitle+'</span></div>';
+	       		 opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -960,7 +1213,7 @@ function preparedContractListWTV(data){
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	         if(output.contractStatus == "completed" && output.templateSubmissionStatus != "FINALIZED"){
-	     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');">Finalize</a></div>';
+	     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a></div>';
 	     		}
      		 opt = opt + '<div ><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
      		 opt = opt + '</div></td>';
@@ -972,6 +1225,14 @@ function preparedContractListWTV(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var verifyCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Verify ('+verifyCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -1037,7 +1298,7 @@ function preparedContractListFinalize(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -1096,7 +1357,7 @@ function preparedContractListFinalize(data){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	       		 opt = opt + '<div class="tbldata-dotdot-sm"><span>'+output.contractTitle+'</span></div>';
+	       		 opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -1137,6 +1398,14 @@ function preparedContractListFinalize(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var finalisedCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#finalised").html('Finalized ('+finalisedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -1201,7 +1470,7 @@ function preparedContractListExpired(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -1264,7 +1533,7 @@ function preparedContractListExpired(data){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	       		 opt = opt + '<div class="tbldata-dotdot-sm"><span>'+output.contractTitle+'</span></div>';
+	       		 opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -1311,6 +1580,14 @@ function preparedContractListExpired(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var expiredCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#expired").html('Expired ('+expiredCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
@@ -1376,7 +1653,7 @@ function preparedContractListRejected(data){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		           	result = result + '<div class="tbldata-dotdot-sm"><span>'+report.contractTitle+'</span></div>';
+		           	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -1446,7 +1723,7 @@ function preparedContractListRejected(data){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	       		 opt = opt + '<div class="tbldata-dotdot-sm"><span>'+output.contractTitle+'</span></div>';
+	       		 opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -1496,6 +1773,14 @@ function preparedContractListRejected(data){
 	}
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
+	
+	var vendorsCount = json.vendorcontractsList.length;
+	var clientsCount = json.clientcontractsList.length;
+	var rejectedCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	
+	$("#Vendor1").html('Vendors ('+vendorsCount+')');
+	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#rejected").html('Rejected ('+rejectedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);

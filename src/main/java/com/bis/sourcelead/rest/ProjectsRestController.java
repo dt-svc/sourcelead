@@ -110,10 +110,11 @@ public class ProjectsRestController {
 	  */
 	 
 	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String storeProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String storeProject(HttpServletRequest request) throws Exception {
 		   
-		    String json1 = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json1);
+		   /* String json1 = "{"+json+"}";*/
+		    JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		    /*JSONObject jsonObj = new JSONObject(json1);*/
 		 	/*OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");*/

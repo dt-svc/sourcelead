@@ -1,17 +1,29 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<link rel="icon" type="resources/image/png"
+	href="resources/images/fav.png" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <script src="resources/js/formvalidator.js"></script>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <script src="resources/js/jquery.mask.min.js"></script>
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+
+
+
+
 <script type="text/javascript">
 $(document).ready(function(){
-	getUserList("0");
+	var invoiceUUID = '${invoiceUUID}';
+	if(invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
+		loadInvoiceDetails(invoiceUUID);
+	}else{
+		getClients();
+	}
+	
 });
 </script>
 <script>
@@ -23,359 +35,513 @@ function errRemoveClientContact(){
 }
 
 </script>
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
+<div class="side_mask">
+	<div class="proj_close"></div>
+</div>
 
- <div class="side_mask">
-      <div class="proj_close"></div>
- </div>
-    
-    
+<div id="popUp"></div>
 <section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Invoice</h2>
-      </div>
-      <div class="pull-right brud-crum">Home » Invoice</div>
-    </section>
-    <div class="content-area content-new clearfix">
-    <div id="invoiceLoading"></div>
-     <form:form id="invoice_form"  name="invoice_form" method="post"  enctype='multipart/form-data'> 
-      <div class="clearfix form-horizontal inner-content">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-            <div class="form-group">
-              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field" id="errClient">
-                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();" data-validation="required" field-name="Client Name">
-                 <option value=''>--Select Clinet--</option>
-                   <c:forEach var="orgrelations" items="${clientList}">
-                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
-                  </c:forEach>
-                </select>
-              </div>
-            </div>
-             <div class="form-group">
-              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9" id="errClientContact">
-                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Vendor Contact" onchange="errRemoveClientContact();">
-                  </select>
-              </div>
-            </div>
-            <!-- <div class="form-group">
-              <label class="col-md-3">Client Contact</label>
-              <div class="col-md-9">
-                <input type="text" class="form-control"id="clientContact" name="clientContact" value="" placeholder="Client Contact">
-              </div>
-            </div> -->
-            <div class="form-group">
-              <label class="col-md-3">Invoice Id<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
-                <input type="text" class="form-control" id="invoiceId" name="invoiceId" value="" placeholder="Invoice Id" data-validation="required" field-name="Invoice Id">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field" id="errInvoiceDate">
-                <input type="text" class="form-control calendar" id="invoiceDate" name="invoiceDate" value="" placeholder="Invoice Date" id="invoiceDate" readonly data-validation="required" field-name="Invoice Date">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3">Payment terms</label>
-              <div class="col-md-9" id="errPayment">
-                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" >
-                    <option value="">Select frequency</option>
-                    <option value="10 days">10 days</option>
-                    <option value="15 days">15 days</option>
-                    <option value="30 days">30 days</option>
-                    <option value="45 days">45 days</option>
-                     <option value="60 days">60 days</option>
-                  </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9" id="errDuedate">
-                <input type="text" class="form-control calendar" id="dueDate" name="dueDate" value="" placeholder="Invoice Date" id="dueDate" readonly data-validation="required" field-name="Due Date">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3">Billing Address</label>
-              <div class="col-md-9">
-                <textarea class="form-control" rows="2" id="billingAddress" name="billingAddress" placeholder="Billing Address"></textarea>
-              </div>
-            </div>
-            
-             
-           <!--  <div class="form-group">
-              <label class="col-md-3">Preojects<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="projectId" name="projectId" onchange="getProjects();">
-                </select>
-              </div>
-            </div> -->
-          </div>
-        </div>
-       
-        <div class="clearfix"></div>
-        <!-- Drap and Drop Table Row -->
-        
-        
-        <!-- Table starts here-->
-          <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">
-          <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />
-          <table width="100%">
-            <thead id="addInvoiceTbl">
-              <tr id="divTsRow0">
-                <!-- <th><i class="fa fa-ellipsis-h"></i></th> -->
-                <th>Date</th>
-                <th>Associate</th>
-                <th>Sow</th>
-                <th>Rate</th>
-                <th>Total Hours</th>
-                <th>Amount</th>
-                <th><i class="fa fa-remove"></i></th>
-              </tr>
-            </thead>
-            
-            <tfoot class="table_footer">
-              <tr>
-                <td colspan="4"></td>
-                <td><strong>Subtotal</strong></td>
-                <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>
-                <input type="hidden" value = "" id="hiddenTotal">
-                <td>&nbsp;</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        <!-- Table Ends here-->
-          
-          <!-- Adding Content Starts herer -->
-          <div class="clearfix invoice_other">
-          <div class="col-md-5">
-            <div class="clearfix mb">
-              <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>
-            </div>
-            
-            
-             <div class="new_side_wrap">
-		         <div class="new_side_wrap_inn">
-			         <div class="new_side_wrap_cta">
-			         	<div id="associatesListDiv"></div>
-			         </div>
-		         </div>
-	         </div>
-          
-            <div class="clearfix mb">
-              <label><strong>Message</strong></label>
-              <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
-            </div>
-            
-            
-            <div class="clearfix mb invoiceAttachment">
-            <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='1' />
-            <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">
-            <tbody>
-              <tr id='divAttachmentTsRow0'>
-            	<td>
-              	<label><strong>Attachments</strong></label>
-	              <div class="timesheet_week_comm col-md-12 " >
-	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
-	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addInvoiceAttachment()'></i>
-	                 </span> </div>
-	              </div>
-            	</td>
-            </tr>
-            </tbody>
-            </table>
-            
-            </div>
-          </div>
-          
-          
-           <div class="col-md-7">
-            <div class="form-horizontal">
-              
-              
-              <div class="form-group">
-                <div class="col-md-7 select-field">
-                  <div class="row">
-                    <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount">
-                        <option value="percentage">Discount %</option>
-                        <option value="flat">Discount Value</option>
-                      </select>
-                    </div>
-                    <div class="col-md-5 paddingLeft">
-                      <input type="text" class="form-control input-sm" id="discountValue" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-5 text-right">
-                  <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" placeholder="00.00" readonly>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readinly></div>
-              </div>
-              <div class="addtax_table">
-              <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />
-                    <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">
-                        <thead id="addTaxTbl">
-                            <tr>
-                                <th colspan="5">
-                                Add Tax
-                                    <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()">
-                                         <i class="fa fa-plus"></i></button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr id='divTaxTsRow0'>
-                                <td>
-                                   <div class="select-field tblminwidth-75">
-                                       <div class="tblminwidth-50">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">
-                                    </div>
-                                   </div>
-                                </td>
-                                <td>
-                                 <div class="btn-group tblminwidth-75">
-                                 <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">
-									 <option value="percentage">Percentage</option>
-									 <option value="flat">Flat</option>
-							 	</select>
-                                </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="singleRowTaxDiscount();">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="text-danger"><i class="fa fa-remove"></i></span>
-                                </td>
-                            </tr>
-                          
-                        </tbody>
-                    </table>
-                    <!-- AddTax Table Starts here -->
-            </div>
-            <div class="form-group mt">
-                <label class="col-md-7 text-right"><strong>Total</strong></label>
-               <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>
-                   <!--  <div  id="grandTotal" name="grandTotal"><span><strong>00.00</strong></span></div> -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Adding Content Starts herer -->
-          <!-- Drap and Drop Table Row --> 
-      <footer class="form-footer">
-              <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT')">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml">Send</button>
-                  <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
-              </div>
-          </footer>
-      </div>
-      </form:form>
-    </div>
-  </section>
-  
-  
+	<section class="content-header clearfix">
+		<div class="pull-left">
+			<h2>Custom Based Invoice</h2>
+		</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Custom Based Invoice</div>
+	</section>
+	<div class="content-area content-new clearfix">
+		<div id="invoiceLoading"></div>
+		<form:form id="invoice_form" name="invoice_form" method="post"
+			enctype='multipart/form-data'>
+			<div class="clearfix form-horizontal inner-content">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+				           <div class="form-group">
+				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
+				              <div class="col-md-9 select-field" id="errClient">
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();" data-validation="required" field-name="Client">
+				                </select>
+				              </div>
+				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+				            </div>
+				             <div class="form-group">
+				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
+				              <div class="col-md-9" id="errClientContact">
+				                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
+				                  </select>
+				              </div>
+				            </div>
+						<div class="form-group">
+							<label class="col-md-3">Invoice Id<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" id="invoiceId"
+									name="invoiceId" value="" placeholder="Invoice Id"
+									data-validation="required" field-name="Invoice Id">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Invoice Date<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9 select-field" id="errInvoiceDate">
+								<input type="text" class="form-control calendar"
+									id="invoiceDate" name="invoiceDate" value=""
+									placeholder="Invoice Date" id="invoiceDate" readonly
+									data-validation="required" field-name="Invoice Date">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Payment terms</label>
+							<div class="col-md-9" id="errPayment">
+								<select class="chosen-select form-control" id="paymentFrequency"
+									name="paymentFrequency">
+									<option value="">Select frequency</option>
+									<option value="10 days">10 days</option>
+									<option value="15 days">15 days</option>
+									<option value="30 days">30 days</option>
+									<option value="45 days">45 days</option>
+									<option value="60 days">60 days</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9" id="errDuedate">
+								<input type="text" class="form-control calendar" id="dueDate"
+									name="dueDate" value="" placeholder="Due Date" id="dueDate"
+									readonly data-validation="required" field-name="Due Date">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Invoice Address</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="2" id="billingAddress"
+									name="billingAddress" placeholder="Invoice Address"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
 
-<!-- ********************************************* Add Rows Invoice Table functionality start  ************************************************************ -->	
-	<div id="divTaskTd2" style="display: none; float: left;">
+				<div class="clearfix mt"></div>
+				<div id="lineItemAddRows"></div>
+
+				<div id="lineItemPopUp"></div>
+
+
+				<footer class="form-footer">
+					<div class="pull-right mr">
+						<button type="button" class="btn btn-sm btn-primary"
+							onclick="saveInvoice('DRAFT')">Save</button>
+						<button type="button" class="btn btn-sm btn-success ml"
+							onclick="saveInvoice('SENT')">Send</button>
+						<button type="button" class="btn btn-sm btn-default ml"
+							onClick="javascript:location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+					</div>
+				</footer>
+			</div>
+		</form:form>
+	</div>
+</section>
+
+
+
+<!-- ********************************************* Add Rows Invoice Table functionality start  ************************************************************ -->
+<div id="divTaskTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm select-field">
-	   <input type="text" class="form-control input-sm" readonly="readonly" id="REPLACEROWIDcandidateName"  > </inmput>
-       <input type="hidden" class="form-control input-sm"  id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate"> </inmput>
-    </div>
+		<input type="text" class="form-control input-sm" readonly="readonly"
+			id="REPLACEROWIDcandidateName">
+		</inmput>
+		<input type="hidden" class="form-control input-sm"
+			id="REPLACEROWIDcandidateId" name="REPLACEROWIDcandidate">
+		</inmput>
+		<input type="hidden" class="form-control input-sm"
+			id="REPLACEROWIDlineItemId" name="REPLACEROWIDlineItemId">
+		</inmput>
 	</div>
-	
-	<div id="divTaskTd3" style="display: none; float: left;">
-       <div class="tbldata-dotdot-100 select-field">
-       <select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow">
-          <option value=''>-Select sow-</option>
-        </select>
-       </div>
-	</div>
-	
-	<div id="divTaskTd4" style="display: none; float: left;">
-       <div class="tbldata-dotdot-100">
-       <input type="text" class="form-control input-sm" placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate" >
-       </div>
-	</div>
+</div>
 
-	<div id="divTaskTd5" style="display: none; float: left;">
+<div id="divTaskTd3" style="display: none; float: left;">
+	<div class="tbldata-dotdot-100 select-field">
+		<select class="form-control input-sm" id="REPLACEROWIDsow"
+			name="REPLACEROWIDsow">
+			<option value=''>-Select sow-</option>
+		</select>
+	</div>
+</div>
+
+<div id="divTaskTd4" style="display: none; float: left;">
+	<div class="tbldata-dotdot-100">
+		<input type="text"
+			class="form-control input-sm allownumericwithdecimal"
+			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
+			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+	</div>
+</div>
+
+<div id="divTaskTd5" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">
-	     <input type="text" class="form-control input-sm inline_field" placeholder="HH:MM" id="REPLACEROWIDtotalHours" name="REPLACEROWIDtotalHours" onblur="calculateAmount(REPLACEROWID);">
-	     </div>
+		<input type="text" class="form-control input-sm inline_field"
+			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
+			name="REPLACEROWIDtotalHours"
+			onblur="totalHoursCalculateAmount(REPLACEROWID);">
 	</div>
-	
-	<div id="divTaskTd6" style="display: none; float: left;">
-	<div class="tbldata-dotdot-100 text-right"  ><input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount" placeholder = "00:00" class="ReadTextFli" > </div>
-<!-- 	     <div class="tbldata-dotdot-100 text-right" id="REPLACEROWIDamount" name="REPLACEROWIDamount"><input type="text" value = "00:00" class="ReadTextFli"></div> -->
+</div>
+
+<div id="divTaskTd6" style="display: none; float: left;">
+	<div class="tbldata-dotdot-100 text-right">
+		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
+			placeholder="00:00" class="ReadTextFli">
 	</div>
+</div>
+
+<div id="divTaskTd7" style="display: none; float: left;">
+	<a class="text-danger tblminwidth-50" title="Remove row"
+		id="REPLACEROWIDremoveLineItem" onclick="removeRow(REPLACEROWID)"><i
+		class="fa fa-remove"></i></a>
+</div>
+
+
+<script>
+	function buildLineItemAndTaxAddRows(){
+		 var result = '';
+		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
+		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
+		 result = result +'  <table width="100%">';
+		 result = result +'  <thead id="addInvoiceTbl">';
+		 result = result +'  <tr id="divTsRow0">';
+		 result = result +'  <th>Date</th>';
+		 result = result +'  <th>Associate</th>';
+		 result = result +'  <th>SOW</th>';
+		 result = result +'  <th>Rate</th>';
+		 result = result +'  <th>Total Hours</th>';
+		 result = result +'  <th>Amount</th>';
+		 result = result +'  <th><i class="fa fa-remove"></i></th>';
+		 result = result +'  </tr>';
+		 result = result +'  </thead>';
+           
+		 result = result +'  <tfoot class="table_footer">';
+		 result = result +'  <tr>';
+		 result = result +'  <td colspan="4"></td>';
+		 result = result +'  <td><strong>Subtotal</strong></td>';
+		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>';
+		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
+		 result = result +'  <td>&nbsp;</td>';
+		 result = result +'  </tr>';
+		 result = result +'  </tfoot>';
+		 result = result +'  </table>';
+		 result = result +'  </div>';
+         
+         result = result +'  <div class="clearfix invoice_other">';
+         result = result +'  <div class="col-md-5">';
+         result = result +'  <div class="clearfix mb">';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
+         result = result +'  </div>';
+           
+           
+         result = result +'  <div class="new_side_wrap">';
+         result = result +'  <div class="new_side_wrap_inn">';
+         result = result +'  <div class="new_side_wrap_cta">';
+         result = result +'  <div id="associatesListDiv"></div>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         
+         result = result +'  <div class="clearfix mb">';
+         result = result +'  <label><strong>Message</strong></label>';
+         result = result +'  <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>';
+         result = result +'  </div>';
+           
+        
+         result = result +'  <div class="clearfix mb invoiceAttachment">';
+         result = result +'  <input type="hidden" name="invoiceAttcahmentMaxRowNumber"  id="invoiceAttcahmentMaxRowNumber" value="1" />';
+         result = result +'  <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">';
+         result = result +'  <tbody>';
+         result = result +'  <tr id="divAttachmentTsRow0">';
+         result = result +'  <td>';
+         result = result +'  <label class="pull-left mb10"><strong>Attachments</strong></label>';
+         
+         result = result +' <div id="timesheetDocumentsId">';
+         result = result +' <div class="timesheet_week_comm invoiceDocs">';
+         result = result +' <span>';
+         result = result +' <div id="savedAttachments"></div>';
+         result = result +' </span>';
+         result = result +' </div>';
+         result = result +' </div>';
+         
+         result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add" >';
+         result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
+         result = result +'  <span>';
+         result = result +'  <input type="file" name="0invoicedocFile" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation"><i class="fa fa-plus" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  </span> </div>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  </tr>';
+         result = result +'  </tbody>';
+         result = result +'  </table>';
+           
+         result = result +'  </div>';
+         result = result +'  </div>';
+         
+         
+         result = result +'  <div class="col-md-7">';
+         result = result +'  <div class="form-horizontal">';
+             
+             
+         result = result +'  <div class="form-group">';
+         result = result +'  <div class="col-md-7 select-field">';
+         result = result +'  <div class="row">';
+         result = result +'  <div class="col-md-7 paddingRight">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount">';
+         result = result +'  <option value="percentage">Discount %</option>';
+         result = result +'  <option value="flat">Discount Value</option>';
+         result = result +'  </select>';
+         result = result +'  </div>';
+         result = result +'  <div class="col-md-5 paddingLeft">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" id="discountValue" disabled="disabled" name="discountValue" placeholder="Enter value" onblur="calculateDiscount();">';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  <div class="col-md-5 text-right">';
+         result = result +'  <input type="text" class="form-control input-sm" id="discountTotal" name="discountTotal" placeholder="00.00" readonly>';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  <div class="form-group">';
+         result = result +'  <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>';
+         result = result +'  <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly="readonly"></div>';
+         result = result +'  </div>';
+         result = result +'  <div class="addtax_table">';
+         result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />';
+         result = result +'  <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">';
+         result = result +'  <thead id="addTaxTbl">';
+         result = result +'  <tr>';
+         result = result +'  <th colspan="5">';
+         result = result +'  Add Tax';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()">';
+         result = result +'  <i class="fa fa-plus"></i></button>';
+         result = result +'  </th>';
+         result = result +'  </tr>';
+         result = result +'  </thead>';
+         result = result +'  <tbody>';
+         result = result +'  <tr id="divTaxTsRow0">';
+         result = result +'  <td>';
+         result = result +'  <div class="select-field tblminwidth-75">';
+         result = result +'  <div class="tblminwidth-50">';
+         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">';
+         result = result +'  <input type="hidden" id="0invoiceTaxId" name="0invoiceTaxId">';
+         result = result +'  </div>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <div class="btn-group tblminwidth-75">';
+         result = result +'  <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">';
+         result = result +'  <option value="percentage">Percentage</option>';
+         result = result +'  <option value="flat">Flat</option>';
+         result = result +'  </select>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <div class="tblminwidth-75">';
+         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="calculateTaxDiscount();">';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <div class="tblminwidth-75">';
+         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>';
+         result = result +'  </div>';
+         result = result +'  </td>';
+         result = result +'  <td>';
+         result = result +'  <span class="text-danger"><i class="fa fa-remove"></i></span>';
+         result = result +'  </td>';
+         result = result +'  </tr>';
+                         
+         result = result +'  </tbody>';
+         result = result +'  </table>';
+                   result = result +'  </div>';
+                   result = result +'  <div class="form-group mt">';
+                   result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
+                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>';
+                   result = result +'  </div>';
+                   result = result +'  </div>';
+                   result = result +'  </div>';
+                   result = result +'  </div>';
+                   $("#lineItemAddRows").empty();
+                   $("#lineItemAddRows").append(result);
+		
+	}
 	
-	<div id="divTaskTd7" style="display: none; float: left;">
-	  <a class="text-danger tblminwidth-50" title="Remove row" onclick="removeRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
-	</div>
+	</script>
+
+
+
+<script>
+	function loadInvoiceDetails(invoiceUUID){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 
+		 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID, 
+		         success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 
+		        	 var result = '';
+		        	 var selected = 'selected';
+		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 $("#clientOrgRelationId").empty();
+		           	 $("#clientOrgRelationId").append(result); 
+		           	 $('#clientOrgRelationId').trigger("chosen:updated");
+		           	 
+		           	getClientContacts(json['vendorContactId']);
+		           	$("#invoiceId").val(json['invoiceId']);
+		           	
+		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
+		           		$("#paymentFrequency").val(json['paymentFrequency']);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	$("#invoiceDate").val(json['invoiceDateStr']);
+		           	$("#dueDate").val(json['dueDateStr']);
+		           	
+		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
+		           		$("#billingAddress").val(json['billingAddress']);
+		           	}
+		           	
+		           	buildLineItemAndTaxAddRows();
+		           	
+		           	editInvoice(json['invoiceLineItemsList']);
+		        	$("#inoviceTotal").val(json['subTotal']);
+		        	$("#disCount").val(json['discountType']);
+		        	$("#discountValue").val(json['discountAmount']);
+		        	$("#discountTotal").val(json['discountValue']);
+		        	$("#comment").val(json['invoiceComment']);
+		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);
+		        	
+		        	editTax(json['invoiceTaxList'])
+		        	
+		        	getSavedAttachments(json['invoiceDocumentsList']);
+		        	
+		        	$("#grandTotal").val(json['total']);
+		        	
+		        	$("#savedInvoiceId").val(json['id']);
+		        	
+		        	
+		        	
+		        }
+    		});
+	}
+	</script>
+
+
+<script>
+	function getSavedAttachments(invoiceDocumentsList){
+		var result = '';
+		var sourceleadUrl = '${sourceleadUrl}';
+		if(invoiceDocumentsList.length > 0){
+			
+			 for (var i = 0; i < invoiceDocumentsList.length; i++) { 
+				 var opt = invoiceDocumentsList[i]; 
+	    		
+				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+					 result = result +"<input type='button' value='"+opt.fileName+"'>";
+					 result = result +"</a>";
+					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
+					 result = result +"</strong>";
+					
+	    	 }
+			 
+			 $("#savedAttachments").empty();
+			 $("#savedAttachments").append(result);
+		}
+    	
+	}
 	
+     function deleteDocument(id){
+	    
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Are you sure to delete Attachment</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#lineItemPopUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+   }
+	
+	
+	function deleteInvoiceDocument(documentId){
+		
+		if(documentId){
+			var sourceleadUrl = '${sourceleadUrl}';
+			$.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/deleteInvoiceDocumentBydocumentId?${_csrf.parameterName}=${_csrf.token}&documentId="+documentId, 
+		         success: function(data) {
+		        	 document.getElementById("invoiceDocument"+documentId).remove();
+		        	 $("#lineItemPopUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		         }
+			});
+			
+	     }
+	  }
+	
+	</script>
+
+
 <script type="text/javascript">
 	function removeRow(rowId) {
 		 var rate = $("#"+rowId+"rate").val();
 		 var totalHours = $("#"+rowId+"totalHours").val();
 		 var subTotal = $("#inoviceTotal").val();
-		 
-	     var split = totalHours.split(':');
-	     var hours = split[0];
- 	     var minute = split[1];
-		 var hourminits = hours * 60;
-		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
-	     var totlalAmount = (perMinit * finalmin);
-	     var subtractTotal = subTotal - totlalAmount.toFixed(2)
-	     $('#inoviceTotal').val(subtractTotal);
-	    /*  $("#grandTotal").val(subtractTotal); */
-	     $("#hiddenTotal").val(subtractTotal);
-	     
+		 if(totalHours != ''){
+			 var split = totalHours.split(':');
+		     var hours = split[0];
+	 	     var minute = split[1];
+			 var hourminits = hours * 60;
+			 var finalmin = parseInt(hourminits) + parseInt(minute);
+		     var perMinit = rate / 60;
+		     var totlalAmount = (perMinit * finalmin);
+		     var subtractTotal = subTotal - totlalAmount.toFixed(2)
+		     $('#inoviceTotal').val(subtractTotal);
+		     $("#hiddenTotal").val(subtractTotal);
+		     
+		 }
+	    
 	     //==============
 	     var discountValue = $("#discountValue").val();
 	     var discountType = $("#disCount").val();
 	     var subtractValueFromRow = $("#hiddenTotal").val();
-	     var total ='';
-	 	 if(discountType == 'flat'){
-	 		total = subtractValueFromRow-discountValue;
-	 		$("#discountTotal").val(discountValue);
-	 		$("#grandTotal").val(total);
-	 		$("#afterDiscountTotal").val(total);
-	 		
-	 	  }
-	 	  if(discountType == 'percentage'){
-	 		var perCentValue = (subtractValueFromRow * discountValue)/100;
-	 		total = subtractValueFromRow - perCentValue;
-	 		$("#discountTotal").val(perCentValue);
-	 		$("#grandTotal").val(total);
-	 		$("#afterDiscountTotal").val(total);
-	 	 }	    	 
+	    if(subtractValueFromRow != ''){
+	    	 var total ='';
+		 	 if(discountType == 'flat'){
+		 		total = subtractValueFromRow-discountValue;
+		 		$("#discountTotal").val(discountValue);
+		 		$("#grandTotal").val(total);
+		 		$("#afterDiscountTotal").val(total);
+		 		
+		 	  }
+		 	  if(discountType == 'percentage'){
+		 		var perCentValue = (subtractValueFromRow * discountValue)/100;
+		 		total = subtractValueFromRow - perCentValue;
+		 		$("#discountTotal").val(perCentValue);
+		 		$("#grandTotal").val(total);
+		 		$("#afterDiscountTotal").val(total);
+		 	 }	 	
+	    }
+	       	 
 	    	 
-	    	 //===================
-	    		 
-  		 var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-	     $("#maxTsRowNum").val(maxTsRowNum - 1);
 	    
 	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	     
 	     var afterDiscountTotal = $("#afterDiscountTotal").val();
-	     
 	     
 		    for(var i=0; i< maxRowNum; i++){
 		         var taxType = $("#"+i+"taxdiscountType").val();
@@ -386,13 +552,33 @@ function errRemoveClientContact(){
 		             
 	             var first=parseFloat(tot);
 	             var second=parseFloat(taxTotal); 
-	             
-	             
 	             var total  = (first+second);
-	             
-                
-	             $("#grandTotal").val(total);
+	             $("#grandTotal").val(total.toFixed());
 		    }
+		    
+		    var count = 0;
+		    var selectedAssociates = '';
+			var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+			  if(maxTsRowNum > 1){
+				  for(var i=1; i<maxTsRowNum; i++){
+					  if(document.getElementById(i+"candidateId")){
+						  var associateId = document.getElementById(i+"candidateId").value;
+						  if(selectedAssociates == ''){
+							  selectedAssociates = associateId;
+							  count++;
+						  }else{
+							  selectedAssociates = selectedAssociates+","+associateId;
+							  count++
+						  } 
+					  }
+				  }
+			  }
+			  
+			  if(count == 1){
+				  $("#discountValue").val('');
+				  $("#discountValue").attr("disabled", "disabled");
+			  }
+			  
 		
 		document.getElementById('divTsRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addInvoiceTbl').rows[rowId];
@@ -402,14 +588,189 @@ function errRemoveClientContact(){
 		}
 		
 		
-	
+		
+		
 	}
 </script>
 
-  <script type="text/javascript">
+
+<script type="text/javascript">
+	function editInvoice(invoiceLineItemsList) {
+		
+		 for(var i=0; i<invoiceLineItemsList.length; i++){
+			 var opt = invoiceLineItemsList[i];
+			 
+			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
+				var tbl = document.getElementById("addInvoiceTbl");
+				var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+				$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
+				
+				$("#discountValue").removeAttr("disabled");
+				
+				
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "divTsRow" + maxRowNum);
+				
+				var text = "";
+				var cell0 = row.insertCell(0);
+				text = text+"<div  class='inputCustom'>";
+				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="'+maxRowNum+'invoiceStartDate" placeholder="Start Date">';
+				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="'+maxRowNum+'invoiceEndDate" placeholder="End Date">';
+				text = text+'</div>';
+				cell0.innerHTML = text;
+				
+				
+				$( "#"+maxRowNum+"sdate-input" ).datepicker({
+					  changeMonth: true,
+				      changeYear: true,
+				      dateFormat : 'dd-mm-yy',
+				      minDate: 0  ,
+					  onSelect : function(selected) {
+				 	  }
+				    });
+				
+				$( "#"+maxRowNum+"edate-input" ).datepicker({
+					  changeMonth: true,
+				      changeYear: true,
+				      dateFormat : 'dd-mm-yy',
+				      minDate: 0  ,
+					  onSelect : function(selected) {
+				 	  }
+				    });
+				
+				
+				var cell1 = row.insertCell(1);
+				var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
+				divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divTsTd2Str = divTsTd2Str.replace(/PRICECALCULATION/g,("")); 
+				cell1.innerHTML = divTsTd2Str;
+				
+				var cell1 = row.insertCell(2);
+				var divTsTd3Str = document.getElementById("divTaskTd3").innerHTML;
+				divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd3Str;
+				
+				var cell1 = row.insertCell(3);
+				var divTsTd4Str = document.getElementById("divTaskTd4").innerHTML;
+				divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd4Str;
+				
+				var cell1 = row.insertCell(4);
+				var divTsTd5Str = document.getElementById("divTaskTd5").innerHTML;
+				divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd5Str;
+				
+				
+				var cell1 = row.insertCell(5);
+				var divTsTd6Str = document.getElementById("divTaskTd6").innerHTML;
+				divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd6Str;
+				
+				var cell1 = row.insertCell(6);
+				var divTsTd7Str = document.getElementById("divTaskTd7").innerHTML;
+				divTsTd7Str = divTsTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTsTd7Str;
+				
+				$('#'+maxRowNum+'sdate-input').val(opt.startDateStr);
+				$('#'+maxRowNum+'edate-input').val(opt.endDateStr);
+				
+				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
+				$('#'+maxRowNum+'candidateName').val(opt.candidateName);
+				$('#'+maxRowNum+'lineItemId').val(opt.id);
+				
+				$('#'+maxRowNum+'rate').val(opt.rate);
+				$('#'+maxRowNum+'totalHours').val(opt.totalHours);
+				$('#'+maxRowNum+'amount').val(opt.amount);
+				
+				
+				getSow(maxRowNum,opt.contractId);
+				maskme();  
+		 }
+		
+	}
+  </script>
+
+
+<script type="text/javascript">
+function cancel(){
+	$("#lineItemPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+
+
+<script>
+	function editTax(invoiceTaxList){  
+		
+		
+		for(var i=0; i<invoiceTaxList.length; i++){
+			 
+			var opt = invoiceTaxList[i];
+			
+			if(i == 0){
+				
+				$('#'+i+'taxType').val(opt.taxName);
+				$('#'+i+'taxdiscountType').val(opt.taxType);
+				$('#'+i+'taxdiscountvalue').val(opt.taxValue);
+				$('#'+i+'taxTotal').val(opt.taxAmount);
+				$('#'+i+'invoiceTaxId').val(opt.id);
+			 
+			}else{
+				 
+				 var checkMaxTsRowNum = $("#maxTaxRowNum").val();
+					var tbl = document.getElementById("addTaxTbl");
+					var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+					$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
+					
+					var row = tbl.insertRow(maxRowNum);
+					row.setAttribute("id", "divTaxRow" + maxRowNum);
+					
+					var cell0 = row.insertCell(0);
+					var divTaxTdStr = document.getElementById("divTaxTd1").innerHTML;
+					divTaxTdStr = divTaxTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+					cell0.innerHTML = divTaxTdStr;
+					
+					var cell1 = row.insertCell(1);
+					var divTaxTdStr1 = document.getElementById("divTaxTd2").innerHTML;
+					divTaxTdStr1 = divTaxTdStr1.replace(/REPLACEROWID/g, (maxRowNum));
+					cell1.innerHTML = divTaxTdStr1;
+					
+					var cell2 = row.insertCell(2);
+					var divTaxTdStr2 = document.getElementById("divTaxTd3").innerHTML;
+					divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
+					cell2.innerHTML = divTaxTdStr2;
+					
+					
+					var cell3 = row.insertCell(3);
+					var divTaxTdStr3 = document.getElementById("divTaxTd4").innerHTML;
+					divTaxTdStr3 = divTaxTdStr3.replace(/REPLACEROWID/g, (maxRowNum));
+					cell3.innerHTML = divTaxTdStr3;
+					
+					var cell4 = row.insertCell(4);
+					var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
+					divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
+					cell4.innerHTML = divTaxTdStr4;
+					maskme();
+					
+					$('#'+i+'taxType').val(opt.taxName);
+					$('#'+i+'taxdiscountType').val(opt.taxType);
+					$('#'+i+'taxdiscountvalue').val(opt.taxValue);
+					$('#'+i+'taxTotal').val(opt.taxAmount);
+					$('#'+i+'invoiceTaxId').val(opt.id);
+					
+			 }
+		}
+	}			
+</script>
+
+
+
+
+<script type="text/javascript">
 	function addInvoice() {
 		
-		var oTable = $('#example').dataTable();
+		var oTable = $('#invoiceAssociatesList').dataTable();
 		var rowcollection =  oTable.$("input[name='associates[]']:checked", {"page": "all"});
 		
 		   var internalOutput = "";
@@ -421,7 +782,9 @@ function errRemoveClientContact(){
 			var tbl = document.getElementById("addInvoiceTbl");
 			var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 			$("input[name = 'maxTsRowNum']").val(maxRowNum + 1);
-	  
+			
+			$("#discountValue").removeAttr("disabled");
+			
 			
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", "divTsRow" + maxRowNum);
@@ -499,56 +862,47 @@ function errRemoveClientContact(){
  		$("body").css('overflow-y', 'auto')
 	}
   </script>
-  
-  
-  <script>
-  function getUserList(rowId){
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getAssociatesList?${_csrf.parameterName}=${_csrf.token}",
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	var output = "";
-	        	output = output + "<option value=''>-Select Associates-</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.lastName != null && opt.lastName != '' && opt.lastName !='undefined'){
-		        			lastName = opt.lastName;
-		        		}else{
-		        			lastName = "";
-		        		}
-		        		
-		        		$('#'+rowId+'candidateId').append('<option value='+opt.id+' >'+opt.firstName+' '+lastName+'</option>');
-				}
-	        	
-	        },
-	        
-	    });
-  
-  }
-  </script>
-  
-  
-  
-  <script>
+
+
+
+
+
+
+<script>
   function getAllAssociates(){
+	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	  
+	  var selectedAssociates = '';
+	  if(maxTsRowNum > 1){
+		  for(var i=1; i<maxTsRowNum; i++){
+			  if(document.getElementById(i+"candidateId")){
+				  var associateId = document.getElementById(i+"candidateId").value;
+				  if(selectedAssociates == ''){
+					  selectedAssociates = associateId;
+				  }else{
+					  selectedAssociates = selectedAssociates+","+associateId;
+				  } 
+			  }
+		  }
+	  }
+	  
+	
+	  
+	  
 	  $('.action-pop').slideUp();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getAssociatesList?${_csrf.parameterName}=${_csrf.token}",
+	        url: sourceleadUrl+"/getInvoiceAssociatesList?${_csrf.parameterName}=${_csrf.token}&selectedAssociates="+selectedAssociates,
 	        success: function(data) {
 	        	
 	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	        		
 	        		
 	        		    var result = '';
-	             	    result = result +'<div class="modal-body clearfix">';
-	             		result = result +'     </div>';
-	             		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
-	             	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+	        		    result = result +'     <h3>Associates List</h3>';
+	             		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table addinvoiceTable">'; 
+	             	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	             		result = result +'           <thead>';
 	             		result = result +'           <tr>';
 	             		result = result +'             <th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
@@ -600,6 +954,26 @@ function errRemoveClientContact(){
 	                     $("#associatesListDiv").append(result); 
 	                     pagination(); 
 	        		
+	        	}else{
+	        		
+	        		var result ="";
+	        		result = result +'     <h3>Associates List</h3>';
+ 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter clients_wrap_table">'; 
+ 	           	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
+ 	           		result = result +'           <thead>';
+ 	           		result = result +'           <tr>';
+ 	           		result = result +'             <th><input type="checkbox" id="checkAll" onclick="toggle(this);"></th>';
+	         		result = result +'             <th>Associate Name</th>';
+	         		result = result +'             <th>Email</th>';
+	         		result = result +'             <th>Phone</th>';
+ 	           		result = result +'           </tr>';
+ 	           		result = result +'           </thead>';
+ 	        		result = result +'           </table>';
+ 	        		result = result +'     </div>';
+ 	        		result = result +'     </div>';
+ 					$("#associatesListDiv").empty();
+ 				    $("#associatesListDiv").append(result); 
+ 				    pagination();  
 	        	}
 	        },
 	        
@@ -611,21 +985,54 @@ function errRemoveClientContact(){
 		
   }
   </script>
-  
-  <script>
+
+
+<script>
+  function alertMsg(){
+	    var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Select Vendor</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#invoice_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+  }
+  </script>
+
+
+<script>
+	function toggleAssociates(source) {
+	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+	        if (checkboxes[i] != source)
+	            checkboxes[i].checked = source.checked;
+	        
+	    }
+	$('input:checkbox:not(#checkAllAssociates)').click(function() {
+	    if(!this.checked) {
+	        $('#checkAllAssociates').removeAttr('checked');
+	    }
+	});
+	}
+</script>
+
+<script>
     $(".addApplicant_close, .side_mask").click(function() {
     	$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});	
 </script>
-  
-  
-  <script>
+
+
+<script>
 function pagination(){
-    $("#example").DataTable( { 
+    $("#invoiceAssociatesList").DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
+    	"lengthMenu": [[10000, 15, 20, -1], [10000, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
@@ -636,23 +1043,31 @@ function pagination(){
     } );
 }
 </script>
-  
-  <script>
-  function getSow(rowId){
+
+
+
+<script>
+  function getSow(rowId,contractId){
 	  var candidateId = $('#'+rowId+'candidateId').val();
 	  var orgRelationId = $("#clientOrgRelationId").val();
+	  
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
+	        		
+	        		
 		        	 for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		$('#'+rowId+'sow').empty();
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
+			        		var selected = '';
+			        		if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+			        			selected = 'selected';
+			        		}
+			        		$('#'+rowId+'sow').append('<option value='+opt.id+' '+selected+' >'+opt.contractTitle+'</option>');
 					} 
 	        	}else{
 	        		
@@ -663,9 +1078,9 @@ function pagination(){
   }
   
   </script>
-  
-  <script>
-  function calculateAmount(rowId){
+
+<script>
+  function totalHoursCalculateAmount(rowId){
 	  var rate = $("#"+rowId+"rate").val();
 	  var totalHours = $("#"+rowId+"totalHours").val();
 	     var split = totalHours.split(':');
@@ -674,24 +1089,29 @@ function pagination(){
  	     
  	     var hours1 = hours.charAt(0);
 		 var hours2 = hours.charAt(1);
+		 var hours3 = hours.charAt(2);
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
 		
-		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("0"+hours1+":00");
-			calAddRowAmount("0"+hours1,"00",rowId);
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+			calAddRowAmount("00"+hours1,"00",rowId);
 		 }
-		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("0"+hours2+":00");
-			calAddRowAmount("0"+hours2,"00",rowId);
+		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+			calAddRowAmount("00"+hours2,"00",rowId);
+		 }
+		 if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3) && isNaN(min1) && isNaN(min2)){
+			 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+			calAddRowAmount("00"+hours3,"00",rowId);
 		 }
 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00:"+min1+"0");
-			calAddRowAmount("00",min1+"0",rowId);
+			 $("#"+rowId+"totalHours").val("000:"+min1+"0");
+			calAddRowAmount("000",min1+"0",rowId);
 		 }
 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00:0"+min2);
-			calAmount("00","0"+min2,rowId);
+			 $("#"+rowId+"totalHours").val("000:0"+min2);
+			calAmount("000","0"+min2,rowId);
 		 }
 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 			 $("#"+rowId+"totalHours").val(hours+":00");
@@ -713,7 +1133,9 @@ function pagination(){
   }
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();
-	  var hourminits = hours * 60;
+	  var split = hours.split(':');
+	  var splitHours = split[0];
+	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
 	     var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
@@ -722,18 +1144,34 @@ function pagination(){
 	     calTotalamount(rowId,totlalAmount);
   }
   </script>
-  <script>
+
+<script>
   function  calTotalamount(rowId,totlalAmount){
-	  
-   var hiddenTotal = +document.getElementById("hiddenTotal").value;
-   var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
-   var arroundGrand = grandTotal.toFixed(2)
-   $("#inoviceTotal").val(arroundGrand);
-   $("#hiddenTotal").val(arroundGrand);
-   $("#grandTotal").val(arroundGrand);
-   $("#afterDiscountTotal").val(arroundGrand);
-   
-   
+	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
+	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
+	    var arroundGrand = grandTotal.toFixed(2)
+	    
+	    
+	    //--------------------------------
+	    
+	    var maxRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	    var sum = 0;
+	 	    for(var i=0; i< maxRowNum; i++){
+	 	    	 if(document.getElementById(i+"amount")){
+	 	    		 if(document.getElementById(i+"amount").value){
+	 	    			var rowAmount = $('#'+i+'amount').val();
+			 	    	sum = parseFloat(sum) + parseFloat(rowAmount);
+	 	    		 }
+	 	    		
+	 	    	 }
+	 	    }
+	    //-------------------------------------
+	    
+	    $("#inoviceTotal").val(sum.toFixed(2));
+	    $("#hiddenTotal").val(sum.toFixed(2));
+	    $("#grandTotal").val(sum.toFixed(2));
+	    $("#afterDiscountTotal").val(sum.toFixed(2));
+	    
    /* =====================  After adding the rows calculate the discount start  ===================== */
    var discountValue =  $("#discountValue").val();
    var discountType =  $("#disCount").val();
@@ -742,17 +1180,17 @@ function pagination(){
 		var total ='';
 		if(discountType == 'flat'){
 			total = arroundGrand-discountValue;
-			$("#discountTotal").val(discountValue);
-			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#discountTotal").val(discountValue.toFixed(2));
+			$("#grandTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(2));
 			
 		}
 		if(discountType == 'percentage'){
 			var perCentValue = (arroundGrand * discountValue)/100;
 			total = arroundGrand - perCentValue;
-			$("#discountTotal").val(perCentValue);
-			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#grandTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}
    }
    
@@ -767,21 +1205,24 @@ function pagination(){
 	         var taxType = $("#"+i+"taxdiscountType").val();
 	         var taxValue = $("#"+i+"taxdiscountvalue").val();
 	         var taxTotal = $("#"+i+"taxTotal").val();
-	         
-	            var tot = $("#grandTotal").val();
-	             
-	            var first=parseFloat(tot);
-	             var second=parseFloat(taxTotal); 
-	             var total  = (first+second);
-              
-	             $("#grandTotal").val(total);
+	            
+              if(taxValue == '' && taxTotal==''){
+            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
+              }else{
+            	  var tot = $("#grandTotal").val();
+  	            var first=parseFloat(tot);
+  	             var second=parseFloat(taxTotal); 
+  	             var total  = (first+second);
+  	           $("#grandTotal").val(total.toFixed(2));
+              }
+	            
 	    }
    /* =====================  After adding the rows calculate the tax end  ===================== */
    
-   
+	    
   }
   </script>
-  
+
 <script type="text/javascript">
 function calculateDiscount(){
 	var discountType = $("#disCount").val();
@@ -789,29 +1230,67 @@ function calculateDiscount(){
 	var discountValue = $("#discountValue").val();
 	var total ='';
 	if(discountType == 'flat'){
-		total = subTotal-discountValue;
-		$("#discountTotal").val(discountValue);
-		$("#grandTotal").val(total);
-		$("#afterDiscountTotal").val(total);
+		if(discountValue && subTotal > 0){
+			total = subTotal-discountValue;
+			$("#discountTotal").val(discountValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
 		
 	}
+	
 	if(discountType == 'percentage'){
-		var perCentValue = (subTotal * discountValue)/100;
-		total = subTotal - perCentValue;
-		$("#discountTotal").val(perCentValue);
-		$("#grandTotal").val(total);
-		$("#afterDiscountTotal").val(total);
+		if(discountValue && subTotal > 0){
+			var perCentValue = (subTotal * discountValue)/100;
+			total = subTotal - perCentValue;
+			$("#discountTotal").val(perCentValue);
+			$("#grandTotal").val(total);
+			$("#afterDiscountTotal").val(total);
+		}else{
+			$("#discountTotal").val(subTotal);
+			$("#grandTotal").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
 	}
-	var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	
+	/* var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	if(maxRowNum > 1){
 	    for(var i=1;i<=maxRowNum;i++){
 	         document.getElementById("divTaxRow"+i+"").style.display="none";
 	    }
 	    $("#grandTotal").val(subTotal);
-	}
+	} 
+	 */
+	 
+	  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+	  var afterDiscountTotal = $("#afterDiscountTotal").val();
+	  
+	   for(var i=0; i< maxRowNum; i++){
+	        var taxType = $("#"+i+"taxdiscountType").val();
+	        var taxValue = $("#"+i+"taxdiscountvalue").val();
+	        var taxTotal = $("#"+i+"taxTotal").val();
+	           
+	             if(taxValue == '' && taxTotal==''){
+	             $("#grandTotal").val(afterDiscountTotal.toFixed(2));
+	             }else{
+	           	 var tot = $("#grandTotal").val();
+	 	           var first=parseFloat(tot);
+	 	            var second=parseFloat(taxTotal); 
+	 	            var total  = (first+second);
+	 	          $("#grandTotal").val(total.toFixed(2));
+	             }
+	           
+	   } 
+	
+	
 }
 </script>
-
+<!-- 
 <script>
   function singleRowTotalhour(){
 	     var rate = $("#0rate").val();
@@ -873,27 +1352,29 @@ function calculateDiscount(){
 	     $("#afterDiscountTotal").val(singleRowTotlalAmount); 
   }
   </script>
-  
+   -->
 
 
-  
-  <!-- ********************************************* Add Rows Invoice Table functionality End  ************************************************************ -->
-  
-  
-  <!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
-  
-  <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
-  			<div class="timesheet_week_comm col-md-12 ">
-                <div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup"> 
-               		 <span> 
-               		 	<input type="file" name='REPLACEROWIDinvoicedocFile' id='REPLACEROWIDinvoicedocFile' onchange='validateContractsUploadFile(REPLACEROWID)'>
-               		    <i class="fa fa-times" onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
-               		   </span>
-                </div>
-             </div>
+
+<!-- ********************************************* Add Rows Invoice Table functionality End  ************************************************************ -->
+
+
+<!-- ********************************************* Add Rows resume Table functionality start  ************************************************************ -->
+
+<div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
+	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add">
+		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
+			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
+				id='REPLACEROWIDinvoicedocFile'
+				onchange='validateContractsUploadFile(REPLACEROWID)'> <i
+				class="fa fa-times"
+				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
+			</span>
+		</div>
+	</div>
 </div>
-  
-  
+
+
 <script>
 	function addInvoiceAttachment(){  
 				var checkMaxTsRowNum = $("#invoiceAttcahmentMaxRowNumber").val();
@@ -912,7 +1393,7 @@ function calculateDiscount(){
 	}			
 </script>
 
-  <script type="text/javascript">
+<script type="text/javascript">
 	function removeInvoiceAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentContractsRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentContractsRow"+rowId).value= '';
@@ -925,47 +1406,57 @@ function calculateDiscount(){
 		 
 	}
 </script>
-  
-  <!-- ********************************************* Add Rows resume Table functionality End  ************************************************************ -->
-  
-  
-  
-  
-  
-  <!-- ********************************************* Add Rows AddTax Table functionality start  ************************************************************ -->	
-  
-  <div id="divTaxTd1" style="display: none; float: left;">
+
+<!-- ********************************************* Add Rows resume Table functionality End  ************************************************************ -->
+
+
+
+
+<!-- ********************************************* Add Rows AddTax Table functionality start  ************************************************************ -->
+
+<div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
-		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
-		  </div>
-	 </div>
+		<div class="tblminwidth-50">
+			<input type="text" class="form-control input-sm" value=""
+				placeholder="Tax type" name='REPLACEROWIDtaxType'
+				id='REPLACEROWIDtaxType'> <input type="hidden"
+				name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
+		</div>
+	</div>
 </div>
 
-  <div id="divTaxTd2" style="display: none; float: left;">
-	 <div class="btn-group tblminwidth-75">
-	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType">
-		 <option value="percentage">Percentage</option>
-		 <option value="flat">Flat</option>
- 		  </select>
-	  </div>
-  </div>
-  
-  <div id="divTaxTd3" style="display: none; float: left;">
-     <div class="tblminwidth-75">
-        <input type="text" class="form-control input-sm" value="" placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount(REPLACEROWID);">
-    </div>
-  </div>
-  
-  <div id="divTaxTd4" style="display: none; float: left;">
-	  <div class="tblminwidth-75">  
-	       <input type="text" class="form-control input-sm" value ="00.00" placeholder="Total Value" name='REPLACEROWIDtaxTotal' id='REPLACEROWIDtaxTotal' readonly="readonly">
-	   </div>
-  </div>
-  <div id="divTaxTd5" style="display: none; float: left;">
-         <a class="text-danger tblminwidth-50" title="Remove row" onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
-  </div>
-  <script>
+<div id="divTaxTd2" style="display: none; float: left;">
+	<div class="btn-group tblminwidth-75">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType"
+			name="REPLACEROWIDtaxdiscountType">
+			<option value="percentage">Percentage</option>
+			<option value="flat">Flat</option>
+		</select>
+	</div>
+</div>
+
+<div id="divTaxTd3" style="display: none; float: left;">
+	<div class="tblminwidth-75">
+		<input type="text"
+			class="form-control input-sm allownumericwithdecimal" value=""
+			placeholder="Flat / Discount" name='REPLACEROWIDtaxdiscountvalue'
+			id='REPLACEROWIDtaxdiscountvalue'
+			onblur="calculateTaxDiscount(REPLACEROWID);">
+	</div>
+</div>
+
+<div id="divTaxTd4" style="display: none; float: left;">
+	<div class="tblminwidth-75">
+		<input type="text" class="form-control input-sm" value="00.00"
+			placeholder="Total Value" name='REPLACEROWIDtaxTotal'
+			id='REPLACEROWIDtaxTotal' readonly="readonly">
+	</div>
+</div>
+<div id="divTaxTd5" style="display: none; float: left;">
+	<a class="text-danger tblminwidth-50" title="Remove row"
+		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
+</div>
+<script>
 	function addTax(){  
 				var checkMaxTsRowNum = $("#maxTaxRowNum").val();
 				var tbl = document.getElementById("addTaxTbl");
@@ -1000,11 +1491,12 @@ function calculateDiscount(){
 				var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
 				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
 				cell4.innerHTML = divTaxTdStr4;
+				maskme();
 				
 	}			
 </script>
-  
-  <script type="text/javascript">
+
+<script type="text/javascript">
 	function removeTaxRow(rowId) {
 		
 		//After removing the row calculate the amount and append the grand total
@@ -1025,34 +1517,49 @@ function calculateDiscount(){
 		
 	}
 </script>
+
+<script type="text/javascript">
+function calculateTaxDiscount(){
+	
+	var maxTaxRowNum = $("#maxTaxRowNum").val();
+	var afterDiscountTotal = $("#afterDiscountTotal").val();
+	
+	for(var i=0; i<maxTaxRowNum; i++){
+		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
+			var taxType = $("#"+i+"taxdiscountType").val();
+		    var taxValue = $("#"+i+"taxdiscountvalue").val();
+		    var first = '0';
+		   
+		    if(taxType == 'flat'){
+		    	if(taxValue){
+		    		first = parseFloat(taxValue);
+			        $("#"+i+"taxTotal").val(first);
+		    	}else{
+			        $("#"+i+"taxTotal").val(0);
+		    	}
+		    	
+		    }
+		    
+		    else if(taxType == 'percentage'){
+		        var perCentValue = (afterDiscountTotal * taxValue)/100;
+		        first = parseFloat(perCentValue.toFixed(2));
+		        $("#"+i+"taxTotal").val(first);
+		    }   
+		}
+	}
+	
+	var taxGrandTotal = 0;
+	for(var i=0; i<maxTaxRowNum; i++){
+		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
+	}
+	
+	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
+	 $("#grandTotal").val(grandTotal.toFixed(2));
   
- <script type="text/javascript">
-function calculateTaxDiscount(rowId){
-	var taxType = $("#"+rowId+"taxdiscountType").val();
-    var taxValue = $("#"+rowId+"taxdiscountvalue").val();
-    var afterDiscountTotal = $("#afterDiscountTotal").val();
-    var grandTotal =  $("#grandTotal").val();
-     var total ='';
-    if(taxType == 'flat'){
-    	 var first=parseFloat(taxValue);
-         var second=parseFloat(grandTotal);
-         total = (first+second);
-         
-        $("#"+rowId+"taxTotal").val(first);
-        $("#grandTotal").val(total);
-    }
-    if(taxType == 'percentage'){
-        var perCentValue = (afterDiscountTotal * taxValue)/100;
-        var first=parseFloat(perCentValue.toFixed(2));
-        var second=parseFloat(grandTotal);
-        total = (first+second);
-        $("#"+rowId+"taxTotal").val(first);
-        $("#grandTotal").val(total);
-    }   
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function singleRowTaxDiscount(){
 	var taxType = $("#0taxdiscountType").val();
     var taxValue = $("#0taxdiscountvalue").val();
@@ -1073,18 +1580,21 @@ function singleRowTaxDiscount(){
         $("#grandTotal").val(total);
     }   
 }
-</script>
-  
-  
-  
-  <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->	
-  <script>
+</script> -->
+
+
+
+<!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->
+<script>
 	$(function() {
 		$('#invoiceDate').datepicker({
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
+			var dt = toDate("#invoiceDate");
+			dt.setDate(dt.getDate() + 1);
+			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
 			}
 		});
@@ -1093,11 +1603,20 @@ function singleRowTaxDiscount(){
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
+			var dt = toDate("#dueDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#invoiceDate").datepicker("option", "maxDate", dt);
 				errDueDate();
 			}
 		});
 		
 	});
+</script>
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
 </script>
 <script>
 function errInvoiceDate(){
@@ -1108,8 +1627,8 @@ function errDueDate(){
 }
 
 </script>
-   
-	<script>
+
+<script>
 	 /*  $(function() {
 	    $( "#invoiceDate, #dueDate" ).datepicker({
 	    	dateFormat : 'dd-mm-yy',
@@ -1135,8 +1654,8 @@ function errDueDate(){
 		  onSelect : function(selected) {
 	 	  }
 	    });
-	  </script> 
-	<script type="text/javascript">
+	  </script>
+<script type="text/javascript">
 	    var config = {
 	    '.chosen-select'           : {},
 	    '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1156,24 +1675,50 @@ function errDueDate(){
 	    $(".clientDetails").toggleClass('hidden', 500);
 	    });
 	    });
-	</script> 
-	<script>
+	</script>
+<script>
 	$("#invoiceTable tbody").sortable({
 	    items: "> tr:not(:first)",
 	    appendTo: "parent",
 	    helper: "clone"
 	}).disableSelection();
 	    </script>
-	    <script>
+<script>
 	    function cloneTax(){
 	    }
 	    </script>
-	    
-	    
-	    
+
+
+
 <!-- added by Rajashekar -->
+
 <script>
-function getClientContacts(){
+function getClients(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getClientList?${_csrf.parameterName}=${_csrf.token}",
+		success :function(data) {
+		var json = JSON.parse(data);
+		var output = "";
+		output = output + "<option value=''>Select Client</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		}
+		$("#clientOrgRelationId").empty();
+		$("#clientOrgRelationId").append(output);
+		$('#clientOrgRelationId').trigger("chosen:updated");
+	},
+	});
+
+	}
+</script>
+
+
+<script>
+function getClientContacts(clientContactId){
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -1186,10 +1731,13 @@ function getClientContacts(){
 	for (var i=0; i<json.length; i++)
 	{
 	var opt = json[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	var selected = "";
+	if(clientContactId != null && clientContactId != "" && clientContactId !="undefined" && clientContactId == opt.spocUserId){
+		selected = 'selected';
 	}
+	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+	}
+	
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
 	$('#clientContact').trigger("chosen:updated");
@@ -1201,72 +1749,83 @@ function getClientContacts(){
 
 
 
-<script>
-function getProjectsList(){
-	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-	}
-	$("#projectId").empty();
-	$("#projectId").append(output);
-	$('#projectId').trigger("chosen:updated");
-	},
-	});
 
-	}
-</script>
 <script>
 function saveInvoice(saveType){
-	/* var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-         };  */
-	
-	   if ($('#invoice_form').validate(false, validationSettings)){  
-		    var frm = $('#invoice_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var form = $('#invoice_form')[0];
-	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        $.ajax({
-		    	type: "POST",
-		    	 data: formData,
-			      contentType : 'application/json; charset=utf-8',
-			      enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
-		        success: function(result) {
-		     		$("#invoiceLoading").removeAttr("style");
-		     		location.replace(sourceleadUrl+"/invoiceList");
-		     		
-		        },
-		    });  
-	         return true; 
-		
-	   }else{
-		return false;
-	  } 
+         
+         
+	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
+	    var selectedAssociates = '';
+		  if(maxTsRowNum > 1){
+			  for(var i=1; i<maxTsRowNum; i++){
+				  if(document.getElementById(i+"candidateId")){
+					  var associateId = document.getElementById(i+"candidateId").value;
+					  if(selectedAssociates == ''){
+						  selectedAssociates = associateId;
+					  }else{
+						  selectedAssociates = selectedAssociates+","+associateId;
+					  } 
+				  }
+			  }
+		  }
+         
+         
+         if ($('#invoice_form').validate(false, validationSettings)){  
+ 		    var frm = $('#invoice_form').serializeFormJSON();
+ 	        var con = JSON.stringify(frm);
+ 	        con = con.replace(/[{}]/g, "");
+ 	        //It will escape all the special characters
+ 	        var jsonData = encodeURIComponent(con);
+ 	        
+ 	        var form = $('#invoice_form')[0];
+ 	 	    var formData = new FormData(form); 
+ 	 	    var sourceleadUrl ='${sourceleadUrl}';
+ 	 	    
+         
+ 	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
+	        	var result = "";
+	     		result = result +"	<div class='project_inn_mask'></div>";
+	     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+	     		result = result +"		<p>At least one Add column Inovoice Line Item</p>";
+	     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	     		result = result +"	</div>";
+	     		$("#popUp").append(result);
+	     		$("#invoice_pop").slideDown(200);
+	     		$(".project_inn_mask").fadeIn(200);
+		        }else{
+		        	
+		    	        
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		    	        $.ajax({
+		    		    	 type: "POST",
+		    		    	 data: formData,
+		    			     contentType : 'application/json; charset=utf-8',
+		    			     enctype: 'multipart/form-data',
+		    		         processData: false,
+		    		         contentType:false,
+		    			     dataType : 'json',
+		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=Receivable", 
+		    		        success: function(result) {
+		    		     		$("#invoiceLoading").removeAttr("style");
+		    		     		
+		    		     		var invoiceUUID = '${invoiceUUID}';
+		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
+		    		     			location.replace(sourceleadUrl+"/getReceivableInvoiceByUUID?invoiceUUID="+invoiceUUID);
+		    		     		}else{
+		    		     			location.replace(sourceleadUrl+"/invoiceList");
+		    		     		}
+		    		     		
+		    		     		
+		    		     		
+		    		        },
+		    		    }); 
+		    	         return true; 
+	        }
+         }else{
+	    		return false;
+	    	  } 
+	   
 }
 
 $('body').on('blur', '#invoice_form', function() {
@@ -1284,18 +1843,36 @@ $(document).ready(function(){
 $(document).ready(function() {  
 	maskme();    
  });
-</script>  	
+</script>
 <script>
 function maskme(){
 	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
     $.mask.definitions['h'] = "[0-9]";
     $.mask.definitions['M'] = "[0-9]";
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hh:Mm"); 
+    $(".inline_field").mask("Hhh:Mm"); 
+    
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
 }
 </script>
+
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+$(this).val($(this).val().replace(/[^0-9\.]/g,''));
+    if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+        event.preventDefault();
+    }
+});
+</script>
+
 <script>
 var validationSettings = {
 		errorMessagePosition : 'element',
@@ -1304,5 +1881,5 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd'
 	};
 </script>
-  
- <jsp:include page="../masterFooter.jsp" />	
+
+<jsp:include page="../masterFooter.jsp" />

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -78,6 +79,31 @@ public class InvoiceLineItems {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Transient
+	private String candidateName;
+	
+	@Transient
+	private String sowName;
+
+	@Transient
+	private Long candidateId;
+		
+	@Transient
+	private String startDateStr;
+	
+	@Transient
+	private String endDtaeStr;
+	
+	@Transient
+	private String employeeId;
+
+	@Transient
+	private String endDateStr;
+	
+	@Transient
+	private Long contractId;
+	
+
 	public Long getId()
 	{
 		return id;
@@ -246,6 +272,71 @@ public class InvoiceLineItems {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getSowName() {
+		return sowName;
+	}
+
+	public void setSowName(String sowName) {
+		this.sowName = sowName;
+	}
+	
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+
+	public String getEndDtaeStr() {
+		return endDtaeStr;
+	}
+
+	public void setEndDtaeStr(String endDtaeStr) {
+		this.endDtaeStr = endDtaeStr;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+}
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public Long getContractId() {
+		return contractId;
+	}
+
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
 	}
 	
 }

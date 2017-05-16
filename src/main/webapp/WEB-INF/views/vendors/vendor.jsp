@@ -193,9 +193,9 @@ window.onload = function () {
                 <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
                   <option value="Active">Active</option>
                   <option value="In-Active">In-Active</option>
-                  <option value="New">New</option>
+                 <!--  <option value="New">New</option>
                   <option value="Negotiation">Negotiation</option>
-                  <option value="Contract">Contract</option>
+                  <option value="Contract">Contract</option> -->
                 </select>
               </div>
             </div>

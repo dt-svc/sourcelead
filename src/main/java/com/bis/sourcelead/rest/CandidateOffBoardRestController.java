@@ -1024,20 +1024,23 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		     List<OffboardTasks> candidateTasksList = offboardTasksService.getOffBoardTasksListByCandidateOffBoardingId(offboardId);
 		     tasksList.addAll(candidateTasksList);
 		 
-			 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingById(offboardId);
-			 List<Long> templateIdsList = new ArrayList<Long>();
 			 
-			 if(!isNullOrEmpty(offboarding.getOffboardTemplateId())){
-				 for (String s : offboarding.getOffboardTemplateId().split(",")){
-					 templateIdsList.add(Long.parseLong(s));
-				 }
-				
-				 templateTasksList = offboardTasksService.getOffboardTasksByTemplateIdList(templateIdsList);
-				 if(null != templateTasksList){
-					 tasksList.addAll(templateTasksList);
-				 }
+		     if(candidateTasksList.size() == 0){
+			     CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingById(offboardId);
+				 List<Long> templateIdsList = new ArrayList<Long>();
 				 
-			 }
+				 if(!isNullOrEmpty(offboarding.getOffboardTemplateId())){
+					 for (String s : offboarding.getOffboardTemplateId().split(",")){
+						 templateIdsList.add(Long.parseLong(s));
+					 }
+					
+					 templateTasksList = offboardTasksService.getOffboardTasksByTemplateIdList(templateIdsList);
+					 if(null != templateTasksList){
+						 tasksList.addAll(templateTasksList);
+					 }
+					 
+				 }
+		     }
 			 
 			 List<OffboardTasks> offboardtasksList = new ArrayList<OffboardTasks>();
 			 

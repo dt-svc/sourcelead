@@ -155,13 +155,13 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	
 				    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
- 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years - '+report.experienceMonths+' Months</label>';
+ 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+',\''+isAssociate+'\')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years - '+report.experienceMonths+' Months</label>';
 				    		 }else if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined'){
-				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years</label>';
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+',\''+isAssociate+'\')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years</label>';
 				    		 }else if(report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
-				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceMonths+' Months</label>';
+				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+',\''+isAssociate+'\')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceMonths+' Months</label>';
 				    		}else{													
-				    			result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';
+				    			result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+',\''+isAssociate+'\')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>';
 				    		}
 					    	
 					    	if(report.mobilePhone !=null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
@@ -885,10 +885,15 @@ function clientSearchSideBar(responderLocationId,orgRelationId,orgName){
 </script>
 
 <script>
-function candidateSearchSideBar(candidateIdSearchId){
+function candidateSearchSideBar(candidateIdSearchId,isAssociate){
 	var candidateKeyword = "candidateSearch";
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/candidatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+	if(isAssociate == "Y"){
+		//Highlighting associate tab when search for associates through universal search
+		window.location.href = sourceleadUrl + "/associatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+	}else{
+		window.location.href = sourceleadUrl + "/candidatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+	}
 }
 </script>
 

@@ -43,6 +43,7 @@
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
+<jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
@@ -78,6 +79,7 @@ if(universalCanddateSearchList=="universalCanddateList")	 {
   }
   if(candidateKeyword == "candidateSearch"){
 	  candidateSideBar(candidateIdSearchId);
+	  candidateQuickViewProfile(candidateIdSearchId);
 	  candidateList();
 	  $("#upcandidateStatus").val('');
   }
@@ -650,6 +652,9 @@ function candidateSideBar(candidateId){
 			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             '</sec:authorize>';
 			             
+			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
+			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
@@ -675,6 +680,9 @@ function candidateSideBar(candidateId){
 						 
 						 result = result + '<div id="tab-5" class="project_tabs_inn">';
 						 result = result + '</div>';
+						 
+						 result = result + '<div id="tab-9" class="project_tabs_inn">';
+			             result = result+'     </div>';
 						 
 						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
 						 result = result + '</div>';
@@ -1319,11 +1327,11 @@ function cancel(candidateId){
                   	<ul>
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Days ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months ago</label></li>
                     </ul>
                   </div>                	
           </li>  
@@ -1457,7 +1465,7 @@ $(document).ready(function() {
 $("#addmore").click(function(){
 	$(this).next(".approved_pop").toggle();
 		//$(".approved_pop").toggle(200);
-	$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop").slideUp();
+	$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp();
 	});
 $("html").click(function() {
     $(".approved_pop").hide(200);
