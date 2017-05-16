@@ -112,7 +112,8 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <div class="clearfix">
                     <select class="chosen-select" name="country" id="country" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}">${cntry.name}</option>
+					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+ 
 				             </c:forEach>
 				     </select>
                   </div>
@@ -252,8 +253,9 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>
             <div class="row form-footer custom_formfooter">
               <div class="pull-right mr"> 
-                <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-primary"/>
-                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+                <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-success"/>
+                 <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
+                <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/>
               
             </div>
             </form:form>
@@ -406,6 +408,33 @@ border:none; background-color: none !important; padding:0 5px !important;
 	    $("#countrySearch").empty();
 	}
 </script>
+
+
+
+
+<script>
+function clearSearch(){
+	document.getElementById("vendorList_form").reset();
+	$('#anyOfKeyword').val('').trigger('chosen:updated');
+	$('#allKeywords').val('').trigger('chosen:updated');
+	$('#excludeKeyWord').val('').trigger('chosen:updated');
+	$('#orgNameAdvanced').val('').trigger('chosen:updated');
+	$('#country').val('').trigger('chosen:updated');
+	$('#state').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	$('#tierAdvanced').val('').trigger('chosen:updated');
+	$('#createdByAdvanced').val('').trigger('chosen:updated');
+	$('#emailAdvanced').val('').trigger('chosen:updated');
+	$('#ownerAdvanced').val('').trigger('chosen:updated');
+	$('#orgAdvanced').val('').trigger('chosen:updated');
+	$('#statusAdvanced').val('').trigger('chosen:updated');
+	$('#invitationAdvanced').val('').trigger('chosen:updated');
+	$('#contactNameAdvanced').val('').trigger('chosen:updated');
+	$('#phoneNumberAdvanced').val('').trigger('chosen:updated');
+}
+</script>
+
+
 
 
 <script type="text/javascript">
@@ -1824,6 +1853,28 @@ function getVendorOrgname(vendorOrgname){
 								result = result + '<span>No Data</span><div class="clearfix"></div>';	
 							}
 							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Vendor BillingAddress:</strong>';
+							if(json.clientBillingAddress != null && json.clientBillingAddress !='' && json.clientBillingAddress !='undefined'){
+								result = result + '<span>'+json.clientBillingAddress+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Vendor PaymentTerm:</strong>';
+							if(json.paymentTerm != null && json.paymentTerm !='' && json.paymentTerm !='undefined'){
+								result = result + '<span>'+json.paymentTerm+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
 							
 							result = result + '<div class="clearfix"></div>';
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorDetailsDiv"></div>';
