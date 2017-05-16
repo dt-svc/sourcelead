@@ -279,7 +279,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 	private void saveParentInvoice(Invoice invoice) throws Exception {
 		Invoice parentInvoice = new Invoice();
-		if(invoice.getInvoiceType().equalsIgnoreCase("payable")){
+		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)){
 			parentInvoice.setInvoiceType(Constants.Receivable);
 		}else{
 			parentInvoice.setInvoiceType(Constants.Payables);

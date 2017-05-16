@@ -79,6 +79,7 @@ if(universalCanddateSearchList=="universalCanddateList")	 {
   }
   if(candidateKeyword == "candidateSearch"){
 	  candidateSideBar(candidateIdSearchId);
+	  candidateQuickViewProfile(candidateIdSearchId);
 	  candidateList();
 	  $("#upcandidateStatus").val('');
   }

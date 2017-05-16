@@ -439,7 +439,7 @@ function populateInlineItemsGrid(data){
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM"  type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -458,7 +458,8 @@ function populateInlineItemsGrid(data){
     result = result +' </tbody>';
     result = result +' </table>';
     $("#tableBody").empty();
-    $("#tableBody").append(result)
+    $("#tableBody").append(result);
+    maskme();
     
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
@@ -536,7 +537,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -556,7 +557,7 @@ function populateInlineItemsGrid1(data){
     result = result +' </table>';
     $("#tableBody").empty();
     $("#tableBody").append(result)
-    
+    maskme();
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
 			dateFormat : 'dd-mm-yy',
@@ -577,6 +578,7 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("bottomGrid").style.display="block";
 	document.getElementById("lineItemAddRows").style.display="block";
 	document.getElementById("tableBody").style.display="block";
+	
     addTaxDivs();
 }
 </script>
@@ -1354,7 +1356,31 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+<script>
+function maskme(){
 
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hhh:Mm"); 
+	
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+}
+</script>
 <script>
 function addTaxDivs(){
 	var result = "";
