@@ -183,12 +183,12 @@
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input class="form-control input-sm" id="discountValue" name="discountValue" type="text" onblur="calculateDisCount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" name="discountValue" placeholder="Flat / Discount" type="text" onblur="calculateDisCount();">
                     </div>
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text">
+                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text" placeholder="00.00" readonly>
                 </div>
 
               </div>
@@ -406,7 +406,11 @@ function populateInlineItemsGrid(data){
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
-    	 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    	 }else{
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
@@ -500,9 +504,9 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
     	 }
     	 /* result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; */
     	 result = result +'</div>';
@@ -1494,6 +1498,7 @@ function addTaxDivs(){
     result = result +'  </div>';
     $("#lineItemAddRows").empty();
     $("#lineItemAddRows").append(result);
+    maskme();
 }
 </script>
 <script>

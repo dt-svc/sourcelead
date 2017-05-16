@@ -184,12 +184,12 @@
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input class="form-control input-sm" id="discountValue" name="discountValue" type="text" onblur="calculateDisCount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" placeholder="Flat / Discount" name="discountValue" type="text" onblur="calculateDisCount();">
                     </div>
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text">
+                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text" placeholder="00.00" readonly>
                 </div>
 
               </div>
@@ -1596,6 +1596,7 @@ function addTaxDivs(){
     result = result +'  </div>';
     $("#lineItemAddRows").empty();
     $("#lineItemAddRows").append(result);
+    maskme();
 }
 </script>
 <script>
