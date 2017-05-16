@@ -170,6 +170,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts = contractsTemplateDao.getContractById(Long.parseLong(jsonObj.getString("contrId")));
 			if(null != contracts && null != contracts.getParentContractId()){
 				vendorContracts = contractsTemplateDao.getChildContractById(contracts.getParentContractId().getId());
+			}else if("PENDING".equalsIgnoreCase(saveType)){
+				vendorContracts = new Contracts();
 			}
 		}else{
 			contracts = new Contracts();

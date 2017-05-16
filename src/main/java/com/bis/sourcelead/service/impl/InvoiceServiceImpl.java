@@ -268,6 +268,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
+			//mail scenario for client accept or reject
+			invoiceClientAcceptMail(user,orgLocation,invoice);
 			saveParentInvoice(invoice);	
 		}
 		
@@ -291,8 +293,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(saveType.equalsIgnoreCase("SENT")){
 			invoiceClientAcceptMail(user,orgLocation,invoice);
 		}
-	
-		
+
 		return invoice;
 	}
 	private void saveParentInvoice(Invoice invoice) throws Exception {
@@ -502,7 +503,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	private void invoiceClientAcceptMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
 
-		
+		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -523,11 +524,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
 		 globalVarsMap.put("address",invoice.getBillingAddress());
-		 StringBuilder attachmentLinkBuilder=new StringBuilder();
+		 /*StringBuilder attachmentLinkBuilder=new StringBuilder();
 	        if(invoice.getFileName() != null){
 	            globalVarsMap.put("attachement",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("/downloadInvoiceAttachment?invoiceId=").append(invoice.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
 	        }
-		 
+		 */
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -551,8 +552,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 EmailAttachment emailAttachment = new EmailAttachment();
+		 emailAttachment.setUUID(UUID);
+		 emailAttachment.setDocFile(invoice.getDocFile());
+		 emailAttachment.setName(invoice.getFileName());
+		 attachmentList.add(emailAttachment);
+		 
+		 //calling the sendEmail method of emailScenerioUtil		
+		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
 	}

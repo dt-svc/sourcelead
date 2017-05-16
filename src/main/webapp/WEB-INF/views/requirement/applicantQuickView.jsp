@@ -52,13 +52,13 @@ function applicantQuickViewProfile(submissionId,candidateId){
  	    	   }
  	    	   
  	    	   if(json.requirementSubmissionTemplateFields.state != null && json.requirementSubmissionTemplateFields.state != '' && json.requirementSubmissionTemplateFields.state !='undefined'){
- 	    		   state = ' , '+json.requirementSubmissionTemplateFields.state;
+ 	    		   state = json.requirementSubmissionTemplateFields.state+',';
  	    	   }else{
  	    		   state = " ";
  	    	   }
  	    	   
  	    	   if(json.requirementSubmissionTemplateFields.city != null && json.requirementSubmissionTemplateFields.city != '' && json.requirementSubmissionTemplateFields.city !='undefined'){
- 	    		   city =' , '+json.requirementSubmissionTemplateFields.city; 
+ 	    		   city =json.requirementSubmissionTemplateFields.city+','; 
  	    	   }else{
  	    		   city = " ";
  	    	   }
@@ -141,7 +141,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					result = result+'                  <ul class="list-unstyled">                                                                                                                  ';
 					result = result+'                      <li><i class="fa fa fa-envelope paddingRight text-warning" title="Email"></i>'+emailId+'</li>';
 					result = result+'                      <li><i class="fa fa-phone paddingRight text-warning" title="Mobile"></i>'+phoneNumber+'</li>                                              ';
-					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="Location"></i>'+country+''+state+''+city+'</li>';
+					result = result+'                      <li><i class="fa fa-map-marker paddingRight text-warning" title="Location"></i>'+city+''+state+''+country+'</li>';
 					result = result+'                    <li><i class="fa fa-usd paddingRight text-warning" title="Rate"></i>'+expectedRate+' '+expectedRateType+''+expectedRatePer+'</li>';
 					result = result+'                  </ul>                                                                                                                                       ';
 					result = result+'              </div>                                                                                                                                          ';
