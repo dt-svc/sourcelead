@@ -217,7 +217,7 @@
        
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3">Vendor<span class="text-danger" id="man1">&nbsp;*</span></label>
+			<label class="col-md-3" id="man1">Vendor<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
@@ -225,7 +225,7 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3">Vendor Contact<span class="text-danger" id="man2">&nbsp;*</span></label>
+			<label class="col-md-3" id="man2">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
                  </select>
