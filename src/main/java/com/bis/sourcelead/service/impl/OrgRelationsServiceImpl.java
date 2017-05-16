@@ -155,6 +155,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 						orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
 						orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
+						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrg().getClientAddress()));
+						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getOrg().getClientBillingAddress()));
+						orgRelation.setPaymentTerms((orgRelation.getResponderLocationId().getOrg().getPaymentTerm()));
 					}
 					orgRelation.setLevel(orgRelation.getInitiatorLevel());
 			 }
@@ -174,6 +177,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 						orgRelation.setEmail(orgRelation.getLocationId().getEmail());
 						orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
+						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrg().getClientAddress()));
+						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getOrg().getClientBillingAddress()));
+						orgRelation.setPaymentTerms((orgRelation.getResponderLocationId().getOrg().getPaymentTerm()));
 					}
 					orgRelation.setLevel(orgRelation.getResponderLevel());
 			 } 

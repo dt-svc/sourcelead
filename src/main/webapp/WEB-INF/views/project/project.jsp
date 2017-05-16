@@ -154,7 +154,7 @@ function validateTaskName(){
 												<table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
 													<tr id="divTsRow0">
 														<th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />Task Name</th>
-														<th>Billable Type</th>
+														<th>Type</th>
 														<th>Description</th>
 														<th class="tblminwidth-75">Action</th>
 													</tr>
@@ -164,15 +164,16 @@ function validateTaskName(){
 											   <div class="form-horizontal row custom-form">
 													<div class="col-xs-12 col-lg-7">
 														<div class="form-group" id="taskNameDIV">
-															<label class="col-md-3">Task Name</label>
+															<label class="col-md-3">Task Name<span class="text-danger">*</span></label>
 															<div class="col-md-9">
 																<input type="text" value="" id="taskName" name="taskName" onkeyup="validateTaskName();" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-md-3">Billable Type</label>
+															<label class="col-md-3">Type</label>
 															<div class="col-md-9">
 																<select id="taskBillableType" name="taskBillableType" class=" form-control selectpicker">
+																  <option value="" selected>Select Type</option>
 																  <option value="Billable">Billable</option>
 																  <option value="Non-Billable">Non-Billable</option>
 																</select>
@@ -236,7 +237,7 @@ function validateTaskName(){
 								class="text-danger">*&nbsp;</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min" id="chosen-level1Manager">
-									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
+									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
 											<option value="${option.id},${option.userType}">${option.firstName}
@@ -278,7 +279,7 @@ function validateTaskName(){
 
 							<div class="col-md-9">
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="" placeholder="Select Assign Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();" readonly="readonly">
+										<input type="text" value="" placeholder="Select Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();" readonly="readonly">
 									</span> <span data-target="#addTeam" data-toggle="modal"> 
 									</span>
 								<span class="hidden">Select Team</span>

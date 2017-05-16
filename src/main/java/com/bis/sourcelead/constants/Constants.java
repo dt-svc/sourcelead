@@ -564,7 +564,7 @@ public class Constants {
     public static String MAIL_REQUESTED = "Requested";
     
     
-    public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
+    public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Emp Name","Emp Email","Start Date","End Date","Approved Hrs","Rejected Hrs","Wiating for Approval","Saved Hrs"};	
 
 //    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 //    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
