@@ -1804,7 +1804,7 @@ function getVendorOrgname(vendorOrgname){
 								result = result + '<span>No Data</span><div class="clearfix"></div>';	
 							}
 							result = result + '</div>'; */
-							
+
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Tier:</strong>';
 							if(json.level != null && json.level !='' && json.level !='undefined'){
@@ -1822,6 +1822,33 @@ function getVendorOrgname(vendorOrgname){
 							}else{
 								
 								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Address :</strong>';
+							if(json.address != null && json.address !='' && json.address !='undefined'){
+								result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Billing Address :</strong>';
+							if(json.billingAddress != null && json.billingAddress !='' && json.billingAddress !='undefined'){
+								result = result + '<span title="'+json.billingAddress+'">'+json.billingAddress+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Payment Terms :</strong>';
+							if(json.paymentTerms != null && json.paymentTerms !='' && json.paymentTerms !='undefined' && json.paymentTerms !='SelectPaymentTerms'){
+								result = result + '<span title="'+json.paymentTerms+'">'+json.paymentTerms+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span>No Data</span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
