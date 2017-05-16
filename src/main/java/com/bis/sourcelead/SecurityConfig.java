@@ -123,6 +123,7 @@ public class SecurityConfig  {
     			.antMatchers("/acceptOrRejectOffer").permitAll()
     			.antMatchers("/acceptOrRejectRequirementOffer").permitAll()
     			.antMatchers("/downloadOfferAttachment").permitAll()
+    			.antMatchers("/downloadInvoiceAttachment").permitAll()
     			.antMatchers("/acceptOrRejectReopenTimeSheet").permitAll() 
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
