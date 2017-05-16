@@ -103,7 +103,7 @@
 							 
 							  <c:if test="${sessionData.nav == 'TimeSheet' || sessionData.nav == 'TimeSheetApproval'}">
 							   <c:set var ="timesheetTabExist" scope="session" value="Y"/> 
-							  <ul class="collapses" style="display: block">
+							  <ul class="collapses" style="display: none">
 							        
 							        <%-- <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheet'/>" title="My TimeSheets">My TimeSheets</a></li>
 							  	    <li class="${sessionData.nav == 'TimeSheet' ? 'treview-active' : ''}"><a href="<c:url value='/timesheetApproval'/>" title="My TimeSheets">TimeSheet Approval</a></li> --%>
@@ -144,7 +144,7 @@
 							  </a>
 							  
 							   <c:if test="${sessionData.nav == 'Finance' || sessionData.nav == 'AssetManagement'}">
-                              <ul class="collapses" style="display: block">
+                              <ul class="collapses" style="display: none">
                                   <li class="${sessionData.nav == 'Finance' ? 'treview-active' : ''}"><a href="<c:url value='/finance'/>" title="Finance">Finance</a></li>
                                     <li class="${sessionData.nav == 'AssetManagement' ? 'treview-active' : ''}"><a href="<c:url value='/assetManagement'/>" title="Asset Management">Asset Management</a></li>
                                     <li><a href="<c:url value='/quickBookInvoice'/>" title="QuickBook Invoice">QuickBook Customers</a></li>
@@ -175,7 +175,7 @@
 							  
 						   
 						   <c:if test="${sessionData.nav == 'Associates' || sessionData.nav == 'OnAndOffboard'}">
-                              <ul class="collapses" style="display: block">
+                              <ul class="collapses" style="display: none">
                                   <li class="${sessionData.nav == 'Associates' ? 'treview-active' : ''}"><a href="<c:url value='/associatesList'/>" title="Associates List">Associates List</a></li>
                                   <li class="${sessionData.nav == 'OnAndOffboard' ? 'treview-active' : ''}"><a href="<c:url value='/candidateOnBoardingList'/>" title="On / Off Boarding">On / Off Boarding</a></li>
                               </ul>
@@ -220,7 +220,7 @@
 							  
 						   
 						   <c:if test="${sessionData.nav == 'Receivable' || sessionData.nav == 'Payables'}">
-                              <ul class="collapses" style="display: block">
+                              <ul class="collapses" style="display: none">
                                   <li class="${sessionData.nav == 'Receivable' ? 'treview-active' : ''}"><a href="<c:url value='/invoiceList'/>" title="Receivable">Receivable</a></li>
                                   <li class="${sessionData.nav == 'Payables' ? 'treview-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables">Payables</a></li>
                               </ul>
