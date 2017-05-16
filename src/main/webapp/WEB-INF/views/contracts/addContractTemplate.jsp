@@ -366,17 +366,29 @@ function generatePDF(id) {
 		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		if ($('#template_form').validate(false, validationSettings)) {
 			var frm = $('#template_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			var jsonData = JSON.stringify(frm);
+			/* var con = JSON.stringify(frm);
+			 con = con.replace(/[{}]/g, ""); */
+			
+			var form = $('#template_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData);
+			
+	  		
 			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	       // var jsonData = encodeURIComponent(con);
 	        $( "#save_template" ).addClass('button').val('Processing..');
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 		$.ajax({
 						type : "POST",
+		  	    	    data: formData,
+		  	    	    contentType : 'application/json; charset=utf-8',
+		  		        processData: false,
+		  		        contentType:false, 
+		  	    	    dataType : 'json',
 						url : sourceleadUrl
-								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							 /* generatePDF(result);  */
 							location.replace(sourceleadUrl+ "/orgContractTemplate");

@@ -103,11 +103,14 @@ public class ContractRestController {
 	UserService userService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
-	public @ResponseBody String saveClient(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody String saveClient(
 			HttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(json1);
+		/*String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);*/
+		
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		

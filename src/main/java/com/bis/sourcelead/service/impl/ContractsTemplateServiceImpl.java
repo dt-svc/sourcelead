@@ -193,7 +193,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
 			if(null != contractsTemplate){
 				contracts.setContractsTemplate(contractsTemplate);
-				vendorContracts.setContractsTemplate(contractsTemplate);
+				if(null != vendorContracts){
+					vendorContracts.setContractsTemplate(contractsTemplate);
+				}
 			}
 		}
 		
@@ -211,16 +213,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setTypeOfContract("New");
 		}
 		
-		ContractsTemplate contractsTemplate = contractsTemplateDao.getContractTemplateById(Long.parseLong(jsonObj.getString("template")));
-		if(null != contractsTemplate){
-			contracts.setContractsTemplate(contractsTemplate);
-			if(null != vendorContracts){
-				vendorContracts.setContractsTemplate(contractsTemplate);
-			}
-		}
-		
-		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-
 		if(null != vendorContracts){
 			vendorContracts.setTypeOfContract("New");
 		}
