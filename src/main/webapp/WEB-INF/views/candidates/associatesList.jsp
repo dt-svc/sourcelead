@@ -1465,7 +1465,7 @@ $(document).ready(function() {
 $("#addmore").click(function(){
 	$(this).next(".approved_pop").toggle();
 		//$(".approved_pop").toggle(200);
-	$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop").slideUp();
+	$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp();
 	});
 $("html").click(function() {
     $(".approved_pop").hide(200);
