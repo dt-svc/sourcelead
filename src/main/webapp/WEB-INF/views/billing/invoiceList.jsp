@@ -33,7 +33,7 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Receivable</h2>
+        <h2>Receivables</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Receivable List</div>
     </section>
@@ -43,11 +43,11 @@ $(document).ready(function(){
           <div class="onboardcreateButtons"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
             <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
-                <option value="month">1 Month</option>
-                <option value="twomonths">2 Months</option>
-                <option value="threemonths">3 Months</option>
-                <option value="sixmonths">6 Months</option>
-                <option value="oneyear">1 Year</option>
+                <option value="month">Last 30 days</option>
+                <option value="twomonths">Last 60 Days</option>
+                <option value="threemonths">Last 90 days</option>
+                <option value="sixmonths">Last 180 days</option>
+                <option value="oneyear">Last 365 days</option>
                 <option value="custom">Custom</option>
               </select>
               
@@ -131,7 +131,7 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Invoice</span><i class="glyphicon glyphicon-play" ></i>|
+                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                         <div class="approved_pop" id="invoiceTabOne">
                           <ul>
                             <li>
@@ -142,6 +142,18 @@ $(document).ready(function(){
                               <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceList();">
                               <label for="onboard2">Sent</label>
                             </li>
+                            <li>
+                              <input type="checkbox" value="RECEIVED" name="invoiceStatus" id="" onclick="getInvoiceList();" >
+                              <label for="onboard1">Received</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Accepted</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Rejected</label>
+                            </li>
                           </ul>
                         </div>
                       </li>
@@ -150,20 +162,20 @@ $(document).ready(function(){
                         <div class="approved_pop" id="paymentTabOne">
                           <ul>
                             <li>
-                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
-                              <label for="onboard1">Unpaid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Partial Paid</label>
-                            </li>
-                            <li>
                               <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceList();">
                               <label for="onboard3">Paid</label>
                             </li>
                             <li>
+                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Partially Paid</label>
+                            </li>
+                            <li>
                               <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getInvoiceList();">
                               <label for="onboard4">OverDue</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
+                              <label for="onboard1">Unpaid</label>
                             </li>
                           </ul>
                         </div>

@@ -567,7 +567,7 @@ $(document).ready(function () {
           
           <div class="form-group">
 	         <label class="col-md-3">Cooling-Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for requirement, because of applied recently."></i></label>
-	         <div class="col-md-9">
+	         <div class="col-md-9 selectpicker_maxheight">
 	             <select class="selectpicker" id="coolingOff" name="coolingOff" >
 	             
 	             		<c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
