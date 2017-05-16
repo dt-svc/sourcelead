@@ -46,15 +46,15 @@
             </div>
               
             <div class="form-group">
-              <label class="col-md-3">Invoice Id<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Invoice Id" type="text" data-validation="required" field-name="Invoice Id">
+                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Invoice Id">
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Bill Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
-                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Invoice Date"  type="text" data-validation="required" field-name="Invoice Date" readonly>
+                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date"  type="text" data-validation="required" field-name="Invoice Date" readonly>
               </div>
             </div>
               
@@ -111,7 +111,7 @@
             </div> -->
               
             <div class="form-group">
-              <label class="col-md-3">Invoice Address</label>
+              <label class="col-md-3">Billing Address</label>
               <div class="col-md-9">
                 <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
               </div>
@@ -308,7 +308,6 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	alert(invoiceFrequency);
 	var projectId = $("#projectId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
