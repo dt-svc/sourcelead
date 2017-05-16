@@ -199,7 +199,7 @@ public class AssociatesRestController {
 				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
 				}
-				if(vendors.getResponderLocationId().equals(orgLocations.getId())){
+				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
 				}
 				
