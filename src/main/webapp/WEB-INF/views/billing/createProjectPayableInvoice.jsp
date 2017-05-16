@@ -46,15 +46,15 @@
             </div>
               
             <div class="form-group">
-              <label class="col-md-3">Invoice Id<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
-                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Invoice Id" type="text" data-validation="required" field-name="Invoice Id">
+                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Invoice Id">
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Bill Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
-                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Invoice Date"  type="text" data-validation="required" field-name="Invoice Date" readonly>
+                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date"  type="text" data-validation="required" field-name="Invoice Date" readonly>
               </div>
             </div>
               
@@ -81,7 +81,7 @@
               <div class="form-group">
               <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field"> 
-                <select class="form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
+                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name"> 
                   <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="projects" items="${projectsList}">
                          <option value="${projects.id}">${projects.projectName}</option>
@@ -92,7 +92,7 @@
            <div class="form-group">
               <label class="col-md-3">Frequency</label>
               <div class="col-md-9 select-field">
-                <select class="form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
+                <select class="chosen-select  form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
                  <!--  <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
@@ -111,7 +111,7 @@
             </div> -->
               
             <div class="form-group">
-              <label class="col-md-3">Invoice Address</label>
+              <label class="col-md-3">Billing Address</label>
               <div class="col-md-9">
                 <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
               </div>
@@ -308,7 +308,6 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	alert(invoiceFrequency);
 	var projectId = $("#projectId").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
@@ -419,7 +418,7 @@ function populateInlineItemsGrid(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	/*  getSow(i) */
+    	 getSow(i,opt.candidateId);
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -500,7 +499,12 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
-    	 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
+    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    	 }else{
+    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 }
+    	 /* result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; */
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
@@ -512,7 +516,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	/*  getSow(i) */
+    	getSow(i,opt.candidateId);
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -552,22 +556,26 @@ function populateInlineItemsGrid1(data){
 
 <!-- Get contract sow between client and the associate -->
   <script>
-  function getSow(rowId){
-	  var candidateId = $('#'+rowId+'candidate').val();
+  function getSow(id,candidateId){
+	 /*  var candidateId = $('#'+id+'candidate').val(); */
+	  alert(candidateId);
 	  var orgRelationId = $("#vendorOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
 		        	 for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		$('#'+rowId+'sow').empty();
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
+			        		$('#'+id+'sow').empty();
+			        		$('#'+id+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
+			        		$('#'+id+'rate').val(opt.billingAmount);
+			        		calculateTotalAmount(id);
 					} 
+		        	 
 	        	}else{
 	        		
 	        	}
@@ -1061,7 +1069,7 @@ var validationSettings = {
 		           	/* editInvoice(json['invoiceLineItemsList']);*/
 		        	$("#inoviceTotal").val(json['subTotal']);
 		        	$("#subTotal").val(json['subTotal']);
-		        	$("#disCountType").val(json['discountType']);
+		        	$("#disCount").val(json['discountType']);
 		        	$("#discountValue").val(json['discountAmount']);
 		        	$("#discountTotal").val(json['discountValue']);
 		        	$("#comment").val(json['invoiceComment']);
