@@ -66,7 +66,7 @@ function cancel(){
 							<div class="col-md-9 select-field" id="errVendor">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();"
+									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();getPaymentTerms();"
 									data-validation="required" field-name="Client Name">
 								</select>
 							</div>
@@ -649,6 +649,9 @@ function cancel(){
 				    });
 				
 				
+				
+				
+				
 				var cell1 = row.insertCell(1);
 				var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 				divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -811,8 +814,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"sdate-input");
+						dt.setDate(dt.getDate() + 1);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			 	  }
 			    });
 			
@@ -820,8 +825,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"edate-input");
+						dt.setDate(dt.getDate() - 1);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			 	  }
 			    });
 			
@@ -1762,9 +1769,37 @@ function getVendorContacts(vendorContactId){
 	}
 </script>
 
-
-
-
+<script> 
+function getPaymentTerms(){
+	var orgRelationId = $("#vendorOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+			 var json = JSON.parse(data);
+			 for (var i=0; i<json.length; i++)
+				{
+				var repot = json[i];
+				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
+		           		$("#paymentFrequency").val(repot.paymentTerms);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}else{
+		           		$("#paymentFrequency").val('');
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	if(repot.billingAddress != null && repot.billingAddress != '' && repot.billingAddress != 'undefined'){
+		           		$("#billingAddress").val(repot.billingAddress);
+		           	}else{
+		           		$("#billingAddress").val('');
+		           	}
+				}
+			
+		}
+	});
+}
+</script>
 <script>
 function saveInvoice(saveType){
          
