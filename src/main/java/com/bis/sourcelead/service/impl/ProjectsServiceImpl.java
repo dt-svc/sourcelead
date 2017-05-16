@@ -1575,7 +1575,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			 if(pm.getEmployee() != null){
 				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
-				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
+				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	
+				 pm.setUserRoleType(pm.getEmployee().getUser().getUserType());	
+				 
 			 }
 			 pm.setProjectStatus(pr.getProjectStatus().getValue());
 			 

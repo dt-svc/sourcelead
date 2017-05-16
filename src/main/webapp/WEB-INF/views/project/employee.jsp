@@ -237,7 +237,7 @@
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";
-	        	result = result + '        <div class="project_tabs_inn_table">';
+	        	result = result + '        <div class="project_tabs_inn_table overflow-data">';
 	    		result = result + ' <div class="success_pop" id="selector3" style="display: none;">';
 	    		result = result + ' <i class="fa fa-check-circle"></i><span id="docMsgDiv3"></span>';
 	    		result = result + ' </div>';
@@ -248,6 +248,7 @@
 	    		result = result + '		<tr>';
 	            result = result + '	 	<th>Emp Name</th>';
 	            result = result + '	 	<th>Emp Email</th>';
+	            result = result + '	 	<th>Emp Role</th>';
 	            result = result + '	     <th>Start Date</th>';
 	            result = result + '	     <th>End Date</th>';
 	            result = result + '	     <th>Approved hrs</th>';
@@ -261,6 +262,13 @@
 	        	for (var i=0; i<json.projectMembersList.length; i++)
 				{      
 		        		var opt = json.projectMembersList[i];
+		        		var role = '';
+						if (opt.userRoleType != null && opt.userRoleType != '' && opt.userRoleType != 'undefined') {
+							role = opt.userRoleType;
+						} else {
+							role = 'Employee';
+						}
+		        		
 		        		var projectEndDateStr = "";
 		        		if(opt.projectEndDateStr != null && opt.projectEndDateStr != ''){
 		        			projectEndDateStr = opt.projectEndDateStr;
@@ -272,6 +280,7 @@
 		                
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empName+'"><span title="'+opt.empName+'">'+opt.empName+'</span></div></td>';
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>';
+		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
@@ -621,6 +630,7 @@ function projectEmployee(projectId,startDateStr,endDateStr,status,projectName){
 function projectEmployeePagination(){
     $('#projectEmployeePagination').DataTable( { 
     	"scrollCollapse": false,
+    	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
