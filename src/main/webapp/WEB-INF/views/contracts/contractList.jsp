@@ -470,10 +470,12 @@ function getTemplateList(){
 	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var selectedContractType = "";
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType+"&contractsType="+contractsType+"&contractStatus="+contractStatus,       
        success :function(data) {
+    	   $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
     	   if(contractSubmissionType == 'DRAFT'){
     		   preparedContractListDraft(data);
     	   }else if(contractSubmissionType == 'WAITING_FOR_APPROVER'){
@@ -1993,14 +1995,16 @@ function mainTabEnable(local){
 
 <script>
 function Check(val){
-			 if(val=="Vendors"){
-				 document.getElementById("vendorContractsList").style.display="block";
-				 document.getElementById("clientContractsList").style.display="none";
-			 }
-			 if(val=="Clients"){
-				 document.getElementById("clientContractsList").style.display="block";
-				 document.getElementById("vendorContractsList").style.display="none";
-			 }
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		 if(val=="Vendors"){
+			 document.getElementById("clientContractsList").style.display="none";
+			 document.getElementById("vendorContractsList").style.display="block";
+		 }
+		 if(val=="Clients"){
+			 document.getElementById("vendorContractsList").style.display="none";
+			 document.getElementById("clientContractsList").style.display="block";
+		 }
+	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 }
 
 </script>

@@ -177,11 +177,11 @@ public class SignatureRequestUtil {
 	}
 
 	public Contracts sendDocumentForSignatureRequestForCustom(User vendorUser, Contracts contracts,
-			OrgLocations orgLocation, User user, Contracts savedContracts, Org org) throws ApiException {
+			OrgLocations orgLocation, User user, Contracts savedContracts, Org org) throws Exception {
 		// Enter your DocuSign credentials:
-				String UserName = "prasannavadla9@gmail.com";
-				String Password = "prasanna";    
-				String IntegratorKey = "d5a84b14-1b12-4735-a455-604a8f7c9754";
+				String UserName = "sourcelead@rediffmail.com";
+				String Password = "Pwd!123";    
+				String IntegratorKey = "1bf5d901-629e-4ec3-a915-8991fd08206a";
 
 				// for production environment update to "www.docusign.net/restapi"
 				String BaseUrl = "https://demo.docusign.net/restapi";
