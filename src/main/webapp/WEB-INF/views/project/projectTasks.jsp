@@ -66,7 +66,7 @@ function taskNameValidation(){
 							<tr id="divTsRow0">
 								<th><input type="hidden" id="maxTsRowNum"
 									name="maxTsRowNum" value="1" />Task Name</th>
-								<th>Billable Type</th>
+								<th>Type</th>
 								<th>Description</th>
 								<th>Action</th>
 							</tr>
@@ -82,7 +82,7 @@ function taskNameValidation(){
 								</div>
 							</div>
 							<div class="form-group" id="taskBillableTypeDiv">
-								<label class="col-md-3">Billable Type</label>
+								<label class="col-md-3">Type</label>
 								<div class="col-md-9">
 									<select id="taskBillableType" name="taskBillableType" class="form-control selectpicker">
 									  <option value="Billable">Billable</option>
@@ -154,7 +154,7 @@ function taskNameValidation(){
 						result = result + '<thead>';
 						result = result + '<tr id="projectTaskTableId">';
 						result = result + '<th>Task name</th>';
-						result = result + '<th>Billable Type</th>';
+						result = result + '<th>Type</th>';
 						result = result + '<th>Task description</th>';
 						result = result + '<th>Action</th>';
 						result = result + '</tr>';
@@ -414,9 +414,9 @@ function taskPagination(){
     	"ordering": true,
     	"autoWidth": false,
     	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
     } );
 }
 </script>
@@ -434,7 +434,7 @@ function eidtTasks(projectId,status,taskName,billableType,description,taskId){
 	result = result + '		   </div>';
 	result = result + '		</div>  ';
 	result = result + '		<div class="form-group col-md-6">   ';
-	result = result + '		  <label class="col-md-12" for="Project Id">Billable Type</label> ';
+	result = result + '		  <label class="col-md-12" for="Project Id">Type</label> ';
 	result = result + '		  <div class="col-md-12"> ';
 	result = result	+ '         <select class="form-control" id="billableType" name="billableType">';
 	result = result  +' 			<option '+(billableType == "Billable" ? "selected" : '') +'>Billable</option>';

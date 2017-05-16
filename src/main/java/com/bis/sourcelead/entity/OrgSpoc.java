@@ -168,7 +168,12 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private String ownerUserName;
+	
+	@Transient
+	private String billingAddress;
 
+	@Transient
+	private String paymentTerms;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -527,6 +532,22 @@ public class OrgSpoc implements Serializable{
 
 	public void setOwnerUserName(String ownerUserName) {
 		this.ownerUserName = ownerUserName;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public String getPaymentTerms() {
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms) {
+		this.paymentTerms = paymentTerms;
 	}
 	
 }
