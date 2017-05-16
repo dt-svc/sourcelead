@@ -8,6 +8,9 @@
  .require_wrap_details_cta b {
     width: 110px;
 }
+.require_wrap_details.require_textarea textarea {
+height: 150px;
+}
  </style>
 
 <script>
@@ -238,7 +241,7 @@ function requirementDetails(requirementUUID){
 		    	 result = result +'      <div class="project_side_wrap_inn_tabs" id="new-id">';
 				 result = result +'        <div class="timesheetHead">';
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
-				 result = result +'            <div class="require_wrap_details"> ';
+				 result = result +'            <div class="require_wrap_details require_textarea"> ';
 				 result = result +'              <h2>Descriptions:</h2>';
 				 result = result +'              <textarea placeholder="Enter description" readonly>'+description+'</textarea>';
 				 result = result +'              <h2>Other details:</h2>';
