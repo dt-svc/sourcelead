@@ -548,7 +548,9 @@ function preparedContractListDraft(data){
 		     	if(report.templateSubmissionStatus == "DRAFT"){
 		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		if(report.typeOfContract == "New"){
 		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
 		     		'</sec:authorize>';
 		     		//result = result + '</div>';
 	     	  }
@@ -611,7 +613,9 @@ function preparedContractListDraft(data){
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		if(output.typeOfContract == "New"){
+		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
 	     		'</sec:authorize>';
 	     		//opt = opt + '</div>';
 	     	  }
@@ -1499,7 +1503,9 @@ function preparedContractListExpired(data){
 			     	if(report.templateSubmissionStatus == "EXPIRED"){
 			     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				     		if(report.typeOfContract == "New"){
+				     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				     		}
 			     		'</sec:authorize>';
 			     		result = result + '</div>';
 		     	  }
@@ -1564,7 +1570,9 @@ function preparedContractListExpired(data){
 	     	  if(output.templateSubmissionStatus == "EXPIRED" ){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		if(output.typeOfContract == "New"){
+		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
 	     		'</sec:authorize>';
 	     		opt = opt + '</div>';
 	     	  }
@@ -1688,7 +1696,9 @@ function preparedContractListRejected(data){
 		     	if(report.templateSubmissionStatus == "REJECTED"){
 		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			     		if(report.typeOfContract == "New"){
+			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			     		}
 		     		'</sec:authorize>';
 		     		result = result + '</div>';
 	     	  }
@@ -1757,7 +1767,9 @@ function preparedContractListRejected(data){
 	     	  if(output.templateSubmissionStatus == "REJECTED" ){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		if(output.typeOfContract == "New"){
+		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
 	     		'</sec:authorize>';
 	     		opt = opt + '</div>';
 	     	  }
