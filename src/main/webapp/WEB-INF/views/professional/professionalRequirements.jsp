@@ -15,7 +15,7 @@ var postdatavalues = { title: "", link: "", picture: "", description: "", commen
 function setPostValues(title,link,picture,description,comment){
 	 if (title) {
          postdatavalues.title = title;
-     } 4 Months
+     } 
      if (link) {
          postdatavalues.link = link;
      }

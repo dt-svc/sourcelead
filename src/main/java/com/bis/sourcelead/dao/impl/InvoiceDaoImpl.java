@@ -83,7 +83,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		
 		String subQuery2 = "";
 		
-		if(invoiceType.equalsIgnoreCase("payable")){
+		if(invoiceType.equalsIgnoreCase("payables")){
 			subQuery2 = " and invoice.invoiceType = 'Payables' ";
 		}else{
 			subQuery2 = " and invoice.invoiceType = 'Receivable' ";
@@ -104,7 +104,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts> contractsList = null;
 		String query = "from Contracts contract left join fetch contract.requirementSubmission submission where contract.orgLocationId.id = :orgLocationId and "
-				+ "contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId and contract.contractType = :contractType ";
+				+ "contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
 	     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).setCacheable(true).list();
 	  if(null != contractsList){
 		  return contractsList;

@@ -15,7 +15,7 @@ $(document).ready(function(){
 
 <section class="content-wraper">
     <section class="content-header clearfix">
-      <div class="pull-left">
+      <div class="pull-left" id="invoiceIdHidden">
           <h2>Inovice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
@@ -61,10 +61,11 @@ $(document).ready(function(){
 <script>
 function getViewInvoice(){
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  var invoiceId ='${invoiceId}';
+	  var invoiceUUID ='${invoiceUUID}';
+	  var invoiceType = '${invoiceType}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId,
+	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";
@@ -123,18 +124,34 @@ function getViewInvoice(){
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Id</label>             ';
-					result = result +'              <div class="col-md-8">                                               ';
-					result = result +'                <label>'+report.invoiceId+'</label>                                          ';
-					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Date</label>           ';
-					result = result +'              <div class="col-md-8">                                               ';
-					result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
-					result = result +'              </div>                                                               ';
-					result = result +'            </div>                                                                 ';
+					if(report.invoiceType == "Payables"){
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Bill Id</label>             ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Bill Date</label>           ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+					}else{
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Id</label>             ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Date</label>           ';
+						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
+						result = result +'              </div>                                                               ';
+						result = result +'            </div>                                                                 ';
+					}
+					
 					result = result +'            <div class="col-md-6">                                                 ';
 					result = result +'              <label class="col-md-4 control-label">Payment Term</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
@@ -147,12 +164,22 @@ function getViewInvoice(){
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
-					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Invoice Address</label>        ';
-					result = result +'              <div class="col-md-8 addressInvoice">                                ';
-					result = result +'                <p>'+billingAddress+'</p>';
-					result = result +'              </div>';
-					result = result +'            </div>';
+					if(report.invoiceType == "Payables"){
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Billing Address</label>        ';
+						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'                <p>'+billingAddress+'</p>';
+						result = result +'              </div>';
+						result = result +'            </div>';
+					}else{
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Address</label>        ';
+						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'                <p>'+billingAddress+'</p>';
+						result = result +'              </div>';
+						result = result +'            </div>';
+					}
+				
 					result = result +'          </div>';
 					result = result +'      </div>';
 					
@@ -419,10 +446,10 @@ function getViewInvoice(){
 <script>
 function paymentHistroy(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	  var invoiceId ='${invoiceId}';
+	  var invoiceUUID ='${invoiceUUID}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId,
+	        url: sourceleadUrl+"/getViewPaymentHistory?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                
@@ -441,10 +468,10 @@ function paymentHistroy(){
 				for (var i=0; i<json.length; i++)
 	    		{  
 	        		var report = json[i];
-	        		if(report.paymentCustomDue != null && report.paymentCustomDue !='' && report.paymentCustomDue != 'undefined'){
-	        			paymentCustomDue = report.paymentCustomDue;
+	        		if(report.paymentAmount != null && report.paymentAmount !='' && report.paymentAmount != 'undefined'){
+	        			paymentAmount = report.paymentAmount;
 	        		}else{
-	        			paymentCustomDue = "0"
+	        			paymentAmount = "0"
 	        		}
 	        		if(report.fileName != null && report.fileName != '' && report.fileName != 'undefined'){
 	        			fileName = report.fileName;
@@ -460,7 +487,7 @@ function paymentHistroy(){
 					result = result +'              <td><div class="tbldata-dotdot-100">'+report.paymentDateStr+' </div></td>     ';
 					result = result +'              <td><div class="tbldata-dotdot-50">'+report.paymentMethod+'</div></td>            ';
 					result = result +'              <td><div class="tbldata-dotdot-50" title="'+report.paymentReferenceNumber+'">'+report.paymentReferenceNumber+'</div>              ';
-					result = result +'              </td><td><div class="tbldata-dotdot-50" title="'+paymentCustomDue+'">'+paymentCustomDue+'</div></td> ';
+					result = result +'              </td><td><div class="tbldata-dotdot-50" title="'+paymentAmount+'">'+paymentAmount+'</div></td> ';
 					result = result +'              <td>                                                          ';
 					result = result +'                <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">      ';
 // 					result = result +'                <p class="pull-left">'+fileName+'</p>                           ';

@@ -52,7 +52,7 @@ function cancel(){
 		<div class="pull-left">
 			<h2>Invoice</h2>
 		</div>
-		<div class="pull-right brud-crum">Home » Invoice</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> &raquo; Receivable</div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
@@ -118,10 +118,10 @@ function cancel(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Billing Address</label>
+							<label class="col-md-3">Invoice Address</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Billing Address"></textarea>
+									name="billingAddress" placeholder="Invoice Address"></textarea>
 							</div>
 						</div>
 					</div>
@@ -216,7 +216,7 @@ function cancel(){
 		 result = result +'  <tr id="divTsRow0">';
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
-		 result = result +'  <th>Sow</th>';
+		 result = result +'  <th>SOW</th>';
 		 result = result +'  <th>Rate</th>';
 		 result = result +'  <th>Total Hours</th>';
 		 result = result +'  <th>Amount</th>';
