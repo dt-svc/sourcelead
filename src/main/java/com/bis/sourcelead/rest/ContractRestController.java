@@ -576,7 +576,14 @@ public class ContractRestController {
 					contract.setApproverUserName(approver.append(contract.getApproverUser().getFirstName()).toString());
 				}
 		 	}
-		 	
+		 	if(null != contract.getContactUser()){
+		 		StringBuilder approver = new StringBuilder();
+		 		if(null != contract.getContactUser().getLastName() && "" != contract.getContactUser().getLastName()){
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()).toString());
+				}else{
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).toString());
+				}
+		 	}
 		 	if(null != contract.getRequirementSubmission()){
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}

@@ -257,20 +257,20 @@ function PopUp(contractUUID){
 			if(null != json.initiatorType && "Client" == json.initiatorType){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUserName+'</div>';
 				result = result +	'	</div>';
 			}
 			
 			if(null != json.initiatorType && "Vendor" == json.initiatorType){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUserName+'</div>';
 				result = result +	'	</div>';
 			}
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUser.firstName+'</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
 			result = result +	'	</div>';
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';

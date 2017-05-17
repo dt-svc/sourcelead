@@ -205,6 +205,9 @@ public class Contracts {
 	private String approverUserName;
 	
 	@Transient
+	private String contactUserName;
+	
+	@Transient
 	private Integer totalDraftCount;
 	
 	@Transient
@@ -256,6 +259,14 @@ public class Contracts {
 	private String offerValue;
 	
 	
+	public String getContactUserName() {
+		return contactUserName;
+	}
+
+	public void setContactUserName(String contactUserName) {
+		this.contactUserName = contactUserName;
+	}
+
 	public String getFileName() {
 		return fileName;
 	}
