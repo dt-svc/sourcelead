@@ -1755,15 +1755,16 @@ public class EMailJobScheduler {
 				        				contracts.setId(contracts.getId());
 				        				contracts.setTemplateSubmissionStatus("EXPIRED");
 				        				contractsTemplateService.saveNewContract(childContarct);
-				        				
-				        				if(!("EXPIRED").equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
-					        				ContractsHistory childContractsHistory = new ContractsHistory();
-					            			childContractsHistory.setFromStage(fromStage);
-					        				childContractsHistory.setContractsId(childContarct);
-					        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
-					        				childContractsHistory.setCreatedDate(new Date());
-					        				childContractsHistory.setUpdatedDate(new Date());
-					        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+				        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+					        				if(!("EXPIRED").equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+						        				ContractsHistory childContractsHistory = new ContractsHistory();
+						            			childContractsHistory.setFromStage(fromStage);
+						        				childContractsHistory.setContractsId(childContarct);
+						        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
+						        				childContractsHistory.setCreatedDate(new Date());
+						        				childContractsHistory.setUpdatedDate(new Date());
+						        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+					        				}
 				        				}
 			            		}
 			            	 }
@@ -1785,7 +1786,7 @@ public class EMailJobScheduler {
 						        				contracts.setId(contracts.getId());
 						        				contracts.setTemplateSubmissionStatus("EXPIRED");
 						        				contractsTemplateService.saveNewContract(childContarct);
-						        				
+						        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
 						        				if(!("EXPIRED").equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
 							        				ContractsHistory childContractsHistory = new ContractsHistory();
 							            			childContractsHistory.setFromStage(fromStage);
@@ -1794,6 +1795,7 @@ public class EMailJobScheduler {
 							        				childContractsHistory.setCreatedDate(new Date());
 							        				childContractsHistory.setUpdatedDate(new Date());
 							        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+						        				}
 						        				}
 					            		}
 					            	 }
@@ -1812,7 +1814,7 @@ public class EMailJobScheduler {
 			        				contracts.setContractStatus(evp.getStatus());
 			        				childContarct.setContractStatus(evp.getStatus());
 			        				contractsTemplateService.saveNewContract(childContarct);
-			        				
+			        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
 			        				if(!("SEND_FOR_VERIFICATION").equalsIgnoreCase(fromStage)){
 				        				ContractsHistory childContractsHistory = new ContractsHistory();
 				            			childContractsHistory.setFromStage(fromStage);
@@ -1821,6 +1823,7 @@ public class EMailJobScheduler {
 				        				childContractsHistory.setCreatedDate(new Date());
 				        				childContractsHistory.setUpdatedDate(new Date());
 				        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+			        				}
 			        				}
 			        			}
 			            	}
@@ -1835,14 +1838,16 @@ public class EMailJobScheduler {
 			        				contracts.setContractStatus(evp.getStatus());
 			        				childContarct.setContractStatus(evp.getStatus());
 			        				contractsTemplateService.saveNewContract(childContarct);
-			        				if(!("REJECTED").equalsIgnoreCase(fromStage)){
-				        				ContractsHistory childContractsHistory = new ContractsHistory();
-				            			childContractsHistory.setFromStage(fromStage);
-				        				childContractsHistory.setContractsId(childContarct);
-				        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
-				        				childContractsHistory.setCreatedDate(new Date());
-				        				childContractsHistory.setUpdatedDate(new Date());
-				        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+			        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
+				        				if(!("REJECTED").equalsIgnoreCase(fromStage)){
+					        				ContractsHistory childContractsHistory = new ContractsHistory();
+					            			childContractsHistory.setFromStage(fromStage);
+					        				childContractsHistory.setContractsId(childContarct);
+					        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
+					        				childContractsHistory.setCreatedDate(new Date());
+					        				childContractsHistory.setUpdatedDate(new Date());
+					        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+				        				}
 			        				}
 			        			}
 			            	}
@@ -1857,6 +1862,7 @@ public class EMailJobScheduler {
 			        				contracts.setContractStatus(evp.getStatus());
 			        				childContarct.setContractStatus(evp.getStatus());
 			        				contractsTemplateService.saveNewContract(childContarct);
+			        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
 			        				if(!("DELETED").equalsIgnoreCase(fromStage)){
 				        				ContractsHistory childContractsHistory = new ContractsHistory();
 				            			childContractsHistory.setFromStage(fromStage);
@@ -1866,10 +1872,11 @@ public class EMailJobScheduler {
 				        				childContractsHistory.setUpdatedDate(new Date());
 				        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 			        				}
+			        				}
 			        			}
 			            	}
 			            	contractsTemplateService.saveNewContract(contracts);
-			            	if(parentFromStage.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+			            	if(!parentFromStage.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 				            	ContractsHistory contractsHistory = new ContractsHistory();
 		            			contractsHistory.setFromStage(parentFromStage);
 		        				contractsHistory.setContractsId(contracts);
