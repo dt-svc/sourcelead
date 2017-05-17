@@ -182,7 +182,6 @@ public class InvoicePdfHelper {
 			document.add(new Chunk(ls));
 			document.close();
 			file.close();
-			System.out.println("Pdf created successfully..");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
