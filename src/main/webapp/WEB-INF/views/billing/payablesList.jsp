@@ -116,7 +116,7 @@ color:#337ab7 !important;
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt" style="overflow-x:auto;">
+              <div class="timesheet_out mt">
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
@@ -353,8 +353,8 @@ color:#337ab7 !important;
    <!-- Add invoice Popup -->
 		   <div class="addcandidate-popup">
 		    <div class="row">
-		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-		      <div class="col-md-4 mt25">
+		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+		      <div class="col-md-5 mt25">
 		        <div class="small-widget bgGreen">
 		            <a  href="<c:url value='/createPayables'/>" title="Create custom invoice">
 		          <div class="clearfix mb10"> 
@@ -364,7 +364,7 @@ color:#337ab7 !important;
 		          </div>
 		      </div>
 		
-		        <div class="col-md-4 mt25">
+		        <div class="col-md-5 mt25">
 		          <div class="small-widget bg-yellow"> 
 		          <a href="<c:url value='/createInvoiceProjectPayableBased'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
@@ -843,7 +843,8 @@ function invoicePagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $('#invoiceListPagination').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <script>

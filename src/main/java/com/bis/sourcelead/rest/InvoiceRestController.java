@@ -63,6 +63,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -118,6 +119,9 @@ public class InvoiceRestController {
 
 	@Autowired
 	private ContractsTemplateService contractsTemplateService;
+	
+	@Autowired
+	private UserService userService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -574,12 +578,20 @@ public class InvoiceRestController {
 	     	}
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
+	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
 	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
 	     		ip.setPaymentComment(ip.getPaymentComment());
 	     		ip.setPaymentAmount(ip.getPaymentAmount());
+	     		StringBuilder name = new StringBuilder();
+	     		if(null != user.getLastName()){
+	     			ip.setCreatedByName(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	
+	     		}else{
+	     			ip.setCreatedByName(name.append(user.getFirstName()).toString());
+	     		}
+	     		
 	     	}
 	     	resultJson = commonUtil.toJSON(invoicePaymentList);
 		 	  return resultJson;
