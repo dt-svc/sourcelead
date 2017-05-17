@@ -51,12 +51,14 @@
              <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
+							
 							<div class="input-group positionRelative" id="uploadFileGroup">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
 	                        </div>
+	                        <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p>
               </div>
             </div>  			
 			</div>

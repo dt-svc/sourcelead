@@ -524,7 +524,7 @@ private JSONObject populateJsonObject(CandidatesImport candidate,OrgLocations or
 			
 				String countryCheck = orgLocations.getCountry();  
 			    switch(countryCheck){  
-			    case "India": jsonObj.put("rateType", "Yearly");
+			    case "India": jsonObj.put("rateType", "Monthly");
 			    break;  
 			    default: jsonObj.put("rateType", "Hourly");  
 			    } 
