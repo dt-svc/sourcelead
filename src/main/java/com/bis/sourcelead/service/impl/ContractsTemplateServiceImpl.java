@@ -529,7 +529,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				childContractsHistory.setCreatedBy(user.getUserCode());
 				childContractsHistory.setUpdatedDate(new Date());
 				childContractsHistory.setUpdatedBy(user.getUserCode());
-				contractsTemplateDao.saveContractsHistory(contractsHistory);
+				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 			}
 			
 			
