@@ -335,4 +335,22 @@ float: none; display: inline-block; width: 100%;
 	.content-wraper, .footer-area {
 	margin-left: 0;
 	}
+	.main-header .navbar .custom-navbar ul.custom-navbar-inner li{
+	padding: 15px 14px;
+	}
+	.custom-navbar .login-user span.image img{
+		margin-top: 0;
+	}
+	.custom-navbar .login-user{
+	height: 48px;}
+}
+@media (max-width: 360px){
+	.main-header .navbar .custom-navbar ul.custom-navbar-inner li{
+	padding: 15px 10px;
+	}
+	.custom-navbar .login-user span.image img{
+		margin-top: 0;
+	}
+	.custom-navbar .login-user{
+	height: 48px;}
 }

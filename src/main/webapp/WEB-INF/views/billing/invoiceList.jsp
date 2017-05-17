@@ -295,7 +295,7 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <h4 class="ml">Filter</h4>
-                    <div class="remove_search pull-right">
+                    <div class="remove_search pull-right hidden">
                       <input placeholder="search" type="text">
                     </div>
                   </div>
@@ -804,16 +804,16 @@ function getInvoiceList(){
 		    $("#invoiceList").append(result);
 		    
 		    $("#draftInvoiceCount").html(draftCount);
-		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
 		    		    
 		    $("#paidInvoiceCount").html(paidCount);
-		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
 		    
 		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
 		    
 		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
 		    
 
 		    invoicePagination()

@@ -35,11 +35,11 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left" id="invoiceIdHidden" style="display:none">
-          <h2>Inovice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
+          <h2>Inovice : <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
       </div>
       
       <div class="pull-left" id="BillIdHidden" style="display:none">
-          <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
+          <h2>Bill : <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
       </div>
       
       <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
@@ -242,7 +242,7 @@ function getViewInvoice(){
 							sowName = "--";
 						}
 						if(items.startDateStr != null && items.startDateStr != '' && items.startDateStr != 'undefined'){
-							startDateStr = items.startDateStr;
+							startDateStr = items.startDateStr +' To';
 						}else{
 							startDateStr = "-";
 						}
@@ -281,10 +281,10 @@ function getViewInvoice(){
 						result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80" tittle="'+sowName+'">'+sowName+'</div>       ';
+						result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80">'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
+						result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDtaeStr+'" >'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
 						result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
@@ -503,6 +503,7 @@ function paymentHistroy(){
 				result = result +'                   <th> Amount Received </th>     ';
 				result = result +'                   <th> Attachment  </th>         ';
 				result = result +'                   <th> Memo </th>                ';
+				result = result +'                   <th> Created By </th>                ';
 				result = result +'               </tr>                              ';
 				result = result +'           </thead>                               ';
 				result = result +'           <tbody>                                ';
@@ -546,6 +547,8 @@ function paymentHistroy(){
 					result = result +'                      </a> ';
 					result = result +'                  </div>   ';
 					result = result +'              </td>        ';
+					
+					result = result +'              <td><div class="tbldata-dotdot-100">'+report.createdByName+' </div></td>     ';
 					result = result +'            </tr>          '; 
 	    		}
 				result = result +'           </tbody>        ';

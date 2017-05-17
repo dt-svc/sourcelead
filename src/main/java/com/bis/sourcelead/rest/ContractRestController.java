@@ -252,14 +252,14 @@ public class ContractRestController {
 			StringBuilder sb = new StringBuilder();
 			StringBuilder clientSb = new StringBuilder();
 			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
-			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 			}else{
-			sb.append(orgSpoc.getVendorUser().getFirstName());
+				sb.append(orgSpoc.getVendorUser().getFirstName());
 			}
 			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-			clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
 			}else{
-			clientSb.append(orgSpoc.getClientUser().getFirstName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
 			}
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
@@ -596,7 +596,14 @@ public class ContractRestController {
 					contract.setApproverUserName(approver.append(contract.getApproverUser().getFirstName()).toString());
 				}
 		 	}
-		 	
+		 	if(null != contract.getContactUser()){
+		 		StringBuilder approver = new StringBuilder();
+		 		if(null != contract.getContactUser().getLastName() && "" != contract.getContactUser().getLastName()){
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()).toString());
+				}else{
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).toString());
+				}
+		 	}
 		 	if(null != contract.getRequirementSubmission()){
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
@@ -680,5 +687,15 @@ public class ContractRestController {
 		 	
 			return commonUtil.toJSON(contract);
 		}
+	 
+	 @RequestMapping(value = "/getContractStageCounts", method = RequestMethod.GET)
+		public @ResponseBody String getContractStageCounts(HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
+			return commonUtil.toJSON(contractsCount);
+		 
+	 }
 
 }

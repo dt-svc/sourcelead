@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -117,6 +119,9 @@ public class InvoiceRestController {
 
 	@Autowired
 	private ContractsTemplateService contractsTemplateService;
+	
+	@Autowired
+	private UserService userService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -573,12 +578,20 @@ public class InvoiceRestController {
 	     	}
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
+	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
 	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
 	     		ip.setPaymentComment(ip.getPaymentComment());
 	     		ip.setPaymentAmount(ip.getPaymentAmount());
+	     		StringBuilder name = new StringBuilder();
+	     		if(null != user.getLastName()){
+	     			ip.setCreatedByName(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	
+	     		}else{
+	     			ip.setCreatedByName(name.append(user.getFirstName()).toString());
+	     		}
+	     		
 	     	}
 	     	resultJson = commonUtil.toJSON(invoicePaymentList);
 		 	  return resultJson;
@@ -821,6 +834,33 @@ public class InvoiceRestController {
 			}
 		}
 		return "success";
+	} 
+	
+	
+	
+	
+	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
+	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,
+			@RequestParam(value = "invoiceDate", required = false) String invoiceDate,HttpServletRequest request) throws Exception {
+		
+		
+		String[] frequency = paymentFrequency.split(" ");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		String dueDateStr = null;
+		
+		try {
+
+			Date date =  formatter.parse(invoiceDate);
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			c.add(Calendar.DATE, Integer.parseInt(frequency[0]));
+			dueDateStr =  formatter.format(c.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+		
+		return dueDateStr;
 	} 
 	
 	
