@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.pdfbox.util.StringUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,13 +15,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ContractsTemplateDao;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Repository
 public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
@@ -395,6 +393,22 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			contractsTemplate = contractsTemplateList.get(0);
 		}
 		return contractsTemplate;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ContractsHistory saveContractsHistory(ContractsHistory contractsHistory) throws Exception {
+		logger.debug("Adding OrgSpoc");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (contractsHistory != null) {
+				session.saveOrUpdate(contractsHistory);
+			}
+			logger.debug("contractsHistory Added Successfully");
+		} catch (Exception exception) {
+			throw exception;
+		}
+		return contractsHistory;
 	}
 
 }

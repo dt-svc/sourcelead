@@ -25,6 +25,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  *
  */
 
+/**
+ * @author BIS94
+ *
+ */
 @Entity
 @Table(name = "CONTRACTS_HISTORY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractsHistory")
@@ -39,7 +43,7 @@ public class ContractsHistory {
 	
 	@ManyToOne 
     @JoinColumn(name="CONTRACT_ID", nullable=false )
-	private Contracts contracts;
+	private Contracts contractsId;
 	
 	@Column(name = "FROM_STAGE")
 	private String fromStage;
@@ -67,12 +71,12 @@ public class ContractsHistory {
 		this.id = id;
 	}
 
-	public Contracts getContracts() {
-		return contracts;
+	public Contracts getContractsId() {
+		return contractsId;
 	}
 
-	public void setContracts(Contracts contracts) {
-		this.contracts = contracts;
+	public void setContractsId(Contracts contractsId) {
+		this.contractsId = contractsId;
 	}
 
 	public String getFromStage() {

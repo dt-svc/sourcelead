@@ -19,3 +19,8 @@ CREATE TABLE `sourcelead`.`CONTRACTS_HISTORY` (
   PRIMARY KEY (`ID`),
   FOREIGN KEY(CONTRACT_ID) REFERENCES `sourcelead`.`CONTRACTS`(ID)
 ) ;
+
+
+set SQL_SAFE_UPDATES=0;
+UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{notifyApplicantMailAboutRequirement.applicantName}},\n \n We have opening for the {{notifyApplicantMailAboutRequirement.requirementName}} position,\n Brief details for the position are below\n \n Exeperience : {{notifyApplicantMailAboutRequirement.experience}} \n \n Location : {{notifyApplicantMailAboutRequirement.location}} \n \n Skills : {{notifyApplicantMailAboutRequirement.skills}} \n \n Job Description : {{notifyApplicantMailAboutRequirement.jobDescription}} . \n ' WHERE `UNIQUE_SCENARIO_NAME`='notifyApplicantMailAboutRequirement' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;
