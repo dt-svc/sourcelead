@@ -255,6 +255,9 @@ public class Contracts {
 	@Transient
 	private String offerValue;
 	
+	@Transient
+	private String contractWith;
+	
 	
 	public String getFileName() {
 		return fileName;
@@ -842,6 +845,14 @@ public class Contracts {
 
 	public void setOfferValue(String offerValue) {
 		this.offerValue = offerValue;
+	}
+
+	public String getContractWith() {
+		return contractWith;
+	}
+
+	public void setContractWith(String contractWith) {
+		this.contractWith = contractWith;
 	}
 	
 }
