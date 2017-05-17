@@ -698,6 +698,9 @@ public class Constants {
    
     public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)", "Rate", "Total Hours", "Total"};
     
-	public static String submitForApproval = "SUBMIT FOR APPROVAL";
+	public static String submitForApproval = "Submit For Approval";
+	public static String TSAPPROVED = "Approved";
+	public static String TSREJECTED = "Rejected";
+	public static String TSNEW = "New";
 
 }	
