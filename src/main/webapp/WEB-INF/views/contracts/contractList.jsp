@@ -180,7 +180,7 @@ function PopUp(contractUUID){
 			result = result +	'<div class="contPopupHead clearfix">';
 			result = result +	'<h4>'+json.contractTitle+'</h4>';
 			result = result +	'<span>';
-			result = result +	'	<i class="fa fa-pencil"></i><i class="fa fa-times" onclick="contPopClose();"></i>';
+			result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a></i> <i class="fa fa-times" onclick="contPopClose();"></i>';
 			result = result +	'</span>';
 			result = result +	'</div>';
 		
@@ -206,10 +206,12 @@ function PopUp(contractUUID){
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
 			result = result +	'	</div>';
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">End Date</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.endDateStr+'</div>';
-			result = result +	'	</div>';
+			if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">End Date</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.endDateStr+'</div>';
+				result = result +	'	</div>';
+			}
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
@@ -251,19 +253,17 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
-			
-			
 			if(null != json.initiatorType && "Client" == json.initiatorType){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
 			
 			if(null != json.initiatorType && "Vendor" == json.initiatorType){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -279,6 +279,7 @@ function PopUp(contractUUID){
 			
 			result = result +	'<div class="clearfix"/>';
 			
+		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA"){
 			result = result +	'<h4>Billing Details</h4>';
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
@@ -330,6 +331,7 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			
 			result = result +	'<div class="clearfix"/>';
+		}
 			result = result +	'<h4>Basic Details</h4>';
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
