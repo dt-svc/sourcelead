@@ -339,6 +339,12 @@ btn-default {
 	.content-wraper, .footer-area {
 	margin-left: 0;
 	}
+	.main-header .navbar .custom-navbar ul.custom-navbar-inner li{
+	padding: 16px 10px;
+	}
+	.custom-navbar .login-user span.image img{
+		margin-top: 0;
+	}
 }
 @media (max-width: 1160px){
 .main-header span.logo {

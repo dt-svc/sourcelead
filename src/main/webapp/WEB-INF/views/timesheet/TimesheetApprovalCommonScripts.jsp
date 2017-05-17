@@ -836,10 +836,10 @@ function checkHours(){
 	    	 
 	 }else{
 	    	if(i == '1'){
-	    		result = result+"MonDay ,";
+	    		result = result+"Monday ,";
 	    	}
 	    	if(i == '2'){  
-	    		result = result+"TuesDay ,";
+	    		result = result+"Tuesday ,";
 	    	}
 	    	if(i == '3'){  
 	    		result = result+"Wednesday ,";
@@ -1382,7 +1382,8 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 
 <script>
 function pagination(){ 
-    $('#example').DataTable( { 
+    $('#example').DataTable( {
+    	"scrollX": true,    	
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
