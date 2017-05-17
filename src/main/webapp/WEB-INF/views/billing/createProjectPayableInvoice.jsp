@@ -859,6 +859,8 @@ function calculateDisCount(){
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
 		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
+		        <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
+		  
 		  </div>
 	 </div>
 </div>
