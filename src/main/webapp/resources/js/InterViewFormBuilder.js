@@ -147,7 +147,7 @@ function addField(fieldType,value,labelValue,sourceleadUrl,templateId,labelValid
     if (hasRequired) {
         includeRequiredHTML = '' +
             '<label class="col-md-5"><div class="col-md-3 lblHeight">Required? </div>' +
-            ' <div class="col-md-9 lblHeight"> ' +
+            ' <div class="col-md-9 lblHeight choicePadLeft"> ' +
             '<input class="toggle-required" '+checkbox+' type="checkbox">' +
             ' </div> ' +
             '</label>'
@@ -249,7 +249,7 @@ function addChoice(labelValue) {
         
         
         '<label class="col-md-2 lblClass"><div class="col-md-9 choice-padLeft lblHeight"> Selected? </div> ' +
-        '<div class="col-md-3 choicePadLeft lblHeight"> ' +
+        '<div class="col-md-3 choicePadLeft lblHeight mt10"> ' +
         '<input class="toggle-selected" type="checkbox">' +
         '</div>' +
         

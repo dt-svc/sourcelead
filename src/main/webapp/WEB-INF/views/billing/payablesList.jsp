@@ -116,7 +116,7 @@ color:#337ab7 !important;
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt" style="overflow-x:auto;">
+              <div class="timesheet_out mt">
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
@@ -283,7 +283,7 @@ color:#337ab7 !important;
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <h4 class="ml">Filter</h4>
-                    <div class="remove_search pull-right">
+                    <div class="remove_search pull-right hidden">
                       <input placeholder="search" type="text">
                     </div>
                   </div>
@@ -353,8 +353,8 @@ color:#337ab7 !important;
    <!-- Add invoice Popup -->
 		   <div class="addcandidate-popup">
 		    <div class="row">
-		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-		      <div class="col-md-4 mt25">
+		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+		      <div class="col-md-5 mt25">
 		        <div class="small-widget bgGreen">
 		            <a  href="<c:url value='/createPayables'/>" title="Create custom invoice">
 		          <div class="clearfix mb10"> 
@@ -364,7 +364,7 @@ color:#337ab7 !important;
 		          </div>
 		      </div>
 		
-		        <div class="col-md-4 mt25">
+		        <div class="col-md-5 mt25">
 		          <div class="small-widget bg-yellow"> 
 		          <a href="<c:url value='/createInvoiceProjectPayableBased'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
@@ -783,7 +783,7 @@ function getPayableInvoiceList(){
 							if(report.invoiceStatus == "Rejected"){
 								result = result +'           <span class="text-danger successBtn primary clearfix" >Rejected</span> </td>          ';	
 							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 							}
 							
 						}
@@ -811,18 +811,16 @@ function getPayableInvoiceList(){
 		    $("#invoiceList").append(result);
 		    
 		    $("#draftInvoiceCount").html(draftCount);
-		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
 		    		    
 		    $("#paidInvoiceCount").html(paidCount);
-		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
 		    
 		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
 		    
 		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
-		    
-		    
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
 		    
 		    invoicePagination()
         },
@@ -845,7 +843,8 @@ function invoicePagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $('#invoiceListPagination').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <script>

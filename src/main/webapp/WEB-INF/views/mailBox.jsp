@@ -56,10 +56,10 @@
             </div>
             <div>
               <ul class="nav nav-pills nav-stacked">
-                <li id="inboxActive" class=""><a href="#inbox" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span>
+                <li id="inboxActive" class=""><a href="#inbox" onclick="getMails('Inbox');"><i class="fa fa-inbox"></i> Inbox <c:if test="${inboxUnreadMailsCount > 0}"><span class="label label-primary pull-right" id="inboxUnread">${inboxUnreadMailsCount}</span></c:if>
                 <li id="sentActive" class=""><a href="#sent" onclick="getMails('Sent');"><i class="fa fa-envelope-o"></i> Sent</a></li>
                 <li id="starredActive" class=""><a href="#starred" onclick="getMails('Starred');"><i class="fa fa-star"></i> Starred</a></li>
-                <li id="requestedActive" class=""><a href="#requested" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></a></li> 
+                <li id="requestedActive" class=""><a href="#requested" onclick="getMails('Requested');"><i class="fa fa-file-text-o"></i> Requested <c:if test="${requestedUnreadMailsCount > 0}"><span class="label label-info pull-right" id="requestedUnread">${requestedUnreadMailsCount}</span></c:if></a></li> 
                 <li id="trashActive" class=""><a href="#trash" onclick="getMails('Trash');"><i class="fa fa-trash-o"></i> Trash</a></li>
               </ul>
             </div>
@@ -100,10 +100,10 @@
 			<div class="mailbox-controls">
 			<div>
 			<input id="checkAllEmails" class="checkbox-custom" onclick="toggleEmails(this);deleteMail();" name="checkAllEmails" type="checkbox">
-			<label for="checkAllEmails" class="checkbox-custom-label"></label>
+			<label for="checkAllEmails" id="checkAllBtn" class="checkbox-custom-label" style="display: none;"></label>
 			</div>
 				<button class="btn btn-danger mailbtn-custom" type="button" onclick="getMailBoxIds();" id="trashBtn" style="display: none;"><i class="fa fa-trash-o" id="trashtype"></i></button>
-                <button class="btn btn-default mailbtn-custom" type="button" onclick="refreshList();"><i class="fa fa-refresh"></i></button>
+                <button class="btn btn-default mailbtn-custom" type="button" id="refreshBtn" style="display: none;" onclick="refreshList();"><i class="fa fa-refresh"></i></button>
                
                <!--  <div class="pull-right">
                   1-50/200
@@ -174,6 +174,8 @@
            	
                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
               		
+                	 document.getElementById("checkAllBtn").style.display="";
+                	 document.getElementById("refreshBtn").style.display="";
               			 
               			var result = '';
               			result = result +'<input type="hidden" id="emailListType" value='+type+'>';
@@ -255,7 +257,7 @@
 	           		result = result +'     <div class="modal-bodyCustom mt clearfix popupFilter">'; 
 	           		result = result +'<table class="table table-hover table-striped">';
 	           		result = result +'           <thead>';
-	           		result = result +'           <p class="text-center text-muted"><i class="noMailImg"></i><br/>No Mails In Your '+type+' </p>';
+	           		result = result +'           <p class="text-center text-muted"><i class="noMailImg"></i><br/>No mails in your '+type+' </p>';
 	           		result = result +'           </thead>';
 	        		result = result +'           </table>';
 	        		result = result +'     </div>';

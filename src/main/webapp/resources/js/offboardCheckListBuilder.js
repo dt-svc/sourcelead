@@ -141,7 +141,7 @@ function addField(fieldType,value,labelValue,sourceleadUrl,labelValidationCheck)
         includeChoicesHTML = '' +
             '<div class="choices col-md-12">' +
             '<ul class="clearfix"></ul>' +
-            '<button type="button" class="add-choice btn btn-primary"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Option</button>' +
+            '<button type="button" class="add-choice btn btn-primary ml"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Option</button>' +
             '</div>'
     }
     

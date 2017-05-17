@@ -108,9 +108,9 @@ function getNotificationtLists(){
 	        	result = result +'<tr>';
 	        	result = result +'	<th>';
 	        	result = result +'</th>';
-	        	result = result +'	<th>Recived From</th>';
+	        	result = result +'	<th>Received From</th>';
 	        	result = result +'	<th>Notification</th>';
-	        	result = result +'	<th>Recived On</th>';
+	        	result = result +'	<th>Received On</th>';
 	        	result = result +'	<th>Action</th>';
 	        	result = result +'</tr>';
 	        	result = result +'</thead>';
