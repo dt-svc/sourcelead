@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -820,6 +821,33 @@ public class InvoiceRestController {
 			}
 		}
 		return "success";
+	} 
+	
+	
+	
+	
+	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
+	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,
+			@RequestParam(value = "invoiceDate", required = false) String invoiceDate,HttpServletRequest request) throws Exception {
+		
+		
+		String[] frequency = paymentFrequency.split(" ");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		String dueDateStr = null;
+		
+		try {
+
+			Date date =  formatter.parse(invoiceDate);
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			c.add(Calendar.DATE, Integer.parseInt(frequency[0]));
+			dueDateStr =  formatter.format(c.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+		
+		return dueDateStr;
 	} 
 	
 	

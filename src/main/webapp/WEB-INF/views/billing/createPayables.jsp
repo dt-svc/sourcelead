@@ -106,7 +106,7 @@ function cancel(){
 							<label class="col-md-3">Payment terms</label>
 							<div class="col-md-9" id="errPayment">
 								<select class="chosen-select form-control" id="paymentFrequency"
-									name="paymentFrequency" onchange="getEndDateByFrequency();">
+									name="paymentFrequency" onchange="getDueDateByFrequency();">
 									<option value="">Select frequency</option>
 									<option value="10 days">10 days</option>
 									<option value="15 days">15 days</option>
@@ -1434,6 +1434,7 @@ function calculateTaxDiscount(){
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
+					getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1600,6 +1601,7 @@ function getPaymentTerms(){
 				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
 		           		$("#paymentFrequency").val(repot.paymentTerms);
 		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	    getDueDateByFrequency();
 		           	}else{
 		           		$("#paymentFrequency").val('');
 		           	    $('#paymentFrequency').trigger("chosen:updated");
@@ -1731,32 +1733,30 @@ $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 </script>
 
 
-<!-- <script>
-function getEndDateByFrequency(){
-	var invoiceDate = document.getElementById("invoiceDate").value;
-	if(invoiceDate){
-	   
-	    var paymentFrequency = document.getElementById("paymentFrequency").value;
-		var days = paymentFrequency.split(" ");
+<script>
+function getDueDateByFrequency(){
+	 var invoiceDate = document.getElementById("invoiceDate").value;
+	 var paymentFrequency = document.getElementById("paymentFrequency").value;
+	
+	 if(paymentFrequency){
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			success :function(dueDateStr) {
+				
+				$("#dueDate").val(dueDateStr);
+				$("#invoiceLoading").removeAttr("style");
+			}
+		});
 		
-		var date = new Date(invoiceDate);
-	    var newdate = new Date(date);
-	   
-	    
-	    var dd = newdate.getDate(); 
-	    var mm = newdate.getMonth()+1; 
-	    var yyyy = newdate.getFullYear(); 
-	    
-	    alert(dd+"--"+mm+"--"+yyyy);
-	    
-	    newdate.setDate(newdate.getDate());
-	    
-	    var someFormattedDate = dd+'-'+mm+'-'+yyyy;
-	    document.getElementById("dueDate").value = someFormattedDate;
-		
+	}else{
+		$("#dueDate").val('');
 	}
 }
-</script> -->
+</script> 
 
 <script>
 var validationSettings = {
