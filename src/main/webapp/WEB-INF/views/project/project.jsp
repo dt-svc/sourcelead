@@ -23,17 +23,22 @@
 function validateTaskName(){
 
 		var Taskname= $("#taskName").val();
+		var Taskdesc= $("#taskDescription").val();
 		var checkMaxTsRowNum = $("#maxTsRowNum").val();
 		for(i = 1; i<checkMaxTsRowNum;i++){
 			var oldTaskname = $("#" + i + "taskName").val()
-			if(oldTaskname == Taskname){
-				$("#save_task").hide();			
+			var oldTaskdesc = $("#" + i + "taskDescription").val()
+			if(oldTaskname == Taskname && oldTaskdesc == Taskdesc){
+// 				$("#save_task").hide();
+				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
 				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");
 				document.getElementById("taskName").setAttribute('record-exist', 'yes');
 				document.getElementById("taskName").setAttribute('record-exist-errorMsg',Taskname+ ' is Already Existed');
 				break;
 			}else{
 				$("#save_task").show();
+				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
 				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
 			}
 			
@@ -182,7 +187,7 @@ function validateTaskName(){
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description"  id="taskDescription" name="taskDescription"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description"  onkeyup="validateTaskName();" id="taskDescription" name="taskDescription"  data-validation="validate_length length2-250"></textarea>
 															</div>
 														</div>
 													</div>
@@ -658,6 +663,9 @@ function getStatus(){
 function flushProjectTasks(){
 	$("#taskName").val('');
 	$("#taskDescription").val('');
+	$("#addTaskText").html('Add Task');
+	$("#save_task").removeAttr('onclick');
+	$("#save_task").attr('onclick', 'addTasks();');
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>
@@ -678,7 +686,6 @@ function flushProjectTasks(){
 			con = con.replace(/[{}]/g, ""); */
 			
 			var jsonData = JSON.stringify(frm);
-			
 			
 		    var form = $('#project_form')[0];
 		    var formData = new FormData(form);
