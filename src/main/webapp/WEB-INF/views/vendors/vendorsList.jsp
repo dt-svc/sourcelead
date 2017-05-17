@@ -1854,7 +1854,6 @@ function getVendorOrgname(vendorOrgname){
 								result = result + '<span>No Data</span><div class="clearfix"></div>';	
 							}
 							result = result + '</div>';
-							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Address :</strong>';
 							if(json.address != null && json.address !='' && json.address !='undefined'){
