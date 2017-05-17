@@ -72,7 +72,7 @@ $(document).ready(function(){
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-yellow"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
+          <div class="small-widget bg-yellow"> <a href="<c:url value="/addCustomContract" />" title="Add Candidate">
             <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Custom Contract</strong> </a> </div>
         </div>
@@ -180,7 +180,7 @@ function PopUp(contractUUID){
 			result = result +	'<div class="contPopupHead clearfix">';
 			result = result +	'<h4>'+json.contractTitle+'</h4>';
 			result = result +	'<span>';
-			result = result +	'	<i class="fa fa-pencil"></i><i class="fa fa-times" onclick="contPopClose();"></i>';
+			result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a></i> <i class="fa fa-times" onclick="contPopClose();"></i>';
 			result = result +	'</span>';
 			result = result +	'</div>';
 		
@@ -206,10 +206,12 @@ function PopUp(contractUUID){
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
 			result = result +	'	</div>';
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">End Date</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.endDateStr+'</div>';
-			result = result +	'	</div>';
+			if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">End Date</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.endDateStr+'</div>';
+				result = result +	'	</div>';
+			}
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
@@ -251,19 +253,17 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
-			
-			
 			if(null != json.initiatorType && "Client" == json.initiatorType){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
 			
 			if(null != json.initiatorType && "Vendor" == json.initiatorType){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUser.firstName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -279,6 +279,7 @@ function PopUp(contractUUID){
 			
 			result = result +	'<div class="clearfix"/>';
 			
+		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA"){
 			result = result +	'<h4>Billing Details</h4>';
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
@@ -330,6 +331,7 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			
 			result = result +	'<div class="clearfix"/>';
+		}
 			result = result +	'<h4>Basic Details</h4>';
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
@@ -470,10 +472,12 @@ function getTemplateList(){
 	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var selectedContractType = "";
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 $.ajax({
       type : "GET",
        url: sourceleadUrl+"/getAllContractsByOrgLocationIdandStatus?${_csrf.parameterName}=${_csrf.token}&contractSubmissionType="+contractSubmissionType+"&tabType="+tabType+"&contractsType="+contractsType+"&contractStatus="+contractStatus,       
        success :function(data) {
+    	   $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
     	   if(contractSubmissionType == 'DRAFT'){
     		   preparedContractListDraft(data);
     	   }else if(contractSubmissionType == 'WAITING_FOR_APPROVER'){
@@ -667,7 +671,7 @@ function listContractsPagination(){
 function vendorListContractsPagination(){ 
     $('#contractListTableDraft').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -752,6 +756,7 @@ function preparedContractListWFA(data){
 	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
 	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 	            	  '</sec:authorize>';
+
 	        	  }
 	        	  else{
 	        		  result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
@@ -835,6 +840,7 @@ function preparedContractListWFA(data){
             		//opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
             		opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
             		opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
+
             		'</sec:authorize>';
         	  }
         	  else{
@@ -890,7 +896,7 @@ function listContractsPaginationWFA(){
 function vendorListContractsPaginationWFA(){ 
     $('#contractListTableWFA').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1074,7 +1080,7 @@ function listContractsPaginationWTS(){
 function vendorListContractsPaginationWTS(){ 
     $('#contractListTableWTS').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1149,6 +1155,7 @@ function preparedContractListWTV(data){
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
 	     		 if(report.contractStatus == "completed" && report.templateSubmissionStatus != "FINALIZED"){
+
 	     			result = result + '<div id="removeStatus'+report.id+'"><a class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a></div>|';
 	            	 }
 	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
@@ -1265,7 +1272,7 @@ function listContractsPaginationWTV(){
 function vendorListContractsPaginationWTV(){ 
     $('#contractListTableWTV').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1438,7 +1445,7 @@ function listContractsPaginationFinalize(){
 function vendorListContractsPaginationFinalize(){ 
     $('#contractListTableFinalize').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1624,7 +1631,7 @@ function listContractsPaginationEXP(){
 function vendorListContractsPaginationEXP(){ 
     $('#contractListTableEXP').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1821,7 +1828,7 @@ function listContractsPaginationREJ(){
 function vendorListContractsPaginationREJ(){ 
     $('#contractListTableREJ').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2002,14 +2009,16 @@ function mainTabEnable(local){
 
 <script>
 function Check(val){
-			 if(val=="Vendors"){
-				 document.getElementById("vendorContractsList").style.display="block";
-				 document.getElementById("clientContractsList").style.display="none";
-			 }
-			 if(val=="Clients"){
-				 document.getElementById("clientContractsList").style.display="block";
-				 document.getElementById("vendorContractsList").style.display="none";
-			 }
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		 if(val=="Vendors"){
+			 document.getElementById("clientContractsList").style.display="none";
+			 document.getElementById("vendorContractsList").style.display="block";
+		 }
+		 if(val=="Clients"){
+			 document.getElementById("vendorContractsList").style.display="none";
+			 document.getElementById("clientContractsList").style.display="block";
+		 }
+	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 }
 
 </script>
