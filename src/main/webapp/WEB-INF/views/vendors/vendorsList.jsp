@@ -255,7 +255,7 @@ border:none; background-color: none !important; padding:0 5px !important;
               <div class="pull-right mr"> 
                 <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
-                <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/>
+              <!--   <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/> -->
               
             </div>
             </form:form>
@@ -403,9 +403,10 @@ border:none; background-color: none !important; padding:0 5px !important;
 	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
 	    $("#emailAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
-	    $("#citySearch").empty();
-	    $("#stateSearch").empty();
-	    $("#countrySearch").empty();
+	    $("#createdByAdvanced").val('').trigger("chosen:updated");
+		   /*  $("#country").val('').trigger("chosen:updated"); */
+		    $("#state").val('').trigger("chosen:updated");
+		    $("#city").val('').trigger("chosen:updated");
 	}
 </script>
 
@@ -419,7 +420,7 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-	$('#country').val('').trigger('chosen:updated');
+/* 	$('#country').val('').trigger('chosen:updated'); */
 	$('#state').val('').trigger('chosen:updated');
 	$('#city').val('').trigger('chosen:updated');
 	$('#tierAdvanced').val('').trigger('chosen:updated');
