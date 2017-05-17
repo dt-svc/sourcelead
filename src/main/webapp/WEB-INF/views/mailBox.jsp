@@ -4,11 +4,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
+<!-- <script>
  window.onload = function() {
 	 getMails('Inbox');
 };
-</script>
+</script> -->
+
+ <script>
+		$(document).ready(function() {
+			 getMails('Inbox');
+		});
+	</script>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -416,16 +422,23 @@ function getMailBoxIds(){
 	}
 	 
 	
-	 
+	 $("#mailLoading").attr('style','position:absolute; width:97%; height:99%; background-color:rgba(255,255,255,0.8); top:-1px; left:14px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; background-size:100px;');
 		 $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/sendMailsToTrash?${_csrf.parameterName}=${_csrf.token}&mailIds="+mailIds,
-			success : function(result) {
+			success : function(data) {
+				
+				var json = JSON.parse(data);
+				
+				 $('#inboxUnread').html(json['unreadInboxCount']);
+         	     $('#requestedUnread').html(json['unreadRequestedCount']);
+         	     
+         	     $("#mailLoading").removeAttr("style");
 				
 				for (var i=0; i< mailIds.length; i++) {
 					 document.getElementById("checkbox"+mailIds[i]).remove();					 
 				}
-				 
+				
 				 
 				
 			},
