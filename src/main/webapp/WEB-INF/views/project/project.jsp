@@ -187,7 +187,7 @@ function validateTaskName(){
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description"  onkeyup="validateTaskName();" id="taskDescription" name="taskDescription"  data-validation="validate_length length2-250"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description"  onkeyup="validateTaskName();" id="taskDescription" name="taskDescription"  data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 															</div>
 														</div>
 													</div>
