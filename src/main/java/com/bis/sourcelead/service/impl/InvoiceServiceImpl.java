@@ -289,10 +289,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			}
 		}
 		
-		//mail scenario for client accept or reject
+		/*//mail scenario for client accept or reject
 		if(saveType.equalsIgnoreCase("SENT")){
 			invoiceClientAcceptMail(user,orgLocation,invoice);
-		}
+		}*/
 
 		return invoice;
 	}
