@@ -295,7 +295,7 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <h4 class="ml">Filter</h4>
-                    <div class="remove_search pull-right">
+                    <div class="remove_search pull-right hidden">
                       <input placeholder="search" type="text">
                     </div>
                   </div>
