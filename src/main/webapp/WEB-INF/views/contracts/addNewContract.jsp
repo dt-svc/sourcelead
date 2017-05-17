@@ -357,12 +357,12 @@
                 <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
 			                
 			                <select class="selectpicker" id="billingRateType" name="billingRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
-				                 <option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-				                 <option ${currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-				                 <option ${currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-				                 <option ${currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-				                 <option ${currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-				                 <option ${currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+				                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+				                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+				                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+				                 <option ${contract.billingRateType == 'GBP' ? 'selected' : currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+				                 <option ${contract.billingRateType == 'SGD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>SGD</option>
+				                 <option ${contract.billingRateType == 'EUR' ? 'selected' : currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
 			                
 			                </select>
 		                </div>
@@ -372,13 +372,13 @@
 		                <div class="input-group-btn tblminwidth-75 ratetype">
 		                  <select class="selectpicker" id="billingRatePer" name="billingRatePer" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
 		                    <option value="">Rate Per</option>
-		                    <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-		                    <option ${rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-		                    <option ${rateType  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-		                    <option ${rateType  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-		                    <option ${rateType  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-		                    <option ${rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+		                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+		                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+		                    <option ${contract.billingRatePer  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+		                    <option ${contract.billingRatePer  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+		                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+		                    <option ${contract.billingRatePer  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+		                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
 		                  </select>
 		                </div>
 		            </div>
