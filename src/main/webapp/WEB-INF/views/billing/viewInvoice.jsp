@@ -242,7 +242,7 @@ function getViewInvoice(){
 							sowName = "--";
 						}
 						if(items.startDateStr != null && items.startDateStr != '' && items.startDateStr != 'undefined'){
-							startDateStr = items.startDateStr;
+							startDateStr = items.startDateStr +' To';
 						}else{
 							startDateStr = "-";
 						}
@@ -281,10 +281,10 @@ function getViewInvoice(){
 						result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80" tittle="'+sowName+'">'+sowName+'</div>       ';
+						result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
-						result = result +'                         <div class="tbldata-dotdot_80">'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
+						result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDtaeStr+'" >'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
 						result = result +'                     </td>                                                     ';
 						result = result +'                     <td>                                                      ';
 						result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
@@ -503,6 +503,7 @@ function paymentHistroy(){
 				result = result +'                   <th> Amount Received </th>     ';
 				result = result +'                   <th> Attachment  </th>         ';
 				result = result +'                   <th> Memo </th>                ';
+				result = result +'                   <th> Created By </th>                ';
 				result = result +'               </tr>                              ';
 				result = result +'           </thead>                               ';
 				result = result +'           <tbody>                                ';
@@ -546,6 +547,8 @@ function paymentHistroy(){
 					result = result +'                      </a> ';
 					result = result +'                  </div>   ';
 					result = result +'              </td>        ';
+					
+					result = result +'              <td><div class="tbldata-dotdot-100">'+report.createdByName+' </div></td>     ';
 					result = result +'            </tr>          '; 
 	    		}
 				result = result +'           </tbody>        ';

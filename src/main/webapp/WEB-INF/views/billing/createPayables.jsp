@@ -1299,7 +1299,7 @@ function calculateDiscount(){
 			total = subTotal - perCentValue;
 			$("#discountTotal").val(perCentValue);
 			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
