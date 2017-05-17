@@ -900,7 +900,7 @@ function addAttachment(){
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
 				             </select>
-				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="pull-left addtaskfield removetaskfield"/>
+				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
 				             </div>
 				             
 				        </div>
