@@ -296,6 +296,12 @@ background-color: #629794;
 	.content-wraper, .footer-area {
 	margin-left: 0;
 	}
+	.main-header .navbar .custom-navbar ul.custom-navbar-inner li{
+	padding: 15px 12px;
+	}
+	.custom-navbar .login-user span.image img{
+		margin-top: 0;
+	}
 }
 @media (max-width: 1160px){
 .main-header span.logo {

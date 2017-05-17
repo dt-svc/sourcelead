@@ -213,11 +213,11 @@ public class RequirementRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/storeRequirementTemplate", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirementTemplate(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+	public @ResponseBody String storeRequirementTemplate(HttpServletRequest request) throws Exception {
 		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		
+		/*String jsonc = "{" + json + "}";*/
+	//	JSONObject jsonObj = new JSONObject(jsonc);
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirementTemplate(jsonObj,orgLocation,user);
@@ -225,6 +225,7 @@ public class RequirementRestController {
 		return "success";
 		
 	}
+	
 	
 	
 	/**

@@ -152,7 +152,13 @@ public class Html2PdfUtil {
 		            	if(null != contracts.getStateJurisdiction()){
 		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
-		            }  
+		            } 
+		            else if(matchPattern.group().equalsIgnoreCase(" [Billing Cycle]")){
+		            	if(null != contracts.getBillingPer()){
+		            		matchPattern.appendReplacement(sb, contracts.getBillingPer());
+		            	}
+		            } 
+	               
 	            }
 	            matchPattern.appendTail(sb);
 	        return sb.toString();

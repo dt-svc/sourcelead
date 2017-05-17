@@ -473,6 +473,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	    		 combinedApprovalClass = "class='proj_closed'";
 	    	    		  combinedApprStatus = "Rejected";
 	    	    	 }
+	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
+	    	    		 combinedApprovalClass = "class='proj_process'";
+	    	    		  combinedApprStatus = "Submit For Approval";
+	    	    	 }
+	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
+	    	    		 combinedApprovalClass = "class='bgGReen'";
+	    	    		  combinedApprStatus = "NEW";
+	    	    	 }
 				     
 				    timesheetApprovalDiv.append("<td><div class='sm'><b "+combinedApprovalClass+">"+combinedApprStatus+"</b></div></td>");
 			        timesheetApprovalDiv.append("</tr>");

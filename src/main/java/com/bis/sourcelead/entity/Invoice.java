@@ -221,8 +221,6 @@ public class Invoice {
 	@Transient
 	private Long invoiceParentId;
 	
-	
-	
 	public Long getId()
 	{
 		return id;

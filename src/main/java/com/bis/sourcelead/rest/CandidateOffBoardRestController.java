@@ -1125,7 +1125,8 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 
 		 
 		 @RequestMapping(value = "/saveCandidateOffBoardTasks" , method = RequestMethod.POST)
-		 public @ResponseBody  String saveCandidateOffBoardTasks(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 public @ResponseBody  String saveCandidateOffBoardTasks(@RequestParam(value="json", required=false) String json, 
+				 @RequestParam(value="tasks", required=false) String tasks,HttpServletRequest request) throws Exception {
 			
 			 
 			 json = "{"+json+"}";
@@ -1201,6 +1202,36 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 
 			 
 			 offboardTasksService.saveOffboardTasks(offboardTasks);
+			 
+			 
+			 if(!isNullOrEmpty(tasks)){
+				 String[] taksIds = tasks.split(",");
+				 for(int i=0; i<taksIds.length; i++){
+					 offboardTasks = offboardTasksService.getOffboardTasksByTaskId(Long.valueOf(taksIds[i]));
+					 
+					 OffboardTasks candidateTask = new OffboardTasks();
+					 candidateTask.setTaskName(offboardTasks.getTaskName());
+					 candidateTask.setCandidateOffBoardingId(offBoarding);
+					 
+					 candidateTask.setAssignToUsers(offboardTasks.getAssignToUsers());
+					 candidateTask.setAssignToCandidate(offboardTasks.getAssignToCandidate());
+					 candidateTask.setPriority(offboardTasks.getPriority());
+					 candidateTask.setTaskRepeat(offboardTasks.getTaskRepeat());
+					 candidateTask.setDueAfterMonths(offboardTasks.getDueAfterMonths());
+					 candidateTask.setDueAfterDays(offboardTasks.getDueAfterDays());
+					 candidateTask.setDueAfterHours(offboardTasks.getDueAfterHours());
+					 candidateTask.setDueAfterMinutes(offboardTasks.getDueAfterMinutes());
+					 candidateTask.setTaskNotification(offboardTasks.getTaskNotification());
+					 candidateTask.setTaskEmail(offboardTasks.getTaskEmail());
+					 candidateTask.setDescription(offboardTasks.getDescription());
+					 candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
+					 candidateTask.setCreatedDate(CommonUtil.currentDate());
+					 candidateTask.setCreatedBy(user.getUserCode());
+					 candidateTask.setUpdatedDate(CommonUtil.currentDate());
+					 candidateTask.setUpdatedBy(user.getUserCode());
+					 offboardTasksService.saveOffboardTasks(candidateTask);
+				 }
+			 }
 			
 			  return "success";
 		   }
