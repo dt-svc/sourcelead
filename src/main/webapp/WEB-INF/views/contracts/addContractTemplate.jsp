@@ -141,8 +141,8 @@
                  <li onclick="copyToClipboard('text_element91')"><i></i><p class="copyText" id="text_element91">[Payment Term]</li>
                  <li onclick="copyToClipboard('text_element107')"><i></i><p class="copyText" id="text_element107">[State Of Jurisdiction]</p></li>
                  <li onclick="copyToClipboard('text_element111')"><i></i><p class="copyText" id="text_element111">[Offer Rate]</p></li>
-                 <li onclick="copyToClipboard('text_element112')"><i></i><p class="copyText" id="text_element112">[Rate Per]</p></li>
-                 <li onclick="copyToClipboard('text_element113')"><i></i><p class="copyText" id="text_element113">[Rate Type]</p></li>
+                <!--  <li onclick="copyToClipboard('text_element112')"><i></i><p class="copyText" id="text_element112">[Rate Per]</p></li>
+                 <li onclick="copyToClipboard('text_element113')"><i></i><p class="copyText" id="text_element113">[Rate Type]</p></li> -->
             </ul>
             
             <ul id="vendorsow" style="display:none">
@@ -164,8 +164,8 @@
                  <li onclick="copyToClipboard('text_element94')"><i></i><p class="copyText" id="text_element94">[Payment Term]</li>
                  <li onclick="copyToClipboard('text_element108')"><i></i><p class="copyText" id="text_element108">[State Of Jurisdiction]</p></li>
                  <li onclick="copyToClipboard('text_element114')"><i></i><p class="copyText" id="text_element114">[Offer Rate]</p></li>
-                 <li onclick="copyToClipboard('text_element115')"><i></i><p class="copyText" id="text_element115">[Rate Per]</p></li>
-                 <li onclick="copyToClipboard('text_element116')"><i></i><p class="copyText" id="text_element116">[Rate Type]</p></li>
+                <!--  <li onclick="copyToClipboard('text_element115')"><i></i><p class="copyText" id="text_element115">[Rate Per]</p></li>
+                 <li onclick="copyToClipboard('text_element116')"><i></i><p class="copyText" id="text_element116">[Rate Type]</p></li> -->
             </ul>
             <ul id="nda" style="display:none">
                  <li onclick="copyToClipboard('text_element52')"><i></i><p class="copyText" id="text_element52">[Vendor Name]</li>
