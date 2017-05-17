@@ -106,6 +106,12 @@ public class Contracts {
 	@Column(name = "BILLING_AMOUNT")
 	private String billingAmount;
 	
+	@Column(name = "BILLING_RATE_TYPE")
+	private String billingRateType;
+	
+	@Column(name = "BILLING_RATE_PER")
+	private String billingRatePer;
+	
 	@Column(name = "BILLING_PER")
 	private String billingPer;
 	
@@ -558,6 +564,22 @@ public class Contracts {
 
 	public void setBillingAmount(String billingAmount) {
 		this.billingAmount = billingAmount;
+	}
+
+	public String getBillingRateType() {
+		return billingRateType;
+	}
+
+	public void setBillingRateType(String billingRateType) {
+		this.billingRateType = billingRateType;
+	}
+
+	public String getBillingRatePer() {
+		return billingRatePer;
+	}
+
+	public void setBillingRatePer(String billingRatePer) {
+		this.billingRatePer = billingRatePer;
 	}
 
 	public String getBillingPer() {

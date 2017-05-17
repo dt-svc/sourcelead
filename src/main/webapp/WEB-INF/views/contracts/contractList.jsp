@@ -181,7 +181,12 @@ function PopUp(contractUUID){
 			result = result +	'<div class="contPopupHead clearfix">';
 			result = result +	'<h4>'+json.contractTitle+'</h4>';
 			result = result +	'<span>';
-			result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a></i> <i class="fa fa-times" onclick="contPopClose();"></i>';
+			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED'){
+				result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+			}else{
+				result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
+			}
+			
 			result = result +	'</span>';
 			result = result +	'</div>';
 		
@@ -1759,16 +1764,16 @@ function preparedContractListRejected(data){
 		         result = result + '<div class="tbldata-dotdot_80">';
 		     	if(report.templateSubmissionStatus == "REJECTED"){
 		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
-		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		/* '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			     		if(report.typeOfContract == "New"){
 			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			     		}
-		     		'</sec:authorize>';
+		     		'</sec:authorize>'; */
 		     		result = result + '</div>';
 	     	  }
 	     	  else{
 	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
-	     	  }
+	     	  } 
 		         result = result + '</div></td>';
 		     	 
 		        result = result + '</tr>';
@@ -1834,11 +1839,11 @@ function preparedContractListRejected(data){
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "REJECTED" ){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
-	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+	     		/* '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
-	     		'</sec:authorize>';
+	     		'</sec:authorize>'; */
 	     		opt = opt + '</div>';
 	     	  }
 	     	  else{
@@ -1933,6 +1938,7 @@ function finalizeContract(recordId,status){
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
 	        $("#removeStatus"+recordId).html("<span>Finalized</span>").addClass('text-success');
+	        getTemplateList();
        },
    });  
 }
@@ -1960,6 +1966,7 @@ function approveContract(recordId,status){
     	        $("#removeStatus"+recordId).html("<span>Approved</span>").addClass('text-success');
         	}
         	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+        	getTemplateList();
        },
    });  
 }
