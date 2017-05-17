@@ -804,16 +804,16 @@ function getInvoiceList(){
 		    $("#invoiceList").append(result);
 		    
 		    $("#draftInvoiceCount").html(draftCount);
-		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
 		    		    
 		    $("#paidInvoiceCount").html(paidCount);
-		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
 		    
 		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
 		    
 		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
 		    
 
 		    invoicePagination()
