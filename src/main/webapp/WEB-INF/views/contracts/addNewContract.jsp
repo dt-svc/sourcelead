@@ -219,10 +219,10 @@
 							    <option value=''>Select Vendor Contact</option>
 							    <c:forEach var="element" items="${orgSpocList}" >
 							    	<c:if test = "${element.tempOwnerId == contract.contactUser.id}">
-								         <option selected value="${element.tempOwnerId}">${element.spocName}  ${element.ownerUserName}</option>
+								         <option selected value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
 								    </c:if>
 								    <c:if test = "${element.tempOwnerId != contract.contactUser.id}">
-								         <option value="${element.tempOwnerId}">${element.spocName}   ${element.ownerUserName}</option>
+								         <option value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -255,11 +255,11 @@
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
 							    <c:forEach var="element" items="${orgSpocList}" >
-							    	<c:if test = "${element.spocUserId == contract.orgRelations.id}">
-								         <option value="${element.spocUserId}">${element.ownerName}</option>
+							    	<c:if test = "${element.spocUserId == contract.contactUser.id}">
+								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
 								    </c:if>
-								    <c:if test = "${element.spocUserId != contract.orgRelations.id}">
-								         <option value="${element.spocUserId}">${element.ownerName}</option>
+								    <c:if test = "${element.spocUserId != contract.contactUser.id}">
+								         <option value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
