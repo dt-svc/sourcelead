@@ -378,6 +378,10 @@ function getViewInvoice(){
 				result = result +'	                  <label>'+discountValue+'</label>                                                               ';
 				result = result +'	                </div>                                                                                    ';
 				result = result +'	              </div>                                                                                      ';
+				
+				
+				if(report.invoiceTaxList != null && report.invoiceTaxList != '' && report.invoiceTaxList != 'undefined' ){
+				
 				result = result +'	                <div class="addtax_table">';
 				result = result +'	                    <table class="table-bordered table-striped table-responsive" width="100%" cellspacing="0" cellpadding="0">';
 				
@@ -449,9 +453,18 @@ function getViewInvoice(){
 					result = result +'	                            </tr>                                                                  ';
 	    		}
 				
+				
+				
+				
 				result = result +'	                        </tbody>                                                                   ';
 				result = result +'	                    </table>                                                                       ';
 				result = result +'	            </div>                                                                                 ';
+				
+				}
+				
+				
+				
+				
 				result = result +'	                <div class="form-group mt">                                                        ';
 				result = result +'	                <label class="col-md-7 text-right"><strong>Total</strong></label>                  ';
 				result = result +'	                    <div class="col-md-5 text-right"><span><strong>'+report.total+'</strong></span></div> ';
