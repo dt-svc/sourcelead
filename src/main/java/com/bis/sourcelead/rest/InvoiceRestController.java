@@ -723,7 +723,7 @@ public class InvoiceRestController {
         Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
-		
+		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		for(ProjectMembers projectMember :projectMembersList){
 			Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
 			if(null != candidate){
@@ -754,9 +754,10 @@ public class InvoiceRestController {
 					sb.append(":").append(arr[1]);
 				}
 				projectMember.setTotalHours(sb.toString());
+				filteredMembersList.add(projectMember);
 			}
 		}
-		return commonUtil.toJSON(projectMembersList);
+		return commonUtil.toJSON(filteredMembersList);
 	} 
 	
 	

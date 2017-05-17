@@ -338,7 +338,11 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	var projectId = '${projectId}';
+	var projectId = null;
+	projectId = $("#projectId").val();
+	if(projectId == null){
+	projectId = '${projectId}';
+	}
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
