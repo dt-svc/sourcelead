@@ -89,6 +89,9 @@ textarea {
 .main-header span.logo img {
 	/*width:100%;*/ width: 200px;
 }
+/* .main-header .logo a i img {
+    width: 200px; width: 100%;
+} */
 .main-header span.logo:hover {
  background: #eeeeee;
 }
@@ -342,8 +345,8 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 /*sidebar menu styles */
 .side-bar {
 background-color: #375d81; left: 0; min-height: 100%; position: fixed; top: 0; width: 230px; z-index: 810;
-padding-top: 50px; box-shadow: 1px 1px 2px #707070; transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
--webkit-transition: 0.3s ease-in-out; /*overflow-x:hidden; overflow-y:auto; overflow: hidden;*/
+padding-top: 50px; box-shadow: 1px 1px 2px #707070; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
+-webkit-transition: 0.3s ease-in-out;*/ /*overflow-x:hidden; overflow-y:auto; overflow: hidden;*/
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -4492,7 +4495,7 @@ margin-bottom: 0;
     padding: 10px 15px;
 }
 .onboardDashboard_counts .count {
-    color: #fff; padding: 8px 15px; font-size: 25px; text-shadow: 1px 1px 1px #474747;
+    color: #fff; padding: 5px 15px; font-size: 25px; text-shadow: 1px 1px 1px #474747;
 }
 .onboardDashboard_counts ul.nav-tabs li {
     min-width: 50px; min-height: 50px;
@@ -5021,7 +5024,7 @@ padding: 15px 15px 25px 15px;
     font-size: 14px; color: #606060; margin-bottom: 5px; font-weight: normal;
 }
 .billing_dashboard .nav-tabs li a {
-    display: inline-block; padding:5px 10px; color: #333; min-width: 175px; border-radius: 3px;
+    display: inline-block; padding:5px 10px; color: #333; min-width: 175px; border-radius: 3px; min-height: 65px;
 }
 .billing_dashboard .nav-tabs > li {
     margin-right: 5px;
@@ -5237,6 +5240,9 @@ float: left; position: relative;top:5px; width: 10%;
   position: absolute !important; right: 0 !important;
 }
 /* Menu styles */
+.selectpicker_maxheight .dropdown-menu {
+   max-height: 230px !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
