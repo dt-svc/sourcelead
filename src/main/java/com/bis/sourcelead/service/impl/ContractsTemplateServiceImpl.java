@@ -25,6 +25,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -421,6 +422,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractUUID(contracts.getContractUUID());
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
+		ContractsHistory contractsHistory = new ContractsHistory();
+		contractsHistory.setContractsId(savedContracts);
+		contractsHistory.setFromStage("NEW");
+		contractsHistory.setToStage(savedContracts.getTemplateSubmissionStatus());
+		contractsHistory.setCreatedDate(new Date());
+		contractsHistory.setCreatedBy(user.getUserCode());
+		contractsHistory.setUpdatedDate(new Date());
+		contractsHistory.setUpdatedBy(user.getUserCode());
+		contractsTemplateDao.saveContractsHistory(contractsHistory);
+		
 		if(null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
 			if(!jsonObj.has("approver") && ownerUser.getId().longValue() != user.getId().longValue()){
 				sendMailToOwner(savedContracts,user,org,orgLocation);
@@ -496,6 +507,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != vendorContracts){
 				vendorContracts.setContractUUID(contracts.getContractUUID());
 				Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
+				ContractsHistory childContractsHistory = new ContractsHistory();
+				childContractsHistory.setContractsId(savedChildContracts);
+				childContractsHistory.setFromStage("NEW");
+				childContractsHistory.setToStage(savedChildContracts.getTemplateSubmissionStatus());
+				childContractsHistory.setCreatedDate(new Date());
+				childContractsHistory.setCreatedBy(user.getUserCode());
+				childContractsHistory.setUpdatedDate(new Date());
+				childContractsHistory.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveContractsHistory(contractsHistory);
 			}
 			
 			
@@ -674,6 +694,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setTemplateSubmissionStatus("PENDING");
 			//upadatedContracts.setTypeOfContract("New");
 			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
+			 
+				ContractsHistory contractsHistory = new ContractsHistory();
+				contractsHistory.setFromStage("WAITING_FOR_APPROVER");
+				contractsHistory.setContractsId(contracts);
+				contractsHistory.setToStage("PENDING");
+				contractsHistory.setCreatedDate(new Date());
+				contractsHistory.setUpdatedDate(new Date());
+				contractsHistory.setCreatedBy(user.getUserCode());
+				contractsHistory.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveContractsHistory(contractsHistory);
+			 
 			Contracts childContract = new Contracts();
 			childContract.setContractTitle(contracts.getContractTitle());
 			childContract.setStartDate(contracts.getStartDate());
@@ -739,6 +770,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 				
 				Contracts savedChildContracts = contractsTemplateDao.saveNewContract(childContract);
+				
+				ContractsHistory childContractsHistory = new ContractsHistory();
+				childContractsHistory.setFromStage("NEW");
+				childContractsHistory.setContractsId(contracts);
+				childContractsHistory.setToStage("WAITING_TO_BE_SIGNED");
+				childContractsHistory.setCreatedDate(new Date());
+				childContractsHistory.setUpdatedDate(new Date());
+				childContractsHistory.setCreatedBy(user.getUserCode());
+				childContractsHistory.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+				
 				  if(null != upadatedContracts.getContactUser()){
 					  Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
 					  upadatedContracts.setDocId(con.getTempdocId());
@@ -755,6 +797,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}else{
 			contracts.setTemplateSubmissionStatus("REJECTED");
 			 upadatedContracts = contractsTemplateDao.saveNewContract(contracts);
+			 ContractsHistory contractsHistory = new ContractsHistory();
+			 contractsHistory.setFromStage("WAITING_FOR_APPROVER");
+			 contractsHistory.setContractsId(contracts);
+			 contractsHistory.setToStage("REJECTED");
+			 contractsHistory.setCreatedDate(new Date());
+			 contractsHistory.setUpdatedDate(new Date());
+			 contractsHistory.setCreatedBy(user.getUserCode());
+			 contractsHistory.setUpdatedBy(user.getUserCode());
+			contractsTemplateDao.saveContractsHistory(contractsHistory);
 			 contractRejectEmail(contracts,user,org,orgLocation);
 		}
 		
