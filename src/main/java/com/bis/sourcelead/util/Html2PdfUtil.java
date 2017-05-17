@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.itextpdf.text.Document;
@@ -33,6 +34,9 @@ public class Html2PdfUtil {
 	
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
 	
 	public void convertHtml2PdfUsingHtmlWorker(){
 		try {
@@ -86,13 +90,13 @@ public class Html2PdfUtil {
 	
 	 private String replacePlaceHolders(String templateBody, Contracts contracts, OrgLocations orgLocation, Org org) throws Exception {
 	        
-	        String orgName = "";
-	        if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+	        String orgName = contracts.getContractOrgLocationId().getOrg().getOrgName();
+	        /*if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getLocationId().getOrg().getOrgName();
 	        }
 	        else if(contracts.getOrgRelations().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getResponderLocationId().getOrg().getOrgName();
-	        }
+	        }*/
 	        
 	         Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
 	            Matcher matchPattern = logEntry.matcher(templateBody);
@@ -105,15 +109,22 @@ public class Html2PdfUtil {
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client Contact]") || matchPattern.group().equalsIgnoreCase("[Vendor Contact]")){
 	                    matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Location]")){
-	                    matchPattern.appendReplacement(sb, orgLocation.getCountry());
+	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getCountry());
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Name]")){
-	                    matchPattern.appendReplacement(sb, org.getOrgName());
+	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrg().getOrgName());
 		            }else if(matchPattern.group().equalsIgnoreCase("[Associate Name]")){
 	                    matchPattern.appendReplacement(sb, org.getOrgName());
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
-		            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
-	                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            	if(null !=contracts.getRequirementSubmission().getRequirement().getId()){
+				            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
+			                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            	}
+		            	else{
+		            		Contracts con = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+		            		Requirement req = requirementService.getRequirementByRequirementId(con.getRequirementSubmission().getRequirement().getId());
+		                    matchPattern.appendReplacement(sb, req.getJobTitle());
+		            	}
 	                }
 	                // need to know about offer rate
 		           /* else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
@@ -138,8 +149,8 @@ public class Html2PdfUtil {
 		            	}
 		            }  
 		            else if(matchPattern.group().equalsIgnoreCase("[State Of Jurisdiction]")){
-		            	if(null != contracts.getStateOfJurisdiction()){
-		            		matchPattern.appendReplacement(sb, contracts.getStateOfJurisdiction());
+		            	if(null != contracts.getStateJurisdiction()){
+		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
 		            }  
 	            }

@@ -75,6 +75,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                 	 result  = result + '           <th>Start Date</th>';
 	                 	 result  = result + '           <th>End Date</th>';
 	                 	 result  = result + '           <th>Owner</th>';
+	                 	 result  = result + '           <th>Description</th>';
 	                 	 result  = result + '           <th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -123,7 +124,11 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 
+	                    	 if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
+	                    	      result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
 	                    		 result = result+'	 <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
 	                    		 

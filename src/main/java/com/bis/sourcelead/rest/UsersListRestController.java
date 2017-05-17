@@ -6,12 +6,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,6 +48,9 @@ import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -63,6 +69,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -80,6 +87,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -108,12 +116,18 @@ public class UsersListRestController {
 	@Autowired
 	private DepartmentService departmentService;
 	
+	@Autowired
+	private EmailScenarioService emailScenarioService;
+	
 
 	@Autowired
 	ProjectsService projectsService;
 
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	private EmailScenerioUtil emailScenerioUtil;
 
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -957,15 +971,18 @@ public class UsersListRestController {
 			userRole.setTerminateReason(jsonObj.getString("reason"));
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
-
-			UserRole updateUserRole = userRoleService.addUserRole(userRole);
-
-			// to assign primary role to another user
+			
+			
 			UserRole existinguserRole = userRoleService.getNotPrimaryUser(userId);
 			if (existinguserRole != null) {
 				existinguserRole.setIsPrimary(1);
 				userRoleService.addUserRole(existinguserRole);
 			}
+
+			UserRole updateUserRole = userRoleService.addUserRole(userRole);
+
+			// to assign primary role to another user
+			
 			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(updateUserRole.getUser().getId(),
 					orgLocations.getId());
 			userService.saveOrUpdateUserElkDocument(updateUserRole, employee, user.getUserCode());
@@ -984,7 +1001,10 @@ public class UsersListRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
-
+		
+		// this is used for user role changed mail scenario
+		String existingRole = userRole.getUserType();
+		
 		json = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json);
 
@@ -1103,11 +1123,14 @@ public class UsersListRestController {
 				userRole.setRoles(roles);
 				userRole.setUserType(roles.getDisplayName());
 			}
-
+			
 			userRole.setRoleChangeReason(jsonObj.getString("reason"));
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			userRoleService.addUserRole(userRole);
+			
+			// User role changed mail
+			userRoleUpdateMail(user,userRole,orgLocations,existingRole);
 
 			/*
 			 * Saving USER DB data as ElasticSearch Documents
@@ -1123,6 +1146,61 @@ public class UsersListRestController {
 		return "success";
 	}
 
+	
+	private void userRoleUpdateMail(User loginUser, UserRole userRole, OrgLocations loginOrgLocation,String existingRole) throws Exception {
+		
+	 EmailMessage emailMessage = new EmailMessage();
+	 emailMessage.setFirstName(loginUser.getFirstName());
+	 emailMessage.setLastName(loginUser.getLastName());
+	 emailMessage.setToEmail(userRole.getUser().getEmail());
+	 emailMessage.setFromEmail(loginUser.getEmail());
+	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	// StringBuilder msgBuild = new StringBuilder();
+	// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	//setting the class filed values
+	 Map<String, String> globalVarsMap = new HashMap<String, String>();
+	 StringBuilder stringBuildername = new StringBuilder();
+		globalVarsMap.put("FirstName", stringBuildername.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
+		globalVarsMap.put("CurrentRole", userRole.getUserType());
+		globalVarsMap.put("ExistingRole", existingRole);
+		StringBuilder stringBuilderLoginname = new StringBuilder();
+		globalVarsMap.put("LoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	 
+		StringBuilder stringBuildforLink = new StringBuilder();
+		globalVarsMap.put("Loginlink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+
+	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+	
+	 //getting the current EmailScenario by EmailScenario unique name and entity type
+	 //using same migration which has been already used in updatedRequirementMailToManager method
+	 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_USER_ROLE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_USER_ROLE_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+	 
+	 //covert subject,body and signature
+	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+	 String url = "sourceleadUrl";
+	 
+	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	 notificationScenario.setBody(notificationbody);
+
+	 //construct HTML template using required data
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
+	 emailMessage.setSubject(subject);
+	 emailMessage.setMessageBody(emailTemplate);
+	 
+	 //calling the sendEmail method of emailScenerioUtil
+	 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	 String actionLink="";
+	 emailScenerioUtil.sendNotification(actionLink, loginUser,  userRole.getUser(), loginOrgLocation, notificationScenario);
+	}
+		
+	
+	
 	/**
 	 * To update user and employee By User ID.
 	 * 

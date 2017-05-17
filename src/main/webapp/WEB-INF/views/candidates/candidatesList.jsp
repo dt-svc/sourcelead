@@ -79,6 +79,7 @@ if(universalCanddateSearchList=="universalCanddateList")	 {
   }
   if(candidateKeyword == "candidateSearch"){
 	  candidateSideBar(candidateIdSearchId);
+	  candidateQuickViewProfile(candidateIdSearchId);
 	  candidateList();
 	  $("#upcandidateStatus").val('');
   }
@@ -1046,7 +1047,7 @@ function cancel(candidateId){
 		
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-X:auto;">
+    <div class="vendor_wrap minHeight_225" style="overflow-X:auto;">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -1220,8 +1221,8 @@ function cancel(candidateId){
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
 								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}">${cntry.name}</option>
-						                </c:forEach>
+							                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+						              </c:forEach>
 				                 </select>
 							  </div>
 						  </div>
@@ -1306,14 +1307,16 @@ function cancel(candidateId){
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
-                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-success"/>
+                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
+                               <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
 				  </div>
 			  </form:form>
       </div>
-      <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
+      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
+      <div class="timesheet_head   customtimesheet-head topfilters topfilters2 pull-right">
         <ul>
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -1341,16 +1344,16 @@ function cancel(candidateId){
                   	<ul>
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Days ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months ago</label></li>
                     </ul>
                   </div>                	
           </li>  
           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li><b id="addmore"><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>&nbsp;<span>Add Candidate</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
+          <li><b id="addmore"><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>&nbsp;<span>Add Candidate</span></b>
           <div id="addmorepop" class="approved_pop">
            <%-- <ul>
              <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
@@ -1891,10 +1894,10 @@ function getCities(){
 	    $('#currency').val(''); 
 	    $('#rateType').val(''); 
 	    
-	    $('#country').val(''); 
-	    $("#country").val('').trigger("chosen:updated");
-	    $("#state").empty();
-	    $("#state").val('').trigger("chosen:updated");
+	    /* $('#country').val(''); 
+	    $("#country").val('').trigger("chosen:updated"); */
+	    /* $("#state").empty();
+	    $("#state").val('').trigger("chosen:updated"); */
 	    $("#city").empty();
 	    $("#city").val('').trigger("chosen:updated");
 	    $('#rateType').val(''); 
@@ -2377,7 +2380,7 @@ function minMaxExperience(){
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
-	    $("#country").val('').trigger("chosen:updated");
+	 /*    $("#country").val('').trigger("chosen:updated"); */
 	    $("#state").val('').trigger("chosen:updated");
 	    $("#city").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");

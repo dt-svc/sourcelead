@@ -168,7 +168,19 @@ public class OrgRelations implements Serializable{
 	private Integer rejectedCount;
 	
 	@Transient
+	private Integer backoutCount;
+	
+	@Transient
 	private String vendorName;
+	
+	@Transient
+	private String address;
+	
+	@Transient
+	private String billingAddress;
+	
+	@Transient
+	private String paymentTerms;
 	
 	public String getLevel() {
 		return level;
@@ -559,4 +571,37 @@ public class OrgRelations implements Serializable{
 	public void setRejectedCount(Integer rejectedCount) {
 		this.rejectedCount = rejectedCount;
 	}
+
+	public Integer getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(Integer backoutCount) {
+		this.backoutCount = backoutCount;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public String getPaymentTerms() {
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms) {
+		this.paymentTerms = paymentTerms;
+	}
+	
 }

@@ -4,9 +4,6 @@
 			$('.user-panel').toggleClass("user-panel-active");
 			$('.content-wraper').toggleClass("content-wraper-active");
 			$('.footer-area').toggleClass("footer-area-active");
-			$("div.side-nav ul li").find('ul.collapses, .tree-view').toggleClass("tree-view-active");
-			$("div.side-nav ul li").find('.tree-view-new').toggleClass('tree-view-new-active');
-			//Theme one side bar
 			$('.theme_sideMenu').toggleClass('themeSideMenu_Active');
 			$(".collapses").hide();
 			});
@@ -94,11 +91,40 @@
 		   $(".level-second").toggleClass("level-second-active");
 		});
        
-       $(".tree-view-new").click(function(){
-    	   $('.timesheet-menu').toggleClass('timesheet-menu-active');
-    	   });
-       
        $(".tree-view").click(function(){
     	   $(this).next('ul').slideToggle();
-    	   });
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi ").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".usersLi, .billingLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       $(".backofficeLi").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       $(".timesheetLi").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });	
+       $(".associatesLi").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       $(".billingLi").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       
     });   
+
+
+
+

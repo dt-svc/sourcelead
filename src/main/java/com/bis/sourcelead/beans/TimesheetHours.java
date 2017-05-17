@@ -11,6 +11,8 @@ public class TimesheetHours {
 	private String sunDayHours;
 	private String status;
 	private String weekTotal;
+	private String sdate;
+	private String edate;
 
 	
 	public String getTaskName() {
@@ -91,6 +93,26 @@ public class TimesheetHours {
 
 	public void setWeekTotal(String weekTotal) {
 		this.weekTotal = weekTotal;
+	}
+
+	public String getSdate()
+	{
+		return sdate;
+	}
+
+	public void setSdate(String sdate)
+	{
+		this.sdate = sdate;
+	}
+
+	public String getEdate()
+	{
+		return edate;
+	}
+
+	public void setEdate(String edate)
+	{
+		this.edate = edate;
 	}
 
 

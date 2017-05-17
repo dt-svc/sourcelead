@@ -18,17 +18,21 @@ public interface ContractsTemplateService {
 
 	String generatePDFContractTemplate(JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception;
 
-	ContractsTemplate getContractTemplateById(Long contractTemplateId);
+	ContractsTemplate getContractTemplateById(Long contractTemplateId) throws Exception;
 
 	List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation)throws Exception;
 
 	List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType)throws Exception;
 
-	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user, Org org)throws Exception;
+	Contracts saveNewContract(JSONObject jsonObj, OrgLocations orgLocation, String saveType, User user, Org org, String contractType, MultipartFile multiFile)throws Exception;
 
-	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType)throws Exception;
+	Contracts getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
+	
+	Contracts getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
 
 	Contracts getContractById(Long contractId);
+	
+	Contracts getContractByContractUUID(String contractUUID);
 
 	Contracts saveNewContract(Contracts updateContracts) throws Exception;
 
@@ -46,6 +50,8 @@ public interface ContractsTemplateService {
 	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
 
 	Contracts saveExistigContract(JSONObject jsonObj, MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception;
+
+	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
 
 	
 }

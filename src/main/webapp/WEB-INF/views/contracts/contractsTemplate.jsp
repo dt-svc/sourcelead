@@ -69,11 +69,11 @@ function preparedTemplateList(data){
 	result = result +  '<table id="contractTemplateTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
-	result = result + '     <th>Template name</th>';
-	result = result + '    <th>Template type</th>';
+	result = result + '     <th>Template Title</th>';
+	result = result + '    <th>Template Type</th>';
 	result = result + '    <th>Description</th>';
-	result = result + '    <th>Document Preview</th>';
-	result = result + '    <th>Document</th>';
+	result = result + '    <th>Actions</th>';
+// 	result = result + '    <th>Document</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -106,12 +106,12 @@ function preparedTemplateList(data){
          result = result + '<td>';
         /*  result = result + '<div><span onclick="previewPDF('+report.id+')">previews/edit</span></div>'; */
          '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF('+report.id+')"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
+         result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\')"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
          '</sec:authorize>';
          result = result + '</td>';
-         result = result + '<td>';
+         /* result = result + '<td>';
          result = result + '<div><a class="glyphicon glyphicon-paperclip pinCo" href="" onclick="downloadPdfTemplate('+report.id+')"></a></div>';
-         result = result + '</td>';
+         result = result + '</td>'; */
         result = result + '</tr>';
     }
 	result = result + '	</tbody>';
@@ -142,9 +142,9 @@ function listTemplatePagination(){
 </script>
 
 <script type="text/javascript">
-function previewPDF(id) {
+function previewPDF(id,tempName) {
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/testController/'+id+'','_newtab');
+	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
 }</script>
 
  <script>

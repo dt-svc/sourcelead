@@ -557,6 +557,9 @@ public class SubmissionsRestController {
 		submission.setCandidateSummary(submission.getCandidate().getSummary());
 		submission.setSkillsList(skillsList.toString());
 		submission.setRequirementSubmissionTemplateFields(requirementSubmissionTemplateFields);
+		submission.setFacebookUrl(submission.getCandidate().getFacebookUrl());
+		submission.setLinkedInUrl(submission.getCandidate().getLinkedUrl());
+		submission.setTwitterUrl(submission.getCandidate().getTwitterUrl());
 		resultJson = toJSON(submission);
 		return resultJson;
 

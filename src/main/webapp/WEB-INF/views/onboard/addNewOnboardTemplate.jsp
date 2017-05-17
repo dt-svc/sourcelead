@@ -80,7 +80,7 @@
                   <label class="col-md-4 control-label mt10">These contracts will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedContractsAttachments"></div>
 				        </span>
                       </div>
@@ -94,7 +94,7 @@
                   <label class="col-md-4 control-label mt10">These forms will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedFormsAttachments"></div>
 				        </span>
                       </div>
@@ -108,7 +108,7 @@
                   <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedPociliesAttachments"></div>
 				        </span>
                       </div>
@@ -121,7 +121,7 @@
                   <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
                   <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			             <div id="savedSupportedAttachments"></div>
 				        </span>
                       </div>
@@ -579,7 +579,7 @@ function addContractsAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateContractsUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'contractsdocFile').val();
@@ -605,7 +605,7 @@ function validateContractsUploadFile(id)
 	
 }
 </script>
-
+ -->
 
 
 <script>
@@ -645,7 +645,7 @@ function addFormsAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateFormsUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'formsdocFile').val();
@@ -670,7 +670,7 @@ function validateFormsUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -722,7 +722,7 @@ function validate_fileupload(fileName)
 }
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateSupportingUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'supportingdocFile').val();
@@ -747,11 +747,11 @@ function validateSupportingUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'docFile').val();
@@ -776,7 +776,7 @@ function validateUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 <script>
 function createTemplate(saveType){
@@ -1289,7 +1289,7 @@ function getOnboardingTasksList(){
 	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
 	        		result = result +'<div class="media-body">';
 	        		result = result +'<div class="clearfix taskheder">';
-	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i> </label>';
+	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
 	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
 	        		result = result +'</div>';
 	        		result = result +'<ul class="list-inline list-description mt10">';

@@ -100,7 +100,7 @@ function onboardingCandidatesList(){
 				                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
 				                    	 if(opt.onboardStatus == 'Draft'){
 				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
-				                    	 }else if(opt.onboardStatus == 'Finished'){
+				                    	 }else{
 				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
 				                    	 }
 				                    	

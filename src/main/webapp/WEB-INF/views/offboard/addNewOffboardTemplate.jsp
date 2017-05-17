@@ -77,7 +77,7 @@
                   </label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedResignationAttachments"></div>
 				        </span>
                       </div>
@@ -90,7 +90,7 @@
                   </label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
                       <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
-				        <span> 
+				        <span class="uploadAttachments"> 
 			              <div id="savedOffboardPackAttachments"></div>
 				        </span>
                       </div>
@@ -507,7 +507,7 @@ function addOffboardPackAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateResignationUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'resignationdocFile').val();
@@ -532,7 +532,7 @@ function validateResignationUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -573,7 +573,7 @@ function addOffboardPackAttachment(){
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function validateOffboardPackUploadFile(id)
 {
 	 var selectedFile = $('#'+id+'offboardPackdocFile').val();
@@ -598,7 +598,7 @@ function validateOffboardPackUploadFile(id)
 	  }
 	
 }
-</script>
+</script> -->
 
 
 
@@ -1067,7 +1067,7 @@ function getOffboardingTasksList(){
 		        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
 		        		result = result +'<div class="media-body">';
 		        		result = result +'<div class="clearfix taskheder">';
-		        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i> </label>';
+		        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
 		        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
 		        		result = result +'</div>';
 		        		result = result +'<ul class="list-inline list-description mt10">';

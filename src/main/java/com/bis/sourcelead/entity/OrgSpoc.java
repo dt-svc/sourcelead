@@ -162,6 +162,18 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private Integer rejectedCount;
+	
+	@Transient
+	private Integer backoutCount;
+	
+	@Transient
+	private String ownerUserName;
+	
+	@Transient
+	private String billingAddress;
+
+	@Transient
+	private String paymentTerms;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -504,6 +516,38 @@ public class OrgSpoc implements Serializable{
 
 	public void setRejectedCount(Integer rejectedCount) {
 		this.rejectedCount = rejectedCount;
+	}
+
+	public Integer getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(Integer backoutCount) {
+		this.backoutCount = backoutCount;
+	}
+
+	public String getOwnerUserName() {
+		return ownerUserName;
+	}
+
+	public void setOwnerUserName(String ownerUserName) {
+		this.ownerUserName = ownerUserName;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public String getPaymentTerms() {
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms) {
+		this.paymentTerms = paymentTerms;
 	}
 	
 }

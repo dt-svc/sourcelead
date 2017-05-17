@@ -946,4 +946,50 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getAllActiveCandidatesByLocation(orgLocationId);
 	}
 
+	@Override
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId) throws Exception
+	{
+		return candidateDao.getAllActiveAssociatesByLocation(orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveAssociatesByLocationAndAssoicatesList(Long orgLocationId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveAssociatesByLocationAndAssoicatesList(orgLocationId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId, Long spocId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByLocationAndAssoicatesList(orgLocationId, spocId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId, Long spocId) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByLocation(orgLocationId, spocId);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(Long vendorOrgRelationId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(vendorOrgRelationId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByOrgLocation(orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		return candidateDao.getCandidateByConsultantUserIdOrgRelationId(consultantUserId,orgLocationId,orgRelationId);
+	}
+
+	@Override
+	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId) throws Exception
+	{
+		return candidateDao.getCandidateByConsultantUserId(consultantUserId,orgLocationId);
+	}
+
 }

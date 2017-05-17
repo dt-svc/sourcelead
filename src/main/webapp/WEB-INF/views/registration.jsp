@@ -135,7 +135,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="popemailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email" onblur="validatepopEmail('Professional');" value='${email}' id="popemail"  data-validation="required validate_Space validate_length length2-100 validate_email" readonly="readonly">
 		                  <b></b>
 		              </span>
 		            </div>
@@ -217,7 +217,7 @@ window.onload = function () {
 		            <div class="form-group clearfix">
 		              <label class="col-md-4">Email<span class="text-danger">&nbsp;*</span></label>
 		              <span class="col-md-8" id="poprecruiterEmailDiv">
-		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail"  onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
+		                 <input type="text" class="form-control" name="email" field-name="Email"  id="poprecruiterEmail" readonly="readonly" onblur="validatepopRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
 		                  <b></b>
 		              </span>
 		            </div>
@@ -269,13 +269,14 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
+        <div class="company_logo pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
           <c:if test="${empty contactUUID}">
           <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
           </c:if>
+          <li><a data-toggle="tab" href="#employee"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employee</a></li>
           <input type="hidden" id="tabType" />
       </ul>
        <!--  <div class="regis_wrap_styles registered_widget_styles"> -->
@@ -466,6 +467,15 @@ window.onload = function () {
 	            </div>
 	             </div>
         </form:form> --%>
+        </div>
+        <div id="employee" class="tab-pane fade">
+        <div class="text-center employee_trail">
+        <h4>FREE TRIAL</h4>
+        <p>We are so glad for your interest in <strong>SourceLead</strong>. <br> Please reach us on</p>
+        <p><a href="mailto:info@sourcelead.com" title="Mail Us"><span class="fa fa-envelope"></span>info@sourcelead.com</a></p>
+        <p><a href="tel:040-6700-7676"><span class="fa fa-phone" title="Call Us"></span>IND : +91 40-6700-7676</b></a></p>
+        <p>We will get back to you as soon as possible.</p>
+        </div>
         </div>
       </div>
         </div>

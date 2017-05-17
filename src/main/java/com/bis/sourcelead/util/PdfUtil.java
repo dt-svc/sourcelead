@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -20,13 +21,19 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -41,6 +48,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -56,6 +64,10 @@ public class PdfUtil {
 	
 	@Autowired
 	UserRoleService userRoleService ;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
@@ -870,7 +882,7 @@ public class PdfUtil {
 			 }
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
-	        int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3,5};
+	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
@@ -957,5 +969,7 @@ public class PdfUtil {
 	    cell.setBorder(0);
 	    cell.setBorderWidthBottom(2f);
 	    }
+	
+	
 	
 	}

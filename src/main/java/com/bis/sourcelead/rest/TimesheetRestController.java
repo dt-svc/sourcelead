@@ -690,7 +690,7 @@ public class TimesheetRestController {
 		tabDiv.append("			            	<tbody>");
 		tabDiv.append("			                	<tr>");
 		tabDiv.append("			                        <th>Tasks </th>");
-		tabDiv.append("			                        <th>Billable Type </th>");
+		tabDiv.append("			                        <th>Type </th>");
 		
 		StringBuilder disbleCondition1 = new StringBuilder("");
 		StringBuilder disbleCondition2 = new StringBuilder("");
@@ -976,8 +976,9 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getMoncomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id' >").append(timesheetEntries.getMoncomments()).append("</textarea></span></div>");
-					            	  }else if(StringUtils.isEmpty(disbleCondition1.toString())){
-					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
+					            	  }else if(StringUtils.isEmpty(disbleCondition1.toString()) || disbleCondition1.toString().equalsIgnoreCase("disabled")){
+					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
+					            		  tabDiv.append(" <i class='blankDiv'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id'  id='"+rowCount+"textArea1Id' ></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -988,8 +989,9 @@ public class TimesheetRestController {
 						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id'>").append(timesheetEntries.getTuecomments()).append("</textarea></span></div>");
-						              }else  if(StringUtils.isEmpty(disbleCondition2.toString())){
-						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
+						              }else  if(StringUtils.isEmpty(disbleCondition2.toString())|| disbleCondition2.toString().equalsIgnoreCase("disabled")){
+						            	  //tabDiv.append(" <i class='glyphicon glyphicon-comment opactiy_0' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
+						            	  tabDiv.append(" <i class='blankDiv'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id' id='"+rowCount+"textArea2Id'></textarea></span></div>");
 						              }
 						              tabDiv.append(" </div> </td>"); 
@@ -1000,8 +1002,9 @@ public class TimesheetRestController {
 						              if(!isNullOrEmpty(timesheetEntries.getWedcomments())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");  
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id'>").append(timesheetEntries.getWedcomments()).append("</textarea></span></div>");
-						              }else if(StringUtils.isEmpty(disbleCondition3.toString())){
-						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");
+						              }else if(StringUtils.isEmpty(disbleCondition3.toString()) || disbleCondition3.toString().equalsIgnoreCase("disabled")){
+						            	 // tabDiv.append(" <i class='glyphicon glyphicon-comment opactiy_0' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");
+						            	  tabDiv.append(" <i class='blankDiv'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id' id='"+rowCount+"textArea3Id'></textarea></span></div>");
 						              }
 						              tabDiv.append(" </div> "); 
@@ -1014,8 +1017,9 @@ public class TimesheetRestController {
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>"); 
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id'>").append(timesheetEntries.getThucomments()).append("</textarea></span></div>");
 					            	  }
-						              else if(StringUtils.isEmpty(disbleCondition4.toString())){
-						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>");
+						              else if(StringUtils.isEmpty(disbleCondition4.toString())|| disbleCondition4.toString().equalsIgnoreCase("disabled")){
+						            	  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>");
+						            	  tabDiv.append(" <i class='blankDiv'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id' id='"+rowCount+"textArea4Id'></textarea></span></div>");
 						              }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -1026,8 +1030,9 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getFricomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id'>").append(timesheetEntries.getFricomments()).append("</textarea></span></div>");
-					            	  }else if(StringUtils.isEmpty(disbleCondition5.toString())){
-					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
+					            	  }else if(StringUtils.isEmpty(disbleCondition5.toString())|| disbleCondition5.toString().equalsIgnoreCase("disabled")){
+					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
+					            		  tabDiv.append(" <i class='blankDiv'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id' id='"+rowCount+"textArea5Id'></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -1038,9 +1043,10 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getSatcomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id'>").append(timesheetEntries.getSatcomments()).append("</textarea></span></div>");
-					            	  }else if(StringUtils.isEmpty(disbleCondition6.toString())){
-					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
-						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id' id='"+rowCount+"textArea6Id'></textarea></span></div>");
+					            	  }else if(StringUtils.isEmpty(disbleCondition6.toString())|| disbleCondition6.toString().equalsIgnoreCase("disabled")){
+					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
+					            		  tabDiv.append(" <i class='blankDiv'></i>");
+					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id' id='"+rowCount+"textArea6Id'></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
 						              
@@ -1050,8 +1056,9 @@ public class TimesheetRestController {
 					            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' >").append(timesheetEntries.getSuncomments()).append("</textarea></span></div>");
-					            	  }else if(StringUtils.isEmpty(disbleCondition7.toString())){
-					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
+					            	  }else if(StringUtils.isEmpty(disbleCondition7.toString())|| disbleCondition7.toString().equalsIgnoreCase("disabled")){
+					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
+					            		  tabDiv.append(" <i class='blankDiv'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' id='"+rowCount+"textArea7Id'></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -1157,24 +1164,24 @@ public class TimesheetRestController {
 				tabDiv.append("	  <tr class='last_child'>"); 
 		        tabDiv.append("    <td class='total_field'>Total</td>"); 
 		        tabDiv.append("    <td></td>"); 
-		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <td> <div class='alignDiv'>"); 
 		        tabDiv.append("    <input type='text' disabled id='rowTotal1Id' name='rowTotal1Id' class='inline_field' value='HH:MM' placeholder='00:00' />"); 	
 		        tabDiv.append("    </div> </td>"); 
-		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <td> <div class='alignDiv'>"); 
 		        tabDiv.append("    <input type='text' disabled id='rowTotal2Id' name='rowTotal2Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
 		        tabDiv.append("    </div> </td>"); 
-		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <td> <div class='alignDiv'>"); 
 		        tabDiv.append("    <input type='text' disabled id='rowTotal3Id' name='rowTotal3Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
 		        tabDiv.append("    </div> </td>"); 
-		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <td> <div class='alignDiv'>"); 
 		        tabDiv.append("    <input type='text'disabled  id='rowTotal4Id' name='rowTotal4Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
 		        tabDiv.append("    </div> </td>"); 
-		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <td> <div class='alignDiv'>"); 
 		        tabDiv.append("    <input type='text' disabled id='rowTotal5Id' name='rowTotal5Id' class='inline_field' value='HH:MM' placeholder='00:00' />"); 	
-		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <td> <div class='alignDiv'>"); 
 		        tabDiv.append("    <input type='text' disabled id='rowTotal6Id' name='rowTotal6Id' class='inline_field' value='HH:MM' placeholder='00:00' />"); 	
 		        tabDiv.append("    </div> </td>"); 
-		        tabDiv.append("    <td> <div>"); 
+		        tabDiv.append("    <td> <div class='alignDiv'>"); 
 		        tabDiv.append("    <input type='text' disabled id='rowTotal7Id' name='rowTotal7Id' class='inline_field' value='HH:MM' placeholder='00:00' />	"); 
 		        tabDiv.append("    </div> </td>"); 
 		        tabDiv.append("      </tr> ");  
@@ -1202,18 +1209,18 @@ public class TimesheetRestController {
 							  
 					    if(ts != null && ts.getWeekcomments() != null && !ts.getWeekcomments().isEmpty()){
 					    	tabDiv.append("<div class='commentTime'>");
-					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comments here...'>").append(ts.getWeekcomments()).append("</textarea>");
+					    	tabDiv.append("<textarea  name='weekComment'  id='weekComment' "+readonly+" placeholder='comment here'>").append(ts.getWeekcomments()).append("</textarea>");
 					    	tabDiv.append("</div>");
 						}else{
 							tabDiv.append("<div class='commentTime'>");
-							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comments here...'></textarea>");
+							tabDiv.append("<textarea   name='weekComment' id='weekComment'   placeholder='comment here'></textarea>");
 							tabDiv.append("</div>");
 						}
 					}
 				}
 				      
 				/*}*/
-			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comments here...'></textarea></div>");*/	
+			    /*tabDiv.append("		            <div class='commentTime'><textarea placeholder='comment here'></textarea></div>");*/	
 			    tabDiv.append("</div>");
 			tabDiv.append("		    </div>  ");	
 			tabDiv.append("</div>");      
@@ -1331,7 +1338,7 @@ public class TimesheetRestController {
 						documentBuffer.append("</tr>");
 				documentBuffer.append("</table>");
 				documentBuffer.append("</span>");
-				documentBuffer.append("<i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps    Allowed Size : 2MB '></i>"); 
+				documentBuffer.append("<i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>"); 
 				documentBuffer.append("</div>");
 			}
 		documentBuffer.append("</div>"); 

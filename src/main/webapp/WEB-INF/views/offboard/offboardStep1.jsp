@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="resources/css/jquery-ui.css">
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
 <link href="resources/css/timesheet.css" rel="stylesheet">
+<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
 
 <link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -37,6 +37,7 @@
 					</div>
 				</c:if>
 				
+				
 			 <div class="welSiO" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out"></i></div>
 			  <ul>
 				  <li class="actLi"><span>1</span><b>Details</b><i class="line"></i></li>
@@ -45,6 +46,35 @@
 				  <li><span>4</span><b>Documents</b><i class="line"></i></li>
 				  <div class="clearfix"></div>
 			  </ul>
+			  
+		<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+		<div class="offOrg">
+             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+	              <div id="spockLinksList" style="display: none;">
+	              <ul class="list-unstyled">
+	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
+		              <li>
+			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+				                <div class="clearfix">
+				                   <div class="pull-left image-parent positionRelative">
+				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     </div>
+				                   </div>
+				                   <div class="pull-left mt5">
+				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+				                   </div>
+				                </div>
+			                </a>
+		              </li>
+	              </c:forEach>
+	              </ul>
+	            </div>
+	            </div>
+          </c:if>			  
+			  
 			  <div class="clearfix"></div>
 		  </div>
 		  
@@ -131,7 +161,7 @@
 	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
-			  <label class="col-md-4 control-label">Reason</label>
+			  <label class="col-md-4 control-label">Reason<span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
 				<select class="chosen-select" data-placeholder="Select Reason" name="surveyReason" data-validation="required" field-name="Survey Reason" >
                       <option  selected="selected" value=''>- Select Reason -</option>
@@ -342,6 +372,34 @@ $(function(){
 		function logoutFormSubmit() {
 			document.getElementById("logoutForm").submit();
 		}
+</script>
+
+<script>
+  function navtoggle(elementRef){
+	  
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area'
+	     document.getElementById("spockLinksList").style.display="block";
+	 }else{
+		 document.getElementById("spockLinksList").removeAttribute("class")
+		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
+		 document.getElementById("spockLinksList").style.display="block";
+	 }
+  }
+  $('html').click(function(){
+	  $('#spockLinksList').hide();
+  });
+  
+  $(".offOrg").click(function( event ) {
+	  event.stopPropagation();
+	});
+  </script>
+  
+ <script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','resources/images/office-image.jpg');
+	}
 </script>
 
 <c:url var="logoutUrl" value="/logout"/>

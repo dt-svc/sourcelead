@@ -27,10 +27,13 @@ public class Constants {
 	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px", "15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
 	
+	
 	public static final String EMPLOYEE_ID = "Employee ID";
 	public static final String FIRST_NAME = "First Name*";
 	public static final String LAST_NAME = "Last Name";
 	public static final String EMAIL_ID = "Email id*";
+	public static final String EMAIL_ID_BULK_IMPORT = "Email*";
+	public static final String PHONE_NUMBER_BULK_IMPORT = "Phone";
 	public static final String PHONE_NUMBER = "Phone Number";
 	public static final String RATE = "Rate";
 	public static final String RATEPER = "Rate Per";
@@ -43,7 +46,7 @@ public class Constants {
 	public static final String CLIENT_NAME = "Client Name*";
 	public static final String PHONE = "Phone";
 	public static final String STATUS = "Status";
-	public static final String OWNER = "Owner (Email)";
+	public static final String OWNER = "Owner(Email)";
 	public static final String WEBSITE = "Website";
 	public static final String COUNTRY = "Country*";
 	public static final String SATATE = "State";
@@ -51,6 +54,19 @@ public class Constants {
 	public static final String LEVEL = "Tier";
 	public static final String VENDOR_NAME = "Vendor Name*";
 	public static final String JOB_OTHER = "Other";
+	
+	public static final String CLIENT_ADDRESS = "ClientAddress";
+	public static final String BILLING_ADDRESS = "BillingAddress";
+	public static final String PAYMENT_TERMS = "PaymentTerms";
+	
+	public static final String INVOICE_RECEIVABLE = "Receivable";
+	
+	public static final String INVOICE_PAYABLES = "Payables";
+	
+	public static final String Client_SOW = "Client SOW";
+	public static final String Vendor_SOW = "Vendor SOW";
+	
+	
 	
 	public static final String country = "Country";
 	
@@ -74,6 +90,8 @@ public class Constants {
 	public static transient DateFormat MY = new SimpleDateFormat("MMMM-yyyy");
 	public static transient DateFormat Y = new SimpleDateFormat("yyyy");
 	public static transient DateFormat M = new SimpleDateFormat("MMMM");
+	
+	public static transient DateFormat DF_MM = new SimpleDateFormat("MM");
 	
 	public static DateFormat DF_DMY = new SimpleDateFormat("dd-MM-yyyy");
 	public static DateFormat DF_STD_DMY = new SimpleDateFormat("dd/MM/yyyy");
@@ -126,7 +144,7 @@ public class Constants {
 	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	
 	public static String CUSTOM_USER_EMAIL = "customUserEmail";
-	
+	public static String INVOICE_CLIENT_ACCEPT_MAIL="InvoiceClientAcceptEmail";
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL ="Forward the Mail";
 	public static String NOTIFICATION_TO_CLIENT = "Notification To Client";
@@ -212,6 +230,13 @@ public class Constants {
 	public static String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
 	
 	public static String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
+	
+	public static String APPROVE_CONTRACT = "Approve Contract";
+	
+	public static String REJECT_CONTRACT = "Reject Contract";
+	
+	public static String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
+	
 	public static String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	
 	public static String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
@@ -239,6 +264,9 @@ public class Constants {
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	
 	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR="updatedRequirementNotificationToVendor"; 
+	
+	public static String UPDATED_USER_ROLE_EMAIL="UserRoleChanged";
+	public static String UPDATED_USER_ROLE_NOTIFICATION="UserRoleChanged";
 	
 	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER="updatedRequirementEmailToManager";
 	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER="updatedRequirementNotificationToManager";
@@ -352,6 +380,9 @@ public class Constants {
 	public static  String Candidates = "Candidates";
 	public static  String Associates = "Associates";
 	public static  String OnAndOffboard = "OnAndOffboard";
+	
+	public static  String Receivable = "Receivable";
+	public static  String Payables = "Payables";
 	
 	public static String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
@@ -533,23 +564,26 @@ public class Constants {
     public static String MAIL_REQUESTED = "Requested";
     
     
-    public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Employee","Email id","Project Start Date","Project End Date","Approved Hours","Rejected Hours","Wiating for Approval","Saved Hours"};	
+    public static String[] PROJECT_ASSIGNED_EMPLOYEES = {"Emp Name","Emp Email","Start Date","End Date","Approved Hrs","Rejected Hrs","Wiating for Approval","Saved Hrs"};	
 
 //    public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 //    public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	
-	public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
+	public static String[] VENDOR_HEADERS = {"Vendor Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)","ClientAddress","BillingAddress","PaymentTerms"};
    
-    public static String[] CLIENT_HEADERS = {"Client Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)"};
+    public static String[] CLIENT_HEADERS = {"Client Name*","Website","Country","State","City","Tier","First Name*","Last Name","Email*","Phone","Status","Owner(Email)","ClientAddress","BillingAddress","PaymentTerms"};
     
     public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
     public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = {"New","Active","In-Active","Negotiation","Contracted"};
+    
+    public static String[] CLIENT_PAYMENT_TERMS = {"10 days","15 days","30 days","45 days","60 days","90 days"};
     
     public static int level1 =1;
     public static int level2 =2;
     
     public static int PREVIOUS_MONTH =-1;
     public static int NEXT_MONTH =1;
+    public static int TWELVE_MONTH =1;
     public static int CURRENT_MONTH =0;
     
     public static String SHORTLIST_COUNT= "Shortlisted Applicants:";
@@ -649,6 +683,21 @@ public class Constants {
     public static String TWO_WEEKS = "twoweeks";
     public static String ONE_MONTH = "month";
     public static String TWO_MONTHS = "twomonths";
+    public static String THREE_MONTHS = "threemonths";
+    public static String SIX_MONTHS = "sixmonths";
+    public static String ONE_YEAR = "oneyear";
     
-    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;
+    public static String INVOICE_ACCEPETED = "Accepted";
+    public static String INVOICE_REJECTED = "Rejected";
+    public static String INVOICE_RECEIVED = "Received";
+    
+    public static String INVOICE_STATUS_UNPAID = "Unpaid";
+    
+    public static  Long CANDIATE_RESUME_IN_ACTIVE = 0L;    
+    //invoice
+   
+    public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)", "Rate", "Total Hours", "Total"};
+    
+	public static String submitForApproval = "SUBMIT FOR APPROVAL";
+
 }	

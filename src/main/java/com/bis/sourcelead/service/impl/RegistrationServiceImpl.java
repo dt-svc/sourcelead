@@ -1,9 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -25,7 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
@@ -762,11 +761,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		if(null == orgUser){
 			orgUser = new User();
 			orgUser.setFirstName(jsonObj.getString("firstName"));
-			
-			if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-				orgUser.setLastName(jsonObj.getString("lastName"));
-			}
-			
+			orgUser.setLastName(jsonObj.getString("lastName"));
 			orgUser.setEmail(jsonObj.getString("userEmail"));
 			orgUser.setCreatedBy(user.getUserCode());
 			orgUser.setCreatedDate(new Date());
@@ -1217,15 +1212,18 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public void saveProfessionalFromSocialInviter(JSONObject jsonObj) throws Exception {
 		 String userName = null;
 		 User user = null;
+		 Candidate can = null;
 		 UserRole userRole = null;
 		 OrgLocations orgLocations = null;
 		if(jsonObj.has("userName") && !isNullOrEmpty(jsonObj.getString("userName"))){
 			userName = jsonObj.getString("userName");
 			user = userService.getUserByEmailAndUserType(userName,Constants.PROFESSIONAL);
+			
 		}
 		if(user != null ) {
 			     if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
@@ -1234,20 +1232,25 @@ public class RegistrationServiceImpl implements RegistrationService{
 						String profileUrl = jsonObj.getString("profileUrl");
 						if(!isNullOrEmpty(service)  && (service.equalsIgnoreCase("googleplus") || service.equalsIgnoreCase("gmail") || service.equalsIgnoreCase("google"))){
 							user.setGooglePlus(profileUrl);
+							can.setGooglePlus(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
 							user.setFacebook(profileUrl);
+							can.setFacebookUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
-							user.setTwitter(profileUrl);			
+							user.setTwitter(profileUrl);
+							can.setTwitterUrl(profileUrl);
 						}
 						else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
 							user.setLinkedIn(profileUrl);
+							can.setLinkedUrl(profileUrl);
 						}
 						
 					}
 					userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 					orgLocations = userRole.getOrgLocations();
+					
 		}
 		else {
 			 user = new User();
@@ -1341,6 +1344,23 @@ public class RegistrationServiceImpl implements RegistrationService{
 				if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
 					candidate.setEmail(jsonObj.getString("email"));
 				}
+
+				if(jsonObj.has("service") && !isNullOrEmpty(jsonObj.getString("service"))
+						  && jsonObj.has("profileUrl") && !isNullOrEmpty(jsonObj.getString("profileUrl"))){
+							String service = jsonObj.getString("service");
+							String profileUrl = jsonObj.getString("profileUrl");
+							if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("facebook")){
+								candidate.setFacebookUrl(profileUrl);
+							}
+							else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("twitter")){
+								candidate.setTwitterUrl(profileUrl);			
+							}
+							else if(!isNullOrEmpty(service)  && service.equalsIgnoreCase("linkedin")){
+								candidate.setLinkedUrl(profileUrl);
+							}
+							
+						}
+				
 				
 				candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 				candidate.setCreatedBy("sladmin");

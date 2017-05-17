@@ -125,6 +125,19 @@ public class ProjectMembers implements Serializable{
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
     
+    @Transient
+    private String totalHours;
+    
+    @Transient
+    private String candidateName;
+    
+    @Transient
+    private Long candidateId;
+    
+    @Transient
+    private String userRoleType;
+    
+    
     @JsonIgnore
     @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonBackReference
@@ -399,6 +412,44 @@ public class ProjectMembers implements Serializable{
 
 	public void setProjectMembersList(List<ProjectMembers> projectMembersList) {
 		this.projectMembersList = projectMembersList;
+	}
+
+	public String getTotalHours()
+	{
+		return totalHours;
+	}
+
+	public void setTotalHours(String totalHours)
+	{
+		this.totalHours = totalHours;
+	}
+
+	public String getCandidateName()
+	{
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName)
+	{
+		this.candidateName = candidateName;
+	}
+
+	public Long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public String getUserRoleType() {
+		return userRoleType;
+	}
+
+	public void setUserRoleType(String userRoleType) {
+		this.userRoleType = userRoleType;
 	}
 
 }

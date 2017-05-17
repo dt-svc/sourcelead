@@ -139,6 +139,10 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 	    success: function(data) {
 	    		 //$("#timesheetPopUp").removeAttr("style");
  	    	     $("#timesheetPopUp").empty();
+ 	    	     var closeElement = $('.proj_close');
+ 	    	      closeElement.removeAttr('onclick');
+ 	    	     closeElement.attr('onclick','timesheetApprovalTableRowByProjectMemberId("'+timesheetFrequency+'","'+projectMemberId+'","'+from+'Close");'); 
+ 	    	      
 			     $("#timesheetPopUp").append(data);
 			     maskme();
 			     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
@@ -435,7 +439,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    	 var table = $('#example').DataTable();
 			 table.row('#row'+projectMemberId+timesheetFrequency+'').remove().draw( false );
 		 }
-		 else{
+		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
 			 var sourceleadUrl ='${sourceleadUrl}';
 				$.ajax({
 			   	type: "POST",
@@ -445,9 +449,11 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		     		    		 $(".side_mask").fadeOut(200); 
 		     	        		 $("body").css('overflow-y', 'scrool');
 		     	        		 $("#dynamic").removeAttr('style');
-					    		 $("#row"+projectMemberId).empty();
-						         $("#row"+projectMemberId).html(data);
-						        /* pagination(); */
+		     	        		 
+		     	        		 if(from == 'approverClose'){
+		     	        			 $("#row"+projectMemberId).empty();
+							         $("#row"+projectMemberId).html(data);
+		     	        		 }
 					        
 					    }
 			    }); 
@@ -728,7 +734,7 @@ function clearTimesheet(){
  	 		    	        if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus != 'new' && approvalStatus != 'draft'){
  	 		    	        	activeElement.addClass("current subColor");
  	 		    	        	activeElement.siblings().removeClass("current");
- 	 		    	        	activeElement.siblings().addClass("subColor");
+ 	 		    	        	//activeElement.siblings().addClass("subColor");
  	 		    	        }
  	 		    	        else if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus == 'draft'){
  	 		    	        	activeElement.addClass("current subColor");
@@ -1258,10 +1264,10 @@ $(document).ready(function() {
 </script>	
 <script>
 function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
-	 if(msg.match(/^[^\s-](.*)*$/) != null){
-		 msg = encodeURIComponent(msg);
+	 var encodeMsg = msg;
+	 if(encodeMsg.match(/^[^\s-](.*)*$/) != null){
+		 var encodeMsg = encodeURIComponent(msg);
 		 $("#rejectReasonDiv").empty();
 		 var sourceleadUrl ='${sourceleadUrl}';
 	     var rowHtmlContent =  $("#row"+projectMemberId).html();
@@ -1279,19 +1285,20 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 	    $.ajax({
 	    type: "POST",
-	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+encodeMsg+"&approvalStatus=REJECTED",       
 	    success: function(data) {    
 	   	   // approvalList();
 	       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
-			    	 var table = $('#example').DataTable();
+	    	   var table = $('#example').DataTable();
 		   		 table.row('#row'+projectMemberId+startDate+'To'+endDate+'').remove().draw( false );
 		   }
 	   	   else{
-	   		  $("#row"+projectMemberId).empty();
+	   		  	  $("#row"+projectMemberId).empty();
 	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
 	 	    	  $("#status"+projectMemberId).html("REJECTED");
 	 	    	  $("#action"+projectMemberId).empty();
-	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");  
+	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");
+	 	    	  $("#row"+projectMemberId).hide();
 	   	   }
 	   	   cancelRejectSubmission(projectMemberId);
 	   	    pagination();
@@ -1377,7 +1384,6 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 function pagination(){ 
     $('#example').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,

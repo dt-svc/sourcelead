@@ -806,33 +806,32 @@ public class UserDaoImpl implements UserDao {
 	  String query = "";
 	  Boolean isAdmin = userRoleDao.isUserAdmin(currentApproverId);
 	  if(isAdmin){
-		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' ) and user.id <> :currentApproverId ";
+		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id != :currentApproverId)";
 	  }else{
-		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id <> :currentApproverId ";
+		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.user.id != :currentApproverId)";
 	  }
 		
-	 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
-     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
-     
-     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
-     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
-     List<Long> ownerRolesList = new ArrayList<Long>();
-     
-     for(Roles roles : rolesList){
-    	 if(null != roles.getActionId()){
-    		 List<Long> roleActionsList = new ArrayList<Long>();
-    		 for (String s : roles.getActionId().split(",")){
-        		 roleActionsList.add(Long.parseLong(s));
-        	 }
-        	 
-        	 roleActionsList.retainAll(tabActionsIds);
-        	 if(roleActionsList.size() > 0){
-        		 ownerRolesList.add(roles.getId());
-        	 }
-    	 }
-    	 
-     }
-	 
+	  String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).setCacheable(true).list();
+	     
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 List<Long> roleActionsList = new ArrayList<Long>();
+	    		 for (String s : roles.getActionId().split(",")){
+	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }
+	        	 
+	        	 roleActionsList.retainAll(tabActionsIds);
+	        	 if(roleActionsList.size() > 0){
+	        		 ownerRolesList.add(roles.getId());
+	        	 }
+	    	 }
+	    	 
+	     }
      List<User> userRoleList = session.createQuery(query).setLong("currentApproverId", currentApproverId).setParameterList("ownerRolesList", ownerRolesList).setCacheable(true).list();
      return userRoleList;
         
@@ -1123,7 +1122,7 @@ public class UserDaoImpl implements UserDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 
-	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState != 'INACTIVE' ) and user.id <> :userId and"
+	    String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationsId and userRole.userState = 'ACTIVE') and user.id <> :userId and"
 	    		+ " user.id NOT IN (select offboarding.userId from CandidateOffBoarding offboarding where offboarding.orgLocationId = :orgLocationsId) ";
 
 	    List<User> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();

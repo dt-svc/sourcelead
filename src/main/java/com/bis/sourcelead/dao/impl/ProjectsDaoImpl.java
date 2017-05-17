@@ -735,5 +735,25 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		return flag;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects p where p.orgRelationId.id = :orgRelationId and p.orgLocationsId.id = :orgLocationId";
+		return session.createQuery(query.toString()).setLong("orgRelationId", orgRelationId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional
+	public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationsId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects project where project.orgLocationsId = :orgLocationsId and project.projectStatus <> 'ONHOLD'";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		return projectsList;
+	}
+
 }
 

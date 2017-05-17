@@ -7,12 +7,13 @@ import org.json.JSONObject;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 
 public interface ContractsTemplateDao {
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
 
-	ContractsTemplate saveContractTemplate(Long contractTemplateId);
+	//ContractsTemplate saveContractTemplate(Long contractTemplateId);
 
 	List<ContractsTemplate> getAllContractsTemplatesByOrgLocationid(OrgLocations orgLocation)throws Exception;
 
@@ -22,9 +23,13 @@ public interface ContractsTemplateDao {
 
 	Contracts saveNewContract(Contracts contracts)throws Exception;
 
-	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType)throws Exception;
+	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
 
+	Integer getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
+	
 	Contracts getContractById(Long contractId);
+	
+	Contracts getContractByContractUUID(String contractUUID);
 
 	Contracts getChildContractById(Long contractId);
 	
@@ -33,5 +38,7 @@ public interface ContractsTemplateDao {
 	List<Contracts> getListOfContractsEnvId();
 
 	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
+
+	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
 	
 }

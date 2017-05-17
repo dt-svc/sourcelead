@@ -84,8 +84,8 @@ public class Contracts {
 	@JoinColumn(name = "ORG_RELATION_ID")
 	private OrgRelations orgRelations;
 	
-	@Column(name = "STATE_OF_JURISDICTION")
-	private String stateOfJurisdiction;
+	/*@Column(name = "STATE_OF_JURISDICTION")
+	private String stateOfJurisdiction;*/
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "APPROVER_USER_ID") 
@@ -158,6 +158,8 @@ public class Contracts {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "CONTRACT_UUID")
+	private String contractUUID;
 	
 	@Column(name = "STATE_JURISDICTION")
 	private String stateJurisdiction;
@@ -198,6 +200,64 @@ public class Contracts {
 
 	@Transient
 	private String tempdocId;
+	
+	@Transient
+	private String approverUserName;
+	
+	@Transient
+	private Integer totalDraftCount;
+	
+	@Transient
+	private Integer totalWTACount;
+	
+	@Transient
+	private Integer totalWTSCount;
+	
+	@Transient
+	private Integer totalWTVCount;
+	
+	@Transient
+	private Integer totalFinalizedCount;
+	
+	@Transient
+	private Integer totalExpiredCount;
+	
+	@Transient
+	private Integer totalRejectedCount;
+	
+	@Transient
+	private Integer totalDraftVendorCount;
+	
+	@Transient
+	private Integer totalDraftClientCount;
+	
+	@Transient
+	private String createdDateStr;
+	
+	@Transient
+	private String updatedDateStr;
+	
+	@Transient
+	private String createdByName;
+	
+	@Transient
+	private String updatedByName;
+	
+	@Transient
+	private String requirementName;
+	
+	@Transient
+	private String applicantName;
+	
+	@Transient
+	private String templateName;
+	
+	@Transient
+	private String offerValue;
+	
+	@Transient
+	private String contractWith;
+	
 	
 	public String getFileName() {
 		return fileName;
@@ -343,6 +403,14 @@ public class Contracts {
 		this.updatedBy = updatedBy;
 	}
 
+	public String getContractUUID() {
+		return contractUUID;
+	}
+
+	public void setContractUUID(String contractUUID) {
+		this.contractUUID = contractUUID;
+	}
+
 	public Long getId()
 	{
 		return id;
@@ -449,13 +517,13 @@ public class Contracts {
 		this.orgRelations = orgRelations;
 	}
 
-	public String getStateOfJurisdiction() {
+	/*public String getStateOfJurisdiction() {
 		return stateOfJurisdiction;
 	}
 
 	public void setStateOfJurisdiction(String stateOfJurisdiction) {
 		this.stateOfJurisdiction = stateOfJurisdiction;
-	}
+	}*/
 
 	public User getApproverUser() {
 		return approverUser;
@@ -634,7 +702,157 @@ public class Contracts {
 	public void setStateJurisdiction(String stateJurisdiction) {
 		this.stateJurisdiction = stateJurisdiction;
 	}
-	
-	
+
+	public String getApproverUserName() {
+		return approverUserName;
+	}
+
+	public void setApproverUserName(String approverUserName) {
+		this.approverUserName = approverUserName;
+	}
+
+	public Integer getTotalDraftCount() {
+		return totalDraftCount;
+	}
+
+	public void setTotalDraftCount(Integer totalDraftCount) {
+		this.totalDraftCount = totalDraftCount;
+	}
+
+	public Integer getTotalWTACount() {
+		return totalWTACount;
+	}
+
+	public void setTotalWTACount(Integer totalWTACount) {
+		this.totalWTACount = totalWTACount;
+	}
+
+	public Integer getTotalWTSCount() {
+		return totalWTSCount;
+	}
+
+	public void setTotalWTSCount(Integer totalWTSCount) {
+		this.totalWTSCount = totalWTSCount;
+	}
+
+	public Integer getTotalWTVCount() {
+		return totalWTVCount;
+	}
+
+	public void setTotalWTVCount(Integer totalWTVCount) {
+		this.totalWTVCount = totalWTVCount;
+	}
+
+	public Integer getTotalFinalizedCount() {
+		return totalFinalizedCount;
+	}
+
+	public void setTotalFinalizedCount(Integer totalFinalizedCount) {
+		this.totalFinalizedCount = totalFinalizedCount;
+	}
+
+	public Integer getTotalExpiredCount() {
+		return totalExpiredCount;
+	}
+
+	public void setTotalExpiredCount(Integer totalExpiredCount) {
+		this.totalExpiredCount = totalExpiredCount;
+	}
+
+	public Integer getTotalRejectedCount() {
+		return totalRejectedCount;
+	}
+
+	public void setTotalRejectedCount(Integer totalRejectedCount) {
+		this.totalRejectedCount = totalRejectedCount;
+	}
+
+	public Integer getTotalDraftVendorCount() {
+		return totalDraftVendorCount;
+	}
+
+	public void setTotalDraftVendorCount(Integer totalDraftVendorCount) {
+		this.totalDraftVendorCount = totalDraftVendorCount;
+	}
+
+	public Integer getTotalDraftClientCount() {
+		return totalDraftClientCount;
+	}
+
+	public void setTotalDraftClientCount(Integer totalDraftClientCount) {
+		this.totalDraftClientCount = totalDraftClientCount;
+	}
+
+	public String getCreatedDateStr() {
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
+
+	public String getUpdatedDateStr() {
+		return updatedDateStr;
+	}
+
+	public void setUpdatedDateStr(String updatedDateStr) {
+		this.updatedDateStr = updatedDateStr;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
+	}
+
+	public String getUpdatedByName() {
+		return updatedByName;
+	}
+
+	public void setUpdatedByName(String updatedByName) {
+		this.updatedByName = updatedByName;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
+	}
+
+	public String getApplicantName() {
+		return applicantName;
+	}
+
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+
+	public String getOfferValue() {
+		return offerValue;
+	}
+
+	public void setOfferValue(String offerValue) {
+		this.offerValue = offerValue;
+	}
+
+	public String getContractWith() {
+		return contractWith;
+	}
+
+	public void setContractWith(String contractWith) {
+		this.contractWith = contractWith;
+	}
 	
 }

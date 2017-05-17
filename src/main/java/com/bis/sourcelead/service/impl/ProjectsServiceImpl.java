@@ -1575,7 +1575,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			 if(pm.getEmployee() != null){
 				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
-				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	 
+				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	
+				 pm.setUserRoleType(pm.getEmployee().getUser().getUserType());	
+				 
 			 }
 			 pm.setProjectStatus(pr.getProjectStatus().getValue());
 			 
@@ -2276,6 +2278,18 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public Boolean validateTasksName(String taskname, Long projectId) throws Exception {
 				Boolean flag = projectsDao.validateTasksName(taskname,projectId);
 				return flag;
+			}
+
+			@Override
+			public List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId) throws Exception
+			{
+				return projectsDao.getClientProjectsByOrgRelationId(orgRelationId,orgLocationId);
+			}
+
+			@Override
+			public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationId) throws Exception
+			{
+				return projectsDao.getAllProjectsByOrgLocationIdAndStatus(orgLocationId);
 			}
 
 

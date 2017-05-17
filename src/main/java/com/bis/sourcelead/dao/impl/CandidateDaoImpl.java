@@ -906,5 +906,94 @@ public class CandidateDaoImpl implements CandidateDao {
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status ='1' and candidate.isAssociate = 'Y' ORDER BY candidate.id DESC";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveAssociatesByLocationAndAssoicatesList(Long orgLocationId,
+			List<Long> associatesIds) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.id NOT IN (:associatesIds) ";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId, Long spocId,
+			List<Long> associatesIds) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.spocId.id = :spocId and candidate.id NOT IN (:associatesIds) ";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId, Long spocId) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.spocId.id = :spocId  ";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(Long vendorOrgRelationId,
+			List<Long> associatesIds) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgRelationId.id =:vendorOrgRelationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.id NOT IN (:associatesIds) ";  
+        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long vendorOrgRelationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgRelationId.id =:vendorOrgRelationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' ";  
+        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Candidate candidate = null;
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId and candidate.orgRelationId.id= :orgRelationId";
+        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		if(null != candidateList && candidateList.size() >0){
+			candidate = candidateList.get(0);
+		}
+        return candidate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Candidate candidate = null;
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
+        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setCacheable(true).list();
+		if(null != candidateList && candidateList.size() >0){
+			candidate = candidateList.get(0);
+		}
+        return candidate;
+	}
 }
 

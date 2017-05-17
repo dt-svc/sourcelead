@@ -192,7 +192,7 @@ $(document).ready(function(){
 			    	    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
-		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Approval<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
 					    
 			    }
@@ -236,7 +236,7 @@ $(document).ready(function(){
 				     
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
-				     result = result + ' <div class="user_summary_edit_cta centerDiv">';
+				     result = result + ' <div class="user_summary_edit_cta">';
 				     result = result + ' <form id="editRole_form"  name="editRole_form" method="post">';
 				     result = result + ' <label>Change Role</label>';
 						 result = result + '<select class="chosen-select" id="userChangeRole"  onchange="getChangeRole('+userId+','+json.roles.id+');" data-validation="required" field-name="Role" name="userChangeRole"  >';
@@ -248,7 +248,7 @@ $(document).ready(function(){
 						  result = result + '<div class="clearfix mb10 mt">';
 						  result = result + '</div>';
 					      result = result + '<div class="clearfix"></div>';
-						  result = result + '<div class="user_summary_edit_cta centerDiv">';
+						  result = result + '<div class="user_summary_edit_cta">';
 						  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
 						  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
 						  result = result + '</div>';
@@ -380,13 +380,13 @@ $(document).ready(function(){
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				<strong>RoleChangeReason:</strong><span class="fix">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>RoleChangeReason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
 				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Reason:</strong><span class="fix">'+json.terminateReason+'</span><div class="clearfix"></div>';
+					result = result + '				<strong>Reason:</strong><span class="fix" title = "'+json.terminateReason+'">'+json.terminateReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
@@ -670,7 +670,7 @@ function getChangeRole(userId,userRoleId){
 						result = result + '</div>';	
 					  }	
 				
-				 result = result + '<div class="col-md-12" id="reasonDiv">';
+				 result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
 				  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
 				  	result = result + '</div><br/>';
 	        	
@@ -1337,6 +1337,8 @@ $("#editRoleDetailsList").empty();
 						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
 						result = result + '</div>'; 
 					
+						result = result + '<input type="hidden" value="'+json.userEmploymentType+'" id="hiddenId" >';
+
 						
 					   result = result + '<div class="user_summary_edit_cta">';
  					   result = result + ' <label>Employment type</label>';
@@ -1553,19 +1555,39 @@ function getCalendar(){
 
 <script>
 function getEmployeementType(){
-	 var employementType = $('#designationType').val(); 
+	
+	var employementType = $('#designationType').val(); 
+	//var abc = document.getElementById('hiddenId').value();
+	var preval = document.getElementById("hiddenId").value;
+	
 		if(employementType == 'C2C' || employementType == 'C2C-1099'){
-			document.getElementById("hideVendor").style.display="block";
+			if(employementType == preval){
+				document.getElementById("hideVendor").style.display="block";
+				 $('#vendors').attr("data-validation","required"); 
+				 $('#vendorcontact').attr("data-validation","required");
+				 getVendorsByOrgLocationId();
+			}else{
+				document.getElementById("hideVendor").style.display="block";
 			 $('#vendors').attr("data-validation","required"); 
 			 $('#vendorcontact').attr("data-validation","required"); 
+			  $('#vendors').val(''); 
 			 
+	            $('#vendors').trigger("chosen:updated");
+	            $('#vendorcontact').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontact').trigger("chosen:updated");
+			} 
 		}else{
 			 document.getElementById("hideVendor").style.display="none";
 			 $('#vendors').removeAttr("data-validation","required"); 
 			 $('#vendorcontact').removeAttr("data-validation","required"); 
 			 
 			 $('#vendors').val(''); 
-			 $('#vendorcontact').val(''); 
+	            $('#vendors').trigger("chosen:updated");
+	            $('#vendorcontact').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontact').trigger("chosen:updated");
+
 			 
 		}
 		$('#designationType + p').remove();
