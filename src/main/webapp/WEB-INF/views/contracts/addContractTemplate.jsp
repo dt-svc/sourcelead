@@ -134,6 +134,7 @@
 				 <li onclick="copyToClipboard('text_element34')"><i></i><p class="copyText" id="text_element34">[Payment Term]</li>
 				 <li onclick="copyToClipboard('text_element35')"><i></i><p class="copyText" id="text_element35">[Start Date]</p></li>
 				 <li onclick="copyToClipboard('text_element36')"><i></i><p class="copyText" id="text_element36">[End date]</li>
+				 <li onclick="copyToClipboard('text_element91')"><i></i><p class="copyText" id="text_element36">[Billing Cycle]</li>
 				 <li onclick="copyToClipboard('text_element37')"><i></i><p class="copyText" id="text_element37">[Company Location]</p></li>
                 <li onclick="copyToClipboard('text_element38')"><i></i><p class="copyText" id="text_element38">[Company Name]</p></li>
 			</ul>
@@ -149,6 +150,9 @@
 				 <li onclick="copyToClipboard('text_element47')"><i></i><p class="copyText" id="text_element47">[Overtime]</li>
 				 <li onclick="copyToClipboard('text_element48')"><i></i><p class="copyText" id="text_element48">[Payment Term]</li>
 				 <li onclick="copyToClipboard('text_element49')"><i></i><p class="copyText" id="text_element49">[End date]</li>
+				 <li onclick="copyToClipboard('text_element88')"><i></i><p class="copyText" id="text_element35">[Start Date]</p></li>
+				 <li onclick="copyToClipboard('text_element89')"><i></i><p class="copyText" id="text_element36">[End date]</li>
+				 <li onclick="copyToClipboard('text_element90')"><i></i><p class="copyText" id="text_element36">[Billing Cycle]</li>
 				 <li onclick="copyToClipboard('text_element50')"><i></i><p class="copyText" id="text_element50">[Company Location]</p></li>
                 <li onclick="copyToClipboard('text_element51')"><i></i><p class="copyText" id="text_element51">[Company Name]</p></li>
 			</ul>
