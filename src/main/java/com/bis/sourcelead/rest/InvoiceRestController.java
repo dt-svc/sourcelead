@@ -835,9 +835,15 @@ public class InvoiceRestController {
 		}
 		return "success";
 	} 
-	
-	
-	
+
+	@RequestMapping(value = "/sendReminder", method = RequestMethod.POST)
+	public @ResponseBody String sendReminder(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
+		invoiceService.sendInvoiceMail(user,orgLocation,invoice);
+		return "success";
+	} 	
 	
 	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,

@@ -760,10 +760,10 @@ function getInvoiceList(){
 				
 				result = result +'         <td> ';
 				result = result +'     <div class="tblminwidth-75">';
-				/* result = result +'  <div class="pull-right positionRelative menuWidget" ><i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+');" ></i>  ';
+				 result = result +'  <div class="pull-right positionRelative menuWidget" ><i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+');" ></i>  ';
 				result = result +'  <div id="popupDiv'+report.id+'"></div>';
 		        result = result +'  </div>                                                                                                      ';
-		         */
+		         
 				if(report.invoiceType=="Receivable" &&( report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
@@ -800,15 +800,7 @@ function getInvoiceList(){
 						}
 					}
 				}
-				
-				/* result = result +'	<td>                                                                                                        ';
-		        result = result +'  <div class="pull-right positionRelative menuWidget"><i class="fa fa-ellipsis-v" onClick="showMenu();"></i>  ';
-		        result = result +'    <ul class="list-inline list-unstyled menupop">                                                            ';
-		        result = result +'      <li><i class="fa fa-bullhorn paddingRight"></i>Send reminder</li>                                       ';
-		        result = result +'      <li><i class="fa fa-print paddingLeft paddingRight"></i>Print</li>                                      ';
-		        result = result +'    </ul>                                                                                                     ';
-		        result = result +'  </div>                                                                                                      ';
-		        result = result +'  <span class="text-primary receiveBtn clearfix" onClick="receivePaymentPop();">Receive</span> '; */
+		 
 		        result = result +'</div>';
 		        result = result +'</td>';
                 
@@ -862,7 +854,7 @@ function invoicePagination(){
 function showPopUp(id){
 	    result = "";
 		 result = result +'    <ul class="list-inline list-unstyled menupop"> ';
-	     result = result +'      <li><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+	     result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 	     result = result +'      <li><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 	     result = result +'      <li><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
 	     result = result +'    </ul>';
@@ -871,6 +863,22 @@ function showPopUp(id){
     	 showMenu();
     	
 }
+</script>
+<script>
+function sendReminder(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/sendReminder?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+            	 $(".list-inline list-unstyled menupop").hide();
+//         	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    });  
+}
+
 </script>
 <script>
 function acceptedInvoice(id){
