@@ -320,4 +320,10 @@ background-color: #78909C;
 	.content-wraper, .footer-area {
 	margin-left: 0;
 	}
+	.main-header .navbar .custom-navbar ul.custom-navbar-inner li{
+	padding: 15px 10px;
+	}
+	.custom-navbar .login-user span.image img{
+		margin-top: 0;
+	}
 }

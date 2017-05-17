@@ -34,11 +34,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -57,7 +57,6 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -103,6 +102,9 @@ public class ContractRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	ContractsTemplateDao contractsTemplateDao;
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
@@ -252,14 +254,14 @@ public class ContractRestController {
 			StringBuilder sb = new StringBuilder();
 			StringBuilder clientSb = new StringBuilder();
 			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
-			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 			}else{
-			sb.append(orgSpoc.getVendorUser().getFirstName());
+				sb.append(orgSpoc.getVendorUser().getFirstName());
 			}
 			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-			clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
 			}else{
-			clientSb.append(orgSpoc.getClientUser().getFirstName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
 			}
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
@@ -398,6 +400,8 @@ public class ContractRestController {
 			HttpServletRequest request)throws Exception{
 
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		
 		
 		Contracts contracts  = contractsTemplateService.getContractById(Long.parseLong(recordId));
 /*		if("Waiting to be signed".equalsIgnoreCase(status)){
@@ -414,6 +418,8 @@ public class ContractRestController {
 		
 		if(("WAITING_TO_BE_VERIFY").equalsIgnoreCase(status)){
 			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			String fromStage = childContarct.getTemplateSubmissionStatus();
+			String parentFromStage = contracts.getTemplateSubmissionStatus();
 			if(null != childContarct.getParentContractId()){
 				childContarct.setId(childContarct.getId());
 				childContarct.setTemplateSubmissionStatus("FINALIZED");
@@ -421,7 +427,27 @@ public class ContractRestController {
 				contracts.setTemplateSubmissionStatus("FINALIZED");
 			}
 			 contractsTemplateService.saveNewContract(childContarct);
+			 
+			 ContractsHistory childContractsHistory = new ContractsHistory();
+			 childContractsHistory.setFromStage(fromStage);
+			 childContractsHistory.setContractsId(childContarct);
+			 childContractsHistory.setToStage("FINALIZED");
+			 childContractsHistory.setCreatedDate(new Date());
+			 childContractsHistory.setUpdatedDate(new Date());
+			 childContractsHistory.setCreatedBy(user.getUserCode());
+			 childContractsHistory.setUpdatedBy(user.getUserCode());
+			contractsTemplateDao.saveContractsHistory(childContractsHistory);
+			 
 			 contractsTemplateService.saveNewContract(contracts);
+			 ContractsHistory parentContractsHistory = new ContractsHistory();
+			 parentContractsHistory.setFromStage(parentFromStage);
+			 parentContractsHistory.setContractsId(contracts);
+			 parentContractsHistory.setToStage("FINALIZED");
+			 parentContractsHistory.setCreatedDate(new Date());
+			 parentContractsHistory.setUpdatedDate(new Date());
+			 parentContractsHistory.setCreatedBy(user.getUserCode());
+			 parentContractsHistory.setUpdatedBy(user.getUserCode());
+			contractsTemplateDao.saveContractsHistory(parentContractsHistory);
 		}
 		
 		
@@ -596,7 +622,14 @@ public class ContractRestController {
 					contract.setApproverUserName(approver.append(contract.getApproverUser().getFirstName()).toString());
 				}
 		 	}
-		 	
+		 	if(null != contract.getContactUser()){
+		 		StringBuilder approver = new StringBuilder();
+		 		if(null != contract.getContactUser().getLastName() && "" != contract.getContactUser().getLastName()){
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()).toString());
+				}else{
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).toString());
+				}
+		 	}
 		 	if(null != contract.getRequirementSubmission()){
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
@@ -680,5 +713,15 @@ public class ContractRestController {
 		 	
 			return commonUtil.toJSON(contract);
 		}
+	 
+	 @RequestMapping(value = "/getContractStageCounts", method = RequestMethod.GET)
+		public @ResponseBody String getContractStageCounts(HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
+			return commonUtil.toJSON(contractsCount);
+		 
+	 }
 
 }

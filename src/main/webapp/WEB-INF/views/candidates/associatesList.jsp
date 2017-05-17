@@ -1850,9 +1850,11 @@ function getCities(){
 	    $('#currency').val(''); 
 	    $('#rateType').val(''); 
 	    
-	    $('#country').val(''); 
+	   /*  $('#country').val(''); 
 	    $('#state').val(''); 
-	    $('#city').val(''); 
+	    $('#city').val('');  */
+	    $("#city").empty();
+	    $("#city").val('').trigger("chosen:updated");
 	    $('#rateType').val(''); 
 
 	    $('#emailDiv').find('p.jquery_form_error_message').remove();

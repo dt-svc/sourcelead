@@ -88,6 +88,9 @@ public class InvoicePayment {
 	
 	@Transient
 	private String paymentDateStr;
+	
+	@Transient
+	private String createdByName;
 
 	public Long getId() {
 		return id;
@@ -223,5 +226,13 @@ public class InvoicePayment {
 
 	public void setPaymentDateStr(String paymentDateStr) {
 		this.paymentDateStr = paymentDateStr;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
 	}
 }

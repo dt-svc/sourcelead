@@ -751,28 +751,33 @@ function getInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot_80">'+report.dueAmount+'</div>';
 				result = result +'         </td>';
 				result = result +'         <td> ';
-				result = result +'           <div class="tbldata-dotdot_100">'+report.invoiceStatus+'</div>';
+				result = result +'           <div class="tbldata-dotdot-100">'+report.invoiceStatus+'</div>';
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				result = result +'           <div class="tbldata-dotdot_100">'+report.paymentStatus+'</div> ';
+				result = result +'           <div class="tbldata-dotdot-100">'+report.paymentStatus+'</div> ';
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
+				result = result +'     <div class="tblminwidth-75">';
+				/* result = result +'  <div class="pull-right positionRelative menuWidget" ><i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+');" ></i>  ';
+				result = result +'  <div id="popupDiv'+report.id+'"></div>';
+		        result = result +'  </div>                                                                                                      ';
+		         */
 				if(report.invoiceType=="Receivable" &&( report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
+						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
 					}else{
-						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 					}
 				}else{
 					if(report.invoiceStatus == "Accepted"){
-						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
 					}else{
 						if(report.invoiceStatus == "Rejected"){
-							result = result +'           <span class="text-primary successBtn primary clearfix" >Rejected</span> </td>          ';	
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span>           ';	
 						}else{
-							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 						}
 						
 					}
@@ -780,21 +785,33 @@ function getInvoiceList(){
 
 				if(report.invoiceType=="Payables" ){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
+						result = result +'           <span class="text-primary successBtn primary pull-left" >Pay</span>           ';	
 					}else{
 						if(report.invoiceStatus == "Accepted"){
-							result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span>';
 						}else{
 							if(report.invoiceStatus == "Rejected"){
-								result = result +'           <span class="text-primary successBtn primary clearfix" >Rejected</span> </td>          ';	
+								result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span> </td>          ';	
 							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> ';
+								
 							}
 							
 						}
 					}
 				}
 				
+				/* result = result +'	<td>                                                                                                        ';
+		        result = result +'  <div class="pull-right positionRelative menuWidget"><i class="fa fa-ellipsis-v" onClick="showMenu();"></i>  ';
+		        result = result +'    <ul class="list-inline list-unstyled menupop">                                                            ';
+		        result = result +'      <li><i class="fa fa-bullhorn paddingRight"></i>Send reminder</li>                                       ';
+		        result = result +'      <li><i class="fa fa-print paddingLeft paddingRight"></i>Print</li>                                      ';
+		        result = result +'    </ul>                                                                                                     ';
+		        result = result +'  </div>                                                                                                      ';
+		        result = result +'  <span class="text-primary receiveBtn clearfix" onClick="receivePaymentPop();">Receive</span> '; */
+		        result = result +'</div>';
+		        result = result +'</td>';
+                
 				result = result +'       </tr>                                                                                                           ';
 
     		}
@@ -804,16 +821,16 @@ function getInvoiceList(){
 		    $("#invoiceList").append(result);
 		    
 		    $("#draftInvoiceCount").html(draftCount);
-		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
 		    		    
 		    $("#paidInvoiceCount").html(paidCount);
-		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
 		    
 		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
 		    
 		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
 		    
 
 		    invoicePagination()
@@ -839,6 +856,20 @@ function invoicePagination(){
      	}
     });
     $("#invoiceListPagination").wrap("<div class='overflow_Auto'></div>");
+}
+</script>
+<script>
+function showPopUp(id){
+	    result = "";
+		 result = result +'    <ul class="list-inline list-unstyled menupop"> ';
+	     result = result +'      <li><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+	     result = result +'      <li><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+	     result = result +'      <li><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+	     result = result +'    </ul>';
+	     $("#popupDiv"+id+"").empty();  
+    	 $("#popupDiv"+id+"").append(result);
+    	 showMenu();
+    	
 }
 </script>
 <script>
