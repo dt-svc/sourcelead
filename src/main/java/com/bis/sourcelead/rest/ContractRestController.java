@@ -660,5 +660,15 @@ public class ContractRestController {
 		 	
 			return commonUtil.toJSON(contract);
 		}
+	 
+	 @RequestMapping(value = "/getContractStageCounts", method = RequestMethod.GET)
+		public @ResponseBody String getContractStageCounts(HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
+			return commonUtil.toJSON(contractsCount);
+		 
+	 }
 
 }
