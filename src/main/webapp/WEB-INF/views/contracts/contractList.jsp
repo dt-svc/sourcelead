@@ -181,7 +181,12 @@ function PopUp(contractUUID){
 			result = result +	'<div class="contPopupHead clearfix">';
 			result = result +	'<h4>'+json.contractTitle+'</h4>';
 			result = result +	'<span>';
-			result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a></i> <i class="fa fa-times" onclick="contPopClose();"></i>';
+			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED'){
+				result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+			}else{
+				result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
+			}
+			
 			result = result +	'</span>';
 			result = result +	'</div>';
 		

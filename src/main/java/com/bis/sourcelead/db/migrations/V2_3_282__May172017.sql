@@ -1,0 +1,2 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','BILLING_RATE_TYPE','VARCHAR(20) NULL  AFTER `BILLING_AMOUNT`');
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CONTRACTS','BILLING_RATE_PER','VARCHAR(20) NULL  AFTER `BILLING_RATE_TYPE`');
