@@ -1228,13 +1228,12 @@ function getOffboardingCheckList(){
 		        result = result + '</div>';
 		        result = result + '</div>';
 		        result = result + '</div>';
-		        
-		        result = result + '<div class="clearfix mb row">';
+		       
 	           
 	           result = result + '<div id="form-fields">';
 	           result = result + '</div>';
-	           result = result + '<div class="form-footer clearfix row mt">';
-	           
+	           result = result + '<div class="form-footer clearfix mt">';
+	           result = result + '<div class="clearfix"></div>';
 	           result = result + '<div class="pull-right mr">';
 	           
 	           result = result +"<input type='button' value='Save' id='save_checkList_button'  onclick='createOffboardCheckList(\"save\");' class='btn btn-sm btn-success'>";
