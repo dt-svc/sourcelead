@@ -8,7 +8,11 @@
 <script src="resources/js/formvalidator.js"></script>
 <link rel="stylesheet" href="resources/css/style.css" />
 
-
+<style type="text/css">
+.require_wrap_table table tr td:first-child {
+width:auto !important;
+}
+</style>
 
 <script>
 function candidateShortList(requirementId){
@@ -61,51 +65,51 @@ function candidateShortList(requirementId){
 	    			    result = result + '<tr>';
 	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' onclick="getCheckedCandidatesCount();"  name="submissionList[]" ></td>';
 	    			    
-			            result = result + '<td><div><span>'+report.candidateName+'</span></div></td>';
+			            result = result + '<td><div class="tbldata-dotdot-100">'+report.candidateName+'</div></td>';
 			           
 			           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.candidateEmail+'</span></div></td>';
+			        	   result = result + '<td><div  class="tbldata-dotdot-100">'+report.candidateEmail+'</div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
 			           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.phoneNumber+'</span></div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot-100">'+report.phoneNumber+'</div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
 			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
-			        	   result = result + '<td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a></span></div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot_80"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a></span></div></td>';
 				           }
 				       else{
 				    	   result = result + '<td><div>--</div></td>';
 			    	     }
 			           
 			           if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.createdDateStr+'</span></div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot_80">'+report.createdDateStr+'</div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
 			           if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot_80">'+report.expectedCTC+'</div></td>';
 				           }
 				       else{
-				    	   result = result + '<td><div><span>--</span></div></td>';
+				    	   result = result + '<td><div class="tbldata-dotdot_80">--</div></td>';
 			    	     }
 			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.createdUser+''+orgName+'</span></div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot_80">'+report.createdUser+''+orgName+'</div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
 			           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.workExperience+'</span></div></td>';
+			        	   result = result + '<td><div class="tbldata-dotdot_80">'+report.workExperience+'</div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -152,6 +156,7 @@ function shortListPagination(){
     	"bPaginate": false,
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"aaSorting": [[1,'desc']],
     	"ordering": true,
     	"aoColumnDefs": [{
 	           'bSortable': false,
@@ -191,13 +196,13 @@ function selectAllShortlisted(){
             });         
         } 
 	
-	 var selectedsubmissionslists = [];
+	 /* var selectedsubmissionslists = [];
 	 $("input[name='submissionList[]']:checked").each( function (i) {
 		 selectedsubmissionslists[i] = $(this).val();
 	});
 	 
 	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
-	 
+	  */
 }
 </script> 
 

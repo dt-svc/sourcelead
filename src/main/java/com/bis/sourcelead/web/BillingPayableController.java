@@ -140,7 +140,9 @@ public class BillingPayableController {
 				String orgName = "";
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getLocationId().getOrg().getOrgName();
-				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				}
+				
+				if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
 				}
 				orgRelations.setOrgName(orgName);
@@ -176,10 +178,23 @@ public class BillingPayableController {
 	
 	@RequestMapping(value = "/getPaymentTermsAndBillindAddress", method = RequestMethod.GET)
 	public @ResponseBody String getPaymentTermsAndBillindAddress(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
 		for(OrgSpoc orgSpoc : orgSpocList){
-			orgSpoc.setPaymentTerms(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getPaymentTerm());
-			orgSpoc.setBillingAddress(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getClientBillingAddress());
+			if(orgSpoc.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				
+				orgSpoc.setPaymentTerms(orgSpoc.getOrgRelations().getLocationId().getOrg().getPaymentTerm());
+				orgSpoc.setBillingAddress(orgSpoc.getOrgRelations().getLocationId().getOrg().getClientBillingAddress());
+				
+			}
+			
+			if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				orgSpoc.setPaymentTerms(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getPaymentTerm());
+				orgSpoc.setBillingAddress(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getClientBillingAddress());
+			}
+			
+			
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
