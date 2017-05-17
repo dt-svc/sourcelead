@@ -629,8 +629,8 @@ function getContractTemplates(){
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
-		document.getElementById("vendorDiv").style.display="none";
-		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="block";
+		document.getElementById("vendorContactDiv").style.display="block";
 		document.getElementById("billingDiv").style.display="none";
 	}
 		 
