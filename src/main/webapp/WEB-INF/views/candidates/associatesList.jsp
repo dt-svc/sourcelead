@@ -1205,7 +1205,7 @@ function cancel(candidateId){
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
 								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}">${cntry.name}</option>
+							                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 						                </c:forEach>
 				                 </select>
 							  </div>
@@ -1293,7 +1293,7 @@ function cancel(candidateId){
 						  <div class="pull-right mr">
 							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
-                                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/>
+                               <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
 				  </div>
@@ -2215,7 +2215,7 @@ function minMaxExperience(){
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
-	    $("#country").val('').trigger("chosen:updated");
+	  /*   $("#country").val('').trigger("chosen:updated"); */
 	    $("#state").val('').trigger("chosen:updated");
 	    $("#city").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");
