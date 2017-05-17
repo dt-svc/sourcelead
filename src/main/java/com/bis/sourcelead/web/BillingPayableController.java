@@ -119,6 +119,7 @@ public class BillingPayableController {
 			model.setViewName("billing/createPayables");			
 		}
 		model.addObject("invoiceUUID", invoiceUUID);
+		model.addObject("projectId", projectId);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Payables);
 		request.getSession().setAttribute("sessionData",sessionData);

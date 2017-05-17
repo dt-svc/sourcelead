@@ -308,7 +308,12 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	var projectId = $("#projectId").val();
+	var projectId = null;
+	projectId = $("#projectId").val();
+	if(projectId == null){
+	projectId = '${projectId}';
+	}
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
@@ -815,42 +820,7 @@ function calculateSum(){
 	  $("#grandTotal").val(sum.toFixed(2));
 	  $("#afterDiscountTotal").val(sum.toFixed(2));
 	  calculateDisCount();
-	  
-	  /* =====================  After adding the rows calculate the tax start  ===================== */
-	  var maxTaxRowNum = $("#maxTaxRowNum").val();
-		var afterDiscountTotal = $("#afterDiscountTotal").val();
-		
-		for(var i=0; i<maxTaxRowNum; i++){
-			if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
-				var taxType = $("#"+i+"taxdiscountType").val();
-			    var taxValue = $("#"+i+"taxdiscountvalue").val();
-			    var first = '0';
-			   
-			    if(taxType == 'flat'){
-			    	if(taxValue){
-			    		first = parseFloat(taxValue);
-				        $("#"+i+"taxTotal").val(first);
-			    	}else{
-				        $("#"+i+"taxTotal").val(0);
-			    	}
-			    	
-			    }
-			    
-			    else if(taxType == 'percentage'){
-			        var perCentValue = (afterDiscountTotal * taxValue)/100;
-			        first = parseFloat(perCentValue.toFixed(2));
-			        $("#"+i+"taxTotal").val(first);
-			    }   
-			}
-		}
-		
-		var taxGrandTotal = 0;
-		for(var i=0; i<maxTaxRowNum; i++){
-			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
-		}
-		
-		var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-		 $("#grandTotal").val(grandTotal.toFixed(2));
+	  calculateTaxDiscount();
 }
 	
 </script>
@@ -877,25 +847,7 @@ function calculateDisCount(){
 					 		$("#afterDiscountTotal").val(total.toFixed(2));
 					 	 }
 
-					 	 var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-						  var afterDiscountTotal = $("#afterDiscountTotal").val();
-						  
-						   for(var i=0; i< maxRowNum; i++){
-						        var taxType = $("#"+i+"taxdiscountType").val();
-						        var taxValue = $("#"+i+"taxdiscountvalue").val();
-						        var taxTotal = $("#"+i+"taxTotal").val();
-						           
-						             if(taxValue == '' && taxTotal==''){
-						             $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-						             }else{
-						           	 var tot = $("#grandTotal").val();
-						 	           var first=parseFloat(tot);
-						 	            var second=parseFloat(taxTotal); 
-						 	            var total  = (first+second);
-						 	          $("#grandTotal").val(total.toFixed(2));
-						             }
-						           
-						   } 
+					 	 calculateTaxDiscount();
 }
 }
 </script>
@@ -907,6 +859,8 @@ function calculateDisCount(){
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
 		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
+		        <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
+		  
 		  </div>
 	 </div>
 </div>
@@ -1025,18 +979,15 @@ function calculateTaxDiscount(){
 	var maxTaxRowNum = $("#maxTaxRowNum").val();
 	var afterDiscountTotal = $("#afterDiscountTotal").val();
 	
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 			var taxType = $("#"+i+"taxdiscountType").val();
 		    var taxValue = $("#"+i+"taxdiscountvalue").val();
-		    var first = '0';
 		   
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first);
-		    	}else{
-			        $("#"+i+"taxTotal").val(0);
 		    	}
 		    	
 		    }
@@ -1050,7 +1001,7 @@ function calculateTaxDiscount(){
 	}
 	
 	var taxGrandTotal = 0;
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
 	}
 	
@@ -1058,31 +1009,8 @@ function calculateTaxDiscount(){
 	 $("#grandTotal").val(grandTotal.toFixed(2));
   
 }
-	
-	/* var taxType = $("#"+rowId+"taxdiscountType").val();
-    var taxValue = $("#"+rowId+"taxdiscountvalue").val();
-    var afterDiscountTotal = $("#afterDiscountTotal").val();
-    var grandTotal =  $("#grandTotal").val();
-     var total ='';
-    if(taxType == 'flat'){
-    	 var first=parseFloat(taxValue);
-         var second=parseFloat(grandTotal);
-         total = (first+second);
-         
-        $("#"+rowId+"taxTotal").val(first);
-        $("#grandTotal").val(total);
-    }
-    if(taxType == 'percentage'){
-        var perCentValue = (afterDiscountTotal * taxValue)/100;
-        var first=parseFloat(perCentValue.toFixed(2));
-        var second=parseFloat(grandTotal);
-        total = (first+second);
-        $("#"+rowId+"taxTotal").val(first.toFixed(2));
-        $("#grandTotal").val(total.toFixed(2)); 
-    } */ 
-	
-
 </script>
+
 
 <!-- Adding Attachment Div Ids -->
 
@@ -1352,14 +1280,6 @@ function getVendors(){
 	function editTax(invoiceTaxList){  
 		for(var i=0; i<invoiceTaxList.length; i++){
 			var opt = invoiceTaxList[i];
-			if(i == 0){
-				$('#'+i+'taxType').val(opt.taxName);
-				$('#'+i+'taxdiscountType').val(opt.taxType);
-				$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-				$('#'+i+'taxTotal').val(opt.taxAmount);
-				$('#'+i+'invoiceTaxId').val(opt.id);
-			 
-			}else{
 				 
 				 var checkMaxTsRowNum = $("#maxTaxRowNum").val();
 					var tbl = document.getElementById("addTaxTbl");
@@ -1396,13 +1316,12 @@ function getVendors(){
 					cell4.innerHTML = divTaxTdStr4;
 					/* maskme(); */
 					
-					$('#'+i+'taxType').val(opt.taxName);
-					$('#'+i+'taxdiscountType').val(opt.taxType);
-					$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-					$('#'+i+'taxTotal').val(opt.taxAmount);
-					$('#'+i+'invoiceTaxId').val(opt.id);
+					$('#'+maxRowNum+'taxType').val(opt.taxName);
+					$('#'+maxRowNum+'taxdiscountType').val(opt.taxType);
+					$('#'+maxRowNum+'taxdiscountvalue').val(opt.taxValue);
+					$('#'+maxRowNum+'taxTotal').val(opt.taxAmount);
+					$('#'+maxRowNum+'invoiceTaxId').val(opt.id);
 					
-			 }
 		}
 	}			
 </script>
@@ -1488,7 +1407,7 @@ function addTaxDivs(){
     result = result +'  </thead>';
     result = result +'  <tbody>';
     result = result +'  <tr id="divTaxTsRow0">';
-    result = result +'  <td>';
+   /*  result = result +'  <td>';
     result = result +'  <div class="select-field tblminwidth-75">';
     result = result +'  <div class="tblminwidth-50">';
     result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">';
@@ -1516,7 +1435,7 @@ function addTaxDivs(){
     result = result +'  </td>';
     result = result +'  <td>';
     result = result +'  <span class="text-danger"><i class="fa fa-remove"></i></span>';
-    result = result +'  </td>';
+    result = result +'  </td>'; */
     result = result +'  </tr>';
     result = result +'  </tbody>';
     result = result +'  </table>';
