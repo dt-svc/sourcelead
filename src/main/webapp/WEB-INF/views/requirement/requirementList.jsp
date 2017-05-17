@@ -1572,7 +1572,7 @@ function requirementPipeline(requirementId){
               <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a>  -->
                <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement();" class="btn btn-sm btn-success"/>
                <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
-               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/></div>
+            <!--    <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> --></div>
             </div>
           </div>
           </form:form>
@@ -2076,6 +2076,7 @@ function searchRequirement(){
 							$("#search_requiremet").removeAttr("disabled");
 							closePop();
 							/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
+								clearAlldata();
 			                	 prepareRequirementData(data);
 /* 		                 }else{
 		                	 $("#requirementList").empty();
@@ -2101,6 +2102,27 @@ $('body').on('blur', '#requirement_form', function() {
 	$("#requirement_form").showHelpOnFocus();
 	$("#requirement_form").validateOnBlur(false, validationSettings);
 });
+</script>
+
+<script type="text/javascript">	
+	function clearAlldata(){
+	 
+	    $("#requirementStatu").val('').trigger("chosen:updated");
+	    $("#updatedOn").val('').trigger("chosen:updated");
+	    $("#client").val('').trigger("chosen:updated");
+	  /*   $("#country").val('').trigger("chosen:updated"); */
+	    $("#state").val('').trigger("chosen:updated");
+	    $("#statusAdvanced").val('').trigger("chosen:updated");
+	    $("#invitationAdvanced").val('').trigger("chosen:updated");
+	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
+	    $("#emailAdvanced").val('').trigger("chosen:updated");
+	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+	    $("#noticePeriod").val('').trigger("chosen:updated");
+	  
+	    $("#requirementTitle").empty();
+	    $("#jobId").empty();
+	  
+	}
 </script>
 
 <script type="text/javascript">
@@ -2307,7 +2329,7 @@ function clearSearch(){
 	$('#requirementStatu').val('').trigger('chosen:updated');
 	$('#updatedOn').val('').trigger('chosen:updated');
 	$('#client').val('').trigger('chosen:updated');
-	$('#country').val('').trigger('chosen:updated');
+	/* $('#country').val('').trigger('chosen:updated'); */
 	$('#state').val('').trigger('chosen:updated');
 	$('#city').val('').trigger('chosen:updated');
 	$('#noticePeriod').val('').trigger('chosen:updated');
