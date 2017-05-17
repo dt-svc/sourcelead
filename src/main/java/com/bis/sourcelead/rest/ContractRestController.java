@@ -247,25 +247,31 @@ public class ContractRestController {
 			StringBuilder sb = new StringBuilder();
 			StringBuilder clientSb = new StringBuilder();
 			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
-			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 			}else{
-			sb.append(orgSpoc.getVendorUser().getFirstName());
+				sb.append(orgSpoc.getVendorUser().getFirstName());
 			}
 			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-			clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
 			}else{
-			clientSb.append(orgSpoc.getClientUser().getFirstName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
 			}
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
-			if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
+			if(orgSpoc.getVendorLocationId() != null && orgSpoc.getVendorLocationId().getId() != null && orgSpoc.getVendorLocationId().getId().longValue()== orgLocation.getId().longValue()){
+				orgSpoc.setOwnerUserName(clientSb.toString());
+			}
+			if(orgSpoc.getClientLocationId() != null && orgSpoc.getClientLocationId().getId() != null && orgSpoc.getClientLocationId().getId().longValue()== orgLocation.getId().longValue()){
+				orgSpoc.setOwnerUserName(sb.toString());
+			}
+			/*if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(clientSb.toString());
             }
             if(orgSpoc.getClientUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(sb.toString());
-            }
+            }*/
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
