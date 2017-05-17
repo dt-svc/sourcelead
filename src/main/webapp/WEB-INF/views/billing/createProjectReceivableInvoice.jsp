@@ -437,15 +437,15 @@ function populateInlineItemsGrid(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM"  value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM"  value='+opt.totalHours+' type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -533,15 +533,15 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -636,7 +636,7 @@ function getSowRate(id){
         	 if(data != null && data != ''){
         		var json = JSON.parse(data);
 	        	 $ ('#'+id+'rate').val(json.billingAmount);
-	        	 calculateTotalAmount(id);
+	        	 totalHoursCalculateAmount(id);
         	} 
         },
         
@@ -645,12 +645,12 @@ function getSowRate(id){
 </script>
   
   <!-- calculating row total with rate and total hours -->
-  <script>
+  <!-- <script>
   function calculateTotalAmount(rowId){
 	 totalHoursCalculateAmount(rowId);
 	 var totalHours =  $('#'+rowId+'totalHours').val();
 	 var rate =  $('#'+rowId+'rate').val();
-	 if(totalHours != ''){
+	/*  if(totalHours != ''){
 		 var split = totalHours.split(':');
 	     var hours = split[0];
  	     var minute = split[1];
@@ -661,13 +661,13 @@ function getSowRate(id){
 	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
 	 }else{
 		 $('#'+rowId+'amount').val('');
-	 }
+	 } */
 	 calculateSum();
 	 
 	 
   }
   
-  </script>
+  </script> -->
   
   
   <script>
@@ -810,6 +810,8 @@ function getSowRate(id){
 				 $("#"+rowId+"totalHours").val(hours+":"+minute);
 				 calAddRowAmount(hours,minute,rowId);
 			 }
+		 }else{
+			 calAddRowAmount("000","00",rowId);
 		 }
   }
   
@@ -1593,7 +1595,7 @@ function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	
-	 if(paymentFrequency){
+	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    
