@@ -450,7 +450,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		     	        		 $("body").css('overflow-y', 'scrool');
 		     	        		 $("#dynamic").removeAttr('style');
 		     	        		 
-		     	        		 if(from == 'approverClose'){
+		     	        		 if(from == 'approverClose' || from == 'approver' ){
 		     	        			 $("#row"+projectMemberId).empty();
 							         $("#row"+projectMemberId).html(data);
 		     	        		 }
