@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,12 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -105,6 +106,10 @@ public class TimesheetApprovalRestController {
 	@Autowired
 	SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	 
+	@Autowired
+	private OrgRelationsService orgRelationsService;
+	
+	
 	@RequestMapping(value = "/timesheetApprovalDiv", method = RequestMethod.POST )   
 	public @ResponseBody String timesheetApprovalDiv(
 			@RequestParam(value="frequencyMonth", required=false) String  frequencyMonth,
@@ -600,8 +605,10 @@ public class TimesheetApprovalRestController {
 					timesheetApprovalDiv.append("				<thead>");   
 					timesheetApprovalDiv.append("	            	<tr>");
 					timesheetApprovalDiv.append("	                	<th>Employee</th>           ");
+					timesheetApprovalDiv.append("	                	<th>Employment Type</th>           ");
 					timesheetApprovalDiv.append("	                    <th>Project</th>            ");
 					timesheetApprovalDiv.append("	                    <th>Client</th>             ");
+					timesheetApprovalDiv.append("	                    <th>Vendor</th>             ");
 					
 					LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
 					Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(startDate, endDate);
@@ -645,6 +652,12 @@ public class TimesheetApprovalRestController {
 						                                             .append("</span>");
 						 timesheetApprovalDiv.append("   <div>");
 						 timesheetApprovalDiv.append(" </td>");
+						 
+						 if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
+						 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()).append("</b></span></div></td>");
+						 }else{
+						 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>");	 
+						 }
 					     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</b></span></div></td>");
 					     
 					     if(null != projectMember.getProjects().getOrgRelationId()){
@@ -662,7 +675,12 @@ public class TimesheetApprovalRestController {
 					    	 timesheetApprovalDiv.append("<td><div>").append("--").append("</div></td>");
 					     }
 					     
-					     
+					     if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType()) && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
+					    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
+					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("'>").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("</b></span></div></td>"); 
+					     }else{
+					     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>"); 
+					     }
 					     
 					     Float totalHours = 0f;
 					     Float estimatedTotalHours = 0f;
