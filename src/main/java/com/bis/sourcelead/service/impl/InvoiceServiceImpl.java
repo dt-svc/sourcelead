@@ -419,7 +419,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-		 for(int i=1;i<maxRowCount;i++){
+		 for(int i=0;i<maxRowCount;i++){
 			 
 			 if(jsonObj.has(i+"invoiceStartDate")){
 			 
