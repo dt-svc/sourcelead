@@ -38,7 +38,6 @@ import com.itextpdf.text.pdf.draw.LineSeparator;
 
 @Component
 public class InvoicePdfHelper {
-	
 	private static final Logger logger = LoggerFactory.getLogger(InvoicePdfHelper.class);
 	public static final String FONTB = "/fonts/OpenSans-Bold.ttf";
 	public static final String FONT = "/fonts/OpenSans-Regular.ttf";
@@ -65,11 +64,9 @@ public class InvoicePdfHelper {
 	
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception
 	{
-		
-		File invoiceFile = new File(org.getOrgName()+"_"+invoice.getInvoiceId() + ".pdf");
+		File invoiceFile = new File(org.getOrgName() + "_" + invoice.getInvoiceId() + ".pdf");
 		OutputStream file = new FileOutputStream(invoiceFile);
 		try {
-			
 			Document document = new Document();
 			PdfWriter writer = PdfWriter.getInstance(document, file);
 			writer.createXmpMetadata();
@@ -123,12 +120,12 @@ public class InvoicePdfHelper {
 			table.setWidthPercentage(100);
 			table.setSpacingBefore(10);
 			table.setSpacingAfter(10);
-			table.setWidths(new int[] { 5, 6, 2, 4, 2 });
-			table.addCell(getCell("Associate name", Element.ALIGN_LEFT, font12b));
-			table.addCell(getCell("Duration", Element.ALIGN_LEFT, font12b));
-			table.addCell(getCell("Rate", Element.ALIGN_LEFT, font12b));
-			table.addCell(getCell("Total Hours", Element.ALIGN_LEFT, font12b));
-			table.addCell(getCell("Total", Element.ALIGN_LEFT, font12b));
+			table.setWidths(new int[] { 5, 5, 3, 3, 3 });
+			table.addCell(getCell("Associate name", Element.ALIGN_CENTER, font12b));
+			table.addCell(getCell("Duration", Element.ALIGN_CENTER, font12b));
+			table.addCell(getCell("Rate", Element.ALIGN_CENTER, font12b));
+			table.addCell(getCell("Total Hours", Element.ALIGN_CENTER, font12b));
+			table.addCell(getCell("Total", Element.ALIGN_CENTER, font12b));
 			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 				StringBuffer name = new StringBuffer();
@@ -174,8 +171,23 @@ public class InvoicePdfHelper {
 					table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
 				}
 			}
+			
+			 PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+				cell.setBorder(PdfPCell.NO_BORDER);
+	            table.addCell(cell);
+				table.addCell(cell);
+				table.addCell(cell);
+				table.addCell(getCell("SUb Total", Element.ALIGN_RIGHT, font10b));
+				table.addCell(getCell(" "+invoice.getSubTotal(), Element.ALIGN_RIGHT, font10b));
+			
 			document.add(table);
+			
 			document.add(getTotalsTable(invoice));
+			document.add(discountTotaltable(invoice));
+			
+			p= new Paragraph("Grand Total "+invoice.getTotal(), font12b);
+	          p.setAlignment(Element.ALIGN_RIGHT );
+	          document.add(p);
 			document.add(Chunk.NEWLINE);
 			LineSeparator ls = new LineSeparator();
 			ls.setAlignment(Element.ALIGN_BOTTOM);
@@ -194,7 +206,6 @@ public class InvoicePdfHelper {
 			Image image = Image.getInstance(org.getDocFile());
 			image.scalePercent(300f);
 			image.setAbsolutePosition(0, (float) (PageSize.A4.getHeight() - 25.0));
-			System.out.println(image.getScaledHeight());
 			image.setAbsolutePosition(100, 500);
 			// Fixed Positioning
 			image.setAbsolutePosition(40f, 780f);
@@ -231,23 +242,22 @@ public class InvoicePdfHelper {
 	
 	public PdfPTable getTotalsTable(Invoice invoice) throws DocumentException
 	{
-		PdfPTable table = new PdfPTable(5);
+		PdfPTable table = new PdfPTable(4);
 		table.setWidthPercentage(100);
-		table.setWidths(new int[] { 1, 1, 3, 3, 3 });
-		table.addCell(getCell("TAX", Element.ALIGN_LEFT, font12b));
-		table.addCell(getCell("%", Element.ALIGN_RIGHT, font12b));
-		table.addCell(getCell("Base amount:", Element.ALIGN_LEFT, font12b));
-		table.addCell(getCell("Tax amount:", Element.ALIGN_LEFT, font12b));
-		table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));
+		table.setWidths(new int[] { 4, 3, 3, 3 });
+		table.addCell(getCell("TAX", Element.ALIGN_CENTER, font12b));
+		table.addCell(getCell("Type", Element.ALIGN_CENTER, font12b));
+		table.addCell(getCell("Base amount:", Element.ALIGN_CENTER, font12b));
+		table.addCell(getCell("Tax amount:", Element.ALIGN_CENTER, font12b));
+		//table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));
 		Set<InvoiceTax> invoiveTaxDetails = invoice.getInvoiceTax();
 		for (InvoiceTax InvoiceTax : invoiveTaxDetails) {
 			table.addCell(getCell(InvoiceTax.getTaxName(), Element.ALIGN_RIGHT, font10));
 			table.addCell(getCell(InvoiceTax.getTaxType(), Element.ALIGN_RIGHT, font10));
 			table.addCell(getCell(InvoiceTax.getTaxValue(), Element.ALIGN_RIGHT, font10));
 			table.addCell(getCell(InvoiceTax.getTaxAmount(), Element.ALIGN_RIGHT, font10));
-			table.addCell(getCell("currency", Element.ALIGN_LEFT, font10));
+			//table.addCell(getCell("currency", Element.ALIGN_LEFT, font10));
 		}
-		table = grandTotaltable(invoice);
 		/*
 		 * PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
 		 * cell.setBorder(PdfPCell.NO_BORDER); table.addCell(cell);
@@ -255,21 +265,51 @@ public class InvoicePdfHelper {
 		 * table.addCell(getCell("GrandTotal"+invoice.getTotal(),
 		 * Element.ALIGN_LEFT, font12b)); table.addCell(getCell("Currency Type",
 		 * Element.ALIGN_LEFT, font12b));
+		 * 
 		 */
+		table.setSpacingAfter(20);
 		return table;
 	}
 	
-private PdfPTable grandTotaltable(Invoice invoice) throws DocumentException {
-PdfPTable table = new PdfPTable(2);
-PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
-cell.setBorder(PdfPCell.NO_BORDER);
-table.addCell(cell);
-table.setWidthPercentage(100);
-table.setWidths(new int[]{5, 3});
-table.addCell(getCell("GrandTotal:"+invoice.getTotal(), Element.ALIGN_LEFT, font12b));
-table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));
-table.getDefaultCell().setBorder(0);
-return table;
+	/*private PdfPTable grandTotaltable(Invoice invoice) throws DocumentException
+	{
+		PdfPTable table = new PdfPTable(2);
+		PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+		cell.setBorder(PdfPCell.NO_BORDER);
+		table.addCell(cell);
+		table.setWidthPercentage(100);
+		table.setWidths(new int[] { 5, 3 });
+		// table.addCell(getCell("Discount:"+invoice.getDiscountValue(),
+		// Element.ALIGN_LEFT, font12b));
+		table.addCell(getCell("GrandTotal:" + invoice.getTotal(), Element.ALIGN_LEFT, font12b));
+		table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));
+		table.getDefaultCell().setBorder(0);
+		return table;
+	}*/
+	
+	/*private PdfPTable discountTotaltable(Invoice invoice) throws DocumentException
+	{
+		PdfPTable table = new PdfPTable(1);
+		PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+		cell.setBorder(PdfPCell.NO_BORDER);
+		table.addCell(cell);
+		table.setWidthPercentage(100);
+		table.setWidths(new int[] { 5 });
+		table.addCell(getCell("Discount:"
+				+ invoice.getDiscountValue(), Element.ALIGN_LEFT, font12b));
+		table.getDefaultCell().setBorder(0);
+		return table;
+	}*/
+	
+	private PdfPTable discountTotaltable(Invoice invoice) throws DocumentException
+	{
+		PdfPTable table = new PdfPTable(3);
+		table.setWidthPercentage(100);
+		table.setWidths(new int[] { 2,2, 2 });
+		table.addCell(getCell("Discount:", Element.ALIGN_LEFT, font12b));
+		table.addCell(getCell(" " + invoice.getDiscountType(), Element.ALIGN_RIGHT, font10));
+		table.addCell(getCell(" "+ invoice.getDiscountValue(), Element.ALIGN_RIGHT, font12b));
+		table.setSpacingAfter(20);
+			return table;
+	}
 }
-}
-
