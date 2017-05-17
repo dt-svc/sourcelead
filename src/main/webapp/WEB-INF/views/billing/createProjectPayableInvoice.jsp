@@ -1087,13 +1087,7 @@ function saveInvoice(saveType){
 		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=payable", 
 		    		        success: function(result) {
 		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     		
-		    		     		/* var invoiceUUID = '${invoiceUUID}';
-		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
-		    		     			location.replace(sourceleadUrl+"/getInvoiceByUUID?invoiceUUID="+invoiceUUID);
-		    		     		}else{ */
 		    		     			location.replace(sourceleadUrl+"/payablesList");
-		    		     		/* } */
 		    		     		
 		    		        },
 		    		    }); 
