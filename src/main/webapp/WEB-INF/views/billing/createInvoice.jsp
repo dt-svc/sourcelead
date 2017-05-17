@@ -195,7 +195,7 @@ function cancel(){
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 text-right">
 		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
-			placeholder="00:00" class="ReadTextFli">
+			placeholder="00:00" class="ReadTextFli" readonly>
 	</div>
 </div>
 
@@ -228,7 +228,7 @@ function cancel(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>';
+		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -335,7 +335,7 @@ function cancel(){
                    result = result +'  </div>';
                    result = result +'  <div class="form-group mt">';
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
-                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>';
+                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
