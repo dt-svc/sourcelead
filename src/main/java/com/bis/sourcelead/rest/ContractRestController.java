@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOffers;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
@@ -101,6 +103,9 @@ public class ContractRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(
@@ -247,25 +252,27 @@ public class ContractRestController {
 			StringBuilder sb = new StringBuilder();
 			StringBuilder clientSb = new StringBuilder();
 			if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
-			sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+				sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
 			}else{
-			sb.append(orgSpoc.getVendorUser().getFirstName());
+				sb.append(orgSpoc.getVendorUser().getFirstName());
 			}
 			if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-			clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
 			}else{
-			clientSb.append(orgSpoc.getClientUser().getFirstName());
+				clientSb.append(orgSpoc.getClientUser().getFirstName());
 			}
 			orgSpoc.setSpocName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
+
 			if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(clientSb.toString());
             }
             if(orgSpoc.getClientUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(sb.toString());
             }
+
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
@@ -568,6 +575,18 @@ public class ContractRestController {
 				}
 		 	}
 		 	
+		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
+		 	if(null != orgRelations){
+		 		if(orgRelations.getLocationId().getId() == orgLocation.getId()){
+		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+				}	
+				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+					contract.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+				}
+		 	}
+		 	
+		 	
+		 	
 		 	if(null != contract.getApproverUser()){
 		 		StringBuilder approver = new StringBuilder();
 		 		if(null != contract.getApproverUser().getLastName() && "" != contract.getApproverUser().getLastName()){
@@ -576,7 +595,14 @@ public class ContractRestController {
 					contract.setApproverUserName(approver.append(contract.getApproverUser().getFirstName()).toString());
 				}
 		 	}
-		 	
+		 	if(null != contract.getContactUser()){
+		 		StringBuilder approver = new StringBuilder();
+		 		if(null != contract.getContactUser().getLastName() && "" != contract.getContactUser().getLastName()){
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()).toString());
+				}else{
+					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).toString());
+				}
+		 	}
 		 	if(null != contract.getRequirementSubmission()){
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
@@ -660,5 +686,15 @@ public class ContractRestController {
 		 	
 			return commonUtil.toJSON(contract);
 		}
+	 
+	 @RequestMapping(value = "/getContractStageCounts", method = RequestMethod.GET)
+		public @ResponseBody String getContractStageCounts(HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 Contracts contractsCount = contractsTemplateService.getAllContractsCountByLocationIdAndStatus(orgLocation, "", "", "", "", user, userRoleName);
+			return commonUtil.toJSON(contractsCount);
+		 
+	 }
 
 }
