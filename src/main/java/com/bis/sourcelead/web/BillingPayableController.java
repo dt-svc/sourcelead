@@ -113,7 +113,7 @@ public class BillingPayableController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		if(null != projectId && !"".equals(projectId)){
+		if(null != projectId && !"".equals(projectId) && !projectId.equalsIgnoreCase("undefined")){
 			model.setViewName("billing/createProjectPayableInvoice");
 		}else{
 			model.setViewName("billing/createPayables");			
@@ -168,6 +168,17 @@ public class BillingPayableController {
 			
 			orgSpoc.setOwnerName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
+			}
+		return commonUtil.toJSON(orgSpocList);
+	} 
+	
+	
+	@RequestMapping(value = "/getPaymentTermsAndBillindAddress", method = RequestMethod.GET)
+	public @ResponseBody String getPaymentTermsAndBillindAddress(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
+		for(OrgSpoc orgSpoc : orgSpocList){
+			orgSpoc.setPaymentTerms(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getPaymentTerm());
+			orgSpoc.setBillingAddress(orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getClientBillingAddress());
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 

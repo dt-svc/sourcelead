@@ -121,6 +121,8 @@
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
            $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
+       
+       
     });   
 
 

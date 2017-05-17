@@ -1291,8 +1291,9 @@ function cancel(candidateId){
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
-                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-success"/>
+                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
+                                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/>
 						  </div>
 					  </div>
 				  </div>
@@ -1465,7 +1466,7 @@ $(document).ready(function() {
 $("#addmore").click(function(){
 	$(this).next(".approved_pop").toggle();
 		//$(".approved_pop").toggle(200);
-	$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop").slideUp();
+	$("#filter2ApprovedPop, #filter3ApprovedPop, #filter1ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp();
 	});
 $("html").click(function() {
     $(".approved_pop").hide(200);
