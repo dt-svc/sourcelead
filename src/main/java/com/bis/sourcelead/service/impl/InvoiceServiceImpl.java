@@ -1,6 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -262,7 +266,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		//store attached Documents (after)
 		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
 		        invoice.setFileName(file.getName());
-		        byte[] bytesArray = new byte[(int) file.length()];
+//		        byte[] bytesArray = new byte[(int) file.length()];
+		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
 		
@@ -289,12 +294,39 @@ public class InvoiceServiceImpl implements InvoiceService{
 			}
 		}
 		
-		//mail scenario for client accept or reject
+		/*//mail scenario for client accept or reject
 		if(saveType.equalsIgnoreCase("SENT")){
 			invoiceClientAcceptMail(user,orgLocation,invoice);
-		}
+		}*/
 
 		return invoice;
+	}
+	private byte[] getByteArray(File file) throws IOException {
+		    ByteArrayOutputStream ous = null;
+		    InputStream ios = null;
+		    try {
+		        byte[] buffer = new byte[4096];
+		        ous = new ByteArrayOutputStream();
+		        ios = new FileInputStream(file);
+		        int read = 0;
+		        while ((read = ios.read(buffer)) != -1) {
+		            ous.write(buffer, 0, read);
+		        }
+		    }finally {
+		        try {
+		            if (ous != null)
+		                ous.close();
+		        } catch (IOException e) {
+		        }
+
+		        try {
+		            if (ios != null)
+		                ios.close();
+		        } catch (IOException e) {
+		        }
+		    }
+		    return ous.toByteArray();
+		
 	}
 	private void saveParentInvoice(Invoice invoice) throws Exception {
 		Invoice parentInvoice = new Invoice();
@@ -419,7 +451,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-		 for(int i=1;i<maxRowCount;i++){
+		 for(int i=0;i<maxRowCount;i++){
 			 
 			 if(jsonObj.has(i+"invoiceStartDate")){
 			 
