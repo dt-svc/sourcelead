@@ -202,10 +202,12 @@ function PopUp(contractUUID){
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractType+'</div>';
 			result = result +	'	</div>';
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i class="fa fa-eye" onclick="previewTemplatePDF(\''+json.contractsTemplate.id+'\')"></i></a></div>';
-			result = result +	'	</div>';
+			if('Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i class="fa fa-eye" onclick="previewTemplatePDF(\''+json.contractsTemplate.id+'\')"></i></a></div>';
+				result = result +	'	</div>';
+			}
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';

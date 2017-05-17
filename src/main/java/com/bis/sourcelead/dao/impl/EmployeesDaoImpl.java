@@ -48,7 +48,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if(employee != null){
-				 session.save(employee);
+				 session.saveOrUpdate(employee);
 				 logger.info("Record saved successfully..!");
 			}
 		}catch(Exception exception)
