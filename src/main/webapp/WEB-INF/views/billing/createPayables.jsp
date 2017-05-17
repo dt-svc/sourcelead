@@ -106,7 +106,7 @@ function cancel(){
 							<label class="col-md-3">Payment terms</label>
 							<div class="col-md-9" id="errPayment">
 								<select class="chosen-select form-control" id="paymentFrequency"
-									name="paymentFrequency">
+									name="paymentFrequency" onchange="getDueDateByFrequency();">
 									<option value="">Select frequency</option>
 									<option value="10 days">10 days</option>
 									<option value="15 days">15 days</option>
@@ -305,7 +305,7 @@ function cancel(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
@@ -1299,7 +1299,7 @@ function calculateDiscount(){
 			total = subTotal - perCentValue;
 			$("#discountTotal").val(perCentValue);
 			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
@@ -1384,8 +1384,7 @@ function calculateDiscount(){
 
 <div id="divTaxTd2" style="display: none; float: left;">
 	<div class="btn-group tblminwidth-75">
-		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType"
-			name="REPLACEROWIDtaxdiscountType">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
 			<option value="percentage">Percentage</option>
 			<option value="flat">Flat</option>
 		</select>
@@ -1527,6 +1526,7 @@ function calculateTaxDiscount(){
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
+					getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1693,6 +1693,7 @@ function getPaymentTerms(){
 				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
 		           		$("#paymentFrequency").val(repot.paymentTerms);
 		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	    getDueDateByFrequency();
 		           	}else{
 		           		$("#paymentFrequency").val('');
 		           	    $('#paymentFrequency').trigger("chosen:updated");
@@ -1822,6 +1823,32 @@ $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     }
 });
 </script>
+
+
+<script>
+function getDueDateByFrequency(){
+	 var invoiceDate = document.getElementById("invoiceDate").value;
+	 var paymentFrequency = document.getElementById("paymentFrequency").value;
+	
+	 if(paymentFrequency){
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			success :function(dueDateStr) {
+				
+				$("#dueDate").val(dueDateStr);
+				$("#invoiceLoading").removeAttr("style");
+			}
+		});
+		
+	}else{
+		$("#dueDate").val('');
+	}
+}
+</script> 
 
 <script>
 var validationSettings = {

@@ -99,10 +99,13 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 				}
 			}
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
+			Invoice parentInvoice = null;
 			if(null != childInvoice){
-				if(null != invoice.getParentInvoiceId()){
-					Invoice parentInvoice =  invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
-					
+				if(null != childInvoice.getId()){
+					parentInvoice =  invoiceDao.getInvoicetBySelfJoinInvoiceId(childInvoice.getId());
+					if(parentInvoice == null){
+						parentInvoice =  invoiceDao.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());	
+					}
 					if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
 						if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
 							invoicePayment.setPaymentAmount(jsonObj.getString("totalAmount"));
