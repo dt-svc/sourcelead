@@ -113,6 +113,7 @@ $(document).ready(function() {
 <script>
 function pagination(){ 
     $('#timesheetReportsPageNation').DataTable( { 
+    	"scrollX": true,
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	

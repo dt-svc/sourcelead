@@ -1576,8 +1576,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 StringBuilder membersListStringBuilder=new StringBuilder();
 				 pm.setEmpName(membersListStringBuilder.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());	 
 				 pm.setEmpEmail(pm.getEmployee().getUser().getEmail());	
-				 pm.setUserRoleType(pm.getEmployee().getUser().getUserType());	
-				 
+				 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getEmployee().getUser().getId(), pm.getProjects().getOrgLocationsId().getId());
+				 pm.setUserRoleType(userRole.getUserType());	
 			 }
 			 pm.setProjectStatus(pr.getProjectStatus().getValue());
 			 
