@@ -69,11 +69,11 @@ function preparedTemplateList(data){
 	result = result +  '<table id="contractTemplateTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
-	result = result + '     <th>Template name</th>';
-	result = result + '    <th>Template type</th>';
+	result = result + '     <th>Template Title</th>';
+	result = result + '    <th>Template Type</th>';
 	result = result + '    <th>Description</th>';
-	result = result + '    <th>Document Preview</th>';
-	result = result + '    <th>Document</th>';
+	result = result + '    <th>Actions</th>';
+// 	result = result + '    <th>Document</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -109,9 +109,9 @@ function preparedTemplateList(data){
          result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\')"></i></a> <a href=\"'+sourceleadUrl+'/editTemplate?templateId='+report.id+'\" title="Edit"><i class="fa fa-edit"></i></a></div>';
          '</sec:authorize>';
          result = result + '</td>';
-         result = result + '<td>';
+         /* result = result + '<td>';
          result = result + '<div><a class="glyphicon glyphicon-paperclip pinCo" href="" onclick="downloadPdfTemplate('+report.id+')"></a></div>';
-         result = result + '</td>';
+         result = result + '</td>'; */
         result = result + '</tr>';
     }
 	result = result + '	</tbody>';
