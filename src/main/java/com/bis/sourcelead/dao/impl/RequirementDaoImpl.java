@@ -1047,7 +1047,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	 		Session session = this.sessionFactory.getCurrentSession();
 	 		String subQuery = "";
 	 		if(sowType.equalsIgnoreCase("Client SOW")){
-	 			subQuery = "and requirement.isClientJob = 'Y' and requirement.parentRequirement <> null ";
+	 			subQuery = "and requirement.isClientJob = 'Y' and requirement.clientId <> null ";
 	 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
 	 			subQuery = " ";
 	 		}
