@@ -106,7 +106,7 @@ function cancel(){
 							<label class="col-md-3">Payment terms</label>
 							<div class="col-md-9" id="errPayment">
 								<select class="chosen-select form-control" id="paymentFrequency"
-									name="paymentFrequency">
+									name="paymentFrequency" onchange="getEndDateByFrequency();">
 									<option value="">Select frequency</option>
 									<option value="10 days">10 days</option>
 									<option value="15 days">15 days</option>
@@ -1729,6 +1729,34 @@ $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     }
 });
 </script>
+
+
+<!-- <script>
+function getEndDateByFrequency(){
+	var invoiceDate = document.getElementById("invoiceDate").value;
+	if(invoiceDate){
+	   
+	    var paymentFrequency = document.getElementById("paymentFrequency").value;
+		var days = paymentFrequency.split(" ");
+		
+		var date = new Date(invoiceDate);
+	    var newdate = new Date(date);
+	   
+	    
+	    var dd = newdate.getDate(); 
+	    var mm = newdate.getMonth()+1; 
+	    var yyyy = newdate.getFullYear(); 
+	    
+	    alert(dd+"--"+mm+"--"+yyyy);
+	    
+	    newdate.setDate(newdate.getDate());
+	    
+	    var someFormattedDate = dd+'-'+mm+'-'+yyyy;
+	    document.getElementById("dueDate").value = someFormattedDate;
+		
+	}
+}
+</script> -->
 
 <script>
 var validationSettings = {
