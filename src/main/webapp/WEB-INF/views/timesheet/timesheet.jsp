@@ -212,7 +212,7 @@ $(document).ready(function() {
 	 		    	        if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus != 'new' && approvalStatus != 'draft'){
 	 		    	        	activeElement.addClass("current subColor");
 	 		    	        	activeElement.siblings().removeClass("current");
-	 		    	        	activeElement.siblings().addClass("subColor");
+	 		    	        	//activeElement.siblings().addClass("subColor");
 	 		    	        }
 	 		    	        else if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus == 'draft'){
 	 		    	        	activeElement.addClass("current subColor");
@@ -252,7 +252,7 @@ function withdrawMyTimesheet(projectMemberId,timesheetFrequency){
 <!-- this script is for add row functionality at Timesheet screen -->
 <script>
 function addTimeSheetRow(projectId) {
-	          
+	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){      
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -388,8 +388,8 @@ function addTimeSheetRow(projectId) {
 			var projectTaskId = maxRowNum+"task1Id"; 
 			
 			getProjectTasks(projectTaskId,projectId); 
-			
-		}	
+	    }	
+	}	
         
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
@@ -567,10 +567,10 @@ function checkHours(){
 	    	 
 	 }else{
 	    	if(i == '1'){
-	    		result = result+"MonDay ,";
+	    		result = result+"Monday ,";
 	    	}
 	    	if(i == '2'){  
-	    		result = result+"TuesDay ,";
+	    		result = result+"Tuesday ,";
 	    	}
 	    	if(i == '3'){  
 	    		result = result+"Wednesday ,";
@@ -895,12 +895,12 @@ function addAttachment(){
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="pull-left existedProjectTaskIdprojectId" data-validation="required" field-name="Task" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" data-validation="required" field-name="Task" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
 				             </select>
-				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="pull-left addtaskfield removetaskfield"/>
+				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
 				             </div>
 				             
 				        </div>
