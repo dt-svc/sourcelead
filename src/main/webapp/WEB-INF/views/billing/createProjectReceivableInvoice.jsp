@@ -28,7 +28,7 @@
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();flushValues();" data-validation="required" field-name="Client">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getPaymentTerms();flushValues();" data-validation="required" field-name="Client">
                    <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -62,7 +62,7 @@
            <div class="form-group">
               <label class="col-md-3">Payment Term</label>
               <div class="col-md-9 select-field">
-                <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency">
+                <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" onchange="getDueDateByFrequency();">
                   <option value=''>--Select Payment Term--</option>
                   <option>10 days</option>
                   <option>15 days</option>
@@ -178,18 +178,18 @@
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount">
+                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();">
                         <option value="percentage">Discount %</option>
                         <option value="flat">Discount Value</option>
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input class="form-control input-sm" id="discountValue" name="discountValue" type="text" onblur="calculateDisCount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" placeholder="Flat / Discount" name="discountValue" type="text" onblur="calculateDisCount();">
                     </div>
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text">
+                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text" placeholder="00.00" readonly>
                 </div>
 
               </div>
@@ -338,7 +338,11 @@ function getProjectsList(projectName){
 <!-- Get Project Frequency Based on project id -->
 <script type="text/javascript">
 function getProjectFrequency(invoiceFrequency){
-	var projectId = $("#projectId").val();
+	var projectId = null;
+	projectId = $("#projectId").val();
+	if(projectId == null){
+	projectId = '${projectId}';
+	}
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
@@ -427,26 +431,30 @@ function populateInlineItemsGrid(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow">';
+    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
     	 result = result +'<option>Sow</option>';
     	 result = result +' </select>';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
-    	 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    	 }else{
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM"  value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	getSow(i,opt.candidateId);
+    	/* getSow(i,opt.candidateId); */
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -458,7 +466,8 @@ function populateInlineItemsGrid(data){
     result = result +' </tbody>';
     result = result +' </table>';
     $("#tableBody").empty();
-    $("#tableBody").append(result)
+    $("#tableBody").append(result);
+    maskme();
     
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
@@ -520,7 +529,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow">';
+    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
     	 result = result +'<option>Sow</option>';
     	 result = result +' </select>';
     	 result = result +'</div>';
@@ -528,22 +537,22 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
     	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	getSow(i,opt.candidateId);
+    	/* getSow(i,opt.candidateId,opt.contractId); */
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -556,7 +565,7 @@ function populateInlineItemsGrid1(data){
     result = result +' </table>';
     $("#tableBody").empty();
     $("#tableBody").append(result)
-    
+    maskme();
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
 			dateFormat : 'dd-mm-yy',
@@ -577,30 +586,39 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("bottomGrid").style.display="block";
 	document.getElementById("lineItemAddRows").style.display="block";
 	document.getElementById("tableBody").style.display="block";
+	
     addTaxDivs();
 }
 </script>
 
 <!-- Get contract sow between client and the associate -->
-  <script>
-  function getSow(rowId,candidateId){
-	 /*  var candidateId = $('#'+rowId+'candidate').val(); */
-	  var orgRelationId = $("#clientOrgRelationId").val();
+ <!-- <script>
+  function getSow(id,candidateId,opt,contractId){
+	 /*  var candidateId = $('#'+id+'candidate').val(); */
+	  var orgRelationId = $("#vendorOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 	        success: function(data) {
+	        	var result = "";
+	        	result = result + "<option value='' >select sow</option>"
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
 		        	 for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		$('#'+rowId+'sow').empty();
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
-			        		$('#'+id+'rate').val(opt.billingAmount);
-			        		calculateTotalAmount(id);
+			        		var selected = '';
+			        		
+			        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+			        			selected = 'selected';
+			        		} 
+			        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
 					} 
+		        	 $('#'+id+'sow').empty();
+		        	 $('#'+id+'sow').append(result);
+		        	 /*$ ('#'+id+'rate').val(opt.billingAmount);
+		        		calculateTotalAmount(id); */
 	        	}else{
 	        		
 	        	}
@@ -608,12 +626,32 @@ function populateInlineItemsGrid1(data){
 	        
 	    });
   }
+  </script> -->
   
-  </script>
+  
+  <script>
+function getSowRate(id){
+	var contractId = $("#"+id+'sow').val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "GET",
+    	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
+        success: function(data) {
+        	 if(data != null && data != ''){
+        		var json = JSON.parse(data);
+	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 calculateTotalAmount(id);
+        	} 
+        },
+        
+    });
+}
+</script>
   
   <!-- calculating row total with rate and total hours -->
   <script>
   function calculateTotalAmount(rowId){
+	 totalHoursCalculateAmount(rowId);
 	 var totalHours =  $('#'+rowId+'totalHours').val();
 	 var rate =  $('#'+rowId+'rate').val();
 	 if(totalHours != ''){
@@ -630,10 +668,168 @@ function populateInlineItemsGrid1(data){
 	 }
 	 calculateSum();
 	 
+	 
   }
   
   </script>
-	
+  
+  
+  <script>
+  function totalHoursCalculateAmount(rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var totalHours = $("#"+rowId+"totalHours").val();
+	     var split = totalHours.split(':');
+	     var hours = split[0];
+ 	     var minute = split[1];
+ 	     
+ 	     var hours1 = hours.charAt(0);
+		 var hours2 = hours.charAt(1);
+		 var hours3 = hours.charAt(2);
+		 var min1 = minute.charAt(0);
+		 var min2 = minute.charAt(1);
+		
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+				 calAddRowAmount("00"+hours1,"00",rowId); 
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min1);
+				 calAddRowAmount("00"+hours1,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min2);
+				 calAddRowAmount("00"+hours1,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours1+":"+minute);
+				 calAddRowAmount("00"+hours1,minute,rowId);
+			 }
+		 }
+		 else if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+				 calAddRowAmount("00"+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min1);
+				 calAddRowAmount("00"+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min2);
+				 calAddRowAmount("00"+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours2+":"+minute);
+				 calAddRowAmount("00"+hours2,minute,rowId);
+			 }
+		 }
+		 else if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+				 calAddRowAmount("00"+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min1);
+				 calAddRowAmount("00"+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min2);
+				 calAddRowAmount("00"+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours3+":"+minute);
+				 calAddRowAmount("00"+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":00");
+				 calAddRowAmount("0"+hours1+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":"+minute);
+				 calAddRowAmount("0"+hours1+hours2,minute,rowId);
+			 }
+			
+		 }
+		 else if(isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":00");
+				 calAddRowAmount("0"+hours2+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":"+minute);
+				 calAddRowAmount("0"+hours2+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":00");
+				 calAddRowAmount("0"+hours1+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":"+minute);
+				 calAddRowAmount("0"+hours1+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":00");
+				 calAddRowAmount(hours,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min1);
+				 calAddRowAmount(hours,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min2);
+				 calAddRowAmount(hours,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val(hours+":"+minute);
+				 calAddRowAmount(hours,minute,rowId);
+			 }
+		 }
+  }
+  
+  function calAddRowAmount(hours,minute,rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var split = hours.split(':');
+	  var splitHours = split[0];
+	  var hourminits = splitHours * 60;
+		 var finalmin = parseInt(hourminits) + parseInt(minute);
+	     var perMinit = rate / 60;
+	     var totlalAmount = (perMinit * finalmin);
+	     $('#'+rowId+'amount').empty();
+	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
+	     calculateSum();
+  }
+  </script>
 	<!-- calculating sub total with all row total amount -->
 <script>
 function calculateSum(){
@@ -653,12 +849,12 @@ function calculateSum(){
 	  $("#grandTotal").val(sum.toFixed(2));
 	  $("#afterDiscountTotal").val(sum.toFixed(2));
 	  calculateDisCount();
-	  
+	  calculateTaxDiscount();
 	  /* =====================  After adding the rows calculate the tax start  ===================== */
-	  var maxTaxRowNum = $("#maxTaxRowNum").val();
+	  /* var maxTaxRowNum = $("#maxTaxRowNum").val();
 		var afterDiscountTotal = $("#afterDiscountTotal").val();
 		
-		for(var i=0; i<maxTaxRowNum; i++){
+		for(var i=1; i<maxTaxRowNum; i++){
 			if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 				var taxType = $("#"+i+"taxdiscountType").val();
 			    var taxValue = $("#"+i+"taxdiscountvalue").val();
@@ -688,7 +884,7 @@ function calculateSum(){
 		}
 		
 		var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-		 $("#grandTotal").val(grandTotal.toFixed(2));
+		 $("#grandTotal").val(grandTotal.toFixed(2)); */
 }
 	
 </script>
@@ -714,8 +910,8 @@ function calculateDisCount(){
 					 		$("#grandTotal").val(total);
 					 		$("#afterDiscountTotal").val(total.toFixed(2));
 					 	 }
-
-					 	 var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+					 	 calculateTaxDiscount();
+					 	/*  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 						  var afterDiscountTotal = $("#afterDiscountTotal").val();
 						  
 						   for(var i=0; i< maxRowNum; i++){
@@ -733,7 +929,7 @@ function calculateDisCount(){
 						 	          $("#grandTotal").val(total.toFixed(2));
 						             }
 						           
-						   } 
+						   }  */
 }
 }
 </script>
@@ -745,13 +941,14 @@ function calculateDisCount(){
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
 		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='REPLACEROWIDtaxType' id='REPLACEROWIDtaxType'>
+		         <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  </div>
 	 </div>
 </div>
 
   <div id="divTaxTd2" style="display: none; float: left;">
 	 <div class="btn-group tblminwidth-75">
-	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType">
+	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType" onchange="calculateTaxDiscount();">
 		 <option value="percentage">Percentage</option>
 		 <option value="flat">Flat</option>
  		  </select>
@@ -857,24 +1054,22 @@ function singleRowTaxDiscount(){
 </script>
 
 <!-- Calculating Tax discount -->
- <script type="text/javascript">
+ 
+<script type="text/javascript">
 function calculateTaxDiscount(){
 	
 	var maxTaxRowNum = $("#maxTaxRowNum").val();
 	var afterDiscountTotal = $("#afterDiscountTotal").val();
 	
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 			var taxType = $("#"+i+"taxdiscountType").val();
 		    var taxValue = $("#"+i+"taxdiscountvalue").val();
-		    var first = '0';
 		   
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first);
-		    	}else{
-			        $("#"+i+"taxTotal").val(0);
 		    	}
 		    	
 		    }
@@ -888,7 +1083,7 @@ function calculateTaxDiscount(){
 	}
 	
 	var taxGrandTotal = 0;
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
 	}
 	
@@ -896,30 +1091,6 @@ function calculateTaxDiscount(){
 	 $("#grandTotal").val(grandTotal.toFixed(2));
   
 }
-	
-	/* var taxType = $("#"+rowId+"taxdiscountType").val();
-    var taxValue = $("#"+rowId+"taxdiscountvalue").val();
-    var afterDiscountTotal = $("#afterDiscountTotal").val();
-    var grandTotal =  $("#grandTotal").val();
-     var total ='';
-    if(taxType == 'flat'){
-    	 var first=parseFloat(taxValue);
-         var second=parseFloat(grandTotal);
-         total = (first+second);
-         
-        $("#"+rowId+"taxTotal").val(first);
-        $("#grandTotal").val(total);
-    }
-    if(taxType == 'percentage'){
-        var perCentValue = (afterDiscountTotal * taxValue)/100;
-        var first=parseFloat(perCentValue.toFixed(2));
-        var second=parseFloat(grandTotal);
-        total = (first+second);
-        $("#"+rowId+"taxTotal").val(first.toFixed(2));
-        $("#grandTotal").val(total.toFixed(2)); 
-    } */ 
-	
-
 </script>
 
 <!-- Adding Attachment Div Ids -->
@@ -998,16 +1169,7 @@ function saveInvoice(saveType){
 		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=Receivable", 
 		    		        success: function(result) {
 		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     		
-		    		     		/* var invoiceUUID = '${invoiceUUID}';
-		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
-		    		     			location.replace(sourceleadUrl+"/getReceivableInvoiceByUUID?invoiceUUID="+invoiceUUID);
-		    		     		}else{ */
 		    		     			location.replace(sourceleadUrl+"/invoiceList");
-		    		     		/* } */
-		    		     		
-		    		     		
-		    		     		
 		    		        },
 		    		    }); 
 		    	         return true; 
@@ -1087,6 +1249,7 @@ var validationSettings = {
 			changeYear: true, 
 			onSelect : function(selected) {
 					 errInvoiceDate(); 
+					 getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1236,15 +1399,7 @@ function getClients(){
 	function editTax(invoiceTaxList){  
 		for(var i=0; i<invoiceTaxList.length; i++){
 			var opt = invoiceTaxList[i];
-			if(i == 0){
-				$('#'+i+'taxType').val(opt.taxName);
-				$('#'+i+'taxdiscountType').val(opt.taxType);
-				$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-				$('#'+i+'taxTotal').val(opt.taxAmount);
-				$('#'+i+'invoiceTaxId').val(opt.id);
-			 
-			}else{
-				 
+						 
 				 var checkMaxTsRowNum = $("#maxTaxRowNum").val();
 					var tbl = document.getElementById("addTaxTbl");
 					var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
@@ -1280,14 +1435,13 @@ function getClients(){
 					cell4.innerHTML = divTaxTdStr4;
 					/*  maskme();  */
 					
-					$('#'+i+'taxType').val(opt.taxName);
-					$('#'+i+'taxdiscountType').val(opt.taxType);
-					$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-					$('#'+i+'taxTotal').val(opt.taxAmount);
-					$('#'+i+'invoiceTaxId').val(opt.id);
+					$('#'+maxRowNum+'taxType').val(opt.taxName);
+					$('#'+maxRowNum+'taxdiscountType').val(opt.taxType);
+					$('#'+maxRowNum+'taxdiscountvalue').val(opt.taxValue);
+					$('#'+maxRowNum+'taxTotal').val(opt.taxAmount);
+					$('#'+maxRowNum+'invoiceTaxId').val(opt.id);
 					
-			 }
-		}
+ 		}
 	}			
 </script>
 <!-- show existed docs in edit mode -->
@@ -1354,7 +1508,31 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+<script>
+function maskme(){
 
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hhh:Mm"); 
+	
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+}
+</script>
 <script>
 function addTaxDivs(){
 	var result = "";
@@ -1372,43 +1550,72 @@ function addTaxDivs(){
     result = result +'  </thead>';
     result = result +'  <tbody>';
     result = result +'  <tr id="divTaxTsRow0">';
-    result = result +'  <td>';
-    result = result +'  <div class="select-field tblminwidth-75">';
-    result = result +'  <div class="tblminwidth-50">';
-    result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">';
-    result = result +'  <input type="hidden" id="0invoiceTaxId" name="0invoiceTaxId">';
-    result = result +'  </div>';
-    result = result +'  </div>';
-    result = result +'  </td>';
-    result = result +'  <td>';
-    result = result +'  <div class="btn-group tblminwidth-75">';
-    result = result +'  <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">';
-    result = result +'  <option value="percentage">Percentage</option>';
-    result = result +'  <option value="flat">Flat</option>';
-    result = result +'  </select>';
-    result = result +'  </div>';
-    result = result +'  </td>';
-    result = result +'  <td>';
-    result = result +'  <div class="tblminwidth-75">';
-    result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="calculateTaxDiscount();">';
-    result = result +'  </div>';
-    result = result +'  </td>';
-    result = result +'  <td>';
-    result = result +'  <div class="tblminwidth-75">';
-    result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>';
-    result = result +'  </div>';
-    result = result +'  </td>';
-    result = result +'  <td>';
-    result = result +'  <span class="text-danger"><i class="fa fa-remove"></i></span>';
-    result = result +'  </td>';
     result = result +'  </tr>';
     result = result +'  </tbody>';
     result = result +'  </table>';
     result = result +'  </div>';
     $("#lineItemAddRows").empty();
     $("#lineItemAddRows").append(result);
+    maskme();
 }
 </script>
+
+<script> 
+function getPaymentTerms(){
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+			 var json = JSON.parse(data);
+			 for (var i=0; i<json.length; i++)
+				{
+				var repot = json[i];
+				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
+		           		$("#paymentFrequency").val(repot.paymentTerms);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	  getDueDateByFrequency();
+		           	}else{
+		           		$("#paymentFrequency").val('');
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	if(repot.billingAddress != null && repot.billingAddress != '' && repot.billingAddress != 'undefined'){
+		           		$("#billingAddress").val(repot.billingAddress);
+		           	}else{
+		           		$("#billingAddress").val('');
+		           	}
+				}
+			
+		}
+	});
+}
+</script>
+<script>
+function getDueDateByFrequency(){
+	 var invoiceDate = document.getElementById("invoiceDate").value;
+	 var paymentFrequency = document.getElementById("paymentFrequency").value;
+	
+	 if(paymentFrequency){
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			success :function(dueDateStr) {
+				
+				$("#dueDate").val(dueDateStr);
+				$("#invoiceLoading").removeAttr("style");
+			}
+		});
+		
+	}else{
+		$("#dueDate").val('');
+	}
+}
+</script> 
 <script>
 function flushValues(){
 	$("#invoiceId").val('');

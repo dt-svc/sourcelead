@@ -64,7 +64,8 @@ function cancel(){
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
 				              <div class="col-md-9 select-field" id="errClient">
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();" data-validation="required" field-name="Client">
+
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
 				              </div>
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -98,8 +99,7 @@ function cancel(){
 						<div class="form-group">
 							<label class="col-md-3">Payment terms</label>
 							<div class="col-md-9" id="errPayment">
-								<select class="chosen-select form-control" id="paymentFrequency"
-									name="paymentFrequency">
+								<select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" onchange="getDueDateByFrequency();">
 									<option value="">Select frequency</option>
 									<option value="10 days">10 days</option>
 									<option value="15 days">15 days</option>
@@ -140,7 +140,7 @@ function cancel(){
 						<button type="button" class="btn btn-sm btn-success ml"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml"
-							onClick="javascript:location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+							onClick="javascript:location.href = '<c:url value='/invoiceList'/>'">Cancel</button>
 					</div>
 				</footer>
 			</div>
@@ -296,7 +296,7 @@ function cancel(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
@@ -328,35 +328,6 @@ function cancel(){
          result = result +'  </thead>';
          result = result +'  <tbody>';
          result = result +'  <tr id="divTaxTsRow0">';
-         result = result +'  <td>';
-         result = result +'  <div class="select-field tblminwidth-75">';
-         result = result +'  <div class="tblminwidth-50">';
-         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">';
-         result = result +'  <input type="hidden" id="0invoiceTaxId" name="0invoiceTaxId">';
-         result = result +'  </div>';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <div class="btn-group tblminwidth-75">';
-         result = result +'  <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">';
-         result = result +'  <option value="percentage">Percentage</option>';
-         result = result +'  <option value="flat">Flat</option>';
-         result = result +'  </select>';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <div class="tblminwidth-75">';
-         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="calculateTaxDiscount();">';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <div class="tblminwidth-75">';
-         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <span class="text-danger"><i class="fa fa-remove"></i></span>';
-         result = result +'  </td>';
          result = result +'  </tr>';
                          
          result = result +'  </tbody>';
@@ -371,6 +342,7 @@ function cancel(){
                    result = result +'  </div>';
                    $("#lineItemAddRows").empty();
                    $("#lineItemAddRows").append(result);
+                   maskme();
 		
 	}
 	
@@ -707,16 +679,6 @@ function cancel(){
 		for(var i=0; i<invoiceTaxList.length; i++){
 			 
 			var opt = invoiceTaxList[i];
-			
-			if(i == 0){
-				
-				$('#'+i+'taxType').val(opt.taxName);
-				$('#'+i+'taxdiscountType').val(opt.taxType);
-				$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-				$('#'+i+'taxTotal').val(opt.taxAmount);
-				$('#'+i+'invoiceTaxId').val(opt.id);
-			 
-			}else{
 				 
 				 var checkMaxTsRowNum = $("#maxTaxRowNum").val();
 					var tbl = document.getElementById("addTaxTbl");
@@ -753,13 +715,12 @@ function cancel(){
 					cell4.innerHTML = divTaxTdStr4;
 					maskme();
 					
-					$('#'+i+'taxType').val(opt.taxName);
-					$('#'+i+'taxdiscountType').val(opt.taxType);
-					$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-					$('#'+i+'taxTotal').val(opt.taxAmount);
-					$('#'+i+'invoiceTaxId').val(opt.id);
+					$('#'+maxRowNum+'taxType').val(opt.taxName);
+					$('#'+maxRowNum+'taxdiscountType').val(opt.taxType);
+					$('#'+maxRowNum+'taxdiscountvalue').val(opt.taxValue);
+					$('#'+maxRowNum+'taxTotal').val(opt.taxAmount);
+					$('#'+maxRowNum+'invoiceTaxId').val(opt.id);
 					
-			 }
 		}
 	}			
 </script>
@@ -801,8 +762,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"sdate-input");
+						dt.setDate(dt.getDate() + 1);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			 	  }
 			    });
 			
@@ -810,8 +773,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"edate-input");
+						dt.setDate(dt.getDate() - 1);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			 	  }
 			    });
 			
@@ -862,10 +827,6 @@ function cancel(){
  		$("body").css('overflow-y', 'auto')
 	}
   </script>
-
-
-
-
 
 
 <script>
@@ -934,7 +895,7 @@ function cancel(){
 	                    	 
 	                    	 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
+	                    	 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
 	                    	 result = result +'<td>'+associateName+'</td>';
 	                    	 result = result +'<td>'+opt.email+'</td>';
 	                    	 result = result +'<td>'+mobilephone+'</td>';
@@ -1093,44 +1054,136 @@ function pagination(){
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
 		
-		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours1+":00");
-			calAddRowAmount("00"+hours1,"00",rowId);
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+				 calAddRowAmount("00"+hours1,"00",rowId); 
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min1);
+				 calAddRowAmount("00"+hours1,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min2);
+				 calAddRowAmount("00"+hours1,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours1+":"+minute);
+				 calAddRowAmount("00"+hours1,minute,rowId);
+			 }
 		 }
-		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours2+":00");
-			calAddRowAmount("00"+hours2,"00",rowId);
+		 else if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+				 calAddRowAmount("00"+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min1);
+				 calAddRowAmount("00"+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min2);
+				 calAddRowAmount("00"+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours2+":"+minute);
+				 calAddRowAmount("00"+hours2,minute,rowId);
+			 }
 		 }
-		 if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3) && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("00"+hours3+":00");
-			calAddRowAmount("00"+hours3,"00",rowId);
+		 else if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+				 calAddRowAmount("00"+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min1);
+				 calAddRowAmount("00"+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min2);
+				 calAddRowAmount("00"+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours3+":"+minute);
+				 calAddRowAmount("00"+hours3,minute,rowId);
+			 }
 		 }
-		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("000:"+min1+"0");
-			calAddRowAmount("000",min1+"0",rowId);
+		 else if(!isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":00");
+				 calAddRowAmount("0"+hours1+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":"+minute);
+				 calAddRowAmount("0"+hours1+hours2,minute,rowId);
+			 }
+			
 		 }
-		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val("000:0"+min2);
-			calAmount("000","0"+min2,rowId);
+		 else if(isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":00");
+				 calAddRowAmount("0"+hours2+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":"+minute);
+				 calAddRowAmount("0"+hours2+hours3,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":00");
-			calAddRowAmount(hours,"00",rowId);
+		 else if(!isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":00");
+				 calAddRowAmount("0"+hours1+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":"+minute);
+				 calAddRowAmount("0"+hours1+hours3,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min1);
-			calAddRowAmount(hours+":","0"+min1,rowId);
+		 else if(!isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":00");
+				 calAddRowAmount(hours,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min1);
+				 calAddRowAmount(hours,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min2);
+				 calAddRowAmount(hours,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val(hours+":"+minute);
+				 calAddRowAmount(hours,minute,rowId);
+			 }
 		 }
-		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
-			 $("#"+rowId+"totalHours").val(hours+":"+"0"+min2);
-			calAddRowAmount(hours+":","0"+min2,rowId);
-		 }
-		 else if(!isNaN(hours)&& !isNaN(minute)){
-			 calAddRowAmount(hours,minute,rowId);
-		 }
-	    
-	  
+		 
   }
+  
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();
 	  var split = hours.split(':');
@@ -1147,6 +1200,7 @@ function pagination(){
 
 <script>
   function  calTotalamount(rowId,totlalAmount){
+	  
 	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
 	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
 	    var arroundGrand = grandTotal.toFixed(2)
@@ -1194,31 +1248,7 @@ function pagination(){
 		}
    }
    
-   /* =====================  After adding the rows calculate the discount end  ===================== */
-   
-   /* =====================  After adding the rows calculate the tax start  ===================== */
-   
-   var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-   var afterDiscountTotal = $("#afterDiscountTotal").val();
-   
-	    for(var i=0; i< maxRowNum; i++){
-	         var taxType = $("#"+i+"taxdiscountType").val();
-	         var taxValue = $("#"+i+"taxdiscountvalue").val();
-	         var taxTotal = $("#"+i+"taxTotal").val();
-	            
-              if(taxValue == '' && taxTotal==''){
-            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-              }else{
-            	  var tot = $("#grandTotal").val();
-  	            var first=parseFloat(tot);
-  	             var second=parseFloat(taxTotal); 
-  	             var total  = (first+second);
-  	           $("#grandTotal").val(total.toFixed(2));
-              }
-	            
-	    }
-   /* =====================  After adding the rows calculate the tax end  ===================== */
-   
+	    calculateTaxDiscount();
 	    
   }
   </script>
@@ -1234,7 +1264,7 @@ function calculateDiscount(){
 			total = subTotal-discountValue;
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
@@ -1247,9 +1277,9 @@ function calculateDiscount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue);
+			$("#discountTotal").val(perCentValue.toFixed(2));
 			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
@@ -1257,102 +1287,12 @@ function calculateDiscount(){
 		}
 		
 	}
-	
-	/* var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-	if(maxRowNum > 1){
-	    for(var i=1;i<=maxRowNum;i++){
-	         document.getElementById("divTaxRow"+i+"").style.display="none";
-	    }
-	    $("#grandTotal").val(subTotal);
-	} 
-	 */
 	 
-	  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-	  var afterDiscountTotal = $("#afterDiscountTotal").val();
-	  
-	   for(var i=0; i< maxRowNum; i++){
-	        var taxType = $("#"+i+"taxdiscountType").val();
-	        var taxValue = $("#"+i+"taxdiscountvalue").val();
-	        var taxTotal = $("#"+i+"taxTotal").val();
-	           
-	             if(taxValue == '' && taxTotal==''){
-	             $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-	             }else{
-	           	 var tot = $("#grandTotal").val();
-	 	           var first=parseFloat(tot);
-	 	            var second=parseFloat(taxTotal); 
-	 	            var total  = (first+second);
-	 	          $("#grandTotal").val(total.toFixed(2));
-	             }
-	           
-	   } 
+	 calculateTaxDiscount();
 	
 	
 }
 </script>
-<!-- 
-<script>
-  function singleRowTotalhour(){
-	     var rate = $("#0rate").val();
-	     var totalHours = $("#0totalHours").val(); 
-	     var split = totalHours.split(':');
-	     var hours = split[0];
- 	     var minute = split[1];
- 	     
- 	     var hours1 = hours.charAt(0);
- 		 var hours2 = hours.charAt(1);
- 		 var min1 = minute.charAt(0);
- 		 var min2 = minute.charAt(1);
- 		
- 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("0"+hours1+":00");
- 			calAmount("0"+hours1,"00");
- 		 }
- 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("0"+hours2+":00");
- 			calAmount("0"+hours2,"00");
- 		 }
- 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("00:"+min1+"0");
- 			calAmount("00",min1+"0");
- 		 }
- 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
- 			$("#0totalHours").val("00:0"+min2);
- 			calAmount("00","0"+min2);
- 		 }
- 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val(hours+":00");
- 			calAmount(hours,"00");
- 		 }
- 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val(hours+":"+"0"+min1);
- 			calAmount(hours+":","0"+min1);
- 		 }
- 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
- 			$("#0totalHours").val(hours+":"+"0"+min2);
- 			calAmount(hours+":","0"+min2);
- 		 }
- 		 else if(!isNaN(hours)&& !isNaN(minute)){
- 			calAmount(hours,minute);
- 		 }
- 	     
-		
-  }
-  function calAmount(hours,minute){
-	  var rate = $("#0rate").val();
-	     var parshours = parseInt(hours);
-	     var hourminits = parshours * 60;
-		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit =   rate / 60;
-	     var singleRowTotlalAmount = (perMinit * finalmin).toFixed(2);
-	     $('#0amount').val(singleRowTotlalAmount);
-	     $('#inoviceTotal').val(singleRowTotlalAmount);
-	     $("#hiddenTotal").val(singleRowTotlalAmount);
-	     $("#grandTotal").val(singleRowTotlalAmount);
-	     $("#afterDiscountTotal").val(singleRowTotlalAmount); 
-  }
-  </script>
-   -->
 
 
 
@@ -1427,8 +1367,7 @@ function calculateDiscount(){
 
 <div id="divTaxTd2" style="display: none; float: left;">
 	<div class="btn-group tblminwidth-75">
-		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType"
-			name="REPLACEROWIDtaxdiscountType">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
 			<option value="percentage">Percentage</option>
 			<option value="flat">Flat</option>
 		</select>
@@ -1524,18 +1463,15 @@ function calculateTaxDiscount(){
 	var maxTaxRowNum = $("#maxTaxRowNum").val();
 	var afterDiscountTotal = $("#afterDiscountTotal").val();
 	
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 			var taxType = $("#"+i+"taxdiscountType").val();
 		    var taxValue = $("#"+i+"taxdiscountvalue").val();
-		    var first = '0';
 		   
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first);
-		    	}else{
-			        $("#"+i+"taxTotal").val(0);
 		    	}
 		    	
 		    }
@@ -1549,7 +1485,7 @@ function calculateTaxDiscount(){
 	}
 	
 	var taxGrandTotal = 0;
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
 	}
 	
@@ -1558,30 +1494,6 @@ function calculateTaxDiscount(){
   
 }
 </script>
-
-<!-- <script type="text/javascript">
-function singleRowTaxDiscount(){
-	var taxType = $("#0taxdiscountType").val();
-    var taxValue = $("#0taxdiscountvalue").val();
-    var afterDiscountTotal = $("#afterDiscountTotal").val();
-   
-     var total ='';
-    if(taxType == 'flat'){
-        total = parseInt(afterDiscountTotal) + parseInt(taxValue);
-        $("#0taxTotal").val(taxValue);
-        $("#grandTotal").val(total);
-    }
-    if(taxType == 'percentage'){
-        var perCentValue = (afterDiscountTotal * taxValue)/100;
-        var first=parseFloat(perCentValue.toFixed(2));
-        var second=parseFloat(afterDiscountTotal);
-        total = (first+second).toFixed(2);
-        $("#0taxTotal").val(first);
-        $("#grandTotal").val(total);
-    }   
-}
-</script> -->
-
 
 
 <!-- ********************************************* Add Rows AddTax Table functionality end  ************************************************************ -->
@@ -1596,6 +1508,7 @@ function singleRowTaxDiscount(){
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
+					getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1747,8 +1660,62 @@ function getClientContacts(clientContactId){
 	}
 </script>
 
-
-
+<script> 
+function getPaymentTerms(){
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+			 var json = JSON.parse(data);
+			 for (var i=0; i<json.length; i++)
+				{
+				var repot = json[i];
+				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
+		           		$("#paymentFrequency").val(repot.paymentTerms);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	  getDueDateByFrequency();
+		           	}else{
+		           		$("#paymentFrequency").val('');
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	if(repot.billingAddress != null && repot.billingAddress != '' && repot.billingAddress != 'undefined'){
+		           		$("#billingAddress").val(repot.billingAddress);
+		           	}else{
+		           		$("#billingAddress").val('');
+		           	}
+				}
+			
+		}
+	});
+}
+</script>
+<script>
+function getDueDateByFrequency(){
+	 var invoiceDate = document.getElementById("invoiceDate").value;
+	 var paymentFrequency = document.getElementById("paymentFrequency").value;
+	
+	 if(paymentFrequency){
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			success :function(dueDateStr) {
+				
+				$("#dueDate").val(dueDateStr);
+				$("#invoiceLoading").removeAttr("style");
+			}
+		});
+		
+	}else{
+		$("#dueDate").val('');
+	}
+}
+</script> 
 
 <script>
 function saveInvoice(saveType){
@@ -1808,16 +1775,7 @@ function saveInvoice(saveType){
 		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=Receivable", 
 		    		        success: function(result) {
 		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     		
-		    		     		var invoiceUUID = '${invoiceUUID}';
-		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
-		    		     			location.replace(sourceleadUrl+"/getReceivableInvoiceByUUID?invoiceUUID="+invoiceUUID);
-		    		     		}else{
 		    		     			location.replace(sourceleadUrl+"/invoiceList");
-		    		     		}
-		    		     		
-		    		     		
-		    		     		
 		    		        },
 		    		    }); 
 		    	         return true; 

@@ -30,14 +30,14 @@ color:#337ab7 !important;
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
-          <div class="onboardcreateButtons"> <a href="javascript:void(0)"  class="btn btn-primary btn-sm" title="Create payables" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Payables</a>
+          <div class="onboardcreateButtons"> <a href="javascript:void(0)"  class="btn btn-primary btn-sm" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>
            <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getPayableInvoiceList();customInvoiceList();">
-                <option value="month">1 Month</option>
-                <option value="twomonths">2 Months</option>
-                <option value="threemonths">3 Months</option>
-                <option value="sixmonths">6 Months</option>
-                <option value="oneyear">1 Year</option>
+                <option value="month">Last 30 days</option>
+                <option value="twomonths">Last 60 Days</option>
+                <option value="threemonths">Last 90 days</option>
+                <option value="sixmonths">Last 180 days</option>
+                <option value="oneyear">Last 365 days</option>
                 <option value="custom">Custom</option>
               </select>
               
@@ -116,11 +116,11 @@ color:#337ab7 !important;
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt" style="overflow-x:auto;">
+              <div class="timesheet_out mt">
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Invoice</span><i class="glyphicon glyphicon-play" ></i>|
+                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                         <div class="approved_pop" id="invoiceTabOne">
                           <ul>
                             <li>
@@ -131,18 +131,18 @@ color:#337ab7 !important;
                               <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getPayableInvoiceList();">
                               <label for="onboard2">Sent</label>
                             </li>
-                            <!-- <li>
-                              <input type="checkbox" id="onboard3" name="invoiceStatus">
-                              <label for="onboard3">Accepted</label>
+                            <li>
+                              <input type="checkbox" id="" value="RECEIVED" name="invoiceStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Received</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard4" name="invoiceStatus">
-                              <label for="onboard4">Rejected</label>
+                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Accepted</label>
                             </li>
                             <li>
-                              <input type="checkbox" id="onboard5" name="invoiceStatus">
-                              <label for="onboard5">On-Hold</label>
-                            </li> -->
+                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Rejected</label>
+                            </li>
                           </ul>
                         </div>
                       </li>
@@ -150,21 +150,21 @@ color:#337ab7 !important;
                         <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
                         <div class="approved_pop" id="paymentTabOne">
                           <ul>
-                            <li>
-                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getPayableInvoiceList();">
-                              <label for="onboard1">Unpaid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
-                              <label for="onboard2">Partial Paid</label>
-                            </li>
-                            <li>
+                             <li>
                               <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
                               <label for="onboard3">Paid</label>
+                            </li>
+                             <li>
+                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getPayableInvoiceList();">
+                              <label for="onboard2">Partially Paid</label>
                             </li>
                             <li>
                               <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getPayableInvoiceList();">
                               <label for="onboard4">OverDue</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getPayableInvoiceList();">
+                              <label for="onboard1">Unpaid</label>
                             </li>
                           </ul>
                         </div>
@@ -283,7 +283,7 @@ color:#337ab7 !important;
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <h4 class="ml">Filter</h4>
-                    <div class="remove_search pull-right">
+                    <div class="remove_search pull-right hidden">
                       <input placeholder="search" type="text">
                     </div>
                   </div>
@@ -353,8 +353,8 @@ color:#337ab7 !important;
    <!-- Add invoice Popup -->
 		   <div class="addcandidate-popup">
 		    <div class="row">
-		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-		      <div class="col-md-4 mt25">
+		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+		      <div class="col-md-5 mt25">
 		        <div class="small-widget bgGreen">
 		            <a  href="<c:url value='/createPayables'/>" title="Create custom invoice">
 		          <div class="clearfix mb10"> 
@@ -364,7 +364,7 @@ color:#337ab7 !important;
 		          </div>
 		      </div>
 		
-		        <div class="col-md-4 mt25">
+		        <div class="col-md-5 mt25">
 		          <div class="small-widget bg-yellow"> 
 		          <a href="<c:url value='/createInvoiceProjectPayableBased'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
@@ -731,7 +731,13 @@ function getPayableInvoiceList(){
         		result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					
+					if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					}else{
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
+					}
+					
 
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
@@ -767,7 +773,7 @@ function getPayableInvoiceList(){
 				
 				result = result +'         <td> ';
 				
-				if(report.invoiceType=="Payables"){
+				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
 					}else{
@@ -777,12 +783,15 @@ function getPayableInvoiceList(){
 							if(report.invoiceStatus == "Rejected"){
 								result = result +'           <span class="text-danger successBtn primary clearfix" >Rejected</span> </td>          ';	
 							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 							}
 							
 						}
 					}
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 				}
+				
 				if(report.invoiceType=="Receivable"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
@@ -802,18 +811,16 @@ function getPayableInvoiceList(){
 		    $("#invoiceList").append(result);
 		    
 		    $("#draftInvoiceCount").html(draftCount);
-		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
 		    		    
 		    $("#paidInvoiceCount").html(paidCount);
-		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
 		    
 		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
 		    
 		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
-		    
-		    
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
 		    
 		    invoicePagination()
         },
@@ -830,12 +837,14 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"aaSorting": [[0,'desc']],
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $('#invoiceListPagination').wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <script>
@@ -846,7 +855,7 @@ function acceptedInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     });  
@@ -861,7 +870,7 @@ function rejectInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     }); 

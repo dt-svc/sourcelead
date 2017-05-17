@@ -90,13 +90,13 @@ public class Html2PdfUtil {
 	
 	 private String replacePlaceHolders(String templateBody, Contracts contracts, OrgLocations orgLocation, Org org) throws Exception {
 	        
-	        String orgName = "";
-	        if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+	        String orgName = contracts.getContractOrgLocationId().getOrg().getOrgName();
+	        /*if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getLocationId().getOrg().getOrgName();
 	        }
 	        else if(contracts.getOrgRelations().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getResponderLocationId().getOrg().getOrgName();
-	        }
+	        }*/
 	        
 	         Pattern logEntry = Pattern.compile("\\[(.*?)\\]");
 	            Matcher matchPattern = logEntry.matcher(templateBody);
@@ -109,9 +109,9 @@ public class Html2PdfUtil {
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client Contact]") || matchPattern.group().equalsIgnoreCase("[Vendor Contact]")){
 	                    matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Location]")){
-	                    matchPattern.appendReplacement(sb, orgLocation.getCountry());
+	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getCountry());
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Name]")){
-	                    matchPattern.appendReplacement(sb, org.getOrgName());
+	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrg().getOrgName());
 		            }else if(matchPattern.group().equalsIgnoreCase("[Associate Name]")){
 	                    matchPattern.appendReplacement(sb, org.getOrgName());
 	                }
@@ -152,7 +152,13 @@ public class Html2PdfUtil {
 		            	if(null != contracts.getStateJurisdiction()){
 		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
-		            }  
+		            } 
+		            else if(matchPattern.group().equalsIgnoreCase(" [Billing Cycle]")){
+		            	if(null != contracts.getBillingPer()){
+		            		matchPattern.appendReplacement(sb, contracts.getBillingPer());
+		            	}
+		            } 
+	               
 	            }
 	            matchPattern.appendTail(sb);
 	        return sb.toString();

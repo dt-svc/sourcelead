@@ -114,7 +114,8 @@ overflow-x: auto;
 		                  <div class="clearfix">
 		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}">${cntry.name}</option>
+					                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+ 
 				             </c:forEach>
 				           </select>
 		                  </div>
@@ -252,8 +253,9 @@ overflow-x: auto;
             </div>
             <div class="row form-footer mt">
               <div class="pull-right mr"> 
-              	<input type="button" value="Search" id="search_client" onclick="searchClient();" class="btn btn-sm btn-primary"/>
-              	<input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+              	<input type="button" value="Search" id="search_client" onclick="searchClient();" class="btn btn-sm btn-success"/>
+              	   <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
+              	<!-- <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/> -->
             </div>
           </div>
           </form:form>
@@ -431,7 +433,27 @@ function getClientUniversalSearchList(searchValue,searchType){
 }
 </script>
 
-
+<script>
+function clearSearch(){
+	document.getElementById("clientlist_form").reset();
+	$('#anyOfKeyword').val('').trigger('chosen:updated');
+	$('#allKeywords').val('').trigger('chosen:updated');
+	$('#excludeKeyWord').val('').trigger('chosen:updated');
+	$('#orgNameAdvanced').val('').trigger('chosen:updated');
+	/* $('#countrySearch').val('').trigger('chosen:updated'); */
+	$('#stateSearch').val('').trigger('chosen:updated');
+	$('#citySearch').val('').trigger('chosen:updated');
+	$('#tierAdvanced').val('').trigger('chosen:updated');
+	$('#createdByAdvanced').val('').trigger('chosen:updated');
+	$('#emailAdvanced').val('').trigger('chosen:updated');
+	$('#ownerAdvanced').val('').trigger('chosen:updated');
+	$('#orgAdvanced').val('').trigger('chosen:updated');
+	$('#statusAdvanced').val('').trigger('chosen:updated');
+	$('#invitationAdvanced').val('').trigger('chosen:updated');
+	$('#contactNameAdvanced').val('').trigger('chosen:updated');
+	$('#phoneNumberAdvanced').val('').trigger('chosen:updated');
+}
+</script>
 
 <script type="text/javascript">
     	   var config = {
@@ -2203,7 +2225,7 @@ $('#selector').delay(2000).fadeOut('slow');
  
  <script type="text/javascript">	
 	function clearSearchKeys(){
-	 
+	
 	    $("#tierAdvanced").val('').trigger("chosen:updated");
 	    $("#phoneNumberAdvanced").val('').trigger("chosen:updated");
 	    $("#ownerAdvanced").val('').trigger("chosen:updated");
@@ -2214,10 +2236,12 @@ $('#selector').delay(2000).fadeOut('slow');
 	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
 	    $("#emailAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+	    $('#createdByAdvanced').val('').trigger('chosen:updated');
+/* 	    $('#countrySearch').val('').trigger('chosen:updated');
+ */	    $('#stateSearch').val('').trigger('chosen:updated');
+	    $('#citySearch').val('').trigger('chosen:updated');
 	    $("#citySearch").empty();
-	    $("#stateSearch").empty();
-	    $("#countrySearch").empty();
-	    $("#countrySearch").val('');
+	   
 	}
 </script>
 

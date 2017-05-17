@@ -1221,8 +1221,8 @@ function cancel(candidateId){
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
 								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}">${cntry.name}</option>
-						                </c:forEach>
+							                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+						              </c:forEach>
 				                 </select>
 							  </div>
 						  </div>
@@ -1307,8 +1307,9 @@ function cancel(candidateId){
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
-                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate(); minMaxExperience();" class="btn btn-sm btn-success"/>
+                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
+                               <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
 				  </div>
@@ -1893,10 +1894,10 @@ function getCities(){
 	    $('#currency').val(''); 
 	    $('#rateType').val(''); 
 	    
-	    $('#country').val(''); 
-	    $("#country").val('').trigger("chosen:updated");
-	    $("#state").empty();
-	    $("#state").val('').trigger("chosen:updated");
+	    /* $('#country').val(''); 
+	    $("#country").val('').trigger("chosen:updated"); */
+	    /* $("#state").empty();
+	    $("#state").val('').trigger("chosen:updated"); */
 	    $("#city").empty();
 	    $("#city").val('').trigger("chosen:updated");
 	    $('#rateType').val(''); 
@@ -2379,7 +2380,7 @@ function minMaxExperience(){
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
-	    $("#country").val('').trigger("chosen:updated");
+	 /*    $("#country").val('').trigger("chosen:updated"); */
 	    $("#state").val('').trigger("chosen:updated");
 	    $("#city").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");
@@ -2399,9 +2400,7 @@ function minMaxExperience(){
 	     $("#excludeKeyWord").empty();
 	     $("#designation").empty();
 	      $("#minRate").val(''); 
-	      $("#country").val(''); 
-	      $("#state").val('');
-	      $("#city").val('');
+	     
 	      
 	     $("#currency").val('');
 	     $('.selectpicker').selectpicker('refresh');

@@ -274,7 +274,7 @@ overflow-x: auto;
                     </div>                	
                 </li>
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
-	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Add Project</a></li>		
 	             </sec:authorize>	
                 <div class="clearfix"></div>
             </ul>

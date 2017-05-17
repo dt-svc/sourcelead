@@ -129,7 +129,7 @@
                   
                 <div class="clearfix"></div>
                 <p><strong>Offboard Details</strong></p>
-				<div class="form-group">
+				<div class="form-group" id="endDateDiv">
                   <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
@@ -169,7 +169,7 @@
                 </div>
                   
                   
-                  <div class="form-group">
+                  <div class="form-group" id="effectiveDateDiv">
                   <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
@@ -700,8 +700,25 @@ function validate_fileupload(fileName)
 			    	 $("#dateOfJoin").val(json['dateOfJoin']);
 			    	 $("#role").val(json['role']);
 			    	 
-			    	 
+			    	 if(json['noticePeriod'] != null && json['noticePeriod'] != '' && json['noticePeriod'] != 'undefined'){
+			    		 $("#noticePeriod").val(json['noticePeriod']);
+				    	 $('#noticePeriod').trigger("chosen:updated");
+				    	 document.getElementById("workInNotice").style.display="";
+			    	 }else{
+			    		 $("#noticePeriod").val('');
+				    	 $('#noticePeriod').trigger("chosen:updated");
+				    	 document.getElementById("workInNotice").style.display="none";
+			    	 }
 		        	
+			    	 $("#reason").val('');
+			    	 $('#reason').trigger("chosen:updated");
+			    	 
+			    	 $("#endDate").val('');
+			    	 $("#effectiveDate").val('');
+			    	 $("#explanation").val('');
+			    	 $("#offboardingTemplate").val('');
+			    	 $('#offboardingTemplate').trigger("chosen:updated");
+			    	 
 			    }
 		   });
 	  }
@@ -826,16 +843,48 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  minDate: 0 ,
+	  	  onSelect : function(selected) {
+	  		addValidClass();
+	  	 }
 	  });
 	  
 	  $('#effectiveDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  minDate: 0  ,
+	  	  onSelect : function(selected) {
+			addValidClass();
+			}
 	  });
 	  
   } );
 </script>
+
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		
+		 var endDate = document.getElementById("endDate").value;
+		 if(endDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var effectiveDate = document.getElementById("effectiveDate").value;
+		 if(effectiveDate){
+			 $('#effectiveDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+  
 
 <script>
 function loadOffBoardingTemplates(offboardTemplateId){
@@ -955,7 +1004,6 @@ function loadOffBoardingTemplates(offboardTemplateId){
  <script>
  function loadOffboardingUser(offBoardingUUID){
 	 
-	 
 	 if(offBoardingUUID == null && offBoardingUUID == "" && offBoardingUUID =="undefined"){
 		 offBoardingUUID = document.getElementById("candidateOffBoardUUID").value;
 	 }
@@ -1043,6 +1091,8 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	        },
 	    });
 	 }
+	 
+	 $("#offboardTasksList").empty();
  }
  </script>
  
@@ -1178,13 +1228,12 @@ function getOffboardingCheckList(){
 		        result = result + '</div>';
 		        result = result + '</div>';
 		        result = result + '</div>';
-		        
-		        result = result + '<div class="clearfix mb row">';
+		       
 	           
 	           result = result + '<div id="form-fields">';
 	           result = result + '</div>';
-	           result = result + '<div class="form-footer clearfix row mt">';
-	           
+	           result = result + '<div class="form-footer clearfix mt">';
+	           result = result + '<div class="clearfix"></div>';
 	           result = result + '<div class="pull-right mr">';
 	           
 	           result = result +"<input type='button' value='Save' id='save_checkList_button'  onclick='createOffboardCheckList(\"save\");' class='btn btn-sm btn-success'>";
@@ -1658,11 +1707,19 @@ function saveOffboardTask(){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
+	        var tasksIds = document.getElementsByName("savedTemplateTask");
+	    	var tasks = '';
+	    	for(var i=0; i < tasksIds.length; i++){
+	    		tasks = tasks+tasksIds[i].value+",";
+	    	}
+	    	
+	    	tasks = tasks.substring(0, tasks.length - 1);
+	        
 	       
 	        $("#offboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	 url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&tasks="+tasks,
 		        success: function(result) {
 		        	if(result == 'success'){
 		        		$("#offboardtasksLoading").removeAttr("style");

@@ -59,6 +59,15 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (Arrays.asList(invoiceTokens).contains("SENT")) {
 			subQuery = subQuery + "invoice.invoiceStatus = 'SENT' or ";
 		}
+		if (Arrays.asList(invoiceTokens).contains("RECEIVED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Received' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("ACCEPTED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Accepted' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Rejected' or ";
+		}
 		
 		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
 			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
@@ -103,7 +112,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts> contractsList = null;
-		String query = "from Contracts contract left join fetch contract.requirementSubmission submission where contract.orgLocationId.id = :orgLocationId and "
+		String query = "from Contracts contract left join fetch contract.requirementSubmission submission left join fetch submission.requirement where contract.orgLocationId.id = :orgLocationId and "
 				+ "contract.orgRelations.id = :orgRelationId and submission.candidate.id = :candidateId and contract.contractType = :contractType and contract.templateSubmissionStatus = 'FINALIZED'";
 	     contractsList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setString("contractType", contractType).setCacheable(true).list();
 	  if(null != contractsList){
@@ -178,5 +187,16 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Invoice getInvoicetBySelfJoinInvoiceId(Long parentInvoiceId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> parentInvoice = session.createQuery("from Invoice invoice  where invoice.parentInvoiceId =:parentInvoiceId" ).setLong( "parentInvoiceId", parentInvoiceId ).setCacheable(true).list();
+		if (parentInvoice.size() > 0) {
+			return parentInvoice.get(0);
+		} else {
+			return null;
+		}
+	}
 	 
 }

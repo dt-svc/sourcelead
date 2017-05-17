@@ -33,7 +33,7 @@
 						'</sec:authorize>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client Name:</strong>';
+						result = result + '<strong>Client Name :</strong>';
 						
 						if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
 						result = result + '<span title='+json.orgName+'>'+json.orgName+'</span>';
@@ -42,14 +42,14 @@
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Website:</strong>';
+						result = result + '<strong>Website :</strong>';
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 						result = result + '<span title='+json.webSite+'>'+json.webSite+'</span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 					
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client Country:</strong>';
+						result = result + '<strong>Client Country :</strong>';
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 						}else{
@@ -58,7 +58,7 @@
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client State:</strong>';
+						result = result + '<strong>Client State :</strong>';
 						if(json.state != null && json.state !='' && json.state !='undefined'){
 							result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
 						}else{
@@ -67,7 +67,7 @@
 						result = result + '</div>';
 						
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Client City:</strong>';
+						result = result + '<strong>Client City :</strong>';
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 						}else{
@@ -80,6 +80,33 @@
 						result = result + '<strong>Created By :</strong>';
 						if(json.vendorCreateduserName != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
 							result = result + '<span title='+json.vendorCreateduserName+'>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Address :</strong>';
+						if(json.address != null && json.address !='' && json.address !='undefined'){
+							result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Billing Address :</strong>';
+						if(json.billingAddress != null && json.billingAddress !='' && json.billingAddress !='undefined'){
+							result = result + '<span title="'+json.billingAddress+'">'+json.billingAddress+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span>No Data</span><div class="clearfix"></div>';
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Payment Terms :</strong>';
+						if(json.paymentTerms != null && json.paymentTerms !='' && json.paymentTerms !='undefined' && json.paymentTerms != 'SelectPaymentTerms'){
+							result = result + '<span title="'+json.paymentTerms+'">'+json.paymentTerms+'</span><div class="clearfix"></div>';
 						}else{
 							result = result + '<span>No Data</span><div class="clearfix"></div>';
 						}
@@ -147,6 +174,14 @@
 						var selected4 = '';
 						var selected5 = '';
 						
+						var paymentTerms0 = '';
+						var paymentTerms1 = '';
+						var paymentTerms2 = '';
+						var paymentTerms3 = '';
+						var paymentTerms4 = '';
+						var paymentTerms5 = '';
+						var paymentTerms6 = '';
+						
 						if(json.level == 'Tier-1'){
 								selected1 = 'selected';
 							} 
@@ -166,6 +201,36 @@
 						if(json.level == 'Tier-5'){
 								selected5 = 'selected';
 						}
+						
+						
+						
+						
+					if(json.paymentTerms == '10 days'){
+						paymentTerms1 = 'selected';
+						} 
+					
+					if(json.paymentTerms == '15 days'){
+						paymentTerms2 = 'selected';
+						} 
+					
+					if(json.paymentTerms == '30 days'){
+						paymentTerms3 = 'selected';
+						}
+					
+					if(json.paymentTerms == '45 days'){
+						paymentTerms4 = 'selected';
+					}
+					
+					if(json.paymentTerms == '60 days'){
+						paymentTerms5 = 'selected';
+					}
+					if(json.paymentTerms == '90 days'){
+						paymentTerms6 = 'selected';
+					}
+						
+						
+						
+						
 						
 						 var country = '';
 						 var state = '';
@@ -212,6 +277,7 @@
 								result = result + '<label>City</label>';
 								result = result + '<input type="text" name="clientCity" id="existingCity" value="'+city+'" readonly="readonly">';
 								result = result + '</div> ';
+																							
 						}else{
 								result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 								result = result + '<div class="user_summary_edit_cta">';
@@ -244,6 +310,8 @@
 								result = result + ' </select> ';
 								result = result + '<input type="hidden"  id="existingCity" value="'+city+'" >';
 								result = result + '</div> ';
+								
+								
 						}
 						
 						
@@ -258,6 +326,37 @@
                         result = result + ' <option '+selected5+'>Tier-5</option>';
                         result = result + ' </select>';
                         result = result + ' </div>';   
+                        
+                        result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Address</label>';
+						if(json.address != null && json.address !='' && json.address != 'undefined'){
+						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
+						}else{
+							result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Billing Address</label>';
+						if(json.billingAddress != null && json.billingAddress !='' && json.billingAddress != 'undefined'){
+						result = result + '<textarea id="addressId" name="billingAddress" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.billingAddress+'</textarea>';
+						}else{
+							result = result + '<textarea id="addressId" name="billingAddress" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
+						}
+						result = result + '</div>';
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+                        result = result + ' <label>Payment Terms</label>';
+                        result = result + ' <select id="paymentTermsId" name="PaymentTerm" >';
+                        result = result + ' <option '+paymentTerms0+' selected>SelectPaymentTerms</option>';
+                        result = result + ' <option '+paymentTerms1+'>10 days</option>';
+                        result = result + ' <option '+paymentTerms2+'>15 days</option>';
+                        result = result + ' <option '+paymentTerms3+'>30 days</option>';
+                        result = result + ' <option '+paymentTerms4+'>45 days</option>';
+                        result = result + ' <option '+paymentTerms5+'>60 days</option>';
+                        result = result + ' <option '+paymentTerms6+'>90 days</option>';
+                        result = result + ' </select>';
+                        result = result + ' </div>'; 
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';

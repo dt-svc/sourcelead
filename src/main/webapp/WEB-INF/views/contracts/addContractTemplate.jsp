@@ -19,7 +19,7 @@
   <div class="pull-left">
     <h2>Add Contract Template</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; Add Contract Template</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo; Add Contract Template</div>
 </section>
 
 <!-- <section class="addcontrHead">
@@ -34,7 +34,7 @@
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
            
             <div class="form-group">
-              <label class="col-md-4">Template name<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Template Title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="templateDiv">
                 <input type="text"  id="templateName" name="templateName" value="${contractsTemplate.templateName}"  field-name="Template Name" data-validation="required validate_Space" type="text" class="form-control">
               </div>
@@ -134,6 +134,7 @@
 				 <li onclick="copyToClipboard('text_element34')"><i></i><p class="copyText" id="text_element34">[Payment Term]</li>
 				 <li onclick="copyToClipboard('text_element35')"><i></i><p class="copyText" id="text_element35">[Start Date]</p></li>
 				 <li onclick="copyToClipboard('text_element36')"><i></i><p class="copyText" id="text_element36">[End date]</li>
+				 <li onclick="copyToClipboard('text_element91')"><i></i><p class="copyText" id="text_element36">[Billing Cycle]</li>
 				 <li onclick="copyToClipboard('text_element37')"><i></i><p class="copyText" id="text_element37">[Company Location]</p></li>
                 <li onclick="copyToClipboard('text_element38')"><i></i><p class="copyText" id="text_element38">[Company Name]</p></li>
 			</ul>
@@ -149,6 +150,9 @@
 				 <li onclick="copyToClipboard('text_element47')"><i></i><p class="copyText" id="text_element47">[Overtime]</li>
 				 <li onclick="copyToClipboard('text_element48')"><i></i><p class="copyText" id="text_element48">[Payment Term]</li>
 				 <li onclick="copyToClipboard('text_element49')"><i></i><p class="copyText" id="text_element49">[End date]</li>
+				 <li onclick="copyToClipboard('text_element88')"><i></i><p class="copyText" id="text_element35">[Start Date]</p></li>
+				 <li onclick="copyToClipboard('text_element89')"><i></i><p class="copyText" id="text_element36">[End date]</li>
+				 <li onclick="copyToClipboard('text_element90')"><i></i><p class="copyText" id="text_element36">[Billing Cycle]</li>
 				 <li onclick="copyToClipboard('text_element50')"><i></i><p class="copyText" id="text_element50">[Company Location]</p></li>
                 <li onclick="copyToClipboard('text_element51')"><i></i><p class="copyText" id="text_element51">[Company Name]</p></li>
 			</ul>
@@ -207,7 +211,8 @@
         <div class="col-lg-12">
           <div class="pull-right">
           	<!-- <input type="button" value="Preview" id="save_Preview" class="btn btn-success" onclick="generatePDF();">  -->
-            <input type="button" value="Save Template" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
+            <input type="button" value="Save" id="save_template" onclick="saveTemplate(); " class="btn btn-primary"> 
+            <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='/orgContractTemplate'/>'" class="btn btn-danger ml10">
           <!--  <input type="button" value="Back" class="btn btn-danger">
 			<a href="add-contract-template-preview.html"><input type="button" value="Next" class="btn btn-primary ml10"></a> -->
           </div>
@@ -365,16 +370,29 @@ function generatePDF(id) {
 		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		if ($('#template_form').validate(false, validationSettings)) {
 			var frm = $('#template_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			var jsonData = JSON.stringify(frm);
+			/* var con = JSON.stringify(frm);
+			 con = con.replace(/[{}]/g, ""); */
+			
+			var form = $('#template_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData);
+			
+	  		
 			  //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
+	       // var jsonData = encodeURIComponent(con);
+	        $( "#save_template" ).addClass('button').val('Processing..');
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 		$.ajax({
 						type : "POST",
+		  	    	    data: formData,
+		  	    	    contentType : 'application/json; charset=utf-8',
+		  		        processData: false,
+		  		        contentType:false, 
+		  	    	    dataType : 'json',
 						url : sourceleadUrl
-								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							 /* generatePDF(result);  */
 							location.replace(sourceleadUrl+ "/orgContractTemplate");
@@ -443,7 +461,7 @@ function validateContractTemplateName(){
 		        	else{
 		        		 $('input#templateName').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#templateDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#save_template" ).addClass('button').val('Save Template');
+		        		 $("#save_template" ).addClass('button').val('Save');
                          $("#save_template").removeAttr("disabled");
 		        	}
 		        	}

@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoicePaymentService;
@@ -61,6 +63,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -113,7 +116,12 @@ public class InvoiceRestController {
 
 	@Autowired
 	private InvoiceDao invoiceDao;
+
+	@Autowired
+	private ContractsTemplateService contractsTemplateService;
 	
+	@Autowired
+	private UserService userService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -253,6 +261,7 @@ public class InvoiceRestController {
      		}
      		 	
      		if(null != contractsList){
+     			System.out.println("================="+contractsList.size());
          		resultJson = commonUtil.toJSON(contractsList);	
          	}
      	}
@@ -401,7 +410,9 @@ public class InvoiceRestController {
 				}
 				
 			}
-			
+			if(null != invoice.getParentInvoiceId()){
+				invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());	
+			}
 			invoice.setDraftInvoiceCount(draftCount);
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
@@ -567,12 +578,20 @@ public class InvoiceRestController {
 	     	}
 	     	List<InvoicePayment> invoicePaymentList = invoicePaymentService.getInvoicePaymentList(Id);
 	     	for(InvoicePayment ip :invoicePaymentList){
+	     		User user = userService.getUserByUserCode(ip.getCreatedBy());
 	     		ip.setPaymentDateStr(Constants.DF_DMY.format(ip.getPaymentDate()));
 	     		ip.setPaymentMethod(ip.getPaymentMethod());
 	     		ip.setPaymentReferenceNumber(ip.getPaymentReferenceNumber());
 	     		ip.setFileName(ip.getFileName());
 	     		ip.setPaymentComment(ip.getPaymentComment());
 	     		ip.setPaymentAmount(ip.getPaymentAmount());
+	     		StringBuilder name = new StringBuilder();
+	     		if(null != user.getLastName()){
+	     			ip.setCreatedByName(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	
+	     		}else{
+	     			ip.setCreatedByName(name.append(user.getFirstName()).toString());
+	     		}
+	     		
 	     	}
 	     	resultJson = commonUtil.toJSON(invoicePaymentList);
 		 	  return resultJson;
@@ -605,7 +624,6 @@ public class InvoiceRestController {
 
 		}  
 
-	//******************* Added By Rajashekar
 	
 	@RequestMapping(value = "/getProjectFrequency", method = RequestMethod.GET)
 	public @ResponseBody String getProjectFrequency(@RequestParam(value = "projectId", required = false) Long projectId,HttpServletRequest request) throws Exception {
@@ -657,7 +675,20 @@ public class InvoiceRestController {
 			}
 			projectMember.setStartDate(startDateStr);
 			projectMember.setEndDate(endDateStr);
-			projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+			String billableHours = String.valueOf(totalHours.get("BILLABLE_HOURS"));;
+			String arr[] = billableHours.split("\\.");
+			StringBuilder sb = new StringBuilder();
+			if(arr[0].length()==2){
+				sb.append("0").append(arr[0]);
+			}else if(arr[0].length()==1){
+				sb.append("00").append(arr[0]);	
+			}
+			if(arr[1].length()==1){
+				sb.append(":").append("0").append(arr[1]);
+			}else{
+				sb.append(":").append(arr[1]);
+			}
+			projectMember.setTotalHours(sb.toString());
 		}
 		return commonUtil.toJSON(projectMembersList);
 	} 
@@ -705,7 +736,7 @@ public class InvoiceRestController {
         Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
 		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
-		
+		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		for(ProjectMembers projectMember :projectMembersList){
 			Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
 			if(null != candidate){
@@ -722,10 +753,24 @@ public class InvoiceRestController {
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				projectMember.setTotalHours(totalHours.get("BILLABLE_HOURS").toString().replace(".", ":"));
+				String billableHours = String.valueOf(totalHours.get("BILLABLE_HOURS"));;
+				String arr[] = billableHours.split("\\.");
+				StringBuilder sb = new StringBuilder();
+				if(arr[0].length()==2){
+					sb.append("0").append(arr[0]);
+				}else if(arr[0].length()==1){
+					sb.append("00").append(arr[0]);	
+				}
+				if(arr[1].length()==1){
+					sb.append(":").append("0").append(arr[1]);
+				}else{
+					sb.append(":").append(arr[1]);
+				}
+				projectMember.setTotalHours(sb.toString());
+				filteredMembersList.add(projectMember);
 			}
 		}
-		return commonUtil.toJSON(projectMembersList);
+		return commonUtil.toJSON(filteredMembersList);
 	} 
 	
 	
@@ -738,7 +783,18 @@ public class InvoiceRestController {
  	    resultJson = commonUtil.toJSON(projectList);
  	    return resultJson;
  	}
-	//******************* End By Rajashekar
+	
+	
+	
+	@RequestMapping(value = "/getSowRateByContractId", method = RequestMethod.GET)
+ 	public @ResponseBody  String getSowRateByContractId(@RequestParam(value = "contractId", required = false) Long contractId,
+ 			HttpServletRequest request, HttpServletResponse response) throws Exception
+ 	{
+		  String resultJson;
+         Contracts contractsList = contractsTemplateService.getContractById(contractId);
+         resultJson = commonUtil.toJSON(contractsList);	
+         return resultJson;
+ 	}
 
 	@RequestMapping(value = "/acceptedInvoice", method = RequestMethod.POST)
 	public @ResponseBody String acceptedInvoice(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
@@ -778,6 +834,33 @@ public class InvoiceRestController {
 			}
 		}
 		return "success";
+	} 
+	
+	
+	
+	
+	@RequestMapping(value = "/getDueDateByFrequency", method = RequestMethod.GET)
+	public @ResponseBody String getDueDateByFrequency(@RequestParam(value = "paymentFrequency", required = false) String paymentFrequency,
+			@RequestParam(value = "invoiceDate", required = false) String invoiceDate,HttpServletRequest request) throws Exception {
+		
+		
+		String[] frequency = paymentFrequency.split(" ");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		String dueDateStr = null;
+		
+		try {
+
+			Date date =  formatter.parse(invoiceDate);
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			c.add(Calendar.DATE, Integer.parseInt(frequency[0]));
+			dueDateStr =  formatter.format(c.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+		
+		return dueDateStr;
 	} 
 	
 	

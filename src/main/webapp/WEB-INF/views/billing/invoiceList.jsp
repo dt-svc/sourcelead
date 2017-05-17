@@ -33,7 +33,7 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Receivable</h2>
+        <h2>Receivables</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Receivable List</div>
     </section>
@@ -43,11 +43,11 @@ $(document).ready(function(){
           <div class="onboardcreateButtons"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
             <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
-                <option value="month">1 Month</option>
-                <option value="twomonths">2 Months</option>
-                <option value="threemonths">3 Months</option>
-                <option value="sixmonths">6 Months</option>
-                <option value="oneyear">1 Year</option>
+                <option value="month">Last 30 days</option>
+                <option value="twomonths">Last 60 Days</option>
+                <option value="threemonths">Last 90 days</option>
+                <option value="sixmonths">Last 180 days</option>
+                <option value="oneyear">Last 365 days</option>
                 <option value="custom">Custom</option>
               </select>
               
@@ -127,11 +127,11 @@ $(document).ready(function(){
             
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
-              <div class="timesheet_out mt" style="overflow-x:auto;">
+              <div class="timesheet_out mt">
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
-                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Invoice</span><i class="glyphicon glyphicon-play" ></i>|
+                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                         <div class="approved_pop" id="invoiceTabOne">
                           <ul>
                             <li>
@@ -142,6 +142,18 @@ $(document).ready(function(){
                               <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceList();">
                               <label for="onboard2">Sent</label>
                             </li>
+                            <li>
+                              <input type="checkbox" value="RECEIVED" name="invoiceStatus" id="" onclick="getInvoiceList();" >
+                              <label for="onboard1">Received</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Accepted</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Rejected</label>
+                            </li>
                           </ul>
                         </div>
                       </li>
@@ -150,20 +162,20 @@ $(document).ready(function(){
                         <div class="approved_pop" id="paymentTabOne">
                           <ul>
                             <li>
-                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
-                              <label for="onboard1">Unpaid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Partial Paid</label>
-                            </li>
-                            <li>
                               <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceList();">
                               <label for="onboard3">Paid</label>
                             </li>
                             <li>
+                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Partially Paid</label>
+                            </li>
+                            <li>
                               <input type="checkbox" id="" value="OverDue" name="paymentStatus" onclick="getInvoiceList();">
                               <label for="onboard4">OverDue</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
+                              <label for="onboard1">Unpaid</label>
                             </li>
                           </ul>
                         </div>
@@ -283,7 +295,7 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <h4 class="ml">Filter</h4>
-                    <div class="remove_search pull-right">
+                    <div class="remove_search pull-right hidden">
                       <input placeholder="search" type="text">
                     </div>
                   </div>
@@ -353,8 +365,8 @@ $(document).ready(function(){
   <!-- Add invoice Popup -->
 		   <div class="addcandidate-popup">
 		    <div class="row">
-		      <div class="col-md-offset-1 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
-		      <div class="col-md-4 mt25">
+		      <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
+		      <div class="col-md-5 mt25">
 		        <div class="small-widget bgGreen">
 		            <a  href="<c:url value='/createInvoice'/>" title="Create custom invoice">
 		          <div class="clearfix mb10"> 
@@ -364,7 +376,7 @@ $(document).ready(function(){
 		          </div>
 		      </div>
 		
-		        <div class="col-md-4 mt25">
+		        <div class="col-md-5 mt25">
 		          <div class="small-widget bg-yellow"> 
 		          <a href="<c:url value='/createInvoiceProjectBased'/>" title="Create project based invoice">
 		            <div class="clearfix mb10">
@@ -747,15 +759,26 @@ function getInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				if(report.invoiceType=="Receivable"){
+				if(report.invoiceType=="Receivable" &&( report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
 					}else{
 						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 					}
+				}else{
+					if(report.invoiceStatus == "Accepted"){
+						result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+					}else{
+						if(report.invoiceStatus == "Rejected"){
+							result = result +'           <span class="text-primary successBtn primary clearfix" >Rejected</span> </td>          ';	
+						}else{
+							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+						}
+						
+					}
 				}
 
-				if(report.invoiceType=="Payables"){
+				if(report.invoiceType=="Payables" ){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
 					}else{
@@ -781,16 +804,16 @@ function getInvoiceList(){
 		    $("#invoiceList").append(result);
 		    
 		    $("#draftInvoiceCount").html(draftCount);
-		    $("#unbilledAmoumt").html(draftTotalAmount);
+		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
 		    		    
 		    $("#paidInvoiceCount").html(paidCount);
-		    $("#paidInvoiceAmount").html(paidTotalAmount);
+		    $("#paidInvoiceAmount").html(paidTotalAmount.toFixed(2));
 		    
 		    $("#dueAfterInvoiceCount").html(dueAfterInvoiceCount);
-		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount);
+		    $("#dueAfterInvoiceAmount").html(dueAfterInvoiceAmount.toFixed(2));
 		    
 		    $("#dueBeforeInvoiceCount").html(dueBeforeInvoiceCount);
-		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount);
+		    $("#dueBeforeInvoiceAmount").html(dueBeforeInvoiceAmount.toFixed(2));
 		    
 
 		    invoicePagination()
@@ -807,16 +830,47 @@ function invoicePagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
+    	"aaSorting": [[0,'desc']],
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#invoiceListPagination").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
+<script>
+function acceptedInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    });  
+}
 
+</script>
+<script>
+function rejectInvoice(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+        	location.replace(sourceleadUrl+"/invoiceList");
+     		
+        },
+    }); 
+}
+
+</script>
 <script>
 function cancelbtn(){
 	  $("#recvPymntpop").fadeOut(200);
