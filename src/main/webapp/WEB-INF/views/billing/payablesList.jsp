@@ -731,7 +731,13 @@ function getPayableInvoiceList(){
         		result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					
+					if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
+					}else{
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'">'+report.invoiceId+'</a></div>   ';
+					}
+					
 
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
@@ -767,7 +773,7 @@ function getPayableInvoiceList(){
 				
 				result = result +'         <td> ';
 				
-				if(report.invoiceType=="Payables"){
+				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Pay</span> </td>          ';	
 					}else{
@@ -782,7 +788,10 @@ function getPayableInvoiceList(){
 							
 						}
 					}
+				}else{
+					result = result +'           <span class="text-primary receiveBtn clearfix" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 				}
+				
 				if(report.invoiceType=="Receivable"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary clearfix" >Receive</span> </td>          ';	
@@ -830,6 +839,7 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"aaSorting": [[0,'desc']],
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
@@ -846,7 +856,7 @@ function acceptedInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/acceptedInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     });  
@@ -861,7 +871,7 @@ function rejectInvoice(id){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
+        	location.replace(sourceleadUrl+"/payablesList");
      		
         },
     }); 

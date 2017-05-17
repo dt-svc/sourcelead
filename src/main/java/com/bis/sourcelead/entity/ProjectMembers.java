@@ -134,6 +134,8 @@ public class ProjectMembers implements Serializable{
     @Transient
     private Long candidateId;
     
+    @Transient
+    private String userRoleType;
     
     
     @JsonIgnore
@@ -440,6 +442,14 @@ public class ProjectMembers implements Serializable{
 	public void setCandidateId(Long candidateId)
 	{
 		this.candidateId = candidateId;
+	}
+
+	public String getUserRoleType() {
+		return userRoleType;
+	}
+
+	public void setUserRoleType(String userRoleType) {
+		this.userRoleType = userRoleType;
 	}
 
 }

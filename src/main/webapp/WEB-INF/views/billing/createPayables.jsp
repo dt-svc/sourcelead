@@ -66,8 +66,7 @@ function cancel(){
 							<div class="col-md-9 select-field" id="errVendor">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();"
-									data-validation="required" field-name="Vendor">
+									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Vendor">
 								</select>
 							</div>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
@@ -337,36 +336,6 @@ function cancel(){
          result = result +'  </tr>';
          result = result +'  </thead>';
          result = result +'  <tbody>';
-         result = result +'  <tr id="divTaxTsRow0">';
-         result = result +'  <td>';
-         result = result +'  <div class="select-field tblminwidth-75">';
-         result = result +'  <div class="tblminwidth-50">';
-         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">';
-         result = result +'  <input type="hidden" id="0invoiceTaxId" name="0invoiceTaxId">';
-         result = result +'  </div>';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <div class="btn-group tblminwidth-75">';
-         result = result +'  <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">';
-         result = result +'  <option value="percentage">Percentage</option>';
-         result = result +'  <option value="flat">Flat</option>';
-         result = result +'  </select>';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <div class="tblminwidth-75">';
-         result = result +'  <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="calculateTaxDiscount();">';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <div class="tblminwidth-75">';
-         result = result +'  <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>';
-         result = result +'  </div>';
-         result = result +'  </td>';
-         result = result +'  <td>';
-         result = result +'  <span class="text-danger"><i class="fa fa-remove"></i></span>';
-         result = result +'  </td>';
          result = result +'  </tr>';
                          
          result = result +'  </tbody>';
@@ -649,6 +618,9 @@ function cancel(){
 				    });
 				
 				
+				
+				
+				
 				var cell1 = row.insertCell(1);
 				var divTsTd2Str = document.getElementById("divTaskTd2").innerHTML;
 				divTsTd2Str = divTsTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -717,16 +689,6 @@ function cancel(){
 		for(var i=0; i<invoiceTaxList.length; i++){
 			 
 			var opt = invoiceTaxList[i];
-			
-			if(i == 0){
-				
-				$('#'+i+'taxType').val(opt.taxName);
-				$('#'+i+'taxdiscountType').val(opt.taxType);
-				$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-				$('#'+i+'taxTotal').val(opt.taxAmount);
-				$('#'+i+'invoiceTaxId').val(opt.id);
-			 
-			}else{
 				 
 				 var checkMaxTsRowNum = $("#maxTaxRowNum").val();
 					var tbl = document.getElementById("addTaxTbl");
@@ -763,13 +725,12 @@ function cancel(){
 					cell4.innerHTML = divTaxTdStr4;
 					maskme();
 					
-					$('#'+i+'taxType').val(opt.taxName);
-					$('#'+i+'taxdiscountType').val(opt.taxType);
-					$('#'+i+'taxdiscountvalue').val(opt.taxValue);
-					$('#'+i+'taxTotal').val(opt.taxAmount);
-					$('#'+i+'invoiceTaxId').val(opt.id);
+					$('#'+maxRowNum+'taxType').val(opt.taxName);
+					$('#'+maxRowNum+'taxdiscountType').val(opt.taxType);
+					$('#'+maxRowNum+'taxdiscountvalue').val(opt.taxValue);
+					$('#'+maxRowNum+'taxTotal').val(opt.taxAmount);
+					$('#'+maxRowNum+'invoiceTaxId').val(opt.id);
 					
-			 }
 		}
 	}			
 </script>
@@ -811,8 +772,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"sdate-input");
+						dt.setDate(dt.getDate() + 1);
+						$("#"+maxRowNum+"edate-input").datepicker("option", "minDate", dt);
 			 	  }
 			    });
 			
@@ -820,8 +783,10 @@ function cancel(){
 				  changeMonth: true,
 			      changeYear: true,
 			      dateFormat : 'dd-mm-yy',
-			      minDate: 0  ,
 				  onSelect : function(selected) {
+					  var dt = toDate("#"+maxRowNum+"edate-input");
+						dt.setDate(dt.getDate() - 1);
+						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt);
 			 	  }
 			    });
 			
@@ -1209,30 +1174,7 @@ function pagination(){
 		}
    }
    
-   /* =====================  After adding the rows calculate the discount end  ===================== */
-   
-   /* =====================  After adding the rows calculate the tax start  ===================== */
-   
-   var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-   var afterDiscountTotal = $("#afterDiscountTotal").val();
-   
-	    for(var i=0; i< maxRowNum; i++){
-	         var taxType = $("#"+i+"taxdiscountType").val();
-	         var taxValue = $("#"+i+"taxdiscountvalue").val();
-	         var taxTotal = $("#"+i+"taxTotal").val();
-	            
-              if(taxValue == '' && taxTotal==''){
-            	  $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-              }else{
-            	  var tot = $("#grandTotal").val();
-  	            var first=parseFloat(tot);
-  	             var second=parseFloat(taxTotal); 
-  	             var total  = (first+second);
-  	           $("#grandTotal").val(total.toFixed(2));
-              }
-	            
-	    }
-   /* =====================  After adding the rows calculate the tax end  ===================== */
+   calculateTaxDiscount();
    
 	    
   }
@@ -1272,104 +1214,11 @@ function calculateDiscount(){
 		}
 		
 	}
-	
-	/* var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-	if(maxRowNum > 1){
-	    for(var i=1;i<=maxRowNum;i++){
-	         document.getElementById("divTaxRow"+i+"").style.display="none";
-	    }
-	    $("#grandTotal").val(subTotal);
-	} 
-	 */
 	 
-	  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-	  var afterDiscountTotal = $("#afterDiscountTotal").val();
-	  
-	   for(var i=0; i< maxRowNum; i++){
-	        var taxType = $("#"+i+"taxdiscountType").val();
-	        var taxValue = $("#"+i+"taxdiscountvalue").val();
-	        var taxTotal = $("#"+i+"taxTotal").val();
-	           
-	             if(taxValue == '' && taxTotal==''){
-	             $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-	             }else{
-	           	 var tot = $("#grandTotal").val();
-	 	           var first=parseFloat(tot);
-	 	            var second=parseFloat(taxTotal); 
-	 	            var total  = (first+second);
-	 	          $("#grandTotal").val(total.toFixed(2));
-	             }
-	           
-	   } 
-	
+	calculateTaxDiscount();
 	
 }
 </script>
-<!-- 
-<script>
-  function singleRowTotalhour(){
-	     var rate = $("#0rate").val();
-	     var totalHours = $("#0totalHours").val(); 
-	     var split = totalHours.split(':');
-	     var hours = split[0];
- 	     var minute = split[1];
- 	     
- 	     var hours1 = hours.charAt(0);
- 		 var hours2 = hours.charAt(1);
- 		 var min1 = minute.charAt(0);
- 		 var min2 = minute.charAt(1);
- 		
- 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("0"+hours1+":00");
- 			calAmount("0"+hours1,"00");
- 		 }
- 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("0"+hours2+":00");
- 			calAmount("0"+hours2,"00");
- 		 }
- 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val("00:"+min1+"0");
- 			calAmount("00",min1+"0");
- 		 }
- 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
- 			$("#0totalHours").val("00:0"+min2);
- 			calAmount("00","0"+min2);
- 		 }
- 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val(hours+":00");
- 			calAmount(hours,"00");
- 		 }
- 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
- 			$("#0totalHours").val(hours+":"+"0"+min1);
- 			calAmount(hours+":","0"+min1);
- 		 }
- 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
- 			$("#0totalHours").val(hours+":"+"0"+min2);
- 			calAmount(hours+":","0"+min2);
- 		 }
- 		 else if(!isNaN(hours)&& !isNaN(minute)){
- 			calAmount(hours,minute);
- 		 }
- 	     
-		
-  }
-  function calAmount(hours,minute){
-	  var rate = $("#0rate").val();
-	     var parshours = parseInt(hours);
-	     var hourminits = parshours * 60;
-		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit =   rate / 60;
-	     var singleRowTotlalAmount = (perMinit * finalmin).toFixed(2);
-	     $('#0amount').val(singleRowTotlalAmount);
-	     $('#inoviceTotal').val(singleRowTotlalAmount);
-	     $("#hiddenTotal").val(singleRowTotlalAmount);
-	     $("#grandTotal").val(singleRowTotlalAmount);
-	     $("#afterDiscountTotal").val(singleRowTotlalAmount); 
-  }
-  </script>
-   -->
-
-
 
 <!-- ********************************************* Add Rows Invoice Table functionality End  ************************************************************ -->
 
@@ -1539,18 +1388,15 @@ function calculateTaxDiscount(){
 	var maxTaxRowNum = $("#maxTaxRowNum").val();
 	var afterDiscountTotal = $("#afterDiscountTotal").val();
 	
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		if($("#"+i+"taxdiscountType").val() != '' && $("#"+i+"taxdiscountType").val() != null && $("#"+i+"taxdiscountType").val() != 'undefined'){
 			var taxType = $("#"+i+"taxdiscountType").val();
 		    var taxValue = $("#"+i+"taxdiscountvalue").val();
-		    var first = '0';
 		   
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
 			        $("#"+i+"taxTotal").val(first);
-		    	}else{
-			        $("#"+i+"taxTotal").val(0);
 		    	}
 		    	
 		    }
@@ -1564,7 +1410,7 @@ function calculateTaxDiscount(){
 	}
 	
 	var taxGrandTotal = 0;
-	for(var i=0; i<maxTaxRowNum; i++){
+	for(var i=1; i<maxTaxRowNum; i++){
 		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
 	}
 	
@@ -1573,29 +1419,6 @@ function calculateTaxDiscount(){
   
 }
 </script>
-
-<!-- <script type="text/javascript">
-function singleRowTaxDiscount(){
-	var taxType = $("#0taxdiscountType").val();
-    var taxValue = $("#0taxdiscountvalue").val();
-    var afterDiscountTotal = $("#afterDiscountTotal").val();
-   
-     var total ='';
-    if(taxType == 'flat'){
-        total = parseInt(afterDiscountTotal) + parseInt(taxValue);
-        $("#0taxTotal").val(taxValue);
-        $("#grandTotal").val(total);
-    }
-    if(taxType == 'percentage'){
-        var perCentValue = (afterDiscountTotal * taxValue)/100;
-        var first=parseFloat(perCentValue.toFixed(2));
-        var second=parseFloat(afterDiscountTotal);
-        total = (first+second).toFixed(2);
-        $("#0taxTotal").val(first);
-        $("#grandTotal").val(total);
-    }   
-}
-</script> -->
 
 
 
@@ -1762,9 +1585,37 @@ function getVendorContacts(vendorContactId){
 	}
 </script>
 
-
-
-
+<script> 
+function getPaymentTerms(){
+	var orgRelationId = $("#vendorOrgRelationId").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPaymentTermsAndBillindAddress?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+		success :function(data) {
+			 var json = JSON.parse(data);
+			 for (var i=0; i<json.length; i++)
+				{
+				var repot = json[i];
+				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
+		           		$("#paymentFrequency").val(repot.paymentTerms);
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}else{
+		           		$("#paymentFrequency").val('');
+		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	}
+		           	
+		           	if(repot.billingAddress != null && repot.billingAddress != '' && repot.billingAddress != 'undefined'){
+		           		$("#billingAddress").val(repot.billingAddress);
+		           	}else{
+		           		$("#billingAddress").val('');
+		           	}
+				}
+			
+		}
+	});
+}
+</script>
 <script>
 function saveInvoice(saveType){
          
@@ -1823,16 +1674,7 @@ function saveInvoice(saveType){
 		     		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType+"&invoiceType=payable", 
 		    		        success: function(result) {
 		    		     		$("#invoiceLoading").removeAttr("style");
-		    		     		
-		    		     		var invoiceUUID = '${invoiceUUID}';
-		    		     		if(saveType == 'DRAFT' && invoiceUUID != null && invoiceUUID != '' && invoiceUUID != 'undefined'){
-		    		     			location.replace(sourceleadUrl+"/getInvoiceByUUID?invoiceUUID="+invoiceUUID);
-		    		     		}else{
 		    		     			location.replace(sourceleadUrl+"/payablesList");
-		    		     		}
-		    		     		
-		    		     		
-		    		     		
 		    		        },
 		    		    }); 
 		    	         return true; 
