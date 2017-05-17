@@ -265,14 +265,15 @@ public class ContractRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
-
-			if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
+			/*if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(clientSb.toString());
             }
             if(orgSpoc.getClientUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(sb.toString());
-            }
-
+            }*/
+            if(null != orgSpoc.getOwnerUser()){
+				orgSpoc.setOwnerUserName(orgSpoc.getOwnerUser().getFirstName());
+			}
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
