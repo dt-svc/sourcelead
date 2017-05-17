@@ -1072,7 +1072,7 @@ function pagination(){
 		 var hours3 = hours.charAt(2);
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
-		
+		 
 
 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
 			 if(isNaN(min1) && isNaN(min2)){
@@ -1200,11 +1200,15 @@ function pagination(){
 				 $("#"+rowId+"totalHours").val(hours+":"+minute);
 				 calAddRowAmount(hours,minute,rowId);
 			 }
+		 }else{
+			 calAddRowAmount("000","00",rowId);
 		 }
 	    
 	  
   }
+  
   function calAddRowAmount(hours,minute,rowId){
+	  
 	  var rate = $("#"+rowId+"rate").val();
 	  var split = hours.split(':');
 	  var splitHours = split[0];
@@ -1830,7 +1834,7 @@ function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	
-	 if(paymentFrequency){
+	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    
