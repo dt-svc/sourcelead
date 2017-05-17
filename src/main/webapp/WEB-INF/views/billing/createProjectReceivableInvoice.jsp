@@ -15,9 +15,9 @@
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Create Bill</h2>
+        <h2>Project Based Invoice</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Invoice</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Project Based Invoice</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
@@ -28,7 +28,7 @@
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field">
-                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();flushValues();" data-validation="required" field-name="Client Name">
+                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();flushValues();" data-validation="required" field-name="Client">
                    <%--  <option value=''>--Select Clinet--</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -41,7 +41,7 @@
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 select-field">					   
-                <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact Name">
+                <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
               </div>
             </div>
@@ -184,12 +184,12 @@
                       </select>
                     </div>
                     <div class="col-md-5 paddingLeft">
-                      <input class="form-control input-sm" id="discountValue" name="discountValue" type="text" onblur="calculateDisCount();">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" placeholder="Flat / Discount" name="discountValue" type="text" onblur="calculateDisCount();">
                     </div>
                   </div>
                 </div>
                 <div class="col-md-5 text-right">
-                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text">
+                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text" placeholder="00.00" readonly>
                 </div>
 
               </div>
@@ -427,19 +427,23 @@ function populateInlineItemsGrid(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow">';
+    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
     	 result = result +'<option>Sow</option>';
     	 result = result +' </select>';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
-    	 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    	 }else{
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM"  value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -458,7 +462,8 @@ function populateInlineItemsGrid(data){
     result = result +' </tbody>';
     result = result +' </table>';
     $("#tableBody").empty();
-    $("#tableBody").append(result)
+    $("#tableBody").append(result);
+    maskme();
     
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
@@ -520,7 +525,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
-    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow">';
+    	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
     	 result = result +'<option>Sow</option>';
     	 result = result +' </select>';
     	 result = result +'</div>';
@@ -528,22 +533,22 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
     	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="Total Hours" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="calculateTotalAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	getSow(i,opt.candidateId);
+    	getSow(i,opt.candidateId,opt.contractId);
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -556,7 +561,7 @@ function populateInlineItemsGrid1(data){
     result = result +' </table>';
     $("#tableBody").empty();
     $("#tableBody").append(result)
-    
+    maskme();
   /*   for (var i = 0; i < json.length; i++) { 
     	$('#'+i+'sdate-input').datepicker({
 			dateFormat : 'dd-mm-yy',
@@ -577,30 +582,39 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("bottomGrid").style.display="block";
 	document.getElementById("lineItemAddRows").style.display="block";
 	document.getElementById("tableBody").style.display="block";
+	
     addTaxDivs();
 }
 </script>
 
 <!-- Get contract sow between client and the associate -->
-  <script>
-  function getSow(rowId,candidateId){
-	 /*  var candidateId = $('#'+rowId+'candidate').val(); */
-	  var orgRelationId = $("#clientOrgRelationId").val();
+ <script>
+  function getSow(id,candidateId,opt,contractId){
+	 /*  var candidateId = $('#'+id+'candidate').val(); */
+	  var orgRelationId = $("#vendorOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 	        success: function(data) {
+	        	var result = "";
+	        	result = result + "<option value='' >select sow</option>"
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
 		        	 for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		$('#'+rowId+'sow').empty();
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' >'+opt.contractTitle+'</option>');
-			        		$('#'+id+'rate').val(opt.billingAmount);
-			        		calculateTotalAmount(id);
+			        		var selected = '';
+			        		
+			        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+			        			selected = 'selected';
+			        		} 
+			        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
 					} 
+		        	 $('#'+id+'sow').empty();
+		        	 $('#'+id+'sow').append(result);
+		        	 /*$ ('#'+id+'rate').val(opt.billingAmount);
+		        		calculateTotalAmount(id); */
 	        	}else{
 	        		
 	        	}
@@ -608,12 +622,32 @@ function populateInlineItemsGrid1(data){
 	        
 	    });
   }
-  
   </script>
+  
+  
+  <script>
+function getSowRate(id){
+	var contractId = $("#"+id+'sow').val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "GET",
+    	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
+        success: function(data) {
+        	 if(data != null && data != ''){
+        		var json = JSON.parse(data);
+	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 calculateTotalAmount(id);
+        	} 
+        },
+        
+    });
+}
+</script>
   
   <!-- calculating row total with rate and total hours -->
   <script>
   function calculateTotalAmount(rowId){
+	 totalHoursCalculateAmount(rowId);
 	 var totalHours =  $('#'+rowId+'totalHours').val();
 	 var rate =  $('#'+rowId+'rate').val();
 	 if(totalHours != ''){
@@ -630,10 +664,168 @@ function populateInlineItemsGrid1(data){
 	 }
 	 calculateSum();
 	 
+	 
   }
   
   </script>
-	
+  
+  
+  <script>
+  function totalHoursCalculateAmount(rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var totalHours = $("#"+rowId+"totalHours").val();
+	     var split = totalHours.split(':');
+	     var hours = split[0];
+ 	     var minute = split[1];
+ 	     
+ 	     var hours1 = hours.charAt(0);
+		 var hours2 = hours.charAt(1);
+		 var hours3 = hours.charAt(2);
+		 var min1 = minute.charAt(0);
+		 var min2 = minute.charAt(1);
+		
+		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":00");
+				 calAddRowAmount("00"+hours1,"00",rowId); 
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min1);
+				 calAddRowAmount("00"+hours1,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours1+":0"+min2);
+				 calAddRowAmount("00"+hours1,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours1+":"+minute);
+				 calAddRowAmount("00"+hours1,minute,rowId);
+			 }
+		 }
+		 else if(isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":00");
+				 calAddRowAmount("00"+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min1);
+				 calAddRowAmount("00"+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours2+":0"+min2);
+				 calAddRowAmount("00"+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours2+":"+minute);
+				 calAddRowAmount("00"+hours2,minute,rowId);
+			 }
+		 }
+		 else if(isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":00");
+				 calAddRowAmount("00"+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min1);
+				 calAddRowAmount("00"+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("00"+hours3+":0"+min2);
+				 calAddRowAmount("00"+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("00"+hours3+":"+minute);
+				 calAddRowAmount("00"+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && !isNaN(hours2) && isNaN(hours3)){
+			if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":00");
+				 calAddRowAmount("0"+hours1+hours2,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours2,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours2+":"+minute);
+				 calAddRowAmount("0"+hours1+hours2,minute,rowId);
+			 }
+			
+		 }
+		 else if(isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":00");
+				 calAddRowAmount("0"+hours2+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours2+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours2+hours3+":"+minute);
+				 calAddRowAmount("0"+hours2+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":00");
+				 calAddRowAmount("0"+hours1+hours3,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min1);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":0"+min2);
+				 calAddRowAmount("0"+hours1+hours3,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val("0"+hours1+hours3+":"+minute);
+				 calAddRowAmount("0"+hours1+hours3,minute,rowId);
+			 }
+		 }
+		 else if(!isNaN(hours1) && !isNaN(hours2) && !isNaN(hours3)){
+			 if(isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":00");
+				 calAddRowAmount(hours,"00",rowId);
+			 }
+			 else if(!isNaN(min1) && isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min1);
+				 calAddRowAmount(hours,"0"+min1,rowId);
+			 }
+			 else if(isNaN(min1) && !isNaN(min2)){
+				 $("#"+rowId+"totalHours").val(hours+":0"+min2);
+				 calAddRowAmount(hours,"0"+min2,rowId);
+			 }
+			 else{
+				 $("#"+rowId+"totalHours").val(hours+":"+minute);
+				 calAddRowAmount(hours,minute,rowId);
+			 }
+		 }
+  }
+  
+  function calAddRowAmount(hours,minute,rowId){
+	  var rate = $("#"+rowId+"rate").val();
+	  var split = hours.split(':');
+	  var splitHours = split[0];
+	  var hourminits = splitHours * 60;
+		 var finalmin = parseInt(hourminits) + parseInt(minute);
+	     var perMinit = rate / 60;
+	     var totlalAmount = (perMinit * finalmin);
+	     $('#'+rowId+'amount').empty();
+	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
+	     calculateSum();
+  }
+  </script>
 	<!-- calculating sub total with all row total amount -->
 <script>
 function calculateSum(){
@@ -1354,7 +1546,31 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+<script>
+function maskme(){
 
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hhh:Mm"); 
+	
+    $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+    $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+        if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+            event.preventDefault();
+        }
+    });
+}
+</script>
 <script>
 function addTaxDivs(){
 	var result = "";
@@ -1407,6 +1623,7 @@ function addTaxDivs(){
     result = result +'  </div>';
     $("#lineItemAddRows").empty();
     $("#lineItemAddRows").append(result);
+    maskme();
 }
 </script>
 <script>

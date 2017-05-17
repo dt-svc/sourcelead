@@ -107,7 +107,6 @@ public class BillingPayableRestController {
 					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
 				}
 				
-//		    	invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
 		    	invoice.setVendorContactId(invoice.getContactUser().getId());
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));

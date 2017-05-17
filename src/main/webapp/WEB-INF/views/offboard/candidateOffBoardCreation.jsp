@@ -129,7 +129,7 @@
                   
                 <div class="clearfix"></div>
                 <p><strong>Offboard Details</strong></p>
-				<div class="form-group">
+				<div class="form-group" id="endDateDiv">
                   <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
@@ -169,7 +169,7 @@
                 </div>
                   
                   
-                  <div class="form-group">
+                  <div class="form-group" id="effectiveDateDiv">
                   <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
                     <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
@@ -700,8 +700,25 @@ function validate_fileupload(fileName)
 			    	 $("#dateOfJoin").val(json['dateOfJoin']);
 			    	 $("#role").val(json['role']);
 			    	 
-			    	 
+			    	 if(json['noticePeriod'] != null && json['noticePeriod'] != '' && json['noticePeriod'] != 'undefined'){
+			    		 $("#noticePeriod").val(json['noticePeriod']);
+				    	 $('#noticePeriod').trigger("chosen:updated");
+				    	 document.getElementById("workInNotice").style.display="";
+			    	 }else{
+			    		 $("#noticePeriod").val('');
+				    	 $('#noticePeriod').trigger("chosen:updated");
+				    	 document.getElementById("workInNotice").style.display="none";
+			    	 }
 		        	
+			    	 $("#reason").val('');
+			    	 $('#reason').trigger("chosen:updated");
+			    	 
+			    	 $("#endDate").val('');
+			    	 $("#effectiveDate").val('');
+			    	 $("#explanation").val('');
+			    	 $("#offboardingTemplate").val('');
+			    	 $('#offboardingTemplate').trigger("chosen:updated");
+			    	 
 			    }
 		   });
 	  }
@@ -826,16 +843,48 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  minDate: 0 ,
+	  	  onSelect : function(selected) {
+	  		addValidClass();
+	  	 }
 	  });
 	  
 	  $('#effectiveDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  minDate: 0  ,
+	  	  onSelect : function(selected) {
+			addValidClass();
+			}
 	  });
 	  
   } );
 </script>
+
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		
+		 var endDate = document.getElementById("endDate").value;
+		 if(endDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var effectiveDate = document.getElementById("effectiveDate").value;
+		 if(effectiveDate){
+			 $('#effectiveDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+  
 
 <script>
 function loadOffBoardingTemplates(offboardTemplateId){

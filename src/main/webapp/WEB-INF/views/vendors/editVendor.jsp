@@ -19,6 +19,14 @@
 						var selected4 = '';
 						var selected5 = '';
 						
+						var paymentTerms1 = '';
+						var paymentTerms2 = '';
+						var paymentTerms3 = '';
+						var paymentTerms4 = '';
+						var paymentTerms5 = '';
+						var paymentTerms6 = '';
+						var paymentTerms0 = '';
+						
 						if(json.level == 'Tier-1'){
 								selected1 = 'selected';
 							} 
@@ -37,6 +45,29 @@
 						
 						if(json.level == 'Tier-5'){
 								selected5 = 'selected';
+						}
+						
+						if(json.paymentTerms == '10 days'){
+							paymentTerms1 = 'selected';
+							} 
+						
+						if(json.paymentTerms == '15 days'){
+							paymentTerms2 = 'selected';
+							} 
+						
+						if(json.paymentTerms == '30 days'){
+							paymentTerms3 = 'selected';
+							}
+						
+						if(json.paymentTerms == '45 days'){
+							paymentTerms4 = 'selected';
+						}
+						
+						if(json.paymentTerms == '60 days'){
+							paymentTerms5 = 'selected';
+						}
+						if(json.paymentTerms == '90 days'){
+							paymentTerms6 = 'selected';
 						}
 						
 						 var country = '';
@@ -129,6 +160,37 @@
 						result = result + ' <option '+selected5+'>Tier-5</option>';
 						result = result + ' </select>';
 						result = result + ' </div>';	
+						
+						 result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Address</label>';
+						if(json.address != null && json.address !='' && json.address != 'undefined'){
+						result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.address+'</textarea>';
+						}else{
+							result = result + '<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
+						}
+						result = result + '</div>';
+						
+						result = result + '<div class="user_summary_edit_cta">';
+						result = result + '<label>Billing Address</label>';
+						if(json.billingAddress != null && json.billingAddress !='' && json.billingAddress != 'undefined'){
+						result = result + '<textarea id="addressId" name="billingAddress" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true">'+json.billingAddress+'</textarea>';
+						}else{
+							result = result + '<textarea id="addressId" name="billingAddress" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>';	
+						}
+						result = result + '</div>';
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+                        result = result + ' <label>Payment Terms</label>';
+                        result = result + ' <select id="paymentTermsId" name="PaymentTerm" >';
+                        result = result + ' <option '+paymentTerms0+' selected>SelectPaymentTerms</option>';
+                        result = result + ' <option '+paymentTerms1+'>10 days</option>';
+                        result = result + ' <option '+paymentTerms2+'>15 days</option>';
+                        result = result + ' <option '+paymentTerms3+'>30 days</option>';
+                        result = result + ' <option '+paymentTerms4+'>45 days</option>';
+                        result = result + ' <option '+paymentTerms5+'>60 days</option>';
+                        result = result + ' <option '+paymentTerms6+'>90 days</option>';
+                        result = result + ' </select>';
+                        result = result + ' </div>'; 
 						
 						 result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
