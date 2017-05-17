@@ -46,7 +46,7 @@
 		                    <option ${contract.contractType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
 		                    <option ${contract.contractType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 		                    <option ${contract.contractType  == 'NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType  == 'NCA' ? 'selected' : ''}>NCA</option>
+		                    <option ${contract.contractType  == 'NSA' ? 'selected' : ''}>NSA</option>
 		                 </select>
 				    </c:when>
 				    <c:otherwise>
@@ -57,7 +57,7 @@
 		                    <option>Client SOW</option>
 		                    <option>Vendor SOW</option>
 		                    <option>NDA</option>
-		                    <option>NCA</option>
+		                    <option>NSA</option>
 		                 </select>
 				    </c:otherwise>
 				 </c:choose>
