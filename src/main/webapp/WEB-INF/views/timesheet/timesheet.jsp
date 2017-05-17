@@ -212,7 +212,7 @@ $(document).ready(function() {
 	 		    	        if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus != 'new' && approvalStatus != 'draft'){
 	 		    	        	activeElement.addClass("current subColor");
 	 		    	        	activeElement.siblings().removeClass("current");
-	 		    	        	activeElement.siblings().addClass("subColor");
+	 		    	        	//activeElement.siblings().addClass("subColor");
 	 		    	        }
 	 		    	        else if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus == 'draft'){
 	 		    	        	activeElement.addClass("current subColor");
