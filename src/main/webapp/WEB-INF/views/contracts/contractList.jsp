@@ -18,6 +18,7 @@
 $(document).ready(function(){
    $("#contractStage").val("DRAFT");
    getTemplateList();
+   getStageCounts();
 });
 </script>
 
@@ -491,7 +492,7 @@ function getTemplateList(){
     	   }else if(contractSubmissionType == 'REJECTED'){
     		   preparedContractListRejected(data);
     	   }
-    	   
+    	   getStageCounts();
       },
   }); 
 }
@@ -1152,9 +1153,9 @@ function preparedContractListWTV(data){
 		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
-	     		 if(report.contractStatus == "completed" && report.templateSubmissionStatus != "FINALIZED"){
+	     		 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 
-	     			result = result + '<div id="removeStatus'+report.id+'"><a class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a></div>|';
+	     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
 	            	 }
 	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 		         result = result + '</div></td>';
@@ -1221,10 +1222,10 @@ function preparedContractListWTV(data){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	         if(output.contractStatus == "completed" && output.templateSubmissionStatus != "FINALIZED"){
-	     			opt = opt +  '<div id="removeStatus'+output.id+'"><a class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a></div>';
+	         if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
+	     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
 	     		}
-     		 opt = opt + '<div ><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
+     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
      		 opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1921,6 +1922,9 @@ function mainTabEnable(local){
 	   for (var i = 0; i < arrMarkChk.length; i++) {
 		   arrMarkChk[i].checked = false;
 	   }
+	   
+	   $('#signedDiv').find('input[type=checkbox]:checked').removeAttr('checked');
+	   $('#verifyDiv').find('input[type=checkbox]:checked').removeAttr('checked');
 	var tabId = local.id;
     if(tabId == 'draft'){
 	$("#draft").addClass("draft"); 
@@ -2002,6 +2006,42 @@ function mainTabEnable(local){
 	
 }
 
+</script>
+
+
+<script>
+function getStageCounts(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+      type : "POST",
+       url: sourceleadUrl+"/getContractStageCounts?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
+       success :function(data) {
+    	   var json = JSON.parse(data);
+    	   
+    	   if(json.totalDraftCount != null && json.totalDraftCount != "" && json.totalDraftCount != 'undefined'){
+    		   $("#draft").html('Draft ('+json.totalDraftCount+')');
+    	   }
+    	   if(json.totalWTACount != null && json.totalWTACount != "" && json.totalWTACount != 'undefined'){
+    		   $("#approve").html('Approve ('+json.totalWTACount+')');
+    	   }
+    	   if(json.totalWTSCount != null && json.totalWTSCount != "" && json.totalWTSCount != 'undefined'){
+    		   $("#sign").html('Sign ('+json.totalWTSCount+')');
+    	   }
+    	   if(json.totalWTVCount != null && json.totalWTVCount != "" && json.totalWTVCount != 'undefined'){
+    		   $("#verify").html('Verify ('+json.totalWTVCount+')');
+    	   }
+    	   if(json.totalFinalizedCount != null && json.totalFinalizedCount != "" && json.totalFinalizedCount != 'undefined'){
+    		   $("#finalised").html('Finalized ('+json.totalFinalizedCount+')');
+    	   }
+    	   if(json.totalExpiredCount != null && json.totalExpiredCount != "" && json.totalExpiredCount != 'undefined'){
+    		   $("#expired").html('Expired ('+json.totalExpiredCount+')');
+    	   }
+    	   if(json.totalRejectedCount != null && json.totalRejectedCount != "" && json.totalRejectedCount != 'undefined'){
+    		   $("#rejected").html('Rejected ('+json.totalRejectedCount+')');
+    	   }
+      },
+  });  
+}
 </script>
 
 
