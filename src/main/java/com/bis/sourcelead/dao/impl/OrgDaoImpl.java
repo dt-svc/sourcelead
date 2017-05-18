@@ -261,7 +261,8 @@ public class OrgDaoImpl implements OrgDao {
 		
 		String userStateSubQuery = "";
 		if (!isNullOrEmpty(userState)) {
-			userStateSubQuery = "and org.user.id IN (select userRole.user.id from UserRole userRole where userRole.userState = '" + userState + "')";
+			userStateSubQuery = "and org.user.id IN (select userRole.user.id from UserRole userRole) "
+					+ " and org.id IN (select userRole.orgLocations.org.id from UserRole userRole where userRole.userState = '" + userState + "')";
 		}
 		
 		String orgNameSubQuery = "";
