@@ -404,7 +404,6 @@ function populateInlineItemsGrid(data){
 		result = result +'	<table width="100%">';
 	    result = result +' <thead>';
 	    result = result +' <tr>';
-	    result = result +' <th><i class="fa fa-ellipsis-h"></i></th>';
 	    result = result +' <th>Date</th>';
 	    result = result +' <th>Candiate</th>';
 	    result = result +' <th>SOW / PO</th>';
@@ -418,7 +417,6 @@ function populateInlineItemsGrid(data){
     for (var i = 0; i < json.length; i++) { 
     	 var opt = json[i]; 
     	 result = result +'<tr>';
-    	 result = result +' <td><a href="javascript:void(0)"><i class="fa fa-ellipsis-h"></i></a></td>';
     	 result = result +' <td>';
     	 result = result +'<div class="inputCustom">';
     	 result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDate+' type="text" readonly>';
@@ -458,7 +456,7 @@ function populateInlineItemsGrid(data){
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
-    result = result +' <td colspan="5"></td>';
+    result = result +' <td colspan="4"></td>';
     result = result +'<td><strong>Total</strong></td>';
     result = result +' <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
@@ -501,7 +499,6 @@ function populateInlineItemsGrid1(data){
 		result = result +'	<table width="100%">';
 	    result = result +' <thead>';
 	    result = result +' <tr>';
-	    result = result +' <th><i class="fa fa-ellipsis-h"></i></th>';
 	    result = result +' <th>Date</th>';
 	    result = result +' <th>Candiate</th>';
 	    result = result +' <th>SOW / PO</th>';
@@ -516,7 +513,6 @@ function populateInlineItemsGrid1(data){
     	 var opt = data[i]; 
     	 result = result +'<tr>';
     	 result = result +' <input type="hidden" value='+opt.id+' id="'+i+'lineItemId"   name="'+i+'lineItemId">';
-    	 result = result +' <td><a href="javascript:void(0)"><i class="fa fa-ellipsis-h"></i></a></td>';
     	 result = result +' <td>';
     	 result = result +'<div class="inputCustom">';
     	 result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDateStr+' type="text" readonly>';
@@ -556,7 +552,7 @@ function populateInlineItemsGrid1(data){
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
-    result = result +' <td colspan="5"></td>';
+    result = result +' <td colspan="4"></td>';
     result = result +'<td><strong>Total</strong></td>';
     result = result +' <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
@@ -1597,7 +1593,7 @@ function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	
-	 if(paymentFrequency){
+	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    

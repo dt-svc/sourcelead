@@ -20,7 +20,9 @@ import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.itextpdf.text.Document;
@@ -37,6 +39,9 @@ public class Html2PdfUtil {
 	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
+	
+	@Autowired
+	private RequirementOffersService requirementOffersService;
 	
 	public void convertHtml2PdfUsingHtmlWorker(){
 		try {
@@ -127,17 +132,33 @@ public class Html2PdfUtil {
 		            	}
 	                }
 	                // need to know about offer rate
-		           /* else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
-	                    matchPattern.appendReplacement(sb, contracts.geto);
-	                }*/
+		           else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
+		        	   if(null !=contracts.getRequirementSubmission().getId()){
+		        		   RequirementOffers requirementOffers =  requirementOffersService.getRequirementOfferSubmissionById(contracts.getRequirementSubmission().getId());
+		        		   matchPattern.appendReplacement(sb,requirementOffers.getAmount());
+		        	   }
+		           }
+		           else if(matchPattern.group().equalsIgnoreCase("[Rate Per]")){
+	                   // matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+	                }
+		           else if(matchPattern.group().equalsIgnoreCase("[Rate Type]")){
+	                  //  matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+	                }
+	                
 		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")){
-	                    matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+		            	if(null !=contracts.getBillingAmount()){
+		            		matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Overtime]")){
-	                    matchPattern.appendReplacement(sb, contracts.getOverTimeHours());
+		            	if(null !=contracts.getOverTimeHours()){
+		            		matchPattern.appendReplacement(sb, contracts.getOverTimeHours());
+		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Payment Term]")){
-	                    matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
+		            	if(null !=contracts.getPaymentTerm()){
+		            		matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
+		            	}
 	                }
 	    			
 		            else if(matchPattern.group().equalsIgnoreCase("[Start Date]")){
@@ -153,12 +174,11 @@ public class Html2PdfUtil {
 		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
 		            } 
-		            else if(matchPattern.group().equalsIgnoreCase(" [Billing Cycle]")){
+		            else if(matchPattern.group().equalsIgnoreCase("[Billing Cycle]")){
 		            	if(null != contracts.getBillingPer()){
 		            		matchPattern.appendReplacement(sb, contracts.getBillingPer());
 		            	}
 		            } 
-	               
 	            }
 	            matchPattern.appendTail(sb);
 	        return sb.toString();

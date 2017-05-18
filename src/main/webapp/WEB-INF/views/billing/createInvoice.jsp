@@ -195,7 +195,7 @@ function cancel(){
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 text-right">
 		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
-			placeholder="00:00" class="ReadTextFli">
+			placeholder="00:00" class="ReadTextFli" readonly>
 	</div>
 </div>
 
@@ -228,7 +228,7 @@ function cancel(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>';
+		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -335,7 +335,7 @@ function cancel(){
                    result = result +'  </div>';
                    result = result +'  <div class="form-group mt">';
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
-                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>';
+                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -1697,7 +1697,7 @@ function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	
-	 if(paymentFrequency){
+	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    
