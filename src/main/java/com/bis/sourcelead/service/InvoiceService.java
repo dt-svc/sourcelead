@@ -36,5 +36,5 @@ public interface InvoiceService {
 
 	Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType)throws Exception;
 
-
+	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception;
 }
