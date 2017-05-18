@@ -247,6 +247,9 @@ public class MailBoxRestController {
 	public String sendMailsToTrash(@RequestParam(value = "mailIds", required = false) String mailIds,HttpServletRequest request) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		UserMailBox mailbox = new UserMailBox();
+		String resultJson;
 		
 		if(!isNullOrEmpty(mailIds)){
 			String[] mailBoxIds = mailIds.split(",");
@@ -268,8 +271,13 @@ public class MailBoxRestController {
 			}
 		}
 		
+		Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
+		Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
+		mailbox.setUnreadInboxCount(inboxUnreadMailsCount);
+		mailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 		
-		return "success";
+		resultJson = commonUtil.toJSON(mailbox);
+		return resultJson;
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")

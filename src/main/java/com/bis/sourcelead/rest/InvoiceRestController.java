@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.service.InvoiceTaxService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
@@ -110,6 +112,9 @@ public class InvoiceRestController {
 
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
 	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
@@ -261,7 +266,6 @@ public class InvoiceRestController {
      		}
      		 	
      		if(null != contractsList){
-     			System.out.println("================="+contractsList.size());
          		resultJson = commonUtil.toJSON(contractsList);	
          	}
      	}
@@ -645,20 +649,65 @@ public class InvoiceRestController {
 	
 	
 	@RequestMapping(value = "/getAllProjectAssignedMembers", method = RequestMethod.GET)
-	public @ResponseBody String getAllProjectAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,@RequestParam(value = "frequency", required = false) String frequency,HttpServletRequest request) throws Exception {
+	public @ResponseBody String getAllProjectAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId, @RequestParam(value = "frequency", required = false) String frequency, HttpServletRequest request) throws Exception
+	{
 		
+		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
 		String pattern = "dd-MM-yyyy";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        
-        Date startDate = format.parse(startDateStr);
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
+		List<ProjectMembers> projectMembersList = new ArrayList<>();
+		List<SubmissionApproverHierarchy> sahList = null;
+		if (null != projectId && !"".equalsIgnoreCase(projectId)) {
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate);
+		}
+		if (null != sahList && sahList.size() > 0) {
+			for (SubmissionApproverHierarchy sah : sahList) {
+				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				StringBuilder candidateName = new StringBuilder();
+				if (null != projectMember.getEmployee().getUser().getFirstName()
+						&& null != projectMember.getEmployee().getUser().getLastName()) {
+					candidateName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+				}
+				else {
+					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
+				}
+				projectMember.setCandidateName(candidateName.toString());
+				if (null != projectMember.getEmployee().getUser().getId()) {
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
+					projectMember.setCandidateId(candidate.getId());
+				}
+				projectMember.setStartDate(startDateStr);
+				projectMember.setEndDate(endDateStr);
+				String billableHours = String.valueOf(sah.getBillableHours());;
+				String arr[] = billableHours.split("\\.");
+				StringBuilder sb = new StringBuilder();
+				if (arr[0].length() == 2) {
+					sb.append("0").append(arr[0]);
+				}
+				else if (arr[0].length() == 1) {
+					sb.append("00").append(arr[0]);
+				}
+				if (arr[1].length() == 1) {
+					sb.append(":").append("0").append(arr[1]);
+				}
+				else {
+					sb.append(":").append(arr[1]);
+				}
+				projectMember.setTotalHours(sb.toString());
+				projectMembersList.add(projectMember);
+			}
+			resultJson = commonUtil.toJSON(projectMembersList);
+		}
+		return resultJson;
+//		return commonUtil.toJSON(projectMembersList);
 		
-		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
+		/*List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
 		
 		for(ProjectMembers projectMember :projectMembersList){
 			Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
@@ -689,8 +738,7 @@ public class InvoiceRestController {
 				sb.append(":").append(arr[1]);
 			}
 			projectMember.setTotalHours(sb.toString());
-		}
-		return commonUtil.toJSON(projectMembersList);
+		}*/
 	} 
 	
 //	commented by Rajashekar if if everything goes fine will delete later
@@ -725,8 +773,8 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getAllProjectVendorAssignedMembers", method = RequestMethod.GET)
 	public @ResponseBody String getAllProjectVendorAssignedMembers(@RequestParam(value = "projectId", required = false) String projectId,@RequestParam(value = "frequency", required = false) String frequency,@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request) throws Exception {
 		
+		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
@@ -735,8 +783,51 @@ public class InvoiceRestController {
         
         Date startDate = format.parse(startDateStr);
 		Date endDate = format.parse(endDateStr);
-		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
+		List<SubmissionApproverHierarchy> sahList = null;
+		if(null != projectId && !"".equalsIgnoreCase(projectId)){
+		sahList =submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate);
+		}
+		if(null !=sahList && sahList.size() >0){
+			for(SubmissionApproverHierarchy sah : sahList){
+				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
+				if(null != candidate){
+					StringBuilder empName =new StringBuilder();
+					if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
+						empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+					}else{
+						empName.append(projectMember.getEmployee().getUser().getFirstName());
+					}
+					projectMember.setCandidateName(empName.toString());
+					if(null != candidate){
+						projectMember.setCandidateId(candidate.getId());
+					}
+					projectMember.setStartDate(startDateStr);
+					projectMember.setEndDate(endDateStr);
+					String billableHours = String.valueOf(sah.getBillableHours());;
+					String arr[] = billableHours.split("\\.");
+					StringBuilder sb = new StringBuilder();
+					if(arr[0].length()==2){
+						sb.append("0").append(arr[0]);
+					}else if(arr[0].length()==1){
+						sb.append("00").append(arr[0]);	
+					}
+					if(arr[1].length()==1){
+						sb.append(":").append("0").append(arr[1]);
+					}else{
+						sb.append(":").append(arr[1]);
+					}
+					projectMember.setTotalHours(sb.toString());
+					filteredMembersList.add(projectMember);
+				}
+				
+			}
+			resultJson =  commonUtil.toJSON(filteredMembersList);
+		}
+		return resultJson;
+		
+		/*List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
 		for(ProjectMembers projectMember :projectMembersList){
 			Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
 			if(null != candidate){
@@ -769,8 +860,8 @@ public class InvoiceRestController {
 				projectMember.setTotalHours(sb.toString());
 				filteredMembersList.add(projectMember);
 			}
-		}
-		return commonUtil.toJSON(filteredMembersList);
+		}*/
+		
 	} 
 	
 	
