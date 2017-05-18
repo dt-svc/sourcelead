@@ -276,6 +276,11 @@
                           <button type="button" class="close" data-dismiss="modal" onclick="flushOffboardTask()">&times;</button>
                           <h4 class="modal-title">Add Tasks</h4>
                         </div>
+                        
+                        <div class="success_pop" id="selector"  style="display: none;">
+	         				<i class="fa fa-check-circle"></i><span>Task Saved Successfully.</span>
+					    </div>
+					    
                         <div class="modal-body clearfix"> 
                           
                           <!-- Add New Task Widget -->
@@ -299,7 +304,7 @@
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
-                                    <option>Mediam</option>
+                                    <option>Medium</option>
                                   </select>
                                 </div>
                                 
@@ -429,11 +434,12 @@
                                     
                                   </div>
                                 </div>
-	                               <div class="clearfix mb10">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
-                                </div>
-	                                
+                                <div class="col-md-12 mb10">
+		                               <div class="clearfix mb10">
+	                                   <label>Description</label>
+	                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
+	                                </div>
+	                            </div>   
 	                                </div>
                                 </div>
                                 
@@ -1726,6 +1732,10 @@ function saveOffboardTask(){
 			        	flushOffboardTask();
 			        	getAssignToUsersList();
 			        	getOffboardingTasksList();
+			        	
+			        	document.getElementById("selector").style.display = 'block';
+			        	$("#selector").fadeIn(150);
+			        	$('#selector').delay(1000).fadeOut('slow');
 		        	}
 		        	
 		        },

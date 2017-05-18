@@ -274,7 +274,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
 			//mail scenario for client accept or reject
-			invoiceClientAcceptMail(user,orgLocation,invoice);
+			sendInvoiceMail(user,orgLocation,invoice);
 			saveParentInvoice(invoice);	
 		}
 		
@@ -533,7 +533,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 	}
 	
-	private void invoiceClientAcceptMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
+	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
 
 		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		 EmailMessage emailMessage = new EmailMessage();

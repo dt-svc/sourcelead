@@ -28,6 +28,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
+.paddingTop {
+padding-top: 55px;	
+}
 .viewTemplate .sjfb-field{
 margin: 0;
 }
@@ -429,10 +432,10 @@ $('body').on('blur', '#interviewTemplate_form', function() {
     <nav class="header-nav navbar">
     </nav>
    </header>
-   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container container-wraper positionRelative" style="display: none;"> </div>
-   <div id="viewInterviewTemplateList" class="container"></div>
-   <div id="viewInterviewTemplateNo" class="container"></div>
+   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative paddingTop" style="display: none;"> </div> 
+   <div id="cancelFeedbackDiv" class="container paddingTop container-wraper positionRelative" style="display: none;"> </div>
+   <div id="viewInterviewTemplateList" class="container paddingTop"></div>
+   <div id="viewInterviewTemplateNo" class="container paddingTop"></div>
    
    
    <footer class="clearfix stickyfooter">

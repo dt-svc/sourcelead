@@ -435,6 +435,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(projectMemberId, startDate, endDate);
 	}
 
+	@Override
+	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId, Date frequencyStartDate, Date frequencyEndDate)
+	{
+		return submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,frequencyStartDate,frequencyEndDate);
+	}
+
 	
 	
 	
