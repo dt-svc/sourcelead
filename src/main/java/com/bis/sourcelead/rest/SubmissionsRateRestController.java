@@ -617,7 +617,6 @@ public class SubmissionsRateRestController {
 		public @ResponseBody String storeApplicantRejectReason(@RequestParam(value = "submissionId", required = false) Long submissionId,
 				@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
 			 
-			//this logic is for update status 
 			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
@@ -626,14 +625,13 @@ public class SubmissionsRateRestController {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 			}
 			
-			requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
-			requirementSubmission.setRejectedReason(rejectreason);
+				requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
+				requirementSubmission.setRejectedReason(rejectreason);
 
 				requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				
 				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-				//requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 				requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 				
