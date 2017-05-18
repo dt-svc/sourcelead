@@ -299,7 +299,7 @@
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
-                                    <option>Mediam</option>
+                                    <option>Medium</option>
                                   </select>
                                 </div>
                                 
@@ -429,11 +429,12 @@
                                     
                                   </div>
                                 </div>
-	                               <div class="clearfix mb10">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
-                                </div>
-	                                
+                                <div class="col-md-12 mb10">
+		                               <div class="clearfix mb10">
+	                                   <label>Description</label>
+	                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
+	                                </div>
+	                            </div>   
 	                                </div>
                                 </div>
                                 
