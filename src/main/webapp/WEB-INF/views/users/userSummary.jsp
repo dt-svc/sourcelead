@@ -244,14 +244,7 @@ $(document).ready(function(){
 						
 					     result = result + ' <div id="editRoleDetailsList"></div>';
 						 result = result + ' </div>';
-						
-						  result = result + '<div class="clearfix mb10 mt">';
-						  result = result + '</div>';
-					      result = result + '<div class="clearfix"></div>';
-						  result = result + '<div class="user_summary_edit_cta">';
-						  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
-						  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
-						  result = result + '</div>';
+						 
 						result = result + ' </form>';
 					 result = result + ' </div>';
 				}
@@ -670,9 +663,17 @@ function getChangeRole(userId,userRoleId){
 						result = result + '</div>';	
 					  }	
 				
-				 result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
-				  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
+				    result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
+				    result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
 				  	result = result + '</div><br/>';
+				  	
+				  	 result = result + '<div class="clearfix mb10 mt">';
+					  result = result + '</div>';
+				      result = result + '<div class="clearfix"></div>';
+					  result = result + '<div class="user_summary_edit_cta clearfix">';
+					  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
+					  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
+					  result = result + '</div>';
 	        	
 	        	result = result + '</div>';	
 	        	
