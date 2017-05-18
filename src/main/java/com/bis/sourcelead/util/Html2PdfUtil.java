@@ -146,13 +146,19 @@ public class Html2PdfUtil {
 	                }
 	                
 		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")){
-	                    matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+		            	if(null !=contracts.getBillingAmount()){
+		            		matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Overtime]")){
-	                    matchPattern.appendReplacement(sb, contracts.getOverTimeHours());
+		            	if(null !=contracts.getOverTimeHours()){
+		            		matchPattern.appendReplacement(sb, contracts.getOverTimeHours());
+		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Payment Term]")){
-	                    matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
+		            	if(null !=contracts.getPaymentTerm()){
+		            		matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
+		            	}
 	                }
 	    			
 		            else if(matchPattern.group().equalsIgnoreCase("[Start Date]")){
@@ -168,14 +174,11 @@ public class Html2PdfUtil {
 		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
 		            } 
-		            else if(matchPattern.group().equalsIgnoreCase(" [Billing Cycle]")){
+		            else if(matchPattern.group().equalsIgnoreCase("[Billing Cycle]")){
 		            	if(null != contracts.getBillingPer()){
 		            		matchPattern.appendReplacement(sb, contracts.getBillingPer());
 		            	}
 		            } 
-	                
-	                
-	               
 	            }
 	            matchPattern.appendTail(sb);
 	        return sb.toString();
