@@ -353,35 +353,35 @@
             <div class="form-group">
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
 					<div class="col-lg-8">
-             <div class="input-group er ratetype">
-                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
+			             <div class="input-group er ratetype">
+			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
+				                
+				                <select class="selectpicker" id="billingRateType" name="billingRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+					                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+					                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+					                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+					                 <option ${contract.billingRateType == 'GBP' ? 'selected' : currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+					                 <option ${contract.billingRateType == 'SGD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>SGD</option>
+					                 <option ${contract.billingRateType == 'EUR' ? 'selected' : currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+				                
+				                </select>
+			                </div>
+							  	
+							  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
 			                
-			                <select class="selectpicker" id="billingRateType" name="billingRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
-				                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-				                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-				                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-				                 <option ${contract.billingRateType == 'GBP' ? 'selected' : currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-				                 <option ${contract.billingRateType == 'SGD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>SGD</option>
-				                 <option ${contract.billingRateType == 'EUR' ? 'selected' : currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-			                
-			                </select>
-		                </div>
-						  	
-						  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
-		                
-		                <div class="input-group-btn tblminwidth-75 ratetype">
-		                  <select class="selectpicker" id="billingRatePer" name="billingRatePer" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
-		                    <option value="">Rate Per</option>
-		                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-		                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-		                    <option ${contract.billingRatePer  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-		                    <option ${contract.billingRatePer  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
-		                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-		                    <option ${contract.billingRatePer  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
-		                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-		                  </select>
-		                </div>
-		            </div>
+			                <div class="input-group-btn tblminwidth-75 ratetype">
+			                  <select class="selectpicker" id="billingRatePer" name="billingRatePer" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+			                    <option value="">Rate Per</option>
+			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+			                    <option ${contract.billingRatePer  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
+			                    <option ${contract.billingRatePer  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+			                    <option ${contract.billingRatePer  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+			                  </select>
+			                </div>
+			            </div>
 		            </div>
 					
                    <%-- <div class="clearfix col-md-8" id="errBilling">
@@ -836,6 +836,21 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation-optional');
 		$('#clientContact').attr("data-validation","required");
 		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
@@ -849,6 +864,22 @@ function contractTypeLabels(){
 		
 		$('#vendorContact').removeAttr('data-validation-optional');
 		$('#vendorContact').attr("data-validation","required");
+		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -856,6 +887,22 @@ function contractTypeLabels(){
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Client SOW");
@@ -865,6 +912,22 @@ function contractTypeLabels(){
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Vendor SOW");
@@ -895,7 +958,6 @@ function contractTypeLabels(){
 		$('#billingRatePer').removeAttr('data-validation');
 		$('#billingRatePer').attr('data-validation-optional',"true");
 		
-		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
@@ -905,8 +967,6 @@ function contractTypeLabels(){
 		$('#orgRelationId').attr('data-validation-optional',"true"); */
 		/* $('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true"); */
-		
-		
 		
 		$('#requirementsList').removeAttr('data-validation');
 		$('#requirementsList').attr('data-validation-optional',"true");
