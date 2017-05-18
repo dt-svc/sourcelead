@@ -215,6 +215,7 @@ function SCpagination(){
     	"bPaginate": false,
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"aaSorting": [[1,'desc']],
     	"ordering": true,
     	"aoColumnDefs": [{
 	           'bSortable': false,
