@@ -121,6 +121,12 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	private Float totalHours;
 	
 	@Transient
+	private Float billableHours;
+	
+	@Transient
+	private Float nonBillableHours;
+	
+	@Transient
 	private LinkedHashMap<Date,Float> weekTotals;
 	
     @Transient
@@ -450,6 +456,26 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	public void setProjectToDateTotalHours(Float projectToDateTotalHours) {
 		this.projectToDateTotalHours = projectToDateTotalHours;
+	}
+
+	public Float getBillableHours()
+	{
+		return billableHours;
+	}
+
+	public void setBillableHours(Float billableHours)
+	{
+		this.billableHours = billableHours;
+	}
+
+	public Float getNonBillableHours()
+	{
+		return nonBillableHours;
+	}
+
+	public void setNonBillableHours(Float nonBillableHours)
+	{
+		this.nonBillableHours = nonBillableHours;
 	}
 
 	
