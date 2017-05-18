@@ -1013,6 +1013,8 @@ function showCommonSOWFields(){
 	document.getElementById("hoursPerWeekDiv").style.display="block";
     // $('#hoursPerWeek').removeAttr('data-validation-optional');
 	//$('#hoursPerWeek').attr("data-validation","required");
+	$('#hoursPerWeek').val("40");
+	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 	
 	document.getElementById("overTimeHoursDiv").style.display="block";
     //$('#overTimeHours').removeAttr('data-validation-optional');
@@ -1381,7 +1383,7 @@ function flush(){
 	document.getElementById("approver").value="";
 	document.getElementById("description").value="";
 	
-	document.getElementById("hoursPerWeek").value="";
+	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
 	document.getElementById("totalHoursEstimated").value="";
 	document.getElementById("overtimeRate").value="";

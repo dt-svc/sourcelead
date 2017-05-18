@@ -257,10 +257,12 @@ function PopUp(contractUUID){
 			}
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.offerValue+'</div>';
-				result = result +	'	</div>';
+				if(null != json.offerValue && "" != json.offerValue && 'undefined' != json.offerValue){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.offerValue+'</div>';
+					result = result +	'	</div>';
+				}
 			}
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
@@ -304,52 +306,68 @@ function PopUp(contractUUID){
 			result = result +	'<h4>Billing Details</h4>';
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Hours Per Week</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.hoursPerWeek+'</div>';
-				result = result +	'	</div>';
+				if(null != json.hoursPerWeek && "" != json.hoursPerWeek && 'undefined' != json.hoursPerWeek){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">Hours Per Week</div>';
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.hoursPerWeek+'</div>';
+					result = result +	'	</div>';
+				}
 			}
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Overtime Hours</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overTimeHours+'</div>';
-				result = result +	'	</div>';
+				if(null != json.overTimeHours && "" != json.overTimeHours && 'undefined' != json.overTimeHours){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">Overtime Hours</div>';
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overTimeHours+'</div>';
+					result = result +	'	</div>';
+				}
 			}
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Overtime rate</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overtimeRate+'</div>';
-				result = result +	'	</div>';
+				if(null != json.overtimeRate && "" != json.overtimeRate && 'undefined' != json.overtimeRate){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">Overtime rate</div>';
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overtimeRate+'</div>';
+					result = result +	'	</div>';
+				}
 			}
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+				if(null != json.totalHours && "" != json.totalHours && 'undefined' != json.totalHours){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">Total Estimated Hours</div>';
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.totalHours+'</div>';
+					result = result +	'	</div>';
+				}
+			}
+			
+			if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Total Estimated Hours</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.totalHours+'</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Billing Amount</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingRateType+' '+json.billingAmount+' / '+json.billingRatePer+'</div>';
 				result = result +	'	</div>';
 			}
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Billing Amount</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingAmount+'</div>';
-			result = result +	'	</div>';
+			if(null != json.invoiceFrequency && "" != json.invoiceFrequency && 'undefined' != json.invoiceFrequency){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Billing Cycle</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.invoiceFrequency+'</div>';
+				result = result +	'	</div>';
+			}
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Billing Cycle</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.invoiceFrequency+'</div>';
-			result = result +	'	</div>';
+			if(null != json.paymentTerm && "" != json.paymentTerm && 'undefined' != json.paymentTerm){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
+				result = result +	'	</div>';
+			}
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Tax</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
-			result = result +	'	</div>';
+			if(null != json.tax && "" != json.tax && 'undefined' != json.tax){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Tax</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
+				result = result +	'	</div>';
+			}
 			
 			result = result +	'<div class="clearfix"/>';
 		}
