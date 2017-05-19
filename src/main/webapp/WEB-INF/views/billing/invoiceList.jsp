@@ -780,7 +780,7 @@ function getInvoiceList(){
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span>           ';	
 						}else{
-							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
+							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 						}
 						
 					}
@@ -796,7 +796,7 @@ function getInvoiceList(){
 							if(report.invoiceStatus == "Rejected"){
 								result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span> </td>          ';	
 							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> ';
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> ';
 								
 							}
 							
