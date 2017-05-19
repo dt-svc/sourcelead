@@ -225,8 +225,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setRequirementSubmission(rs);
 		}
 		
-		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
-			contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+		if("Client SOW".equals(jsonObj.getString("contractType")) || "Vendor SOW".equals(jsonObj.getString("contractType"))){
+			if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
+				contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+			}
 		}
 		
 		if(jsonObj.has("overTimeHours") && null != jsonObj.getString("overTimeHours") && !"".equals(jsonObj.getString("overTimeHours"))){

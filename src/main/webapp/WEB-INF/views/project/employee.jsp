@@ -123,10 +123,10 @@
  
  
  <script>
- function filterStatus() {
+ /* function filterStatus() {
 	 $(".export_pipline").toggle();
 	 //$("#exportPop").slideUp();
- };
+ }; */
  </script>
  
 
@@ -153,14 +153,14 @@
  		result = result +'</li>';
 		}
 		
-	    result = result + '	<li><a onClick="filterStatus()"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>|';
-		result = result + '   	<div class="export_pipline filterLi" id="myModal">';
+	    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>|';
+	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
 		result = result + '       	<ul>';
 		result = result + '           	<li><input id="c5" type="checkbox" name="employeeStatus" value ="All" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c5">All</label></li>';
 		result = result + '				<li><input id="c6" type="checkbox"  checked="true" name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
 		result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
 		result = result + '           </ul>';
-		result = result + '       </div>';                	
+		result = result + '       </div>'; 
 		result = result + '   </li>';
 
  

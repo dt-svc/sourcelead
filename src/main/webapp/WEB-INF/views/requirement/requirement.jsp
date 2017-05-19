@@ -76,6 +76,8 @@ width: 100% !important;
 .icon-inside .form-control {
     padding: 6px 12px 6px 30px !important;
 }
+.chosen-container-multi .chosen-choices li.search-field input[type="text"] { width: 100% !important;}
+
 </style>
 
 
