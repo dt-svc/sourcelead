@@ -352,9 +352,38 @@
            
             <div class="form-group">
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-                	<div class="col-lg-8">
-					  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
-					</div>
+					<div class="col-lg-8">
+			             <div class="input-group er ratetype">
+			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
+				                
+				                <select class="selectpicker" id="billingRateType" name="billingRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+					                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+					                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+					                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+					                 <option ${contract.billingRateType == 'GBP' ? 'selected' : currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+					                 <option ${contract.billingRateType == 'SGD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>SGD</option>
+					                 <option ${contract.billingRateType == 'EUR' ? 'selected' : currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+				                
+				                </select>
+			                </div>
+							  	
+							  	<input type="text" class="form-control" id="flatReward" name="flatReward" value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
+			                
+			                <div class="input-group-btn tblminwidth-75 ratetype">
+			                  <select class="selectpicker" id="billingRatePer" name="billingRatePer" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+			                    <option value="">Rate Per</option>
+			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+			                    <option ${contract.billingRatePer  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+			                  </select>
+			                </div>
+			            </div>
+		            </div>
+					
                    <%-- <div class="clearfix col-md-8" id="errBilling">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
@@ -565,7 +594,7 @@ function getVendorContacts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,       
+       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
        success :function(data) {
     	var json = JSON.parse(data);
        	var output = "";
@@ -592,7 +621,7 @@ function getClientContacts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -807,6 +836,21 @@ function contractTypeLabels(){
 		$('#clientContact').removeAttr('data-validation-optional');
 		$('#clientContact').attr("data-validation","required");
 		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
@@ -820,6 +864,22 @@ function contractTypeLabels(){
 		
 		$('#vendorContact').removeAttr('data-validation-optional');
 		$('#vendorContact').attr("data-validation","required");
+		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -827,6 +887,22 @@ function contractTypeLabels(){
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Client SOW");
@@ -836,22 +912,38 @@ function contractTypeLabels(){
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
 		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation-optional');
+		$('#flatReward').attr('data-validation',"required");
+		
+		$('#billingRateType').removeAttr('data-validation-optional');
+		$('#billingRateType').attr('data-validation',"required");
+		
+		$('#billingRatePer').removeAttr('data-validation-optional');
+		$('#billingRatePer').attr('data-validation',"required");
+		
+		$('#invoiceFrequency').removeAttr('data-validation-optional');
+		$('#invoiceFrequency').attr('data-validation',"required");
+		
+		$('#paymentFrequency').removeAttr('data-validation-optional');
+		$('#paymentFrequency').attr('data-validation',"required");
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Vendor SOW");
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 
-		$('#percentageRewardValue').removeAttr('data-validation');
-		$('#flatRewardValue').removeAttr('data-validation');
+		//$('#percentageRewardValue').removeAttr('data-validation');
+		//$('#flatRewardValue').removeAttr('data-validation');
 		$('#invoiceFrequency').removeAttr('data-validation');
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
 		$('#taxFlatRewardValue').removeAttr('data-validation');
 		
 		
-		$('#percentageRewardValue').attr('data-validation-optional',"true");
-		$('#flatRewardValue').attr('data-validation-optional',"true");
+		//$('#percentageRewardValue').attr('data-validation-optional',"true");
+		//$('#flatRewardValue').attr('data-validation-optional',"true");
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').attr('data-validation-optional',"true");
 		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
@@ -860,6 +952,11 @@ function contractTypeLabels(){
 		$('#flatReward').removeAttr('data-validation');
 		$('#flatReward').attr('data-validation-optional',"true");
 		
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
 		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
@@ -870,8 +967,6 @@ function contractTypeLabels(){
 		$('#orgRelationId').attr('data-validation-optional',"true"); */
 		/* $('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true"); */
-		
-		
 		
 		$('#requirementsList').removeAttr('data-validation');
 		$('#requirementsList').attr('data-validation-optional',"true");
@@ -918,6 +1013,8 @@ function showCommonSOWFields(){
 	document.getElementById("hoursPerWeekDiv").style.display="block";
     // $('#hoursPerWeek').removeAttr('data-validation-optional');
 	//$('#hoursPerWeek').attr("data-validation","required");
+	$('#hoursPerWeek').val("40");
+	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 	
 	document.getElementById("overTimeHoursDiv").style.display="block";
     //$('#overTimeHours').removeAttr('data-validation-optional');
@@ -1096,7 +1193,7 @@ function hideCommonSOWFields(){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getRewardType(rewardType){
 	
 	 $("#rewardType").val(rewardType);
@@ -1106,14 +1203,18 @@ function getRewardType(rewardType){
 	 
 	 $('#percentageReward').find('p.jquery_form_error_message').remove();
 	 $('#flatReward').find('p.jquery_form_error_message').remove();
+	 $('#billingRateType').find('p.jquery_form_error_message').remove();
+	 $('#billingRatePer').find('p.jquery_form_error_message').remove();
 	 
 	if(rewardType == 'Percentage'){
 		document.getElementById("percentageReward").style.display="";
 		document.getElementById("flatReward").style.display="none";
+		document.getElementById("billingRateType").style.display="none";
+		document.getElementById("billingRatePer").style.display="none";
 		document.getElementById("flatRateType").style.display="none";
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
-	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
+	   // document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
     	$('#percentageRewardValue').attr("data-validation","required validate_float");  
 		$('#percentageRewardValue').removeAttr('data-validation-optional');
 	    $('#flatRewardValue').removeAttr('data-validation');
@@ -1124,11 +1225,13 @@ function getRewardType(rewardType){
 	
 	if(rewardType == 'Flat'){
 		document.getElementById("flatReward").style.display="";
+		document.getElementById("billingRateType").style.display="";
+		document.getElementById("billingRatePer").style.display="";
 		document.getElementById("flatRateType").style.display="";
 		document.getElementById("percentageReward").style.display="none";
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
-		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
+		//document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
 		$('#flatRewardValue').attr("data-validation","required validate_float");
 		$('#flatRewardValue').removeAttr('data-validation-optional');
 		$('#percentageRewardValue').removeAttr('data-validation');
@@ -1136,14 +1239,14 @@ function getRewardType(rewardType){
 		
 	}
 }
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function getPercentageValue(){
 	var percentageValue = document.getElementById("percentageRewardValue").value;
 	if(percentageValue > 100 || percentageValue < 0){
 		/* $("#releaseToCWBtn").attr("disabled", "disabled"); */
-	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+	    //$('#percentageReward').find('p.jquery_form_error_message').remove(); 
 	   
 	    if(percentageValue < 0){
 	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
@@ -1161,7 +1264,7 @@ function getPercentageValue(){
 	}else{
 		 /* $("#releaseToCWBtn").removeAttr("disabled"); */
 		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
-		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+		// $('#percentageReward').find('p.jquery_form_error_message').remove(); 
 		 $( "#releaseToCWBtn" ).removeAttr("style");
 		 $( "#releaseToCWBtn" ).click(function() {
 		 if ($(this).validate(false, validationSettings)){
@@ -1170,7 +1273,7 @@ function getPercentageValue(){
 	}
 	
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">
@@ -1280,7 +1383,7 @@ function flush(){
 	document.getElementById("approver").value="";
 	document.getElementById("description").value="";
 	
-	document.getElementById("hoursPerWeek").value="";
+	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
 	document.getElementById("totalHoursEstimated").value="";
 	document.getElementById("overtimeRate").value="";

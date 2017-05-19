@@ -22,7 +22,7 @@ function customizeFields(templateId,sourceleadUrl,type){
     	var result = "";
     	result = result +"<div class='project_inn_mask'></div>";
     	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-    	result = result +"<p>Are you sure ?</p>";
+    	result = result +"<p>Are you sure to delete ?</p>";
     	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
     	result = result +"<b href='javascript:void(0)'><input type='button' class='nomr' id='deleteCustomField'  value='Ok' /><input class='u_can_color nomr' type='button' id='cancelDelete' value='Cancel'></b>";
     	result = result +"</div>";
@@ -141,7 +141,7 @@ function addField(fieldType,value,labelValue,sourceleadUrl,labelValidationCheck)
         includeChoicesHTML = '' +
             '<div class="choices col-md-12">' +
             '<ul class="clearfix"></ul>' +
-            '<button type="button" class="add-choice btn btn-primary"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Option</button>' +
+            '<button type="button" class="add-choice btn btn-primary ml"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Option</button>' +
             '</div>'
     }
     

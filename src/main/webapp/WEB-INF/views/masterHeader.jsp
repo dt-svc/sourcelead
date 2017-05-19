@@ -301,7 +301,7 @@ document.onkeydown=function(e){
             </c:if>
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-            	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </a></li>
+            	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
             </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
             <li> <a href="javascript:void(0)" title="Locations" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
@@ -370,6 +370,7 @@ document.onkeydown=function(e){
           </c:if>
           
           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
+           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
@@ -391,14 +392,15 @@ document.onkeydown=function(e){
 	                     <li><a href="<c:url value="/orgContractTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contract Template</a></li>
 						</sec:authorize>
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
-	                    	 <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>On-boarding</a></li>
+	                    	 <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Onboarding</a></li>
 	                      </sec:authorize>
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Off-boarding</a></li>
+	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Offboarding</a></li>
 						  </sec:authorize>	
 	              </ul>
 	            </div>
 	          </li>
+          </sec:authorize>
          </sec:authorize>
          
          <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">

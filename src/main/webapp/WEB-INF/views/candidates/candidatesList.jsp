@@ -1032,18 +1032,18 @@ function cancel(candidateId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Candidate List</h2>
+      <h2>Candidate List - <span class="label label-success">${candidateCount}</span></h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
     
-     <div class=" pull-left reportsH">
+     <%-- <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
-		</div>   
+		</div>   --%> 
 		
   </section>
   <div class="timesheet_out">
@@ -1307,7 +1307,7 @@ function cancel(candidateId){
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-success"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate(); minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
@@ -2400,9 +2400,7 @@ function minMaxExperience(){
 	     $("#excludeKeyWord").empty();
 	     $("#designation").empty();
 	      $("#minRate").val(''); 
-	      $("#country").val(''); 
-	      $("#state").val('');
-	      $("#city").val('');
+	     
 	      
 	     $("#currency").val('');
 	     $('.selectpicker').selectpicker('refresh');

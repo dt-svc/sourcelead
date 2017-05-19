@@ -35,12 +35,7 @@ function errRemoveClientContact(){
 }
 
 </script>
-<script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
+
 
 <div class="side_mask">
 	<div class="proj_close"></div>
@@ -99,8 +94,7 @@ function cancel(){
 						<div class="form-group">
 							<label class="col-md-3">Payment terms</label>
 							<div class="col-md-9" id="errPayment">
-								<select class="chosen-select form-control" id="paymentFrequency"
-									name="paymentFrequency">
+								<select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" onchange="getDueDateByFrequency();">
 									<option value="">Select frequency</option>
 									<option value="10 days">10 days</option>
 									<option value="15 days">15 days</option>
@@ -180,7 +174,7 @@ function cancel(){
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);" onchange="getSowRate(REPLACEROWID)">
 	</div>
 </div>
 
@@ -196,7 +190,7 @@ function cancel(){
 <div id="divTaskTd6" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 text-right">
 		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
-			placeholder="00:00" class="ReadTextFli">
+			placeholder="00:00" class="ReadTextFli" readonly>
 	</div>
 </div>
 
@@ -229,7 +223,7 @@ function cancel(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div>';
+		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -297,7 +291,7 @@ function cancel(){
          result = result +'  <div class="col-md-7 select-field">';
          result = result +'  <div class="row">';
          result = result +'  <div class="col-md-7 paddingRight">';
-         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount">';
+         result = result +'  <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDiscount();">';
          result = result +'  <option value="percentage">Discount %</option>';
          result = result +'  <option value="flat">Discount Value</option>';
          result = result +'  </select>';
@@ -336,7 +330,7 @@ function cancel(){
                    result = result +'  </div>';
                    result = result +'  <div class="form-group mt">';
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
-                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli"></div>';
+                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -510,13 +504,11 @@ function cancel(){
 		 	 }	 	
 	    }
 	       	 
-	    	 
-	    
 	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	     
 	     var afterDiscountTotal = $("#afterDiscountTotal").val();
 	     
-		    for(var i=0; i< maxRowNum; i++){
+		    for(var i=1; i< maxRowNum; i++){
 		         var taxType = $("#"+i+"taxdiscountType").val();
 		        
 		         var taxValue = $("#"+i+"taxdiscountvalue").val();
@@ -896,7 +888,7 @@ function cancel(){
 	                    	 
 	                    	 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td>&nbsp;&nbsp;<input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
+	                    	 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
 	                    	 result = result +'<td>'+associateName+'</td>';
 	                    	 result = result +'<td>'+opt.email+'</td>';
 	                    	 result = result +'<td>'+mobilephone+'</td>';
@@ -1181,6 +1173,8 @@ function pagination(){
 				 $("#"+rowId+"totalHours").val(hours+":"+minute);
 				 calAddRowAmount(hours,minute,rowId);
 			 }
+		 }else{
+			 calAddRowAmount("000","00",rowId);
 		 }
 		 
   }
@@ -1265,7 +1259,7 @@ function calculateDiscount(){
 			total = subTotal-discountValue;
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
@@ -1278,9 +1272,9 @@ function calculateDiscount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue);
+			$("#discountTotal").val(perCentValue.toFixed(2));
 			$("#grandTotal").val(total);
-			$("#afterDiscountTotal").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
@@ -1368,8 +1362,7 @@ function calculateDiscount(){
 
 <div id="divTaxTd2" style="display: none; float: left;">
 	<div class="btn-group tblminwidth-75">
-		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType"
-			name="REPLACEROWIDtaxdiscountType">
+		<select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="REPLACEROWIDtaxdiscountType" onchange="calculateTaxDiscount(REPLACEROWID);">
 			<option value="percentage">Percentage</option>
 			<option value="flat">Flat</option>
 		</select>
@@ -1510,6 +1503,7 @@ function calculateTaxDiscount(){
 			dt.setDate(dt.getDate() + 1);
 			$("#dueDate").datepicker("option", "minDate", dt);
 					errInvoiceDate();
+					getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1540,6 +1534,25 @@ function errDueDate(){
 	$('#errDuedate').find('p.jquery_form_error_message').remove(); 
 }
 
+</script>
+
+<script>
+function getSowRate(id){
+	var contractId = $("#"+id+'sow').val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "GET",
+    	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
+        success: function(data) {
+        	 if(data != null && data != ''){
+        		var json = JSON.parse(data);
+	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 totalHoursCalculateAmount(id);
+        	} 
+        },
+        
+    });
+}
 </script>
 
 <script>
@@ -1676,6 +1689,7 @@ function getPaymentTerms(){
 				 	if(repot.paymentTerms != null && repot.paymentTerms != '' && repot.paymentTerms != 'undefined'){
 		           		$("#paymentFrequency").val(repot.paymentTerms);
 		           	    $('#paymentFrequency').trigger("chosen:updated");
+		           	  getDueDateByFrequency();
 		           	}else{
 		           		$("#paymentFrequency").val('');
 		           	    $('#paymentFrequency').trigger("chosen:updated");
@@ -1692,7 +1706,30 @@ function getPaymentTerms(){
 	});
 }
 </script>
-
+<script>
+function getDueDateByFrequency(){
+	 var invoiceDate = document.getElementById("invoiceDate").value;
+	 var paymentFrequency = document.getElementById("paymentFrequency").value;
+	
+	 if(paymentFrequency && invoiceDate){
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getDueDateByFrequency?${_csrf.parameterName}=${_csrf.token}&paymentFrequency="+paymentFrequency+"&invoiceDate="+invoiceDate,
+			success :function(dueDateStr) {
+				
+				$("#dueDate").val(dueDateStr);
+				$("#invoiceLoading").removeAttr("style");
+			}
+		});
+		
+	}else{
+		$("#dueDate").val('');
+	}
+}
+</script> 
 
 <script>
 function saveInvoice(saveType){
@@ -1730,7 +1767,7 @@ function saveInvoice(saveType){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
 	     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-	     		result = result +"		<p>At least one Add column Inovoice Line Item</p>";
+	     		result = result +"		<p>At least one Add column Receivables Line Item</p>";
 	     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	     		result = result +"	</div>";
@@ -1807,7 +1844,12 @@ $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     }
 });
 </script>
-
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <script>
 var validationSettings = {
 		errorMessagePosition : 'element',

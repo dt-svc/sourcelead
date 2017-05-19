@@ -162,7 +162,7 @@ function getAddApplicant(requirementId){
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
 	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
-	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -241,7 +241,6 @@ function getAddApplicant(requirementId){
     	 $("#newUploadFile").focus();
     	 if(validate_fileupload(this.value)){
     		 var docSize = this.files[0].size;
-    		 alert(docSize);
    	      $("#uploadFileGroup1").find('p.jquery_form_error_message').remove();
    	      if(docSize > 2097152){
    	    	  document.getElementById("newUploadFile").value = '';
@@ -259,31 +258,6 @@ function getAddApplicant(requirementId){
 	document.getElementById("newUploadBtn").onchange = function () {
 		$('#newUploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	};
-	
-	
-	/* var selectedFile = document.getElementById("uploadBtn");
-	 selectedFile.addEventListener("change", function() {
-	 	 $("#uploadFile").focus();
-	 	 if(validate_fileupload(this.value)){
-	 		 var docSize = this.files[0].size;
-	 		 alert(docSize);
-		      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-		      if(docSize > 2097152){
-		    	  document.getElementById("uploadFile").value = '';
-		    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-				  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-				  document.getElementById("uploadFile").setAttribute('record-exist','yes');
-				  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-		      }else{
-		    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	   		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	 	    }
-	 	 }
-	 });
-		
-		document.getElementById("uploadBtn").onchange = function () {
-			$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-		}; */
 	
 }
 </script>

@@ -74,7 +74,7 @@ z-index: 9999999999 !important;
 				  </div>
 			  </div>
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<div class="row">
+					<div class="row mrng0">
 						<div class="col-md-6">
 								
 								<div class="form-group">

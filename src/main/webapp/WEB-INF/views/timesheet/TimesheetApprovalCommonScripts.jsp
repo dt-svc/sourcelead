@@ -139,6 +139,10 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 	    success: function(data) {
 	    		 //$("#timesheetPopUp").removeAttr("style");
  	    	     $("#timesheetPopUp").empty();
+ 	    	     var closeElement = $('.proj_close');
+ 	    	      closeElement.removeAttr('onclick');
+ 	    	     closeElement.attr('onclick','timesheetApprovalTableRowByProjectMemberId("'+timesheetFrequency+'","'+projectMemberId+'","'+from+'Close");'); 
+ 	    	      
 			     $("#timesheetPopUp").append(data);
 			     maskme();
 			     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
@@ -189,7 +193,7 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
                
 <script>
 function addTimeSheetRow(projectId) {
-	          
+	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){     
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -325,8 +329,8 @@ function addTimeSheetRow(projectId) {
 			var projectTaskId = maxRowNum+"task1Id"; 
 			
 			getProjectTasks(projectTaskId,projectId); 
-			
-		}	
+	    }		
+	}	
         
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
@@ -435,7 +439,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    	 var table = $('#example').DataTable();
 			 table.row('#row'+projectMemberId+timesheetFrequency+'').remove().draw( false );
 		 }
-		 else{
+		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
 			 var sourceleadUrl ='${sourceleadUrl}';
 				$.ajax({
 			   	type: "POST",
@@ -445,9 +449,11 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		     		    		 $(".side_mask").fadeOut(200); 
 		     	        		 $("body").css('overflow-y', 'scrool');
 		     	        		 $("#dynamic").removeAttr('style');
-					    		 $("#row"+projectMemberId).empty();
-						         $("#row"+projectMemberId).html(data);
-						        /* pagination(); */
+		     	        		 
+		     	        		 if(from == 'approverClose' || from == 'approver' ){
+		     	        			 $("#row"+projectMemberId).empty();
+							         $("#row"+projectMemberId).html(data);
+		     	        		 }
 					        
 					    }
 			    }); 
@@ -618,7 +624,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 	<!-- addrow divs -->
 	 <div id="divadttTd1" style="display:none;" >   
 	      <div> 
-	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId pull-left" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 	                   <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 	                       	<option value="${task.id}">${task.taskName}</option>
 	                    </c:forEach> --%>
@@ -830,10 +836,10 @@ function checkHours(){
 	    	 
 	 }else{
 	    	if(i == '1'){
-	    		result = result+"MonDay ,";
+	    		result = result+"Monday ,";
 	    	}
 	    	if(i == '2'){  
-	    		result = result+"TuesDay ,";
+	    		result = result+"Tuesday ,";
 	    	}
 	    	if(i == '3'){  
 	    		result = result+"Wednesday ,";
@@ -1291,7 +1297,8 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
 	 	    	  $("#status"+projectMemberId).html("REJECTED");
 	 	    	  $("#action"+projectMemberId).empty();
-	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");  
+	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");
+	 	    	  $("#row"+projectMemberId).hide();
 	   	   }
 	   	   cancelRejectSubmission(projectMemberId);
 	   	    pagination();
@@ -1375,7 +1382,8 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 
 <script>
 function pagination(){ 
-    $('#example').DataTable( { 
+    $('#example').DataTable( {
+    	"scrollX": true,    	
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,

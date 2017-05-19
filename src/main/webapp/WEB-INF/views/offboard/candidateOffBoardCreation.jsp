@@ -276,6 +276,11 @@
                           <button type="button" class="close" data-dismiss="modal" onclick="flushOffboardTask()">&times;</button>
                           <h4 class="modal-title">Add Tasks</h4>
                         </div>
+                        
+                        <div class="success_pop" id="selector"  style="display: none;">
+	         				<i class="fa fa-check-circle"></i><span>Task Saved Successfully.</span>
+					    </div>
+					    
                         <div class="modal-body clearfix"> 
                           
                           <!-- Add New Task Widget -->
@@ -299,7 +304,7 @@
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
-                                    <option>Mediam</option>
+                                    <option>Medium</option>
                                   </select>
                                 </div>
                                 
@@ -429,11 +434,12 @@
                                     
                                   </div>
                                 </div>
-	                               <div class="clearfix mb10">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
-                                </div>
-	                                
+                                <div class="col-md-12 mb10">
+		                               <div class="clearfix mb10">
+	                                   <label>Description</label>
+	                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
+	                                </div>
+	                            </div>   
 	                                </div>
                                 </div>
                                 
@@ -1004,7 +1010,6 @@ function loadOffBoardingTemplates(offboardTemplateId){
  <script>
  function loadOffboardingUser(offBoardingUUID){
 	 
-	 
 	 if(offBoardingUUID == null && offBoardingUUID == "" && offBoardingUUID =="undefined"){
 		 offBoardingUUID = document.getElementById("candidateOffBoardUUID").value;
 	 }
@@ -1092,6 +1097,8 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	        },
 	    });
 	 }
+	 
+	 $("#offboardTasksList").empty();
  }
  </script>
  
@@ -1227,13 +1234,12 @@ function getOffboardingCheckList(){
 		        result = result + '</div>';
 		        result = result + '</div>';
 		        result = result + '</div>';
-		        
-		        result = result + '<div class="clearfix mb row">';
+		       
 	           
 	           result = result + '<div id="form-fields">';
 	           result = result + '</div>';
-	           result = result + '<div class="form-footer clearfix row mt">';
-	           
+	           result = result + '<div class="form-footer clearfix mt">';
+	           result = result + '<div class="clearfix"></div>';
 	           result = result + '<div class="pull-right mr">';
 	           
 	           result = result +"<input type='button' value='Save' id='save_checkList_button'  onclick='createOffboardCheckList(\"save\");' class='btn btn-sm btn-success'>";
@@ -1707,17 +1713,29 @@ function saveOffboardTask(){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
+	        var tasksIds = document.getElementsByName("savedTemplateTask");
+	    	var tasks = '';
+	    	for(var i=0; i < tasksIds.length; i++){
+	    		tasks = tasks+tasksIds[i].value+",";
+	    	}
+	    	
+	    	tasks = tasks.substring(0, tasks.length - 1);
+	        
 	       
 	        $("#offboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	 url: sourceleadUrl+"/saveCandidateOffBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&tasks="+tasks,
 		        success: function(result) {
 		        	if(result == 'success'){
 		        		$("#offboardtasksLoading").removeAttr("style");
 			        	flushOffboardTask();
 			        	getAssignToUsersList();
 			        	getOffboardingTasksList();
+			        	
+			        	document.getElementById("selector").style.display = 'block';
+			        	$("#selector").fadeIn(150);
+			        	$('#selector').delay(1000).fadeOut('slow');
 		        	}
 		        	
 		        },

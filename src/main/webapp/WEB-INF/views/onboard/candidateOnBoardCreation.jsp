@@ -385,8 +385,12 @@
                           <button type="button" class="close" data-dismiss="modal" onclick="flushOnboardTask()">&times;</button>
                           <h4 class="modal-title">Add Tasks</h4>
                         </div>
+                        
+                        <div class="success_pop" id="selector"  style="display: none;">
+	         				<i class="fa fa-check-circle"></i><span>Task Saved Successfully.</span>
+					    </div>
+					    
                         <div class="modal-body clearfix"> 
-                          
                           <!-- Add New Task Widget -->
                           <div class="col-md-12 clearfix">
                           <div id="onboardtasksLoading"></div>
@@ -408,7 +412,7 @@
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
-                                    <option>Mediam</option>
+                                    <option>Medium</option>
                                   </select>
                                 </div>
                                 
@@ -534,15 +538,15 @@
                                 </div>
                                 </div>
 	                           
-	                            <div class="clearfix"></div>    
-                               <div class="clearfix mb10">
-                                  <label>Description</label>
-                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
-                                </div>
-	                                
+	                            <div class="clearfix"></div>   
+	                            <div class="col-md-12 mb10">
+	                               <div class="clearfix mb10">
+	                                  <label>Description</label>
+	                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
 	                                </div>
                                 </div>
-                                
+                                </div>
+                                </div>
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
@@ -2110,21 +2114,33 @@ function saveOnboardTask(){
 	        
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        
+	    	var tasksIds = document.getElementsByName("savedTemplateTask");
+	    	var tasks = '';
+	    	for(var i=0; i < tasksIds.length; i++){
+	    		tasks = tasks+tasksIds[i].value+",";
+	    	}
+	    	
+	    	tasks = tasks.substring(0, tasks.length - 1);
+	        
 	       
 	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&tasks="+tasks, 
 		        success: function(result) {
 		        	if(result == 'success'){
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
 			        	getAssignToUsersList();
 			        	getOnboardingTasksList();
+			        	
+			        	document.getElementById("selector").style.display = 'block';
+			        	$("#selector").fadeIn(150);
+			        	$('#selector').delay(1000).fadeOut('slow');
 		        	}
 		        	
 		        },
-		    });  
+		    });   
 	        return true;
 		
 	  }else{
@@ -2265,7 +2281,6 @@ function saveAndFinishOnboardTemplate(onboardId){
 	}
 	
 	tasks = tasks.substring(0, tasks.length - 1);
-	
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');

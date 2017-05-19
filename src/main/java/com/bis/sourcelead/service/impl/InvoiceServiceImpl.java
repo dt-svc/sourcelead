@@ -1,6 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -262,14 +266,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 		//store attached Documents (after)
 		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
 		        invoice.setFileName(file.getName());
-		        byte[] bytesArray = new byte[(int) file.length()];
+//		        byte[] bytesArray = new byte[(int) file.length()];
+		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
 		
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
 			//mail scenario for client accept or reject
-			invoiceClientAcceptMail(user,orgLocation,invoice);
+			sendInvoiceMail(user,orgLocation,invoice);
 			saveParentInvoice(invoice);	
 		}
 		
@@ -289,12 +294,39 @@ public class InvoiceServiceImpl implements InvoiceService{
 			}
 		}
 		
-		//mail scenario for client accept or reject
+		/*//mail scenario for client accept or reject
 		if(saveType.equalsIgnoreCase("SENT")){
 			invoiceClientAcceptMail(user,orgLocation,invoice);
-		}
+		}*/
 
 		return invoice;
+	}
+	private byte[] getByteArray(File file) throws IOException {
+		    ByteArrayOutputStream ous = null;
+		    InputStream ios = null;
+		    try {
+		        byte[] buffer = new byte[4096];
+		        ous = new ByteArrayOutputStream();
+		        ios = new FileInputStream(file);
+		        int read = 0;
+		        while ((read = ios.read(buffer)) != -1) {
+		            ous.write(buffer, 0, read);
+		        }
+		    }finally {
+		        try {
+		            if (ous != null)
+		                ous.close();
+		        } catch (IOException e) {
+		        }
+
+		        try {
+		            if (ios != null)
+		                ios.close();
+		        } catch (IOException e) {
+		        }
+		    }
+		    return ous.toByteArray();
+		
 	}
 	private void saveParentInvoice(Invoice invoice) throws Exception {
 		Invoice parentInvoice = new Invoice();
@@ -419,7 +451,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     List<Long> updatedInvoiceLineItems = new ArrayList<Long>();
 		
 		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-		 for(int i=1;i<maxRowCount;i++){
+		 for(int i=0;i<maxRowCount;i++){
 			 
 			 if(jsonObj.has(i+"invoiceStartDate")){
 			 
@@ -501,7 +533,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 	}
 	
-	private void invoiceClientAcceptMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
+	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
 
 		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -552,16 +584,30 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
-		 
 		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
 		 EmailAttachment emailAttachment = new EmailAttachment();
 		 emailAttachment.setUUID(UUID);
+		 
+		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+		 for(InvoiceDocument doc:documenetSet){
+			 EmailAttachment docAttachment = new EmailAttachment();
+			 docAttachment.setDocFile(doc.getDocFile());
+			 docAttachment.setName(doc.getFileName());
+			 documentList.add(docAttachment);
+		 }
+		 
+		 }
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
+		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
+		 attachmentList.addAll(documentList);
+		 }
+		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 //calling the sendEmail method of emailScenerioUtil		
-		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
+		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
 	}
