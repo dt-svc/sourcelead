@@ -1,12 +1,15 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.util.Date;
 import java.util.Set;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +68,14 @@ public class InvoicePdfHelper {
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception
 	{
 		File invoiceFile = new File(org.getOrgName() + "_" + invoice.getInvoiceId() + ".pdf");
-		OutputStream file = new FileOutputStream(invoiceFile);
+
+		//StringBuilder fileSB = new StringBuilder();
+		Document document = new Document();
+		//File invoiceFile = File.createTempFile(fileSB.append(org.getOrgName()).append(invoice.getInvoiceId()).toString(),".pdf");
+		invoiceFile.setReadable(true);
+
 		try {
-			Document document = new Document();
-			PdfWriter writer = PdfWriter.getInstance(document, file);
-			writer.createXmpMetadata();
+			PdfWriter.getInstance(document, new FileOutputStream(invoiceFile));
 			document.open();
 			// save image file in pdf
 			document = addLogoToPdfFile(document, org);
@@ -192,11 +198,14 @@ public class InvoicePdfHelper {
 			LineSeparator ls = new LineSeparator();
 			ls.setAlignment(Element.ALIGN_BOTTOM);
 			document.add(new Chunk(ls));
-			document.close();
-			file.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			//file.close();
+		}  catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
 		return invoiceFile;
 	}
 	
@@ -245,6 +254,7 @@ public class InvoicePdfHelper {
 		PdfPTable table = new PdfPTable(4);
 		table.setWidthPercentage(100);
 		table.setWidths(new int[] { 4, 3, 3, 3 });
+		if(!invoice.getInvoiceTax().isEmpty()){
 		table.addCell(getCell("TAX", Element.ALIGN_CENTER, font12b));
 		table.addCell(getCell("Type", Element.ALIGN_CENTER, font12b));
 		table.addCell(getCell("Base amount:", Element.ALIGN_CENTER, font12b));
@@ -268,6 +278,7 @@ public class InvoicePdfHelper {
 		 * 
 		 */
 		table.setSpacingAfter(20);
+		}
 		return table;
 	}
 	
@@ -306,10 +317,12 @@ public class InvoicePdfHelper {
 		PdfPTable table = new PdfPTable(3);
 		table.setWidthPercentage(100);
 		table.setWidths(new int[] { 2,2, 2 });
+		if(invoice.getDiscountType() != null && invoice.getDiscountValue() != null){
 		table.addCell(getCell("Discount:", Element.ALIGN_LEFT, font12b));
 		table.addCell(getCell(" " + invoice.getDiscountType(), Element.ALIGN_RIGHT, font10));
 		table.addCell(getCell(" "+ invoice.getDiscountValue(), Element.ALIGN_RIGHT, font12b));
 		table.setSpacingAfter(20);
+		}
 			return table;
 	}
 }

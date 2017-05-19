@@ -129,6 +129,8 @@ public class SecurityConfig  {
     			.antMatchers("/downloadRequirementAttachment").permitAll()
     			.antMatchers("/resources/**/**").permitAll() 
     			.antMatchers("/acceptOrRejectOrRateNegotiateApplicantRates").permitAll() 
+    			.antMatchers("/acceptOrRejectRequirement").permitAll() 
+    			.antMatchers("/storeApplicantRejectReason").permitAll() 
     			.antMatchers("/acceptOrRejectOrRateNegotiateUserRates").permitAll()
     			.antMatchers("/storeReject").permitAll() 
     			.antMatchers("/getRateHistoryBySubmissionId").permitAll() 

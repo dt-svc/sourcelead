@@ -666,6 +666,8 @@ function flushProjectTasks(){
 	$("#addTaskText").html('Add Task');
 	$("#save_task").removeAttr('onclick');
 	$("#save_task").attr('onclick', 'addTasks();');
+	$("input#taskName").removeClass("error");
+	 $('input#taskName').removeAttr( "record-exist record-exist-errormsg");
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>

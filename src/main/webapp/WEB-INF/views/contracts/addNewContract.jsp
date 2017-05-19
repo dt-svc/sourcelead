@@ -318,28 +318,28 @@
            <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Hours Per Week</label>
 	              <div class="col-md-8">
-				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${!empty contract && !empty contract.hoursPerWeek  ? contract.hoursPerWeek : contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? '' : '40' }" placeholder="Enter Hours" field-name="Hours Per Week">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${!empty contract && !empty contract.hoursPerWeek  ? contract.hoursPerWeek : contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? '' : '40' }" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Hours" field-name="Hours Per Week">
 	              </div>
             </div>
             
             <div class="form-group" id="overTimeHoursDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Overtime Hours</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" placeholder="Enter Hours" field-name="Overtime Hours">
+					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Hours" field-name="Overtime Hours">
               	</div> 
             </div>
             
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Total Hours Estimated</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
            <div class="form-group" id="overtimeRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Overtime Rate</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" placeholder="Overtime Rate" field-name="Overtime Rate">
+					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" data-validation-optional="true" data-validation="validate_int validate_length length1-8" placeholder="Overtime Rate" field-name="Overtime Rate">
 					  <%-- <div class="col-lg-4">
 						<select class="form-control selectpicker" id="overtimeRateType" name="overtimeRateType" field-name="Overtime Rate Type">
 						  <option value="">Select Type</option>
@@ -374,10 +374,10 @@
 			                    <option value="">Rate Per</option>
 			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-			                    <option ${contract.billingRatePer  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-			                    <option ${contract.billingRatePer  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+			                    <option ${contract.billingRatePer  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
 			                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-			                    <option ${contract.billingRatePer  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 			                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
 			                  </select>
 			                </div>
@@ -594,7 +594,7 @@ function getVendorContacts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,       
+       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
        success :function(data) {
     	var json = JSON.parse(data);
        	var output = "";
@@ -621,7 +621,7 @@ function getClientContacts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -837,7 +837,7 @@ function contractTypeLabels(){
 		$('#clientContact').attr("data-validation","required");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
@@ -866,7 +866,7 @@ function contractTypeLabels(){
 		$('#vendorContact').attr("data-validation","required");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
@@ -889,7 +889,7 @@ function contractTypeLabels(){
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
@@ -914,7 +914,7 @@ function contractTypeLabels(){
 		$('#clientContact').attr('data-validation-optional',"true");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
@@ -934,16 +934,16 @@ function contractTypeLabels(){
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 
-		$('#percentageRewardValue').removeAttr('data-validation');
-		$('#flatRewardValue').removeAttr('data-validation');
+		//$('#percentageRewardValue').removeAttr('data-validation');
+		//$('#flatRewardValue').removeAttr('data-validation');
 		$('#invoiceFrequency').removeAttr('data-validation');
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
 		$('#taxFlatRewardValue').removeAttr('data-validation');
 		
 		
-		$('#percentageRewardValue').attr('data-validation-optional',"true");
-		$('#flatRewardValue').attr('data-validation-optional',"true");
+		//$('#percentageRewardValue').attr('data-validation-optional',"true");
+		//$('#flatRewardValue').attr('data-validation-optional',"true");
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').attr('data-validation-optional',"true");
 		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
@@ -1013,6 +1013,8 @@ function showCommonSOWFields(){
 	document.getElementById("hoursPerWeekDiv").style.display="block";
     // $('#hoursPerWeek').removeAttr('data-validation-optional');
 	//$('#hoursPerWeek').attr("data-validation","required");
+	$('#hoursPerWeek').val("40");
+	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 	
 	document.getElementById("overTimeHoursDiv").style.display="block";
     //$('#overTimeHours').removeAttr('data-validation-optional');
@@ -1191,7 +1193,7 @@ function hideCommonSOWFields(){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getRewardType(rewardType){
 	
 	 $("#rewardType").val(rewardType);
@@ -1212,7 +1214,7 @@ function getRewardType(rewardType){
 		document.getElementById("flatRateType").style.display="none";
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
-	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
+	   // document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
     	$('#percentageRewardValue').attr("data-validation","required validate_float");  
 		$('#percentageRewardValue').removeAttr('data-validation-optional');
 	    $('#flatRewardValue').removeAttr('data-validation');
@@ -1229,7 +1231,7 @@ function getRewardType(rewardType){
 		document.getElementById("percentageReward").style.display="none";
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
-		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
+		//document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
 		$('#flatRewardValue').attr("data-validation","required validate_float");
 		$('#flatRewardValue').removeAttr('data-validation-optional');
 		$('#percentageRewardValue').removeAttr('data-validation');
@@ -1237,14 +1239,14 @@ function getRewardType(rewardType){
 		
 	}
 }
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 function getPercentageValue(){
 	var percentageValue = document.getElementById("percentageRewardValue").value;
 	if(percentageValue > 100 || percentageValue < 0){
 		/* $("#releaseToCWBtn").attr("disabled", "disabled"); */
-	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+	    //$('#percentageReward').find('p.jquery_form_error_message').remove(); 
 	   
 	    if(percentageValue < 0){
 	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
@@ -1262,7 +1264,7 @@ function getPercentageValue(){
 	}else{
 		 /* $("#releaseToCWBtn").removeAttr("disabled"); */
 		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
-		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
+		// $('#percentageReward').find('p.jquery_form_error_message').remove(); 
 		 $( "#releaseToCWBtn" ).removeAttr("style");
 		 $( "#releaseToCWBtn" ).click(function() {
 		 if ($(this).validate(false, validationSettings)){
@@ -1271,7 +1273,7 @@ function getPercentageValue(){
 	}
 	
 }
-</script>
+</script> -->
 
 
 <script type="text/javascript">
@@ -1381,7 +1383,7 @@ function flush(){
 	document.getElementById("approver").value="";
 	document.getElementById("description").value="";
 	
-	document.getElementById("hoursPerWeek").value="";
+	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
 	document.getElementById("totalHoursEstimated").value="";
 	document.getElementById("overtimeRate").value="";
