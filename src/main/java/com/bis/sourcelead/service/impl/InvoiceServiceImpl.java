@@ -276,10 +276,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
-		     // tem file deletion
-		        if(file != null){
-					file.delete();
-				}
 		        
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
