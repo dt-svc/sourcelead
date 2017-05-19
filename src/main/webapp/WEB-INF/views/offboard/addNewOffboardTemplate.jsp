@@ -136,8 +136,12 @@
                           <button type="button" class="close" data-dismiss="modal" onclick="flushOffboardTask()">&times;</button>
                           <h4 class="modal-title">Add Tasks</h4>
                         </div>
+                        
+                         <div class="success_pop" id="selector"  style="display: none;">
+	         				<i class="fa fa-check-circle"></i><span>Task Saved Successfully.</span>
+					    </div>
+					    
                         <div class="modal-body clearfix"> 
-                          
                           <!-- Add New Task Widget -->
                           <div class="col-md-12 clearfix">
                           <div id="offboardtasksLoading"></div>
@@ -805,6 +809,10 @@ function saveOffboardTask(){
 			        	flushOffboardTask();
 			        	getAssignToUsersList();
 			        	getOffboardingTasksList();
+			        	
+			        	document.getElementById("selector").style.display = 'block';
+			        	$("#selector").fadeIn(150);
+			        	$('#selector').delay(1000).fadeOut('slow');
 		        	}
 		        	
 		        },

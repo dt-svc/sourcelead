@@ -159,6 +159,10 @@ public class CandidateController {
 		    model.addObject("searchType", "Candidate");
 		}
 		
+		
+	   Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+	   model.addObject("candidateCount", candidateCount);
+	   
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		

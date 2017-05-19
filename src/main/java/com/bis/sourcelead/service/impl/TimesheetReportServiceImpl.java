@@ -582,10 +582,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        StringBuilder userStyle = new StringBuilder();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 			BaseColor myColor = WebColors.getRGBColor("#000000");
-			userStyle.append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports");
+			userStyle.append(orgLocations.getOrg().getOrgName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports");
 			
 			StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append("TimeSheet-Reports: ").append(frequencyMonth).append("-").append(frequencyYear).toString());
+            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrg().getOrgName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 			
@@ -846,7 +846,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		timesheetReportsExcelBorder(createExcelworkbook);
 		StringBuilder sheetName = new StringBuilder();
-		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append("timesheetSheet-").append(frequencyMonth).append("-").append(frequencyYear).toString());
+		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(orgLocations.getOrg().getOrgName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
 		Row writeRow = null;
 		createExcelsheet = gettimesheetReportsExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,weekFrequencyDates);
 		
@@ -894,13 +894,17 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow, Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
 		createExcelsheet.getDefaultRowHeight();
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sbid = new StringBuilder();
 		if(null != (projectMember.getEmployee().getEmployeeId()) && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
-			 writeRow.createCell(0).setCellValue(sb.append(projectMember.getEmployee().getEmployeeId()).toString());
+			 writeRow.createCell(0).setCellValue(sbid.append(projectMember.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 		}
-		if(null != projectMember.getEmployee().getUser().getFullName() && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getFullName())){
-			 writeRow.createCell(1).setCellValue(sb.append(projectMember.getEmployee().getUser().getFullName()).toString()); 
+		StringBuilder sbname = new StringBuilder();
+		if(null != projectMember.getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getLastName())){
+			 writeRow.createCell(1).setCellValue(sbname.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName()).toString()); 
+			 createExcelsheet.autoSizeColumn(1);
+		}else if(null != projectMember.getEmployee().getUser().getFirstName() && !"".equalsIgnoreCase(projectMember.getEmployee().getUser().getFirstName())){
+			writeRow.createCell(1).setCellValue(sbname.append(projectMember.getEmployee().getUser().getFirstName()).toString()); 
 			 createExcelsheet.autoSizeColumn(1);
 		}
 		if(projectMember.getEmployee().getUser().getEmail() != null){
