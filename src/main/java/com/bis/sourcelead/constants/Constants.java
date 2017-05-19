@@ -702,5 +702,8 @@ public class Constants {
 	public static String TSAPPROVED = "Approved";
 	public static String TSREJECTED = "Rejected";
 	public static String TSNEW = "New";
+	public static String SENT = "SENT";
+	
+	
 
 }	

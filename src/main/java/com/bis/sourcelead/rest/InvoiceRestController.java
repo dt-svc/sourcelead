@@ -210,6 +210,9 @@ public class InvoiceRestController {
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org);
 		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
 		if(null !=invoice){
+			if(null != invoice.getProjectID()){
+				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency());
+			}
 			invoiceSaved = "success";
 		}
 		return invoiceSaved;
@@ -669,6 +672,7 @@ public class InvoiceRestController {
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				StringBuilder candidateName = new StringBuilder();
 				if (null != projectMember.getEmployee().getUser().getFirstName()
 						&& null != projectMember.getEmployee().getUser().getLastName()) {
@@ -791,6 +795,7 @@ public class InvoiceRestController {
 		if(null !=sahList && sahList.size() >0){
 			for(SubmissionApproverHierarchy sah : sahList){
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
 				if(null != candidate){
 					StringBuilder empName =new StringBuilder();
