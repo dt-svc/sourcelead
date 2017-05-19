@@ -50,8 +50,7 @@
             </div>	
              <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-							
+              <div class="col-md-8 validation_p">
 							<div class="input-group positionRelative" id="uploadFileGroup">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
@@ -378,7 +377,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Finalize" id="save_template" onclick="saveExistigContract();" class="btn btn-success ml10">
-            <input type="button" value="Cancel" class="btn btn-danger ml10" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="Cancel" class="btn btn-default ml10" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
