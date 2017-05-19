@@ -611,6 +611,40 @@ public class SubmissionsRateRestController {
 			return "SUCCESS";
 		}
 	 
+	 
+	 
+	 @RequestMapping(value = "/storeApplicantRejectReason", method = RequestMethod.POST)
+		public @ResponseBody String storeApplicantRejectReason(@RequestParam(value = "submissionId", required = false) Long submissionId,
+				@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
+			 
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+			}
+			
+				requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
+				requirementSubmission.setRejectedReason(rejectreason);
+
+				requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				
+				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+				requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+				
+				Requirement requirement = requirementSubmission.getRequirement();
+				OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+				requirementSubmissionService.applicantRejectMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations, rejectreason, null, null, submissionId);
+				return "success";
+			}
+
+	 
+	 
+	 
+	 
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {
