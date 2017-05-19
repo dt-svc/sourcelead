@@ -977,8 +977,8 @@ public class TimesheetRestController {
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id' >").append(timesheetEntries.getMoncomments()).append("</textarea></span></div>");
 					            	  }else if(StringUtils.isEmpty(disbleCondition1.toString()) || disbleCondition1.toString().equalsIgnoreCase("disabled")){
-					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
-					            		  tabDiv.append(" <i class='blankDiv'></i>");
+					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment1Id\");'></i>");
+					            		//tabDiv.append(" <i class='blankDiv'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment1Id'><textarea "+disbleCondition1+" name='"+rowCount+"comment1Id'  id='"+rowCount+"textArea1Id' ></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -989,9 +989,9 @@ public class TimesheetRestController {
 						              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id'>").append(timesheetEntries.getTuecomments()).append("</textarea></span></div>");
-						              }else  if(StringUtils.isEmpty(disbleCondition2.toString())|| disbleCondition2.toString().equalsIgnoreCase("disabled")){
-						            	  //tabDiv.append(" <i class='glyphicon glyphicon-comment opactiy_0' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
-						            	  tabDiv.append(" <i class='blankDiv'></i>");
+						              }else if(StringUtils.isEmpty(disbleCondition2.toString()) || disbleCondition2.toString().equalsIgnoreCase("disabled")){
+						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment opactiy_0' onclick='timesheetComment(\""+rowCount+"comment2Id\");'></i>");
+						            	//tabDiv.append(" <i class='blankDiv'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment2Id'><textarea "+disbleCondition2+" name='"+rowCount+"comment2Id' id='"+rowCount+"textArea2Id'></textarea></span></div>");
 						              }
 						              tabDiv.append(" </div> </td>"); 
@@ -1003,8 +1003,8 @@ public class TimesheetRestController {
 						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");  
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id'>").append(timesheetEntries.getWedcomments()).append("</textarea></span></div>");
 						              }else if(StringUtils.isEmpty(disbleCondition3.toString()) || disbleCondition3.toString().equalsIgnoreCase("disabled")){
-						            	 // tabDiv.append(" <i class='glyphicon glyphicon-comment opactiy_0' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");
-						            	  tabDiv.append(" <i class='blankDiv'></i>");
+						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment opactiy_0' onclick='timesheetComment(\""+rowCount+"comment3Id\");'></i>");
+						            	  // tabDiv.append(" <i class='blankDiv'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment3Id'><textarea "+disbleCondition3+" name='"+rowCount+"comment3Id' id='"+rowCount+"textArea3Id'></textarea></span></div>");
 						              }
 						              tabDiv.append(" </div> "); 
@@ -1018,8 +1018,8 @@ public class TimesheetRestController {
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id'>").append(timesheetEntries.getThucomments()).append("</textarea></span></div>");
 					            	  }
 						              else if(StringUtils.isEmpty(disbleCondition4.toString())|| disbleCondition4.toString().equalsIgnoreCase("disabled")){
-						            	  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>");
-						            	  tabDiv.append(" <i class='blankDiv'></i>");
+						            	  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment4Id\");'></i>");
+						            	  //tabDiv.append(" <i class='blankDiv'></i>");
 						            	  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment4Id' ><textarea "+disbleCondition4+" name='"+rowCount+"comment4Id' id='"+rowCount+"textArea4Id'></textarea></span></div>");
 						              }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -1031,8 +1031,8 @@ public class TimesheetRestController {
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id'>").append(timesheetEntries.getFricomments()).append("</textarea></span></div>");
 					            	  }else if(StringUtils.isEmpty(disbleCondition5.toString())|| disbleCondition5.toString().equalsIgnoreCase("disabled")){
-					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
-					            		  tabDiv.append(" <i class='blankDiv'></i>");
+					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment5Id\");' ></i>");
+					            		  //tabDiv.append(" <i class='blankDiv'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment5Id'><textarea "+disbleCondition5+" name='"+rowCount+"comment5Id' id='"+rowCount+"textArea5Id'></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -1044,8 +1044,8 @@ public class TimesheetRestController {
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id'>").append(timesheetEntries.getSatcomments()).append("</textarea></span></div>");
 					            	  }else if(StringUtils.isEmpty(disbleCondition6.toString())|| disbleCondition6.toString().equalsIgnoreCase("disabled")){
-					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
-					            		  tabDiv.append(" <i class='blankDiv'></i>");
+					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment6Id\");'></i>");
+					            		  //tabDiv.append(" <i class='blankDiv'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment6Id' ><textarea "+disbleCondition6+" name='"+rowCount+"comment6Id' id='"+rowCount+"textArea6Id'></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
@@ -1057,8 +1057,8 @@ public class TimesheetRestController {
 					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment com_active' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' >").append(timesheetEntries.getSuncomments()).append("</textarea></span></div>");
 					            	  }else if(StringUtils.isEmpty(disbleCondition7.toString())|| disbleCondition7.toString().equalsIgnoreCase("disabled")){
-					            		  //tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
-					            		  tabDiv.append(" <i class='blankDiv'></i>");
+					            		  tabDiv.append(" <i class='glyphicon glyphicon-comment' onclick='timesheetComment(\""+rowCount+"comment7Id\");'></i>");
+					            		  //tabDiv.append(" <i class='blankDiv'></i>");
 					            		  tabDiv.append(" <span class='teskcomment' id='"+rowCount+"comment7Id' ><textarea "+disbleCondition7+" name='"+rowCount+"comment7Id' id='"+rowCount+"textArea7Id'></textarea></span></div>");
 					            	  }
 					            	  tabDiv.append(" </div> </td>"); 
