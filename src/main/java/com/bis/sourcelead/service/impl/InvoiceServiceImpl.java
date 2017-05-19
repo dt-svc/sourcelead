@@ -276,7 +276,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
-		
+		        
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
 			//mail scenario for client accept or reject
