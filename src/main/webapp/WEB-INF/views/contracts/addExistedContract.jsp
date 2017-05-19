@@ -37,7 +37,7 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
+                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="droptDownValidateContract();contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
                     <option value=''>Contract Type</option>
                     <option>Client MSA</option>
                     <option>Vendor MSA</option>
@@ -84,7 +84,7 @@
             <div class="form-group" id="requirementDiv" style="display: none;">
               <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
+                  <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();droptDownValidateContract();" field-name="Requirement">
                   </select>
               </div>
             </div>
@@ -135,7 +135,7 @@
          <div class="form-group" id="vendorDiv" style="display: none;">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="required" field-name="Vendor Name">
+                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();droptDownValidateContract();" data-validation="required" field-name="Vendor Name">
                     <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -151,7 +151,7 @@
             <div class="form-group" id="vendorContactDiv"  style="display: none;">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+                  <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact" onchange="droptDownValidateContract();">
                    <option value=''>Select Vendor Contact</option></select>
               </div>
             </div>
@@ -160,7 +160,7 @@
              <div class="form-group" id="clientDiv" style="display: none;">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Client Name">
+                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();droptDownValidateContract();" data-validation="required" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}">${orgrelations.orgName}</option>
@@ -172,7 +172,7 @@
             <div class="form-group" id="clientContactDiv" style="display: none;">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="droptDownValidateContract();">
                   <option value=''>Select Client Contact</option></select>
               </div>
             </div>
@@ -310,7 +310,7 @@
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
-                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
+                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency" onchange="droptDownValidateContract();">
                     <option value="">Select Cycle</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Bi-Weekly">Bi-Weekly</option>
@@ -323,7 +323,7 @@
               <div class="form-group">
               <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errPayment">
-                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
+                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency" onchange="droptDownValidateContract();">
                     <option value="">Select frequency</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
@@ -1248,6 +1248,61 @@ function cancelContract(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/contractListbyStatus");
 }
+
+</script>
+
+<script type="text/javascript">
+function droptDownValidateContract(){
+	var contType = document.getElementById("contractType");
+	var strUser = contType.options[contType.selectedIndex].value;
+	if(strUser != null && strUser !='' && strUser !='undefined'){
+	$('#contractType').parent().find('p.jquery_form_error_message').remove();
+	}
+	
+	var contClient = document.getElementById("clientOrgRelationId");
+	var client = contClient.options[contClient.selectedIndex].value;
+	if(client != null && client !='' && client !='undefined'){
+	$('#clientOrgRelationId').parent().find('p.jquery_form_error_message').remove();
+	}
+	
+	var cliContact = document.getElementById("clientContact");
+	var clientContactContract = cliContact.options[cliContact.selectedIndex].value;
+	if(clientContactContract != null && clientContactContract !='' && clientContactContract !='undefined'){
+	$('#clientContact').parent().find('p.jquery_form_error_message').remove();
+	}
+	
+	var contVendor = document.getElementById("orgRelationId");
+	var vendor = contVendor.options[contVendor.selectedIndex].value;
+	if(vendor != null && vendor !='' && vendor !='undefined'){
+	$('#orgRelationId').parent().find('p.jquery_form_error_message').remove();
+	}
+	
+	var contVendorContact = document.getElementById("vendorContact");
+	var vendorContact = contVendorContact.options[contVendorContact.selectedIndex].value;
+	if(vendorContact != null && vendorContact !='' && vendorContact !='undefined'){
+	$('#vendorContact').parent().find('p.jquery_form_error_message').remove();
+	}
+	
+	
+	var contRequirementsList = document.getElementById("requirementsList").value;
+	if(contRequirementsList != null && contRequirementsList !='' && contRequirementsList !='undefined'){
+	$('#requirementsList').parent().find('p.jquery_form_error_message').remove();
+	} 
+	
+	var continvoiceFrequency = document.getElementById("invoiceFrequency");
+	var invoiceFreq = continvoiceFrequency.options[continvoiceFrequency.selectedIndex].value;
+	if(invoiceFreq != null && invoiceFreq !='' && invoiceFreq !='undefined'){
+	$('#invoiceFrequency').parent().find('p.jquery_form_error_message').remove();
+	}
+	
+	var contpaymentFrequency = document.getElementById("paymentFrequency");
+	var paymentFreq = contpaymentFrequency.options[contpaymentFrequency.selectedIndex].value;
+	if(paymentFreq != null && paymentFreq !='' && paymentFreq !='undefined'){
+	$('#paymentFrequency').parent().find('p.jquery_form_error_message').remove();
+	}
+	
+	
+} 
 
 </script>
 
