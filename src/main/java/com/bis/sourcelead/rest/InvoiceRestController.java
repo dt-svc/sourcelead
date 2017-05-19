@@ -223,10 +223,9 @@ public class InvoiceRestController {
 		}
 
 		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org);
-		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
 		if(null !=invoice){
 			if(null != invoice.getProjectID()){
-				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency());
+				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency(),invoiceType);
 			}
 			invoiceSaved = "success";
 		}
@@ -283,7 +282,7 @@ public class InvoiceRestController {
      			contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,loginOrgLocation.getId(),orgRelationId,Constants.Client_SOW);	
      		}
      		 	
-     		if(null != contractsList){
+     		if(null != contractsList && contractsList.size() >0){
          		resultJson = commonUtil.toJSON(contractsList);	
          	}
      	}
