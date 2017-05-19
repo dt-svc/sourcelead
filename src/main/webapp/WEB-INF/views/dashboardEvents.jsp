@@ -299,7 +299,7 @@ function dashboardAddInterview(){
 	
 	result = result + '<div class="pull-right">';
 	result = result + '<button type="submit" id="add_interview" class="btn btn-sm btn-primary mr">Submit</button>';
-	result = result + '<button type="button" class="btn btn-sm btn-danger" onClick="cancelAddInterviewDiv();">Cancel</button>';
+	result = result + '<button type="button" class="btn btn-sm btn-default" onClick="cancelAddInterviewDiv();">Cancel</button>';
 	result = result + '</div>';
 	result = result + '<div class="clearfix"></div>'; 
 	result = result + '</form>';
@@ -510,7 +510,7 @@ function getRequirements(){
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
 	              	$("#reqDiv").find('p.jquery_form_error_message').remove();
-	              	$("#reqDiv").append("<p class='jquery_form_error_message'>Select requirement</span>");
+	              	$("#reqDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>Select Requirement</p>");
               }else{
             	  var result = "";
             	  	 result = result + '<option value="">--- Select Requirement ---</option>';
