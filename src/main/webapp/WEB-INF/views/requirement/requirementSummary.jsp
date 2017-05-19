@@ -4348,7 +4348,8 @@ function getActions(){
 	});
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
- 	}); */	
+ 	}); */
+ 	$(".export_pipline").hide();
 }
 function popClose(){
 	$(".action-pop").hide();

@@ -69,10 +69,10 @@
 <!-- 			 <option value="">select</option> -->
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
-			  <option value="week">1 week</option>
-			  <option value="twoweeks">2 weeks</option>
-			  <option value="month">1 month</option>
-			  <option value="twomonths">2 months</option>
+			  <option value="week">1 Week ago</option>
+			  <option value="twoweeks">2 Weeks ago</option>
+			  <option value="month">1 Month ago</option>
+			  <option value="twomonths">2 Months ago</option>
 			   <option value="custom">Custom</option> 
 			</select>
 		 </div>	
@@ -103,10 +103,10 @@
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week ago</option>
+		  <option value="twoweeks">2 Weeks ago</option>
+		  <option value="month">1 Month ago</option>
+		  <option value="twomonths">2 Months ago</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	

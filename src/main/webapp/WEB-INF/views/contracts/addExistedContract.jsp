@@ -23,7 +23,7 @@
       <div class="pull-left">
         <h2>Add Existing Contract</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Add Existing Contract</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo;&raquo; Existing Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -310,7 +310,7 @@
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errInvoice">
-                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency">
+                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Billing Cycle">
                     <option value="">Select Cycle</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Bi-Weekly">Bi-Weekly</option>
@@ -321,10 +321,10 @@
             </div>
             
               <div class="form-group">
-              <label class="col-md-4">Payment frequency<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errPayment">
                   <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency">
-                    <option value="">Select frequency</option>
+                    <option value="">Select Payment Frequency</option>
                     <option value="10 days">10 days</option>
                     <option value="15 days">15 days</option>
                     <option value="30 days">30 days</option>
@@ -336,7 +336,7 @@
             
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
-                <label class="col-md-4">Tax<span class="text-danger">&nbsp;*</span></label>
+                <label class="col-md-4">Tax </label>
                    <div class="clearfix col-md-8" id="errTax">
                       <div class="col-md-5 paddingLeft">
                         <div class="btn-group btn_Block">
