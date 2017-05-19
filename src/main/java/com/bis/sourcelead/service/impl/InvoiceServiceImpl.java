@@ -276,7 +276,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
-		
+		        
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
 			//mail scenario for client accept or reject
@@ -888,18 +888,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceDao.getInvoicetByParentInvoiceId(parentInvoiceId);
 	}
 	@Override
-	public void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency) throws Exception
+	public void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType) throws Exception
 	{
-		String frequencyArray[] = invoiceFrequency.split("/");
-		String startDateStr = frequencyArray[0];
-		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
-		Date startDate = format.parse(startDateStr);
-		Date endDate = format.parse(endDateStr);
 		for(String id :submissionApproverHierarchyIds){
 			SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
-			submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+			if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
+				submissionApproverHierarchy.setBillingStatus(Constants.SENT);
+			}else{
+				submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+			}
 			submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 		}
 	

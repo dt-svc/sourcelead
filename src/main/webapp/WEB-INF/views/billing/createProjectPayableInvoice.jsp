@@ -535,7 +535,46 @@ function populateInlineItemsGrid1(data){
 </script>
 
 <!-- Get contract sow between client and the associate -->
-  <script>
+<script>
+  function getSow(contractId){
+	  var orgRelationId = $("#vendorOrgRelationId").val();
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  var maxRowNum = $("#maxTsRowNum").val();
+		  for(var id=0;id < maxRowNum;id++){
+			  var candidateId = $("#"+id+'candidate').val();
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
+			        success: function(data) {
+			        	alert(data);
+			        	var result = "";
+			        	result = result + "<option value='' >select sow</option>"
+			        	if(data != null && data != ''){
+			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.length; i++)
+							{
+					        		var opt = json[i];
+					        		var selected = '';
+					        		
+					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+					        			selected = 'selected';
+					        		} 
+					        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
+							} 
+				        	 $('#'+id+'sow').empty();
+				        	 $('#'+id+'sow').append(result);
+			        	}else{
+			        		
+			        	}
+			        },
+			        
+			    });
+		 } 
+	 
+	 
+  }
+  </script> 
+ <!--  <script>
   function getSow(id,candidateId,opt,contractId){
 	 /*  var candidateId = $('#'+id+'candidate').val(); */
 	  var orgRelationId = $("#vendorOrgRelationId").val();
@@ -569,7 +608,7 @@ function populateInlineItemsGrid1(data){
 	        
 	    });
   }
-  </script>
+  </script> -->
   
 <script>
 function getSowRate(id){
