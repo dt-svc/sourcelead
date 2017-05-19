@@ -721,7 +721,9 @@ public class InvoiceRestController {
 				projectMember.setTotalHours(sb.toString());
 				projectMembersList.add(projectMember);
 			}
-			resultJson = commonUtil.toJSON(projectMembersList);
+			if(projectMembersList.size() >0){
+				resultJson = commonUtil.toJSON(projectMembersList);
+			}
 		}
 		return resultJson;
 //		return commonUtil.toJSON(projectMembersList);
@@ -843,7 +845,9 @@ public class InvoiceRestController {
 				}
 				
 			}
-			resultJson =  commonUtil.toJSON(filteredMembersList);
+			if(filteredMembersList.size() >0){
+				resultJson =  commonUtil.toJSON(filteredMembersList);
+			}
 		}
 		return resultJson;
 		

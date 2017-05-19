@@ -391,6 +391,7 @@ function populateInlineItemsGrid(data){
              result = result +'<div class="inputCustom">';
              result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDate+' type="text" readonly>';
              result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="'+i+'invoiceEndDate" placeholder="End Date" value='+opt.endDate+' type="text" readonly>';
+             result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="'+i+'submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
              result = result +'</div>';
              result = result +' </td>';
              result = result +'<td>';
@@ -407,15 +408,15 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +'<div class="tbldata-dotdot-100">';
              if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" data-validation="required" field-name="Rate" onblur="calculateTotalAmount('+i+');">'; 
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" data-validation="required" field-name="Rate" onblur="totalHoursCalculateAmount('+i+');">'; 
              }else{
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  data-validation="required" field-name="Rate" placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  data-validation="required" field-name="Rate" placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
              }
              result = result +'</div>';
              result = result +'</td>';
              result = result +' <td>';
              result = result +'<div class="tbldata-dotdot-vsm">';
-             result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="calculateTotalAmount('+i+');">';
+             result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
              result = result +'</div>';
              result = result +'</td>';
              result = result +'<td>';
@@ -477,10 +478,11 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<div class="inputCustom">';
     	 result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDateStr+' type="text" readonly>';
     	 result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="'+i+'invoiceEndDate" placeholder="End Date" value='+opt.endDateStr+' type="text" readonly>';
+    	 result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="'+i+'submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
     	 result = result +'</div>';
     	 result = result +' </td>';
     	 result = result +'<td>';
-    	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName">'+opt.candidateName+'</div>';
+    	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName"  data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
     	 result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
     	 result = result +' </td>';
     	 result = result +'  <td>';
@@ -493,16 +495,16 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal"  id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate"  data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 }
     	 /* result = result +'<input class="form-control input-sm" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; */
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="totalHoursCalculateAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
@@ -523,22 +525,7 @@ function populateInlineItemsGrid1(data){
     $("#tableBody").empty();
     $("#tableBody").append(result)
     maskme();
-  /*   for (var i = 0; i < json.length; i++) { 
-    	$('#'+i+'sdate-input').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-			}
-		});
-	  $('#'+i+'edate-input').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-			}
-		});
-    } */
+
     document.getElementById("bottomGrid").style.display="block";
 	document.getElementById("bottomGrid").style.display="block";
 	document.getElementById("lineItemAddRows").style.display="block";
@@ -1438,9 +1425,9 @@ function flushValues(){
 	$("#invoiceDate").val('');
 	$("#dueDate").val('');
 	$("#paymentFrequency").val('');
-	$("#frequency").val('');
+	$("#frequency").val('').trigger("chosen:updated");
 	$("#billingAddress").val('');
-	
+	$("#projectId").val('').trigger("chosen:updated");
 	$("#comment").val('');
 	$("#discountValue").val('');
 	$("#discountTotal").val('');
@@ -1484,7 +1471,10 @@ function getVendorContacts(vendorContactId){
 		$('#vendorContact').trigger("chosen:updated");
 	},
 	});
-
+	document.getElementById("bottomGrid").style.display="none";
+	document.getElementById("lineItemAddRows").style.display="none";
+	document.getElementById("tableBody").style.display="none";
+	getProjectsList();
 	}
 </script>
 
