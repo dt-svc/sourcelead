@@ -221,6 +221,10 @@ public class Invoice {
 	@Transient
 	private Long invoiceParentId;
 	
+	
+	@Transient
+	private List<String> submissionApproverHierarchyIds;
+	
 	public Long getId()
 	{
 		return id;
@@ -742,5 +746,16 @@ public class Invoice {
 	public void setInvoiceParentId(Long invoiceParentId) {
 		this.invoiceParentId = invoiceParentId;
 	}
+
+	public List<String> getSubmissionApproverHierarchyIds()
+	{
+		return submissionApproverHierarchyIds;
+	}
+
+	public void setSubmissionApproverHierarchyIds(List<String> submissionApproverHierarchyIds)
+	{
+		this.submissionApproverHierarchyIds = submissionApproverHierarchyIds;
+	}
+
 	
 }
