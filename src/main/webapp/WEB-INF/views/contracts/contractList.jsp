@@ -371,7 +371,7 @@ function PopUp(contractUUID){
 			
 			result = result +	'<div class="clearfix"/>';
 		}
-			result = result +	'<h4>Basic Details</h4>';
+			result = result +	'<h4>History</h4>';
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
@@ -394,7 +394,7 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contract Type</div>';
+			result = result +	'		<div class="col-md-4 col-sm-4">Added From</div>';
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.typeOfContract+'</div>';
 			result = result +	'	</div>';
 			
