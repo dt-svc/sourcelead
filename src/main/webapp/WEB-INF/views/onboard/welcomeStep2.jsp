@@ -89,7 +89,7 @@
 	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 			<div class="form-group">
-			  <label class="col-md-4 control-label">Street Addess 1 <span class="text-danger paddingLeft">*</span></label>
+			  <label class="col-md-4 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
 				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space"  id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
 			  </div>
@@ -97,7 +97,7 @@
 		</div>
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
 			<div class="form-group">
-			  <label class="col-md-4 control-label">Street Addess 2</label>
+			  <label class="col-md-4 control-label">Street Address 2</label>
 			  <div class="col-md-8">
 				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
 			  </div>
@@ -271,7 +271,7 @@
 	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
                   <div class="form-group">
-                  <label class="col-md-4 control-label">Speical Conditions</label>
+                  <label class="col-md-4 control-label">Special Conditions</label>
                   <div class="col-md-8">
                       <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" readonly="readonly"  >${SourceLeadWeb_candidateOnBoarding.specialConditions}</textarea>
                   </div>

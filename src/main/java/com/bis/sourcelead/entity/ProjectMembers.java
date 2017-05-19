@@ -137,6 +137,9 @@ public class ProjectMembers implements Serializable{
     @Transient
     private String userRoleType;
     
+    @Transient
+    private Long submissionApproverHierarchyId;
+    
     
     @JsonIgnore
     @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
@@ -450,6 +453,16 @@ public class ProjectMembers implements Serializable{
 
 	public void setUserRoleType(String userRoleType) {
 		this.userRoleType = userRoleType;
+	}
+
+	public Long getSubmissionApproverHierarchyId()
+	{
+		return submissionApproverHierarchyId;
+	}
+
+	public void setSubmissionApproverHierarchyId(Long submissionApproverHierarchyId)
+	{
+		this.submissionApproverHierarchyId = submissionApproverHierarchyId;
 	}
 
 }
