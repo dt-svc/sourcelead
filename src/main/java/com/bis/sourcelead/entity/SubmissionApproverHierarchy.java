@@ -54,6 +54,13 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Enumerated(EnumType.STRING)
 	private Submission_ApprovalStatus submissionApprovalStatus;
 	
+	 
+	@Column(name = "INVOICE_STATUS")
+    private String invoiceStatus;
+	
+	@Column(name = "BILLING_STATUS")
+    private String billingStatus;
+	
 	@Column(name = "FREQUENCY_START_DATE")
     private Date frequencyStartDate;
 	
@@ -119,6 +126,12 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	
 	@Transient
 	private Float totalHours;
+	
+	@Transient
+	private Float billableHours;
+	
+	@Transient
+	private Float nonBillableHours;
 	
 	@Transient
 	private LinkedHashMap<Date,Float> weekTotals;
@@ -451,6 +464,47 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	public void setProjectToDateTotalHours(Float projectToDateTotalHours) {
 		this.projectToDateTotalHours = projectToDateTotalHours;
 	}
+
+	public Float getBillableHours()
+	{
+		return billableHours;
+	}
+
+	public void setBillableHours(Float billableHours)
+	{
+		this.billableHours = billableHours;
+	}
+
+	public Float getNonBillableHours()
+	{
+		return nonBillableHours;
+	}
+
+	public void setNonBillableHours(Float nonBillableHours)
+	{
+		this.nonBillableHours = nonBillableHours;
+	}
+
+	public String getInvoiceStatus()
+	{
+		return invoiceStatus;
+	}
+
+	public void setInvoiceStatus(String invoiceStatus)
+	{
+		this.invoiceStatus = invoiceStatus;
+	}
+
+	public String getBillingStatus()
+	{
+		return billingStatus;
+	}
+
+	public void setBillingStatus(String billingStatus)
+	{
+		this.billingStatus = billingStatus;
+	}
+
 
 	
 	

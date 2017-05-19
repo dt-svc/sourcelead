@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -108,10 +109,11 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchy(String id) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		return (SubmissionApproverHierarchy) session.get(SubmissionApproverHierarchy.class, id);
+		return (SubmissionApproverHierarchy) session.get(SubmissionApproverHierarchy.class, Long.parseLong(id));
 	}
 
 	
@@ -1503,6 +1505,126 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		monthTotals.put("BILLABLE_HOURS", billableTotalHours);
 		monthTotals.put("NONBILLABLE_HOURS", nonBillableTotalHours);
 		return monthTotals;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class }) 
+	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId, Date frequencyStartDate, Date frequencyEndDate)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if (frequencyStartDate != null) {
+			sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
+		}
+
+		java.sql.Date sqlEndDate = null;
+		if (frequencyEndDate != null) {
+			sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+		}
+
+		// Getting Max Hierarchy Level for which employee is Assigned
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where  subsah.submissionId.projectMembers.projects.id = :projectId ";
+		String query = "from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
+				+ " where project.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and sah.invoiceStatus IS NULL and sah.submissionId.status = '1'"
+				/*
+				 * For getting approved timesheet hours list
+				 */
+
+				+ " and ( hierarchy.level IN(" + subQueryForMaxLevel
+				+ ")) and sah.submissionApprovalStatus = :approvalStatus order by pm.id";
+		
+		
+		@SuppressWarnings("unchecked")
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString())
+				.setLong("projectId", projectId).setParameter("approvalStatus", Submission_Status.APPROVED)
+				.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setCacheable(true).list();
+		LinkedList<SubmissionApproverHierarchy> finalSahList = new LinkedList<>();
+		if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
+			Long projectMemberId = 0l;
+			int count = 0;
+			SubmissionApproverHierarchy finalSah = null;
+			for (SubmissionApproverHierarchy sah : submissionApproverHierarchyList) {
+				 if(projectMemberId == 0 || projectMemberId != sah.getSubmissionId().getProjectMembers().getId()){
+					    if(projectMemberId != 0){
+					    	finalSahList.add(finalSah);
+					    	count = 0;
+					    }
+					    finalSah = sah;
+					    projectMemberId = sah.getSubmissionId().getProjectMembers().getId();
+					    float weekTotalHours = 0f;
+						float weekBillableTotalHours = 0f;
+						float weekNonBillableTotalHours = 0f;
+
+						if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
+							weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
+						}
+						if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
+							weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
+						}
+						if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
+							weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
+						}
+						float totalHours = 0f;
+						float billableTotalHours = 0f;
+						float nonBillableTotalHours = 0f;
+                        if(finalSah.getTotalHours() != null){
+                        	totalHours = finalSah.getTotalHours();
+                        }
+                        if(finalSah.getBillableHours() != null){
+                        	billableTotalHours = finalSah.getBillableHours();
+                        }
+                        if(finalSah.getNonBillableHours() != null){
+                        	nonBillableTotalHours = finalSah.getNonBillableHours();
+                        }
+						finalSah.setTotalHours(CommonUtil.getCombinedHours(totalHours, weekTotalHours));
+						finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
+						finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));
+						count++;	
+				 }
+				 else{
+					    if(finalSah == null)
+					    continue;
+					    
+					    float weekTotalHours = 0f;
+						float weekBillableTotalHours = 0f;
+						float weekNonBillableTotalHours = 0f;
+
+						if (StringUtils.isNotEmpty(sah.getSubmissionId().getTotalHours())) {
+							weekTotalHours = Float.parseFloat(sah.getSubmissionId().getTotalHours());
+						}
+						if (StringUtils.isNotEmpty(sah.getSubmissionId().getBillableHours())) {
+							weekBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getBillableHours());
+						}
+						if (StringUtils.isNotEmpty(sah.getSubmissionId().getNonBillableHours())) {
+							weekNonBillableTotalHours = Float.parseFloat(sah.getSubmissionId().getNonBillableHours());
+						}
+						float totalHours = 0f;
+						float billableTotalHours = 0f;
+						float nonBillableTotalHours = 0f;
+	                    if(finalSah.getTotalHours() != null){
+	                     	totalHours = finalSah.getTotalHours();
+	                    }
+	                    if(finalSah.getBillableHours() != null){
+	                     	billableTotalHours = finalSah.getBillableHours();
+	                    }
+	                    if(finalSah.getNonBillableHours() != null){
+	                     	nonBillableTotalHours = finalSah.getNonBillableHours();
+	                    }
+						finalSah.setTotalHours(CommonUtil.getCombinedHours(totalHours, weekTotalHours));
+						finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
+						finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));
+						count++;
+				 }
+				
+			}
+			
+			if(count>0){
+				finalSahList.add(finalSah);
+			}
+			
+		}
+		
+		return finalSahList;
 	}
 	
 	

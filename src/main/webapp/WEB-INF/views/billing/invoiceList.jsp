@@ -760,10 +760,13 @@ function getInvoiceList(){
 				
 				result = result +'         <td> ';
 				result = result +'     <div class="tblminwidth-75">';
-				/* result = result +'  <div class="pull-right positionRelative menuWidget" ><i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+');" ></i>  ';
-				result = result +'  <div id="popupDiv'+report.id+'"></div>';
-		        result = result +'  </div>                                                                                                      ';
-		         */
+				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
+				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\');" ></i>  ';
+						result = result +'  <div id="popupDiv'+report.id+'"></div>';
+				} 
+				result = result +'  </div> ';                                                                                                    
+		         
 				if(report.invoiceType=="Receivable" &&( report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
@@ -800,15 +803,7 @@ function getInvoiceList(){
 						}
 					}
 				}
-				
-				/* result = result +'	<td>                                                                                                        ';
-		        result = result +'  <div class="pull-right positionRelative menuWidget"><i class="fa fa-ellipsis-v" onClick="showMenu();"></i>  ';
-		        result = result +'    <ul class="list-inline list-unstyled menupop">                                                            ';
-		        result = result +'      <li><i class="fa fa-bullhorn paddingRight"></i>Send reminder</li>                                       ';
-		        result = result +'      <li><i class="fa fa-print paddingLeft paddingRight"></i>Print</li>                                      ';
-		        result = result +'    </ul>                                                                                                     ';
-		        result = result +'  </div>                                                                                                      ';
-		        result = result +'  <span class="text-primary receiveBtn clearfix" onClick="receivePaymentPop();">Receive</span> '; */
+		 
 		        result = result +'</div>';
 		        result = result +'</td>';
                 
@@ -847,9 +842,9 @@ function invoicePagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
-    	"aaSorting": [[0,'desc']],
+//     	"aaSorting": [[0,'desc']],
     	"bDestroy": true,
-    	"ordering": true,
+    	"ordering": false,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -859,19 +854,69 @@ function invoicePagination(){
 }
 </script>
 <script>
-function showPopUp(id){
-	    result = "";
+function showPopUp(id,invoiceStatus,invoiceParentId){
+		 removePopup();
+	     result = "";
 		 result = result +'    <ul class="list-inline list-unstyled menupop"> ';
-	     result = result +'      <li><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
-	     result = result +'      <li><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-	     result = result +'      <li><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
+		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
+		 if(invoiceParentId == 'undefined'){
+			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+		 }
+	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
 	     result = result +'    </ul>';
-	     $("#popupDiv"+id+"").empty();  
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
-    	
 }
 </script>
+<script>
+function removePopup(){
+	if( document.getElementById("invoicePopupId") != null &&  document.getElementById("invoicePopupId") != 'undefined'){
+		var invoicePopupId = document.getElementById("invoicePopupId").value;
+		  $("#popupDiv"+invoicePopupId+"").empty(); 
+	}
+	
+}
+</script>
+<script>
+$(".menupop, .pull-right, .positionRelative, .menuWidget, .fa, .fa-ellipsis-v, #unbilled").click(function(e) {
+	e.stopPropagation();
+});
+
+$('html').click(function(){
+	$(".menupop").hide();
+});
+</script>
+
+<script>
+function sendReminder(id){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/sendReminder?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id, 
+             success: function(result) {
+            	 removePopup();
+        },
+    });  
+}
+</script>
+
+<script type="text/javascript">
+function getPrint(id) {
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/getPrint/'+id+'','_newtab');
+}</script>
+
+<script>
+function downloadInvoice(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.location.href = sourceleadUrl+"/downloadInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id;
+}
+
+</script>
+
 <script>
 function acceptedInvoice(id){
 	 var sourceleadUrl ='${sourceleadUrl}';

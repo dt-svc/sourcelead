@@ -1436,9 +1436,15 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
    					  endDate != null && endDate != '' && endDate != 'undefined'){
    			    	
    			    	  if(timesheetSubmissionStatus == 'approved'){
-   			    		  timesheetDivAfterSaving(startDate,endDate,"approved");
+   			    		 if(isSuperUser == 'true'){
+      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+      			    	 }
+   			    		 else{
+   			    			 timesheetDivAfterSaving(startDate,endDate,"approved");
+   			    		 }
+   			    		 
    			    	  }else{
-   			    		 if(isSuperUser == true){
+   			    		 if(isSuperUser == 'true'){
       			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
       			    	 }
       			    	 else{

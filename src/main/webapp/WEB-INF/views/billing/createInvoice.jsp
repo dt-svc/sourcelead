@@ -35,12 +35,7 @@ function errRemoveClientContact(){
 }
 
 </script>
-<script type="text/javascript">
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
+
 
 <div class="side_mask">
 	<div class="proj_close"></div>
@@ -179,7 +174,7 @@ function cancel(){
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);" onchange="getSowRate(REPLACEROWID)">
 	</div>
 </div>
 
@@ -509,13 +504,11 @@ function cancel(){
 		 	 }	 	
 	    }
 	       	 
-	    	 
-	    
 	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
 	     
 	     var afterDiscountTotal = $("#afterDiscountTotal").val();
 	     
-		    for(var i=0; i< maxRowNum; i++){
+		    for(var i=1; i< maxRowNum; i++){
 		         var taxType = $("#"+i+"taxdiscountType").val();
 		        
 		         var taxValue = $("#"+i+"taxdiscountvalue").val();
@@ -1180,6 +1173,8 @@ function pagination(){
 				 $("#"+rowId+"totalHours").val(hours+":"+minute);
 				 calAddRowAmount(hours,minute,rowId);
 			 }
+		 }else{
+			 calAddRowAmount("000","00",rowId);
 		 }
 		 
   }
@@ -1542,6 +1537,25 @@ function errDueDate(){
 </script>
 
 <script>
+function getSowRate(id){
+	var contractId = $("#"+id+'sow').val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+    	type: "GET",
+    	url: sourceleadUrl+"/getSowRateByContractId?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId,
+        success: function(data) {
+        	 if(data != null && data != ''){
+        		var json = JSON.parse(data);
+	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 totalHoursCalculateAmount(id);
+        	} 
+        },
+        
+    });
+}
+</script>
+
+<script>
 	 /*  $(function() {
 	    $( "#invoiceDate, #dueDate" ).datepicker({
 	    	dateFormat : 'dd-mm-yy',
@@ -1697,7 +1711,7 @@ function getDueDateByFrequency(){
 	 var invoiceDate = document.getElementById("invoiceDate").value;
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	
-	 if(paymentFrequency){
+	 if(paymentFrequency && invoiceDate){
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    
@@ -1753,7 +1767,7 @@ function saveInvoice(saveType){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
 	     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-	     		result = result +"		<p>At least one Add column Inovoice Line Item</p>";
+	     		result = result +"		<p>At least one Add column Receivables Line Item</p>";
 	     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	     		result = result +"	</div>";
@@ -1830,7 +1844,12 @@ $(this).val($(this).val().replace(/[^0-9\.]/g,''));
     }
 });
 </script>
-
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <script>
 var validationSettings = {
 		errorMessagePosition : 'element',
