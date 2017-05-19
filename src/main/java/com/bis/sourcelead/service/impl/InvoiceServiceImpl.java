@@ -584,16 +584,30 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
-		 
 		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
 		 EmailAttachment emailAttachment = new EmailAttachment();
 		 emailAttachment.setUUID(UUID);
+		 
+		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+		 for(InvoiceDocument doc:documenetSet){
+			 EmailAttachment docAttachment = new EmailAttachment();
+			 docAttachment.setDocFile(doc.getDocFile());
+			 docAttachment.setName(doc.getFileName());
+			 documentList.add(docAttachment);
+		 }
+		 
+		 }
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
+		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
+		 attachmentList.addAll(documentList);
+		 }
+		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 //calling the sendEmail method of emailScenerioUtil		
-		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
+		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
 	}
