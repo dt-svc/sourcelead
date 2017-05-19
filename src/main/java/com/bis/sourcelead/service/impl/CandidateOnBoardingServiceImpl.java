@@ -557,6 +557,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    if(!isNullOrEmpty(candidateOnBoarding.getCity())){
 		    	employees.setCity(candidateOnBoarding.getCity());
 		    }
+		    employees.setUserEmploymentType(candidateOnBoarding.getEmploymentType());
+		    employees.setDesignationOtherType(candidateOnBoarding.getEmploymentOtherType());
 		    employees.setHireDate(candidateOnBoarding.getStartDate());
 		    employees.setCreatedBy(loginUser.getUserCode());
 		    employees.setCreatedDate(commonUtil.currentDate());

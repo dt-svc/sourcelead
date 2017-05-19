@@ -1282,15 +1282,9 @@ function flushContactDetails(){
 </script>
 
 <script>
-function getContactsCount(){
-	var contactsCount =  $('#userContacts_chosen  span').size();
+function getContactsCount(e,params){
+	var contactsCount  = $('#userContacts option:selected').length;
 	$("#contactsCount").html(contactsCount);
-	$('#userContacts_chosen').next("p").remove();
-	
-	$('.search-choice-close').click(function() {
-		var contactsCount =  $('#userContacts_chosen  span').size();
-		$("#contactsCount").html(contactsCount);
-	});
 }
 </script>
 
