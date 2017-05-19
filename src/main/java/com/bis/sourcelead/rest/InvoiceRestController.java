@@ -300,6 +300,8 @@ public class InvoiceRestController {
 		
     	String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Invoice> invoiceList = null;
+		List<Invoice> billingInvoiceList = new ArrayList<Invoice>();
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -352,7 +354,8 @@ public class InvoiceRestController {
 		}
 		
 		
-		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String currentDate = sdf.format(new Date());
@@ -364,6 +367,8 @@ public class InvoiceRestController {
 			Integer paidCount = 0;
 			Integer overDueInvoiceCount = 0;
 			Integer openInvoiceCount = 0;
+			
+			boolean isInvoiceDueDate = false;
 			
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
@@ -419,6 +424,7 @@ public class InvoiceRestController {
 						if(todayDate.after(invoiceDueDate)){
 							overDueInvoiceCount = overDueInvoiceCount+1;
 							invoice.setDueAfterInvoiceAmount(invoice.getDueAmount());
+							isInvoiceDueDate = true;
 						}else{
 							openInvoiceCount = openInvoiceCount+1;
 							invoice.setDueBeforeInvoiceAmount(invoice.getDueAmount());
@@ -436,10 +442,12 @@ public class InvoiceRestController {
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
 			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
-			
-			
+			billingInvoiceList.add(invoice);
 		}
-	    resultJson = commonUtil.toJSON(invoiceList);
+		
+		
+		
+	    resultJson = commonUtil.toJSON(billingInvoiceList);
 	  return resultJson;
 	}
 	
