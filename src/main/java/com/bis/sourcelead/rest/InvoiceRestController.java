@@ -975,7 +975,14 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
+		Long Id = null;
+     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
+     	if(parentInvoice.getParentInvoiceId() != null){
+     		Id = parentInvoice.getParentInvoiceId().getId();
+     	}else{
+     		Id = Long.parseLong(invoiceId); 
+     	}
+		Invoice invoice = invoiceService.getInvoicetById(Id);
   	    byte[] pdfBytes = invoice.getDocFile();
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
@@ -998,12 +1005,18 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/downloadInvoice", method = RequestMethod.GET)
 	public void downloadInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		
-		 response.setContentType("application/octet-stream");
-		    StringBuilder fileName = new StringBuilder();
-	     response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
-			InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
+		Long Id = null;
+     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
+     	if(parentInvoice.getParentInvoiceId() != null){
+     		Id = parentInvoice.getParentInvoiceId().getId();
+     	}else{
+     		Id = Long.parseLong(invoiceId); 
+     	}
+		Invoice invoice = invoiceService.getInvoicetById(Id);
+		response.setContentType("application/octet-stream");
+		StringBuilder fileName = new StringBuilder();
+	    response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
+		InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
 			try {
 				OutputStream outStream = response.getOutputStream();
 	

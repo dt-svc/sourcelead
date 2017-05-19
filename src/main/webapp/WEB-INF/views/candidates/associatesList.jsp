@@ -446,7 +446,7 @@ function candidateSideBar(candidateId){
          			 		mobilePhone =json.mobilePhone;
          			 	 }else{
          			 		 
-         			 		mobilePhone = '';
+         			 		mobilePhone = '--';
          			 	 }
          			 	 
 	                	 var result = "";
@@ -481,7 +481,7 @@ function candidateSideBar(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
@@ -1382,8 +1382,8 @@ function cancel(candidateId){
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">
-    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
-    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailedview</a></li>
+    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quick view</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed view</a></li>
   </ul>
 
   <div class="tab-content">
@@ -2288,12 +2288,12 @@ function minMaxExperience(){
 					       
 					       <div class="col-md-4 mt25">
 	                          <div class="small-widget bg-yellow">
-	                              <a href="<c:url value='/associate?type=associateFromCandidate'/>" title="Create from Candidates">
+	                              <a href="<c:url value='/associate?type=associateFromCandidate'/>" title="Add from Candidates">
 	                                  <div class="clearfix mb10">
 	                                      <i class="fa fa-user-circle fa-4x"></i>
 	                                      <span class="fa fa-plus"></span>
 	                                  </div>
-	                                  <strong class="clearfix">Create from Candidates</strong>
+	                                  <strong class="clearfix">Add from Candidates</strong>
 	                                </a>
 	                                
 	                          </div>

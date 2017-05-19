@@ -380,11 +380,11 @@ function candidateSideBar(candidateId){
          			 		experienceMonths = ' ';  
          			 	 }
          			 	
-         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+         			 	/* if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
              			 	designation = 'Designation'+'-'+json.designation;
              			 	}else{
              			 		designation = '';
-             			 	}
+             			 	} */
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
          			 	designationType = 'Employment Type'+ ' - '+json.designationType;
@@ -498,7 +498,7 @@ function candidateSideBar(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
@@ -521,7 +521,7 @@ function candidateSideBar(candidateId){
                          
 			             result = result+'                       </ul>';
 
-			             result = result+' <ul class="list-unstyled">';
+			             result = result+' <ul class="list-unstyled" >';
 						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
 						 result = result+'</ul>';
 						 
