@@ -266,7 +266,6 @@ public class InvoiceRestController {
      		}
      		 	
      		if(null != contractsList){
-     			System.out.println("================="+contractsList.size());
          		resultJson = commonUtil.toJSON(contractsList);	
          	}
      	}
