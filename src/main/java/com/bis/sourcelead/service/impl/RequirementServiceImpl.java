@@ -552,18 +552,22 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  requirementApproverHierarchyList.add(rah);
 				  }
-				  
+				  String approverNames2 = jsonObj.getString("sequentialApprover2");
 				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
+					  
+					  User approverUsersabc = userService.getUserById(Long.parseLong(approverNames2));
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  //to remove the unselected approvers in Dropdown
+					  removedApproversInRequirementForSequential(approverUsersabc,requirement,Constants.LEVEL2);
+					  
 					  
 					  User approverUserId = new User();
 					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover2")));
 					  				  
 					  rah.setApproverUserId(approverUserId);
 					  
-					 //to remove the unselected approvers in Dropdown
-					  removedApproversInRequirementForSequential(approverUserId,requirement,Constants.LEVEL2);
-					  
+					
 					  
 					  rah.setRequirementId(requirement);
 					  

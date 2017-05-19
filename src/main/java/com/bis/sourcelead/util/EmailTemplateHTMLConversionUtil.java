@@ -60,12 +60,12 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 					  	      tempHTML.append("<table width='900' style='margin:30px auto; font-family:'arial'; align='center' cellpadding='0' cellspacing='0' >");
 						           tempHTML.append("<tr>");
 						                 tempHTML.append("<td>");
-						                         tempHTML.append("<div style='font-size:16px; color:#333333; line-height: 30px;'>");
+						                         tempHTML.append("<div style='font-size:16px; color:#333333; line-height: 20px;'>");
 		                                         tempHTML.append(body);
 		                                         tempHTML.append("</div>");
 		                                         
 		                                         if(!isNullOrEmpty(signature)){
-									                    tempHTML.append("<div style='font-size:16px; font-weight:600; color:#333333; line-height:30px;'><br/><br/>");
+									                    tempHTML.append("<div style='font-size:16px; font-weight:600; color:#333333; line-height:20px;'><br/><br/>");
 														tempHTML.append(signature);
 													    tempHTML.append(" </div>");		
 												 }
