@@ -32,7 +32,10 @@
 					$("#accept").removeAttr("style");
 			}
 			if(rateStatus == 'Rejected'){
-				$("#reject").removeAttr("style");		
+				$("#reject").removeAttr("style");	
+			}
+			if(rateStatus == 'RejectedApplicant'){
+				$("#rejectApplicant").removeAttr("style");
 			}
 			if(rateStatus == 'Negotiate'){
 				$("#negotiation").removeAttr("style");		
@@ -86,6 +89,32 @@ width: auto;
 							  </c:choose>
 						  </div>
 		  		</div>
+		  		
+		  		
+		  		<div id="rejectApplicant" style="display:none">
+			  		<c:choose>
+					    <c:when test="${permission=='YES'}">
+						    <form id="reject_form_applicant" name="reject_form_applicant" method="post" >
+					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
+								  <div class="col-md-6">
+									  <i class="fa fa-ban fa-3x"></i>
+									  <p class="reason-msg">You are not interested for the position <B> ${requirementSubmission.requirement.jobTitle}</B></p>
+								  </div>
+								  <div class="col-md-6" id="rejectApplicantIdDiv">
+									  <div class="col-md-12">
+										  <label>Reason for Reject</label>
+										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectApplicantId"></textarea>	
+									  </div>
+									  <div class="col-md-12 mt10"><button type="button" id="reject_Applicant" class="btn btn-sm btn-danger pull-right" onclick="storeApplicantRejectReason();">Submit</button></div>
+								  	
+								  </div>
+							  </div>
+							</form>
+					    </c:when>    
+					  </c:choose>
+		  		</div>
+		  		
+		  		
 		  		<div id="reject" style="display:none">
 			  		<c:choose>
 					    <c:when test="${permission=='YES'}">
@@ -206,6 +235,33 @@ width: auto;
 			       
 	} 
 </script>
+
+<script type="text/javascript">
+	function storeApplicantRejectReason() {
+		$('#reject_Applicant').attr("disabled", true);
+			var sourceleadUrl = '${sourceleadUrl}';
+			var submissionId = '${submissionId}';
+			var rejectreason = document.getElementById("rejectApplicantId").value;
+			var frm = $('#reject_form_applicant').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						success : function(data) {
+							if(data == "success"){
+								$('#rejectApplicantIdDiv').empty();
+								$('#rejectApplicantIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
+							}else if(data == "failure"){
+								$('#rejectApplicantIdDiv').empty();
+								$('#rejectApplicantIdDiv').append("<span>Your decision is already submitted !!</span>");	
+							}
+						},
+					});
+			       
+	} 
+</script>
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',

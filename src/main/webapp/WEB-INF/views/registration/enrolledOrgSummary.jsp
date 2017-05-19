@@ -658,9 +658,9 @@ function getUserList(){
 	                    	 }
 	                    	 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><span title='+name+'>'+name+'</span></td>';
-	                    	 result = result +'<td><span title='+opt.email+'>'+opt.email+'</span></td>';
-	                    	 result = result +'<td><span title='+mobilePhone+'>'+mobilePhone+'</span></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+name+'>'+name+'</div></td>';
+	                    	 result = result +'<td><div class="tbltbldata-dotdot" title='+opt.email+'>'+opt.email+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+mobilePhone+'>'+mobilePhone+'</div></td>';
 	                    	 result = result +'<td>'+opt.role+'</td>';
 	                    	 
 	                    	 if(opt.userState == 'NOT_LOGGEDIN'){

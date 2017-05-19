@@ -212,52 +212,57 @@ public class ReportRestController {
 				}
 			}
 
-		List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
-		List<User> orgUsersList = new ArrayList<User>(); 
-		StringBuilder userName = new StringBuilder();
-		if(null != usersList){
-			for(User user : usersList){
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				user.setUserState(userRole.getUserState());
-				user.setRole(userRole.getRoles().getDisplayName());
-				if(!isNullOrEmpty(userRole.getUser().getLastName())){
-					userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
-					userRole.setUserName(userName.toString());
+			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
+			List<User> orgUsersList = new ArrayList<User>(); 
+			StringBuilder userName = new StringBuilder();
+			if(null != usersList){
+				for(User user : usersList){
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					user.setUserState(userRole.getUserState());
+					user.setRole(userRole.getRoles().getDisplayName());
+					if(!isNullOrEmpty(userRole.getUser().getLastName())){
+						userName = userName.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName());
+						userRole.setUserName(userName.toString());
+						
+					}else{
+						userRole.setUserName(userRole.getUser().getFirstName());
+					}
 					
-				}else{
-					userRole.setUserName(userRole.getUser().getFirstName());
+					long totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocations.getId(), user, startDateUTC, endDateUTC);
+					user.setUserRequirementsCount(totalRequirements);
+					
+					long totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocations.getId(), user, startDateUTC, endDateUTC);
+					user.setUserCandidatesCount(totalCandidates);
+					
+					long totalApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user,"SUBMISSION", startDateUTC, endDateUTC);
+					user.setUserApplicantsCount(totalApplicants);
+					
+					long totalShortlistedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user,"SHORTLIST", startDateUTC, endDateUTC);
+					user.setUserShortlisteApplicantsCount(totalShortlistedApplicants);
+					
+					long totalSubmittedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user,"SUBMIT_TO_CLIENT", startDateUTC, endDateUTC);
+					user.setUserSubmittedApplicantsCount(totalSubmittedApplicants);
+					
+					long totalInterviewedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "INTERVIEW", startDateUTC, endDateUTC);
+					user.setUserInterviewedApplicantsCount(totalInterviewedApplicants);
+					
+					long totalOfferedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "OFFERMADE", startDateUTC, endDateUTC);
+					user.setUserOfferedApplicantsCount(totalOfferedApplicants);
+					
+					long totalRejectedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "rejected", startDateUTC, endDateUTC);
+					user.setUserRejectedApplicantsCount(totalRejectedApplicants);
+					
+					long userApplicantsBackOutCount = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "BACKOUT", startDateUTC, endDateUTC);
+					user.setUserApplicantsBackOutCount(userApplicantsBackOutCount);
+					
+					
+					orgUsersList.add(user);
 				}
-				
-				long totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocations.getId(), user, startDateUTC, endDateUTC);
-				user.setUserRequirementsCount(totalRequirements);
-				
-				long totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocations.getId(), user, startDateUTC, endDateUTC);
-				user.setUserCandidatesCount(totalCandidates);
-				
-				long totalApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user,"", startDateUTC, endDateUTC);
-				user.setUserApplicantsCount(totalApplicants);
-				
-				long totalShortlistedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user,"SHORTLIST", startDateUTC, endDateUTC);
-				user.setUserShortlisteApplicantsCount(totalShortlistedApplicants);
-				
-				long totalSubmittedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user,"SUBMISSION", startDateUTC, endDateUTC);
-				user.setUserSubmittedApplicantsCount(totalSubmittedApplicants);
-				
-				long totalInterviewedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "INTERVIEW", startDateUTC, endDateUTC);
-				user.setUserInterviewedApplicantsCount(totalInterviewedApplicants);
-				
-				long totalOfferedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "OFFERMADE", startDateUTC, endDateUTC);
-				user.setUserOfferedApplicantsCount(totalOfferedApplicants);
-				
-				long totalRejectedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "rejected", startDateUTC, endDateUTC);
-				user.setUserRejectedApplicantsCount(totalRejectedApplicants);
-				
-				orgUsersList.add(user);
 			}
+		    resultJson = commonUtil.toJSON(orgUsersList);
+			return resultJson;
 		}
-	    resultJson = commonUtil.toJSON(orgUsersList);
-		return resultJson;
-	}
+
 	
 
 	@RequestMapping(value = "/getVendorRequirementReports")

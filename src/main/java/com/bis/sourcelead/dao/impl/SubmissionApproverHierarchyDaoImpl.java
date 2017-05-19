@@ -109,10 +109,11 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	
 	
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchy(String id) throws Exception {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
-		return (SubmissionApproverHierarchy) session.get(SubmissionApproverHierarchy.class, id);
+		return (SubmissionApproverHierarchy) session.get(SubmissionApproverHierarchy.class, Long.parseLong(id));
 	}
 
 	
@@ -1524,7 +1525,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		// Getting Max Hierarchy Level for which employee is Assigned
 		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from SubmissionApproverHierarchy subsah where  subsah.submissionId.projectMembers.projects.id = :projectId ";
 		String query = "from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " where project.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and sah.submissionId.status = '1'"
+				+ " where project.id = :projectId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and sah.invoiceStatus IS NULL and sah.submissionId.status = '1'"
 				/*
 				 * For getting approved timesheet hours list
 				 */
