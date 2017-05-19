@@ -421,7 +421,7 @@ function populateInlineItemsGrid(data){
              result = result +'<div class="inputCustom">';
              result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDate+' type="text" readonly>';
              result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="'+i+'invoiceEndDate" placeholder="End Date" value='+opt.endDate+' type="text" readonly>';
-             result = result +' <input type="hidden" value='+opt.id+' id="'+i+'projectMemberId" name="'+i+'projectMemberId">';
+             result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="'+i+'submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
              result = result +'</div>';
              result = result +' </td>';
              result = result +'<td>';
@@ -438,22 +438,21 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +'<div class="tbldata-dotdot-100">';
              if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="calculateTotalAmount('+i+');">'; 
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
              }else{
-                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="calculateTotalAmount('+i+');">';
+                 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
              }
              result = result +'</div>';
              result = result +'</td>';
              result = result +' <td>';
              result = result +'<div class="tbldata-dotdot-vsm">';
-             result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM"  value='+opt.totalHours+' type="text" data-validation="required" field-name="Total Hours" onblur="calculateTotalAmount('+i+');">';
+             result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM"  value='+opt.totalHours+' type="text" data-validation="required" field-name="Total Hours" onblur="totalHoursCalculateAmount('+i+');">';
              result = result +'</div>';
              result = result +'</td>';
              result = result +'<td>';
              result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
              result = result +'</td>';
              result = result +'</tr>';
-            /* getSow(i,opt.candidateId); */
         }
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
@@ -472,6 +471,7 @@ function populateInlineItemsGrid(data){
         document.getElementById("lineItemAddRows").style.display="block";
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();    
+        getSow();
     }else{
         document.getElementById("bottomGrid").style.display="none";
         document.getElementById("lineItemAddRows").style.display="none";
@@ -509,10 +509,11 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<div class="inputCustom">';
     	 result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDateStr+' type="text" readonly>';
     	 result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="'+i+'invoiceEndDate" placeholder="End Date" value='+opt.endDateStr+' type="text" readonly>';
+    	 result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="'+i+'submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
     	 result = result +'</div>';
     	 result = result +' </td>';
     	 result = result +'<td>';
-    	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName">'+opt.candidateName+'</div>';
+    	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
     	 result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
     	 result = result +' </td>';
     	 result = result +'  <td>';
@@ -525,22 +526,21 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
     	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate" value='+opt.rate+' placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">'; 
     	 }else{
-    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
+    		 result = result +'<input class="form-control input-sm allownumericwithdecimal" id="'+i+'rate" name="'+i+'rate"  placeholder="Rate" data-validation="required" field-name="Rate" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 }
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-vsm">';
-    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' type="text" onblur="totalHoursCalculateAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	/* getSow(i,opt.candidateId,opt.contractId); */
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -554,67 +554,55 @@ function populateInlineItemsGrid1(data){
     $("#tableBody").empty();
     $("#tableBody").append(result)
     maskme();
-  /*   for (var i = 0; i < json.length; i++) { 
-    	$('#'+i+'sdate-input').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-			}
-		});
-	  $('#'+i+'edate-input').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-			}
-		});
-    } */
     document.getElementById("bottomGrid").style.display="block";
 	document.getElementById("bottomGrid").style.display="block";
 	document.getElementById("lineItemAddRows").style.display="block";
 	document.getElementById("tableBody").style.display="block";
 	
     addTaxDivs();
+    getSow();
 }
 </script>
 
 <!-- Get contract sow between client and the associate -->
- <!-- <script>
-  function getSow(id,candidateId,opt,contractId){
-	 /*  var candidateId = $('#'+id+'candidate').val(); */
-	  var orgRelationId = $("#vendorOrgRelationId").val();
+  <script>
+  function getSow(contractId){
+	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-	        success: function(data) {
-	        	var result = "";
-	        	result = result + "<option value='' >select sow</option>"
-	        	if(data != null && data != ''){
-	        		var json = JSON.parse(data);
-		        	 for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var selected = '';
+	  var maxRowNum = $("#maxTsRowNum").val();
+		  for(var id=0;id < maxRowNum;id++){
+			  var candidateId = $("#"+id+'candidate').val();
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        success: function(data) {
+			        	var result = "";
+			        	result = result + "<option value='' >select sow</option>"
+			        	if(data != null && data != ''){
+			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.length; i++)
+							{
+					        		var opt = json[i];
+					        		var selected = '';
+					        		
+					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+					        			selected = 'selected';
+					        		} 
+					        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
+							} 
+				        	 $('#'+id+'sow').empty();
+				        	 $('#'+id+'sow').append(result);
+			        	}else{
 			        		
-			        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
-			        			selected = 'selected';
-			        		} 
-			        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
-					} 
-		        	 $('#'+id+'sow').empty();
-		        	 $('#'+id+'sow').append(result);
-		        	 /*$ ('#'+id+'rate').val(opt.billingAmount);
-		        		calculateTotalAmount(id); */
-	        	}else{
-	        		
-	        	}
-	        },
-	        
-	    });
+			        	}
+			        },
+			        
+			    });
+		 } 
+	 
+	 
   }
-  </script> -->
+  </script> 
   
   
   <script>
@@ -1612,9 +1600,9 @@ function flushValues(){
 	$("#invoiceDate").val('');
 	$("#dueDate").val('');
 	$("#paymentFrequency").val('');
-	$("#frequency").val('');
+	$("#frequency").val('').trigger("chosen:updated");
 	$("#billingAddress").val('');
-	
+	$("#projectId").val('').trigger("chosen:updated");
 	$("#comment").val('');
 	$("#discountValue").val('');
 	$("#discountTotal").val('');
