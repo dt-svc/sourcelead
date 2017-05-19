@@ -648,7 +648,7 @@ function errRemoveClientContact(){
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				
 				
-				getSow(maxRowNum,opt.contractId);
+				getSow();
 				maskme();  
 		 }
 		
@@ -809,7 +809,7 @@ function cancel(){
 			
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
 			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
-			getSow(maxRowNum);
+			getSow();
 			maskme(); 
 			
 		   });
@@ -1000,38 +1000,46 @@ function pagination(){
 
 
 
-<script>
-  function getSow(rowId,contractId){
-	  var candidateId = $('#'+rowId+'candidateId').val();
+<!-- Get contract sow between client and the associate -->
+  <script>
+  function getSow(contractId){
 	  var orgRelationId = $("#clientOrgRelationId").val();
-	  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-	        success: function(data) {
-	        	if(data != null && data != ''){
-	        		var json = JSON.parse(data);
-	        		
-	        		
-		        	 for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var selected = '';
-			        		if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
-			        			selected = 'selected';
-			        		}
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' '+selected+' >'+opt.contractTitle+'</option>');
-					} 
-	        	}else{
-	        		
-	        	}
-	        },
-	        
-	    });
+	  var maxRowNum = $("#maxTsRowNum").val();
+		  for(var id=0;id < maxRowNum;id++){
+			  var candidateId = $("#"+id+'candidate').val();
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        success: function(data) {
+			        	alert(data);
+			        	var result = "";
+			        	result = result + "<option value='' >select sow</option>"
+			        	if(data != null && data != ''){
+			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.length; i++)
+							{
+					        		var opt = json[i];
+					        		var selected = '';
+					        		
+					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+					        			selected = 'selected';
+					        		} 
+					        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
+							} 
+				        	 $('#'+id+'sow').empty();
+				        	 $('#'+id+'sow').append(result);
+			        	}else{
+			        		
+			        	}
+			        },
+			        
+			    });
+		 } 
+	 
+	 
   }
-  
-  </script>
+  </script> 
 
 <script>
   function totalHoursCalculateAmount(rowId){

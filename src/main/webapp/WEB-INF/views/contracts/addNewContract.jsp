@@ -318,28 +318,28 @@
            <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Hours Per Week</label>
 	              <div class="col-md-8">
-				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${!empty contract && !empty contract.hoursPerWeek  ? contract.hoursPerWeek : contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? '' : '40' }" placeholder="Enter Hours" field-name="Hours Per Week">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${!empty contract && !empty contract.hoursPerWeek  ? contract.hoursPerWeek : contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? '' : '40' }" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Hours" field-name="Hours Per Week">
 	              </div>
             </div>
             
             <div class="form-group" id="overTimeHoursDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Overtime Hours</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" placeholder="Enter Hours" field-name="Overtime Hours">
+					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Hours" field-name="Overtime Hours">
               	</div> 
             </div>
             
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Total Hours Estimated</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
            <div class="form-group" id="overtimeRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Overtime Rate</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" placeholder="Overtime Rate" field-name="Overtime Rate">
+					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" data-validation-optional="true" data-validation="validate_int validate_length length1-8" placeholder="Overtime Rate" field-name="Overtime Rate">
 					  <%-- <div class="col-lg-4">
 						<select class="form-control selectpicker" id="overtimeRateType" name="overtimeRateType" field-name="Overtime Rate Type">
 						  <option value="">Select Type</option>
@@ -837,7 +837,7 @@ function contractTypeLabels(){
 		$('#clientContact').attr("data-validation","required");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
@@ -866,7 +866,7 @@ function contractTypeLabels(){
 		$('#vendorContact').attr("data-validation","required");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
@@ -889,7 +889,7 @@ function contractTypeLabels(){
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
@@ -914,7 +914,7 @@ function contractTypeLabels(){
 		$('#clientContact').attr('data-validation-optional',"true");
 		
 		$('#flatReward').removeAttr('data-validation-optional');
-		$('#flatReward').attr('data-validation',"required");
+		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
 		
 		$('#billingRateType').removeAttr('data-validation-optional');
 		$('#billingRateType').attr('data-validation',"required");
