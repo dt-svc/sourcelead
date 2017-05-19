@@ -243,7 +243,7 @@ function requirementDetails(requirementUUID){
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
 				 result = result +'            <div class="require_wrap_details require_textarea"> ';
 				 result = result +'              <h2>Descriptions:</h2>';
-				 result = result +'              <textarea placeholder="Enter description" readonly>'+description+'</textarea>';
+				 result = result +'              <div class="RDdetails">'+description+'</div>';
 				 result = result +'              <h2>Other details:</h2>';
 				 result = result +'              <div class="require_one">';
 				 result = result +'                <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+positions+'</span>';
