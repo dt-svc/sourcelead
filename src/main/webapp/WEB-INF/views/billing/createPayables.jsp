@@ -1031,7 +1031,6 @@ function pagination(){
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 			        success: function(data) {
-			        	alert(data);
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
 			        	if(data != null && data != ''){
