@@ -202,6 +202,9 @@ public class User implements Serializable{
     private long userRejectedApplicantsCount;
 	
 	@Transient
+    private long userApplicantsBackOutCount;
+	
+	@Transient
 	private String dateOfJoin;
 	
 	@Transient
@@ -641,6 +644,14 @@ public class User implements Serializable{
 
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
+	}
+
+	public long getUserApplicantsBackOutCount() {
+		return userApplicantsBackOutCount;
+	}
+
+	public void setUserApplicantsBackOutCount(long userApplicantsBackOutCount) {
+		this.userApplicantsBackOutCount = userApplicantsBackOutCount;
 	}
 
 	
