@@ -252,6 +252,10 @@ public class ReportRestController {
 					long totalRejectedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "rejected", startDateUTC, endDateUTC);
 					user.setUserRejectedApplicantsCount(totalRejectedApplicants);
 					
+					long userApplicantsBackOutCount = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocations.getId(), user, "BACKOUT", startDateUTC, endDateUTC);
+					user.setUserApplicantsBackOutCount(userApplicantsBackOutCount);
+					
+					
 					orgUsersList.add(user);
 				}
 			}
