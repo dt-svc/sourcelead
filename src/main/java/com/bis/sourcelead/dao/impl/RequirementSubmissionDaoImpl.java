@@ -2352,7 +2352,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
-			 String query = "from RequirementSubmission rs "+leftJoins+" where req.id = :requirementId and rs.vendorLocationId.id <> NULL "+subQuery+" ORDER BY rs.id DESC";
+			 String query = "from RequirementSubmission rs "+leftJoins+" where req.id = :requirementId "+subQuery+" ORDER BY rs.id DESC";
 			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		     return offerAcceptedCandidatesList;
 		}
