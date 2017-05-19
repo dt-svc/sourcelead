@@ -49,9 +49,9 @@ public class SignatureRequestUtil {
 	public Contracts sendDocumentForSignatureRequest(User vendorUser, ContractsTemplate contractsTemplate, OrgLocations orgLocation, User loginUser, Contracts contracts, Org org) throws Exception{
 		
 		// Enter your DocuSign credentials:
-		String UserName = "prasannavadla9@gmail.com";
-		String Password = "prasanna";    
-		String IntegratorKey = "d5a84b14-1b12-4735-a455-604a8f7c9754";
+		String UserName = "sourcelead@rediffmail.com";
+		String Password = "Pwd!123";    
+		String IntegratorKey = "1bf5d901-629e-4ec3-a915-8991fd08206a";
 
 		// for production environment update to "www.docusign.net/restapi"
 		String BaseUrl = "https://demo.docusign.net/restapi";
@@ -100,7 +100,7 @@ public class SignatureRequestUtil {
 //			// read file from a local directory
 //			Path path = Paths.get(currentDir + SignTest1File);
 //			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate);
-			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate,contracts,orgLocation,org);
+			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate.getTemplateContent(),contracts,orgLocation,org);
 		}
 		catch (IOException ioExcp)
 		{
@@ -114,6 +114,8 @@ public class SignatureRequestUtil {
 		Document doc = new Document();  
 		String base64Doc = Base64.getEncoder().encodeToString(fileBytes);
 		doc.setDocumentBase64(base64Doc);
+		
+		
 		doc.setName(contractsTemplate.getTemplateName()+".pdf");    // can be different from actual file name
 		/*doc.setDocumentId("1");*/
 		doc.setDocumentId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
@@ -125,6 +127,9 @@ public class SignatureRequestUtil {
 	        PdfReader pdfReader = new PdfReader(fileBytes);
 	        Integer numberOfPages = pdfReader.getNumberOfPages();
 		
+	        
+	        
+	        
 
 		// add a recipient to sign the document, identified by name, email, and recipientId
 		Signer signer = new Signer();
@@ -136,10 +141,10 @@ public class SignatureRequestUtil {
 		// default unit of measurement is pixels, can be mms, cms, inches also
 		SignHere signHere = new SignHere();
 		signHere.setDocumentId(doc.getDocumentId());
-		signHere.setPageNumber("1");
+		signHere.setPageNumber(numberOfPages.toString());
 		signHere.setRecipientId("1");
-		signHere.setXPosition("100");
-		signHere.setYPosition("150");
+		signHere.setXPosition("500");
+		signHere.setYPosition("750");
 
 		// can have multiple tabs, so need to add to envelope as a single element list
 		List<SignHere> signHereTabs = new ArrayList<SignHere>();
@@ -228,7 +233,13 @@ public class SignatureRequestUtil {
 //					// read file from a local directory
 //					Path path = Paths.get(currentDir + SignTest1File);
 //					fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate);
+			//	fileBytes = contracts.getDocFile();
 				fileBytes = contracts.getDocFile();
+				//fileBytes = html2PdfUtil.getPdfBytes("",contracts,orgLocation,org);
+				
+				
+				 PdfReader pdfReader = new PdfReader(fileBytes);
+			        Integer numberOfPages = pdfReader.getNumberOfPages();
 				// create an envelope that will store the document(s), tab(s), and recipient(s)
 				EnvelopeDefinition envDef = new EnvelopeDefinition();
 				envDef.setEmailSubject("Business Intelli Solutions : Please sign this doc");
@@ -254,10 +265,10 @@ public class SignatureRequestUtil {
 				// default unit of measurement is pixels, can be mms, cms, inches also
 				SignHere signHere = new SignHere();
 				signHere.setDocumentId(doc.getDocumentId());
-				signHere.setPageNumber("1");
+				signHere.setPageNumber(numberOfPages.toString());
 				signHere.setRecipientId("1");
-				signHere.setXPosition("100");
-				signHere.setYPosition("150");
+				signHere.setXPosition("500");
+				signHere.setYPosition("750");
 
 				// can have multiple tabs, so need to add to envelope as a single element list
 				List<SignHere> signHereTabs = new ArrayList<SignHere>();
