@@ -246,7 +246,7 @@ public class ContractRestController {
 	
 	
 	@RequestMapping(value = "/getVendorContactsByOrgRelationId", method = RequestMethod.GET)
-	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,@RequestParam(value = "listName", required = false) String listName,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
 		
@@ -267,15 +267,21 @@ public class ContractRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
-			/*if(orgSpoc.getVendorUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
+			if("Vendor".equalsIgnoreCase(listName)){
+				orgSpoc.setOwnerUserName(clientSb.toString());
+			}
+			else{
+				orgSpoc.setOwnerUserName(sb.toString());
+			}
+			/*if(orgSpoc.getVendorUser().getId().longValue()== orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(clientSb.toString());
             }
             if(orgSpoc.getClientUser().getId().longValue()==orgSpoc.getOwnerUser().getId().longValue()){
                 orgSpoc.setOwnerUserName(sb.toString());
             }*/
-            if(null != orgSpoc.getOwnerUser()){
+           /* if(null != orgSpoc.getOwnerUser()){
 				orgSpoc.setOwnerUserName(orgSpoc.getOwnerUser().getFirstName());
-			}
+			}*/
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
