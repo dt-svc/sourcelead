@@ -176,6 +176,7 @@ function editCandidate(candidateId){
 							if(json.candidateType == "Candidate"){
 								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
 							}
 							 
 							if(json.candidateType == "Consultant"){
@@ -1124,6 +1125,7 @@ function candidateProfile(candidateId,candidateType){
 		
 		rateValidations();
 		
+		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
@@ -1687,6 +1689,10 @@ function updateDesignationOtherType(){
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = $('#email').val(); 
+	 var tempEmail = $('#tempEmail').val(); 
+	 
+	 if(tempEmail != email){
+	 
 	 var candidateType = $('#candidateType').val(); 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1712,8 +1718,10 @@ function updateDesignationOtherType(){
 		        },
 		    });
 	 }
+	 }
  }
  </script>     
+ 
  
  <!-- Candidate Email validation script ends here -->
  

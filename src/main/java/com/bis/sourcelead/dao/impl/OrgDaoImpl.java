@@ -265,9 +265,13 @@ public class OrgDaoImpl implements OrgDao {
 					+ " and org.id IN (select userRole.orgLocations.org.id from UserRole userRole where userRole.userState = '" + userState + "')";
 		}
 		
+		// trim the spaces between words (escape spaces)
+		String s1 = searchByName;
+		String withoutWhitespace = s1.trim();
 		String orgNameSubQuery = "";
-		if (!isNullOrEmpty(searchByName)) {
-			orgNameSubQuery = "and org.orgName LIKE '" + searchByName + "%' ";
+		
+		if (!isNullOrEmpty(withoutWhitespace)) {
+			orgNameSubQuery = "and ((org.orgName LIKE '" + withoutWhitespace + "%') OR (org.user.email LIKE '" + withoutWhitespace + "')) ";
 		}
 		
 	    String query = "from Org org where org.id <> :orgId " + userStateSubQuery + " " + orgNameSubQuery + " ";

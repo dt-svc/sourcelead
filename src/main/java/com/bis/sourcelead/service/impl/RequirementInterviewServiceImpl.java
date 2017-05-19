@@ -610,6 +610,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
         }
         if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y") && requirementSubmission.getVendorLocationId() != null){
      	   sendEmailToVendors(candidate,requirementSubmission, user,loginOrg, requirementInterview,orgLocations);
+        }else if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y")){
+        	sendEmailToVendors(candidate,requirementSubmission, user,loginOrg, requirementInterview,orgLocations);
         }
         if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
 				String[] othersEmails = jsonObj.getString("notificationToOthersEmails").split(",");
