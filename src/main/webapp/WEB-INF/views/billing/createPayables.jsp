@@ -1026,10 +1026,11 @@ function pagination(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var maxRowNum = $("#maxTsRowNum").val();
 		  for(var id=0;id < maxRowNum;id++){
+			  alert("id "+id); 
 			  var candidateId = $("#"+id+'candidate').val();
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 			        success: function(data) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"
@@ -1039,17 +1040,14 @@ function pagination(){
 							{
 					        		var opt = json[i];
 					        		var selected = '';
-					        		
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
 					        		} 
 					        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
 							} 
-				        	 $('#'+id+'sow').empty();
-				        	 $('#'+id+'sow').append(result);
-			        	}else{
-			        		
 			        	}
+			        	 $('#'+id+'sow').empty();
+			        	 $('#'+id+'sow').append(result);
 			        },
 			        
 			    });
