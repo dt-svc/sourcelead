@@ -65,7 +65,7 @@ public class InvoicePdfHelper {
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org) throws IOException, Exception
 	{
 		File invoiceFile = new File(org.getOrgName() + "_" + invoice.getInvoiceId() + ".pdf");
-		OutputStream file = new FileOutputStream(invoiceFile);
+		FileOutputStream file = new FileOutputStream(invoiceFile);
 		try {
 			Document document = new Document();
 			PdfWriter writer = PdfWriter.getInstance(document, file);
