@@ -453,7 +453,6 @@ function populateInlineItemsGrid(data){
              result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
              result = result +'</td>';
              result = result +'</tr>';
-            getSow(i,opt.candidateId);
         }
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
@@ -472,6 +471,7 @@ function populateInlineItemsGrid(data){
         document.getElementById("lineItemAddRows").style.display="block";
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();    
+        getSow();
     }else{
         document.getElementById("bottomGrid").style.display="none";
         document.getElementById("lineItemAddRows").style.display="none";
@@ -541,7 +541,6 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	getSow(i,opt.candidateId,opt.contractId);
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -561,43 +560,48 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("tableBody").style.display="block";
 	
     addTaxDivs();
+    getSow();
 }
 </script>
 
 <!-- Get contract sow between client and the associate -->
   <script>
-  function getSow(id,candidateId,opt,contractId){
-	 /*  var candidateId = $('#'+id+'candidate').val(); */
-	  var orgRelationId = $("#vendorOrgRelationId").val();
+  function getSow(contractId){
+	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
-	        success: function(data) {
-	        	var result = "";
-	        	result = result + "<option value='' >select sow</option>"
-	        	if(data != null && data != ''){
-	        		var json = JSON.parse(data);
-		        	 for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var selected = '';
+	  var maxRowNum = $("#maxTsRowNum").val();
+		  for(var id=0;id < maxRowNum;id++){
+			  var candidateId = $("#"+id+'candidate').val();
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        success: function(data) {
+			        	alert(data);
+			        	var result = "";
+			        	result = result + "<option value='' >select sow</option>"
+			        	if(data != null && data != ''){
+			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.length; i++)
+							{
+					        		var opt = json[i];
+					        		var selected = '';
+					        		
+					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+					        			selected = 'selected';
+					        		} 
+					        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
+							} 
+				        	 $('#'+id+'sow').empty();
+				        	 $('#'+id+'sow').append(result);
+			        	}else{
 			        		
-			        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
-			        			selected = 'selected';
-			        		} 
-			        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
-					} 
-		        	 $('#'+id+'sow').empty();
-		        	 $('#'+id+'sow').append(result);
-		        	 /*$ ('#'+id+'rate').val(opt.billingAmount);
-		        		calculateTotalAmount(id); */
-	        	}else{
-	        		
-	        	}
-	        },
-	        
-	    });
+			        	}
+			        },
+			        
+			    });
+		 } 
+	 
+	 
   }
   </script> 
   
