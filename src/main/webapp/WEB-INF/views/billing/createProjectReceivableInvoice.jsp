@@ -378,7 +378,6 @@ function getProjectAssignedMem(){
 	var frequency = $("#frequency").val();
 	var projectId = $("#projectId").val();
 	var orgRelationId = $("#clientOrgRelationId").val();
-	alert("orgRelationId "+orgRelationId);
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
