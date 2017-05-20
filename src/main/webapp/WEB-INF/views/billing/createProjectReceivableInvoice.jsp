@@ -377,10 +377,12 @@ function getProjectFrequency(invoiceFrequency){
 function getProjectAssignedMem(){
 	var frequency = $("#frequency").val();
 	var projectId = $("#projectId").val();
+	var orgRelationId = $("#clientOrgRelationId").val();
+	alert("orgRelationId "+orgRelationId);
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency,
+	url: sourceleadUrl+"/getAllProjectAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 	success :function(data) {
 		populateInlineItemsGrid(data);
 	},
@@ -431,7 +433,13 @@ function populateInlineItemsGrid(data){
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
              result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-             result = result +'<option>Sow</option>';
+             result = result +'<option>select Sow</option>';
+             if(opt.contractsList != '' && opt.contractsList != null && opt.contractsList != 'undefined'){
+                 for (var j = 0; j < opt.contractsList.length; j++) { 
+                     var opt1 = opt.contractsList[j]; 
+                     result = result +'<option value='+opt1.id+'>'+opt1.contractTitle+'</option>';
+                 } 
+             }
              result = result +' </select>';
              result = result +'</div>';
              result = result +'</td>';
@@ -471,7 +479,7 @@ function populateInlineItemsGrid(data){
         document.getElementById("lineItemAddRows").style.display="block";
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();    
-        getSow();
+        /* getSow(); */
     }else{
         document.getElementById("bottomGrid").style.display="none";
         document.getElementById("lineItemAddRows").style.display="none";
@@ -560,7 +568,7 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("tableBody").style.display="block";
 	
     addTaxDivs();
-    getSow();
+    /* getSow(); */
 }
 </script>
 

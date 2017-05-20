@@ -350,7 +350,7 @@ function getProjectAssignedMem(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectVendorAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getAllProjectVendorAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 	success :function(data) {
 		populateInlineItemsGrid(data);
 	},
@@ -401,7 +401,13 @@ function populateInlineItemsGrid(data){
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
              result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-             result = result +'<option>Sow</option>';
+             result = result +'<option>select Sow</option>';
+             if(opt.contractsList != '' && opt.contractsList != null && opt.contractsList != 'undefined'){
+                 for (var j = 0; j < opt.contractsList.length; j++) { 
+                     var opt1 = opt.contractsList[j]; 
+                     result = result +'<option value='+opt1.id+'>'+opt1.contractTitle+'</option>';
+                 } 
+             }
              result = result +' </select>';
              result = result +'</div>';
              result = result +'</td>';
@@ -423,7 +429,7 @@ function populateInlineItemsGrid(data){
              result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
              result = result +'</td>';
              result = result +'</tr>';
-             getSow(i,opt.candidateId);
+             /* getSow(i,opt.candidateId); */
         }
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
@@ -511,7 +517,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	getSow(i,opt.candidateId,opt.contractId);
+    	/* getSow(i,opt.candidateId,opt.contractId); */
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
