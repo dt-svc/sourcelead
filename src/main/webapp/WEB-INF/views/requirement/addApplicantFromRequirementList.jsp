@@ -761,12 +761,6 @@ function getCandidateSelectionType(){
 		        		 document.getElementById("orConditionDiv").style.display="none";
 		        		
 		        		 document.getElementById("newResumeDiv").style.display="";
-		        		 document.getElementById("skillsDiv").style.display="";
-		        		
-		        		/*  document.getElementById("employmentTypeDiv").style.display="";
-		        		 $('#designationType').removeAttr("data-validation-optional");
-						 $("#designationType").attr("data-validation","required"); */
-		        		 
 		        		 
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
 		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
