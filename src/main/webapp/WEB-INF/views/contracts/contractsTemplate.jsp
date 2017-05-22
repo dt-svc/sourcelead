@@ -17,7 +17,7 @@
   <div class="pull-left">
     <h2>Contract Template</h2>
   </div>
-  <div class="pull-right brud-crum">Home &raquo; List by status</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Contract Template List</div>
 </section>
 	
 	

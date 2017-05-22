@@ -416,7 +416,7 @@ public class TimesheetApprovalRestController {
 			timesheetApprovalDiv.append("	                </select>");
 			timesheetApprovalDiv.append("	            </div>   ");  
 			
-			timesheetApprovalDiv.append("					<div class='export dropexport' onClick='dropDown();'> ");
+			timesheetApprovalDiv.append("					<div class='export dropexport' onClick='dropDown();' id='exportHideId'> ");
 			timesheetApprovalDiv.append("						<p data-toggle='tooltip' title='Export'><i class='glyphicon glyphicon-export'></i></p> ");
 			timesheetApprovalDiv.append("							<ul id='exporrt'> ");
 			String exportPdf="pdf";
@@ -546,9 +546,9 @@ public class TimesheetApprovalRestController {
 	    	 timesheetApprovalDiv.append("<div class='sm text-center'>--</div>");
 	     }
 	     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-     	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
+     	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
      	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
-     	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
+     	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' title='Reject' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
      	                     .append(projectMember.getId()).append("\",\"")
      	                      .append(format.format(actualStartDate))
      	                     .append("\",\"").append(format.format(actualEndDate))
@@ -749,9 +749,9 @@ public class TimesheetApprovalRestController {
 					    	 timesheetApprovalDiv.append("<div class='sm text-center'>--</div>");
 					     }
 					     if(sah.getSubmissionApprovalStatus() !=null && sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
+			            	 timesheetApprovalDiv.append("<div class='sm text-center'id='action").append(projectMember.getId()).append("'> <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"").append(format.format(actualStartDate)).append("\",\"").append(format.format(actualEndDate)).
-			            	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
+			            	                     append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i>|<i class='fa fa-times' title='Reject' alt='Rejected' onclick='rejecteSubmissionByProjectMemberId(\"")
 			            	                     .append(projectMember.getId()).append("\",\"")
 			            	                      .append(format.format(actualStartDate))
 			            	                     .append("\",\"").append(format.format(actualEndDate))
@@ -779,6 +779,7 @@ public class TimesheetApprovalRestController {
 				}
 		        else{
 		        	timesheetApprovalDiv.append("   <div class='dataTables_empty'>"); 
+		        	timesheetApprovalDiv.append("  <input type='hidden' id='hideExportApproval' value='EmptyList'>");
 					/*timesheetApprovalDiv.append("	<div class='col-lg-12'>"); 
 					timesheetApprovalDiv.append("		<div class='content-area clearfix'>"); 
 					timesheetApprovalDiv.append("			<div class='blank-pages'>");

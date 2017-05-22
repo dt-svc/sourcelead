@@ -45,4 +45,3 @@ UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='View & Remove Candid
 UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='View & Remove Candidate Certification Details' WHERE `ID`='89';
 UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='View & Remove Employer' WHERE `ID`='129';
 UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Remove Candidate Document' WHERE `ID`='209';
-
