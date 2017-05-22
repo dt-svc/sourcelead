@@ -969,6 +969,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 
 	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts, OrgLocations orgLocation) throws Exception
 	{
+		Timezone timezone = null;
+		if(null != orgLocation.getTimezone()){
+	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 }
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -1006,15 +1010,31 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			globalVarsMap.put("OwnerName","--");
 		}
 		
-		if(contracts.getStartDate()!=null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
-			globalVarsMap.put("StartDate",contracts.getStartDate().toString());	
-		}else{
+		
+		if(contracts.getStartDate() != null){
+			String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
+			if(null != timezone && null != timezone.getTimeZoneId()){
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				globalVarsMap.put("StartDate",currentDateInTimezone);	
+			}
+	    }else{
 			globalVarsMap.put("StartDate","--");
 		}
 
-		if(contracts.getEndDate()!=null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
-			globalVarsMap.put("EndDate",contracts.getEndDate().toString());	
-		}else{
+		
+		if(contracts.getEndDate() != null){
+			String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
+			if(null != timezone && null != timezone.getTimeZoneId()){
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				globalVarsMap.put("EndDate",currentDateInTimezone);	
+			}
+	    }else{
 			globalVarsMap.put("EndDate","--");
 		}
 		 

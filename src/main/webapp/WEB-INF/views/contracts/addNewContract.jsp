@@ -90,10 +90,10 @@
                   </span>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
-				    	<span title="Title text" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:when>
 				    <c:otherwise>
-				        <span title="Title text" id="tempEye" style="display:none"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				        <span title="View Template" id="tempEye" style="display:none"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:otherwise>
 				 </c:choose>
                   
@@ -146,22 +146,24 @@
             
             <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant">
+		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
+								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								    <c:if test = "${element.id != contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
+								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								</c:forEach>
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant"></select>
+					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
               	</div>
@@ -1098,6 +1100,7 @@ function hideCommonSOWFields(){
 					}); 
 			return true;
 		} else {
+			$('#submissionOffersListDiv').find('p.text-primary').remove();
 			return false;
 		}
 	}
@@ -1153,11 +1156,23 @@ function hideCommonSOWFields(){
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
+	                 	 result = result +  '<input type="hidden" readonly id="vendorLocationCode" value="'+opt.vendorLocationCode+'/>';
 	                  }
+	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
+	              }else{
+	            	  var result = "";
+	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  $("#submissionOffersList").empty();
+	            	  $("#submissionOffersList").append(result);
+	                  $("#submissionOffersList").chosen();
+	              	  $("#submissionOffersList").trigger('chosen:update');
+	              	  $('#submissionOffersListDiv').find('p.jquery_form_error_message').remove();
+	              	  $('#submissionOffersListDiv').find('p.text-primary').remove();
+	              	  $("#submissionOffersListDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>No Applicants found </p>");
 	              }
 	              $('#submissionOffersList')
 	                .find('option:first-child').prop('selected', true)
@@ -1189,6 +1204,20 @@ function hideCommonSOWFields(){
 	    });
 
 	}
+	
+	/* function getVendor(){
+		var venLocCode = $("#vendorLocationCode").val();
+		<c:forEach var="vendor" items="${orgRelationsList}">
+		          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
+		        	  alert("vendor a code "+'${vendor.responderLocationId.id}');
+		          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
+					  alert("vendor bbbbb code "+'${vendor.orgLocation.id}');
+		          }
+			   
+          </c:forEach>
+          
+	
+	} */
 </script>
 
 
