@@ -10,11 +10,9 @@
 
 <script>
 function candidateCommentsList(candidateId,submissionId){
-	$("#tab-7").show();
-	$('.current').each(function() {
-		    var currentId = this.id;
-		    $("#"+currentId).removeClass("current");
-	});
+	$('#tab-7').show();
+	
+	$('.' + "current").removeClass("current");
 	$("#candidateCommentTab").addClass("current");
 	var urlForm = "";
 	if(submissionId != null && submissionId != '' && submissionId != 'undefined'){
@@ -84,6 +82,7 @@ function candidateCommentsList(candidateId,submissionId){
           	  $("#tabb-4").empty();  
               $("#tabb-5").empty();  
               $("#tabb-6").empty();
+              $("#tabb-8").empty();
               $("#tab-7").append(result);
               
          },
