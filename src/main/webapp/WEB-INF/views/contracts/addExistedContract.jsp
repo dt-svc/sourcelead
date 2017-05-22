@@ -23,7 +23,7 @@
       <div class="pull-left">
         <h2>Add Existing Contract</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Add Existing Contract</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo;&raquo; Existing Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -52,13 +52,13 @@
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
 							
-							<div class="input-group positionRelative" id="uploadFileGroup">
+							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .doc, pdf, txt, docx formats only">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
 	                        </div>
-	                        <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p>
+	                        <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
               </div>
             </div>  			
 			</div>
@@ -67,7 +67,7 @@
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           	
           	<div class="form-group">
-              <label class="col-md-4">Contract title<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Contract Title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                 <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title">
               </div>
@@ -91,7 +91,7 @@
             
             <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="submissionOffersListDiv">
                   <select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
                   </select>
               </div>
@@ -189,7 +189,7 @@
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+                <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
             </div>         
             
@@ -267,7 +267,7 @@
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 dropdown-select" id="errInvoice">
-                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Invoice Frequency" onchange="removeBillCycleValidation();">
+                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Billing Cycle" onchange="removeBillCycleValidation();">
                     <option value="">Select Cycle</option>
                     <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
                     <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -293,6 +293,7 @@
             
             <div class="form-group">
               <!-- <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label> -->
+
                 <label class="col-md-4">Tax</label>
                    <div class="clearfix col-md-8" id="errTax">
                       <div class="col-md-5 paddingLeft">
@@ -335,7 +336,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Finalize" id="save_template" onclick="saveExistigContract();" class="btn btn-success ml10">
-            <input type="button" value="Cancel" class="btn btn-danger ml10" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="Cancel" class="btn btn-default ml10" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
@@ -764,16 +765,16 @@ function contractTypeLabels(){
 		}
 		if(contractType == "NDA" || contractType == "NSA"){
 
-			$('#percentageRewardValue').removeAttr('data-validation');
-			$('#flatRewardValue').removeAttr('data-validation');
+			//$('#percentageRewardValue').removeAttr('data-validation');
+			//$('#flatRewardValue').removeAttr('data-validation');
 			$('#invoiceFrequency').removeAttr('data-validation');
 			$('#paymentFrequency').removeAttr('data-validation');
 			$('#taxPercentageRewardValue').removeAttr('data-validation');
 			$('#taxFlatRewardValue').removeAttr('data-validation');
 			
 			
-			$('#percentageRewardValue').attr('data-validation-optional',"true");
-			$('#flatRewardValue').attr('data-validation-optional',"true");
+			//$('#percentageRewardValue').attr('data-validation-optional',"true");
+			//$('#flatRewardValue').attr('data-validation-optional',"true");
 			$('#invoiceFrequency').attr('data-validation-optional',"true");
 			$('#paymentFrequency').attr('data-validation-optional',"true");
 			$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
@@ -782,6 +783,11 @@ function contractTypeLabels(){
 			$('#flatReward').removeAttr('data-validation');
 			$('#flatReward').attr('data-validation-optional',"true");
 			
+			$('#billingRateType').removeAttr('data-validation');
+			$('#billingRateType').attr('data-validation-optional',"true");
+			
+			$('#billingRatePer').removeAttr('data-validation');
+			$('#billingRatePer').attr('data-validation-optional',"true");
 			
 			$('#clientOrgRelationId').removeAttr('data-validation');
 			$('#clientOrgRelationId').attr('data-validation-optional',"true");
@@ -900,6 +906,7 @@ function hideCommonSOWFields(){
 					}); 
 			return true;
 		} else {
+			$('#submissionOffersListDiv').find('p.text-primary').remove();
 			return false;
 		}
 	}
@@ -953,10 +960,21 @@ function hideCommonSOWFields(){
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
 	                  }
+	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
+	              }else{
+	            	  var result = "";
+	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  $("#submissionOffersList").empty();
+	            	  $("#submissionOffersList").append(result);
+	                  $("#submissionOffersList").chosen();
+	              	  $("#submissionOffersList").trigger('chosen:update');
+	              	  $('#submissionOffersListDiv').find('p.jquery_form_error_message').remove();
+	              	  $('#submissionOffersListDiv').find('p.text-primary').remove();
+	              	  $("#submissionOffersListDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>No Applicants found </p>");
 	              }
 	              document.getElementById("offeredSubmissionDiv").style.display="block";
 	              $('#submissionOffersList').removeAttr('data-validation-optional');
@@ -1102,5 +1120,4 @@ function cancelContract(){
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
 

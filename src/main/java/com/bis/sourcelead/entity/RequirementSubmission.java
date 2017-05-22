@@ -385,6 +385,9 @@ public class RequirementSubmission implements Serializable{
     @Transient
 	private String twitterUrl;
     
+    @Transient
+	private String vendorLocationCode;
+    
 	
 	
 	public OrgLocations getVendorLocationId() {
@@ -1284,5 +1287,13 @@ public class RequirementSubmission implements Serializable{
 
 	public void setTwitterUrl(String twitterUrl) {
 		this.twitterUrl = twitterUrl;
+	}
+
+	public String getVendorLocationCode() {
+		return vendorLocationCode;
+	}
+
+	public void setVendorLocationCode(String vendorLocationCode) {
+		this.vendorLocationCode = vendorLocationCode;
 	}
 }

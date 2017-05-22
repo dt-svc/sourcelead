@@ -19,6 +19,8 @@
 function applicantQuickViewProfile(submissionId,candidateId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
+	  
+	  $("#quickLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
@@ -197,6 +199,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
   				  reqQvemployeeSubmission(candidateId);
   				 reqQveducationSubmission(candidateId);
   				reqQwikCertificates(candidateId);
+  				 $("#quickLoading").removeAttr("style");
               }else{
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 

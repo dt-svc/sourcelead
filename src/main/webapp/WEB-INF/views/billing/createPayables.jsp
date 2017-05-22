@@ -1025,7 +1025,7 @@ function pagination(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 			        success: function(data) {
 			        	var result = "";
 			        	result = result + "<option value='' >select sow</option>"

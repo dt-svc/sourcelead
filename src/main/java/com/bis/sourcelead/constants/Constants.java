@@ -216,6 +216,20 @@ public class Constants {
 	public static String INDIVIDUAL_RECRUITER = "Recruiter";
 	public static String INVITE_PROFESSIONAL = "Professional Invitation";
 	public static String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
+	
+	
+	
+	public static String USER_NEW_ACTION_ASSIGNED="UserNewActionAssigned";
+
+	public static String USER_NEW_ACTION_ASSIGNED_As_A_Approver="UserNewActionAssignedAsaApprover";
+
+	public static String USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER="UserNewActionAssignedAsaReportingManager";
+
+	public static String USER_NEW_ACTION_ASSIGNED_As_A_TEAM_OWNER="UserNewActionAssignedAsaTeamOwnerUser";
+
+	public static String USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER="UserNewActionAssignedAsaProjectApproverUser";
+	
+	
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
