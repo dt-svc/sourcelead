@@ -272,7 +272,7 @@
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+                <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length1-250">
               </div>
             </div>         
             
