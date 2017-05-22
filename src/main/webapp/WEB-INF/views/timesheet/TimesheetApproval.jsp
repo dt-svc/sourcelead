@@ -66,6 +66,10 @@ $(document).ready(function() {
         		    	  	$("#timesheetApprovalDiv").append(result);
         		    	  	prepareChosenScripts();
         		    	  	pagination();
+        		    	  	var checkEmptyList = document.getElementById("hideExportApproval").value;  
+        		    	  	if(checkEmptyList == 'EmptyList'){
+        		    			$('#exportHideId').hide();
+        		    		}
         		      }
         	    }); 
 	}

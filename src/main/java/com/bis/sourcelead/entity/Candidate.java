@@ -330,6 +330,13 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private String employer;
 	 
+	 @Transient
+	 private String sowContractName;
+	 
+	 
+	 @Transient
+	 private List<Contracts> contractsList;
+	 
 	 
 	public Long getId() {
 		return id;
@@ -1252,5 +1259,30 @@ public class Candidate implements Serializable{
 	public void setTwitterUrl(String twitterUrl) {
 		this.twitterUrl = twitterUrl;
 	}
+
+
+	public String getSowContractName()
+	{
+		return sowContractName;
+	}
+
+
+	public void setSowContractName(String sowContractName)
+	{
+		this.sowContractName = sowContractName;
+	}
+
+
+	public List<Contracts> getContractsList()
+	{
+		return contractsList;
+	}
+
+
+	public void setContractsList(List<Contracts> contractsList)
+	{
+		this.contractsList = contractsList;
+	}
+	
 	
 }

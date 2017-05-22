@@ -176,14 +176,14 @@ public class CandidateListRestController {
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
 			
-			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+//			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
 					if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.NO)){
 						boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", candidateType));
 					}
 					
 				}
-			}
+//			}s
 			
 			
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){

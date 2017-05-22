@@ -49,6 +49,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	
+	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -519,6 +520,7 @@ $("#viewCandidateDiv").empty();
 $("#viewCandidateDiv").append(result);
 
 $("#tabb-1").show()
+$("#detailViewLoading").removeAttr("style");
 $(".new-tabs a").click(function(event) {
     event.preventDefault();
     $(this).parent().addClass("current");
@@ -1987,7 +1989,7 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result + '						<input type="text" class="form-control input-sm" placeholder="Date" id="rescheduleDate" name="rescheduleDate" data-validation="required" field-name="Interview Date">';
 	result = result + '						<i class="fa fa-calendar"></i>';
 	result = result + '						</span>	';									  	
-	result = result + '						<span class="timeDiv" id="timeDiv">';
+	result = result + '						<span class="timeDiv" id="rescheduleTimeDiv">';
 	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="Start Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
 	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="End Time" name="endTime" id="endTime" onBlur="validateEndTime();">';
 	result = result + '						</span>';
@@ -2259,17 +2261,17 @@ function TimezonesRescheduleList(timezone){
 	function validateEndTime() {
 		 var allStartTimes = [];
 		 var allEndTimes = [];
-		 $("#timeDiv").find('p.jquery_form_error_message').remove();
+		 $("#rescheduleTimeDiv").find('p.jquery_form_error_message').remove();
 			var startTime = $("#startTime").val();
 			 var endTime = $("#endTime").val();
 			if(endTime != null && endTime != '' && endTime != 'undefined'){
 				if(startTime == endTime){
-					$("#timeDiv").find('p.jquery_form_error_message').remove();
+					$("#rescheduleTimeDiv").find('.text-danger').remove();
 			        $("#add_interview").removeAttr("disabled");
 			        $("#add_interview").attr("disabled", "disabled");
-			        $("#timeDiv").append("<p class='jquery_form_error_message'>End Time should greater than Start Time</span>");
+			        $("#rescheduleTimeDiv").append("<small class='text-danger'>End Time should greater than Start Time</small>");
 			    }else{
-			         $("#timeDiv").find('p.jquery_form_error_message').remove();
+			         $("#rescheduleTimeDiv").find('.text-danger').remove();
 			         $("#add_interview").removeAttr("disabled");
 			   	}
 			}

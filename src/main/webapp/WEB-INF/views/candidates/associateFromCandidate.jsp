@@ -171,10 +171,10 @@
        </div>
        
        <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger">*</span></label>
+         <label class="col-md-3">Employment Type<span class="text-danger">*</span></label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" data-validation="required" field-name="Employment type">
-                <option value="">--Select--</option>
+                <option value="">--Select Employment Type--</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>
                  <option>W-2</option>
@@ -219,7 +219,7 @@
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();">
                  </select>
 			</div>
 		</div>
@@ -227,7 +227,7 @@
 		 <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 			<div class="col-md-9">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">
+			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact">
                  </select>
 			</div>
 		</div>
@@ -329,36 +329,12 @@
           </div>
         </div>
         
-         <div class="form-group">
-              <label class="col-md-3">Education</label> 
-              <div class="col-md-9">
-                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation-optional="true">
-                <c:forEach var="edu" items="${educationsList}">
-	                     <option value="${edu.name}">${edu.name}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
-       
-         
-        
-        
-        <div class="form-group">
-              <label class="col-md-3">Skills</label>
-              <div class="col-md-9">
-                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
         
         <div class="form-group">
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
                <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
-                <option value="">--Select--</option>
+                <option value="">--Select Notice Period--</option>
                  <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
                  <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
                  <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
@@ -369,19 +345,58 @@
            </div>
          </div>
          
+         
+
+      
+         
+<div class="form-group innerForm_formGroup">
+	<div class="form-group">
+              <label class="col-md-3">Skills</label>
+              <div class="col-md-9 mySkillsUl">
+                <select multiple data-placeholder="Select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">
+                <c:forEach var="skill" items="${skillsList}">
+	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+        </div>
+        
         <div class="form-group">
           <label class="col-md-3">Primary Skill</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
           </div>
          </div>
-        
-        <div class="form-group">
+
+</div>         
+<div class="form-group innerForm_formGroup">
+		
+		<div class="form-group">
+		              <label class="col-md-3">Education</label> 
+		              <div class="col-md-9 mySkillsUl">
+		                <select multiple data-placeholder="Select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation-optional="true">
+		                <c:forEach var="edu" items="${educationsList}">
+		             <option value="${edu.name}">${edu.name}</option>
+		       </c:forEach>
+		       </select>
+		     </div>
+		</div>
+		
+		 <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
+
+</div>            
+       
+         
+        
+        
+        
+        
+       
         
          <div class="clearfix" id="newResumeDiv"  style="display: none;">
          <div class="form-group">
@@ -566,7 +581,7 @@ function getStates(state){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select state---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(state != null && state != 'undefined' && json[i] == state){
 	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
@@ -578,7 +593,7 @@ function getStates(state){
 	            $('#state').trigger("chosen:updated");
 	            
 	            $('#city').empty();
-	            $('#city').append('<option value="">---select city---</option>');
+	            $('#city').append('<option value="">---Select City---</option>');
 	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
@@ -586,10 +601,10 @@ function getStates(state){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select state---</option>');
+    	$('#state').append('<option value="">---Select State---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -608,7 +623,7 @@ function getCities(city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	
 	            	 if(city != null && city != 'undefined' && json[i] == city){
@@ -624,7 +639,7 @@ function getCities(city){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
@@ -1595,7 +1610,7 @@ function getCandidateDetails(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
-		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
@@ -1619,7 +1634,7 @@ function getCandidateDetails(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
-		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
 		             for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
@@ -1799,7 +1814,7 @@ if(type == 'C2C-1099'){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
-		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
@@ -1822,7 +1837,7 @@ if(type == 'C2C-1099'){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
-		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
 		             for(var i=0;i<json.length;i++){
 		            	 var opt = json[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){

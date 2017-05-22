@@ -350,7 +350,7 @@ function getProjectAssignedMem(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectVendorAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getAllProjectVendorAssignedMembers?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&frequency="+frequency+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 	success :function(data) {
 		populateInlineItemsGrid(data);
 	},
@@ -401,7 +401,13 @@ function populateInlineItemsGrid(data){
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
              result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-             result = result +'<option>Sow</option>';
+             result = result +'<option value="">select Sow</option>';
+             if(opt.contractsList != '' && opt.contractsList != null && opt.contractsList != 'undefined'){
+                 for (var j = 0; j < opt.contractsList.length; j++) { 
+                     var opt1 = opt.contractsList[j]; 
+                     result = result +'<option value='+opt1.id+'>'+opt1.contractTitle+'</option>';
+                 } 
+             }
              result = result +' </select>';
              result = result +'</div>';
              result = result +'</td>';
@@ -423,7 +429,7 @@ function populateInlineItemsGrid(data){
              result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
              result = result +'</td>';
              result = result +'</tr>';
-             getSow(i,opt.candidateId);
+             /* getSow(i,opt.candidateId); */
         }
         result = result +' <tfoot class="table_footer">';
         result = result +' <tr>';
@@ -488,7 +494,17 @@ function populateInlineItemsGrid1(data){
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
     	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-    	 result = result +'<option>Sow</option>';
+    	 result = result +'<option value="">select Sow</option>';
+    	 if(opt.contractList != '' && opt.contractList != null && opt.contractList != 'undefined'){
+             for (var j = 0; j < opt.contractList.length; j++) { 
+                 var opt1 = opt.contractList[j]; 
+                 var selected = '';
+                 if(opt.sowContractName !='' && opt.sowContractName != null && opt.sowContractName != 'undefined'){
+                	 selected = 'selected';
+                 }
+                 result = result +'<option value=' +opt1.id+ ' '+selected+'>'+opt1.contractTitle+'</option>';
+             } 
+         }
     	 result = result +' </select>';
     	 result = result +'</div>';
     	 result = result +'</td>';
@@ -511,7 +527,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
-    	getSow(i,opt.candidateId,opt.contractId);
+    	/* getSow(i,opt.candidateId,opt.contractId); */
     }
     result = result +' <tfoot class="table_footer">';
     result = result +' <tr>';
@@ -534,38 +550,36 @@ function populateInlineItemsGrid1(data){
 }
 </script>
 
-<!-- Get contract sow between client and the associate -->
+<!-- Get contract sow between client and the associate NOT USING AS OF NOW-->
 <script>
   function getSow(contractId){
 	  var orgRelationId = $("#vendorOrgRelationId").val();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var maxRowNum = $("#maxTsRowNum").val();
 		  for(var id=0;id < maxRowNum;id++){
+			  alert("id "+id); 
+			     var result = "";
+	        	result = result + "<option value='' >select sow</option>"
 			  var candidateId = $("#"+id+'candidate').val();
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=vendorSow",
 			        success: function(data) {
-			        	alert(data);
-			        	var result = "";
-			        	result = result + "<option value='' >select sow</option>"
+			        	
 			        	if(data != null && data != ''){
 			        		var json = JSON.parse(data);
 				        	 for (var i=0; i<json.length; i++)
 							{
 					        		var opt = json[i];
 					        		var selected = '';
-					        		
 					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
 					        			selected = 'selected';
 					        		} 
 					        		 result = result +"<option value="+opt.id+" >"+opt.contractTitle+"</option>";
 							} 
-				        	 $('#'+id+'sow').empty();
-				        	 $('#'+id+'sow').append(result);
-			        	}else{
-			        		
 			        	}
+			        	 $('#'+id+'sow').empty();
+			        	 $('#'+id+'sow').append(result);
 			        },
 			        
 			    });

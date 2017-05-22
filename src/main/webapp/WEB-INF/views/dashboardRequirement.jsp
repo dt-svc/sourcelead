@@ -11,7 +11,7 @@ $(document).ready(function(){
 </script>
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
-          <h4 class="clearfix">Requirement &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
+          <h4 class="clearfix">Requirements &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
