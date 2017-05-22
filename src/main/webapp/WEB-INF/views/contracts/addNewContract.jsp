@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>New Contract</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; New Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo;&raquo; New Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -495,7 +495,7 @@
             <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
 
             <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
-            <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
