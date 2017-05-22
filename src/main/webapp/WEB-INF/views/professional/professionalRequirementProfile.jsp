@@ -9,7 +9,7 @@
     width: 110px;
 }
 .require_wrap_details.require_textarea textarea {
-height: 150px;
+height: 225px;
 }
  </style>
 
