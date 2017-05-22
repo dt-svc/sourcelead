@@ -25,6 +25,7 @@ $(document).ready(function(){
    }
    
    $("#searchKey").val(searchValue);
+   
    if(searchType=="All"){
 	   getSearchResultsForAll(searchType,searchValue);
    }
