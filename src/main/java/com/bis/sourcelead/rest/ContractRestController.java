@@ -495,6 +495,9 @@ public class ContractRestController {
 				}else{
 					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
 				}
+				if(null != requirementSubmission.getVendorLocationId()){
+					requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+				}
 			}
 		}
 		
