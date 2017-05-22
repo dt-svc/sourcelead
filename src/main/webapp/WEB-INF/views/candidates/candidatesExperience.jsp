@@ -13,7 +13,7 @@
 --%>
 <script>
 	function candidateExperience(candidateId) {
-
+		 var candidateType = '${candidateType}';
 		var result = "";
 		if(window.candidateStatusGlobal == '0'){
 			result = result	+ '    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
@@ -29,9 +29,16 @@
 		result = result	+ '<a href="javascript:void(0)" class="addUser-org" ></a>';
 		'</sec:authorize>';
 		}else{
-			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_EMPLOYER\')">';
-			result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
-			'</sec:authorize>';
+			if(candidateType == "Candidates"){
+				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+				result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
+				'</sec:authorize>';
+			}else{
+				'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EMPLOYER\')">';
+				result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
+				'</sec:authorize>';
+			}
+			
 		}
 		result = result	+ '     <div id="popUpDivEmp" class="edit-details col-md-4"> ';
 		result = result + '     </div>  ';
@@ -429,6 +436,7 @@ function closeCertificatePopup(){
 --%>
 <script>
 	function candidateEmployersList(candidateId) {
+		 var candidateType = '${candidateType}';
 		var sourceleadUrl = '${sourceleadUrl}';
 		
 				$.ajax({
@@ -502,11 +510,21 @@ function closeCertificatePopup(){
 									if(window.candidateStatusGlobal == '0'){
 				                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 									}else{
-										result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a></sec:authorize>';	
+										if(candidateType == "Candidates"){
+											result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a></sec:authorize>';	
+										}else{
+											result = result+'<td><div class="tblicons"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a></sec:authorize>';
+										}
+											
 									}if(window.candidateStatusGlobal == '0'){
 										result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 									}else{
-										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></sec:authorize></div></td>';
+										if(candidateType == "Candidates"){
+											result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></sec:authorize></div></td>';	
+										}else{
+											result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></sec:authorize></div></td>';
+										}
+										
 									}
 									result = result + '</tr>';
 								}

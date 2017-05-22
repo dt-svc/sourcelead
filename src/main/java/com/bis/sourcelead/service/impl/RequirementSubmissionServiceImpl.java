@@ -354,6 +354,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					}else{
 						candidate.setSpocId(null);
 					}
+					
+					if(jsonObj.has("primarySkill") && !isNullOrEmpty(jsonObj.getString("primarySkill"))){
+						 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+					}
 					 
 					candidate.setCandidateType("Candidate");
 					candidate.setIsAssociate(Constants.NO);

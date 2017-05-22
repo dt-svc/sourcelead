@@ -26,7 +26,7 @@
 --%>
 <script>
 function candidateEducation(candidateId){
-	
+	 var candidateType = '${candidateType}';
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
 		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt25">  ';
@@ -38,13 +38,27 @@ function candidateEducation(candidateId){
     result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">'; 	
-		result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
-		'</sec:authorize>';
+		if(candidateType == "Candidates"){
+			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 	
+			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
+			'</sec:authorize>';
+		}else{
+			'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">'; 	
+			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
+			'</sec:authorize>';
+		}
+		
 	}else{
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">';
-		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
-		'</sec:authorize>';
+		if(candidateType == "Candidates"){
+			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			'</sec:authorize>';
+		}else{
+			'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			'</sec:authorize>';
+		}
+		
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
@@ -93,6 +107,7 @@ function candidateEducation(candidateId){
 --%>
 <script>
 function candidateEducationList(candidateId){
+	var candidateType = '${candidateType}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -185,12 +200,22 @@ function candidateEducationList(candidateId){
 	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 	                    		 }
 	                    		 else{
-	                    			 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';	 
+	                    			 if(candidateType == "Candidates"){
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    			 }else{
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    			 }
+	                    				 
 	                    		 }
 	                    		 if(window.candidateStatusGlobal == '0'){
 									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    		 }else{
-	                    			 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>'; 
+	                    			 if(candidateType == "Candidates"){
+	                    				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
+	                    			 }else{
+	                    				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
+	                    			 }
+	                    			  
 	                    		 }
 	                    	}
 	                    	 result  = result + '</tr>';

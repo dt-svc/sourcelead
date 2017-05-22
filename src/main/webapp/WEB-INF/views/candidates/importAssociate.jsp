@@ -49,6 +49,7 @@
            </label>
 
              <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
+
          </div>
           </div>
            <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>
@@ -86,7 +87,7 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
+            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();"  value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
