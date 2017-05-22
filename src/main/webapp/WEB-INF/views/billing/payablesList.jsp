@@ -54,9 +54,9 @@ color:#337ab7 !important;
                         <h4>Unbilled</h4>
                         <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Draft Bills">
                             <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                             <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right">
+                            <div class="pull-right ml10">
                             <div class="count" id="unbilledAmoumt"></div>
                                 <h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
                                 </div>
@@ -66,9 +66,9 @@ color:#337ab7 !important;
                         <h4>Un Paid</h4>
                         <a href="#unpaid" data-toggle="tab" title="UnPaid Overdue Bills" class="billingbg_red">
                         <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                             <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right">
+                            <div class="pull-right ml10">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
                         <h5>Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
                             </div>
@@ -79,9 +79,9 @@ color:#337ab7 !important;
                         <h4>&nbsp;</h4>
                         <a href="#unpaid" data-toggle="tab" title="UnPaid Open Bills" class="billingbgRed">
                         <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            <strong> ${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right">
+                            <div class="pull-right ml10">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
                         <h5>Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
                         </div>
@@ -91,9 +91,9 @@ color:#337ab7 !important;
                         <h4>Paid</h4>
                         <a href="#paid" data-toggle="tab" title="Paid Bills" class="billbg_green">
                         <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            <strong> ${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right">
+                            <div class="pull-right ml10">
                             <div class="count" id="paidInvoiceAmount"></div>
                         <h5>Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
                             </div>
@@ -772,7 +772,7 @@ function getPayableInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				result = result +'     <div class="tblminwidth-75">';
+				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
 					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\');" ></i>  ';
@@ -785,7 +785,7 @@ function getPayableInvoiceList(){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Pay</span> </td>          ';	
 					}else{
 						if(report.invoiceStatus == "Accepted"){
-							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
 						}else{
 							if(report.invoiceStatus == "Rejected"){
 								result = result +'           <span class="text-danger successBtn primary pull-left" >Rejected</span> </td>          ';	
@@ -797,14 +797,14 @@ function getPayableInvoiceList(){
 					}
 					
 				}else{
-					result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+					result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>          ';
 				}
 				
 				if(report.invoiceType=="Receivable"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span> </td>          ';	
 					}else{
-						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
+						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 					}
 				}
 				 
@@ -845,8 +845,8 @@ function invoicePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"aaSorting": [[0,'desc']],
-    	"ordering": true,
+//     	"aaSorting": [[0,'desc']],
+    	"ordering": false,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -859,7 +859,11 @@ function invoicePagination(){
 function showPopUp(id,invoiceStatus,invoiceParentId){
 		 removePopup();
 	     result = "";
-		 result = result +'    <ul class="list-inline list-unstyled menupop"> ';
+	     if(invoiceParentId == 'undefined'){
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	     }else{
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){

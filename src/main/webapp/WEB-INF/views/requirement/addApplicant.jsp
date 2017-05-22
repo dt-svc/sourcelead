@@ -100,6 +100,16 @@ function getAddApplicant(requirementId){
 	result = result + '	 </div>';
 	result = result + '	 </div>';
 	
+	
+    result = result + '<div class="row">';
+    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
+	result = result + '<label class="col-md-4">Primary Skill</label>';
+	result = result + '<div class="col-md-8">';
+	result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>'; 
+	
     result = result + '<div class="row">';
     result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Employment Type<span class="paddingLeft">*</span></label>';
@@ -159,6 +169,7 @@ function getAddApplicant(requirementId){
 	result = result + '	 </div>';
 	
 	
+	
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
 	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
@@ -198,14 +209,22 @@ function getAddApplicant(requirementId){
 	    chosen = select.data('chosen');
 	    
 	    
-	 /*    
 	    $("#candidateSkills").chosen().change(function(event) {
 	    	 var sourceleadUrl ='${sourceleadUrl}';
-	    	 var allSkills = $(event.target).val();
-	 
+	    	var allSkills = $(event.target).val();
+	   
+	    	
+	    	$.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        success: function(data) {
+		        	var primarySkill = data;
+		        	      $("#primarySkill").val(primarySkill);
+		        	
+		        },
+		    });
 	    	
 	    });
-	     */
 	    
 	    chosen.search_field.on('keyup', function(e)
 	    {
@@ -316,7 +335,7 @@ function submitRecomendedApplicant(requirementId,candidateId){
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
 	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
-	result = result + '<input type="checkbox" name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -476,6 +495,8 @@ function discordApplicant(){
 		 if(skillsDiv != null){
 			 document.getElementById("skillsDiv").style.display="none";
 			 $("#candidateSkills").val('').trigger("chosen:updated");
+			 document.getElementById("primarySkillDiv").style.display="none";
+			 $("#primarySkill").val('');
 		 }
 		 
 		 var employmentTypeDiv = document.getElementById('employmentTypeDiv');
@@ -546,6 +567,8 @@ function discordApplicant(){
 			 
 			 document.getElementById("newResumeDiv").style.display="none";
 			 document.getElementById("skillsDiv").style.display="";
+			 document.getElementById("primarySkillDiv").style.display="";
+			 
 			 
 			 document.getElementById("employmentTypeDiv").style.display="";
 			 $("#designationType").removeAttr("data-validation-optional");
@@ -554,6 +577,7 @@ function discordApplicant(){
 		     $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation');
 			 $('#newUploadFile').attr("data-validation-optional","true"); 
+			 $("#primarySkill").val('');
 	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
 	    	 document.getElementById("browseDiv").style.display="none";
 	    	 $('#uploadFile').removeAttr('data-validation');
@@ -561,6 +585,7 @@ function discordApplicant(){
 	    	 
 	    	 document.getElementById("newResumeDiv").style.display="";
 	    	 document.getElementById("skillsDiv").style.display="";
+	    	 document.getElementById("primarySkillDiv").style.display="";
 	    	 
 	     	 document.getElementById("employmentTypeDiv").style.display="";
 	    	 $("#designationType").removeAttr("data-validation-optional");
@@ -569,6 +594,7 @@ function discordApplicant(){
 		     $("#candidateSkills").val('').trigger("chosen:updated");
 			 $('#newUploadFile').removeAttr('data-validation-optional');
 			 $("#newUploadFile").attr("data-validation", "required validatedoc");
+			 $("#primarySkill").val('');
 			 
 			
 	     }
@@ -1023,6 +1049,7 @@ function getCandidateSelectionType(){
 				        
 				        document.getElementById("newResumeDiv").style.display="none";
 				        document.getElementById("skillsDiv").style.display="none";
+				        document.getElementById("primarySkillDiv").style.display="none";
 				        
 				       /*  document.getElementById("employmentTypeDiv").style.display="none";
 					    $('#designationType').removeAttr("data-validation");
@@ -1044,11 +1071,6 @@ function getCandidateSelectionType(){
 		        		 document.getElementById("orConditionDiv").style.display="none";
 		        		
 		        		 document.getElementById("newResumeDiv").style.display="";
-		        		 document.getElementById("skillsDiv").style.display="";
-		        		
-		        		/*  document.getElementById("employmentTypeDiv").style.display="";
-		        		 $('#designationType').removeAttr("data-validation-optional");
-						 $("#designationType").attr("data-validation","required"); */
 		        		 
 		        		 
 		        		 $('#newUploadFile').removeAttr('data-validation-optional');
@@ -1678,6 +1700,7 @@ function setRateTypesByLocation(){
 	        	 
 	        	 $("#candidateSkills").append('');
 	        	 $("#candidateSkills").trigger("chosen:updated");
+	        	 $("#primarySkill").val('');
 	    	  
 	    	  document.getElementById("uploadFile").value = '';
 	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();

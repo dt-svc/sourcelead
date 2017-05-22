@@ -188,7 +188,7 @@
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+                <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
             </div>         
             
@@ -764,16 +764,16 @@ function contractTypeLabels(){
 		}
 		if(contractType == "NDA" || contractType == "NSA"){
 
-			$('#percentageRewardValue').removeAttr('data-validation');
-			$('#flatRewardValue').removeAttr('data-validation');
+			//$('#percentageRewardValue').removeAttr('data-validation');
+			//$('#flatRewardValue').removeAttr('data-validation');
 			$('#invoiceFrequency').removeAttr('data-validation');
 			$('#paymentFrequency').removeAttr('data-validation');
 			$('#taxPercentageRewardValue').removeAttr('data-validation');
 			$('#taxFlatRewardValue').removeAttr('data-validation');
 			
 			
-			$('#percentageRewardValue').attr('data-validation-optional',"true");
-			$('#flatRewardValue').attr('data-validation-optional',"true");
+			//$('#percentageRewardValue').attr('data-validation-optional',"true");
+			//$('#flatRewardValue').attr('data-validation-optional',"true");
 			$('#invoiceFrequency').attr('data-validation-optional',"true");
 			$('#paymentFrequency').attr('data-validation-optional',"true");
 			$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
@@ -782,6 +782,11 @@ function contractTypeLabels(){
 			$('#flatReward').removeAttr('data-validation');
 			$('#flatReward').attr('data-validation-optional',"true");
 			
+			$('#billingRateType').removeAttr('data-validation');
+			$('#billingRateType').attr('data-validation-optional',"true");
+			
+			$('#billingRatePer').removeAttr('data-validation');
+			$('#billingRatePer').attr('data-validation-optional',"true");
 			
 			$('#clientOrgRelationId').removeAttr('data-validation');
 			$('#clientOrgRelationId').attr('data-validation-optional',"true");
@@ -1102,5 +1107,4 @@ function cancelContract(){
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
 
