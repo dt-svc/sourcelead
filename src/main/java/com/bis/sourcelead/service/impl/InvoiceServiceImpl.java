@@ -270,12 +270,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		//store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType);
 		        invoice.setFileName(file.getName());
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
+		        if(null != file){
+		        	file.delete();
+		        }
 		        
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
@@ -622,10 +625,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 
-	@Override
+	/*@Override
 	public void getPdfFileForInvoice(Invoice invoice,OrgLocations orgLocation,User user, Org org) throws Exception {
 		invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
-	}
+	}*/
 	
 	@Override
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
