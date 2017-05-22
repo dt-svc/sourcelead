@@ -188,6 +188,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		if(null != statusList && !statusList.isEmpty()){
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
+					+"left join fetch contracts.requirementSubmission.candidate "
 					+ "left join fetch contracts.ownerUserId "
 					+ "left join fetch contracts.orgLocationId "
 					+ "left join fetch contracts.orgRelations "
@@ -204,6 +205,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}else{
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
+					+"left join fetch contracts.requirementSubmission.candidate "
 					+ "left join fetch contracts.ownerUserId "
 					+ "left join fetch contracts.orgLocationId "
 					+ "left join fetch contracts.orgRelations "
@@ -274,6 +276,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		if(null != statusList && !statusList.isEmpty()){
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
+					+"left join fetch contracts.requirementSubmission.candidate "
 					+ "left join fetch contracts.ownerUserId "
 					+ "left join fetch contracts.orgLocationId "
 					+ "left join fetch contracts.orgRelations "
@@ -290,6 +293,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}else{
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
+					+"left join fetch contracts.requirementSubmission.candidate "
 					+ "left join fetch contracts.ownerUserId "
 					+ "left join fetch contracts.orgLocationId "
 					+ "left join fetch contracts.orgRelations "

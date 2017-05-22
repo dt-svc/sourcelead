@@ -643,7 +643,7 @@ public class ContractRestController {
 		 	if(null != contract.getRequirementSubmission()){
 		 		
 		 		StringBuilder applicant = new StringBuilder();
-		 		if(contract.getRequirementSubmission().getCandidate() != null){
+		 		if(null != contract.getRequirementSubmission().getCandidate() && null != contract.getRequirementSubmission().getCandidate().getLastName()){
 		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).append(" ").append(contract.getRequirementSubmission().getCandidate().getLastName()).toString());
 		 		}else{
 		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).toString());

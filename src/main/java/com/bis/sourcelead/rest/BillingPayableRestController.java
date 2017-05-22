@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
@@ -137,8 +138,19 @@ public class BillingPayableRestController {
 		    		
 		    		if(null != lineItems.getContract()){
 		    			lineItems.setContractId(lineItems.getContract().getId());
+		    			lineItems.setSowContractName(lineItems.getContract().getContractTitle());
+		    			String contractType = "";
+		    			if("Receivable".equalsIgnoreCase(invoice.getInvoiceType())){
+		    				contractType = "clientSow";
+		    			}else{
+		    				contractType = "vendorSow";
+		    			}
+		    			List<Contracts> contractList = getSowContract(candidate.getId(),lineItems.getOrgLocation(),invoice.getOrgRelationID().getId(),"contractType");
+		    			lineItems.setContractList(contractList);
+		    			//if(null != contractList && contractList.size() >0){
+//							projectMember.setContractsList(contractList);
+//						}
 		    		}
-		    		
 		    		lineItemsList.add(lineItems);
 		    	}
 		    	if(null != invoice.getProjectID()){
@@ -232,7 +244,23 @@ public class BillingPayableRestController {
 	 }
 	 
 	 
-	 
+	 private List<Contracts> getSowContract(Long candidateId, OrgLocations orgLocation, Long orgRelationId, String contractType) throws Exception
+		{
+			List<Contracts> contractsList = null;
+	     	if(null != orgRelationId){
+	     		if(contractType.equalsIgnoreCase("vendorSow")){
+	     			 contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Vendor_SOW);
+	     		}else{
+	     			contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Client_SOW);	
+	     		}
+	     		 	
+//	     		if(null != contractsList && contractsList.size() >0){
+//	         		resultJson = commonUtil.toJSON(contractsList);	
+//	         	}
+	     	}
+			return contractsList;
+			
+		}
 	    
 
 }

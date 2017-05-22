@@ -991,7 +991,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName()) && approverUser.getLastName()!= null && !"".equalsIgnoreCase(approverUser.getLastName())){
 			StringBuilder approverSb = new StringBuilder();
 			globalVarsMap.put("ApproverName", approverSb.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
-		}else if(approverUser.getLastName()!= null && !"".equalsIgnoreCase(approverUser.getLastName())){
+		}else if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
 			globalVarsMap.put("ApproverName",approverUser.getFirstName());
 		}else{
 			globalVarsMap.put("ApproverName","--");
@@ -1000,7 +1000,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(contracts.getOwnerUserId().getFirstName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getFirstName()) && contracts.getOwnerUserId().getLastName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getLastName())){
 			StringBuilder ownerSb = new StringBuilder();
 			globalVarsMap.put("OwnerName", ownerSb.append(contracts.getOwnerUserId().getFirstName()).append(" ").append(contracts.getOwnerUserId().getLastName()).toString());
-		}else if(contracts.getOwnerUserId().getLastName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getLastName())){
+		}else if(contracts.getOwnerUserId().getFirstName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getFirstName())){
 			globalVarsMap.put("OwnerName",contracts.getOwnerUserId().getFirstName());
 		}else{
 			globalVarsMap.put("OwnerName","--");
@@ -1031,8 +1031,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
 		 
+		 if(null != contracts.getContractOrgLocationId().getOrg().getOrgName() && !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getOrg().getOrgName())){
+			 globalVarsMap.put("ClientVendorName",contracts.getContractOrgLocationId().getOrg().getOrgName());
+			 }else{
+				 globalVarsMap.put("ClientVendorName","--");
+			}
 			
-			if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
+			/*if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
 				List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 				for (OrgRelations orgRelations : clientList) {
 				String orgName = "";
@@ -1067,7 +1072,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							 globalVarsMap.put("ClientVendorName","--");
 						}
 			}
-			}
+			}*/
 		 
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

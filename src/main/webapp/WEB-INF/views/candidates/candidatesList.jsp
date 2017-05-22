@@ -120,7 +120,6 @@ else{
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  
-
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 	  
 	var isAssociate = "N";
@@ -1113,14 +1112,6 @@ function cancel(candidateId){
 						 
 					 </div>
 						
-						<div class="clearfix">
-						  <div class="col-md-4">
-						    <label>Designation</label>
-						     <div class="clearfix">
-						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
-                                     </select>
-						    </div>
-						</div>
 						<div class="col-md-8">
 							<div class="row">
 								<div class="col-md-6">
@@ -1145,7 +1136,10 @@ function cancel(candidateId){
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
-									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+								 <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+								</div>
+								<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
 										        <option value="Hourly">Hourly</option>
@@ -1157,14 +1151,21 @@ function cancel(candidateId){
 												<option value="Yearly">Yearly</option>
 				                            </select> 
 									</div>
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
 								</div>
 							</div>
 						 </div>
 						 </div>
+						 
+						 <div class="clearfix">
+						  <div class="col-md-4">
+						    <label>Designation</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
+                                     </select>
+						    </div>
+							</div>
 						 </div>
+						 
 						  <div class="clearfix">
 						  <div class="col-md-4">
 							  <label>Experience</label>
@@ -1332,7 +1333,7 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
-          <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')">
+<%--           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')"> --%>
           <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
@@ -1341,7 +1342,7 @@ function cancel(candidateId){
                     </ul>
                   </div>                	
           </li>
-          </sec:authorize>
+<%--           </sec:authorize> --%>
           
             <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
@@ -1378,7 +1379,7 @@ function cancel(candidateId){
           
           <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> 
           
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
           <li title="Export" id="candidate-export" class="mrPOP"><i class="glyphicon glyphicon-export expIcon"></i>
             <div class="export_pop">
               <ul>
