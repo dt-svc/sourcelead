@@ -6,10 +6,7 @@
 	padding: 0;
 }
 body {
-	background-color: #e1e6fa;
-	font-size: 14px;
-	color: #333;
-	font-family:'Roboto', sans-serif  !important;
+	background-color: #e1e6fa; font-size: 14px; color: #333; font-family:'Roboto', sans-serif  !important;
     min-height: 100%;
 }
 a:hover, a:active, a:focus {
@@ -1273,6 +1270,9 @@ border: 1px solid #ddd; margin-bottom: 20px !important; border-radius: 5px; back
 }
 .tblminwidth-100 {
 	min-width: 100px !important;
+}
+.tblminwidth-30 {
+    min-width: 30px !important;
 }
 .tblminwidth-90 {
 	min-width: 90px !important;
@@ -5011,9 +5011,6 @@ appearance:none; -webkit-appearance:none; -moz-appearance:none; -ms-appearance:n
  .centerDiv {
 float:none; margin:0 auto;
 }
-.tblminwidth-30 {
-    min-width: 30px !important;
-}
 .dropdown-select.paddingNone select {
     padding:0 !important;
 }
@@ -5268,12 +5265,23 @@ float: none !important; padding: 0; color: #333;
 .close-div.closediv-small {
  left: -10px; padding: 1px 3px; position: absolute; top: -10px; font-size: 12px;
 }
-
+.mrng0{
+	margin: 0;
+}
 .mrng0 .tbldata-dotdot-me, .mrng0 .tbldata-dotdot{
 	margin: 0;
 }
-.receiveBtn.receive_Btn {
+.validation_p p.jquery_form_error_message {
+    position: absolute; bottom:-15px; left: 0;
+}
+ .receiveBtn.receive_Btn {
 	width: 75px;
+}
+.mySkillsUl .chosen-container-multi .chosen-choices {
+	margin-bottom: 15px;
+}
+.innerForm_formGroup .form-group {
+    width: 100%;
 }
 /* media 320px */
 @media (max-width: 320px) {
