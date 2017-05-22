@@ -432,7 +432,7 @@ function populateInlineItemsGrid(data){
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
              result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-             result = result +'<option>select Sow</option>';
+             result = result +'<option value="">select Sow</option>';
              if(opt.contractsList != '' && opt.contractsList != null && opt.contractsList != 'undefined'){
                  for (var j = 0; j < opt.contractsList.length; j++) { 
                      var opt1 = opt.contractsList[j]; 
@@ -526,7 +526,17 @@ function populateInlineItemsGrid1(data){
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
     	 result = result +'<select class="form-control input-sm" id="'+i+'sow" name="'+i+'sow" onchange="getSowRate('+i+')">';
-    	 result = result +'<option>Sow</option>';
+    	 result = result +'<option value="">select Sow</option>';
+    	 if(opt.contractList != '' && opt.contractList != null && opt.contractList != 'undefined'){
+             for (var j = 0; j < opt.contractList.length; j++) { 
+                 var opt1 = opt.contractList[j]; 
+                 var selected = '';
+                 if(opt.sowContractName !='' && opt.sowContractName != null && opt.sowContractName != 'undefined'){
+                	 selected = 'selected';
+                 }
+                 result = result +'<option value=' +opt1.id+ ' '+selected+'>'+opt1.contractTitle+'</option>';
+             } 
+         }
     	 result = result +' </select>';
     	 result = result +'</div>';
     	 result = result +'</td>';
@@ -571,7 +581,7 @@ function populateInlineItemsGrid1(data){
 }
 </script>
 
-<!-- Get contract sow between client and the associate -->
+<!-- Get contract sow between client and the associate NOT USING AS OF NOW-->
   <script>
   function getSow(contractId){
 	  var orgRelationId = $("#clientOrgRelationId").val();

@@ -232,28 +232,32 @@ public class InvoiceRestController {
 		return invoiceSaved;
 	} 
 	
-    @RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
- 	public @ResponseBody  String getInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates,HttpServletRequest request, HttpServletResponse response) throws Exception
- 	{
-     	String resultJson;
-     	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-     	
-     	List<Long> associateIds = new ArrayList<Long>();
-     	List<Candidate> associateList = null;
-     	
-     	if(!isNullOrEmpty(selectedAssociates)){
-     		String[] selectedAssoicatesIds =  selectedAssociates.split(",");
-         	for(int i=0; i < selectedAssoicatesIds.length; i++){
-         		associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
-         	}
-         	associateList = candidateService.getAllActiveAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(),associateIds);
-     	}else{
-     		associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
-     	}
-     	
- 	    resultJson = commonUtil.toJSON(associateList);
- 	    return resultJson;
- 	}
+	@RequestMapping(value = "/getInvoiceAssociatesList", method = RequestMethod.GET)
+	public @ResponseBody String getInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String resultJson;
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Long> associateIds = new ArrayList<Long>();
+		List<Candidate> associateList = null;
+		if (!isNullOrEmpty(selectedAssociates)) {
+			String[] selectedAssoicatesIds = selectedAssociates.split(",");
+			for (int i = 0; i < selectedAssoicatesIds.length; i++) {
+				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
+			}
+			associateList = candidateService.getAllActiveAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(), associateIds);
+			for (Candidate candidate : associateList) {
+				List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, orgRelationId, contractType);
+				if(null != contractsList && contractsList.size() >0){
+					candidate.setContractsList(contractsList);
+				}
+			}
+		}
+		else {
+			associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
+		}
+		resultJson = commonUtil.toJSON(associateList);
+		return resultJson;
+	}
     
     
     @RequestMapping(value = "/getClientProjectsByOrgRelationId", method = RequestMethod.GET)
