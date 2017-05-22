@@ -111,7 +111,8 @@ public class Constants {
 	public static String EMAIL_CAMPAIGN = "EmailCampaign";
 	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	public static String CUSTOM_USER_EMAIL = "customUserEmail";
-	public static String INVOICE_CLIENT_ACCEPT_MAIL = "InvoiceClientAcceptEmail";
+	public static String INVOICE_CLIENT_RECEIVABLE_MAIL = "InvoiceClientAcceptEmail";
+	public static String INVOICE_CLIENT_PAYABLE_MAIL = "InvoiceClientPayableEmail";
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL = "Forward the Mail";
 	public static String NOTIFICATION_TO_CLIENT = "Notification To Client";
