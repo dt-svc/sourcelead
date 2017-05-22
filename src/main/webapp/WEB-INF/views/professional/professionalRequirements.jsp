@@ -660,7 +660,7 @@ function requirementsList(offset){
 			 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 			 					jobType = requirements.jobType;
 			 				}else{
-			 					jobType = 'No Data';
+			 					jobType = '--';
 			 				}
 			 				
 			 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
@@ -677,7 +677,7 @@ function requirementsList(offset){
 			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
-			 					experience = 'No Data';
+			 					experience = '--';
 			 				}
 			 				
 			 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
@@ -689,7 +689,7 @@ function requirementsList(offset){
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 			 				}else{
-			 					rate = 'No Data';
+			 					rate = '--';
 			 				}
 			 				
 			 				description =  description+'Job Title:'+requirements.jobTitle+";";
@@ -715,15 +715,15 @@ function requirementsList(offset){
 				 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 				 				}
 			 				}else{
-			 					result = result +'<li>No Data</li>';
+			 					result = result +'<li>--</li>';
 			 				}
-			 				if(jobType != null &&jobType != 'No Data'){
+			 				if(jobType != null && jobType != '' && jobType != 'undefined'){
 			 					description =  description+'Job Type:'+requirements.jobType+";";
 			 				}
-			 				if(experience != null && experience != 'No Data'){
+			 				if(experience != null && experience != '' && experience != 'undefined'){
 								description =  description+'Experience :'+experience+";";
 							}
-			 				if(location != null && location != 'No Data'){
+			 				if(location != null && location != '' && location != 'undefined'){
 			 					description =  description+'Job Location: '+location+";";
 							}
 			 				description =  description+'Posted :'+requirements.calDays+";";
@@ -959,7 +959,7 @@ function searchRequirement(offset){
 									 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 									 					jobType = requirements.jobType;
 									 				}else{
-									 					jobType = 'No Data';
+									 					jobType = '--';
 									 				}
 									 				
 									 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
@@ -976,7 +976,7 @@ function searchRequirement(offset){
 									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 									 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 									 				}else{
-									 					experience = 'No Data';
+									 					experience = '--';
 									 				}
 									 				
 									 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
@@ -988,7 +988,7 @@ function searchRequirement(offset){
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
-									 					rate = 'No Data';
+									 					rate = '--';
 									 				}
 									 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
@@ -1010,15 +1010,15 @@ function searchRequirement(offset){
 										 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 										 				}
 									 				}else{
-									 					result = result +'<li>No Data</li>';
+									 					result = result +'<li>--</li>';
 									 				}
-									 				if(jobType != null &&jobType != 'No Data'){
+									 				if(jobType != null && jobType != '' && jobType != 'undefined'){
 									 					description =  description+'Job Type:'+requirements.jobType+";";
 									 				}
-									 				if(experience != null && experience != 'No Data'){
+									 				if(experience != null && experience != '' && experience != 'undefined'){
 														description =  description+'Experience :'+experience+";";
 													}
-									 				if(location != null && location != 'No Data'){
+									 				if(location != null && location != '' && location != 'undefined'){
 									 					description =  description+'Job Location: '+location+";";
 													}
 									 				description =  description+'Posted :'+requirements.calDays+";";

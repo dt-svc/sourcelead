@@ -5,7 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 

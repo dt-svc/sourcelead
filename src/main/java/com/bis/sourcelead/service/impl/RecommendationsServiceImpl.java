@@ -840,7 +840,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @return float
 	 */
 	private float getRatePercentage(CandidateIndex candidateIndex, float ratePercentage, RecommendedCustomizeScore recommendedCustomizeScore, float reqPerMonthSal) {
-		if(null != candidateIndex.getExpectedRate() && null != candidateIndex.getRateType()  && !"".equalsIgnoreCase(candidateIndex.getRateType())){
+		if(null != candidateIndex.getExpectedRate() && null != candidateIndex.getCurrentRate() && null != candidateIndex.getRateType()  && !"".equalsIgnoreCase(candidateIndex.getRateType())){
 			String candidateRateType = candidateIndex.getRateType();
 			String  expectedRate = candidateIndex.getExpectedRate().toString();
 			expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
