@@ -369,7 +369,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Contracts> getListOfContractsEnvId() {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.typeOfContract = 'New' and ct.parentContractId.id IS NULL").setCacheable(true).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct where (ct.typeOfContract = 'New' or ct.typeOfContract = 'Custom') and ct.templateSubmissionStatus != 'EXPIRED' and ct.parentContractId.id IS NULL").setCacheable(true).list();
 		return contractsList;
 	}
 
