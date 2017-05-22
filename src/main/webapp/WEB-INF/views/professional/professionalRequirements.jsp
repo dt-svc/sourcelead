@@ -318,7 +318,7 @@ window.onload = function () {
 	    <div id="requirementsListLoading"></div>  
 	  <div id="requirementsList"></div>
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
-	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a>
+	  <%-- <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a> --%>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
@@ -851,10 +851,10 @@ function requirementsList(offset){
 			       	    	
 			       	    	if(requirements.noOfSearchHits >= 10){
 			       	    		document.getElementById("loadMoreSection").style.display="";
-			       	    		document.getElementById("noMoreRecordsSection").style.display="none";
+			       	    		/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 			       	    	}else{
 			       	    		document.getElementById("loadMoreSection").style.display="none";
-			       	    		document.getElementById("noMoreRecordsSection").style.display="";
+			       	    		/* document.getElementById("noMoreRecordsSection").style.display=""; */
 			       	    	}
 			       	    	
 			       	    	document.getElementById("loadMoreSearchSection").style.display="none";
@@ -870,12 +870,12 @@ function requirementsList(offset){
 			    $("#requirementsList").append(result); 
 			    document.getElementById("loadMoreSection").style.display="none";
 			    document.getElementById("loadMoreSearchSection").style.display="none";
-			    document.getElementById("noMoreRecordsSection").style.display="none";
+			    /* document.getElementById("noMoreRecordsSection").style.display="none"; */
    		    }else{
    		    	
    		    	document.getElementById("viewMoreLoading").removeAttribute("class");
    		    	document.getElementById("loadMoreSection").style.display="none";
-   		    	document.getElementById("noMoreRecordsSection").style.display="";
+   		    	/* document.getElementById("noMoreRecordsSection").style.display=""; */
    		    	
    		    }
 	     
@@ -1100,10 +1100,10 @@ function searchRequirement(offset){
 									       	     
 									       	    if(requirements.noOfSearchHits >= 10){
 								       	    		document.getElementById("loadMoreSearchSection").style.display="";
-								       	    		document.getElementById("noMoreRecordsSection").style.display="none";
+								       	    		/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 								       	    	}else{
 								       	    		document.getElementById("loadMoreSearchSection").style.display="none";
-								       	    		document.getElementById("noMoreRecordsSection").style.display="";
+								       	    		/* document.getElementById("noMoreRecordsSection").style.display=""; */
 								       	    	}
 									       	  
 									       	     document.getElementById("viewMoreSearchLoading").removeAttribute("class");
@@ -1118,11 +1118,10 @@ function searchRequirement(offset){
 				    			    $("#requirementsList").append(result); 
 				    			    document.getElementById("loadMoreSection").style.display="none";
 				    			    document.getElementById("loadMoreSearchSection").style.display="none";
-				    			    document.getElementById("noMoreRecordsSection").style.display="";
+				    			   /*  document.getElementById("noMoreRecordsSection").style.display=""; */
 		               		 }else{
 		           		    	document.getElementById("viewMoreSearchLoading").removeAttribute("class");
-		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
-		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
+		           		    	/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
 					        socialInviterScripts();
