@@ -53,9 +53,13 @@ function candidateDocuments(candidateId){
 			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
 		}else{
-			'<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
+		 '<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
 			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
+		
+		'<sec:authorize access="!hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
+		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"   class="addUser-org" ></a></span>';
+	'</sec:authorize>';
 		}
 	
 	}
