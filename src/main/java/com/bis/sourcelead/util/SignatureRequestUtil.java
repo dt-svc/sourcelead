@@ -100,8 +100,7 @@ public class SignatureRequestUtil {
 //			// read file from a local directory
 //			Path path = Paths.get(currentDir + SignTest1File);
 //			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate);
-			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate.getTemplateContent(),contracts,orgLocation,org);
-		}
+			fileBytes = html2PdfUtil.getPdfBytes(contractsTemplate,contracts,orgLocation,org);		}
 		catch (IOException ioExcp)
 		{
 			// handle error
