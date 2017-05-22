@@ -1789,7 +1789,7 @@ function requirementPipeline(requirementId,submissionType){
 function documentpagination(){  
     $('#requirementsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -1799,7 +1799,8 @@ function documentpagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPagination").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 </script>
 
@@ -2070,7 +2071,7 @@ function requirementPipelineDA(requirementId,submissionType){
 function documentpaginationDA(){  
     $('#requirementsPaginationDA').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -2080,7 +2081,8 @@ function documentpaginationDA(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationDA").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -2345,7 +2347,7 @@ function requirementPipelineRS(requirementId,submissionType){
 function documentpaginationRS(){  
     $('#requirementsPaginationRS').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -2355,7 +2357,8 @@ function documentpaginationRS(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationRS").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -2632,7 +2635,7 @@ function requirementPipelineSL(requirementId,submissionType){
 function documentpaginationSL(){  
     $('#requirementsPaginationSL').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
@@ -2642,7 +2645,8 @@ function documentpaginationSL(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationSL").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -2894,7 +2898,7 @@ function requirementPipelineSC(requirementId,submissionType){
 function documentpaginationSC(){  
     $('#requirementsPaginationSC').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -2904,7 +2908,8 @@ function documentpaginationSC(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationSC").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3072,7 +3077,7 @@ function requirementPipelineIN(requirementId,submissionType){
 function documentpaginationIN(){  
     $('#requirementsPaginationIN').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	/* "aaSorting": [[8,'desc']], */
     	"bLengthChange": false,
@@ -3082,7 +3087,8 @@ function documentpaginationIN(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationIN").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3270,7 +3276,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 function documentpaginationOffer(){  
     $('#requirementsPaginationOffer').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
@@ -3280,7 +3286,8 @@ function documentpaginationOffer(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationOffer").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3528,7 +3535,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 function documentpaginationRejected(){  
     $('#requirementsPaginationRejected').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3537,7 +3544,8 @@ function documentpaginationRejected(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationRejected").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3785,7 +3793,7 @@ function requirementPipelineBackout(requirementId,submissionType){
 function documentpaginationBackout(){  
     $('#requirementsPaginationBackout').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3794,7 +3802,8 @@ function documentpaginationBackout(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationBackout").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 <div id="popUp"></div>
@@ -4341,7 +4350,7 @@ function recommendationpagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
 }
 </script>
 
@@ -4354,7 +4363,8 @@ function getActions(){
 	});
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
- 	}); */	
+ 	}); */
+ 	$(".export_pipline").hide();
 }
 function popClose(){
 	$(".action-pop").hide();

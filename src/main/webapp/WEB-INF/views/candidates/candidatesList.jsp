@@ -120,7 +120,6 @@ else{
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  
-
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 	  
 	var isAssociate = "N";
@@ -1334,7 +1333,7 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
-          <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')">
+<%--           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')"> --%>
           <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
@@ -1343,7 +1342,7 @@ function cancel(candidateId){
                     </ul>
                   </div>                	
           </li>
-          </sec:authorize>
+<%--           </sec:authorize> --%>
           
             <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
@@ -1380,7 +1379,7 @@ function cancel(candidateId){
           
           <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> 
           
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
           <li title="Export" id="candidate-export" class="mrPOP"><i class="glyphicon glyphicon-export expIcon"></i>
             <div class="export_pop">
               <ul>

@@ -235,7 +235,6 @@ public class ContractController {
 						orgSpoc.setOwnerUserName(orgSpoc.getOwnerUser().getFirstName());
 					}
 				}
-				
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
 				model.addObject("orgSpocList", orgSpocList);
@@ -266,6 +265,7 @@ public class ContractController {
 			}
 			orgRelations.setOrgName(orgName);
 		}
+		model.addObject("orgLocation", orgLocation);
 		model.addObject("contract", contract);
 		model.addObject("userList", userList);
 		model.addObject("clientList", clientList);
