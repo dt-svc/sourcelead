@@ -933,7 +933,6 @@ function contractTypeLabels(){
 		getRequirements("Vendor SOW");
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
-
 		//$('#percentageRewardValue').removeAttr('data-validation');
 		//$('#flatRewardValue').removeAttr('data-validation');
 		$('#invoiceFrequency').removeAttr('data-validation');
