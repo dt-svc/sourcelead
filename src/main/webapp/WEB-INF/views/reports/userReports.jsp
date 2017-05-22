@@ -281,9 +281,13 @@ function usersList(){
 	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
 	                    	 }
 	                    	 
-	                    	 result = result + '<td>';
-                    		 result = result + '<div class="small"><span>0</span></div>';
-	                         result = result + '</td>';
+	                    	 if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
+	                    		  result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
+	                    	 }else{
+	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	                    	 }
+	                    	 
+	                    	 
 		                    
 		                     result = result +"</tr>";
 	                     }
