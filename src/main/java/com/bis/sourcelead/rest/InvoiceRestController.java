@@ -306,6 +306,8 @@ public class InvoiceRestController {
 		
     	String resultJson;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Invoice> invoiceList = null;
+		List<Invoice> billingInvoiceList = new ArrayList<Invoice>();
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -358,7 +360,8 @@ public class InvoiceRestController {
 		}
 		
 		
-		List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+		invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,startDateUTC,endDateUTC,invoiceType);
+		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String currentDate = sdf.format(new Date());
@@ -370,6 +373,8 @@ public class InvoiceRestController {
 			Integer paidCount = 0;
 			Integer overDueInvoiceCount = 0;
 			Integer openInvoiceCount = 0;
+			
+			boolean isInvoiceDueDate = false;
 			
 			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
@@ -425,6 +430,7 @@ public class InvoiceRestController {
 						if(todayDate.after(invoiceDueDate)){
 							overDueInvoiceCount = overDueInvoiceCount+1;
 							invoice.setDueAfterInvoiceAmount(invoice.getDueAmount());
+							isInvoiceDueDate = true;
 						}else{
 							openInvoiceCount = openInvoiceCount+1;
 							invoice.setDueBeforeInvoiceAmount(invoice.getDueAmount());
@@ -442,10 +448,12 @@ public class InvoiceRestController {
 			invoice.setPaidInvoiceCount(paidCount);
 			invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
 			invoice.setDueBeforeInvoiceCount(openInvoiceCount);
-			
-			
+			billingInvoiceList.add(invoice);
 		}
-	    resultJson = commonUtil.toJSON(invoiceList);
+		
+		
+		
+	    resultJson = commonUtil.toJSON(billingInvoiceList);
 	  return resultJson;
 	}
 	
@@ -987,7 +995,14 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
+		Long Id = null;
+     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
+     	if(parentInvoice.getParentInvoiceId() != null){
+     		Id = parentInvoice.getParentInvoiceId().getId();
+     	}else{
+     		Id = Long.parseLong(invoiceId); 
+     	}
+		Invoice invoice = invoiceService.getInvoicetById(Id);
   	    byte[] pdfBytes = invoice.getDocFile();
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
   	    response.setContentType("application/pdf");
@@ -1010,12 +1025,18 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/downloadInvoice", method = RequestMethod.GET)
 	public void downloadInvoice(@RequestParam(value="invoiceId", required=false) String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		
-		 response.setContentType("application/octet-stream");
-		    StringBuilder fileName = new StringBuilder();
-	     response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
-			InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
+		Long Id = null;
+     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
+     	if(parentInvoice.getParentInvoiceId() != null){
+     		Id = parentInvoice.getParentInvoiceId().getId();
+     	}else{
+     		Id = Long.parseLong(invoiceId); 
+     	}
+		Invoice invoice = invoiceService.getInvoicetById(Id);
+		response.setContentType("application/octet-stream");
+		StringBuilder fileName = new StringBuilder();
+	    response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
+		InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
 			try {
 				OutputStream outStream = response.getOutputStream();
 	

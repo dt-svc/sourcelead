@@ -196,7 +196,7 @@ public class CandidateController {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Candidates);
-		
+		model.addObject("candidateType", "Candidates");
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		//this block is for success messages --@Yashoda
