@@ -583,9 +583,11 @@ function openTopDiv(){
 
 <script>
 function sideBar(requirementId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
+	 
+	  $("#detailsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -764,6 +766,7 @@ function sideBar(requirementId){
 					    result = result+'    <div class="project_tabs">';
 						    result = result+' <div id="tab-1" class="project_tabs_inn">';
 						    result = result+'</div>';
+						    result = result +'<div id="detailsLoading"></div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
 						    result = result +'<div id="pipelineLoading"></div>';
@@ -825,15 +828,15 @@ function sideBar(requirementId){
 							 
 							 
 						     result = result +'<div class="tab-content">';
-							 
+						     result = result +'<div id="quickLoading"></div>';
 							 result = result +'<div id="quickview" class="tab-pane fade in active">';
-							 
 							 result = result +'<div id="applicantQuickViewDiv"></div>';
 							 
 							 result = result +'</div>';
 							 
+							 result = result +'<div id="detailViewLoading"></div>';
 							 result = result +'<div id="detailview" class="tab-pane fade">';
-							 
+							
 							 result = result +'<div class="clients_side_wrap_inn">';
 							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
 							 result = result + '<div id="viewCandidateDiv"></div>';
@@ -909,6 +912,7 @@ function sideBar(requirementId){
 			             $("#requirementSideDiv").empty();  
 			 		     $("#requirementSideDiv").append(result);  
 			 		     requirementDetails(requirementId);
+			 		    $("#detailsLoading").removeAttr("style");
 				 		 
 			 		     /*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
@@ -978,8 +982,9 @@ function requirementDetails(requirementId){
 	  
 	  var isLoginUserAsTeamMember = '${isTeamMember}';
 	  var isLoginUserAsManager = '${isManager}';
-	  
 	  var requirementUUID = '${requirementUUID}'
+	  
+	  $("#detailsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -1309,7 +1314,7 @@ function requirementDetails(requirementId){
 							$("#tab-3").empty();
 							$("#status-div").empty();
 						    $("#status-data").empty();
-							$("#tab-1").append(result); 
+							$("#tab-1").append(result);
 							
 							assignedMemberList(requirementId);
 							$("#tab-1").show();
@@ -1321,6 +1326,7 @@ function requirementDetails(requirementId){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
+							$("#detailsLoading").removeAttr("style");
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
        	    	         var result ="";

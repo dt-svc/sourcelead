@@ -1109,14 +1109,6 @@ function cancel(candidateId){
 						 
 					 </div>
 						
-						<div class="clearfix">
-						  <div class="col-md-4">
-						    <label>Designation</label>
-						     <div class="clearfix">
-						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
-                                     </select>
-						    </div>
-						</div>
 						<div class="col-md-8">
 							<div class="row">
 								<div class="col-md-6">
@@ -1141,7 +1133,10 @@ function cancel(candidateId){
 							<div class="col-md-6">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
-									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+								 <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+								</div>
+								<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
 										        <option value="Hourly">Hourly</option>
@@ -1153,14 +1148,21 @@ function cancel(candidateId){
 												<option value="Yearly">Yearly</option>
 				                            </select> 
 									</div>
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
 								</div>
 							</div>
 						 </div>
 						 </div>
+						 
+						 <div class="clearfix">
+						  <div class="col-md-4">
+						    <label>Designation</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
+                                     </select>
+						    </div>
+							</div>
 						 </div>
+						 
 						  <div class="clearfix">
 						  <div class="col-md-4">
 							  <label>Experience</label>
