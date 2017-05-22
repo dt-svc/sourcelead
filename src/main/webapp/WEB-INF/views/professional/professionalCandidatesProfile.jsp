@@ -140,7 +140,10 @@ function editCandidate(candidateId){
             			 	}else{
             			 		designationOtherType = '';  
             			 	 }
-            			 	
+            			 	var primarySkill = '';
+            			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+            			 		primarySkill = json.primarySkill;            			 		
+            			 	}
             			 	var summary = '';
             			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
             			 		summary = json.summary;            			 		
@@ -338,6 +341,9 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
+							
+							
+							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							if(json.experienceYears == "25+"){
 							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
@@ -363,8 +369,11 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '</div>';
-							result = result + '</div>';
+							result = result + '</div>';	
 							
+							result = result + '		          <div class="col-md-6">';
+							result = result + '		            <input type="text" class="form-control" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		          </div>';
 							
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';

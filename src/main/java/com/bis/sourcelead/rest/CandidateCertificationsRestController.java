@@ -80,7 +80,7 @@ public class CandidateCertificationsRestController {
 	   * 
 	   * @throws Exception
 	   */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
 	 @RequestMapping(value = "/getCandidateCertificationListByCandidateIdAndOrgLocationID") 
 	 public String getCandidateCertificationListByCandidateIdAndOrgLocationID(@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
 
