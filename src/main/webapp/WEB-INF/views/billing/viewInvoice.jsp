@@ -220,7 +220,7 @@ function getViewInvoice(){
 					result = result +'                 <tr>                                                          ';
 					result = result +'                     <th>id</th>                                               ';
 					result = result +'                     <th>Candidate</th>                                        ';
-					result = result +'                     <th>SOW/POW</th>                                          ';
+					result = result +'                     <th>SOW/PO</th>                                          ';
 					result = result +'                     <th>Date</th>                                             ';
 					result = result +'                     <th>Rate</th>                                             ';
 					result = result +'                     <th>Total Hours</th>                                      ';

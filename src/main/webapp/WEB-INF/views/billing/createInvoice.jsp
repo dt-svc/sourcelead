@@ -1535,7 +1535,6 @@ function errDueDate(){
 <script>
 function getSowRate(id){
 	var contractId = $("#"+id+'sow').val();
-	alert(contractId);
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
     	type: "GET",
