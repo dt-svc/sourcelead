@@ -800,13 +800,18 @@ public class UsersListRestController {
 						orgLocations.getId());
 				User reportingManager = new User();
 				reportingManager.setId(Long.valueOf(jsonObj.getString("assignReportingManagers")));
+				List<Long> userIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId, orgLocations.getId());
+				
+				Long count = (long) userIds.size();
+					UserRole reportingManagerMail=null;
 				if (null != userRolesList) {
 					for (UserRole roles : userRolesList) {
 						roles.setReportingManager(reportingManager);
 						roles.setUpdatedBy(user.getUserCode());
 						roles.setUpdatedDate(new Date());
-						userRoleService.addUserRole(roles);
+						reportingManagerMail=userRoleService.addUserRole(roles);
 					}
+				assignedNewUserAsaReportingManagers(user,reportingManagerMail,userId,orgLocations,count);	
 				}
 
 			}
@@ -877,13 +882,17 @@ public class UsersListRestController {
 				requirementManagerUser.setId(Long.valueOf(jsonObj.getString("managerUsers")));
 				List<Requirement> requirementsList = requirementService.getManagerAssignedRequirementsList(userId,
 						orgLocations.getId());
+				Integer requirementsCountAsManager = requirementService.getManagerAssignedRequirementsCount(userId,	orgLocations.getId());
 				if (null != requirementsList) {
+					Requirement savedRequirement = null;
 					for (Requirement requirement : requirementsList) {
 						requirement.setManagerUserId(requirementManagerUser);
 						requirement.setUpdatedBy(user.getUserCode());
 						requirement.setUpdatedDate(new Date());
-						requirementService.addRequirement(requirement);
+						savedRequirement=requirementService.addRequirement(requirement);
 					}
+					
+					assignedNewUserAsaManager(user,savedRequirement,userId,orgLocations,requirementsCountAsManager);
 				}
 
 			}
@@ -893,13 +902,17 @@ public class UsersListRestController {
 				requirementApproverUser.setId(Long.valueOf(jsonObj.getString("approverUser")));
 				List<RequirementApproverHierarchy> approversList = requirementApproverHierarchyService
 						.getRequirementsAsApprover(userId, orgLocations.getId());
+				Integer requirementsCountAsApprover = requirementService.getRequirementsCountAsApprover(userId,	orgLocations.getId());
+				RequirementApproverHierarchy updatedHierarchi=null;
 				if (null != approversList) {
 					for (RequirementApproverHierarchy hierarchy : approversList) {
 						hierarchy.setApproverUserId(requirementApproverUser);
 						hierarchy.setUpdatedBy(user.getUserCode());
 						hierarchy.setUpdatedDate(new Date());
-						requirementApproverHierarchyService.addRequirementApproverHierarchy(hierarchy);
+						updatedHierarchi=requirementApproverHierarchyService.addRequirementApproverHierarchy(hierarchy);
 					}
+					
+					assignedNewUserAsaApprover(user,updatedHierarchi,userId,orgLocations,requirementsCountAsApprover);
 				}
 
 			}
@@ -908,14 +921,18 @@ public class UsersListRestController {
 				User teamOwnerUser = new User();
 				teamOwnerUser.setId(Long.valueOf(jsonObj.getString("teamOwnerUser")));
 				List<Team> teamsList = teamService.getTeamListByTeamOwner(userId, orgLocations.getId());
+				Integer teamsCountAsOwner = teamService.getTeamCountByTeamOwner(userId, orgLocations.getId());
+				Team assignedTeamOwner=null;
 				if (null != teamsList) {
 					for (Team team : teamsList) {
 						team.setOwnerUserId(teamOwnerUser);
 						team.setUpdatedBy(user.getUserCode());
 						team.setUpdatedDate(new Date());
-						teamService.saveTeam(team);
+						assignedTeamOwner=teamService.saveTeam(team);
 					}
 				}
+				
+				assignedNewUserAsateamOwnerUser(user,assignedTeamOwner,userId,orgLocations,teamsCountAsOwner);
 
 			}
 
@@ -993,6 +1010,233 @@ public class UsersListRestController {
 		return "success";
 	}
 
+	
+	
+	
+	
+	private void assignedNewUserAsaManager(User loginUser, Requirement requirement, Long userId, OrgLocations orgLocations, Integer requirementsCountAsManager2) throws Exception {
+		
+	Requirement req = 	requirementService.getRequirementByRequirementId(requirement.getId());
+	
+
+	
+	 EmailMessage emailMessage = new EmailMessage();
+	 emailMessage.setFirstName(loginUser.getFirstName());
+	 emailMessage.setLastName(loginUser.getLastName());
+	 emailMessage.setToEmail(req.getManagerUserId().getEmail());
+	 emailMessage.setFromEmail(loginUser.getEmail());
+	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	 StringBuilder msgBuild = new StringBuilder();
+	emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	//setting the class filed values
+	 Map<String, String> globalVarsMap = new HashMap<String, String>();
+	 	 User termentaedUserName = userService.getUserById(userId);
+		 globalVarsMap.put("loginUser", loginUser.getFirstName());
+		 globalVarsMap.put("assignedUser", req.getManagerUserId().getFirstName());
+		 globalVarsMap.put("reqCount", requirementsCountAsManager2.toString());
+		 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	  
+	
+	 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+	
+	 //getting the current EmailScenario by EmailScenario unique name and entity type
+	 //using same migration which has been already used in updatedRequirementMailToManager method
+	 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED,Constants.ENTITY_TYPE_EMAIL);
+	/* EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+*/
+	 
+	 //covert subject,body and signature
+	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+	 String url = "";
+	 
+	/* String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+	 notificationScenario.setBody(notificationbody);
+*/
+	 //construct HTML template using required data
+	 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+	 emailMessage.setSubject(subject);
+	 emailMessage.setMessageBody(emailTemplate);
+	 
+	 //calling the sendEmail method of emailScenerioUtil
+	 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	 String actionLink="";
+	/* emailScenerioUtil.sendNotification(actionLink, loginUser, user, orgLocations, notificationScenario);*/
+	}
+	
+	
+	
+	
+	private void assignedNewUserAsaApprover(User loginUser, RequirementApproverHierarchy requirementApprover, Long userId, OrgLocations orgLocations,Integer requirementsCountAsApprover) throws Exception {
+		RequirementApproverHierarchy abc = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementApprover.getRequirementId().getId(), requirementApprover.getApproverUserId().getId());
+		//Integer requirementsCountAsManager = requirementService.getManagerAssignedRequirementsCount(userId,	orgLocations.getId());
+		
+		//Integer	count = requirementService.getManagerAssignedRequirementsCount(userId,orgLocations.getId());
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(abc.getApproverUserId().getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 	 User termentaedUserName = userService.getUserById(userId);
+			 globalVarsMap.put("loginUser", loginUser.getFirstName());
+			 globalVarsMap.put("assignedUser", abc.getApproverUserId().getFirstName());
+			 globalVarsMap.put("reqCount", requirementsCountAsApprover.toString());
+			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+			 StringBuilder loginBuilder = new StringBuilder();
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		  
+		  
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_Approver,Constants.ENTITY_TYPE_EMAIL);
+		/* EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+	*/
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/* String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+	*/
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		/* emailScenerioUtil.sendNotification(actionLink, loginUser, user, orgLocations, notificationScenario);*/
+		}
+	
+	
+	
+	
+	
+	
+	private void assignedNewUserAsaReportingManagers(User loginUser, UserRole requirementApprover, Long userId, OrgLocations orgLocations,Long count) throws Exception {
+		User assUserName = userService.getUserById(requirementApprover.getReportingManager().getId());		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(assUserName.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 	 User termentaedUserName = userService.getUserById(userId);
+			 globalVarsMap.put("loginUser", loginUser.getFirstName());
+			 globalVarsMap.put("assignedUser", assUserName.getFirstName());
+			 globalVarsMap.put("reqCount", count.toString());
+			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+			 StringBuilder loginBuilder = new StringBuilder();
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		  
+		  
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_REPORTING_MANAGER,Constants.ENTITY_TYPE_EMAIL);
+		/* EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+	*/
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/* String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+	*/
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		/* emailScenerioUtil.sendNotification(actionLink, loginUser, user, orgLocations, notificationScenario);*/
+		}
+	
+	
+	
+	private void assignedNewUserAsateamOwnerUser(User loginUser, Team requirementApprover, Long userId, OrgLocations orgLocations,Integer teamsCountAsOwner) throws Exception {
+		User assUserName = userService.getUserById(requirementApprover.getOwnerUserId().getId());		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(loginUser.getFirstName());
+		 emailMessage.setLastName(loginUser.getLastName());
+		 emailMessage.setToEmail(assUserName.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 	 User termentaedUserName = userService.getUserById(userId);
+			 globalVarsMap.put("loginUser", loginUser.getFirstName());
+			 globalVarsMap.put("assignedUser", assUserName.getFirstName());
+			 globalVarsMap.put("reqCount", teamsCountAsOwner.toString());
+			 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+			 StringBuilder loginBuilder = new StringBuilder();
+			 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		  
+		  
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_TEAM_OWNER,Constants.ENTITY_TYPE_EMAIL);
+		/* EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+	*/
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = "";
+		 
+		/* String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+	*/
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		/* emailScenerioUtil.sendNotification(actionLink, loginUser, user, orgLocations, notificationScenario);*/
+		}
+	
+	
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_USER')")
 	@RequestMapping(value = "/editUserRole", method = RequestMethod.POST)
 	public @ResponseBody String editUserRole(@RequestParam(value = "userId", required = false) Long userId,
