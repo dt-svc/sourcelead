@@ -583,9 +583,11 @@ function openTopDiv(){
 
 <script>
 function sideBar(requirementId){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	  var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
+	 
+	  $("#detailsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -764,6 +766,7 @@ function sideBar(requirementId){
 					    result = result+'    <div class="project_tabs">';
 						    result = result+' <div id="tab-1" class="project_tabs_inn">';
 						    result = result+'</div>';
+						    result = result +'<div id="detailsLoading"></div>';
 						    result = result+' <div id="tab-2" class="project_tabs_inn">';
 						    result = result+'</div>';
 						    result = result +'<div id="pipelineLoading"></div>';
@@ -825,15 +828,15 @@ function sideBar(requirementId){
 							 
 							 
 						     result = result +'<div class="tab-content">';
-							 
+						     result = result +'<div id="quickLoading"></div>';
 							 result = result +'<div id="quickview" class="tab-pane fade in active">';
-							 
 							 result = result +'<div id="applicantQuickViewDiv"></div>';
 							 
 							 result = result +'</div>';
 							 
+							 result = result +'<div id="detailViewLoading"></div>';
 							 result = result +'<div id="detailview" class="tab-pane fade">';
-							 
+							
 							 result = result +'<div class="clients_side_wrap_inn">';
 							 result = result +' <div class="project_side_wrap_inn_tabs"> ';
 							 result = result + '<div id="viewCandidateDiv"></div>';
@@ -909,6 +912,7 @@ function sideBar(requirementId){
 			             $("#requirementSideDiv").empty();  
 			 		     $("#requirementSideDiv").append(result);  
 			 		     requirementDetails(requirementId);
+			 		    $("#detailsLoading").removeAttr("style");
 				 		 
 			 		     /*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
@@ -978,8 +982,9 @@ function requirementDetails(requirementId){
 	  
 	  var isLoginUserAsTeamMember = '${isTeamMember}';
 	  var isLoginUserAsManager = '${isManager}';
-	  
 	  var requirementUUID = '${requirementUUID}'
+	  
+	  $("#detailsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getRequirementById?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,        
@@ -1309,7 +1314,7 @@ function requirementDetails(requirementId){
 							$("#tab-3").empty();
 							$("#status-div").empty();
 						    $("#status-data").empty();
-							$("#tab-1").append(result); 
+							$("#tab-1").append(result);
 							
 							assignedMemberList(requirementId);
 							$("#tab-1").show();
@@ -1321,6 +1326,7 @@ function requirementDetails(requirementId){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
+							$("#detailsLoading").removeAttr("style");
               }else{
                      	 $("#requirementSideDiv").removeAttr("style");
        	    	         var result ="";
@@ -1783,7 +1789,7 @@ function requirementPipeline(requirementId,submissionType){
 function documentpagination(){  
     $('#requirementsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -1793,7 +1799,8 @@ function documentpagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPagination").wrap("<div class='overflow_Auto' style='width:100%;'></div>");  
 }
 </script>
 
@@ -2064,7 +2071,7 @@ function requirementPipelineDA(requirementId,submissionType){
 function documentpaginationDA(){  
     $('#requirementsPaginationDA').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -2074,7 +2081,8 @@ function documentpaginationDA(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationDA").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -2339,7 +2347,7 @@ function requirementPipelineRS(requirementId,submissionType){
 function documentpaginationRS(){  
     $('#requirementsPaginationRS').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -2349,7 +2357,8 @@ function documentpaginationRS(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationRS").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -2626,7 +2635,7 @@ function requirementPipelineSL(requirementId,submissionType){
 function documentpaginationSL(){  
     $('#requirementsPaginationSL').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
@@ -2636,7 +2645,8 @@ function documentpaginationSL(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationSL").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -2888,7 +2898,7 @@ function requirementPipelineSC(requirementId,submissionType){
 function documentpaginationSC(){  
     $('#requirementsPaginationSC').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
@@ -2898,7 +2908,8 @@ function documentpaginationSC(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationSC").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3066,7 +3077,7 @@ function requirementPipelineIN(requirementId,submissionType){
 function documentpaginationIN(){  
     $('#requirementsPaginationIN').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	/* "aaSorting": [[8,'desc']], */
     	"bLengthChange": false,
@@ -3076,7 +3087,8 @@ function documentpaginationIN(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationIN").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3264,7 +3276,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 function documentpaginationOffer(){  
     $('#requirementsPaginationOffer').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
     	"bLengthChange": false,
@@ -3274,7 +3286,8 @@ function documentpaginationOffer(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationOffer").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3522,7 +3535,7 @@ function requirementPipelineRejected(requirementId,submissionType){
 function documentpaginationRejected(){  
     $('#requirementsPaginationRejected').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3531,7 +3544,8 @@ function documentpaginationRejected(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationRejected").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 
@@ -3779,7 +3793,7 @@ function requirementPipelineBackout(requirementId,submissionType){
 function documentpaginationBackout(){  
     $('#requirementsPaginationBackout').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+//     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -3788,7 +3802,8 @@ function documentpaginationBackout(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#requirementsPaginationBackout").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
 <div id="popUp"></div>
@@ -4335,7 +4350,7 @@ function recommendationpagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
 }
 </script>
 
@@ -4348,7 +4363,8 @@ function getActions(){
 	});
 	$(".action, .action-pop").click(function(e){
 	 	e.stopPropagation();
- 	}); */	
+ 	}); */
+ 	$(".export_pipline").hide();
 }
 function popClose(){
 	$(".action-pop").hide();

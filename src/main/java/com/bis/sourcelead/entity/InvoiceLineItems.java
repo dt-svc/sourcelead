@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,7 +40,7 @@ public class InvoiceLineItems {
 	
 	@ManyToOne
 	@JoinColumn(name = "CONTRACT_ID", nullable = false)
-	private Contracts contract;
+	private Contracts contract; 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INVOICE_ID", nullable = false)
@@ -102,6 +103,13 @@ public class InvoiceLineItems {
 	
 	@Transient
 	private Long contractId;
+	
+	@Transient
+	private String sowContractName;
+	
+	@Transient
+	private List<Contracts> contractList;
+	
 	
 
 	public Long getId()
@@ -337,6 +345,26 @@ public class InvoiceLineItems {
 
 	public void setContractId(Long contractId) {
 		this.contractId = contractId;
+	}
+
+	public String getSowContractName()
+	{
+		return sowContractName;
+	}
+
+	public void setSowContractName(String sowContractName)
+	{
+		this.sowContractName = sowContractName;
+	}
+
+	public List<Contracts> getContractList()
+	{
+		return contractList;
+	}
+
+	public void setContractList(List<Contracts> contractList)
+	{
+		this.contractList = contractList;
 	}
 	
 }

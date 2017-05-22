@@ -9,7 +9,7 @@
     width: 110px;
 }
 .require_wrap_details.require_textarea textarea {
-height: 150px;
+height: 225px;
 }
  </style>
 
@@ -99,7 +99,7 @@ function requirementProfile(requirementUUID){
 		    	if(json.description != null && json.description != '' && json.description != 'undefined'){
 		    		description = json.description;
 		    	}else{
-		    		description = "NO DATA";
+		    		description = "--";
 		    	}
 		    	if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 		    		positions = json.positions;
@@ -110,7 +110,7 @@ function requirementProfile(requirementUUID){
 		    	if(json.education != null && json.education != '' && json.education != 'undefined'){
 		    		education = json.education;
 		    	}else{
-		    		education = "NO DATA";
+		    		education = "--";
 		    	}
 		    	if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
 		    		 noticePeriod = json.noticePeriod;
@@ -166,7 +166,7 @@ function requirementProfile(requirementUUID){
 				        	 result = result +'<li>'+customSkill+'</li>';
 				        }
 			    	}else{
-	 					result = result +'<li>No Data</li>';
+	 					result = result +'<li>--</li>';
 	 				}
 				 result = result +'                    </ul>';
 				 result = result +'                  </div>';

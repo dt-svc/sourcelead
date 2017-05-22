@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>New Contract</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; New Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo;&raquo; New Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -90,10 +90,10 @@
                   </span>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
-				    	<span title="Title text" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:when>
 				    <c:otherwise>
-				        <span title="Title text" id="tempEye" style="display:none"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				        <span title="View Template" id="tempEye" style="display:none"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:otherwise>
 				 </c:choose>
                   
@@ -146,22 +146,24 @@
             
             <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant">
+		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
+								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								    <c:if test = "${element.id != contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
+								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								</c:forEach>
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant"></select>
+					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
               	</div>
@@ -277,7 +279,7 @@
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="approver" name="approver" onchange="changeSaveButton();">
-                  <option value=''>--Select Approver--</option>
+                  <option value=''>Select Approver</option>
                   <c:forEach var="user" items="${userList}">
                    <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
 	                     <option value="${user.id}" ${user.id  == contract.approverUser.id ? 'selected' : ''}>${user.firstName} ${user.lastName}</option>
@@ -303,7 +305,7 @@
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+                <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
             </div>         
             
@@ -495,7 +497,7 @@
             <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
 
             <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
-            <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
@@ -933,7 +935,6 @@ function contractTypeLabels(){
 		getRequirements("Vendor SOW");
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
-
 		//$('#percentageRewardValue').removeAttr('data-validation');
 		//$('#flatRewardValue').removeAttr('data-validation');
 		$('#invoiceFrequency').removeAttr('data-validation');
@@ -1099,6 +1100,7 @@ function hideCommonSOWFields(){
 					}); 
 			return true;
 		} else {
+			$('#submissionOffersListDiv').find('p.text-primary').remove();
 			return false;
 		}
 	}
@@ -1119,7 +1121,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Requirement ---</option>';
+	            	  result = result + '<option value="">Select Requirement</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
@@ -1150,15 +1152,27 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
+	                 	 result = result +  '<input type="hidden" readonly id="vendorLocationCode" value="'+opt.vendorLocationCode+'/>';
 	                  }
+	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
+	              }else{
+	            	  var result = "";
+	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  $("#submissionOffersList").empty();
+	            	  $("#submissionOffersList").append(result);
+	                  $("#submissionOffersList").chosen();
+	              	  $("#submissionOffersList").trigger('chosen:update');
+	              	  $('#submissionOffersListDiv').find('p.jquery_form_error_message').remove();
+	              	  $('#submissionOffersListDiv').find('p.text-primary').remove();
+	              	  $("#submissionOffersListDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>No Applicants found </p>");
 	              }
 	              $('#submissionOffersList')
 	                .find('option:first-child').prop('selected', true)
@@ -1190,6 +1204,20 @@ function hideCommonSOWFields(){
 	    });
 
 	}
+	
+	/* function getVendor(){
+		var venLocCode = $("#vendorLocationCode").val();
+		<c:forEach var="vendor" items="${orgRelationsList}">
+		          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
+		        	  alert("vendor a code "+'${vendor.responderLocationId.id}');
+		          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
+					  alert("vendor bbbbb code "+'${vendor.orgLocation.id}');
+		          }
+			   
+          </c:forEach>
+          
+	
+	} */
 </script>
 
 

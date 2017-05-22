@@ -372,7 +372,7 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	 <label class="col-md-12">Status</label>';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	 <div class="col-md-12 dropdown-select">';
 	result = result  +'	  <select class="form-control" id="spocStatus" name="spocStatus">';
 	result = result  +'	   <option value="Active">Active</option>';
 	result = result  +'	   <option value="In-Active">In-Active</option>';
@@ -440,9 +440,9 @@ function addContact(orgRelationID,clientLocationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
+	 /* $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
-	   });	
+	   });	 */
 	 
 	 var config = {
 			  '.chosen-select'           : {},

@@ -494,7 +494,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
-						 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"candidate")));
+						 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"sow")));
 						 invoiceLineItems.setContract(contract);
 					 }else{
 						 invoiceLineItems.setContract(null);

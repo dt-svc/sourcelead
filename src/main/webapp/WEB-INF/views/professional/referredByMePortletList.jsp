@@ -130,7 +130,7 @@ function portletListFilter(requirementStatus){
 	    	 var result ='';
 	    	 result =result +'<span class="select-field"><i class="fa fa-filter"></i>';
 	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction();">'; 
-	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : 'referByMe') +' value = "referByMe">Refer To Me ('+json.referByMeJobs+')</span></option>';
+	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : 'referByMe') +' value = "referByMe">Referred By Me ('+json.referByMeJobs+')</span></option>';
 	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : '') +' value = "">Applied ('+json.appliedJobs+')</span></option>';
 	    	 result =result +'<option '+ (requirementStatus == "SHORTLIST" ? "selected" : '') +' value = "SHORTLIST">Short Listed ('+json.shortlistJobs+')</option>';
 	    	 result =result +'<option '+ (requirementStatus == "INTERVIEW" ? "selected" : '') +' value = "INTERVIEW">Interviews ('+json.interviews+') </option>';
