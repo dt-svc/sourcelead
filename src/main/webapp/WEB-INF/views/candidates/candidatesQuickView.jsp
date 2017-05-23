@@ -390,7 +390,13 @@ function qwikCertificates(candidateId){
 								}else{
 									name = '';
 								}
-								result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
+								
+								if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+									result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
+								}else{
+									result = result +' <h4>'+name+'</h4>';
+								}
+								
 								/* result = result +'<div class="description">';
 								result = result +'  <p>'+opt.provider+'</p>';
 								result = result +'</div>';   */

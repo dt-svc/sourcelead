@@ -1279,6 +1279,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           	 }
  
         	 $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+        	 getOfferDetails(submissionId);
         	 
        },
          

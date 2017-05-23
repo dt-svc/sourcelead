@@ -40,17 +40,10 @@
               <div class="col-md-8">
               	<c:choose>
 				    <c:when test="${!empty contract.contractType}">
-				        <select class="chosen-select form-control" disabled="true" id="contractType" name="contractType" data-validation="required" field-name="Contract Type">
-		                    <option ${contract.contractType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
-		                    <option ${contract.contractType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
-		                    <option ${contract.contractType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
-		                    <option ${contract.contractType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option ${contract.contractType  == 'NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType  == 'NSA' ? 'selected' : ''}>NSA</option>
-		                 </select>
+				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels(); getContractTemplates(); flush();" data-validation="required" field-name="Contract Type">
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
@@ -66,12 +59,12 @@
             <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .doc, pdf, txt, docx formats only
+							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only
 							">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
 	                         <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
               </div>			
@@ -117,9 +110,9 @@
             <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="submissionOffersListDiv">
-	              <c:choose>
+					 <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant">
+		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
@@ -131,7 +124,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant"></select>
+					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
               	</div>
@@ -168,7 +161,7 @@
               </div>
             </div>
           
-         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorVendor">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
@@ -180,7 +173,7 @@
               </div>
           </div>                      
                       
-            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorvendorContact">
               		<c:choose>
@@ -188,11 +181,11 @@
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
 							    <option value=''>Select Vendor Contact</option>
 							    <c:forEach var="element" items="${orgSpocList}" >
-							    	<c:if test = "${element.tempOwnerId == contract.orgRelations.id}">
-								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+							    	<c:if test = "${element.tempOwnerId == contract.contactUser.id}">
+								         <option selected value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
 								    </c:if>
-								    <c:if test = "${element.tempOwnerId != contract.orgRelations.id}">
-								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+								    <c:if test = "${element.tempOwnerId != contract.contactUser.id}">
+								         <option value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -206,7 +199,7 @@
             </div>
             
             
-             <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
+            <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorClient">
                   <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
@@ -225,11 +218,11 @@
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
 							    <c:forEach var="element" items="${orgSpocList}" >
-							    	<c:if test = "${element.spocUserId == contract.orgRelations.id}">
-								         <option value="${element.spocUserId}">${element.ownerName}</option>
+							    	<c:if test = "${element.spocUserId == contract.contactUser.id}">
+								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
 								    </c:if>
-								    <c:if test = "${element.spocUserId != contract.orgRelations.id}">
-								         <option value="${element.spocUserId}">${element.ownerName}</option>
+								    <c:if test = "${element.spocUserId != contract.contactUser.id}">
+								         <option value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -729,6 +722,9 @@ function getContractTemplates(){
 	        $("#template").append(output);
 	        $('#template').trigger("chosen:updated"); 
      },
+     complete: function (data) {
+    	 flush(); 
+    }
  }); 
 	
 }
@@ -916,6 +912,11 @@ function contractTypeLabels(){
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 	}
+	getContractTemplates();
+	
+	$("#flatReward").val("");
+    $("#billingRateType").val('${currencyCode}').trigger('change');
+    $("#billingRatePer").val("").trigger('change');
 }
 </script>
 
@@ -1018,7 +1019,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Requirement ---</option>';
+	            	  result = result + '<option value="">Select Requirement</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
@@ -1042,14 +1043,18 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
-		$.ajax({
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
+	    $.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
@@ -1061,7 +1066,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
@@ -1078,12 +1083,15 @@ function hideCommonSOWFields(){
 	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
 	    });
-
 	}
 	
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
@@ -1095,6 +1103,12 @@ function hideCommonSOWFields(){
 	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
 	            	  $("#flatReward").val("");
 	            	  $("#flatReward").val(json.amount);
+	            	  
+	            	  $("#billingRateType").val("");
+	            	  $("#billingRateType").val(json.paymentType).trigger('change');
+	            	  
+	            	  $("#billingRatePer").val("");
+	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
 	              }
 	       },
 	    });
