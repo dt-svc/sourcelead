@@ -1003,7 +1003,7 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		invoiceService.sendInvoiceMail(user,orgLocation,invoice);
+		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType());
 		return "success";
 	} 	
 	
