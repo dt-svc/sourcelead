@@ -68,13 +68,24 @@ width: auto;
   <section class="container">
 		<div class="row">
 		  		<div id="accept" style="display:none">
+		  				<c:choose>
+						 <c:when test="${permission=='YES'}">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
 							  <p class="reason-msg">You Have accepted the Offer for ${requirementOffers.submissionId.requirement.jobTitle}</p>
 							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
+							  </c:when> 
+							  <c:otherwise>
+							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+						          		<i class="fa fa-clock-o fa-3x"></i>
+							        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
+							  </c:otherwise>
+							  </c:choose>
 						  </div>
 		  		</div>
 		  		<div id="reject" style="display:none">
+		  		<c:choose>
+					   <c:when test="${permission=='YES'}">
 		  			<form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
@@ -90,7 +101,15 @@ width: auto;
 								  	
 								  </div>
 							  </div>
-					</form>							  
+					</form>		
+					 </c:when>    
+					 <c:otherwise>
+					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+				          		<i class="fa fa-clock-o fa-3x"></i>
+					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
+					        </div>
+					    </c:otherwise>
+					  </c:choose>					  
 		  		</div>
 		 </div>
   </section>
