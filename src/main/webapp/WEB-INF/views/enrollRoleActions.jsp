@@ -2,16 +2,8 @@
 <jsp:include page="masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
 
 
-
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link href="resources/css/timesheet.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="resources/css/jquery.tree-multiselect.css">
 
 <script type="text/javascript">
@@ -66,9 +58,6 @@ window.onload = function () {
   </section>
   <!-- Content Area Ends--> 
 
-
-<script src="resources/js/jquery-1.11.3.min.js"></script> 
-<script src="resources/js/jquery-ui.min.js"></script>
 <script src="resources/js/jquery.tree-multiselect.js"></script>
 
 

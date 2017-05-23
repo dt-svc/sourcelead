@@ -24,6 +24,7 @@
 --%>
 <script>
 function candidateDocuments(candidateId){
+	var candidateType = '${candidateType}';
 	var result = "";
 	
 	if(window.candidateStatusGlobal == '0'){
@@ -35,10 +36,32 @@ function candidateDocuments(candidateId){
     result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
-		result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
+		if(candidateType =="Candidates"){
+			'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
+			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
+			'</sec:authorize>';
+		}else{
+			'<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">'; 
+			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
+			'</sec:authorize>';
+		}
+		
 	}else{
 		var docUUID = '';
-		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
+		if(candidateType =="Candidates"){
+			'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
+		'</sec:authorize>';
+		}else{
+		 '<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
+		'</sec:authorize>';
+		
+		'<sec:authorize access="!hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
+		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"   class="addUser-org" ></a></span>';
+	'</sec:authorize>';
+		}
+	
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
@@ -66,6 +89,7 @@ function candidateDocuments(candidateId){
 
 <script>
 function candDocumentsList(candidateId){
+	var candidateType = '${candidateType}';
 	  var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -121,7 +145,16 @@ function candDocumentsList(candidateId){
 			           		}else{
 			           			var docUUID = opt.documentUUID;
 			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
-				           		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			if(candidateType =="Candidates"){
+			           				'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			'</sec:authorize>';
+			           			}else{
+			           				'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\')">';
+			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           			'</sec:authorize>';
+			           			}
+			           			
 			           		}
 			           		result = result+'</div></td>';
 	                    	 result  = result + '</tr>';

@@ -117,6 +117,11 @@ function getProfessionalInfo(){
 		    		 city = "";
 		    	 }
 		    	 
+		    	 if(json.primarySkill != null  && json.primarySkill != '' && json.primarySkill != 'undefiend'){
+		    		 primarySkill = json.primarySkill;
+		    	 }else{
+		    		 primarySkill = "NO DATA";
+		    	 }
 		    	 
 		    	 if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
 		    		 skillsName = json.skillsName;
@@ -198,7 +203,7 @@ function getProfessionalInfo(){
 				 result = result +'	        <img onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayUserImage/'+userId+'"/>" alt="Profile Image" width="96" height="96">';
 				 
 				 result = result +'	        <span>';
-				 result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>';
+				  result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>'; 
 				 result = result +'	        </span>';
 				 result = result +'	        </div>';
 				 result = result +'	        <ul class="list-unstyled professional-details">';
@@ -228,6 +233,16 @@ function getProfessionalInfo(){
 				 result = result +'	        <p><i class="fa fa-map-marker" title="Location"></i>'+country+' '+state+' '+city+'</p>';
 				 result = result +'	        </div>';
 				 result = result +'	    </div>';
+				 
+				 result = result +'	    <div class="col-md-4">';
+				 result = result +'	        <h5>Primary Skill</h5>';
+				 result = result +'	        <div class="skills mt25">';
+				 result = result +'	            <p><strong>';
+				 result = result +'	        '+primarySkill+'</strong>';
+				 result = result +'	        </p>';
+				 result = result +'	            </div>';
+				 result = result +'	    </div>';
+				 
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Skills</h5>';
 				 result = result +'	        <div class="skills mt25">';
@@ -236,6 +251,7 @@ function getProfessionalInfo(){
 				 result = result +'	        </p>';
 				 result = result +'	            </div>';
 				 result = result +'	    </div>';
+				
 				 result = result +'	</section>';
 				 result = result +'	</div>';
 				 

@@ -2349,10 +2349,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 if(sowType.equalsIgnoreCase("Client SOW")){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
-		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 			subQuery = "and rs.vendorLocationId <> null and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
 			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
-			 String query = "from RequirementSubmission rs "+leftJoins+" where req.id = :requirementId and rs.vendorLocationId.id <> NULL "+subQuery+" ORDER BY rs.id DESC";
+			 String query = "from RequirementSubmission rs "+leftJoins+" where req.id = :requirementId "+subQuery+" ORDER BY rs.id DESC";
 			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		     return offerAcceptedCandidatesList;
 		}
@@ -2362,7 +2362,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		public List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId,
 				Long orgRelationId, Date startUTCDate, Date endUTCDate) {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.sourceSubmission.requirement.clientId.id =:orgRelationId and rs.sourceSubmission <> NULL and (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC)";
+			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:orgRelationId and rs.sourceSubmission <> NULL and (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC)";
 			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setCacheable(true).list();
 		    return subList;
 		}

@@ -354,6 +354,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					}else{
 						candidate.setSpocId(null);
 					}
+					
+					if(jsonObj.has("primarySkill") && !isNullOrEmpty(jsonObj.getString("primarySkill"))){
+						 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+					}
 					 
 					candidate.setCandidateType("Candidate");
 					candidate.setIsAssociate(Constants.NO);
@@ -1265,9 +1269,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 StringBuilder rejectBuilder = new StringBuilder();
 		 StringBuilder negotiateBuilder = new StringBuilder();
 		 
-		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirement?rateStatus=Accepted&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
 	        
-	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Rejected&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirement?rateStatus=RejectedApplicant&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 
 	     globalVarsMap.put("negotiateRateLink",negotiateBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
 
@@ -1455,6 +1459,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("applicantName",requirementSubmissionTemplateFields.getFirstName());
 			 }
+		 if(null != requirementRateSubmissionNegotiation){
 		 if(null != requirement.getCurrencyCode() && requirementRateSubmissionNegotiation.getExpectedRate()!= null && !"".equalsIgnoreCase(requirementRateSubmissionNegotiation.getExpectedRate()) && null != requirementRateSubmissionNegotiation.getExpectedRateType() && !"".equalsIgnoreCase(requirementRateSubmissionNegotiation.getExpectedRateType())){
 			 StringBuilder rateBuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirementRateSubmissionNegotiation.getExpectedRate()).append("-").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());
@@ -1464,6 +1469,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else{
 				 globalVarsMap.put("requirementRate","---");
 			 }
+		 }
 		 
 		 if(rejectreason != null && !"".equalsIgnoreCase(rejectreason)){
 			 globalVarsMap.put("rejectReason",rejectreason);
@@ -1471,7 +1477,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("rejectReason","--");
 			 }
 		 
+		 if(null !=tempHTML){
 		 globalVarsMap.put("negotiationLink", tempHTML.toString());
+		 }
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		

@@ -225,8 +225,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setRequirementSubmission(rs);
 		}
 		
-		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
-			contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+		if("Client SOW".equals(jsonObj.getString("contractType")) || "Vendor SOW".equals(jsonObj.getString("contractType"))){
+			if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
+				contracts.setHoursPerWeek(jsonObj.getString("hoursPerWeek"));
+			}
 		}
 		
 		if(jsonObj.has("overTimeHours") && null != jsonObj.getString("overTimeHours") && !"".equals(jsonObj.getString("overTimeHours"))){
@@ -967,6 +969,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 
 	private void sendMailToContractApprover(User loginUser, User approverUser, Contracts contracts, OrgLocations orgLocation) throws Exception
 	{
+		Timezone timezone = null;
+		if(null != orgLocation.getTimezone()){
+	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		 }
 		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
@@ -989,7 +995,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName()) && approverUser.getLastName()!= null && !"".equalsIgnoreCase(approverUser.getLastName())){
 			StringBuilder approverSb = new StringBuilder();
 			globalVarsMap.put("ApproverName", approverSb.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
-		}else if(approverUser.getLastName()!= null && !"".equalsIgnoreCase(approverUser.getLastName())){
+		}else if(approverUser.getFirstName()!= null && !"".equalsIgnoreCase(approverUser.getFirstName())){
 			globalVarsMap.put("ApproverName",approverUser.getFirstName());
 		}else{
 			globalVarsMap.put("ApproverName","--");
@@ -998,21 +1004,37 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(contracts.getOwnerUserId().getFirstName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getFirstName()) && contracts.getOwnerUserId().getLastName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getLastName())){
 			StringBuilder ownerSb = new StringBuilder();
 			globalVarsMap.put("OwnerName", ownerSb.append(contracts.getOwnerUserId().getFirstName()).append(" ").append(contracts.getOwnerUserId().getLastName()).toString());
-		}else if(contracts.getOwnerUserId().getLastName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getLastName())){
+		}else if(contracts.getOwnerUserId().getFirstName()!= null && !"".equalsIgnoreCase(contracts.getOwnerUserId().getFirstName())){
 			globalVarsMap.put("OwnerName",contracts.getOwnerUserId().getFirstName());
 		}else{
 			globalVarsMap.put("OwnerName","--");
 		}
 		
-		if(contracts.getStartDate()!=null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
-			globalVarsMap.put("StartDate",contracts.getStartDate().toString());	
-		}else{
+		
+		if(contracts.getStartDate() != null){
+			String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
+			if(null != timezone && null != timezone.getTimeZoneId()){
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				globalVarsMap.put("StartDate",currentDateInTimezone);	
+			}
+	    }else{
 			globalVarsMap.put("StartDate","--");
 		}
 
-		if(contracts.getEndDate()!=null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
-			globalVarsMap.put("EndDate",contracts.getEndDate().toString());	
-		}else{
+		
+		if(contracts.getEndDate() != null){
+			String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
+			if(null != timezone && null != timezone.getTimeZoneId()){
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = Constants.DF_DMY.format(converteDate);
+				globalVarsMap.put("EndDate",currentDateInTimezone);	
+			}
+	    }else{
 			globalVarsMap.put("EndDate","--");
 		}
 		 
@@ -1029,8 +1051,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
 		 
+		 if(null != contracts.getContractOrgLocationId().getOrg().getOrgName() && !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getOrg().getOrgName())){
+			 globalVarsMap.put("ClientVendorName",contracts.getContractOrgLocationId().getOrg().getOrgName());
+			 }else{
+				 globalVarsMap.put("ClientVendorName","--");
+			}
 			
-			if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
+			/*if("Client MSA".equalsIgnoreCase(contracts.getContractType())){
 				List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 				for (OrgRelations orgRelations : clientList) {
 				String orgName = "";
@@ -1065,7 +1092,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							 globalVarsMap.put("ClientVendorName","--");
 						}
 			}
-			}
+			}*/
 		 
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());

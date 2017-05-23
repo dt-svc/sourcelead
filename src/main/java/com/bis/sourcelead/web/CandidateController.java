@@ -159,6 +159,10 @@ public class CandidateController {
 		    model.addObject("searchType", "Candidate");
 		}
 		
+		
+	   Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+	   model.addObject("candidateCount", candidateCount);
+	   
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
@@ -192,7 +196,7 @@ public class CandidateController {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Candidates);
-		
+		model.addObject("candidateType", "Candidates");
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		//this block is for success messages --@Yashoda

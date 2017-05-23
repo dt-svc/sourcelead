@@ -176,6 +176,7 @@ function editCandidate(candidateId){
 							if(json.candidateType == "Candidate"){
 								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
 							}
 							 
 							if(json.candidateType == "Consultant"){
@@ -773,7 +774,27 @@ function candidateProfile(candidateId,candidateType){
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
 							}else{
-								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_EDIT_ASSOCIATE\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\',\'ROLE_VIEW_DELETE_ASSOCIATE\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
+								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline">';
+								   
+								   if(candidateType == "Candidates"){
+									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+									   result = result + ' <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   '</sec:authorize>'; 
+									   
+									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   '</sec:authorize>';
+								   }else{
+									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
+									   result = result + ' <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   '</sec:authorize>'; 
+									   
+									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
+									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   '</sec:authorize>';
+								   }
+								   
+								   result = result + '</div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -782,7 +803,7 @@ function candidateProfile(candidateId,candidateType){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							}
 							else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> --</textarea>';
 				    	        }
 							
 							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
@@ -1124,6 +1145,7 @@ function candidateProfile(candidateId,candidateType){
 		
 		rateValidations();
 		
+		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
@@ -1687,6 +1709,10 @@ function updateDesignationOtherType(){
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = $('#email').val(); 
+	 var tempEmail = $('#tempEmail').val(); 
+	 
+	 if(tempEmail != email){
+	 
 	 var candidateType = $('#candidateType').val(); 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1712,8 +1738,10 @@ function updateDesignationOtherType(){
 		        },
 		    });
 	 }
+	 }
  }
  </script>     
+ 
  
  <!-- Candidate Email validation script ends here -->
  

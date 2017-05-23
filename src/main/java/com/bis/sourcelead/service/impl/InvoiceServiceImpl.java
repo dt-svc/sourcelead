@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -92,6 +94,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 
 	protected static boolean isNullOrEmpty(String str) {
@@ -239,16 +244,17 @@ public class InvoiceServiceImpl implements InvoiceService{
 		invoice.setUpdatedBy(user.getUserCode());
 		invoice.setCreatedDate(commonUtil.currentDate());
 	
-		
+		List<String> submissionApproverHierarchyIds = new ArrayList<>();
 		// storing invoive line items
 		List<Long> invoiceLineItemsIdsList = null;
 		 if(null != invoice.getId()){
 	    	  invoiceLineItemsIdsList = invoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoice.getId());
 	     }
-		
-		 Set<InvoiceLineItems> invoiceLineItemSet = getInvoiceLineItems(jsonObj,user,orgLocation,invoice,invoiceLineItemsIdsList);
+		 Set<InvoiceLineItems> invoiceLineItemSet = getInvoiceLineItems(jsonObj,user,orgLocation,invoice,invoiceLineItemsIdsList,submissionApproverHierarchyIds);
 		 invoice.setInvoiceLineItems(invoiceLineItemSet);
-		
+		 
+		 invoice.setSubmissionApproverHierarchyIds(submissionApproverHierarchyIds);
+		 
 		//Store Tax
 		List<Long> invoiceTaxItemsIdsList = null;
 		 if(null != invoice.getId()){
@@ -264,17 +270,20 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		//store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType);
 		        invoice.setFileName(file.getName());
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
-		
+		        if(null != file){
+		        	file.delete();
+		        }
+		        
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
 			//mail scenario for client accept or reject
-			invoiceClientAcceptMail(user,orgLocation,invoice);
+			sendInvoiceMail(user,orgLocation,invoice);
 			saveParentInvoice(invoice);	
 		}
 		
@@ -442,7 +451,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 	
 	
-	private Set<InvoiceLineItems> getInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice,List<Long> invoiceLineItemsIdsList) throws Exception {
+	private Set<InvoiceLineItems> getInvoiceLineItems(JSONObject jsonObj, User user, OrgLocations orgLocation, Invoice invoice,List<Long> invoiceLineItemsIdsList, List<String> submissionApproverHierarchyIds) throws Exception {
 		 Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 	        
 		 String pattern = "dd-MM-yyyy";
@@ -485,7 +494,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
-						 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"candidate")));
+						 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"sow")));
 						 invoiceLineItems.setContract(contract);
 					 }else{
 						 invoiceLineItems.setContract(null);
@@ -508,17 +517,20 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }else{
 						 invoiceLineItems.setAmount(null);
 					 }
-	
-					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
-							invoiceLineItems.setSeperateInvoice(jsonObj.getString("seperateInvoice"));;
+	              // As of Now we are not storing seperateInvoice status
+//					if(jsonObj.has("seperateInvoice") && !"".equalsIgnoreCase(jsonObj.getString("seperateInvoice"))){
+//							invoiceLineItems.setSeperateInvoice(jsonObj.getString("seperateInvoice"));;
+//					 }
+					if(jsonObj.has(i+"submissionApproverHierarchyId") && !"".equalsIgnoreCase(jsonObj.getString(i+"submissionApproverHierarchyId"))){
+						submissionApproverHierarchyIds.add(jsonObj.getString(i+"submissionApproverHierarchyId"));
 					 }
-						
 					 invoiceLineItems.setOrgLocation(orgLocation);
 					 invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
 					 invoiceLineItems.setCreatedBy(user.getUserCode());
 					 invoiceLineItems.setCreatedDate(commonUtil.currentDate());
 					 invoiceLineItems.setInvoice(invoice);
 					 invoiceLineItemsSet.add(invoiceLineItems);
+					 
 				 }
 			 }
 			 
@@ -533,7 +545,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 	}
 	
-	private void invoiceClientAcceptMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
+	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
 
 		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -584,25 +596,39 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
-		 
 		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
 		 EmailAttachment emailAttachment = new EmailAttachment();
 		 emailAttachment.setUUID(UUID);
+		 
+		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+		 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+		 for(InvoiceDocument doc:documenetSet){
+			 EmailAttachment docAttachment = new EmailAttachment();
+			 docAttachment.setDocFile(doc.getDocFile());
+			 docAttachment.setName(doc.getFileName());
+			 documentList.add(docAttachment);
+		 }
+		 
+		 }
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
+		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
+		 attachmentList.addAll(documentList);
+		 }
+		 //calling the sendEmail method of emailScenerioUtil
 		 
-		 //calling the sendEmail method of emailScenerioUtil		
-		 emailScenerioUtil.sendEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList);
+		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
 	}
 
 
-	@Override
+	/*@Override
 	public void getPdfFileForInvoice(Invoice invoice,OrgLocations orgLocation,User user, Org org) throws Exception {
 		invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
-	}
+	}*/
 	
 	@Override
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
@@ -863,5 +889,19 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public Invoice getInvoicetByParentInvoiceId(Long parentInvoiceId) throws Exception {
 		return invoiceDao.getInvoicetByParentInvoiceId(parentInvoiceId);
+	}
+	@Override
+	public void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType) throws Exception
+	{
+		for(String id :submissionApproverHierarchyIds){
+			SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
+			if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
+				submissionApproverHierarchy.setBillingStatus(Constants.SENT);
+			}else{
+				submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+			}
+			submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
+		}
+	
 	}
 }

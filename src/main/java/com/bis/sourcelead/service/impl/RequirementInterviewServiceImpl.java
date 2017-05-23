@@ -497,7 +497,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	         tempHTML.append("<th> Interview Type </th>");
 	         tempHTML.append("<th> Interview Time & Date </th>");
 	         tempHTML.append("<th> Details </th>");
+	         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 	         tempHTML.append("<th> Feedback </th>");
+	         }
 	         tempHTML.append("</tr>");
 	        
 	     		for(RequirementSubmissionTemplateFields requirementSubmissionTemplateFields:interviewcandidateList){
@@ -526,6 +528,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		        		 tempHTML.append("<td>").append("--").append("</td>");
 		        	 }
 			         int i=0;
+			         if(null != templateId && !"".equalsIgnoreCase(templateId)){
 					for (RequirementInterview interviersArray : intervieresArrayList) {
 						if (null != requirementSubmissionTemplateFields.getRequirementSubmission() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getRequirementSubmission().toString())) {
 							if (requirementSubmissionTemplateFields.getRequirementSubmission().getId().equals(interviersArray.getSubmissionId().getId())) {
@@ -539,6 +542,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 							}
 						}
 					}
+	     		}
 				}
 	         tempHTML.append("</tr>");
 		     tempHTML.append("</table> ");
@@ -610,6 +614,8 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
         }
         if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y") && requirementSubmission.getVendorLocationId() != null){
      	   sendEmailToVendors(candidate,requirementSubmission, user,loginOrg, requirementInterview,orgLocations);
+        }else if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y")){
+        	sendEmailToVendors(candidate,requirementSubmission, user,loginOrg, requirementInterview,orgLocations);
         }
         if(jsonObj.has("notificationToOthersEmails") && !jsonObj.getString("notificationToOthersEmails").isEmpty()){
 				String[] othersEmails = jsonObj.getString("notificationToOthersEmails").split(",");

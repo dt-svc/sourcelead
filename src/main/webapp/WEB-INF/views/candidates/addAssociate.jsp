@@ -77,7 +77,7 @@
         </div>
 						
         <div class="form-group">
-          <label class="col-md-3">Mobile</label>
+          <label class="col-md-3">Mobile Number</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="${phone}"  field-name="Mobile Number" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" value="">
           </div>
@@ -181,7 +181,7 @@
        
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" id="man1">Vendor<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
 			<div class="col-md-9" id="errorvendor">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
@@ -189,7 +189,7 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3" id="man2">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 			<div class="col-md-9" id="errorvendorContact">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
@@ -283,7 +283,7 @@
          <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9">
-                <select multiple data-placeholder="select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <select multiple data-placeholder="Select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
                 <c:forEach var="edu" items="${educationsList}">
 	                     <option value="${edu.name}">${edu.name}</option>
                 </c:forEach>
@@ -295,7 +295,7 @@
         <div class="form-group">
               <label class="col-md-3">Skills</label>
               <div class="col-md-9">
-                <select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
+                <select multiple data-placeholder="Select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
                 </c:forEach>
@@ -310,7 +310,7 @@
                <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
                  </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Import Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
            </div>
          </div>
         </div>

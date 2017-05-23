@@ -74,7 +74,7 @@ z-index: 9999999999 !important;
 				  </div>
 			  </div>
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<div class="row">
+					<div class="row mrng0">
 						<div class="col-md-6">
 								
 								<div class="form-group">
@@ -658,9 +658,9 @@ function getUserList(){
 	                    	 }
 	                    	 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><span title='+name+'>'+name+'</span></td>';
-	                    	 result = result +'<td><span title='+opt.email+'>'+opt.email+'</span></td>';
-	                    	 result = result +'<td><span title='+mobilePhone+'>'+mobilePhone+'</span></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+name+'>'+name+'</div></td>';
+	                    	 result = result +'<td><div class="tbltbldata-dotdot" title='+opt.email+'>'+opt.email+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+mobilePhone+'>'+mobilePhone+'</div></td>';
 	                    	 result = result +'<td>'+opt.role+'</td>';
 	                    	 
 	                    	 if(opt.userState == 'NOT_LOGGEDIN'){

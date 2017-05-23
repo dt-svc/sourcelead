@@ -6,10 +6,7 @@
 	padding: 0;
 }
 body {
-	background-color: #e1e6fa;
-	font-size: 14px;
-	color: #333;
-	font-family:'Roboto', sans-serif  !important;
+	background-color: #e1e6fa; font-size: 14px; color: #333; font-family:'Roboto', sans-serif  !important;
     min-height: 100%;
 }
 a:hover, a:active, a:focus {
@@ -1273,6 +1270,12 @@ border: 1px solid #ddd; margin-bottom: 20px !important; border-radius: 5px; back
 }
 .tblminwidth-100 {
 	min-width: 100px !important;
+}
+.tblminwidth-30 {
+    min-width: 30px !important;
+}
+.tblminwidth-90 {
+	min-width: 90px !important;
 }
 .tbldata-dotdot_80{
 overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; display: block; margin: 0 auto;
@@ -3070,7 +3073,7 @@ border: none !important; border-bottom: 1px solid #ccc !important; border-radius
 	color:#ff4b4b;
 }
 .assignroles {
-position:absolute; width:670px; min-height:50px; max-height:250px; overflow-y: auto; background-color:#FFF; box-sizing:border-box; right:0; top:0px; text-align:left; padding:10px 10px; display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
+position:absolute; width:670px; min-height:50px; max-height:350px; overflow-y: auto; background-color:#FFF; box-sizing:border-box; right:0; top:0px; text-align:left; padding:10px 10px; display:block; box-shadow:0px 0px 3px rgba(0,0,0,0.3);
 }
 .assignroles .user_badg p {
     padding: 0px 0px !important; color: #333;
@@ -4960,14 +4963,22 @@ div.inputCustom {
     background-color: #337ab7; border-color: #2e6da4; font-size:13px;
 }
 .menuWidget {
-    cursor: pointer;
+    cursor: pointer; z-index: 9;
 }
 .menuWidget .fa-ellipsis-h {
     cursor: pointer; color: #787878;
 }
 .menuWidget ul.menupop {
-    position: absolute; top: 5px; right: 15px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
-    width: 325px; box-shadow: -1px 1px 2px #333; display: none;
+    position: absolute; top: -20px; right: 10px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
+    box-shadow: -1px 1px 2px #333; display: none;  z-index:9px;
+}
+.menuWidget ul.menupop.menupop_1
+{
+	width: 200px;
+}
+.menuWidget ul.menupop.menupop_2
+{
+	width:320px;
 }
 .menuWidget ul li{
     cursor: pointer; color: #263238;
@@ -4975,8 +4986,11 @@ div.inputCustom {
 .menuWidget ul li:hover{
     color: #455a64;
 }
+.menuWidget ul li{
+    border-right: 1px solid #90a4ae;
+}
 .menuWidget ul li:last-child{
-    border-left: 1px solid #90a4ae;
+    border-right: none;
 }
 .addtax_table table thead th {
     padding: 5px 5px;background: #e0e0e0;
@@ -4996,9 +5010,6 @@ appearance:none; -webkit-appearance:none; -moz-appearance:none; -ms-appearance:n
 }
  .centerDiv {
 float:none; margin:0 auto;
-}
-.tblminwidth-30 {
-    min-width: 30px !important;
 }
 .dropdown-select.paddingNone select {
     padding:0 !important;
@@ -5244,6 +5255,33 @@ float: left; position: relative;top:5px; width: 10%;
 /* Menu styles */
 .selectpicker_maxheight .dropdown-menu {
    max-height: 230px !important;
+}
+.bootstrap_dropdownMenu ul {
+padding: 0; float: none;
+}
+.bootstrap_dropdownMenu ul li{
+float: none !important; padding: 0; color: #333;
+}
+.close-div.closediv-small {
+ left: -10px; padding: 1px 3px; position: absolute; top: -10px; font-size: 12px;
+}
+.mrng0{
+	margin: 0;
+}
+.mrng0 .tbldata-dotdot-me, .mrng0 .tbldata-dotdot{
+	margin: 0;
+}
+.validation_p p.jquery_form_error_message {
+    position: absolute; bottom:-15px; left: 0;
+}
+ .receiveBtn.receive_Btn {
+	width: 75px;
+}
+.mySkillsUl .chosen-container-multi .chosen-choices {
+	margin-bottom: 15px;
+}
+.innerForm_formGroup .form-group {
+    width: 100%;
 }
 /* media 320px */
 @media (max-width: 320px) {

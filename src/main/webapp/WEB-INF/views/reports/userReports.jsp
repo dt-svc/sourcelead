@@ -15,12 +15,15 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
+
 <script type="text/javascript">
-		window.onload = function () {
-			usersList();
-		 };
-	</script>
-	<input type="hidden" id="noRecruiters" name="noRecruiters"/>
+	window.onload = function () {
+		usersList();
+	 };
+</script>
+   
+   
+<input type="hidden" id="noRecruiters" name="noRecruiters"/>
 <section class="content-wraper">
   <section class="content-header clearfix">
    <c:if test="${!empty msg}">
@@ -62,17 +65,17 @@
  <c:if test="${requirementTabAccess == true }">
   <div style="overflow: auto;" class=" vendor_wrap"> 
    
-   <div class="pull-left reportBtns">
+   <div class="pull-left reportBtns mt10">
 <h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custdates();">
 <!-- 			 <option value="">select</option> -->
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
-			  <option value="week">1 week</option>
-			  <option value="twoweeks">2 weeks</option>
-			  <option value="month">1 month</option>
-			  <option value="twomonths">2 months</option>
+			  <option value="week">1 Week ago</option>
+			  <option value="twoweeks">2 Weeks ago</option>
+			  <option value="month">1 Month ago</option>
+			  <option value="twomonths">2 Months ago</option>
 			   <option value="custom">Custom</option> 
 			</select>
 		 </div>	
@@ -97,16 +100,16 @@
  <div class="timesheet_out mt40">
     <div class="vendor_wrap">
       <div class="timesheet_head">
-<div class="pull-left reportBtns">
+<div class="pull-left reportBtns mt10">
 <h4 class="pull-left mr">Vendors Report</h4>
 	  <div class="reportBtn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week ago</option>
+		  <option value="twoweeks">2 Weeks ago</option>
+		  <option value="month">1 Month ago</option>
+		  <option value="twomonths">2 Months ago</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
@@ -143,8 +146,8 @@
   </div>
   </div>
   </c:if>
-  </section>    
-      
+  </section>
+   
 <div class="mask_time"></div>
 
 <div class="pavPop">
@@ -170,6 +173,12 @@ $(document).ready(function(){
 <style>
 #resumesDiv select{
 width: 100% !important;
+}
+.reportBtns {
+width: 65%;
+}
+.reportBtn  {
+width: 20%;
 }
 </style>
 
@@ -281,9 +290,13 @@ function usersList(){
 	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
 	                    	 }
 	                    	 
-	                    	 result = result + '<td>';
-                    		 result = result + '<div class="small"><span>0</span></div>';
-	                         result = result + '</td>';
+	                    	 if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
+	                    		  result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
+	                    	 }else{
+	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	                    	 }
+	                    	 
+	                    	 
 		                    
 		                     result = result +"</tr>";
 	                     }

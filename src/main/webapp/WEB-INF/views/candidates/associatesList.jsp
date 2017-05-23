@@ -446,7 +446,7 @@ function candidateSideBar(candidateId){
          			 		mobilePhone =json.mobilePhone;
          			 	 }else{
          			 		 
-         			 		mobilePhone = '';
+         			 		mobilePhone = '--';
          			 	 }
          			 	 
 	                	 var result = "";
@@ -481,7 +481,7 @@ function candidateSideBar(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
@@ -504,7 +504,7 @@ function candidateSideBar(candidateId){
                          
 			             result = result+'                       </ul>';
 
-			             result = result+' <ul class="list-unstyled">';
+			             result = result+' <ul class="list-unstyled mrng0">';
 						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
 						 result = result+'</ul>';
 						 
@@ -631,7 +631,8 @@ function candidateSideBar(candidateId){
 			             result = result+'   <div class="proj_close"></div>';
 			             result = result+'   <div class="project_side_wrap_inn_tabs">';
 			             result = result+'     <ul class="project-tabs-menu">'; 
-			             
+			             if(json.isAssociate == "Y"){
+			            	 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Profile</a></li>';
 			             '</sec:authorize>';
@@ -653,15 +654,19 @@ function candidateSideBar(candidateId){
 			             '</sec:authorize>';
 			             
 			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
+			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\')">';
 			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
 			              
+			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Requirement History</a></li>';
-			              
+			              '</sec:authorize>';
+			             }
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -1291,7 +1296,7 @@ function cancel(candidateId){
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-success"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
@@ -1337,7 +1342,10 @@ function cancel(candidateId){
                   </div>                	
           </li>  
           
-          <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
+          <li>
+             <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE','ROLE_CROWDSOURCING_CANDIDATES')">
+          	<b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
+          	</sec:authorize>
           	<div id="addmorepop" class="approved_pop">
 	          <ul>
 	          <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE','ROLE_CROWDSOURCING_CANDIDATES')">
@@ -1382,8 +1390,8 @@ function cancel(candidateId){
  <div class="clients_side_wrap quickviewTabs">
     
  <ul class="nav nav-tabs">
-    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
-    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailedview</a></li>
+    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quick view</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed view</a></li>
   </ul>
 
   <div class="tab-content">
@@ -2288,12 +2296,12 @@ function minMaxExperience(){
 					       
 					       <div class="col-md-4 mt25">
 	                          <div class="small-widget bg-yellow">
-	                              <a href="<c:url value='/associate?type=associateFromCandidate'/>" title="Create from Candidates">
+	                              <a href="<c:url value='/associate?type=associateFromCandidate'/>" title="Add from Candidates">
 	                                  <div class="clearfix mb10">
 	                                      <i class="fa fa-user-circle fa-4x"></i>
 	                                      <span class="fa fa-plus"></span>
 	                                  </div>
-	                                  <strong class="clearfix">Create from Candidates</strong>
+	                                  <strong class="clearfix">Add from Candidates</strong>
 	                                </a>
 	                                
 	                          </div>
