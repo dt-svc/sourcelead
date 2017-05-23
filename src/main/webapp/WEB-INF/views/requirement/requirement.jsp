@@ -544,7 +544,7 @@ $(document).ready(function () {
            
             </div>
           </div> --%>
-          
+          <div class="clearfix"></div>
           <div class="clearfix mb">
           <label class="col-md-3">Description</label>
           <div class="col-md-12 txtEditor_p">
@@ -612,6 +612,7 @@ $(document).ready(function () {
 	         </div>
        	 </div>
           
+          <div class="clearfix"></div>
          <div class="form-group">
 				<div class="ml">
 					<c:set var="val" value="${requirement.isClientJob}" />
