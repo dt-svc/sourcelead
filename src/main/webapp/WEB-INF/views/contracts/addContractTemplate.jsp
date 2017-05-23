@@ -19,20 +19,20 @@
   <div class="pull-left">
     <h2>Add Contract Template</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo; Add Contract Template</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/orgContractTemplate'/>"> Contract Template List</a>  &raquo; Add Contract Template</div>
 </section>
 
 <!-- <section class="addcontrHead">
 	<a href="#" class="active">Template</a>
 	<a href="#">Preview</a>
 </section> -->
-	
+	 <div id="loading"></div>
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
        <form:form id="template_form" name="template_form" method="post">
         <div class="row newContrWrap">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-           
+          
             <div class="form-group">
               <label class="col-md-4">Template Title<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="templateDiv">

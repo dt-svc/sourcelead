@@ -64,11 +64,11 @@ $(document).ready(function(){
                         <h4>Unbilled</h4>
                         <a href="#unbilled" data-toggle="tab" class="onboardCount billbg_orange" title="Draft Invoices">
                             <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right">
+                            <div class="pull-right ml10">
                             <div class="count" id="unbilledAmoumt"></div>
-                                <h5>Draft Invoices<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
+                                <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount"></span></h5>
                                 </div>
                         </a>
                     </li>
@@ -76,9 +76,9 @@ $(document).ready(function(){
                         <h4>Un Paid</h4>
                         <a href="#unpaid" data-toggle="tab" title="UnPaid Overdue Invoices" class="billingbg_red">
                         <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                         <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right">
+                            <div class="pull-right ml10">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
                         <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
                             </div>
@@ -89,9 +89,9 @@ $(document).ready(function(){
                         <h4>&nbsp;</h4>
                         <a href="#unpaid" data-toggle="tab" title="UnPaid Open Invoices" class="billingbgRed">
                         <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
+                            <strong>${SourceLeadWeb_currencyCode}</strong>
                             </div>
-                            <div class="pull-right">
+                            <div class="pull-right ml10">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
                         <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
                         </div>
@@ -101,9 +101,9 @@ $(document).ready(function(){
                         <h4>Paid</h4>
                         <a href="#paid" data-toggle="tab" title="Paid Invoices" class="billbg_green">
                         <div class="pull-left">
-                            <i class="fa fa-usd paddingRight fa-3x icon_fa"></i>
-                            </div>
-                            <div class="pull-right">
+                           <strong>${SourceLeadWeb_currencyCode}</strong>
+                            </div> 
+                            <div class="pull-right ml10">
                             <div class="count" id="paidInvoiceAmount"></div>
                         <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
                             </div>
@@ -775,12 +775,12 @@ function getInvoiceList(){
 					}
 				}else{
 					if(report.invoiceStatus == "Accepted"){
-						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span> </td>';
+						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 					}else{
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span>           ';	
 						}else{
-							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
+							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 						}
 						
 					}
@@ -796,7 +796,7 @@ function getInvoiceList(){
 							if(report.invoiceStatus == "Rejected"){
 								result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span> </td>          ';	
 							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Success"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Remove"><i class="paddingLeft fa fa-times text-danger"></i></a></span> ';
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> ';
 								
 							}
 							
@@ -857,7 +857,11 @@ function invoicePagination(){
 function showPopUp(id,invoiceStatus,invoiceParentId){
 		 removePopup();
 	     result = "";
-		 result = result +'    <ul class="list-inline list-unstyled menupop"> ';
+	     if(invoiceParentId == 'undefined'){
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+	     }else{
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){

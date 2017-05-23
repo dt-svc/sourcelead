@@ -98,14 +98,14 @@
                   </div>
                   
                  <div class="form-group" id="EmailIdDiv">
-                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
+                  <label class="col-md-3">Email Id<span class="text-danger">*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
                   </div>
                   </div>
                   
                 <div class="form-group" id="FirstNameDiv">
-                  <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
+                  <label class="col-md-3">First Name<span class="text-danger">*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="FirstName" name="firstName" value="" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
                   </div>
@@ -155,7 +155,7 @@
        </div>
                 
                 <div class="form-group">
-                  <label class="col-md-3">Role <span class="text-danger">&nbsp; *</span></label>
+                  <label class="col-md-3">Role<span class="text-danger">*</span></label>
                   <div class="col-md-9" id="chosen-role">
                          <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
@@ -176,7 +176,7 @@
        
        <span id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
 			<div class="col-md-9" id="errorvendor">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
                  </select>
@@ -184,7 +184,7 @@
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
+			<label class="col-md-3 paddingRight" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 			<div class="col-md-9" id="errorvendorContact">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
@@ -352,19 +352,36 @@ function getEmployeementType(designationType){
 		  }
 	}
 	
-	if(designationType.value == 'C2C' || designationType.value == 'C2C-1099'){
-		document.getElementById("hideVendor").style.display="block";
+	if(designationType.value == 'C2C'){
+		 document.getElementById("hideVendor").style.display="block";
 		 $('#vendors').attr("data-validation","required"); 
 		 $('#vendorcontact').attr("data-validation","required"); 
-		  getVendorsByOrgLocationId();
-		   $('#vendorcontact').empty();
-		  $('#vendorcontact').trigger("chosen:updated"); 
-		  
+		 
+		 document.getElementById("man1").style.display="block";
+		 document.getElementById("man2").style.display="block";
+		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
 		 $('#vendors').removeAttr("data-validation","required"); 
 		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
+	
+	 
+	if(designationType.value == 'C2C-1099'){
+		 document.getElementById("hideVendor").style.display="block";
+		 document.getElementById("man1").style.display="none";
+		 document.getElementById("man2").style.display="none";
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorcontact').attr("data-validation-optional", "true");  
+		 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		  getVendorsByOrgLocation();
+	}else{
+		// document.getElementById("hideVendor").style.display="none";
+		 $('#vendors').removeAttr("data-validation-optional", "true"); 
+		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
+	} 
+	
 	$('#designationType + p').remove();
 }
 </script>
