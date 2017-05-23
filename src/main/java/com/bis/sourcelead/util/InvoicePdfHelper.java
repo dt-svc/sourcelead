@@ -129,6 +129,7 @@ public class InvoicePdfHelper {
 			table.setSpacingBefore(10);
 			table.setSpacingAfter(10);
 			table.setWidths(new int[] { 3, 5, 5, 3, 3, 3 });
+			table.addCell(getCell("Associate Id", Element.ALIGN_CENTER, font12b));
 			table.addCell(getCell("Associate Name", Element.ALIGN_CENTER, font12b));
 			table.addCell(getCell("Duration", Element.ALIGN_CENTER, font12b));
 			table.addCell(getCell("Rate", Element.ALIGN_CENTER, font12b));
@@ -182,8 +183,12 @@ public class InvoicePdfHelper {
 			}
 			
 			 PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
+			 	cell.setBorder(PdfPCell.NO_BORDER);
+				cell.setBorder(PdfPCell.NO_BORDER);
+				cell.setBorder(PdfPCell.NO_BORDER);
 				cell.setBorder(PdfPCell.NO_BORDER);
 	            table.addCell(cell);
+				table.addCell(cell);
 				table.addCell(cell);
 				table.addCell(cell);
 				table.addCell(getCell("Sub Total", Element.ALIGN_RIGHT, font10b));
@@ -331,7 +336,11 @@ public class InvoicePdfHelper {
 				
 				 PdfPCell cell = getCell("", Element.ALIGN_LEFT, font12b);
 					cell.setBorder(PdfPCell.NO_BORDER);
+					cell.setBorder(PdfPCell.NO_BORDER);
+					cell.setBorder(PdfPCell.NO_BORDER);
+					cell.setBorder(PdfPCell.NO_BORDER);
 		            table.addCell(cell);
+					table.addCell(cell);
 					table.addCell(cell);
 					table.addCell(cell);
 					table.addCell(getCell("Sub Total", Element.ALIGN_RIGHT, font10b));
@@ -381,6 +390,11 @@ public class InvoicePdfHelper {
 			// Scale to new height and new width of image
 			image.scaleAbsolute(100, 50);
 			document.add(image);
+		}else{
+		Paragraph p;
+		p = new Paragraph("Org Name: " + org.getOrgName(), font12b);
+		p.setAlignment(Element.ALIGN_TOP);
+		document.add(p);
 		}
 		return document;
 	}

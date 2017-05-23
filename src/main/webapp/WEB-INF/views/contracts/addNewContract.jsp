@@ -80,10 +80,10 @@
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template" onchange="previewTemplateEye()">
 						    <c:forEach var="element" items="${contractsTemplateList}" >
 						    	<c:if test = "${element.id == contract.contractsTemplate.id}">
-							         <option selected value="${element.id}">${element.templateName}</option>
+							         <option selected value="${element.id}" id="${element.templateUUID}">${element.templateName}</option>
 							    </c:if>
 							    <c:if test = "${element.id != contract.contractsTemplate.id}">
-							         <option value="${element.id}">${element.templateName}</option>
+							         <option value="${element.id}" id="${element.templateUUID}">${element.templateName}</option>
 							    </c:if>
 							</c:forEach>
 						</select>                
@@ -153,11 +153,9 @@
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
-								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								    <c:if test = "${element.id != contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
-								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -653,10 +651,11 @@ function previewTemplateEye(){
 }
 	
 function previewTemplatePDF(){
-	var id = $("#template").val();
+	var uuid = $("#template").children(":selected").attr("id");
+	var templateName = $("#template").children(":selected").text();
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(id != null && id != ""){
-		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+id+'','_newtab');
+	if(uuid != null && uuid != ""){
+		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
 	}
 }
 </script>
@@ -798,11 +797,12 @@ function getContractTemplates(){
 	        var opt = json[i];
 	            // need to use in edit
       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-      			output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+      			output = output + "<option value='"+opt.id+"' id='"+opt.templateUUID+"'>"+opt.templateName+"</option>";
 			}
       	    $("#template").empty();
 	        $("#template").append(output);
-	        $('#template').trigger("chosen:updated"); 
+	        $('#template').trigger("chosen:updated");
+	        $('#template').find('span').hide();
      },
      complete: function (data) {
     	 flush(); 
@@ -1006,6 +1006,10 @@ function contractTypeLabels(){
 		
 	}
 	getContractTemplates();
+	
+    $("#flatReward").val("");
+    $("#billingRateType").val('${currencyCode}').trigger('change');
+    $("#billingRatePer").val("").trigger('change');
 }
 </script>
 
@@ -1145,6 +1149,10 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
@@ -1156,7 +1164,6 @@ function hideCommonSOWFields(){
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
-	                 	 result = result +  '<input type="hidden" readonly id="vendorLocationCode" value="'+opt.vendorLocationCode+'/>';
 	                  }
 	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
@@ -1165,7 +1172,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
@@ -1188,6 +1195,10 @@ function hideCommonSOWFields(){
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
@@ -1199,6 +1210,12 @@ function hideCommonSOWFields(){
 	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
 	            	  $("#flatReward").val("");
 	            	  $("#flatReward").val(json.amount);
+	            	  
+	            	  $("#billingRateType").val("");
+	            	  $("#billingRateType").val(json.paymentType).trigger('change');
+	            	  
+	            	  $("#billingRatePer").val("");
+	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
 	              }
 	       },
 	    });
@@ -1206,17 +1223,33 @@ function hideCommonSOWFields(){
 	}
 	
 	/* function getVendor(){
-		var venLocCode = $("#vendorLocationCode").val();
-		<c:forEach var="vendor" items="${orgRelationsList}">
-		          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
-		        	  alert("vendor a code "+'${vendor.responderLocationId.id}');
-		          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
-					  alert("vendor bbbbb code "+'${vendor.orgLocation.id}');
-		          }
-			   
-          </c:forEach>
-          
-	
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		var sowType = $("#contractType").val();
+		if(sowType == "Vendor SOW"){
+			$.ajax({
+		        type : "GET",
+		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+		         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	 var json = JSON.parse(data);
+		             <c:forEach var="vendor" items="${orgRelationsList}">
+		    	          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
+		    	        	  if(json.vendorLocationCode == '${vendor.responderLocationId.locationCode}'){
+		    	        		  $("#orgRelationId").val('${vendor.id}'); 
+		    	        		  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
+		    				  if(json.vendorLocationCode == '${vendor.locationId.locationCode}'){
+		    					  $("#orgRelationId").val('${vendor.id}');
+		    					  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }
+		              </c:forEach>
+	              }
+		       },
+		    });
+		}
 	} */
 </script>
 

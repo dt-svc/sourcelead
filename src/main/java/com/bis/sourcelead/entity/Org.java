@@ -138,6 +138,9 @@ public class Org implements Serializable{
 	@Transient
 	private String location;
 	
+	@Transient
+	private Long registeredUserId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -362,6 +365,14 @@ public class Org implements Serializable{
 
 	public void setPaymentTerm(String paymentTerm) {
 		PaymentTerm = paymentTerm;
+	}
+
+	public Long getRegisteredUserId() {
+		return registeredUserId;
+	}
+
+	public void setRegisteredUserId(Long registeredUserId) {
+		this.registeredUserId = registeredUserId;
 	}
 
 	

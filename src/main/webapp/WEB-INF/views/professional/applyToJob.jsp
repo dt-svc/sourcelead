@@ -92,7 +92,7 @@ function getRequirementSubmissionDetails(submissionId,candidateId,requirementId)
 	    	   $.each(details, function( k, v ) {
 	    		   var value = '';
 	    		   if(v['value'] == null || v['value'] == '' || v['value'] == 'undefined'){
-	    			   var value = 'NO DATA';
+	    			   var value = '-----';
 	    		   }else{
 	    			   var value = v['value'];
 	    		   }
@@ -426,7 +426,7 @@ function getOfferDetails(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Joining Date</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7">No Data</p>';
+		                    	 result = result + '<p class="col-md-7">-----</p>';
 		                    	 result = result + '</div>';
 	                    	 }
 	                    	 
@@ -442,7 +442,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Position Type</strong>';
 	                        	 result = result + '</label>';
-	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">-----</p>';
 	                        	 result = result + '</div>';
 	                    	 }
 	                    	 
@@ -467,7 +467,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Rate</strong>';
 	                        	 result = result + '</label>';
-	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">------</p>';
 	                        	 result = result + '</div>';
 	                    	 }
 	                    	
@@ -698,7 +698,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 			result = result + '<div class="input-group" id="uploadFileGroup">';
 			result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
+			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="professionaluploadBtn"  class="upload">';
 			result = result + '</span> </label>';
 			result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 			result = result + '</div>';
@@ -1166,6 +1166,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 						 validateCandidateEmail();
 						 getAllSubmissionCandidateCountries();
 						 setRateTypesByLocation();
+						 dobDatePicker();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -1682,10 +1683,6 @@ function getCandidateStates(stateName){
 	
 	var countryName = $("#submissionCountry").val();
 	
-	if(stateName == null || stateName == "" || stateName =="undefined"){
-		stateName = document.getElementById("submissionState").value;
-	}
-	
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -2122,17 +2119,7 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
   }
 </script>
 
-<script>
-  $( function() {
-	  
-	  $('#DOB').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  });
-	  
-  } );
-</script>
+
 
 <script type="text/javascript">
 function setRateTypesByLocation(){
@@ -2161,7 +2148,7 @@ function setRateTypesByLocation(){
 
 
 <script>
- $(document.body).on('change', '#uploadBtn' ,function(){
+ $(document.body).on('change', '#professionaluploadBtn' ,function(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
  	 if(validate_fileupload(this.value)){
@@ -2222,6 +2209,7 @@ function setRateTypesByLocation(){
 						 validateCandidateEmail();
 						 getAllSubmissionCandidateCountries();
 						 setRateTypesByLocation();
+						 dobDatePicker();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -2229,6 +2217,29 @@ function setRateTypesByLocation(){
  });
 
 </script> 
+
+<script type="text/javascript">
+function init(){
+	getAllSubmissionCandidateCountries();
+	      
+	       $("#submissionCountry").on('change', function (e) {
+	    	   getCandidateStates();
+	      	   getCandidateCities();
+	       });
+	       $("#submissionState").on('change', function (e) {
+	    	   getCandidateCities();
+	       });
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		  
+    setRateTypesByLocation();
+}
+</script>
+
+
 
 <script>
 function parseProfessionalResume(){
