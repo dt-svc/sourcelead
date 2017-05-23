@@ -300,6 +300,13 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
+			if(null != json.description && "" != json.description && 'undefined' != json.description){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.description+'</div>';
+				result = result +	'	</div>';
+			}
+			
 			result = result +	'<div class="clearfix"/>';
 			
 		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA"){
@@ -563,20 +570,20 @@ function preparedContractListDraft(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span>'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
-		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -635,20 +642,20 @@ function preparedContractListDraft(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span>'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
        		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
-	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -763,20 +770,20 @@ function preparedContractListWFA(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span>'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
-		       	 result = result + '<div class="tbldata-dotdot-vsm">'+report.ownerName+'</div>';
+		       	 result = result + '<div class="tbldata-dotdot-vsm"><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -797,7 +804,7 @@ function preparedContractListWFA(data){
 		         
 		         result = result + '<td>';
 		         if(report.approverUserName != null && report.approverUserName != "" && report.approverUserName != 'undefined'){
-		        	 result = result + '<div class="tbldata-dotdot_80">'+report.approverUserName+'</div>';
+		        	 result = result + '<div class="tbldata-dotdot_80"><span title="'+report.approverUserName+'">'+report.approverUserName+'</span></div>';
 		         }else{
 		        	 result = result + '<div><span>---</span></div>';
 		         }
@@ -859,20 +866,20 @@ function preparedContractListWFA(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span>'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
        		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
-	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -893,7 +900,7 @@ function preparedContractListWFA(data){
 
 	         opt = opt + '<td>';
 	         if(output.approverUserName != null && output.approverUserName != "" && output.approverUserName != 'undefined'){
-	        	 opt = opt + '<div><span>'+output.approverUserName+'</span></div>';
+	        	 opt = opt + '<div><span title="'+output.approverUserName+'">'+output.approverUserName+'</span></div>';
 	         }else{
 	        	 opt = opt + '<div><span>---</span></div>';
 	         }
@@ -1012,20 +1019,20 @@ function preparedContractListWTS(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span>'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
-		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1081,20 +1088,20 @@ function preparedContractListWTS(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span>'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
        		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
-	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1203,20 +1210,20 @@ function preparedContractListWTV(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span>'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
-		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         //need to change for signed on
@@ -1276,20 +1283,20 @@ function preparedContractListWTV(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span>'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
        		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
-	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         //need to change for signed on
@@ -1402,20 +1409,20 @@ function preparedContractListFinalize(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span>'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
-		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1465,20 +1472,20 @@ function preparedContractListFinalize(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span>'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
        		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
-	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1582,20 +1589,20 @@ function preparedContractListExpired(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span>'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
-		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1651,20 +1658,20 @@ function preparedContractListExpired(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span>'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
        		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
-	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1777,20 +1784,20 @@ function preparedContractListRejected(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span>'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span>'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
 		         result = result + '</td>';
 		    	 result = result + '<td>';
-		       	 result = result + '<div><span>'+report.ownerName+'</span></div>';
+		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.vendorContactName+'</span></div>';
+		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1856,20 +1863,20 @@ function preparedContractListRejected(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span>'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span>'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
        		 opt = opt + '</td>';
 	    	 opt = opt + '<td>';
-	       	 opt = opt + '<div><span>'+output.ownerName+'</span></div>';
+	       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
+	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
