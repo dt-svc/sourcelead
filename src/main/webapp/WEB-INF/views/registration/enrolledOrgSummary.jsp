@@ -167,8 +167,8 @@ z-index: 9999999999 !important;
 										<ul class="list-unstyled pull-left">
 				               				 <li>
 										    <c:if test="${module.id == '1'}">
-									         <label class="mr pull-left">
-							           		     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${module.moduleName}</p>
+									         <label class="mr pull-left NoPad">
+							           		     <p>${module.moduleName}</p>
 							           		  </label>
 							           		   <ul class="list-unstyled pull-left tree-checkbox">
 							                    	 <c:forEach var="submodules" items="${registeredSubModulesList}">
@@ -205,7 +205,7 @@ z-index: 9999999999 !important;
 					
 					</div>
 					<div class="clearfix">
-					<div class="pull-left">
+					<div class="pull-right">
 					<input type="button" value="Upgrade" onclick="updateModules();" id="save_button" class="btn btn-primary mr">
 					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/enrolledOrgsList'">
 					</div>
@@ -240,7 +240,7 @@ z-index: 9999999999 !important;
 							
 							 
 				   			 <div class="clearfix"></div>
-							 <div class="user_summary_edit_cta">
+							 <div class="user_summary_edit_cta pull-right">
 							 <input class="us-btn" value="Save" id="update_primaryuser" onclick="validatePrimaryUserEmail();savePrimaryUserDetails();" type="submit" > <input class="us-btn us-btn_a" value="Cancel" onClick="editPrimaryUser();" type="button">
 							 </div>
 								
@@ -262,7 +262,7 @@ z-index: 9999999999 !important;
                             
                             <div class="clearfix mb10">
 	                              <div class="col-md-12" id="userEmailDiv">
-	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="userEmail" id="userEmail" class="form-control input-sm"  placeholder="Email">
+	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="userEmail" id="userEmail" class="form-control input-sm"  placeholder="Email*">
 	                              	<input type="hidden" name="registeredOrgLocationId" value="${registeredOrgLocationId}">
 	                              	<input type="hidden" name="registredOrgId" value="${orgId}">
 	                              </div>
@@ -270,7 +270,7 @@ z-index: 9999999999 !important;
                               
                              <div class="clearfix mb10">
 	                              <div class="col-md-12" id="firstNameDiv">
-	                                <input type="text" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" field-name="First Name" name="firstName" id="firstName" class="form-control input-sm"  placeholder="First Name">
+	                                <input type="text" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" field-name="First Name" name="firstName" id="firstName" class="form-control input-sm"  placeholder="First Name*">
 	                              </div>
                               </div>
                               
@@ -659,7 +659,7 @@ function getUserList(){
 	                    	 
 	                    	 result = result +'<tr>';
 	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+name+'>'+name+'</div></td>';
-	                    	 result = result +'<td><div class="tbltbldata-dotdot" title='+opt.email+'>'+opt.email+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+opt.email+'>'+opt.email+'</div></td>';
 	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+mobilePhone+'>'+mobilePhone+'</div></td>';
 	                    	 result = result +'<td>'+opt.role+'</td>';
 	                    	 
@@ -818,7 +818,7 @@ function pagination(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-- Select Role --</option>"; 
+		        	output = output + "<option value=''>-- Select Role* --</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
