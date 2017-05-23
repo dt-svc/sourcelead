@@ -1883,7 +1883,7 @@ function preparedContractListRejected(data){
 	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
 	         } 
 	         opt = opt + '</td>';
-	         
+	         opt = opt + '<td>';
 	         // need to be changed for Rejected By
 	         /* opt = opt + '<td>';
 	         opt = opt + '<div><span>'+output.vendorContactName+'</span></div>';
@@ -1906,7 +1906,7 @@ function preparedContractListRejected(data){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
 	     	  }
 	     		opt = opt + '</div>';
-	     	
+	     		 opt = opt + '</td>';
 	     	opt = opt + '</tr>';
 	    }
 		

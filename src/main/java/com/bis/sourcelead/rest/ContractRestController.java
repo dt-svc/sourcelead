@@ -504,6 +504,21 @@ public class ContractRestController {
 		return commonUtil.toJSON(requirementSubmissionsList);
 	}
 	
+	
+	@RequestMapping(value = "/getVendorForSOWByRequirementSubmissionId", method = RequestMethod.GET)
+	public @ResponseBody String getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(reqSubId));
+		if(requirementSubmission != null){
+			if(null != requirementSubmission.getVendorLocationId()){
+				requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+			}
+		}
+		
+		return commonUtil.toJSON(requirementSubmission);
+	}
+	
+	
 	@RequestMapping(value = "/getSubmissionOfferForSOWByRequirementSubmissionId", method = RequestMethod.GET)
 	public @ResponseBody String getSubmissionOfferForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		RequirementOffers requirementOffers = null;

@@ -153,11 +153,9 @@
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
-								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								    <c:if test = "${element.id != contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
-								         <input type="hidden" readonly id="vendorLocationCode" value="${element.vendorLocationCode}"/>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -1156,7 +1154,6 @@ function hideCommonSOWFields(){
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
-	                 	 result = result +  '<input type="hidden" readonly id="vendorLocationCode" value="'+opt.vendorLocationCode+'/>';
 	                  }
 	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
@@ -1165,7 +1162,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
@@ -1206,17 +1203,33 @@ function hideCommonSOWFields(){
 	}
 	
 	/* function getVendor(){
-		var venLocCode = $("#vendorLocationCode").val();
-		<c:forEach var="vendor" items="${orgRelationsList}">
-		          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
-		        	  alert("vendor a code "+'${vendor.responderLocationId.id}');
-		          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
-					  alert("vendor bbbbb code "+'${vendor.orgLocation.id}');
-		          }
-			   
-          </c:forEach>
-          
-	
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		var sowType = $("#contractType").val();
+		if(sowType == "Vendor SOW"){
+			$.ajax({
+		        type : "GET",
+		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+		         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	 var json = JSON.parse(data);
+		             <c:forEach var="vendor" items="${orgRelationsList}">
+		    	          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
+		    	        	  if(json.vendorLocationCode == '${vendor.responderLocationId.locationCode}'){
+		    	        		  $("#orgRelationId").val('${vendor.id}'); 
+		    	        		  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }else if('${vendor.initiatorType}' == "Vendor" && '${vendor.responderLocationId.id}' == '${orgLocation.id}'){
+		    				  if(json.vendorLocationCode == '${vendor.locationId.locationCode}'){
+		    					  $("#orgRelationId").val('${vendor.id}');
+		    					  $('#orgRelationId').trigger("chosen:updated");
+		    	        	  }
+		    	          }
+		              </c:forEach>
+	              }
+		       },
+		    });
+		}
 	} */
 </script>
 
