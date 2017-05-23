@@ -454,6 +454,7 @@ public class CrowdSourcingRequirementsRestController {
 	
 	public void calculateDaysAndSkills(List<RequirementIndex> requirementList) throws ParseException {
 		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		 formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		for (RequirementIndex requirement : requirementList) {
 			long diff = commonUtil.currentDate().getTime() - formatter.parse(requirement.getCreatedDate()).getTime();
 			
