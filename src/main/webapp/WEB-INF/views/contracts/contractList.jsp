@@ -42,7 +42,7 @@ $(document).ready(function(){
 <li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
 <li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify (${contractsCount.totalWTVCount})</a></li>
 <li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized (${contractsCount.totalFinalizedCount})</a></li>
-<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);">Expired (${contractsCount.totalExpiredCount})</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList();">Expired (${contractsCount.totalExpiredCount})</a></li>
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
@@ -1617,6 +1617,7 @@ function preparedContractListExpired(data){
 		         }
 		         result = result + '</td>';
 		         
+		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 			     	if(report.templateSubmissionStatus == "EXPIRED"){
 			     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
