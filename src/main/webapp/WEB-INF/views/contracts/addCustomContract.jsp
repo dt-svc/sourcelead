@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>Custom Contract</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Custom Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo;&raquo; Custom Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -40,17 +40,10 @@
               <div class="col-md-8">
               	<c:choose>
 				    <c:when test="${!empty contract.contractType}">
-				        <select class="chosen-select form-control" disabled="true" id="contractType" name="contractType" data-validation="required" field-name="Contract Type">
-		                    <option ${contract.contractType  == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
-		                    <option ${contract.contractType  == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
-		                    <option ${contract.contractType  == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
-		                    <option ${contract.contractType  == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option ${contract.contractType  == 'NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType  == 'NSA' ? 'selected' : ''}>NSA</option>
-		                 </select>
+				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels(); getContractTemplates(); flush();" data-validation="required" field-name="Contract Type">
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
@@ -66,13 +59,14 @@
             <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-							<div class="input-group positionRelative" id="uploadFileGroup">
+							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only
+							">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
-	                         <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p>
+	                         <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
               </div>			
 			</div>
           	
@@ -115,7 +109,7 @@
             
             <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
 		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant">
@@ -167,7 +161,7 @@
               </div>
             </div>
           
-         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorVendor">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
@@ -179,7 +173,7 @@
               </div>
           </div>                      
                       
-            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorvendorContact">
               		<c:choose>
@@ -187,11 +181,11 @@
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
 							    <option value=''>Select Vendor Contact</option>
 							    <c:forEach var="element" items="${orgSpocList}" >
-							    	<c:if test = "${element.tempOwnerId == contract.orgRelations.id}">
-								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+							    	<c:if test = "${element.tempOwnerId == contract.contactUser.id}">
+								         <option selected value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
 								    </c:if>
-								    <c:if test = "${element.tempOwnerId != contract.orgRelations.id}">
-								         <option value="${element.tempOwnerId}">${element.spocName}</option>
+								    <c:if test = "${element.tempOwnerId != contract.contactUser.id}">
+								         <option value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -205,7 +199,7 @@
             </div>
             
             
-             <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
+            <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="errorClient">
                   <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
@@ -224,11 +218,11 @@
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
 							    <c:forEach var="element" items="${orgSpocList}" >
-							    	<c:if test = "${element.spocUserId == contract.orgRelations.id}">
-								         <option value="${element.spocUserId}">${element.ownerName}</option>
+							    	<c:if test = "${element.spocUserId == contract.contactUser.id}">
+								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
 								    </c:if>
-								    <c:if test = "${element.spocUserId != contract.orgRelations.id}">
-								         <option value="${element.spocUserId}">${element.ownerName}</option>
+								    <c:if test = "${element.spocUserId != contract.contactUser.id}">
+								         <option value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -272,7 +266,7 @@
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction">
+                <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
             </div>         
             
@@ -285,47 +279,36 @@
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Hours Per Week<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Hours Per Week</label>
 	              <div class="col-md-8">
-				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${contract.hoursPerWeek}" placeholder="Enter Hours" field-name="Hours Per Week">
+				  		<input type="text" class="form-control" id="hoursPerWeek" name="hoursPerWeek" value="${!empty contract && !empty contract.hoursPerWeek  ? contract.hoursPerWeek : contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? '' : '40' }" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Hours" field-name="Hours Per Week">
 	              </div>
             </div>
             
             <div class="form-group" id="overTimeHoursDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Overtime Hours<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Overtime Hours</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" placeholder="Enter Hours" field-name="Overtime Hours">
+					  	<input type="text" class="form-control" id="overTimeHours" name="overTimeHours" value="${contract.overTimeHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Hours" field-name="Overtime Hours">
               	</div> 
             </div>
             
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Total Hours Estimated<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Total Hours Estimated</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
            <div class="form-group" id="overtimeRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
-              <label class="col-md-4">Overtime Rate<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Overtime Rate</label>
               	<div class="col-md-8">
-              		<div class="row">
-					  <div class="col-lg-8">
-					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" placeholder="Overtime Rate" field-name="Overtime Rate">
-					  </div>
-					  <div class="col-lg-4">
-						<select class="form-control selectpicker" id="overtimeRateType" name="overtimeRateType" field-name="Overtime Rate Type">
-						  <option value="">Select Type</option>
-						  <option ${contract.overtimeRateType == 'FLAT' ? 'selected' : ''} value="FLAT">Flat</option>
-						  <option ${contract.overtimeRateType == 'PERCENTAGE' ? 'selected' : ''} value="PERCENTAGE">Percentage</option>
-						</select>
-					  </div>
-					</div>
+					  	<input type="text" class="form-control" id="overtimeRate" name="overtimeRate" value="${contract.overtimeRate}" data-validation-optional="true" data-validation="validate_int validate_length length1-8" placeholder="Overtime Rate" field-name="Overtime Rate">
               	</div>
             </div>
            
             <div class="form-group">
                 <label class="col-md-4">Billing Amount<span class="text-danger">&nbsp;*</span></label>
-                	<div class="col-lg-8">
+					<div class="col-lg-8">
 			             <div class="input-group er ratetype">
 			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
 				                
@@ -347,52 +330,21 @@
 			                    <option value="">Rate Per</option>
 			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-			                    <option ${contract.billingRatePer  == 'Biweekly' ? 'selected' : ''}>Bi-weekly</option>
-			                    <option ${contract.billingRatePer  == 'SemiMonthly' ? 'selected' : ''}>Semi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+			                    <option ${contract.billingRatePer  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
 			                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-			                    <option ${contract.billingRatePer  == 'BiMonthly' ? 'selected' : ''}>Bi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
 			                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
 			                  </select>
 			                </div>
 			            </div>
 		            </div>
-                   <%-- <div class="clearfix col-md-8" id="errBilling">
-                      <div class="col-md-5 paddingLeft">
-                        <div class="btn-group btn_Block">
-                          <button type="button" class="btn btn-sm btn-primary" id="percentageBtn" value="percentage" onClick="getRewardType('Percentage')">%</button>
-                          <button type="button" class="btn btn-sm btn-default" id="flatBtn" value="flat" onClick="getRewardType('Flat')">Flat</button>
-                          <input type="hidden" name="rewardType" id="rewardType" value=""/>
-                        </div>
-                      </div>
-                      <div class="col-md-7 paddingLeft" id="percentageReward">
-                        <div class="form-group positionRelative iconHolder percentage fullWid" >
-                          <input type="text" class="form-control input-sm" field-name="Percentage" value="${contract.billingAmount}" id="percentageRewardValue" name="percentageReward" onblur="getPercentageValue()" placeholder="Percentage">
-                          <i class="fa fa-percent"></i> 
-                        </div>
-                        </div>
-                        <div class="col-md-7 paddingLeft" id="flatReward"  style="display: none">
-                        <div class="row flat">
-                          <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
-                            <input type="text" class="form-control input-sm" field-name="Flat" id="flatRewardValue"  name="flatReward" placeholder="Flat">
-                            <i class="fa fa-money" id="flatRewardIcon"></i> </div>
-                          <div class="form-group select-field col-md-4 paddingLeft">
-                            <select class="form-control input-sm" id="flatRateType" name="flatRateType"  style="display: none">
-                              <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
-                              <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
-                              <option  ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}><i class="fa fa-aud" title="AUD"></i>AUD</option>
-                              <option  ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}><i class="fa fa-eur" title="Eur"></i>EUR</option>
-                              <option  ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}><i class="fa fa-sgd" title="SGD"></i>SGD</option>
-                              <option  ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}><i class="fa fa-gdp" title="GDP"></i>GBP</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    </div> --%>
+					
             </div>
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errInvoice">
-                  <select class="chosen-select form-control" id="invoiceFrequency" name="invoiceFrequency" data-validation="required" field-name="Invoice Frequency" onchange="removeBillCycleValidation();">
+              <div class="col-md-8 dropdown-select" id="errInvoice">
+                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Invoice Frequency" onchange="removeBillCycleValidation();">
                     <option value="">Select Cycle</option>
                     <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
                     <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -404,8 +356,8 @@
             
               <div class="form-group">
               <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errPayment">
-                  <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" data-validation="required" field-name="Payment Frequency" onchange="removePaymentvalidation();">
+              <div class="col-md-8 dropdown-select" id="errPayment">
+                  <select class="form-control" id="paymentFrequency" name="paymentFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Payment Frequency" onchange="removePaymentvalidation();">
                     <option value="">Select Frequency</option>
                     <option ${contract.paymentTerm == '10 days' ? 'selected' : ''} value="10 days">10 days</option>
                     <option ${contract.paymentTerm == '15 days' ? 'selected' : ''} value="15 days">15 days</option>
@@ -438,7 +390,7 @@
                           <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >
                             <input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">
                             <i class="fa fa-money" id="taxFlatRewardIcon"></i> </div>
-                          <div class="form-group select-field col-md-4 paddingLeft"> 
+                          <div class="form-group dropdown-select col-md-4 paddingLeft"> 
                             <select class="form-control input-sm" id="taxFlatRateType" name="taxFlatRateType"  style="display: none">
                               <option  ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}><i class="fa fa-rupee" title="INR"></i>INR</option>
                               <option  ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}><i class="fa fa-dollar" title="USD"></i>USD</option>
@@ -464,7 +416,7 @@
             <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
 
             <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
-            <input type="button" value="Cancel" class="btn btn-danger ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>
@@ -578,7 +530,7 @@ function getVendorContacts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,       
+       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",      
        success :function(data) {
     	var json = JSON.parse(data);
        	var output = "";
@@ -605,7 +557,7 @@ function getClientContacts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
+	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
 	success :function(data) {
 	var json = JSON.parse(data);
 	var output = "";
@@ -770,6 +722,9 @@ function getContractTemplates(){
 	        $("#template").append(output);
 	        $('#template').trigger("chosen:updated"); 
      },
+     complete: function (data) {
+    	 flush(); 
+    }
  }); 
 	
 }
@@ -896,16 +851,16 @@ function contractTypeLabels(){
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 
-		$('#percentageRewardValue').removeAttr('data-validation');
-		$('#flatRewardValue').removeAttr('data-validation');
+		//$('#percentageRewardValue').removeAttr('data-validation');
+		//$('#flatRewardValue').removeAttr('data-validation');
 		$('#invoiceFrequency').removeAttr('data-validation');
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
 		$('#taxFlatRewardValue').removeAttr('data-validation');
 		
 		
-		$('#percentageRewardValue').attr('data-validation-optional',"true");
-		$('#flatRewardValue').attr('data-validation-optional',"true");
+		//$('#percentageRewardValue').attr('data-validation-optional',"true");
+		//$('#flatRewardValue').attr('data-validation-optional',"true");
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').attr('data-validation-optional',"true");
 		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
@@ -914,6 +869,11 @@ function contractTypeLabels(){
 		$('#flatReward').removeAttr('data-validation');
 		$('#flatReward').attr('data-validation-optional',"true");
 		
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
 		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
@@ -937,54 +897,36 @@ function contractTypeLabels(){
 		$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("offeredSubmissionDiv").style.display="none";
 		
-		$('#hoursPerWeek').removeAttr('data-validation');
-		$('#hoursPerWeek').attr('data-validation-optional',"true");
 		$('#hoursPerWeek').val("");
 		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("hoursPerWeekDiv").style.display="none";
 		
-		$('#overTimeHours').removeAttr('data-validation');
-		$('#overTimeHours').attr('data-validation-optional',"true");
 		$('#overTimeHours').val("");
 		$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("overTimeHoursDiv").style.display="none";
 		
-		$('#totalHoursEstimated').removeAttr('data-validation');
-		$('#totalHoursEstimated').attr('data-validation-optional',"true");
 		$('#totalHoursEstimated').val("");
 		$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
 		document.getElementById("totalHoursEstimatedDiv").style.display="none";
 		
-		$('#overtimeRate').removeAttr('data-validation');
-		$('#overtimeRate').attr('data-validation-optional',"true");
 		$('#overtimeRate').val("");
-		$('#overtimeRateType').removeAttr('data-validation');
-		$('#overtimeRateType').attr('data-validation-optional',"true");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
-		
 	}
+	getContractTemplates();
 }
 </script>
 
 <script>
 function showCommonSOWFields(){
 	document.getElementById("hoursPerWeekDiv").style.display="block";
-    $('#hoursPerWeek').removeAttr('data-validation-optional');
-	$('#hoursPerWeek').attr("data-validation","required");
+	$('#hoursPerWeek').val("40");
+	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 	
 	document.getElementById("overTimeHoursDiv").style.display="block";
-    $('#overTimeHours').removeAttr('data-validation-optional');
-	$('#overTimeHours').attr("data-validation","required");
 	
 	document.getElementById("totalHoursEstimatedDiv").style.display="block";
-    $('#totalHoursEstimated').removeAttr('data-validation-optional');
-	$('#totalHoursEstimated').attr("data-validation","required");
 	
 	document.getElementById("overtimeRateDiv").style.display="block";
-    $('#overtimeRate').removeAttr('data-validation-optional');
-	$('#overtimeRate').attr("data-validation","required");
-	$('#overtimeRateType').removeAttr('data-validation-optional');
-	$('#overtimeRateType').attr("data-validation","required");
 }
 </script>
 
@@ -1007,31 +949,19 @@ function hideCommonSOWFields(){
 	$('#offerRate').val("");
 	document.getElementById("offerRateDiv").style.display="none";
 	
-	$('#hoursPerWeek').removeAttr('data-validation');
-	$('#hoursPerWeek').attr('data-validation-optional',"true");
 	$('#hoursPerWeek').val("");
 	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("hoursPerWeekDiv").style.display="none";
 	
-	$('#overTimeHours').removeAttr('data-validation');
-	$('#overTimeHours').attr('data-validation-optional',"true");
 	$('#overTimeHours').val("");
 	$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("overTimeHoursDiv").style.display="none";
 	
-	$('#totalHoursEstimated').removeAttr('data-validation');
-	$('#totalHoursEstimated').attr('data-validation-optional',"true");
 	$('#totalHoursEstimated').val("");
 	$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("totalHoursEstimatedDiv").style.display="none";
 	
-	$('#overtimeRate').removeAttr('data-validation');
-	$('#overtimeRate').attr('data-validation-optional',"true");
 	$('#overtimeRate').val("");
-	$("#overtimeRateType option:selected").removeAttr("selected");
-	$('#overtimeRateType').trigger("chosen:updated");
-	$('#overtimeRateType').removeAttr('data-validation');
-	$('#overtimeRateType').attr('data-validation-optional',"true");
 	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("overtimeRateDiv").style.display="none";
 }
@@ -1064,6 +994,7 @@ function hideCommonSOWFields(){
 					}); 
 			return true;
 		} else {
+			$('#submissionOffersListDiv').find('p.text-primary').remove();
 			return false;
 		}
 	}
@@ -1120,10 +1051,21 @@ function hideCommonSOWFields(){
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
 	                  }
+	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
+	              }else{
+	            	  var result = "";
+	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  $("#submissionOffersList").empty();
+	            	  $("#submissionOffersList").append(result);
+	                  $("#submissionOffersList").chosen();
+	              	  $("#submissionOffersList").trigger('chosen:update');
+	              	  $('#submissionOffersListDiv').find('p.jquery_form_error_message').remove();
+	              	  $('#submissionOffersListDiv').find('p.text-primary').remove();
+	              	  $("#submissionOffersListDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>No Applicants found </p>");
 	              }
 	              $('#submissionOffersList')
 	                .find('option:first-child').prop('selected', true)
@@ -1155,83 +1097,6 @@ function hideCommonSOWFields(){
 	    });
 
 	}
-</script>
-
-
-<script type="text/javascript">
-function getRewardType(rewardType){
-	
-	 $("#rewardType").val(rewardType);
-	 
-	 $("#percentageRewardValue").val('');
-	 $("#flatRewardValue").val('');
-	 
-	 $('#percentageReward').find('p.jquery_form_error_message').remove();
-	 $('#flatReward').find('p.jquery_form_error_message').remove();
-	 
-	if(rewardType == 'Percentage'){
-		document.getElementById("percentageReward").style.display="";
-		document.getElementById("flatReward").style.display="none";
-		document.getElementById("flatRateType").style.display="none";
-		
-		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
-	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
-    	$('#percentageRewardValue').attr("data-validation","required validate_float");  
-		$('#percentageRewardValue').removeAttr('data-validation-optional');
-	    $('#flatRewardValue').removeAttr('data-validation');
-	    $('#flatRewardValue').attr("data-validation-optional","true"); 
-	    	
-	    
-	}
-	
-	if(rewardType == 'Flat'){
-		document.getElementById("flatReward").style.display="";
-		document.getElementById("flatRateType").style.display="";
-		document.getElementById("percentageReward").style.display="none";
-		
-		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
-		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
-		$('#flatRewardValue').attr("data-validation","required validate_float");
-		$('#flatRewardValue').removeAttr('data-validation-optional');
-		$('#percentageRewardValue').removeAttr('data-validation');
-		$('#percentageRewardValue').attr("data-validation-optional","true"); 
-		
-	}
-}
-</script>
-
-<script>
-function getPercentageValue(){
-	var percentageValue = document.getElementById("percentageRewardValue").value;
-	if(percentageValue > 100 || percentageValue < 0){
-		/* $("#releaseToCWBtn").attr("disabled", "disabled"); */
-	    $('#percentageReward').find('p.jquery_form_error_message').remove(); 
-	   
-	    if(percentageValue < 0){
-	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
-	    }else{
-	    	$("input#percentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
-	    }
-	    
-		$('input#percentageRewardValue').attr('record-exist','yes');
-		 if(percentageValue < 0){
-			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
-		 }else{
-			 $('input#percentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
-		 }
-		
-	}else{
-		 /* $("#releaseToCWBtn").removeAttr("disabled"); */
-		 $('input#percentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
-		 $('#percentageReward').find('p.jquery_form_error_message').remove(); 
-		 $( "#releaseToCWBtn" ).removeAttr("style");
-		 $( "#releaseToCWBtn" ).click(function() {
-		 if ($(this).validate(false, validationSettings)){
-		 }
-		});
-	}
-	
-}
 </script>
 
 
@@ -1342,18 +1207,16 @@ function flush(){
 	document.getElementById("approver").value="";
 	document.getElementById("description").value="";
 	
-	document.getElementById("hoursPerWeek").value="";
+	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
 	document.getElementById("totalHoursEstimated").value="";
 	document.getElementById("overtimeRate").value="";
-	document.getElementById("overtimeRateType").value="";
+	//document.getElementById("overtimeRateType").value="";
 	
 	document.getElementById("invoiceFrequency").value="";
 	document.getElementById("taxFlatRateType").value="";
 	document.getElementById("submissionOffersList").value="";
-	
-	
-	
+
 	$("newcontract_form").validate().resetForm();
 }
 </script>

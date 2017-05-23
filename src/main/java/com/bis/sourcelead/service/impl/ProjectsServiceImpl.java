@@ -1926,7 +1926,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 
 				//calling the sendNotification method of emailScenerioUtil
 				EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
-				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+				String notificationBody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(loginOrgCode);
 				//String url = null;
@@ -2146,7 +2146,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				   boolean flag = false;
 				
 		    		List<ProjectApproverHierarchy> projectApproverList = projectApproverHierarchyService.getProjectApproversListByUserIdAndOrgLocationId(userId,orgLocations.getId());
-		    		
+		    		Integer projectApproverCount = getProjectApproversCountByUserIdAndOrgLocationId(userId,orgLocations.getId());
 		    		for(ProjectApproverHierarchy hierarchy : projectApproverList){
 		    			
 							
@@ -2174,7 +2174,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					    					}
 										 
 							}*/
-							
+							ProjectApproverHierarchy assignedProjectManager=null;
 							 if(hierarchy.getProjectId() != null && hierarchy.getProjectId().getId() != null){
 			    					ProjectMembers pm1 = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUser.getId(), hierarchy.getProjectId().getId());
 				    				if(pm1.getId() != null){
@@ -2200,10 +2200,68 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				    				 
 			    				}
 						
-								projectApproverHierarchyService.updateProjectApproverHierarchy(hierarchy);
+							 assignedProjectManager=projectApproverHierarchyService.updateProjectApproverHierarchy(hierarchy);
+							 assignedNewUserAsaassignedProjectManager(user,usr,userId,orgLocations,projectApproverCount);
 		    		}
 		    		
 			}
+			
+			
+			
+			
+			private void assignedNewUserAsaassignedProjectManager(User loginUser, User assUserName, Long userId, OrgLocations orgLocations,Integer projectApproverCount) throws Exception {
+				 EmailMessage emailMessage = new EmailMessage();
+				 emailMessage.setFirstName(loginUser.getFirstName());
+				 emailMessage.setLastName(loginUser.getLastName());
+				 emailMessage.setToEmail(assUserName.getEmail());
+				 emailMessage.setFromEmail(loginUser.getEmail());
+				 emailMessage.setCreatedBy(loginUser.getUserCode());
+				 StringBuilder msgBuild = new StringBuilder();
+				emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				//setting the class filed values
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 	 User termentaedUserName = userService.getUserById(userId);
+					 globalVarsMap.put("loginUser", loginUser.getFirstName());
+					 globalVarsMap.put("assignedUser", assUserName.getFirstName());
+					 globalVarsMap.put("reqCount", projectApproverCount.toString());
+					 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
+					 StringBuilder loginBuilder = new StringBuilder();
+					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				  
+				  
+				
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 //using same migration which has been already used in updatedRequirementMailToManager method
+				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,Constants.ENTITY_TYPE_EMAIL);
+				 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,Constants.ENTITY_TYPE_NOTIFICATION);
+			
+				 
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = "";
+				 
+				 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+				 notificationScenario.setBody(notificationbody);
+			
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				 
+				 //calling the sendEmail method of emailScenerioUtil
+				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 String actionLink="";
+				 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario);
+				}
+			
+			
+			
+			
 
 			@Override
 			public List<Projects> getProjectBasedClientsByOrgLocationsIdAndApproverUserId(Long orgLocationsId,

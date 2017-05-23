@@ -318,7 +318,7 @@ window.onload = function () {
 	    <div id="requirementsListLoading"></div>  
 	  <div id="requirementsList"></div>
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
-	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a>
+	  <%-- <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a> --%>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
@@ -660,7 +660,7 @@ function requirementsList(offset){
 			 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 			 					jobType = requirements.jobType;
 			 				}else{
-			 					jobType = 'No Data';
+			 					jobType = '--';
 			 				}
 			 				
 			 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
@@ -677,7 +677,7 @@ function requirementsList(offset){
 			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
-			 					experience = 'No Data';
+			 					experience = '--';
 			 				}
 			 				
 			 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
@@ -689,7 +689,7 @@ function requirementsList(offset){
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 			 				}else{
-			 					rate = 'No Data';
+			 					rate = '--';
 			 				}
 			 				
 			 				description =  description+'Job Title:'+requirements.jobTitle+";";
@@ -715,15 +715,15 @@ function requirementsList(offset){
 				 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 				 				}
 			 				}else{
-			 					result = result +'<li>No Data</li>';
+			 					result = result +'<li>--</li>';
 			 				}
-			 				if(jobType != null &&jobType != 'No Data'){
+			 				if(jobType != null && jobType != '' && jobType != 'undefined'){
 			 					description =  description+'Job Type:'+requirements.jobType+";";
 			 				}
-			 				if(experience != null && experience != 'No Data'){
+			 				if(experience != null && experience != '' && experience != 'undefined'){
 								description =  description+'Experience :'+experience+";";
 							}
-			 				if(location != null && location != 'No Data'){
+			 				if(location != null && location != '' && location != 'undefined'){
 			 					description =  description+'Job Location: '+location+";";
 							}
 			 				description =  description+'Posted :'+requirements.calDays+";";
@@ -851,10 +851,10 @@ function requirementsList(offset){
 			       	    	
 			       	    	if(requirements.noOfSearchHits >= 10){
 			       	    		document.getElementById("loadMoreSection").style.display="";
-			       	    		document.getElementById("noMoreRecordsSection").style.display="none";
+			       	    		/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 			       	    	}else{
 			       	    		document.getElementById("loadMoreSection").style.display="none";
-			       	    		document.getElementById("noMoreRecordsSection").style.display="";
+			       	    		/* document.getElementById("noMoreRecordsSection").style.display=""; */
 			       	    	}
 			       	    	
 			       	    	document.getElementById("loadMoreSearchSection").style.display="none";
@@ -870,12 +870,12 @@ function requirementsList(offset){
 			    $("#requirementsList").append(result); 
 			    document.getElementById("loadMoreSection").style.display="none";
 			    document.getElementById("loadMoreSearchSection").style.display="none";
-			    document.getElementById("noMoreRecordsSection").style.display="none";
+			    /* document.getElementById("noMoreRecordsSection").style.display="none"; */
    		    }else{
    		    	
    		    	document.getElementById("viewMoreLoading").removeAttribute("class");
    		    	document.getElementById("loadMoreSection").style.display="none";
-   		    	document.getElementById("noMoreRecordsSection").style.display="";
+   		    	/* document.getElementById("noMoreRecordsSection").style.display=""; */
    		    	
    		    }
 	     
@@ -959,7 +959,7 @@ function searchRequirement(offset){
 									 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 									 					jobType = requirements.jobType;
 									 				}else{
-									 					jobType = 'No Data';
+									 					jobType = '--';
 									 				}
 									 				
 									 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
@@ -976,7 +976,7 @@ function searchRequirement(offset){
 									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 									 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 									 				}else{
-									 					experience = 'No Data';
+									 					experience = '--';
 									 				}
 									 				
 									 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
@@ -988,7 +988,7 @@ function searchRequirement(offset){
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
-									 					rate = 'No Data';
+									 					rate = '--';
 									 				}
 									 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
@@ -1010,15 +1010,15 @@ function searchRequirement(offset){
 										 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 										 				}
 									 				}else{
-									 					result = result +'<li>No Data</li>';
+									 					result = result +'<li>--</li>';
 									 				}
-									 				if(jobType != null &&jobType != 'No Data'){
+									 				if(jobType != null && jobType != '' && jobType != 'undefined'){
 									 					description =  description+'Job Type:'+requirements.jobType+";";
 									 				}
-									 				if(experience != null && experience != 'No Data'){
+									 				if(experience != null && experience != '' && experience != 'undefined'){
 														description =  description+'Experience :'+experience+";";
 													}
-									 				if(location != null && location != 'No Data'){
+									 				if(location != null && location != '' && location != 'undefined'){
 									 					description =  description+'Job Location: '+location+";";
 													}
 									 				description =  description+'Posted :'+requirements.calDays+";";
@@ -1100,10 +1100,10 @@ function searchRequirement(offset){
 									       	     
 									       	    if(requirements.noOfSearchHits >= 10){
 								       	    		document.getElementById("loadMoreSearchSection").style.display="";
-								       	    		document.getElementById("noMoreRecordsSection").style.display="none";
+								       	    		/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 								       	    	}else{
 								       	    		document.getElementById("loadMoreSearchSection").style.display="none";
-								       	    		document.getElementById("noMoreRecordsSection").style.display="";
+								       	    		/* document.getElementById("noMoreRecordsSection").style.display=""; */
 								       	    	}
 									       	  
 									       	     document.getElementById("viewMoreSearchLoading").removeAttribute("class");
@@ -1118,11 +1118,10 @@ function searchRequirement(offset){
 				    			    $("#requirementsList").append(result); 
 				    			    document.getElementById("loadMoreSection").style.display="none";
 				    			    document.getElementById("loadMoreSearchSection").style.display="none";
-				    			    document.getElementById("noMoreRecordsSection").style.display="";
+				    			   /*  document.getElementById("noMoreRecordsSection").style.display=""; */
 		               		 }else{
 		           		    	document.getElementById("viewMoreSearchLoading").removeAttribute("class");
-		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
-		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
+		           		    	/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
 					        socialInviterScripts();

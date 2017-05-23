@@ -410,11 +410,11 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 StringBuilder dueAfter = new StringBuilder();
 					 
 					 if(null != tasks.getDueAfterMonths()){
-						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Month(s) ");
 					 }
 					 
 					 if(null != tasks.getDueAfterDays()){
-						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Day(s) ");
 					 }
 					 
 					 if(null != tasks.getDueAfterHours()){
@@ -1077,11 +1077,11 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					 StringBuilder dueAfter = new StringBuilder();
 					 
 					 if(null != tasks.getDueAfterMonths()){
-						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Months ");
+						 dueAfter = dueAfter.append(tasks.getDueAfterMonths()).append(" Month(s) ");
 					 }
 					 
 					 if(null != tasks.getDueAfterDays()){
-						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Days ");
+						 dueAfter = dueAfter.append(tasks.getDueAfterDays()).append(" Day(s) ");
 					 }
 					 
 					 if(null != tasks.getDueAfterHours()){

@@ -1105,6 +1105,9 @@ function universalSearch(){
 	 var searchType = document.getElementById('searchType').value;
 	 var searchValue = document.getElementById('searchKey').value;
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 if(sourceleadUrl == ''){
+		 sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	 }
 	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
 }
 </script>

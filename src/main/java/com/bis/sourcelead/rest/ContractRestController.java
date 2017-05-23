@@ -209,10 +209,10 @@ public class ContractRestController {
 	}
 	
 	
-	@RequestMapping(value = "/viewContractTemplatePdf/{id}", method = RequestMethod.GET)
-	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/viewContractTemplatePdf/{uuid}/{templateName}", method = RequestMethod.GET)
+	public @ResponseBody  void viewContractTemplatePdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(id));		
+		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateByTemplateUUID(uuid);		
 		
 		String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></div><br>";
 		String totalBody = header + contractsTemplate.getTemplateContent();
@@ -495,11 +495,29 @@ public class ContractRestController {
 				}else{
 					requirementSubmission.setCandidateName(candidateName.append(requirementSubmission.getCandidate().getFirstName()).toString());
 				}
+				if(null != requirementSubmission.getVendorLocationId()){
+					requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+				}
 			}
 		}
 		
 		return commonUtil.toJSON(requirementSubmissionsList);
 	}
+	
+	
+	@RequestMapping(value = "/getVendorForSOWByRequirementSubmissionId", method = RequestMethod.GET)
+	public @ResponseBody String getVendorForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(reqSubId));
+		if(requirementSubmission != null){
+			if(null != requirementSubmission.getVendorLocationId()){
+				requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+			}
+		}
+		
+		return commonUtil.toJSON(requirementSubmission);
+	}
+	
 	
 	@RequestMapping(value = "/getSubmissionOfferForSOWByRequirementSubmissionId", method = RequestMethod.GET)
 	public @ResponseBody String getSubmissionOfferForSOWByRequirementSubmissionId(@RequestParam(value = "reqSubId", required = false) String reqSubId, HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -643,7 +661,7 @@ public class ContractRestController {
 		 	if(null != contract.getRequirementSubmission()){
 		 		
 		 		StringBuilder applicant = new StringBuilder();
-		 		if(contract.getRequirementSubmission().getCandidate() != null){
+		 		if(null != contract.getRequirementSubmission().getCandidate() && null != contract.getRequirementSubmission().getCandidate().getLastName()){
 		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).append(" ").append(contract.getRequirementSubmission().getCandidate().getLastName()).toString());
 		 		}else{
 		 			contract.setApplicantName(applicant.append(contract.getRequirementSubmission().getCandidate().getFirstName()).toString());

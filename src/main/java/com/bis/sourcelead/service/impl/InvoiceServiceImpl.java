@@ -270,17 +270,20 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		//store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType);
 		        invoice.setFileName(file.getName());
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
 		        invoice.setDocFile(bytesArray);
 		        invoiceDao.saveInvoce(invoice);
+		        if(null != file){
+		        	file.delete();
+		        }
 		        
 		invoiceDao.saveInvoce(invoice);
 		if(saveType.equalsIgnoreCase("SENT")){
 			//mail scenario for client accept or reject
-			sendInvoiceMail(user,orgLocation,invoice);
+			sendInvoiceMail(user,orgLocation,invoice,invoiceType);
 			saveParentInvoice(invoice);	
 		}
 		
@@ -491,7 +494,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
-						 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"candidate")));
+						 Contracts contract = contractsTemplateService.getContractById(Long.parseLong(jsonObj.getString(i+"sow")));
 						 invoiceLineItems.setContract(contract);
 					 }else{
 						 invoiceLineItems.setContract(null);
@@ -542,9 +545,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 	}
 	
-	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception{
+	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType) throws Exception{
 
-		 String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		Invoice invoiceId = invoiceDao.getInvoicetById(invoice.getId());
+		 
+		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -565,6 +570,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
 		 globalVarsMap.put("address",invoice.getBillingAddress());
+		 
+		 /*StringBuilder acceptBuilder = new StringBuilder();
+		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptedInvoice").append(invoiceId).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+	        
+		StringBuilder  rejectBuilder = new StringBuilder();
+	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("rejectInvoice").append(invoiceId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+
+		 */
 		 /*StringBuilder attachmentLinkBuilder=new StringBuilder();
 	        if(invoice.getFileName() != null){
 	            globalVarsMap.put("attachement",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("/downloadInvoiceAttachment?invoiceId=").append(invoice.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
@@ -573,17 +586,17 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
+		 if(invoiceType.equalsIgnoreCase("payable")){
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_ACCEPT_MAIL,Constants.ENTITY_TYPE_EMAIL);
-		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_ACCEPT_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
-
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -619,13 +632,58 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
 		 String actionLink="";
 		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
-	}
+		 }else{
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_MAIL,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+			 
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+			 notificationScenario.setBody(notificationbody);
+
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orglocations.getOrg());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+			 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+			 EmailAttachment emailAttachment = new EmailAttachment();
+			 emailAttachment.setUUID(UUID);
+			 
+			 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+			 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+			 for(InvoiceDocument doc:documenetSet){
+				 EmailAttachment docAttachment = new EmailAttachment();
+				 docAttachment.setDocFile(doc.getDocFile());
+				 docAttachment.setName(doc.getFileName());
+				 documentList.add(docAttachment);
+			 }
+			 
+			 }
+			 emailAttachment.setDocFile(invoice.getDocFile());
+			 emailAttachment.setName(invoice.getFileName());
+			 attachmentList.add(emailAttachment);
+			 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
+			 attachmentList.addAll(documentList);
+			 }
+			 //calling the sendEmail method of emailScenerioUtil
+			 
+			 emailScenerioUtil.sendWithAttachmentEmail(emailMessage,orglocations.getId(),iAdressArray,attachmentList,null);
+			 String actionLink="";
+			 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), orglocations, notificationScenario);
+			 }
+		 }
 
 
-	@Override
+	/*@Override
 	public void getPdfFileForInvoice(Invoice invoice,OrgLocations orgLocation,User user, Org org) throws Exception {
 		invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org);
-	}
+	}*/
 	
 	@Override
 	public Invoice getInvoicetById(Long invoiceId) throws Exception {
@@ -888,18 +946,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 		return invoiceDao.getInvoicetByParentInvoiceId(parentInvoiceId);
 	}
 	@Override
-	public void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency) throws Exception
+	public void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType) throws Exception
 	{
-		String frequencyArray[] = invoiceFrequency.split("/");
-		String startDateStr = frequencyArray[0];
-		String endDateStr = frequencyArray[1];
-		String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
-		Date startDate = format.parse(startDateStr);
-		Date endDate = format.parse(endDateStr);
 		for(String id :submissionApproverHierarchyIds){
 			SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
-			submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+			if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
+				submissionApproverHierarchy.setBillingStatus(Constants.SENT);
+			}else{
+				submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+			}
 			submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 		}
 	

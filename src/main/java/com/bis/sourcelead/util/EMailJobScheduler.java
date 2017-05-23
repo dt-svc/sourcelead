@@ -1684,7 +1684,7 @@ public class EMailJobScheduler {
 	 * Fires on every 1 hour on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
-	@Scheduled(cron = "0 0 12 1/1 * ?")
+	@Scheduled(cron = "0 0/1 * 1/1 * ?")
 	@Async
 	public void runContractDocumentStatus() throws Exception {
 				logger.info("##########  E-Mail Job Scheduler started..! ##########");
@@ -1770,38 +1770,8 @@ public class EMailJobScheduler {
 			            	 }
 			            	}
 			            	
-			            	if(contracts.getEndDate()!=null){
-			            		if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
-			            			
-					            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-					            		Date date = new Date();
-					            		String currentTimeStr = TZ_DF_TS.format(date);
-					    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
-					            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
-					            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-						        			if(null != childContarct.getParentContractId()){
-						        				String fromStage = childContarct.getTemplateSubmissionStatus();
-						        				childContarct.setId(childContarct.getId());
-						        				childContarct.setTemplateSubmissionStatus("EXPIRED");
-						        				contracts.setId(contracts.getId());
-						        				contracts.setTemplateSubmissionStatus("EXPIRED");
-						        				contractsTemplateService.saveNewContract(childContarct);
-						        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
-						        				if(!("EXPIRED").equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
-							        				ContractsHistory childContractsHistory = new ContractsHistory();
-							            			childContractsHistory.setFromStage(fromStage);
-							        				childContractsHistory.setContractsId(childContarct);
-							        				childContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
-							        				childContractsHistory.setCreatedDate(new Date());
-							        				childContractsHistory.setUpdatedDate(new Date());
-							        				contractsTemplateDao.saveContractsHistory(childContractsHistory);
-						        				}
-						        				}
-					            		}
-					            	 }
-			            		}
-			            	}
-			            	if(!"FINALIZED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())||!"completed".equalsIgnoreCase(contracts.getContractStatus())){
+			       
+			            	if(!"FINALIZED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())||!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())||!"completed".equalsIgnoreCase(contracts.getContractStatus())){
 				            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
 				            	if(evp.getStatus().equalsIgnoreCase("completed")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
 				            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
@@ -1827,7 +1797,7 @@ public class EMailJobScheduler {
 				        				}
 				        			}
 				            	}
-				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+				            	if(evp.getStatus().equalsIgnoreCase("declined")&&!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
 				            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				        			if(null != childContarct.getParentContractId()){
 				        				String fromStage = childContarct.getTemplateSubmissionStatus();
@@ -1851,7 +1821,7 @@ public class EMailJobScheduler {
 				        				}
 				        			}
 				            	}
-				            	if(evp.getStatus().equalsIgnoreCase("deleted")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
+				            	if(evp.getStatus().equalsIgnoreCase("deleted")&&!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
 				            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				        			if(null != childContarct.getParentContractId()){
 				        				String fromStage = childContarct.getTemplateSubmissionStatus();

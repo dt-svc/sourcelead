@@ -162,8 +162,7 @@ function errRemoveClientContact(){
 
 <div id="divTaskTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100 select-field">
-		<select class="form-control input-sm" id="REPLACEROWIDsow"
-			name="REPLACEROWIDsow">
+		<select class="form-control input-sm" id="REPLACEROWIDsow" name="REPLACEROWIDsow" onchange="getSowRate(REPLACEROWID);">
 			<option value=''>-Select sow-</option>
 		</select>
 	</div>
@@ -174,7 +173,7 @@ function errRemoveClientContact(){
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);" onchange="getSowRate(REPLACEROWID)">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);">
 	</div>
 </div>
 
@@ -648,7 +647,7 @@ function errRemoveClientContact(){
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				
 				
-				getSow(maxRowNum,opt.contractId);
+	 			getSow(opt.candidateId,maxRowNum,opt.contractId);
 				maskme();  
 		 }
 		
@@ -809,7 +808,7 @@ function cancel(){
 			
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
 			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
-			getSow(maxRowNum);
+			getSow(checkbox_value[0],maxRowNum); 
 			maskme(); 
 			
 		   });
@@ -825,7 +824,7 @@ function cancel(){
 <script>
   function getAllAssociates(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
-	  
+	  var orgRelationId = $("#clientOrgRelationId").val();
 	  var selectedAssociates = '';
 	  if(maxTsRowNum > 1){
 		  for(var i=1; i<maxTsRowNum; i++){
@@ -840,14 +839,11 @@ function cancel(){
 		  }
 	  }
 	  
-	
-	  
-	  
 	  $('.action-pop').slideUp();
 	  var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getInvoiceAssociatesList?${_csrf.parameterName}=${_csrf.token}&selectedAssociates="+selectedAssociates,
+	        url: sourceleadUrl+"/getInvoiceAssociatesList?${_csrf.parameterName}=${_csrf.token}&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 	        success: function(data) {
 	        	
 	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){
@@ -1000,38 +996,38 @@ function pagination(){
 
 
 
-<script>
-  function getSow(rowId,contractId){
-	  var candidateId = $('#'+rowId+'candidateId').val();
+<!-- Get contract sow between client and the associate -->
+  <script>
+  function getSow(candidateId,id,contractId){
 	  var orgRelationId = $("#clientOrgRelationId").val();
-	  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
-	        success: function(data) {
-	        	if(data != null && data != ''){
-	        		var json = JSON.parse(data);
-	        		
-	        		
-		        	 for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		var selected = '';
-			        		if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
-			        			selected = 'selected';
-			        		}
-			        		$('#'+rowId+'sow').append('<option value='+opt.id+' '+selected+' >'+opt.contractTitle+'</option>');
-					} 
-	        	}else{
-	        		
-	        	}
-	        },
-	        
-	    });
+			  $.ajax({
+			    	type: "GET",
+			        url: sourceleadUrl+"/getSowcontractListByAssociateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
+			        success: function(data) {
+			        	var result = "";
+			        	result = result + "<option value='' >select sow</option>"
+			        	if(data != null && data != ''){
+			        		var json = JSON.parse(data);
+				        	 for (var i=0; i<json.length; i++)
+							{
+					        		var opt = json[i];
+					        		 var selected = '';
+					        		 if(contractId != null && contractId != "" && contractId !="undefined" && contractId == opt.id){
+					        			selected = 'selected';
+					        		} 
+					        		 result = result +"<option value="+opt.id+" "+selected+">"+opt.contractTitle+"</option>";
+							} 
+			        	}
+			        	 $('#'+id+'sow').empty();
+			        	 $('#'+id+'sow').append(result);
+			        },
+			        
+			    });
+	 
+	 
   }
-  
-  </script>
+  </script> 
 
 <script>
   function totalHoursCalculateAmount(rowId){
