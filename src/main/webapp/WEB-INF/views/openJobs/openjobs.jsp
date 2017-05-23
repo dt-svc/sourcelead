@@ -342,7 +342,7 @@ display: none;}
 			<div id= "openJobsRequirementsList"></div>
 			<div class="jobResultsNoRecords" id="noResultsDiv"></div>
 			<div id="loadMoreDiv"></div> 
-			<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq" style="display: block; cursor: pointer;">View more</div>
+			<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq" style="display: none; cursor: pointer;">View more</div>
 			<div id= "openJobsRequirementsSummary"></div>
 			
 		
@@ -763,7 +763,7 @@ function requirementsFilter(type){
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
-	    		if(json.length ==9){
+	    		if(json.length > 10){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
 	    		$("#noResultsDiv").css("display", "none");
@@ -805,11 +805,10 @@ function getOpenJobsELKList(type){
 	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&openJobsRequirementTitle="+openJobsRequirementTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 
-	    		if(json.length ==9){
+	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
+	    		if(json.length > 10){
 	    			$("#loadMoreReq").css("display", "block");
 	    		}
-	    		$("#loadMoreReq").css("display", "block");
 	    		prepareOpenJobsElkList(data,sourceleadUrl,offset);
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    	}else{
@@ -984,11 +983,13 @@ function getOrgsList(alphabet,type){
 	    	}else{
 	    		for(var i=0; i<5; i++){
 		    		var opt = json[i];
-		    		result = result +'<li class="control-group">';
-			    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
-			    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" onclick="requirementsFilter();"/><div class="control__indicator"></div>';
-			    	result = result +'</label>';
-			    	result = result +'</li>';
+		    		if(opt != null && opt !='undefined'){ 	
+		    			result = result +'<li class="control-group">';
+				    	result = result +'<label class="control control--checkbox" title="'+opt.orgName+'"><span>'+opt.orgName+'</span>';
+				    	result = result +'  <input type="checkbox" name="orgName" value="'+opt.id+'" onclick="requirementsFilter();"/><div class="control__indicator"></div>';
+				    	result = result +'</label>';
+				    	result = result +'</li>';
+		    		}
 		    	}
 	    		if(json.length > 5){
 	    			var orgCount = json.length - 5 ;
