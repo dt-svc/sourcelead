@@ -132,7 +132,7 @@
        </div>
        
        <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
+         <label class="col-md-3">Employment Type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select--</option>
@@ -517,7 +517,7 @@ function getAllCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
-        	$('#country').append('<option value="">---select country---</option>');
+        	$('#country').append('<option value="">---Select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -548,14 +548,14 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select state---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
 	            $('#city').empty();
-	            $('#city').append('<option value="">---select city---</option>');
+	            $('#city').append('<option value="">---Select City---</option>');
 	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
@@ -563,10 +563,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select state---</option>');
+    	$('#state').append('<option value="">---Select State---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -586,7 +586,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
@@ -597,7 +597,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
