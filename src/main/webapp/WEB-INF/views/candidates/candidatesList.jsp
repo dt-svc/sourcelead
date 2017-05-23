@@ -374,16 +374,16 @@ function candidateSideBar(candidateId){
 			            
 			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
+         			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
          			 		experienceMonths = ' ';  
          			 	 }
          			 	
-         			 	/* if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
              			 	designation = 'Designation'+'-'+json.designation;
              			 	}else{
              			 		designation = '';
-             			 	} */
+             			 } 
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
          			 	designationType = 'Employment Type'+ ' - '+json.designationType;
@@ -480,10 +480,10 @@ function candidateSideBar(candidateId){
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -529,14 +529,10 @@ function candidateSideBar(candidateId){
 						 result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
-			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			                    	 
-			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+'</li>';
-			             
+			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
+			            	 result = result+'<li>Experience -'+json.experienceYears+' Year/s '+experienceMonths+'</li>';
               		       }else{
-              		                                                	  
-              		     result = result+'<li>Experience ----</li>';  
-              		     
+              		   		 result = result+'<li>Experience ----</li>';  
               		       }
 			             result = result+'</ul>';
 			             
@@ -878,14 +874,14 @@ function refreshImageBlock(candidateId){
                 	 var json = JSON.parse(data);
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
-			             result = result+'<div class="well text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 result = result+'  <div class="btn-group uploadfile">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
+						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';

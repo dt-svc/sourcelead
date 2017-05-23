@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
@@ -58,6 +59,9 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	 private CommonUtil commonUtil;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
 	
 	@Autowired
 	private EmailScenarioService emailScenarioService;
@@ -332,7 +336,7 @@ public class TaskServiceImpl implements TaskService{
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = "";
+			 String url = sourceleadUrl;
 			 
 			 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 			 notificationScenario.setBody(notificationbody);

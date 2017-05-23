@@ -76,7 +76,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	private EmailScenarioService emailScenarioService;
 	
-	@Autowired
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -338,7 +338,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
             String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-            String url = "";
+            String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
            notificationScenario.setBody(notificationbody);
@@ -472,7 +472,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
             String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-            String url = "";
+            String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
             notificationScenario.setSubject(notificationbody);
@@ -573,7 +573,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = "";
+		String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg());
@@ -656,7 +656,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = "";
+		String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocations.getOrg());

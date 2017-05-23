@@ -368,7 +368,9 @@ function prepareExcelDataDiv(data){
 	result = result + '</table>';
 	  $("#excelimportData").empty();
     $("#excelimportData").append(result);
-    excelimportDataPagination();
+	$('#uploadFile').val("");
+	$('#uploadBtn').val("");
+excelimportDataPagination();
 }
 </script>
 
