@@ -385,23 +385,23 @@ function validatePrimaryUserEmail(){
 		        		var json = JSON.parse(data);
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#firstName").val(json.firstName);
-				        	$("#firstName").attr("disabled", true);
+				        	$("#firstName").attr("readonly", "readonly");
 				        	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
 			        		
 			        		if(json.lastName != null && json.lastName != ''){
 			        			$("#lastName").val(json.lastName);
-					        	$("#lastName").attr("disabled", true);
+					        	$("#lastName").attr("readonly", "readonly");
 			        		}else{
-			        			 $("#lastName").attr("disabled", false);
+			        			 $("#lastName").removeAttr("readonly");
 			        			 $("#lastName").val('');
 			        		}
 			        		
 			        		
 		        		}else{
-		        			 $("#firstName").attr("disabled", false);
+		        			 $("#firstName").removeAttr("readonly");
 		        			 $("#firstName").val('');
 		        			 
-		        			 $("#lastName").attr("disabled", false);
+		        			 $("#lastName").removeAttr("readonly");
 		        			 $("#lastName").val('');
 		        		}
 		        		

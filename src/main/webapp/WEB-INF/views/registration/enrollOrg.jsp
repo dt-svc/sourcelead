@@ -359,18 +359,18 @@ function getUserDetails(){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
-	        			$("#firstName").attr("disabled", true);
+	        			$("#firstName").attr("readonly", "readonly");
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").attr("readonly", "readonly");
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
-		        			$("#lastName").attr("disabled", true);
+		        			$("#lastName").attr("readonly", "readonly");
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").attr("readonly", "readonly");
 	        			    $("#lastName").val('');
 	        		 }
 	        	}
@@ -380,10 +380,10 @@ function getUserDetails(){
 	        }
 	    });
 	}else{
-		$("#firstName").attr("disabled", false);
+		$("#firstName").removeAttr("readonly");
 	    $("#firstName").val('');
 	    
-	    $("#lastName").attr("disabled", false);
+	    $("#lastName").removeAttr("readonly");
 	    $("#lastName").val('');
 	    
 	   

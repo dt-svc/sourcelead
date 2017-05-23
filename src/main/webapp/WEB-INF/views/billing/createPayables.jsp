@@ -13,6 +13,11 @@
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 
+<style type="text/css">
+.inline_field, .inline_field:focus {
+	width:100px !important; text-align:center;
+}
+</style>
 
 
 <script type="text/javascript">
@@ -184,7 +189,7 @@ function errRemoveVendorContact(){
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">
-	<div class="tbldata-dotdot-vsm">
+	<div class="tbldata-dotdot-100">
 		<input type="text" class="form-control input-sm inline_field"
 			placeholder="HHH:MM" id="REPLACEROWIDtotalHours"
 			name="REPLACEROWIDtotalHours"
@@ -193,7 +198,7 @@ function errRemoveVendorContact(){
 </div>
 
 <div id="divTaskTd6" style="display: none; float: left;">
-	<div class="tbldata-dotdot-100 text-right">
+	<div class="tbldata-dotdot-vsm text-right">	
 		<input type="text" name="REPLACEROWIDamount" id="REPLACEROWIDamount"
 			placeholder="00:00" class="ReadTextFli" readonly="readonly">
 	</div>
@@ -208,9 +213,8 @@ function errRemoveVendorContact(){
 
 <script>
 	function buildLineItemAndTaxAddRows(){
-		
+		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
-		
 		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';
 		 result = result +'  <table width="100%">';
@@ -230,7 +234,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
+		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -314,7 +318,7 @@ function errRemoveVendorContact(){
          result = result +'  </div>';
          result = result +'  <div class="form-group">';
          result = result +'  <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>';
-         result = result +'  <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly="readonly"></div>';
+         result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly="readonly"></div>';
          result = result +'  </div>';
          result = result +'  <div class="addtax_table">';
          result = result +'  <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />';
@@ -336,7 +340,7 @@ function errRemoveVendorContact(){
                    result = result +'  </div>';
                    result = result +'  <div class="form-group mt">';
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
-                   result = result +'  <div class="col-md-5 text-right"> <input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly="readonly"></div>';
+                   result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly="readonly"></div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';

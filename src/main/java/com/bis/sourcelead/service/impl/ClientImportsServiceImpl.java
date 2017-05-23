@@ -1434,10 +1434,10 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 														orgName1 = orgRelations2.getResponderLocationId().getOrg().getOrgName();
 													}
 													
-													list.add(orgName1);
+													list.add(orgName1.toLowerCase());
 												}
 												
-												if(!list.contains(clientOrVendor.getOrgName())){
+												if(!list.contains(clientOrVendor.getOrgName().toLowerCase())){
 													if(spocList==null){
 														logger.info("domain from email is......."+clientOrVendor.getEmail());
 														String domain = clientOrVendor.getEmail().split("@")[1];
