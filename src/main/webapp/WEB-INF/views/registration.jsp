@@ -80,10 +80,11 @@
 <script>
 window.onload = function () {
 	    socialInviterScripts();
-	    resetCredentials('Professional');
 		var contactUUID = '${contactUUID}';
 		if(contactUUID != null && contactUUID != '' && contactUUID != 'undefined'){
 			validateEmail('Professional');
+		}else{
+			resetCredentials('Professional');
 		}
 	};
 </script>
@@ -269,14 +270,14 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
+        <div class="company_logo pull-left mb10"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
           <c:if test="${empty contactUUID}">
           <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
-          </c:if>
           <li><a data-toggle="tab" href="#employee"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employee</a></li>
+          </c:if>
           <input type="hidden" id="tabType" />
       </ul>
        <!--  <div class="regis_wrap_styles registered_widget_styles"> -->
@@ -292,7 +293,7 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt">
+            <div class="row mt10">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
@@ -359,7 +360,7 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt">
+            <div class="row mt10">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>

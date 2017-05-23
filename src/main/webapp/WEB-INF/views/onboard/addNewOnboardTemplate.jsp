@@ -167,7 +167,7 @@
                                 <div class="row">
                                 
                                 <div class="col-md-12 mb10" id="taskNameDiv">
-                                  <label>Subject <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Subject<span class="text-danger">*</span></label>
                                   <input type="text" class="form-control input-sm" placeholder="Subject" field-name="Subject" id="taskName" name="taskName"  data-validation="required validate_Space validate_length length2-100">
                                 </div>
                                 
@@ -212,7 +212,7 @@
 	                                <div class="row">
 	                                
 	                                <div class="col-md-12 mb10">
-                                  <label>Assign To <span class="text-danger paddingLeft">*</span></label>
+                                  <label>Assign To<span class="text-danger">*</span></label>
                                   
                                   <div class="">
                                     <label class="paddingRight">
@@ -233,7 +233,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:</strong><span class="text-danger paddingLeft">*</span></label>
+                                      <label><strong>Due after:<span class="text-danger">*</span></strong></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       

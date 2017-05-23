@@ -11,6 +11,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
@@ -48,6 +49,9 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 	
 	@Autowired
 	TaskDao taskDao;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
 	
 	@Autowired
 	UserDao userDao;
@@ -353,7 +357,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
