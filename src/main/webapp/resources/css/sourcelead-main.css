@@ -5037,7 +5037,7 @@ padding: 15px 15px 25px 15px;
     font-size: 14px; color: #606060; margin-bottom: 5px; font-weight: normal;
 }
 .billing_dashboard .nav-tabs li a {
-    display: inline-block; padding:5px 10px; color: #333; min-width: 175px; border-radius: 3px; min-height: 65px;
+    display: inline-block; padding:5px 10px; color: #333; min-width: 175px; border-radius: 3px; min-height: 65px; cursor: default;
 }
 .billing_dashboard .nav-tabs > li {
     margin-right: 5px;
@@ -5282,6 +5282,9 @@ float: none !important; padding: 0; color: #333;
 }
 .innerForm_formGroup .form-group {
     width: 100%;
+}
+a.anchorTag {
+	color:#333;
 }
 /* media 320px */
 @media (max-width: 320px) {
