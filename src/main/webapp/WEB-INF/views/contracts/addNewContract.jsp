@@ -80,10 +80,10 @@
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template" onchange="previewTemplateEye()">
 						    <c:forEach var="element" items="${contractsTemplateList}" >
 						    	<c:if test = "${element.id == contract.contractsTemplate.id}">
-							         <option selected value="${element.id}">${element.templateName}</option>
+							         <option selected value="${element.id}" id="${element.templateUUID}">${element.templateName}</option>
 							    </c:if>
 							    <c:if test = "${element.id != contract.contractsTemplate.id}">
-							         <option value="${element.id}">${element.templateName}</option>
+							         <option value="${element.id}" id="${element.templateUUID}">${element.templateName}</option>
 							    </c:if>
 							</c:forEach>
 						</select>                
@@ -651,10 +651,11 @@ function previewTemplateEye(){
 }
 	
 function previewTemplatePDF(){
-	var id = $("#template").val();
+	var uuid = $("#template").children(":selected").attr("id");
+	var templateName = $("#template").children(":selected").text();
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(id != null && id != ""){
-		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+id+'','_newtab');
+	if(uuid != null && uuid != ""){
+		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
 	}
 }
 </script>
@@ -796,11 +797,12 @@ function getContractTemplates(){
 	        var opt = json[i];
 	            // need to use in edit
       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-      			output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+      			output = output + "<option value='"+opt.id+"' id='"+opt.templateUUID+"'>"+opt.templateName+"</option>";
 			}
       	    $("#template").empty();
 	        $("#template").append(output);
-	        $('#template').trigger("chosen:updated"); 
+	        $('#template').trigger("chosen:updated");
+	        $('#template').find('span').hide();
      },
      complete: function (data) {
     	 flush(); 
