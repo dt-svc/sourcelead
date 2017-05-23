@@ -1274,6 +1274,9 @@ border: 1px solid #ddd; margin-bottom: 20px !important; border-radius: 5px; back
 .tblminwidth-100 {
 	min-width: 100px !important;
 }
+.tblminwidth-90 {
+	min-width: 90px !important;
+}
 .tbldata-dotdot_80{
 overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 80px; display: block; margin: 0 auto;
 }
@@ -4967,7 +4970,15 @@ div.inputCustom {
 }
 .menuWidget ul.menupop {
     position: absolute; top: -20px; right: 10px; padding: 5px 10px; border: 1px solid #ededed; background: #fff;
-    min-width:200px; max-width: 325px; box-shadow: -1px 1px 2px #333; display: none;  z-index:9px;
+    box-shadow: -1px 1px 2px #333; display: none;  z-index:9px;
+}
+.menuWidget ul.menupop.menupop_1
+{
+	width: 200px;
+}
+.menuWidget ul.menupop.menupop_2
+{
+	width:320px;
 }
 .menuWidget ul li{
     cursor: pointer; color: #263238;
@@ -5258,10 +5269,12 @@ float: none !important; padding: 0; color: #333;
  left: -10px; padding: 1px 3px; position: absolute; top: -10px; font-size: 12px;
 }
 
-.mrng0 .tbldata-dotdot-me{
+.mrng0 .tbldata-dotdot-me, .mrng0 .tbldata-dotdot{
 	margin: 0;
 }
-
+.receiveBtn.receive_Btn {
+	width: 75px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
