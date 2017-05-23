@@ -1006,6 +1006,10 @@ function contractTypeLabels(){
 		
 	}
 	getContractTemplates();
+	
+    $("#flatReward").val("");
+    $("#billingRateType").val('${currencyCode}').trigger('change');
+    $("#billingRatePer").val("").trigger('change');
 }
 </script>
 
@@ -1145,6 +1149,10 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
@@ -1187,6 +1195,10 @@ function hideCommonSOWFields(){
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
@@ -1198,6 +1210,12 @@ function hideCommonSOWFields(){
 	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
 	            	  $("#flatReward").val("");
 	            	  $("#flatReward").val(json.amount);
+	            	  
+	            	  $("#billingRateType").val("");
+	            	  $("#billingRateType").val(json.paymentType).trigger('change');
+	            	  
+	            	  $("#billingRatePer").val("");
+	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
 	              }
 	       },
 	    });
