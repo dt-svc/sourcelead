@@ -809,7 +809,7 @@ function preparedContractListWFA(data){
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
 	            		//result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
-	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
+	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
 	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 	            	  '</sec:authorize>';
 	            	  '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -906,7 +906,7 @@ function preparedContractListWFA(data){
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
         		   '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
             		//opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
-            		opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
+            		opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
             		opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
 
             		'</sec:authorize>';
