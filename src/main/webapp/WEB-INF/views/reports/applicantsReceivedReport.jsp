@@ -702,7 +702,7 @@ var chart = AmCharts.makeChart("chartdiv", {
   
 	<script>
 	function applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData){
-Highcharts.chart('container', {
+		Highcharts.chart('container', {
     chart: {
         type: 'column'
     },
@@ -790,7 +790,7 @@ function getDayWiseAppRecReports(){
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(reportType!="custom"){
+	/* if(reportType!="custom"){ */
 	$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getDayWiseAppRecReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
@@ -853,7 +853,12 @@ function getDayWiseAppRecReports(){
          },
           
      });  
-	}
+	/* } */
+	
+	
+	
+	
+	
 	
 }
 
