@@ -360,7 +360,7 @@ function getUserDetails(){
 	        			$("#firstName").attr("readonly", "readonly");
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("readonly", "readonly");
+	        			 $("#firstName").removeAttr("readonly", "readonly");
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
@@ -368,7 +368,7 @@ function getUserDetails(){
 		        			$("#lastName").attr("readonly", "readonly");
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("readonly", "readonly");
+	        			    $("#lastName").removeAttr("readonly", "readonly");
 	        			    $("#lastName").val('');
 	        		 }
 	        	}
