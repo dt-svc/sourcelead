@@ -136,7 +136,7 @@ window.onload = function () {
 	       	        
 	       	    	if(org.user != null && (org.isMailSent != null && org.isMailSent != "" && org.isMailSent == 'Y') &&
 	 			    		(org.userState != null && org.userState != "" && org.userState == 'NOT_LOGGEDIN') ){
-	 			    	 result = result +"<p><label id='user"+org.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.user.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
+	 			    	 result = result +"<p><label id='user"+org.user.id+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+org.registeredUserId+","+org.id+");'>&nbsp;&nbsp;Resend</a></label></p>";
 	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'ACTIVE'){
 	 			    	result = result +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
 	 			    }else if(org.user != null && org.userState != null && org.userState != "" && org.userState == 'INACTIVE'){
@@ -172,13 +172,13 @@ window.onload = function () {
 
 
 <script type="text/javascript">
-function resendInvitation(userId){
+function resendInvitation(userId,orgId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(userId != null && userId != ""){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId, 
+			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId,  
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
