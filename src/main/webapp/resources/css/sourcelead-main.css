@@ -5289,6 +5289,9 @@ float: none !important; padding: 0; color: #333;
 .innerForm_formGroup .form-group {
     width: 100%;
 }
+a.anchorTag {
+	color:#333;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
