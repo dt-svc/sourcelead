@@ -147,7 +147,7 @@ else{
 	          result = result +"<thead>"; 
 	          result = result +"  <tr>"; 
 	         /*  result = result +"    <th><input type='checkbox' id='checkAll' onclick='toggle(this);'</th>";   */
-	          result = result +"    <th>&nbsp;</th>";
+	          result = result +"    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>";
 	          result = result +"    <th>Name</th>"; 
 	          result = result +"    <th>Primary Skill</th>"; 
 	         /*  result = result +"    <th>Skills</th>";  */
@@ -314,7 +314,8 @@ function cpagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#candidatePagination").wrap("<div class='overflow_Auto'></div>"); 
 }
 </script> 
 

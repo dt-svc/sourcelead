@@ -64,7 +64,7 @@
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" value="${contract.fileName}" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
 	                         <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
               </div>			
@@ -110,9 +110,9 @@
             <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="submissionOffersListDiv">
-	              <c:choose>
+					 <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant">
+		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
 								         <option value="${element.id}">${element.candidateName}</option>
@@ -124,7 +124,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate();" field-name="Applicant"></select>
+					        <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant"></select>
 					    </c:otherwise>
 					 </c:choose>
               	</div>
@@ -527,54 +527,68 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 function getVendorContacts(){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#orgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-      type : "GET",
-       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",      
-       success :function(data) {
-    	var json = JSON.parse(data);
-       	var output = "";
-       	output = output + "<option value=''>Select Vendor Contact</option>";
-       	for (var i=0; i<json.length; i++)
-			{
-	        var opt = json[i];
-	            // need to use in edit
-       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
-			}
-       	    $("#vendorContact").empty();
-	        $("#vendorContact").append(output);
-	        $('#vendorContact').trigger("chosen:updated");
-      },
-  });  
-	
+	if("" != orgRelationId){
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",      
+	       success :function(data) {
+	    	var json = JSON.parse(data);
+	       	var output = "";
+	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	for (var i=0; i<json.length; i++)
+				{
+		        var opt = json[i];
+		            // need to use in edit
+	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+	       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+				}
+	       	    $("#vendorContact").empty();
+		        $("#vendorContact").append(output);
+		        $('#vendorContact').trigger("chosen:updated");
+	      },
+	  });  
+	}else{
+		var output = "";
+		output = output + "<option value=''>Select Vendor Contact</option>";
+		$("#vendorContact").empty();
+        $("#vendorContact").append(output);
+        $('#vendorContact').trigger("chosen:updated");
+	}
 }
 
 function getClientContacts(){
 	
 	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+	if("" != orgRelationId){
+		var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
+		success :function(data) {
+		var json = JSON.parse(data);
+		var output = "";
+		output = output + "<option value=''>Select Client Contact</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		// need to use in edit
+		//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+		}
+		$("#clientContact").empty();
+		$("#clientContact").append(output);
+		$('#clientContact').trigger("chosen:updated");
+		},
+		});
+	}else{
+		var output = "";
+		output = output + "<option value=''>Select Client Contact</option>";
+		$("#clientContact").empty();
+		$("#clientContact").append(output);
+		$('#clientContact').trigger("chosen:updated");
 	}
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	},
-	});
-
 	}
 </script>
 
@@ -913,6 +927,10 @@ function contractTypeLabels(){
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 	}
 	getContractTemplates();
+	
+	$("#flatReward").val("");
+    $("#billingRateType").val('${currencyCode}').trigger('change');
+    $("#billingRatePer").val("").trigger('change');
 }
 </script>
 
@@ -1015,7 +1033,7 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Requirement ---</option>';
+	            	  result = result + '<option value="">Select Requirement</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
@@ -1039,14 +1057,18 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
-		$.ajax({
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
+	    $.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
@@ -1058,7 +1080,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
@@ -1075,12 +1097,15 @@ function hideCommonSOWFields(){
 	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
 	    });
-
 	}
 	
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
@@ -1092,6 +1117,12 @@ function hideCommonSOWFields(){
 	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
 	            	  $("#flatReward").val("");
 	            	  $("#flatReward").val(json.amount);
+	            	  
+	            	  $("#billingRateType").val("");
+	            	  $("#billingRateType").val(json.paymentType).trigger('change');
+	            	  
+	            	  $("#billingRatePer").val("");
+	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
 	              }
 	       },
 	    });

@@ -100,7 +100,7 @@
             <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="submissionOffersListDiv">
-                  <select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
+                  <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
                   </select>
               </div>
             </div>
@@ -214,7 +214,12 @@
               </div>
             </div>
         
-            
+            <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+	              <label class="col-md-4">Offer Rate</label>
+	              <div class="col-md-8">
+	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
+	              </div>
+            </div>
                           
             <div class="form-group">
               <label class="col-md-4">Description</label>
@@ -484,53 +489,67 @@ function toDate(selector) {
 function getVendorContacts(){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	 var orgRelationId = $("#orgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-      type : "GET",
-       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
-       success :function(data) {
-    	var json = JSON.parse(data);
-       	var output = "";
-       	output = output + "<option value=''>Select Vendor Contact</option>";
-       	for (var i=0; i<json.length; i++)
-			{
-	        var opt = json[i];
-	            // need to use in edit
-       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	        output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
-			}
-       	    $("#vendorContact").empty();
+	 if("" != orgRelationId){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
+	       success :function(data) {
+	    	var json = JSON.parse(data);
+	       	var output = "";
+	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	for (var i=0; i<json.length; i++)
+				{
+		        var opt = json[i];
+		            // need to use in edit
+	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+		        output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+				}
+	       	    $("#vendorContact").empty();
+		        $("#vendorContact").append(output);
+		        $('#vendorContact').trigger("chosen:updated");
+	      },
+	  });  
+	 }else{
+			var output = "";
+			output = output + "<option value=''>Select Vendor Contact</option>";
+			$("#vendorContact").empty();
 	        $("#vendorContact").append(output);
 	        $('#vendorContact').trigger("chosen:updated");
-      },
-  });  
-	
+		}
 }
 
 function getClientContacts(){
 	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+	if("" != orgRelationId){
+		var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
+		success :function(data) {
+		var json = JSON.parse(data);
+		var output = "";
+		output = output + "<option value=''>Select Client Contact</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		// need to use in edit
+		//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+		}
+		$("#clientContact").empty();
+		$("#clientContact").append(output);
+		$('#clientContact').trigger("chosen:updated");
+		},
+		});
+	}else{
+		var output = "";
+		output = output + "<option value=''>Select Client Contact</option>";
+		$("#clientContact").empty();
+		$("#clientContact").append(output);
+		$('#clientContact').trigger("chosen:updated");
 	}
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	},
-	});
-
 	}
 </script>
 
@@ -869,6 +888,10 @@ function contractTypeLabels(){
 			$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 		}
 		getContractTemplates();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 	}
 </script>
 
@@ -901,6 +924,9 @@ function hideCommonSOWFields(){
 	$('#submissionOffersList').attr('data-validation-optional',"true");
 	$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("offeredSubmissionDiv").style.display="none";
+	
+	$('#offerRate').val("");
+	document.getElementById("offerRateDiv").style.display="none";
 	
 	$('#hoursPerWeek').val("");
 	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
@@ -970,16 +996,19 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Requirement ---</option>';
+	            	  result = result + '<option value="">Select Requirement</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
-	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
 	                  }
 	                  $("#requirementsList").empty();
 	                  $("#requirementsList").append(result);
 	                  $("#requirementsList").chosen();
 	              	  $("#requirementsList").trigger('chosen:update');
 	              }
+	              $('#requirementsList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("requirementDiv").style.display="block";
 	              $('#requirementsList').removeAttr('data-validation-optional');
 	  			  $('#requirementsList').attr("data-validation","required");
@@ -991,14 +1020,18 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
-		$.ajax({
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
+	    $.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
@@ -1010,7 +1043,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
@@ -1019,9 +1052,42 @@ function hideCommonSOWFields(){
 	              	  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	              	  $("#submissionOffersListDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>No Applicants found </p>");
 	              }
+	              $('#submissionOffersList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("offeredSubmissionDiv").style.display="block";
 	              $('#submissionOffersList').removeAttr('data-validation-optional');
 	  			  $('#submissionOffersList').attr("data-validation","required");
+	       },
+	    });
+
+	}
+	
+	function getOfferRate(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	  var json = JSON.parse(data);
+	            	  $("#offerRate").val("");
+	            	  document.getElementById("offerRateDiv").style.display="block";
+	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
+	            	  $("#flatReward").val("");
+	            	  $("#flatReward").val(json.amount);
+	            	  
+	            	  $("#billingRateType").val("");
+	            	  $("#billingRateType").val(json.paymentType).trigger('change');
+	            	  
+	            	  $("#billingRatePer").val("");
+	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
+	              }
 	       },
 	    });
 
