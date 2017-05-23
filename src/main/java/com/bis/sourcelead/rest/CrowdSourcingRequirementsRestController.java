@@ -454,6 +454,7 @@ public class CrowdSourcingRequirementsRestController {
 	
 	public void calculateDaysAndSkills(List<RequirementIndex> requirementList) throws ParseException {
 		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		 formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		for (RequirementIndex requirement : requirementList) {
 			long diff = commonUtil.currentDate().getTime() - formatter.parse(requirement.getCreatedDate()).getTime();
 			
@@ -1689,18 +1690,15 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementCity(rr.getRequirementId().getCity());
 						rr.setRequirementRate(rr.getRequirementId().getRate());
 						rr.setRequirementRateType(rr.getRequirementId().getRateType());
-						//rr.setSubmissionStatus(rs.getSubmissionStatus());
 						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
-						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
-						if(null != requirementRefer){
-							StringBuilder referredUser = new StringBuilder();
-							if(null != requirementRefer.getReferFromUser().getLastName()){
-								rr.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
-							}else{
-								rr.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
-							}
-							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						
+						StringBuilder referredUser = new StringBuilder();
+						if(null != rr.getReferFromUser().getLastName()){
+							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).append(" ").append(rr.getReferFromUser().getLastName()).toString());	
+						}else{
+							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).toString());
 						}
+						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
 						
 					}
 					refer.setReferToMeList(referedToMeJobs);

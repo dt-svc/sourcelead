@@ -132,7 +132,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
  margin-bottom: 0; margin-left: 0;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li {
-	transition: all 0.5s ease-in-out 0s; position: relative; padding: 17px 14px;
+	transition: all 0.5s ease-in-out 0s; position: relative; padding: 15px 14px;
 }
 .main-header .navbar .custom-navbar ul.custom-navbar-inner li a {
 	display: block; /* padding: 16.5px 14px; */ padding: 0;
@@ -1064,7 +1064,7 @@ padding: 10px 15px; border-bottom: 1px solid #f4f4f4; position: relative;
 	min-height: 180px;
 }
 .org-settings-area .tab-content {
-	padding-top: 25px; padding-bottom: 25px;
+	padding-top: 5px; padding-bottom: 25px;
 }
 /* users dashboard styles ends */
 
@@ -2861,7 +2861,7 @@ box-shadow: 0 8px 6px -8px #505050; border-radius: 5px; display: none;
 }
 .reason {
 	position:absolute; width:200px; top:10px; right:10px; padding:5px 10px; min-height: 20px; max-height: 200px; overflow-y:auto;
-    background: #fff; border:1px solid #ccc; border-radius:3px !important; z-index: 9999; color:#333; display:none; font-weight: normal;
+    background: #fff; z-index: 9999; color:#333; display:none; font-weight: normal;
     transition:all 0.2s;
 }
 .show-reason:hover .reason{
@@ -4339,7 +4339,7 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
     border:1px solid #ededed; -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px;
 }
 .resume-header .media-heading {
-    margin-bottom: 2px;
+    margin-bottom: 2px; font-size: 30px; text-transform: uppercase;
 }
 .resume-header .media-body p {
     font-size: 13px; line-height: 18px; margin-bottom: 2px;
@@ -4348,7 +4348,7 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
     border-bottom: 1px solid #f0ad4e; padding-bottom:0px;
 }
 .resume-header div.col-md-5 .pull-right li {
-padding-bottom: 5px; font-size: 13px;	
+padding-bottom: 2px; font-size: 13px;	
 }
 .resume-header .media-object {
     border-radius: 10px; border: 1px solid #ededed;
@@ -4378,6 +4378,12 @@ padding-bottom: 5px; font-size: 13px;
 }
 .resume-widget .description {
 font-size: 13px; display: none;
+}
+.resume-widget .pro_description {
+font-size: 13px; color: #616161;
+}
+.resume-widget .pro_description strong{
+    color:#333;
 }
 .resume-widget.resumewidget {
     border-left:transparent; padding-left: 0; border-bottom: 1px dotted #cfd8dc;
@@ -5256,10 +5262,10 @@ float: left; position: relative;top:5px; width: 10%;
 .selectpicker_maxheight .dropdown-menu {
    max-height: 230px !important;
 }
-.bootstrap_dropdownMenu ul {
+.dropdown-menu.bootstrap_dropdownMenu ul {
 padding: 0; float: none;
 }
-.bootstrap_dropdownMenu ul li{
+.dropdown-menu.bootstrap_dropdownMenu ul li{
 float: none !important; padding: 0; color: #333;
 }
 .close-div.closediv-small {

@@ -388,7 +388,12 @@ function getSubmissionDetails(requirementUUID){
 			        	   result = result +'         <td><div class="tbldata-dotdot-big proj_show"><div onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" class="tbldata-dotdot-me pull-left">'+report.candidateName+'</div><i class="fa fa-binoculars pull-right"></i></div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot-me">'+report.candidateEmail+'</div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.phoneNumber+'</div></td>';
-			        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.submissionStatus+'</div></td>';
+			        	   
+			        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+			        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+			        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+			        	   }	
+			        	   result = result + '</div></td>';
 			        	   result = result +'         </tr>';
 			        	   
 		  				}
