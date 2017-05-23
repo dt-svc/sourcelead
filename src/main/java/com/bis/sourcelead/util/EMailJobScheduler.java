@@ -1771,7 +1771,7 @@ public class EMailJobScheduler {
 			            	}
 			            	
 			       
-			            	if(!"FINALIZED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())||!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())||!"completed".equalsIgnoreCase(contracts.getContractStatus())){
+			            	if(!"FINALIZED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!"completed".equalsIgnoreCase(contracts.getContractStatus())){
 				            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
 				            	if(evp.getStatus().equalsIgnoreCase("completed")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
 				            		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
