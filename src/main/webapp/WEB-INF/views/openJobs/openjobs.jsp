@@ -178,7 +178,7 @@ display: none;}
 <section class="innerContent">
 <input type="hidden" name="openJobsOffset" id="openJobsOffset" value="0"/>
 		<div class="filter">
-			<h2>Fliter your search <i class="fa fa-refresh" aria-hidden="true" onclick="clearFilters();" style="cursor: pointer;"></i></h2>
+			<h2>Fliter your search <i class="fa fa-refresh" aria-hidden="true" onclick="clearFilters(); getOpenJobsELKList();" style="cursor: pointer;"></i></h2>
 			<div class="filterCta" id="dateFilterId">
 				<h3>Posted on<i class="fa fa-caret-down arrAc"></i></h3>
 				<ul id="show">
@@ -337,9 +337,10 @@ display: none;}
 			<div class="filLoad filLoad_a"><h2 class="gradi"></h2></div>
 				
 			</div>-->
-			<div class="noResults" id="noResultsDiv" style="display: none;"></div>
+<!-- 			<div class="noResults" id="noResultsDiv" style="display: none;"></div> -->
 			<div id="loadinggif"></div>
 			<div id= "openJobsRequirementsList"></div>
+			<div class="jobResultsNoRecords" id="noResultsDiv"></div>
 			<div id="loadMoreDiv"></div> 
 			<div class="loadJob" onClick="loadMoreReq();" id="loadMoreReq" style="display: block; cursor: pointer;">View more</div>
 			<div id= "openJobsRequirementsSummary"></div>
