@@ -122,7 +122,15 @@ public class Html2PdfUtil {
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client Contact]") || matchPattern.group().equalsIgnoreCase("[Vendor Contact]")){
 	                    matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Location]")){
-	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getCountry());
+	                	StringBuffer location = new StringBuffer();
+	                	if(null != contracts.getOrgLocationId().getCountry()&& !"".equalsIgnoreCase(contracts.getOrgLocationId().getCountry())){
+	            			location.append(contracts.getOrgLocationId().getCountry());
+	            		}else if(null != contracts.getOrgLocationId().getState()&& !"".equalsIgnoreCase(contracts.getOrgLocationId().getState())){
+	            			location.append(contracts.getOrgLocationId().getState());
+	            		}else if(null != contracts.getOrgLocationId().getCity()&& !"".equalsIgnoreCase(contracts.getOrgLocationId().getCity())){
+	            			location.append(contracts.getOrgLocationId().getCity());
+	            		}
+	                    matchPattern.appendReplacement(sb, location.toString());    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Name]")){
 	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrg().getOrgName());
 		            }else if(matchPattern.group().equalsIgnoreCase("[Associate Name]")){
