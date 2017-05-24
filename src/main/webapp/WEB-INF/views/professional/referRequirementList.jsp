@@ -54,7 +54,7 @@ $(document).ready(function() {
           <ul>
             <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
             </li>
-            <li id="contactLevel">
+            <!-- <li id="contactLevel">
 		                  <div id="contactsFilter"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="contactsFilterPop" class="approved_pop" style="display: none;">
 		                    	<ul>
@@ -66,7 +66,7 @@ $(document).ready(function() {
 		                        </ul>
 		                    </div>                	
 		                </li>
-            
+             -->
             
             
             <li><a href="javascript:void(0)" id="imCon"><i class="fa fa-plus"></i>Import Contacts</a></li>
@@ -142,7 +142,7 @@ function refercontactList(){
 			   	 result = result +'          <th class="emailWidth">Email Id</th>';
 			   	 result = result +'          <th>Phone No</th>';
 			   	 result = result +'          <th>Source</th>';
-			   	 result = result +'          <th>Action</th>'; 
+			   	/*  result = result +'          <th>Action</th>';  */
 			   	 result = result +'        </tr>';
 			   	result = result + '	     </thead>';
 			   	 result = result +'      <tbody>';
@@ -164,7 +164,7 @@ function refercontactList(){
 				   	 result = result +'<td><div class="text-left"><span class="mid-span">'+report.contactUserEmail+'</span></div></td>';
 				   	 result = result +'<td><div  class="tbldata-dotdot"><span>'+contactUserPhone+'</span></div></td>';
 				   	 result = result +'<td><div class="tbldata-dotdot-100"><span>'+report.contactSource+'</span></div></td>';
-				   	 result = result +'<td><div class="tbldata-dotdot-100"><span class="bg-blue status_contact paddingRight">Accepted</span><b title="Chat" class="text-success fa fa-comments"></b></div></td>'; 
+				   	/*  result = result +'<td><div class="tbldata-dotdot-100"><span class="bg-blue status_contact paddingRight">Accepted</span><b title="Chat" class="text-success fa fa-comments"></b></div></td>'; */ 
 				   	 result = result +'</tr>';
 			   }
 			   	 result = result +'      </tbody>';

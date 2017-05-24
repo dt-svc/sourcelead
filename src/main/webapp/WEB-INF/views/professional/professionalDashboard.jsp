@@ -701,10 +701,10 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 			  "type": "pie",
 			  "theme": "light",
 			  "dataProvider": [ {
-			    "title": "Refered\n To Me ("+referToMeJobs+")",
+			    "title": "Referred\n To Me ("+referToMeJobs+")",
 			    "value": referToMeJobs
 			  }, {
-			    "title": "Refered\n By Me ("+referByMeJobs+")",
+			    "title": "Referred\n By Me ("+referByMeJobs+")",
 			    "value": referByMeJobs
 			  }, {
 			    "title": "Applied ("+appliedJobs+")",
@@ -750,15 +750,15 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	    }],
 	    "startDuration": 0.5,
 	    "graphs": [{
-	        "balloonText": "Refered To Me: [[value]]",
+	        "balloonText": "Referred To Me: [[value]]",
 	        "bullet": "round",
-	        "title": "Refered To Me",
+	        "title": "Referred To Me",
 	        "valueField": "referedToMe",
 			"fillAlphas": 0
 	    }, {
-	        "balloonText": "Refered By Me: [[value]]",
+	        "balloonText": "Referred By Me: [[value]]",
 	        "bullet": "round",
-	        "title": "Refferd By Me",
+	        "title": "Referred By Me",
 	        "valueField": "referedByMe",
 			"fillAlphas": 0
 	    },{
