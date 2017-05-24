@@ -30,7 +30,7 @@
           <div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">
              
             <div class="form-group">
-	            <label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
+	            <label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
 	              <input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
 	             <span class="hidden">Company</span>
@@ -40,7 +40,7 @@
             <div class="form-group">
 	            <label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="form-control" />
+	              <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name=" Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="form-control" />
 	            <span class="hidden">Website</span>
 	            </div>
             </div>
@@ -66,7 +66,7 @@
                <div class="form-group">
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
+					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="timeZone" name="timeZone">
                      </select>
                      <span class="hidden">Time Zone</span>
 				</div>
@@ -75,6 +75,7 @@
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
             <div class="col-md-9 checkBox">
+            <div class="clearfix reMar">
 	            <c:forEach var="module" items="${modulesList}">
 	            <ul class="list-unstyled pull-left">
 	                <li>
@@ -94,9 +95,10 @@
 					 </li>
 				</ul>
 			    </c:forEach>
-            </div>
+			    </div>
             <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 
+            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 			    
+            </div>
           </div> 
           
           
@@ -108,7 +110,7 @@
             <div class="form-group">
 	            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Company Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
+	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
 	            <span class="hidden">Email</span>
 	            </div>
             </div>
@@ -357,18 +359,18 @@ function getUserDetails(){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
-	        			$("#firstName").attr("disabled", true);
+	        			$("#firstName").attr("readonly", "readonly");
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").removeAttr("readonly", "readonly");
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
-		        			$("#lastName").attr("disabled", true);
+		        			$("#lastName").attr("readonly", "readonly");
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").removeAttr("readonly", "readonly");
 	        			    $("#lastName").val('');
 	        		 }
 	        	}
@@ -378,10 +380,10 @@ function getUserDetails(){
 	        }
 	    });
 	}else{
-		$("#firstName").attr("disabled", false);
+		$("#firstName").removeAttr("readonly");
 	    $("#firstName").val('');
 	    
-	    $("#lastName").attr("disabled", false);
+	    $("#lastName").removeAttr("readonly");
 	    $("#lastName").val('');
 	    
 	   
