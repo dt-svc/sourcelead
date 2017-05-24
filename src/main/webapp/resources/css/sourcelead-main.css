@@ -5081,7 +5081,7 @@ padding: 15px 15px 25px 15px;
 /* Billing Dashboard css */
 .custom_search {
  position: absolute; top: 45px; right: 0; background: #ededed;  border: 1px solid #ddd; border-radius: 3px; z-index: 99;
- padding: 10px 15px; display: none; width: 400px;
+ padding: 5px 10px 10px 10px; display: none; width: 310px;
 }
 .closeSearch {
     color: #fff; position: relative; top: -19px; padding: 2px 5px;

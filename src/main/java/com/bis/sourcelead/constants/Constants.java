@@ -537,6 +537,10 @@ public class Constants {
 	public static String INVOICE_REJECTED = "Rejected";
 	public static String INVOICE_RECEIVED = "Received";
 	public static String INVOICE_STATUS_UNPAID = "Unpaid";
+	public static String INVOICE_STATUS_PAID = "Paid";
+	public static String INVOICE_STATUS_PARTIAL_PAID = "Partial Paid";
+	public static String INVOICE_SENT = "SENT";
+	
 	public static Long CANDIATE_RESUME_IN_ACTIVE = 0L;
 	// invoice
 	public static String[] INVOICE_PDF_HEADERS = { "Associate Name & Id", "Duration(From-To Date)",
