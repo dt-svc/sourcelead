@@ -2035,7 +2035,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
 				 String subQuery = "";
 			
-				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT' or reqSub.submissionStatus = 'CLIENT_INTERVIEW' or reqSub.submissionStatus = 'OFFERMADE')";
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and reqSub.submissionStatus = 'SUBMIT_TO_CLIENT' ";
 				params.put("loginOrgLocation",loginOrgLocationId);
 			
 			Query query = null;
