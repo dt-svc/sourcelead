@@ -488,5 +488,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	{
 		return orgRelationsDao.getAllClientsByOrgLocationIdAndDomain(orgLocationId,domain,responderType);
 	}
+
+	@Override
+	public OrgRelations getOrgRelationById(Long id) throws Exception {
+		return orgRelationsDao.getOrgRelationById(id);
+	}
 	
 }

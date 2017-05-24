@@ -1907,6 +1907,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
  	    	url : sourceleadUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	
+	        	
 	        	if('${resumesCount}' > 0){
 	        		$("#loading").removeAttr("style");
 		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
@@ -1926,9 +1927,8 @@ $('body').on('submit', '#applyToJob_form', function(e){
 		    			location.replace(sourceleadUrl+"/requirementProfileDetails?requirementUUID="+requirementUUID); 
 		    		}
 		    		
-		    		
 	        	}else{
-	        		 
+	        		location.replace(sourceleadUrl+"/professionalRequirements"); 
 	        	}
 	        },
 	    });  
