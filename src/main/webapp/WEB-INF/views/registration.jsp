@@ -336,6 +336,7 @@ window.onload = function () {
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="professionalRegistrationCheckTermsId">
                     I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+                    <input type="hidden" id="professionalRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
                     <button type="submit" id="register_button"  class="btn btn-primary btn_styles btn-block" title="Register">
@@ -403,6 +404,7 @@ window.onload = function () {
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="termsCheckoxId">
                     I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+                    <input type="hidden" id="recruiterRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
                     <button type="submit" id="recruiter_register"  class="btn btn-primary btn_styles btn-block" title="Register">
@@ -704,6 +706,11 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#professionalRegistration_form', function(e){
+        	  $("#professionalRegistrationErrorMsg").val('');
+        	  if($("#professionalRegistrationCheckTermsId").is(':checked')){
+        		  $("#professionalRegistrationErrorMsg").val('NO');
+        	  }
+        	 
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	var frm = $('#professionalRegistration_form').serializeFormJSON();
@@ -762,6 +769,10 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#recruiterRegistration_form', function(e){
+        	 $("#recruiterRegistrationErrorMsg").val('');
+       	  	if($("#termsCheckoxId").is(':checked')){
+       			  $("#recruiterRegistrationErrorMsg").val('NO');
+       	  		}
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	var frm = $('#recruiterRegistration_form').serializeFormJSON();
