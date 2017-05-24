@@ -338,7 +338,7 @@ function errRemoveClientContact(){
                    result = result +'  </div>';
                    
                    //New Div for currency conversion: srinivas l
-                   result = result +'  <div class="row">';
+                  /*  result = result +'  <div class="row">';
                    result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
                    
                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
@@ -346,7 +346,7 @@ function errRemoveClientContact(){
                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
                    
                    result = result +'  </div>';
-                   result = result +'  </div>';
+                   result = result +'  </div>'; */
                  //New Div for currency conversion: srinivas l
                    
                    result = result +'  </div>';
@@ -1195,7 +1195,7 @@ function pagination(){
   
   
   function  conversion(){
-	  alert("Hi");
+// 	  alert("Hi");
   }
   
   function calAddRowAmount(hours,minute,rowId){
