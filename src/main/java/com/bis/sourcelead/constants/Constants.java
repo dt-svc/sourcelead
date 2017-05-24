@@ -549,6 +549,24 @@ public class Constants {
 	public static String PAYABLE = "payable";
 	
 	
-;
+//	public static  String  COUNTRY_INDIA = "India";
+	public static final String COUNTRY_INDIA = "India";
+	public static final String COUNTRY_AUSTRALIA = "Australia";
+	public static final String COUNTRY_UNITEDSTATES = "United States";
+	public static final String COUNTRY_SINGAPORE = "Singapore";
+	public static final String COUNTRY_UNITEDKINGDOM = "United Kingdom";
+	public static final String COUNTRY_FRANCE = "France";
+	
+	public static final String CURRENCYCODE_INR = "INR";
+	public static final String CURRENCYCODE_AUD = "AUD";
+	public static final String CURRENCYCODE_USD = "USD";
+	public static final String CURRENCYCODE_SGD = "SGD";
+	public static final String CURRENCYCODE_GBP = "GBP";
+	public static final String CURRENCYCODE_EUR = "EUR";
+	
+	
+	
+	
+	
 	
 }
