@@ -39,6 +39,6 @@ public interface InvoiceService {
 
 	void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType)throws Exception;
 
-	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice) throws Exception;
+	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType) throws Exception;
 
 }
