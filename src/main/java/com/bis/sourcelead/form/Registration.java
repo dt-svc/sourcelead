@@ -23,6 +23,8 @@ public class Registration {
 	
 	private String timeZone;
 	
+	private String mobilePhone;
+	
 	
 	
 	
@@ -105,6 +107,14 @@ public class Registration {
 
 	public void setVerificationCode(String verificationCode) {
 		this.verificationCode = verificationCode;
+	}
+
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
 	}
 	
 	

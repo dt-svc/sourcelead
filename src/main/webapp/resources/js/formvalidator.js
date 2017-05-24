@@ -1339,7 +1339,7 @@ jQueryFormUtils.LANG =  {
 	badNumberAlphabet:'Allows Only Alphanumeric and must start with a Number',
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
-	badDoc:'Invalid Document Type Use .doc,pdf,txt,docx formats only',
+	badDoc:'doc,docx,pdf,txt formats allowed',
 	badFileFormat:'Invalid Image Format Use .doc,pdf,txt,docx,jpeg,jpg,gif,png formats only',
 	badResume:'Invalid Resume Type Use .doc,.docx,.pdf,.rtf formats only',
 	badPdf:'Invalid Document Type Use .PDF formats only',

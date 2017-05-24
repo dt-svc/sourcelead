@@ -103,7 +103,7 @@
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/professionalDashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/recruiterDashboard'" >
 							</div>
 					  </div>
 			 </div>
