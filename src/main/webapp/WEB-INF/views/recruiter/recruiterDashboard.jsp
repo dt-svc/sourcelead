@@ -91,7 +91,7 @@ $(document).ready(function(){
 						  </div>
 		 		   </div>
 		 		  </div>
-	 		   <div class="content-new clearfix mt25">
+	 		   <div class="content-new clearfix">
 	             <div id="jobSummary"> </div>
 	          </div>
       </div></div>
@@ -260,9 +260,9 @@ $(document).ready(function(){
 	        "valueField": "submittedByMe",
 			"fillAlphas": 0
 	    }, {
-	        "balloonText": "Refered By Me: [[value]]",
+	        "balloonText": "Referred By Me: [[value]]",
 	        "bullet": "round",
-	        "title": "Refferd By Me",
+	        "title": "Referred By Me",
 	        "valueField": "referedByMe",
 			"fillAlphas": 0
 	    },{
@@ -338,7 +338,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 			    "title": "Submitted\n By Me ("+submittedByMeJobs+")",
 			    "value": submittedByMeJobs
 			  }, {
-			    "title": "Refered\n By Me ("+referByMeJobs+")",
+			    "title": "Referred\n By Me ("+referByMeJobs+")",
 			    "value": referByMeJobs
 			  }, {
 			    "title": "Applied ("+appliedJobs+")",

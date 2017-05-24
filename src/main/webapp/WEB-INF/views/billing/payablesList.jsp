@@ -18,6 +18,12 @@ $(document).ready(function(){
 .invoiceId_Anchor a {
 color:#337ab7 !important;
 }
+.successBtn {
+background-color: #1ab394;
+border-color: #1ab394;
+cursor: pointer; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+font-size: 13px; width: 75px;
+}
 </style>
 
 <section class="content-wraper">
@@ -637,7 +643,7 @@ function getPayableInvoiceList(){
 				
 				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" title="Pay" >Pay</span> </td>          ';	
+						result = result +'           <span class="text-primary successBtn primary pull-left" title="Pay" >Paid</span> </td>          ';	
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
@@ -919,7 +925,7 @@ function customDate(){
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" placeholder="Start Date">                   ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';
-	result = result +'   <div class="col-md-5 paddingLeft" id="errEndDate">                                                                                            ';
+	result = result +'   <div class="col-md-5 paddingLeft paddingRight" id="errEndDate">                                                                                            ';
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" placeholder="End Date">                       ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';

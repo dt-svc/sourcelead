@@ -35,7 +35,7 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left" id="invoiceIdHidden" style="display:none">
-          <h2>Inovice : <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
+          <h2>Inovice Id: <span><input class="ReadTextFliA" id="invoiceIdDiv" readonly="readonly"></span></h2>
       </div>
       
       <div class="pull-left" id="BillIdHidden" style="display:none">
