@@ -1470,7 +1470,7 @@ function requirementPipeline(requirementId){
 						   <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
-								 <select class="chosen-select" name="country" id="country" field-name="Country" onchange="getStates();" >
+								 <select class="chosen-select" name="country" id="country" field-name="Country">
 								     <c:forEach var="cntry" items="${countryList}">
 							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 						                </c:forEach>
@@ -2148,80 +2148,20 @@ $('body').on('blur', '#requirement_form', function() {
 
 
 <script type="text/javascript">
-    	   var config = {
+    	   /* var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
     				  '.chosen-select-no-single' : {disable_search_threshold:10},
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
-    	   }
+    	   } */
+    	   
+    	   
 			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
-		    select = $("#anyKeyWord");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var anyofKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#anyKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#anyKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    var selectone, chosenone;
-		    selectone = $("#allReqKeyWord");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var allofKeyWord = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(allofKeyWord).text(allofKeyWord);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#allReqKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#allReqKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#excludeReqKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
-		    {
-		    	var excludeKeyWord = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyWord).text(excludeKeyWord);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeReqKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeReqKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
 		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
-		       });
+		       }); 
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
@@ -2236,12 +2176,12 @@ $('body').on('blur', '#requirement_form', function() {
 
 <script>
 function loadChosenRequirementScripts(){
-	 $('#country').val('${loginCountryName}'); 
-     $('#state').val(''); 
-     $('#city').val('');
-     $("#anyKeyWord").val('').trigger("chosen:updated");
+	
+     $("#city").empty();
+	 $("#city").val('').trigger("chosen:updated");
+   /*   $("#anyKeyWord").val('').trigger("chosen:updated");
 	 $("#allReqKeyWord").val('').trigger("chosen:updated");
-	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
+	 $("#excludeReqKeyWord").val('').trigger("chosen:updated"); */
 	 $("#requirementTitle").val('').trigger("chosen:updated");
 	 $("#rate").val('').trigger("chosen:updated");
 	 $("#minExp").val('').trigger("chosen:updated");
@@ -2252,9 +2192,9 @@ function loadChosenRequirementScripts(){
 	 $("#client").val('').trigger("chosen:updated");
 	 $("#skills").val('').trigger("chosen:updated"); 
 	 
-	 $("#anyKeyWord").empty();
+	/*  $("#anyKeyWord").empty();
 	 $("#allReqKeyWord").empty();
-	 $("#excludeReqKeyWord").empty();
+	 $("#excludeReqKeyWord").empty(); */
 }
 </script>
 
