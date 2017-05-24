@@ -253,6 +253,7 @@ function toDate(selector) {
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
+
 	  <div class="reportBtn">
 		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
 <!-- 		 <option value="">select</option> -->
@@ -291,7 +292,7 @@ function toDate(selector) {
    <div class="reportA">
           <label>Owner</label>
           <div class="reportAChoo">
-           <select multiple data-placeholder="select owner" class="chosen-select"   name="user" id="user" >
+           <select multiple data-placeholder="Select Owner" class="chosen-select"   name="user" id="user" >
                 <c:forEach var="user" items="${ownersList}">
             			  <option value="${user.userCode}">${user.firstName} ${user.lastName}</option>
                 </c:forEach>
