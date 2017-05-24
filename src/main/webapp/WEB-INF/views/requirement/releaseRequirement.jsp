@@ -636,7 +636,7 @@ function getRewardType(rewardType){
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
 	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
-    	$('#percentageRewardValue').attr("data-validation","required validate_float");  
+    	$('#percentageRewardValue').attr("data-validation","required validate_int");  
 		$('#percentageRewardValue').removeAttr('data-validation-optional');
 	    $('#flatRewardValue').removeAttr('data-validation');
 	    $('#flatRewardValue').attr("data-validation-optional","true"); 
@@ -652,7 +652,7 @@ function getRewardType(rewardType){
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
 		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
-		$('#flatRewardValue').attr("data-validation","required validate_float");
+		$('#flatRewardValue').attr("data-validation","required validate_int");
 		$('#flatRewardValue').removeAttr('data-validation-optional');
 		$('#percentageRewardValue').removeAttr('data-validation');
 		$('#percentageRewardValue').attr("data-validation-optional","true"); 

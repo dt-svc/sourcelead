@@ -4790,19 +4790,21 @@ function getRateListDiv(submissionId, candidateId){
           		 else if (data.indexOf('exception') >= 0) {
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }else{
-          			var expectedRate = json[0].expectedRate;
+          			var expectedRate = json[0].expectedRateRN;
           			if(expectedRate != null && expectedRate != '' && expectedRate != 'undefined'){
           				expectedRate = expectedRate;
           			}else{
           				expectedRate = ""
           			}
-          			var expectedRateType =json[0].expectedRateType;
+          			var expectedRateType =json[0].expectedRateTypeRN;
+          			var toggleER = "";
           			if(expectedRateType != null && expectedRateType != '' && expectedRateType != 'undefined'){
           				expectedRateType = expectedRateType;
           			}else{
           				expectedRateType ="";
+          				toggleER = 'style="display: none"';
           			}
-          			var expectedRatePer =json[0].expectedRatePer;
+          			var expectedRatePer =json[0].expectedRatePerRN;
           			if(expectedRatePer != null && expectedRatePer != '' && expectedRatePer != 'undefined'){
           				expectedRatePer = expectedRatePer;
           			}else{
@@ -4810,7 +4812,7 @@ function getRateListDiv(submissionId, candidateId){
           			}
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-      			         result = result + '<p><strong>Rate Negotiation History </strong> <strong>&nbsp;&nbsp;Expected Rate</strong> :'+expectedRateType+' &nbsp; '+expectedRate+'  &nbsp; '+expectedRatePer+'</p>';
+      			         result = result + '<p><strong>Rate Negotiation History </strong> <span class="pull-right paddingRight" '+toggleER+'><strong>Expected Rate</strong>: '+expectedRateType+'&nbsp;'+expectedRate+'&nbsp;'+expectedRatePer+'<span></p>';
          			     result = result + '<section class="tbl-scroll require_wrap_table">';
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';
@@ -5487,24 +5489,34 @@ function customizeScore(requirementId){
 		    		    select = $("#customizeSkills");
 		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    		    chosen = select.data('chosen');
+		    		   
 		    		    chosen.search_field.on('keyup', function(e)
-		    		    {
-		    		    	var newSkill = this.value.replace(",","");
-		    		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		    		        {
-		    		        	var par = this.parent;
-		    		            var option = $("<option>").val(newSkill).text(newSkill);
-		    		            select.append(option);
-		    		            select.find(option).prop('selected', true);
-		    		          //to doesn't allow duplicates
-		                        $("#customizeSkills option").each(function(){
-		                              $(this).siblings("[value='"+ this.value+"']").remove();
-		                        });
-		                        //end
-		    	        		$("#customizeSkills").trigger("chosen:updated");
-		    	        		
-		    		        }
-		    		    });
+		    				    {
+		    				    	   var skillsArray = this.value.split(",");
+		    					    	 if(skillsArray.length > 1){
+		    				        		 for (var i=0; i < skillsArray.length; i++) {
+		    				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+		    				        			 select.append(option);
+		    				 		             select.find(option).prop('selected', true);
+		    				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+		    				 	        		 $("#customizeSkills").trigger("chosen:updated");
+		    				                 }
+		    					    	 }else{
+		    				    			var newSkill = this.value.replace(","," ");
+		    				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    				                {
+		    				    				 var option = $("<option>").val(newSkill).text(newSkill);
+		    				                     select.append(option);
+		    				                     select.find(option).prop('selected', true);
+		    				                     $("#customizeSkills option").each(function(){
+		    				                         $(this).siblings("[value='"+ this.value+"']").remove();
+		    				                   });
+		    				                   $("#customizeSkills").trigger("chosen:updated");
+		    				                }
+		    						       
+		    			    	         }
+		    		    	});
+		    		    
 		    		    //Adding Customized Skills to the list
 		    		    
 		    		    
