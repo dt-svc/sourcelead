@@ -168,6 +168,9 @@ public class Html2PdfUtil {
 		            	if(null != contracts.getEndDate()){
 		            		matchPattern.appendReplacement(sb, Constants.DF_DMY.format(contracts.getEndDate()));
 		            	}
+		            	else{
+		            		matchPattern.appendReplacement(sb,"");
+		            	}
 		            }  
 		            else if(matchPattern.group().equalsIgnoreCase("[State Of Jurisdiction]")){
 		            	if(null != contracts.getStateJurisdiction()){
