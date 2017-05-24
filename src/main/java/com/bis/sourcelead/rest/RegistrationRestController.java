@@ -221,13 +221,21 @@ public class RegistrationRestController {
 	 			primaryUser.setFirstName(jsonObj.getString("primaryUserFirstName"));
 	 		 }
 	 		 
-	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
+	 		 if(jsonObj.has("primaryUserLastName") && !isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
 		 			primaryUser.setLastName(jsonObj.getString("primaryUserLastName"));
+	 		 }else{
+	 			primaryUser.setLastName(null);
 	 		 }
 	 		 
 	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserEmail"))){
 		 			primaryUser.setEmail(jsonObj.getString("primaryUserEmail"));
 		 			primaryUser.setUserName(jsonObj.getString("primaryUserEmail"));
+	 		 }
+	 		 
+	 		 if(jsonObj.has("mobilePhone") && !isNullOrEmpty(jsonObj.getString("mobilePhone"))){
+	 			primaryUser.setMobilePhone(jsonObj.getString("mobilePhone"));
+	 		 }else{
+	 			primaryUser.setMobilePhone(null);
 	 		 }
 	 		 
 	 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
