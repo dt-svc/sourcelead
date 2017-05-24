@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <script src="resources/js/formvalidator.js"></script>
 <!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
@@ -37,26 +38,33 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();getContractTemplates();flush();" data-validation="required" field-name="Contract Type">
-                    <option value=''>Contract Type</option>
-                    <option>Client MSA</option>
-                    <option>Vendor MSA</option>
-                    <option>Client SOW</option>
-                    <option>Vendor SOW</option>
-                    <option>NDA</option>
-                    <option>NSA</option>
-                  </select>
+                  <c:choose>
+				    <c:when test="${!empty contract.contractType}">
+				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
+				    </c:when>
+				    <c:otherwise>
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option>Client MSA</option>
+		                    <option>Vendor MSA</option>
+		                    <option>Client SOW</option>
+		                    <option>Vendor SOW</option>
+		                    <option>NDA</option>
+		                    <option>NSA</option>
+		                 </select>
+				    </c:otherwise>
+				 </c:choose>
             </div>
             </div>	
              <div class="form-group">
               <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
 							
-							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .doc, pdf, txt, docx formats only">
+							<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_Space validatedoc">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
 	                        </div>
 	                        <!-- <p class="text-muted pull-right small"><i class="fa fa-info-circle"></i>Please upload PDF type doc.</p> -->
               </div>
@@ -92,7 +100,7 @@
             <div class="form-group" id="offeredSubmissionDiv" style="display: none;">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="submissionOffersListDiv">
-                  <select class="form-control" id="submissionOffersList" name="submissionOffersList" field-name="Applicant">
+                  <select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
                   </select>
               </div>
             </div>
@@ -132,52 +140,86 @@
               </div>
             </div>
           
-         <div class="form-group" id="vendorDiv" style="display: none;">
+         <div class="form-group" id="vendorDiv" style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="required" field-name="Vendor Name">
+              <div class="col-md-8" id="errorVendor">
+                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
                     <option value=''>Select Vendor</option>
                    <c:forEach var="orgrelations" items="${orgRelationsList}">
-                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
+                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
-                  
-                   <!--  <option>Vendor-1</option>
-                    <option>Vendor-2</option>
-                    <option>Vendor-3</option> -->
                   </select>
               </div>
           </div>                      
                       
-            <div class="form-group" id="vendorContactDiv"  style="display: none;">
+            <div class="form-group" id="vendorContactDiv"  style="display: ${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                  <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
-                   <option value=''>Select Vendor Contact</option></select>
+              <div class="col-md-8" id="errorvendorContact">
+              		<c:choose>
+	              		<c:when test="${fn:length(orgSpocList) gt 0}">
+		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+							    <option value=''>Select Vendor Contact</option>
+							    <c:forEach var="element" items="${orgSpocList}" >
+							    	<c:if test = "${element.tempOwnerId == contract.contactUser.id}">
+								         <option selected value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
+								    </c:if>
+								    <c:if test = "${element.tempOwnerId != contract.contactUser.id}">
+								         <option value="${element.tempOwnerId}">${element.spocName} (${element.ownerUser.firstName})</option>
+								    </c:if>
+								</c:forEach>
+							</select>
+					    </c:when>
+					    <c:otherwise>
+					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact" onchange="removeVendorContactValidation();">
+					        <option value=''>Select Vendor Contact</option></select>
+					    </c:otherwise>
+					 </c:choose>
               </div>
             </div>
             
             
-             <div class="form-group" id="clientDiv" style="display: none;">
+             <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="required" field-name="Client Name">
+              <div class="col-md-8" id="errorClient">
+                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
-                         <option value="${orgrelations.id}">${orgrelations.orgName}</option>
+                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
                   </select>
               </div>
           </div>                      
                       
-            <div class="form-group" id="clientContactDiv" style="display: none;">
+            <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                  <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
-                  <option value=''>Select Client Contact</option></select>
+              <div class="col-md-8" id="errorClientContact">
+              		<c:choose>
+	              		<c:when test="${fn:length(orgSpocList) gt 0}">
+		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+							    <c:forEach var="element" items="${orgSpocList}" >
+							    	<c:if test = "${element.spocUserId == contract.contactUser.id}">
+								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
+								    </c:if>
+								    <c:if test = "${element.spocUserId != contract.contactUser.id}">
+								         <option value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
+								    </c:if>
+								</c:forEach>
+							</select>
+					    </c:when>
+					    <c:otherwise>
+					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="removeValidationClientContact();">
+					        <option value=''>Select Client Contact</option></select>
+					    </c:otherwise>
+					 </c:choose>
               </div>
             </div>
         
-            
+            <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+	              <label class="col-md-4">Offer Rate</label>
+	              <div class="col-md-8">
+	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
+	              </div>
+            </div>
                           
             <div class="form-group">
               <label class="col-md-4">Description</label>
@@ -445,53 +487,69 @@ function toDate(selector) {
 
 <script>
 function getVendorContacts(){
+	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	 var orgRelationId = $("#orgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-      type : "GET",
-       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,       
-       success :function(data) {
-    	var json = JSON.parse(data);
-       	var output = "";
-       	output = output + "<option value=''>Select Vendor Contact</option>";
-       	for (var i=0; i<json.length; i++)
-			{
-	        var opt = json[i];
-	            // need to use in edit
-       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	        output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
-			}
-       	    $("#vendorContact").empty();
+	 if("" != orgRelationId){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
+	       success :function(data) {
+	    	var json = JSON.parse(data);
+	       	var output = "";
+	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	for (var i=0; i<json.length; i++)
+				{
+		        var opt = json[i];
+		            // need to use in edit
+	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+		        output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+				}
+	       	    $("#vendorContact").empty();
+		        $("#vendorContact").append(output);
+		        $('#vendorContact').trigger("chosen:updated");
+	      },
+	  });  
+	 }else{
+			var output = "";
+			output = output + "<option value=''>Select Vendor Contact</option>";
+			$("#vendorContact").empty();
 	        $("#vendorContact").append(output);
 	        $('#vendorContact').trigger("chosen:updated");
-      },
-  });  
-	
+		}
 }
 
 function getClientContacts(){
+	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId,
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+	if("" != orgRelationId){
+		var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
+		success :function(data) {
+		var json = JSON.parse(data);
+		var output = "";
+		output = output + "<option value=''>Select Client Contact</option>";
+		for (var i=0; i<json.length; i++)
+		{
+		var opt = json[i];
+		// need to use in edit
+		//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+		}
+		$("#clientContact").empty();
+		$("#clientContact").append(output);
+		$('#clientContact').trigger("chosen:updated");
+		},
+		});
+	}else{
+		var output = "";
+		output = output + "<option value=''>Select Client Contact</option>";
+		$("#clientContact").empty();
+		$("#clientContact").append(output);
+		$('#clientContact').trigger("chosen:updated");
 	}
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	},
-	});
-
 	}
 </script>
 
@@ -639,6 +697,9 @@ function getContractTemplates(){
 	        $("#template").append(output);
 	        $('#template').trigger("chosen:updated"); 
      },
+     complete: function (data) {
+    	 flush(); 
+    }
  }); 
 	
 }
@@ -826,6 +887,11 @@ function contractTypeLabels(){
 			$('#overtimeRate').val("");
 			$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 		}
+		getContractTemplates();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
 	}
 </script>
 
@@ -858,6 +924,9 @@ function hideCommonSOWFields(){
 	$('#submissionOffersList').attr('data-validation-optional',"true");
 	$('#offeredSubmissionDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("offeredSubmissionDiv").style.display="none";
+	
+	$('#offerRate').val("");
+	document.getElementById("offerRateDiv").style.display="none";
 	
 	$('#hoursPerWeek').val("");
 	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
@@ -927,16 +996,19 @@ function hideCommonSOWFields(){
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Requirement ---</option>';
+	            	  result = result + '<option value="">Select Requirement</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
-	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+opt.spocName+'</option>';
 	                  }
 	                  $("#requirementsList").empty();
 	                  $("#requirementsList").append(result);
 	                  $("#requirementsList").chosen();
 	              	  $("#requirementsList").trigger('chosen:update');
 	              }
+	              $('#requirementsList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("requirementDiv").style.display="block";
 	              $('#requirementsList').removeAttr('data-validation-optional');
 	  			  $('#requirementsList').attr("data-validation","required");
@@ -948,14 +1020,18 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
-		$.ajax({
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
+	    $.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
 	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
@@ -967,7 +1043,7 @@ function hideCommonSOWFields(){
 	              	  $("#submissionOffersList").trigger('chosen:update');
 	              }else{
 	            	  var result = "";
-	            	  result = result + '<option value="">--- Select Candidate ---</option>';
+	            	  result = result + '<option value="">Select Candidate</option>';
 	            	  $("#submissionOffersList").empty();
 	            	  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
@@ -976,9 +1052,42 @@ function hideCommonSOWFields(){
 	              	  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	              	  $("#submissionOffersListDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>No Applicants found </p>");
 	              }
+	              $('#submissionOffersList')
+	                .find('option:first-child').prop('selected', true)
+	                .end().trigger('chosen:updated');
 	              document.getElementById("offeredSubmissionDiv").style.display="block";
 	              $('#submissionOffersList').removeAttr('data-validation-optional');
 	  			  $('#submissionOffersList').attr("data-validation","required");
+	       },
+	    });
+
+	}
+	
+	function getOfferRate(){
+		var sourceleadUrl ='${sourceleadUrl}';
+		var reqSubId = $("#submissionOffersList").val();
+		
+		$("#flatReward").val("");
+	    $("#billingRateType").val('${currencyCode}').trigger('change');
+	    $("#billingRatePer").val("").trigger('change');
+		$.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
+	         success :function(data) {
+	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+	            	  var json = JSON.parse(data);
+	            	  $("#offerRate").val("");
+	            	  document.getElementById("offerRateDiv").style.display="block";
+	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
+	            	  $("#flatReward").val("");
+	            	  $("#flatReward").val(json.amount);
+	            	  
+	            	  $("#billingRateType").val("");
+	            	  $("#billingRateType").val(json.paymentType).trigger('change');
+	            	  
+	            	  $("#billingRatePer").val("");
+	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
+	              }
 	       },
 	    });
 
