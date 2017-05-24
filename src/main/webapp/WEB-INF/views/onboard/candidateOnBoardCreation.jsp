@@ -853,6 +853,7 @@ function validateUploadFile(id)
 			    		 
 			    		 if(json['positionType'] == 'Other'){
 			    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+			    			 $("#employmentOtherType").val(json['otherPositionType']);
 			    			 $("#employmentOtherType").attr("data-validation", "required");
 			    			 $("#employmentOtherType").removeAttr("data-validation-optional");
 			    		 }else{

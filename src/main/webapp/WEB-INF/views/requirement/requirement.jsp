@@ -920,7 +920,7 @@ $(document).ready(function () {
                 <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
                 
-                 <i class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
+                  <i id="navbar" class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                
@@ -1955,6 +1955,20 @@ function removeApprovers(){
 	
 	$('#sequentialApprover2').val('');
 	$('#sequentialApprover2').trigger('chosen:updated');
+	
+	
+	if(!$("#apprverReq").is(':checked')){
+	     
+        $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+    } 
+
+else{
+	
+	
+	 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
+	
+	
+}
 	
 	
 	

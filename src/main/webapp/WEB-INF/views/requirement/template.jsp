@@ -75,9 +75,11 @@ function requirementTemplateList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; 
+	                    	 result = result +"<td><div class='proj_show tbldata-dotdot'>";
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +'<td><div class="proj_show tbldata-dotdot"><a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-binoculars"></i></span></a></div></td>';
+		                     	result = result +'<a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'<i class="fa fa-binoculars"></i></span></a>';
 		                     '</sec:authorize>';
+		                     result = result +"</div></td>";
 		                     if(null != opt.jobType && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 if(opt.jobType=='Other'){
 		                    		 result = result +"<td><div><span title="+opt.otherJobType+">"+opt.otherJobType+"</span></div></td>";
@@ -119,7 +121,11 @@ function requirementTemplateList(){
 		                     }else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
-		                     result = result +"<td><div><a id='edit-user' href='#' onClick='deleteRequirementTemplate("+opt.id+");'><i class='glyphicon glyphicon-trash'></i></div></td>";
+		                     result = result +"<td><div>";
+		                     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
+		                     	result = result +"<a id='edit-user' href='#' onClick='deleteRequirementTemplate("+opt.id+");'><i class='glyphicon glyphicon-trash'></i></a>";
+		                     '</sec:authorize>';
+		                     result = result +"</div></td>";
 		                    result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
