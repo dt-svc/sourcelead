@@ -1619,7 +1619,7 @@ function preparedContractListExpired(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<div class="tbldata-dotdot_80">';
-			     	if(report.templateSubmissionStatus == "EXPIRED"){
+			     	/* if(report.templateSubmissionStatus == "EXPIRED"){
 			     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 				     		if(report.typeOfContract == "New"){
@@ -1628,9 +1628,9 @@ function preparedContractListExpired(data){
 			     		'</sec:authorize>';
 			     		result = result + '</div>';
 		     	  }
-		     	  else{
+		     	  else{ */
 		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
-		     	  }
+// 		     	  }
 			         result = result + '</div></td>';
 		     	 
 		        result = result + '</tr>';
@@ -1690,7 +1690,7 @@ function preparedContractListExpired(data){
 	         opt = opt + '<td>';
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	     	  if(output.templateSubmissionStatus == "EXPIRED" ){
+	     	  /* if(output.templateSubmissionStatus == "EXPIRED" ){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
@@ -1699,9 +1699,9 @@ function preparedContractListExpired(data){
 	     		'</sec:authorize>';
 	     		opt = opt + '</div>';
 	     	  }
-	     	  else{
+	     	  else{ */
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
-	     	  }
+// 	     	  }
 	     		opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
