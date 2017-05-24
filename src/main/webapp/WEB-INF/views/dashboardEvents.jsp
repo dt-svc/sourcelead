@@ -500,7 +500,11 @@ function getRequirements(){
             	  result = result + '<option value="">--- Select Requirement ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
-                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+                 	var jobId = "";
+                 	if(null != opt.jobId && "" != opt.jobId && 'undefined' != opt.jobId){
+                 		jobId = " - "+opt.jobId;
+                 	}
+                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+jobId+'</option>';
                   }
                   $("#requirementsList").empty();
                   $("#requirementsList").append(result);
