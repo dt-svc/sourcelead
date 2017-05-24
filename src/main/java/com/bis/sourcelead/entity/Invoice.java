@@ -94,6 +94,10 @@ public class Invoice {
 	@Column(name = "TOTAL")
 	private String total;
 	
+	@Column(name = "CURRENCY_CODE")
+	private String currencyCode;
+	
+	
 	@Column(name = "DUE_AMOUNT")
 	private String dueAmount;
 	
@@ -757,6 +761,16 @@ public class Invoice {
 	public void setSubmissionApproverHierarchyIds(List<String> submissionApproverHierarchyIds)
 	{
 		this.submissionApproverHierarchyIds = submissionApproverHierarchyIds;
+	}
+
+	public String getCurrencyCode()
+	{
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode)
+	{
+		this.currencyCode = currencyCode;
 	}
 
 	
