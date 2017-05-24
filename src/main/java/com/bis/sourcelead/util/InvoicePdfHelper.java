@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,12 +11,15 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.elasticsearch.transport.TransportResponse.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
@@ -23,6 +27,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.itextpdf.text.Chunk;
@@ -65,8 +70,14 @@ public class InvoicePdfHelper {
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	
+	@Autowired
+	private CountriesService countriesService;
+	
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,String invoiceType) throws IOException, Exception
 	{
+		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+		String countryCurrency  = countries.getCurrency();
+		
 		File invoiceFile = new File(org.getOrgName() + "_" + invoice.getInvoiceId() + ".pdf");
 		if(invoiceType.equalsIgnoreCase("payable")){
 		//StringBuilder fileSB = new StringBuilder();
@@ -80,7 +91,7 @@ public class InvoicePdfHelper {
 			// save image file in pdf
 			document = addLogoToPdfFile(document, org);
 			Paragraph p;
-			p = new Paragraph("Billing ID :" + invoice.getInvoiceId(), font10);
+			p = new Paragraph("Billing Id :" + invoice.getInvoiceId(), font10);
 			p.setAlignment(Element.ALIGN_RIGHT);
 			document.add(p);
 			String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
@@ -131,54 +142,60 @@ public class InvoicePdfHelper {
 			table.setWidths(new int[] { 3, 5, 5, 3, 3, 3 });
 			table.addCell(getCell("Associate Id", Element.ALIGN_CENTER, font12b));
 			table.addCell(getCell("Associate Name", Element.ALIGN_CENTER, font12b));
-			table.addCell(getCell("Duration", Element.ALIGN_CENTER, font12b));
+			table.addCell(getCell("Date", Element.ALIGN_CENTER, font12b));
 			table.addCell(getCell("Rate", Element.ALIGN_CENTER, font12b));
 			table.addCell(getCell("Total Hours", Element.ALIGN_CENTER, font12b));
 			table.addCell(getCell("Total", Element.ALIGN_CENTER, font12b));
 			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
+
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-				table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_LEFT, font10));
+				Employees employeeId=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
+				if(null != employeeId.getEmployeeId() && !"".equalsIgnoreCase(employeeId.getEmployeeId())){
+					table.addCell(getCell(employeeId.getEmployeeId(), Element.ALIGN_CENTER, font10));
+				}else{
+					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+				}
 				StringBuffer name = new StringBuffer();
 				if (null != invoiceLineItems.getCandidate()) {
-					table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_LEFT, font10));
+					table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
 				}
 				else {
-					table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_LEFT, font10));
+					table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
 				}
 				StringBuffer startAndEndDate = new StringBuffer();
 				if (null != invoiceLineItems.getStartDate()
 						&& null != invoiceLineItems.getEndDate()) {
 					String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
 					String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
-					table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_CENTER, font10));
 				}
 				else if (null != invoiceLineItems.getStartDate()) {
 					String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-					table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 				}
 				else {
-					table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_CENTER, font10));
 				}
 				if (null != invoiceLineItems.getRate()
 						&& !"".equalsIgnoreCase(invoiceLineItems.getRate())) {
-					table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_CENTER, font10));
 				}
 				else {
-					table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 				}
 				if (null != invoiceLineItems.getTotalHours()
 						&& !"".equalsIgnoreCase(invoiceLineItems.getTotalHours())) {
-					table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_CENTER, font10));
 				}
 				else {
-					table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 				}
 				if (null != invoiceLineItems.getAmount()
 						&& !"".equalsIgnoreCase(invoiceLineItems.getAmount())) {
-					table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_CENTER, font10));
 				}
 				else {
-					table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 				}
 			}
 			
@@ -191,15 +208,15 @@ public class InvoicePdfHelper {
 				table.addCell(cell);
 				table.addCell(cell);
 				table.addCell(cell);
-				table.addCell(getCell("Sub Total", Element.ALIGN_RIGHT, font10b));
-				table.addCell(getCell(" "+invoice.getSubTotal(), Element.ALIGN_RIGHT, font10b));
+				table.addCell(getCell("Sub Total", Element.ALIGN_CENTER, font10b));
+				table.addCell(getCell(" " + countryCurrency  +invoice.getSubTotal(), Element.ALIGN_CENTER, font10b));
 			
 			document.add(table);
 			
 			document.add(getTotalsTable(invoice));
 			document.add(discountTotaltable(invoice));
 			
-			p= new Paragraph("Grand Total "+invoice.getTotal(), font12b);
+			p= new Paragraph("Grand Total: " + countryCurrency  +  invoice.getTotal(), font12b);
 	          p.setAlignment(Element.ALIGN_RIGHT );
 	          document.add(p);
 			document.add(Chunk.NEWLINE);
@@ -232,7 +249,7 @@ public class InvoicePdfHelper {
 				// save image file in pdf
 				document = addLogoToPdfFile(document, org);
 				Paragraph p;
-				p = new Paragraph("Invoice ID :" + invoice.getInvoiceId(), font10);
+				p = new Paragraph("Invoice Id :" + invoice.getInvoiceId(), font10);
 				p.setAlignment(Element.ALIGN_RIGHT);
 				document.add(p);
 				String createdDate = Constants.DF_DMY.format(invoice.getCreatedDate());
@@ -283,54 +300,60 @@ public class InvoicePdfHelper {
 				table.setWidths(new int[] { 3, 5, 5, 3, 3, 3 });
 				table.addCell(getCell("Associate Id", Element.ALIGN_CENTER, font12b));
 				table.addCell(getCell("Associate Name", Element.ALIGN_CENTER, font12b));
-				table.addCell(getCell("Duration", Element.ALIGN_CENTER, font12b));
+				table.addCell(getCell("Date", Element.ALIGN_CENTER, font12b));
 				table.addCell(getCell("Rate", Element.ALIGN_CENTER, font12b));
 				table.addCell(getCell("Total Hours", Element.ALIGN_CENTER, font12b));
 				table.addCell(getCell("Total", Element.ALIGN_CENTER, font12b));
 				Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-					table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_LEFT, font10));
+					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
+					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
+					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
+						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+					}else{
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+					}
 					StringBuffer name = new StringBuffer();
 					if (null != invoiceLineItems.getCandidate()) {
-						table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_LEFT, font10));
+						table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
 					}
 					else {
-						table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_LEFT, font10));
+						table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
 					}
 					StringBuffer startAndEndDate = new StringBuffer();
 					if (null != invoiceLineItems.getStartDate()
 							&& null != invoiceLineItems.getEndDate()) {
 						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
 						String endDate = Constants.DF_DMY.format(invoiceLineItems.getEndDate());
-						table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell(startAndEndDate.append(StartDate).append("to").append(endDate).toString(), Element.ALIGN_CENTER, font10));
 					}
 					else if (null != invoiceLineItems.getStartDate()) {
 						String StartDate = Constants.DF_DMY.format(invoiceLineItems.getStartDate());
-						table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell(startAndEndDate.append(StartDate).toString(), Element.ALIGN_CENTER, font10));
 					}
 					else {
-						table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell(startAndEndDate.append("--").toString(), Element.ALIGN_CENTER, font10));
 					}
 					if (null != invoiceLineItems.getRate()
 							&& !"".equalsIgnoreCase(invoiceLineItems.getRate())) {
-						table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell(invoiceLineItems.getRate(), Element.ALIGN_CENTER, font10));
 					}
 					else {
-						table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 					if (null != invoiceLineItems.getTotalHours()
 							&& !"".equalsIgnoreCase(invoiceLineItems.getTotalHours())) {
-						table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell(invoiceLineItems.getTotalHours(), Element.ALIGN_CENTER, font10));
 					}
 					else {
-						table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 					if (null != invoiceLineItems.getAmount()
 							&& !"".equalsIgnoreCase(invoiceLineItems.getAmount())) {
-						table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell(invoiceLineItems.getAmount(), Element.ALIGN_CENTER, font10));
 					}
 					else {
-						table.addCell(getCell("--", Element.ALIGN_RIGHT, font10));
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 				}
 				
@@ -343,15 +366,15 @@ public class InvoicePdfHelper {
 					table.addCell(cell);
 					table.addCell(cell);
 					table.addCell(cell);
-					table.addCell(getCell("Sub Total", Element.ALIGN_RIGHT, font10b));
-					table.addCell(getCell(" "+invoice.getSubTotal(), Element.ALIGN_RIGHT, font10b));
+					table.addCell(getCell("Sub Total", Element.ALIGN_CENTER, font10b));
+					table.addCell(getCell(" " + countryCurrency  +  invoice.getSubTotal(), Element.ALIGN_CENTER, font10b));
 				
 				document.add(table);
 				
 				document.add(getTotalsTable(invoice));
 				document.add(discountTotaltable(invoice));
 				
-				p= new Paragraph("Grand Total "+invoice.getTotal(), font12b);
+				p= new Paragraph("Grand Total: " + countryCurrency  +  invoice.getTotal(), font12b);
 		          p.setAlignment(Element.ALIGN_RIGHT );
 		          document.add(p);
 				document.add(Chunk.NEWLINE);
@@ -423,23 +446,24 @@ public class InvoicePdfHelper {
 		return cell;
 	}
 	
-	public PdfPTable getTotalsTable(Invoice invoice) throws DocumentException
+	public PdfPTable getTotalsTable(Invoice invoice) throws Exception
 	{
+		
 		PdfPTable table = new PdfPTable(4);
 		table.setWidthPercentage(100);
 		table.setWidths(new int[] { 4, 3, 3, 3 });
 		if(!invoice.getInvoiceTax().isEmpty()){
 		table.addCell(getCell("TAX", Element.ALIGN_CENTER, font12b));
 		table.addCell(getCell("Type", Element.ALIGN_CENTER, font12b));
-		table.addCell(getCell("Base amount:", Element.ALIGN_CENTER, font12b));
-		table.addCell(getCell("Tax amount:", Element.ALIGN_CENTER, font12b));
+		table.addCell(getCell("Base Amount", Element.ALIGN_CENTER, font12b));
+		table.addCell(getCell("Tax Amount", Element.ALIGN_CENTER, font12b));
 		//table.addCell(getCell("Currency Type", Element.ALIGN_LEFT, font12b));
 		Set<InvoiceTax> invoiveTaxDetails = invoice.getInvoiceTax();
 		for (InvoiceTax InvoiceTax : invoiveTaxDetails) {
-			table.addCell(getCell(InvoiceTax.getTaxName(), Element.ALIGN_RIGHT, font10));
-			table.addCell(getCell(InvoiceTax.getTaxType(), Element.ALIGN_RIGHT, font10));
-			table.addCell(getCell(InvoiceTax.getTaxValue(), Element.ALIGN_RIGHT, font10));
-			table.addCell(getCell(InvoiceTax.getTaxAmount(), Element.ALIGN_RIGHT, font10));
+			table.addCell(getCell(InvoiceTax.getTaxName(), Element.ALIGN_CENTER, font10));
+			table.addCell(getCell(InvoiceTax.getTaxType(), Element.ALIGN_CENTER, font10));
+			table.addCell(getCell(InvoiceTax.getTaxValue(), Element.ALIGN_CENTER, font10));
+			table.addCell(getCell(InvoiceTax.getTaxAmount(), Element.ALIGN_CENTER, font10));
 			//table.addCell(getCell("currency", Element.ALIGN_LEFT, font10));
 		}
 		/*
@@ -486,16 +510,17 @@ public class InvoicePdfHelper {
 		return table;
 	}*/
 	
-	private PdfPTable discountTotaltable(Invoice invoice) throws DocumentException
+	private PdfPTable discountTotaltable(Invoice invoice) throws Exception
 	{
+		
 		PdfPTable table = new PdfPTable(4);
 		table.setWidthPercentage(100);
 		table.setWidths(new int[] { 2,2, 2,2 });
 		if(invoice.getDiscountType() != null && invoice.getDiscountValue() != null){
-		table.addCell(getCell("Discount:", Element.ALIGN_LEFT, font12b));
-		table.addCell(getCell(" " + invoice.getDiscountType(), Element.ALIGN_RIGHT, font10));
-		table.addCell(getCell(" " + invoice.getDiscountAmount(), Element.ALIGN_RIGHT, font10));
-		table.addCell(getCell(" "+ invoice.getDiscountValue(), Element.ALIGN_RIGHT, font12b));
+		table.addCell(getCell("Discount", Element.ALIGN_CENTER, font12b));
+		table.addCell(getCell(" " + invoice.getDiscountType(), Element.ALIGN_CENTER, font10));
+		table.addCell(getCell(" " + invoice.getDiscountAmount(), Element.ALIGN_CENTER, font10));
+		table.addCell(getCell(" " + invoice.getDiscountValue(), Element.ALIGN_CENTER, font12b));
 		table.setSpacingAfter(20);
 		}
 			return table;
