@@ -108,6 +108,16 @@ public class RequirementRateSubmissionNegotiation {
 	
 	@Transient
 	private String expectedRatePer;
+	
+	/*expectedRateRN, expectedRateTypeRN, expectedRatePerRN are temp variables to keep expected rate for rate negotiation*/
+	@Transient
+	private String expectedRateRN;
+	
+	@Transient
+	private String expectedRateTypeRN;
+	
+	@Transient
+	private String expectedRatePerRN;
 
 	public Long getId() {
 		return id;
@@ -316,6 +326,30 @@ public class RequirementRateSubmissionNegotiation {
 
 	public void setSubmissionRateStatus(String submissionRateStatus) {
 		this.submissionRateStatus = submissionRateStatus;
+	}
+
+	public String getExpectedRateRN() {
+		return expectedRateRN;
+	}
+
+	public void setExpectedRateRN(String expectedRateRN) {
+		this.expectedRateRN = expectedRateRN;
+	}
+
+	public String getExpectedRateTypeRN() {
+		return expectedRateTypeRN;
+	}
+
+	public void setExpectedRateTypeRN(String expectedRateTypeRN) {
+		this.expectedRateTypeRN = expectedRateTypeRN;
+	}
+
+	public String getExpectedRatePerRN() {
+		return expectedRatePerRN;
+	}
+
+	public void setExpectedRatePerRN(String expectedRatePerRN) {
+		this.expectedRatePerRN = expectedRatePerRN;
 	}
 	
 }

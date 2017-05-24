@@ -4790,19 +4790,21 @@ function getRateListDiv(submissionId, candidateId){
           		 else if (data.indexOf('exception') >= 0) {
           			 location.replace(sourceleadUrl+"/errorPage");
           		 }else{
-          			var expectedRate = json[0].expectedRate;
+          			var expectedRate = json[0].expectedRateRN;
           			if(expectedRate != null && expectedRate != '' && expectedRate != 'undefined'){
           				expectedRate = expectedRate;
           			}else{
           				expectedRate = ""
           			}
-          			var expectedRateType =json[0].expectedRateType;
+          			var expectedRateType =json[0].expectedRateTypeRN;
+          			var toggleER = "";
           			if(expectedRateType != null && expectedRateType != '' && expectedRateType != 'undefined'){
           				expectedRateType = expectedRateType;
           			}else{
           				expectedRateType ="";
+          				toggleER = 'style="display: none"';
           			}
-          			var expectedRatePer =json[0].expectedRatePer;
+          			var expectedRatePer =json[0].expectedRatePerRN;
           			if(expectedRatePer != null && expectedRatePer != '' && expectedRatePer != 'undefined'){
           				expectedRatePer = expectedRatePer;
           			}else{
@@ -4810,7 +4812,7 @@ function getRateListDiv(submissionId, candidateId){
           			}
           			     var result = "";
       			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-      			         result = result + '<p><strong>Rate Negotiation History </strong> <strong>&nbsp;&nbsp;Expected Rate</strong> :'+expectedRateType+' &nbsp; '+expectedRate+'  &nbsp; '+expectedRatePer+'</p>';
+      			         result = result + '<p><strong>Rate Negotiation History </strong> <span class="pull-right paddingRight" '+toggleER+'><strong>Expected Rate</strong>: '+expectedRateType+'&nbsp;'+expectedRate+'&nbsp;'+expectedRatePer+'<span></p>';
          			     result = result + '<section class="tbl-scroll require_wrap_table">';
 	                     result = result + '  <table>';
 	                     result = result + '    <thead>';
