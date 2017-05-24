@@ -2122,7 +2122,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 			Session session = this.sessionFactory.getCurrentSession();
 			boolean flag = false;
-			String query ="from RequirementSubmission submission where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
+			String query ="from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
 			List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).setCacheable(true).list();
 			if(educationList !=null && educationList.size() >0){
 				flag = true;

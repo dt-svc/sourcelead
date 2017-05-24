@@ -270,7 +270,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
+        <div class="company_logo pull-left mb10"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
@@ -293,7 +293,7 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt">
+            <div class="row mt10">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
@@ -360,7 +360,7 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt">
+            <div class="row mt10">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
