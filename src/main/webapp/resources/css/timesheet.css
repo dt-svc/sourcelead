@@ -17,7 +17,7 @@ a { cursor:pointer;}
     height:auto;
     }
 .timesheet_head ul {
-    margin:0px 0px; padding: 2px 235px 2px 0px; float:right; height:auto;
+    margin:0px 0px; padding: 2px 235px 2px 0px; float:right; height:auto; margin-top: 5px;
     }
 .timesheet_head ul.no_search {
     padding: 2px 15px 2px 0px;
