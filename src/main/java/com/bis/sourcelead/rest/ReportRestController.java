@@ -318,16 +318,17 @@ public class ReportRestController {
 			}
 		
 	    List<OrgRelations> vendorslist = orgRelationService.getAllVendorsListByOrgLocationId(orgLocations.getId());
-	    int applicantsSum = 0;
-		int requestSentSum = 0;
-		int shortlistedSum = 0;
-		int submitToClientSum = 0;
-		int interviewsSum = 0;
-		int offeredSum = 0;
-		int rejectedSum = 0;
-		int backoutSum = 0;
-		long vendorLocationId = 0L;
+	    
 	    for(OrgRelations orgrel : vendorslist){
+	    	int applicantsSum = 0;
+			int requestSentSum = 0;
+			int shortlistedSum = 0;
+			int submitToClientSum = 0;
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int rejectedSum = 0;
+			int backoutSum = 0;
+			long vendorLocationId = 0L;
 	    	List<Requirement> reqList = requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(), orgrel.getId(),startDateUTC,endDateUTC);
 	    	if(orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 	    		vendorLocationId = orgrel.getLocationId().getId();
@@ -349,21 +350,21 @@ public class ReportRestController {
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
-							if("submission".equals(rsh.getToStage())){
+							if("submission".equalsIgnoreCase(rsh.getToStage())){
 								applicantsCount++;
-							}else if("shortList".equals(rsh.getToStage())){
+							}else if("shortList".equalsIgnoreCase(rsh.getToStage())){
 								shortlistedCount++;
-							}else if("interview".equals(rsh.getToStage())){
+							}else if("interview".equalsIgnoreCase(rsh.getToStage())){
 								interviewsCount++;
-							}else if("offer_made".equals(rsh.getToStage())){
+							}else if("offermade".equalsIgnoreCase(rsh.getToStage())){
 								offeredCount++;
-							}else if("request_sent".equals(rsh.getToStage())){
+							}else if("request_sent".equalsIgnoreCase(rsh.getToStage())){
 								requestSentCount++;
-							}else if("submit_to_client".equals(rsh.getToStage())){
+							}else if("submit_to_client".equalsIgnoreCase(rsh.getToStage())){
 								submitToClientCount++;
-							}else if("rejected".equals(rsh.getToStage())){
+							}else if("rejected".equalsIgnoreCase(rsh.getToStage())){
 								rejectedCount++;
-							}else if("backout".equals(rsh.getToStage())){
+							}else if("backout".equalsIgnoreCase(rsh.getToStage())){
 								backoutCount++;
 							}
 						}
@@ -448,18 +449,19 @@ public class ReportRestController {
 					
 				}
 			}
-	    int applicantsSum = 0;
-		int requestSentSum = 0;
-		int shortlistedSum = 0;
-		int submitToClientSum = 0;
-		int interviewsSum = 0;
-		int offeredSum = 0;
-		int rejectedSum = 0;
-		int backoutSum = 0;
+	    
 		List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(relationId, loginUser.getId(),orgLocations.getId(),"Vendor");
 		
 //	    List<OrgSpoc> vendorSpocsList = orgSpocService.getSpoclistByDomain(relationId,"");
 	    for(OrgSpoc spoc : orgSpocsList){
+	    	int applicantsSum = 0;
+			int requestSentSum = 0;
+			int shortlistedSum = 0;
+			int submitToClientSum = 0;
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int rejectedSum = 0;
+			int backoutSum = 0;
 	    	List<Requirement> reqList = requirementService.getTotalRequirementsReleasedToSpoc(relationId,spoc.getId(),startDateUTC,endDateUTC);
 	    	spoc.setReqReleasedCount(reqList.size());
 	    	   List<RequirementSubmission> reqSubmissionList = requirementSubmissionService.getVendorSpocSubmissions(spoc.getVendorUser().getUserCode(),orgLocations.getId(),startDateUTC,endDateUTC);
@@ -477,21 +479,21 @@ public class ReportRestController {
 						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 						if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 							for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
-								if("submission".equals(rsh.getToStage())){
+								if("submission".equalsIgnoreCase(rsh.getToStage())){
 									applicantsCount++;
-								}else if("shortList".equals(rsh.getToStage())){
+								}else if("shortList".equalsIgnoreCase(rsh.getToStage())){
 									shortlistedCount++;
-								}else if("interview".equals(rsh.getToStage())){
+								}else if("interview".equalsIgnoreCase(rsh.getToStage())){
 									interviewsCount++;
-								}else if("offer_made".equals(rsh.getToStage())){
+								}else if("offermade".equalsIgnoreCase(rsh.getToStage())){
 									offeredCount++;
-								}else if("request_sent".equals(rsh.getToStage())){
+								}else if("request_sent".equalsIgnoreCase(rsh.getToStage())){
 									requestSentCount++;
-								}else if("submit_to_client".equals(rsh.getToStage())){
+								}else if("submit_to_client".equalsIgnoreCase(rsh.getToStage())){
 									submitToClientCount++;
-								}else if("rejected".equals(rsh.getToStage())){
+								}else if("rejected".equalsIgnoreCase(rsh.getToStage())){
 									rejectedCount++;
-								}else if("backout".equals(rsh.getToStage())){
+								}else if("backout".equalsIgnoreCase(rsh.getToStage())){
 									backoutCount++;
 								}
 							}

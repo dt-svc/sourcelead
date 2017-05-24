@@ -57,7 +57,7 @@
         <div class="tabbable">
           <ul class="nav nav-tabs" id="tab_bar">
             <li class="active" onclick="loadOffboardingUser();"> <a href="#details" data-toggle="tab"> <i class="fa fa-th-list paddingRight"></i> <span>Details</span> <br>
-              <small>Employee details &amp; Postion details</small> </a> </li>
+              <small>Employee details &amp; Position details</small> </a> </li>
             <li onclick="getTemplateResignationDocumentsDetails();getTemplateOffboardPackDocumentsDetails();"><a href="#documents" data-toggle="tab" id="templateDocs"> <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
               <small>Acceptance &amp; Policy Documents</small> </a> </li>
              <li onclick="getOffboardingCheckList();"> <a href="#offboardCheckList" data-toggle="tab" id="checkList"> <i class="fa fa-check-square-o paddingRight"></i> <span>Check List</span> <br>

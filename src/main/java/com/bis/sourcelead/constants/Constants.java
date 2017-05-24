@@ -111,7 +111,8 @@ public class Constants {
 	public static String EMAIL_CAMPAIGN = "EmailCampaign";
 	public static String CLIENTORVENDORMAIL = "ClientOrVendorMail";
 	public static String CUSTOM_USER_EMAIL = "customUserEmail";
-	public static String INVOICE_CLIENT_ACCEPT_MAIL = "InvoiceClientAcceptEmail";
+	public static String INVOICE_CLIENT_RECEIVABLE_MAIL = "InvoiceClientAcceptEmail";
+	public static String INVOICE_CLIENT_PAYABLE_MAIL = "InvoiceClientPayableEmail";
 	public static String SUBMIT_TO_CLIENT = "Submit To Client";
 	public static String ADD_OFFER_MAIL = "Forward the Mail";
 	public static String NOTIFICATION_TO_CLIENT = "Notification To Client";
@@ -229,7 +230,7 @@ public class Constants {
 
 	public static String USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER="UserNewActionAssignedAsaProjectApproverUser";
 	
-	
+	public static String USER_NEW_ACTION_ASSIGNED_NOTIFICATION ="UserNewActionAssignedNotification";
 	public static String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
@@ -479,12 +480,12 @@ public class Constants {
 	public static String NOTICE_PERIOD_3MONTH = "3 Month";
 	public static String NOTICE_PERIOD_IMMEDIATELY = "Immediately available";
 	public static Integer EXPERIENCE_26YEARS = 26;
-	public static String RATE_TYPE_HOURLY = "Hourly";
-	public static String RATE_TYPE_WEEKLY = "Weekly";
-	public static String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
-	public static String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
-	public static String RATE_TYPE_MONTHLY = "Monthly";
-	public static String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
+	public static final String RATE_TYPE_HOURLY = "Hourly";
+	public static final String RATE_TYPE_WEEKLY = "Weekly";
+	public static final String RATE_TYPE_BI_WEEKLY = "Bi-weekly";
+	public static final String RATE_TYPE_SEMI_MONTHLY = "Semi-Monthly";
+	public static final String RATE_TYPE_MONTHLY = "Monthly";
+	public static final String RATE_TYPE_BI_MONTHLY = "Bi-Monthly";
 	public static String PROJECT = "Projects";
 	public static String USER = "User";
 	public static String REQUIREMENT = "Requirement";
@@ -546,5 +547,8 @@ public class Constants {
 	public static String TSNEW = "New";
 	public static String SENT = "SENT";
 	public static String PAYABLE = "payable";
+	
+	
+;
 	
 }

@@ -39,7 +39,7 @@ $(document).ready(function(){
       </div>
       
       <div class="pull-left" id="BillIdHidden" style="display:none">
-          <h2>Bill : <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
+          <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
       </div>
       
       <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
@@ -218,9 +218,9 @@ function getViewInvoice(){
 					result = result +'         <table width="100%" cellpadding="0" cellspacing="0">                  ';
 					result = result +'             <thead>                                                           ';
 					result = result +'                 <tr>                                                          ';
-					result = result +'                     <th>id</th>                                               ';
-					result = result +'                     <th>Candidate</th>                                        ';
-					result = result +'                     <th>SOW/POW</th>                                          ';
+					result = result +'                     <th>Id</th>                                               ';
+					result = result +'                     <th>Associates</th>                                        ';
+					result = result +'                     <th>SOW/PO</th>                                          ';
 					result = result +'                     <th>Date</th>                                             ';
 					result = result +'                     <th>Rate</th>                                             ';
 					result = result +'                     <th>Total Hours</th>                                      ';
@@ -230,7 +230,7 @@ function getViewInvoice(){
 					result = result +'             <tbody>                                                           ';
 					for (var j=0; j<report.invoiceLineItemsList.length; j++)
 		    		{
-						var items = report.invoiceLineItemsList[i]; 
+						var items = report.invoiceLineItemsList[j]; 
 						if(items.candidateName != null && items.candidateName != '' && items.candidateName != 'undefined'){
 							candidateName = items.candidateName;
 						}else{
@@ -347,8 +347,8 @@ function getViewInvoice(){
 				result = result +'	        <div class="col-md-7">                                                                            ';
 				result = result +'	            <div class="form-horizontal billsubTotal">                                                    ';
 				result = result +'	              <div class="form-group">                                                                    ';
-				result = result +'	                <label class="control-label col-md-7"><strong>Subtotal</strong></label>                   ';
-				result = result +'	                <div class="col-md-5 text-right"><span>'+report.subTotal+'</span></div>                             ';
+				result = result +'	                <label class="col-md-7 text-right"><strong>Subtotal</strong></label>                   ';
+				result = result +'	                <div class="col-md-5 text-right"><span class="pull-left">INR</span><span><strong>'+report.subTotal+'</strong></span></div>                             ';
 				result = result +'	              </div>                                                                                      ';
 				result = result +'	              <!-- Discount UI -->                                                                        ';
 				result = result +'	              <div class="form-group">                                                                    ';
@@ -467,7 +467,7 @@ function getViewInvoice(){
 				
 				result = result +'	                <div class="form-group mt">                                                        ';
 				result = result +'	                <label class="col-md-7 text-right"><strong>Total</strong></label>                  ';
-				result = result +'	                    <div class="col-md-5 text-right"><span><strong>'+report.total+'</strong></span></div> ';
+				result = result +'	                    <div class="col-md-5 text-right"><span class="pull-left">INR</span><span><strong>'+report.total+'</strong></span></div> ';
 				result = result +'	              </div>                                                                               ';
 				result = result +'	              </div>                                                                               ';
 				result = result +'	          </div>                                                                                   ';

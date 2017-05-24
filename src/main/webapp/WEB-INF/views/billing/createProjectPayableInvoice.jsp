@@ -10,7 +10,13 @@
 <script src="resources/js/jquery.mask.min.js"></script>
 <script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-
+<style type="text/css">
+.inline_field, .inline_field:focus {
+	width:100px !important; text-align:center;
+}
+.form-control.formControl {
+border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
+</style>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -166,7 +172,7 @@
           </div>
           <div class="col-md-7">
             <div class="form-horizontal">
-              <div class="form-group">
+              <div class="form-group hidden">
                 <label class="control-label col-md-7"><strong>Subtotal</strong></label>
                 <div class="col-md-5 text-right"><input type="text" value = "00:00" id="subTotal" name="subTotal" class="ReadTextFli"></div>
               </div>
@@ -192,62 +198,13 @@
               </div>
                  <div class="form-group">
                 <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readinly></div>
+                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readinly></div>
               </div>              
-              <!-- Discount UI -->
-                <!-- AddTax Table Starts here -->
-                <!--  <div class="addtax_table">
-              <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" />
-                    <table width="100%" cellpadding="0" cellspacing="0" class="table-bordered table-striped table-responsive">
-                        <thead id="addTaxTbl">
-                            <tr>
-                                <th colspan="5">
-                                Add Tax
-                                    <button type="button" class="btn btn-sm btn-primary buttonCustom" title="Add Tax" onclick="addTax()">
-                                         <i class="fa fa-plus"></i></button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr id='divTaxTsRow0'>
-                                <td>
-                                   <div class="select-field tblminwidth-75">
-                                       <div class="tblminwidth-50">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" id="0taxType" name="0taxType">
-                                    </div>
-                                   </div>
-                                </td>
-                                <td>
-                                 <div class="btn-group tblminwidth-75">
-                                 <select class="form-control input-sm" id="0taxdiscountType" name="0taxdiscountType">
-									 <option value="percentage">Percentage</option>
-									 <option value="flat">Flat</option>
-							 	</select>
-                                </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" id="0taxdiscountvalue" name="0taxdiscountvalue" onblur="calculateTaxDiscount();">
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="tblminwidth-75">
-                                        <input type="text" class="form-control input-sm" value="" placeholder="00.00" id="0taxTotal" name="0taxTotal" readonly>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="text-danger"><i class="fa fa-remove"></i></span>
-                                </td>
-                            </tr>
-                          
-                        </tbody>
-                    </table>
-                    AddTax Table Starts here
-            </div> -->
+             
              <div id="lineItemAddRows"></div>
                 <div class="form-group mt">
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right"><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
+                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
               </div>
               </div>
           </div>
@@ -368,6 +325,7 @@ function getProjectAssignedMem1(invoiceLineItemsList){
 </script>
 <script>
 function populateInlineItemsGrid(data){
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
     if(data != '' && data !=null){
         var json = JSON.parse(data);
         var result = '';
@@ -426,7 +384,7 @@ function populateInlineItemsGrid(data){
              result = result +'</div>';
              result = result +'</td>';
              result = result +'<td>';
-             result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
+             result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
              result = result +'</td>';
              result = result +'</tr>';
              /* getSow(i,opt.candidateId); */
@@ -435,7 +393,7 @@ function populateInlineItemsGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="4"></td>';
         result = result +'<td><strong>Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +' </tr>';
         result = result +' </tfoot> ';
         result = result +' </tbody>';
@@ -462,6 +420,7 @@ function populateInlineItemsGrid(data){
 
 <script>
 function populateInlineItemsGrid1(data){
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var result = '';
 		result = result +'	<table width="100%">';
 	    result = result +' <thead>';
@@ -519,12 +478,12 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +' <td>';
-    	 result = result +'<div class="tbldata-dotdot-vsm">';
+    	 result = result +'<div class="tbldata-dotdot-100">';
     	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="'+i+'totalHours" value='+opt.totalHours+' placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
-    	 result = result +'<input class="form-control input-sm" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
+    	 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
     	 result = result +'</td>';
     	 result = result +'</tr>';
     	/* getSow(i,opt.candidateId,opt.contractId); */
@@ -533,7 +492,7 @@ function populateInlineItemsGrid1(data){
     result = result +' <tr>';
     result = result +' <td colspan="4"></td>';
     result = result +'<td><strong>Total</strong></td>';
-    result = result +' <td><div class="tblminwidth-75">  <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
     result = result +' </tfoot> ';
     result = result +' </tbody>';

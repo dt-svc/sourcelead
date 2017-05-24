@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -79,6 +81,9 @@ public class ContractController {
 	
 	@Autowired
 	RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	CountriesService countriesService;
 	
 	/**
 	 * display contract template list page
@@ -235,7 +240,6 @@ public class ContractController {
 						orgSpoc.setOwnerUserName(orgSpoc.getOwnerUser().getFirstName());
 					}
 				}
-				
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
 				model.addObject("orgSpocList", orgSpocList);
@@ -266,6 +270,13 @@ public class ContractController {
 			}
 			orgRelations.setOrgName(orgName);
 		}
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+		if(null != countries){
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+		model.addObject("orgLocation", orgLocation);
 		model.addObject("contract", contract);
 		model.addObject("userList", userList);
 		model.addObject("clientList", clientList);
@@ -307,6 +318,13 @@ public class ContractController {
 			}
 			orgRelations.setOrgName(orgName);
 		}
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+		if(null != countries){
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+		model.addObject("orgLocation", orgLocation);
 		model.addObject("userList", userList);
 		model.addObject("clientList", clientList);
 		model.addObject("orgRelationsList", orgRelationsList);
@@ -451,6 +469,13 @@ public class ContractController {
 			}
 			orgRelations.setOrgName(orgName);
 		}
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+		if(null != countries){
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+		model.addObject("orgLocation", orgLocation);
 		model.addObject("contract", contract);
 		model.addObject("userList", userList);
 		model.addObject("clientList", clientList);

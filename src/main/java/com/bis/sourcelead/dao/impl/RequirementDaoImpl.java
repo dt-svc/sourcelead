@@ -154,6 +154,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
 			params.put("approverUserId",user.getId());
+			params.put("userId",user.getId());
 			params.put("level1",1);
 			params.put("level2",2);
 			
@@ -194,6 +195,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		else{
 			query = session.createQuery(from+" "+subQuery+" "+subQuery7+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
+			params.put("clientsList",clientsList);
 		}
 		
 		for (String str : query.getNamedParameters())

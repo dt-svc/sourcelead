@@ -332,7 +332,7 @@ public class SubmissionsRateRestController {
 				}else{
 					requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
 				}
-				DateFormat date = new SimpleDateFormat( "yyyy-MM-dd");
+				DateFormat date = new SimpleDateFormat( "dd-MM-yyyy");
 				String commonDate = date.format(requirementSubmissionTemplateFields.getCreatedDate());
 				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
 				requirementRateSubmission.setIsNeedApplicantPermit(requirementSubmissionTemplateFields.getRequirementSubmission().getNeedApplicantPermit());
@@ -625,24 +625,27 @@ public class SubmissionsRateRestController {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 			}
 			
-				requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
-				requirementSubmission.setRejectedReason(rejectreason);
+			if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			 StringBuilder candBuild = new StringBuilder();
+			 requirementSubmission.setUpdatedUser(candBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+			 }else{
+				 requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
+			 }
+			
+			requirementSubmission.setRejectedReason(rejectreason);
 
-				requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				
-				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-				requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-				
-				Requirement requirement = requirementSubmission.getRequirement();
-				OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-				requirementSubmissionService.applicantRejectMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations, rejectreason, null, null, submissionId);
-				return "success";
-			}
-
-	 
-	 
+			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			
+			Requirement requirement = requirementSubmission.getRequirement();
+			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations, rejectreason, null, null, submissionId);
+			return "success";
+		}
 	 
 	 
     private String toJSON(Object obj){
