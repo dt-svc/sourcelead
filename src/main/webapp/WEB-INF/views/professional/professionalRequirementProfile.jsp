@@ -138,13 +138,13 @@ function requirementProfile(requirementUUID){
 				 result = result +'                      <ul class="list-unstyled can-perdt">';
 				 
 				 if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
-				 result = result +'                        <li><i class="fa fa-black-tie" title="Experience"></i><span>'+json.minExp+'-'+json.maxExp+' years</span></li>';
+				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+'-'+json.maxExp+' years</span></li>';
 				 }else if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
-				 result = result +'                        <li><i class="fa fa-black-tie" title="Experience"></i><span>'+json.minExp+' years</span></li>';
+				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+' years</span></li>';
 				 }else if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'){
-				 result = result +'                        <li><i class="fa fa-black-tie" title="Experience"></i><span>'+json.maxExp+' years</span></li>';
+				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.maxExp+' years</span></li>';
 				 }else{
-					 result = result+'						<li><i class="fa fa-black-tie" title="Experience"></i><span> -- </span></li>';
+					 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
 				 }
 				 
 				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
