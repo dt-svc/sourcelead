@@ -83,13 +83,13 @@ public class CurrencyConvertor {
 //		System.out.println("What is your currency code ?");
 //		String fromCurrencyCode = scanner.next();
 //		System.out.println("Enter the Amount :");
-		double amount = 100;
+		double amount = 1;
 //		System.out.println("Enter the Currency Code that you want to covert : ");
 //		String toCurrencyCode = scanner.next();
 //		fromCurrencyCode = fromCurrencyCode.toUpperCase();
 //		toCurrencyCode = toCurrencyCode.toUpperCase();
 		// Currency Conversion
-		double coversionRate = convert("INR","INR",amount);
+		double coversionRate = convert("USD","INR",amount);
 //		System.out.println("Hi, The " + amount + " " + fromCurrencyCode + " is equivalent to "+(coversionRate * 500) + " " + toCurrencyCode + " today.");
 //		double conversionValue = coversionRate * amount;
 		System.out.println(dformat.format(coversionRate));

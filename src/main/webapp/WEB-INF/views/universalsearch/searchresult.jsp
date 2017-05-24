@@ -640,7 +640,8 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	result = result+'  <div class="srchresult clearfix">';
 								    	
 						                result = result+' <figure class="image_parent">';
-								    	result = result+' <i class="fa fa-user-circle fa-2x"></i>';
+// 								    	result = result+' <i class="fa fa-user-circle fa-2x"></i>';
+ 										result = result+ '<img width="55" class="img-circle"  onerror="predefineProfileImage(this);" src="<c:url value="${sourceleadUrl}/displayCandidateImage/'+report.candidateId+'"/>">';
 								    	result = result+' </figure>';
 								    	
 								    	
@@ -707,7 +708,8 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	result = result+'  <div class="srchresult clearfix">';
 								    	
 						                result = result+' <figure class="image_parent">';
-								    	result = result+' <i class="fa fa-user-plus fa-2x"></i>';
+								    	/* result = result+' <i class="fa fa-user-plus fa-2x"></i>'; */
+								    	result = result+ '<img width="55" class="img-circle"  onerror="predefineProfileImage(this);" src="<c:url value="${sourceleadUrl}/displayClientImage/'+report.orgRelationId+'"/>">';
 								    	result = result+' </figure>';
 								    	
 								    	

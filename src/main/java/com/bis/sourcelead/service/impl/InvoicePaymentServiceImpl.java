@@ -78,7 +78,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 			if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
 				if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
 					invoicePayment.setPaymentAmount(jsonObj.getString("totalAmount"));
-					invoice.setPaymentStatus("Paid");
+					invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 					invoice.setDueAmount("00.00");
 				}
 			}
@@ -90,13 +90,16 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 					Float receivedAmount  = totalAmount - customAmount;
 					
 					if(totalAmount.equals(customAmount) || (customAmount > totalAmount)){
-						invoice.setPaymentStatus("Paid");
+						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 					}else{
-						invoice.setPaymentStatus("Partial Paid");
+						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 					}
 					invoice.setDueAmount(receivedAmount.toString());
 					
 				}
+			}
+			if(Constants.INVOICE_SENT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+				invoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 			}
 			Invoice childInvoice = invoiceDao.saveInvoce(invoice);
 			Invoice parentInvoice = null;
@@ -109,7 +112,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 					if(jsonObj.getString("paymentAmount").equalsIgnoreCase("total")){
 						if(jsonObj.has("totalAmount") && !"".equalsIgnoreCase(jsonObj.getString("totalAmount"))){
 							invoicePayment.setPaymentAmount(jsonObj.getString("totalAmount"));
-							parentInvoice.setPaymentStatus("Paid");
+							parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							parentInvoice.setDueAmount("00.00");
 						}
 					}
@@ -121,14 +124,17 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService{
 							Float receivedAmount  = totalAmount - customAmount;
 							
 							if(totalAmount.equals(customAmount) || (customAmount > totalAmount)){
-								parentInvoice.setPaymentStatus("Paid");
+								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PAID);
 							}else{
-								parentInvoice.setPaymentStatus("Partial Paid");
+								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 							}
 							
 							parentInvoice.setDueAmount(receivedAmount.toString());
 							
 						}
+					}
+					if(Constants.INVOICE_RECEIVED.equalsIgnoreCase(parentInvoice.getInvoiceStatus())){
+						parentInvoice.setInvoiceStatus(Constants.INVOICE_ACCEPETED);
 					}
 				  invoiceDao.saveInvoce(parentInvoice);
 				}

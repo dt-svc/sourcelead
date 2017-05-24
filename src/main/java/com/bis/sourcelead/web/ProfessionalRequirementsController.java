@@ -322,7 +322,7 @@ public class ProfessionalRequirementsController {
 	 public ModelAndView referRequirementList(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
-		model.setViewName("professional/referRequiremnetList");
+		model.setViewName("professional/referRequirementList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 		}
