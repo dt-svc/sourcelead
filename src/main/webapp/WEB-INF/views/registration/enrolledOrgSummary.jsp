@@ -114,7 +114,7 @@ z-index: 9999999999 !important;
 								<c:if test="${!empty orgloc.user.id}">
 								<div class="form-group">
 								<div class="col-md-12 clearfix">
-								<h5>Primary Contact Details&nbsp; <c:if test="${userState == 'NOT_LOGGEDIN'}"><a id="edit-user" href="javascript:editPrimaryUser();"><i class="fa fa-edit"></i></a></c:if></h5>
+								<h5>Contact Details&nbsp; <c:if test="${userState == 'NOT_LOGGEDIN'}"><a id="edit-user" href="javascript:editPrimaryUser();"><i class="fa fa-edit" title="Edit Contact Details"></i></a></c:if></h5>
 								</div>
 								</div>
 								
@@ -129,7 +129,7 @@ z-index: 9999999999 !important;
 									<p class="tbldata-dotdot-me">${orgloc.user.lastName}</p>
 								</c:if>
 								<c:if test="${empty orgloc.user.lastName}">
-									<p>NO DATA</p>
+									<p>-----</p>
 								</c:if>
 								
 								</div>
@@ -145,7 +145,7 @@ z-index: 9999999999 !important;
 									<p>${orgloc.user.mobilePhone}</p>
 								</c:if>
 								<c:if test="${empty orgloc.user.mobilePhone}">
-									<p>NO DATA</p>
+									<p>-----</p>
 								</c:if>
 								</div>
 							</c:if>
@@ -219,7 +219,7 @@ z-index: 9999999999 !important;
 	 						<form id="editPrimaryUser_form"  name="editPrimaryUser_form" method="post">
 	 						<div class="form-group">
 								<div class="col-md-12 clearfix">
-								<h5>Edit Primary User</h5>
+								<h5>Edit Contact Details</h5>
 								</div>
 							</div>
 							
@@ -236,6 +236,11 @@ z-index: 9999999999 !important;
 							<div class="user_summary_edit_cta" id="primaryUserEmailDiv">
 								 <label>Email<span class="text-danger">&nbsp; *</span></label>
 									<input type="text" value="${orgloc.user.email}" name="primaryUserEmail" id="primaryUserEmail" field-name="Email" onblur="validatePrimaryUserEmail()" data-validation="required validate_Space validate_email validate_length length2-100"  class="form-control">
+							</div>
+							
+							<div class="user_summary_edit_cta" id="phoneNumberDiv">
+								 <label>Phone Number</span></label>
+									<input type="text" value="${orgloc.user.mobilePhone}" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control">
 							</div>
 							
 							 
