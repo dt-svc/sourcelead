@@ -110,7 +110,15 @@ public class Html2PdfUtil {
 	                if(matchPattern.group().equalsIgnoreCase("[Client Name]") || matchPattern.group().equalsIgnoreCase("[Vendor Name]")){
 	                    matchPattern.appendReplacement(sb, orgName);
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client location]") || matchPattern.group().equalsIgnoreCase("[Vendor location]")){
-	                    matchPattern.appendReplacement(sb, contracts.getContractOrgLocationId().getCountry());    
+	                	StringBuffer location = new StringBuffer();
+	                	if(null != contracts.getContractOrgLocationId().getCountry()&& !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getCountry())){
+	            			location.append(contracts.getContractOrgLocationId().getCountry());
+	            		}else if(null != contracts.getContractOrgLocationId().getState()&& !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getState())){
+	            			location.append(contracts.getContractOrgLocationId().getState());
+	            		}else if(null != contracts.getContractOrgLocationId().getCity()&& !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getCity())){
+	            			location.append(contracts.getContractOrgLocationId().getCity());
+	            		}
+	                    matchPattern.appendReplacement(sb, location.toString());    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client Contact]") || matchPattern.group().equalsIgnoreCase("[Vendor Contact]")){
 	                    matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Location]")){
