@@ -425,7 +425,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     color:#333; padding:7px 8px; border-left:1px solid #eae6e6; height:35px; font-weight:500; text-align:center;
     }
 .timesheet_appr_table table tr td:last-child {
-    width:120px; text-align:left; padding:7px 5px;
+    width:120px; padding:7px 5px;
     }  
 .timesheet_appr_table div input {
     width:95px; padding: 7px 10px; font-size: 13px; border: none; overflow: hidden; background-color: transparent;
@@ -732,7 +732,7 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
     color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400;
     }
 .project_tabs_inn_table table tr td:last-child {
-    width:50px; padding:0px 10px; text-align:center;
+    padding:0px 10px; text-align:center;
     }
 .project_tabs_inn_table.project_tabs_inn_table_a table tr td:last-child {
     color:#333; padding:0px 10px; border-left:1px solid #eae6e6; height:40px; font-weight:400; width:50%;
@@ -1257,7 +1257,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
       
 .success_pop {
     position:fixed; text-align:left; margin:0px auto; left:0px; right:0px; top:54px; display:none;
-    background-color:#34c244; z-index:10000; padding:3px 15px; width:450px; border-radius:4px; font-size:15px; font-weight:500;
+    background-color:#34c244; z-index:10000; padding:3px 15px; width:350px; border-radius:4px; font-size:15px; font-weight:500;
     color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); word-wrap: break-word;
     }
 .success_pop i {
@@ -2549,7 +2549,7 @@ padding-right:10px;
     background-color:#0cc2aa; color: #FFF;
 }
 .OpenJob {
-    padding:15px 20px; width: 70%; float: left; position: relative;
+    padding:15px 20px; width: 70%; float: left; position: relative; min-height: 170px;
 }
 .OpenJob h3 {
     margin:0px 0px; padding: 3px 0px 0px; font-size: 15px; font-weight: 500; color: #1686b0;
@@ -4323,9 +4323,6 @@ float: none !important; padding: 2px 5px; color: #333;
 }
 
 
-.evDaPa {
-	padding: 0px 0px 0px 15px !important;
-}
 .evCheck {
 	display:inline-block; padding: 0px 10% 0px 0px;
 }
@@ -4384,36 +4381,36 @@ float: none !important; padding: 2px 5px; color: #333;
 
 .notification-table {}
 .notification-table tr th {
-       text-align: center; border-right: 1px solid #4576a4 !important;
+    text-align: center; border-right: 1px solid #4576a4 !important;
 }
 .notification-table tr td {
-       text-align: center; border-left: 1px solid #eae6e6 !important;
+    text-align: center; border-left: 1px solid #eae6e6 !important;
 }
 .notification-table tr td:first-child {
-      text-align: left;
+    text-align: left;
 }
 
 .notificationUser {
-       width: 250px;
+    width: 250px;
 }
 .notification-table .table .notifi-image {
-       float: left;
+    float: left;
 }
 .notification-table .table .mailbox-name {
-       float: left; width: 204px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; display: block;
-       padding: 8px 0px 0px 10px;
+    float: left; width: 204px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; display: block;
+    padding: 8px 0px 0px 10px;
 }
 .notification-table .table .notifi-image img {
-       max-height: 35px; width: 100%;
+    max-height: 35px; width: 100%;
 }
-.notiRej {
-        width: 46px; text-align: right; margin: 0px auto;
+ .notiRej {
+    width: 46px; text-align: center; margin: 0px auto; display: flex; display:-webkit-flex;
 }
 .notiRej .mailbox-trash {
-        display: inline-block; padding: 0px 5px;
+    display:block; padding: 0px 5px; margin: 0 auto;
 }
 .hePad {
-       height: 30px; padding: 4px 6px;
+    height: 30px; padding: 4px 6px;
 }
 .UniEdit {
 	display: inline; color: #368ee0 !important; padding: 0px 10px 0px 0px;
@@ -4480,10 +4477,10 @@ text-align: center;
 }
 
 .blankDiv {
-width: 16px; height: 16px; display: block; cursor: default !important;
+	width: 16px; height: 16px; display: block; cursor: default !important;
 }
 .alignDiv {
-text-align: left; margin-left: 5px;
+	text-align: left; margin-left: 5px;
 }
 
 .padEv {
@@ -4526,18 +4523,18 @@ text-align: left; margin-left: 5px;
 	font-size: 16px; color: #1d6cb5;
 }
 
-
 .cand-advsrch-popup .chosen-container .chosen-results li {
 	float: none; margin: 0px;
 }
-
 .reMar ul {
     margin: 0px 0px; margin-bottom: 0px;
 }
 .NoPad {
     padding: 0px; padding-left:0px !important;
 }
-
+.evDaPa {
+	padding: 0px 0px 0px 15px !important;
+}
 
 .project_wrap_table table i {
 	font-size: 14px; display: inline-block; cursor: pointer; padding: 1px; margin: 1px; color: #375d81;
@@ -4545,4 +4542,62 @@ text-align: left; margin-left: 5px;
 .project_wrap_table table i.glyphicon-trash {
 	color: #fe4556;
 }
+.expensHead {
+	position: relative; background-color: #fff; border-top:1px solid #ededed; padding: 5px 15px;
+}
+.expensHead a {
+	padding: 4px 9px; float: right;
+}
+.expensTable {
+	max-height: 400px; overflow-y: auto;
+}
+.expensTableView {
+	max-height: 400px; overflow-y: auto; padding: 10px; margin-bottom: 20px;
+}
+.expensTableView table tr:nth-child(even) {background: #fff;}
+.expensTableView table tr:nth-child(odd) {background: #fff;}   
+.expensTableView table tr {
+	border-bottom: 1px solid #eae6e6; border-right: 1px solid #eae6e6;
+}
+.expensTableView table tr td:last-child {
+    width:auto; padding:0px 10px;
+    }  
+.expensTableView .fa-plus-square-o {
+	display:inline-block; padding: 0px 5px 0px 0px; color: #375d81;
+}
+.expPopCon {
+	 background-color: #f1f1f1;
+}
+.project_detailsExp {
+	min-height: inherit;
+}  
+.fa-binoculars {
+	color: #375d81 !important;
+}
+.ExpShow {
+	cursor:pointer;
+}
+.expDetails {
+	width: 100%; text-align: left;
+}
+.expDetails ul {
+	padding:10px 10px; margin: 0px 0px;
+}
+.expDetails ul li {
+	list-style-type:none; float: left; display: block; width: 50%; padding: 4px 5px;
+}
+.expDetails strong {
+	float: left; width: 30%; font-size: 14px; font-weight: 400; color: #333;
+}
+.expDetails span {
+	float: left; width: 60%; max-width: 60%; font-size: 14px; font-weight: 400; color: #454545;
+}
+.expDetails p {
+	float: left; width: 60%; max-width: 60%; font-size: 14px; font-weight: 400; color: #454545;
+}
+.ExpDe {
+	display:none;
+}
+
+
 

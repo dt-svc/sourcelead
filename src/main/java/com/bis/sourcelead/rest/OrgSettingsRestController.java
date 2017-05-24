@@ -35,12 +35,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
@@ -65,6 +67,9 @@ public class OrgSettingsRestController {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	
 	@Autowired
 	OrgLocationService orgLocationService;
@@ -119,6 +124,39 @@ public class OrgSettingsRestController {
   	 Org org = null;
 			try {
 				org = orgService.getOrgByOrgCode(orgCode);
+				
+				if(org != null)
+				{
+						if(org.getDocFile() != null){
+							org.setFileContentType("image/jpeg");
+							InputStream in = new ByteArrayInputStream(org.getDocFile());
+							BufferedImage bi = ImageIO.read(in);
+							OutputStream out = response.getOutputStream();
+							ImageIO.write(bi, "jpg", out);
+							out.close();
+						}
+						
+					
+				}
+				
+			} catch (IOException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e)); 
+			} 
+			
+			catch (Exception e1) {
+				logger.error(ExceptionUtils.getFullStackTrace(e1)); 
+			}
+   }
+   
+   
+   @RequestMapping(value = "/displayClientImage/{orgRelationId}" , method = RequestMethod.GET)
+   public void displayClientImage(@PathVariable String orgRelationId,HttpServletResponse response) {
+  	 
+  	 Org org = null;
+			try {
+				
+				OrgRelations orgRelation = orgRelationsService.getOrgRelationById(Long.parseLong(orgRelationId));
+				org = orgService.getOrgByOrgCode(orgRelation.getResponderLocationId().getOrg().getOrgCode());
 				
 				if(org != null)
 				{

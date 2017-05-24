@@ -730,10 +730,17 @@ function clearSearch(){
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 		}
 	    
-	    $('#countrySearch').val(''); 
+	   /*  $('#countrySearch').val(''); 
 	    $('#stateSearch').val(''); 
 	    $('#citySearch').val(''); 
 	    
+	    $("#stateSearch").val('').trigger("chosen:updated");
+	    $("#citySearch").val('').trigger("chosen:updated");
+	     */
+	    
+	    $("#citySearch").empty();
+		 $("#citySearch").val('').trigger("chosen:updated");
+		 
 	    $('#orgNameAdvanced').val(''); 
 	    
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
