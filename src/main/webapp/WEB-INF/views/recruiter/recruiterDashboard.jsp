@@ -338,7 +338,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
 			    "title": "Submitted\n By Me ("+submittedByMeJobs+")",
 			    "value": submittedByMeJobs
 			  }, {
-			    "title": "Refered By Me ("+referByMeJobs+")",
+			    "title": "Refered\n By Me ("+referByMeJobs+")",
 			    "value": referByMeJobs
 			  }, {
 			    "title": "Applied ("+appliedJobs+")",
