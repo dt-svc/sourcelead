@@ -933,9 +933,9 @@ public class InvoiceRestController {
 		  String resultJson;
          Contracts contracts = contractsTemplateService.getContractById(contractId);
          String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-         double hourlyRate = conversionUtil.getHourlyRate(contracts.getBillingAmount(), contracts.getBillingRatePer());
+         float hourlyRate = conversionUtil.getHourlyRate(contracts.getBillingAmount(), contracts.getBillingRatePer());
          if(!currencyCode.equalsIgnoreCase(contracts.getBillingRateType())){
-        	 double coversionRate = conversionUtil.convert(contracts.getBillingRateType(),currencyCode,hourlyRate);
+        	 float coversionRate = conversionUtil.convert(contracts.getBillingRateType(),currencyCode,hourlyRate);
         	 contracts.setBillingAmount(dformat.format(coversionRate));
          }else{
         	 contracts.setBillingAmount(dformat.format(hourlyRate));
@@ -1003,7 +1003,7 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		invoiceService.sendInvoiceMail(user,orgLocation,invoice);
+		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType());
 		return "success";
 	} 	
 	

@@ -961,7 +961,7 @@ public class ClientServiceImpl implements ClientService{
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = "";
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
@@ -1012,7 +1012,7 @@ public class ClientServiceImpl implements ClientService{
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = "";
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg());
@@ -1165,7 +1165,7 @@ public class ClientServiceImpl implements ClientService{
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = "";
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
