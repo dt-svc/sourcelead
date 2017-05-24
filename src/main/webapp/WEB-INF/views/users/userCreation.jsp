@@ -359,7 +359,7 @@ function getEmployeementType(designationType){
 		 
 		 document.getElementById("man1").style.display="block";
 		 document.getElementById("man2").style.display="block";
-		  getVendorsByOrgLocation();
+		 getVendorsByOrgLocationId();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
 		 $('#vendors').removeAttr("data-validation","required"); 
@@ -375,7 +375,7 @@ function getEmployeementType(designationType){
 		 $('#vendorcontact').attr("data-validation-optional", "true");  
 		 $("#errorvendor").find("p.jquery_form_error_message").remove();
 			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
-		  getVendorsByOrgLocation();
+			getVendorsByOrgLocationId();
 	}else{
 		// document.getElementById("hideVendor").style.display="none";
 		 $('#vendors').removeAttr("data-validation-optional", "true"); 

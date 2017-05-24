@@ -591,55 +591,68 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 function getVendorContacts(){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#orgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-      type : "GET",
-       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
-       success :function(data) {
-    	var json = JSON.parse(data);
-       	var output = "";
-       	output = output + "<option value=''>Select Vendor Contact</option>";
-       	for (var i=0; i<json.length; i++)
-			{
-	        var opt = json[i];
-	            // need to use in edit
-       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
-			}
-       	    $("#vendorContact").empty();
-	        $("#vendorContact").append(output);
-	        $('#vendorContact').trigger("chosen:updated");
-      },
-  });  
-	
+	if("" != orgRelationId){
+		var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Vendor",       
+	       success :function(data) {
+	    	var json = JSON.parse(data);
+	       	var output = "";
+	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	for (var i=0; i<json.length; i++)
+				{
+		        var opt = json[i];
+		            // need to use in edit
+	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+	       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+				}
+	       	    $("#vendorContact").empty();
+		        $("#vendorContact").append(output);
+		        $('#vendorContact').trigger("chosen:updated");
+	      },
+	  });  
+	}else{
+		var output = "";
+		output = output + "<option value=''>Select Vendor Contact</option>";
+		$("#vendorContact").empty();
+        $("#vendorContact").append(output);
+        $('#vendorContact').trigger("chosen:updated");
+	}
 }
 
 function getClientContacts(){
-	
 	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
-	success :function(data) {
-	var json = JSON.parse(data);
-	var output = "";
-	output = output + "<option value=''>Select Client Contact</option>";
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	// need to use in edit
-	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+	if("" != orgRelationId){
+		var sourceleadUrl ='${sourceleadUrl}';
+		$.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getVendorContactsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&listName=Client",
+			success :function(data) {
+				var json = JSON.parse(data);
+				var output = "";
+				output = output + "<option value=''>Select Client Contact</option>";
+				for (var i=0; i<json.length; i++)
+				{
+				var opt = json[i];
+				// need to use in edit
+				//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
+				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+				}
+				$("#clientContact").empty();
+				$("#clientContact").append(output);
+				$('#clientContact').trigger("chosen:updated");
+			},
+		});
+	}else{
+		var output = "";
+		output = output + "<option value=''>Select Client Contact</option>";
+		$("#clientContact").empty();
+		$("#clientContact").append(output);
+		$('#clientContact').trigger("chosen:updated");
 	}
-	$("#clientContact").empty();
-	$("#clientContact").append(output);
-	$('#clientContact').trigger("chosen:updated");
-	},
-	});
-
-	}
+}
 	
 function previewTemplateEye(){
 	var id = $("#template").val();
