@@ -147,6 +147,7 @@ public class SubmissionsRateController {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
 			requirementSubmission.setFinalizedRate(requirementRateSubmissionNegotiation.getCurrentRate());
+			requirementSubmission.setFinalizedRateType(requirementRateSubmissionNegotiation.getCurrentRateType());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());

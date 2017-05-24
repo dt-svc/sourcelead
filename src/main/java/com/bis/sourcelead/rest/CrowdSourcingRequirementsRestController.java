@@ -229,7 +229,7 @@ public class CrowdSourcingRequirementsRestController {
 	     
 	     if(!isNullOrEmpty(jobTitleSearch)){
 	    	 BoolQueryBuilder anyJobSearchBoolQueryBuilder = QueryBuilders.boolQuery();
-	    	 anyJobSearchBoolQueryBuilder.should(QueryBuilders.prefixQuery("jobTitle", jobTitleSearch));
+	    	 anyJobSearchBoolQueryBuilder.should(QueryBuilders.matchQuery("jobTitle", jobTitleSearch));
 	    	 anyJobSearchBoolQueryBuilder.should(QueryBuilders.matchQuery("jobId", jobTitleSearch));
 	    	 boolQueryBuilder.must(anyJobSearchBoolQueryBuilder);
 	     }
