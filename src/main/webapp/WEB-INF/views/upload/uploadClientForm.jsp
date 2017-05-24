@@ -239,11 +239,19 @@ if ($('#upload_form').validate(false, validationSettings)){
  		    		$("#msgDiv").html("Please import valid Template");
  		    		msgFadein();
  		    	}else if(data == "success"){
+ 		    		$("#selector").removeClass("remove_pop");
+ 		    		$("#selector").addClass("success_pop");
  		    		$("#selector").removeAttr("style");
  	    			$("#selector").css({ display: "block" });
  		    		$("#msgDiv").html("Inserted successfully");
  		    		msgFadein();
  		    	}else{
+ 		    		$("#selector").removeClass("remove_pop");
+ 		    		$("#selector").addClass("success_pop");
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Processed successfully");
+ 		    		msgFadein();
  		    		prepareExcelDataDiv(data);
  		    	}
  		    },

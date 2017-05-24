@@ -7,6 +7,24 @@
 <!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
 
 
+<style type="text/css">
+.statusFiler-1 {
+width: 150px;
+}
+.statusFiler-1 ul{
+padding: 5px;
+}
+.statusFiler-1 li label {
+padding-left: 5px;
+position: relative;
+top: -2px;
+}
+.statusFiler-1 li {
+padding: 2px 10px !important;
+margin: 0 !important;
+}
+</style>
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
@@ -32,6 +50,20 @@ $(document).ready(function(){
  <div class="project_wrap">
 	<div class="timesheet_head">
         	<ul>
+        	
+        	<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
+	           	<div class="statusFiler-1">
+					<ul class="list-unstyled">
+						<li><input id="c1" type="checkbox" name="templateType" value="Client MSA" onclick="getTemplateList();"><label for="c1">Client MSA</label></li>
+						<li><input id="c2" type="checkbox" name="templateType" value="Vendor MSA" onclick="getTemplateList();"><label for="c2">Vendor MSA</label></li>
+						<li><input id="c3" type="checkbox" name="templateType" value="Client SOW" onclick="getTemplateList();"><label for="c3">Client SOW</label></li>
+						<li><input id="c4" type="checkbox" name="templateType" value="Vendor SOW" onclick="getTemplateList();"><label for="c4">Vendor SOW</label></li>
+						<li><input id="c5" type="checkbox" name="templateType" value="NDA" onclick="getTemplateList();"><label for="c5">NDA</label></li>
+						<li><input id="c6" type="checkbox" name="templateType" value="NSA" onclick="getTemplateList();"><label for="c6">NSA</label></li>
+					</ul>
+				</div>	                	
+			</li>
+			
         		<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
 				<li><a href="<c:url value="/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
 				</sec:authorize>
@@ -49,10 +81,17 @@ $(document).ready(function(){
       
 <script type="text/javascript">
 function getTemplateList(){
+	
+	var templateType = [];
+	$('input:checkbox[name=templateType]:checked').each(function() 
+    {
+		templateType.push($(this).val());
+    });
+	
 		var sourceleadUrl ='${sourceleadUrl}';
 		 $.ajax({
 	       type : "GET",
-	        url: sourceleadUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}",       
+	        url: sourceleadUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&templateType="+templateType,       
 	        success :function(data) {
 	       	 preparedTemplateList(data);
 	       },
@@ -139,6 +178,21 @@ function listTemplatePagination(){
      	}
     } );
 }
+</script>
+
+
+<script>
+$("#filterContractTypePop").click(function(){
+	$(".statusFiler-1").toggle();
+	//$(".statusFiler-2, .statusFiler-3").hide();
+});
+
+$("html").click(function() {
+    $(".statusFiler-1").hide();
+});	
+$("#filterContractTypePop, .statusFiler-1, .approved_pop").click(function(e) {
+    e.stopPropagation();
+});	
 </script>
 
 <script type="text/javascript">
