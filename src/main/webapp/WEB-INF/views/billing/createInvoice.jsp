@@ -336,6 +336,19 @@ function errRemoveClientContact(){
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
+                   
+                   //New Div for currency conversion: srinivas l
+                   result = result +'  <div class="row">';
+                   result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                   
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>USD</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   
+                   result = result +'  </div>';
+                   result = result +'  </div>';
+                 //New Div for currency conversion: srinivas l
+                   
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -1177,7 +1190,12 @@ function pagination(){
 		 }else{
 			 calAddRowAmount("000","00",rowId);
 		 }
-		 
+		 conversion();
+  }
+  
+  
+  function  conversion(){
+	  alert("Hi");
   }
   
   function calAddRowAmount(hours,minute,rowId){

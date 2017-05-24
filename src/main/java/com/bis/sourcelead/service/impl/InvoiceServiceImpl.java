@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
@@ -62,6 +64,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 public class InvoiceServiceImpl implements InvoiceService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceServiceImpl.class);
+	
 	
 	@Autowired
 	private InvoiceDao invoiceDao;
@@ -96,6 +99,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	private ConversionUtil conversionUtil;
+	
+	@Autowired
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 
@@ -125,7 +131,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	}
 
 	@Override
-	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType,Org org) throws Exception {
+	public Invoice saveInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation,String saveType,List<MultipartFile> attachedfileList,String invoiceType,Org org,String loginOrgCurrencyCode) throws Exception {
 		
 		
 		String pattern = "dd-MM-yyyy";
@@ -140,14 +146,18 @@ public class InvoiceServiceImpl implements InvoiceService{
         	invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
         }
         
-		
+		OrgLocations vendorOrgLocation = null;;
         if(invoiceType.equalsIgnoreCase("payable")){
         	if(jsonObj.has("vendorOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("vendorOrgRelationId"))){
       			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendorOrgRelationId")));
       			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-      				invoice.setResponderLocationId(orgRelation.getLocationId());
+      				vendorOrgLocation = orgRelation.getLocationId();
+      				invoice.setResponderLocationId(vendorOrgLocation);
+      				logger.info("**************"+orgRelation.getLocationId().getCountry());
       			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
       				invoice.setResponderLocationId(orgRelation.getResponderLocationId());
+      				logger.info("**************"+orgRelation.getLocationId().getCountry());
       			}
       			invoice.setOrgRelationID(orgRelation);	
       		}
@@ -161,8 +171,10 @@ public class InvoiceServiceImpl implements InvoiceService{
         	 if(jsonObj.has("clientOrgRelationId") && !"".equalsIgnoreCase(jsonObj.getString("clientOrgRelationId"))){
      			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("clientOrgRelationId")));
      			if(orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-      				invoice.setResponderLocationId(orgRelation.getLocationId());
+     				vendorOrgLocation = orgRelation.getLocationId();
+     				invoice.setResponderLocationId(vendorOrgLocation);
       			}if(orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+      				vendorOrgLocation = orgRelation.getResponderLocationId();
       				invoice.setResponderLocationId(orgRelation.getResponderLocationId());
       			}
      			invoice.setOrgRelationID(orgRelation);	
@@ -174,7 +186,7 @@ public class InvoiceServiceImpl implements InvoiceService{
      		}
      		invoice.setInvoiceType(Constants.Receivable);
         }
-        
+       
         invoice.setOwnerUserId(user);
 		invoice.setOrgLocation(orgLocation);
 		if(jsonObj.has("invoiceId") && !"".equalsIgnoreCase(jsonObj.getString("invoiceId"))){
@@ -238,6 +250,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(jsonObj.has("frequency") && !"".equalsIgnoreCase(jsonObj.getString("frequency"))){
 			invoice.setInvoiceFrequency(jsonObj.getString("frequency"));
 		}
+		
+	    invoice.setCurrencyCode(loginOrgCurrencyCode);
 		invoice.setCreatedBy(user.getUserCode());
 		invoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		invoice.setInvoiceStatus(saveType);
@@ -284,7 +298,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(saveType.equalsIgnoreCase("SENT")){
 			//mail scenario for client accept or reject
 			sendInvoiceMail(user,orgLocation,invoice,invoiceType);
-			saveParentInvoice(invoice);	
+			
+			saveParentInvoice(invoice,loginOrgCurrencyCode,vendorOrgLocation);	
 		}
 		
 		
@@ -337,13 +352,30 @@ public class InvoiceServiceImpl implements InvoiceService{
 		    return ous.toByteArray();
 		
 	}
-	private void saveParentInvoice(Invoice invoice) throws Exception {
+	
+	private void saveParentInvoice(Invoice invoice, String loginOrgCurrencyCode, OrgLocations vendorOrgLocation) throws Exception {
 		Invoice parentInvoice = new Invoice();
 		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)){
 			parentInvoice.setInvoiceType(Constants.Receivable);
 		}else{
 			parentInvoice.setInvoiceType(Constants.Payables);
 		}
+		String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
+	        if(null != vendorCurrencyCode){
+	      	float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoice.getTotal()));
+	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+	      	parentInvoice.setCurrencyCode(vendorCurrencyCode);
+	      	parentInvoice.setTotal(String.valueOf(convertedAmount1));
+	      	parentInvoice.setDueAmount(String.valueOf(convertedAmount1));
+	        }	
+	    }else{
+	    	parentInvoice.setCurrencyCode(invoice.getCurrencyCode());
+	    	parentInvoice.setDueAmount(invoice.getDueAmount());
+	    	parentInvoice.setTotal(invoice.getTotal());
+	    }
+		
+		
 		parentInvoice.setInvoiceId(invoice.getInvoiceId());
 		parentInvoice.setParentInvoiceId(invoice);
 		parentInvoice.setOrgRelationID(invoice.getOrgRelationID());
@@ -360,12 +392,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setInvoiceComment(invoice.getInvoiceComment());
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
-		parentInvoice.setTotal(invoice.getTotal());
 		parentInvoice.setInvoiceStatus(Constants.INVOICE_RECEIVED);
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
-		parentInvoice.setDueAmount(invoice.getDueAmount());
+		
 		parentInvoice.setStatus(Constants.RECORD_ACTIVE.toString());
 		parentInvoice.setCreatedDate(invoice.getCreatedDate());
 		parentInvoice.setCreatedBy(invoice.getCreatedBy());
