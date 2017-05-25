@@ -521,23 +521,9 @@ function errRemoveClientContact(){
 		 	 }	 	
 	    }
 	       	 
-	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-	     
-	     var afterDiscountTotal = $("#afterDiscountTotal").val();
-	     
-		    for(var i=1; i< maxRowNum; i++){
-		         var taxType = $("#"+i+"taxdiscountType").val();
-		        
-		         var taxValue = $("#"+i+"taxdiscountvalue").val();
-		         var taxTotal = $("#"+i+"taxTotal").val();
-		         var tot = $("#grandTotal").val();
-		             
-	             var first=parseFloat(tot);
-	             var second=parseFloat(taxTotal); 
-	             var total  = (first+second);
-	             $("#grandTotal").val(total.toFixed());
-		    }
-		    
+	calculateTaxDiscount();
+	
+	
 		    var count = 0;
 		    var selectedAssociates = '';
 			var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -568,10 +554,6 @@ function errRemoveClientContact(){
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
-		
-		
-		
-		
 	}
 </script>
 
@@ -1500,9 +1482,11 @@ function calculateTaxDiscount(){
 	
 	var taxGrandTotal = 0;
 	for(var i=1; i<maxTaxRowNum; i++){
-		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
+		if($("#"+i+"taxTotal").val() != null && $("#"+i+"taxTotal").val() != '' && $("#"+i+"taxTotal").val() != 'undefined'){
+			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
+		}
+		
 	}
-	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
   

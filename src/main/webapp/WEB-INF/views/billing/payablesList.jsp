@@ -21,7 +21,7 @@ color:#337ab7 !important;
 .successBtn {
 background-color: #1ab394;
 border-color: #1ab394;
-cursor: pointer; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
 font-size: 13px; width: 75px;
 }
 </style>
@@ -251,6 +251,7 @@ font-size: 13px; width: 75px;
   
 <script>
 function receivePaymentPop1(invoiceId,total){
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
 	 var result = "";
 	result = result +'  <div class="modal-dialog modal-lg">';
@@ -293,11 +294,13 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked onclick="validMask();">           ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
+	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
 	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
 	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
+	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
