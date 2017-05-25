@@ -419,11 +419,11 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 }
             	 
             	 if(label == "Education"){
-            		 educationPlaceHolder = 'placeholder="Enter educations by comma(,) seperated"';
+            		 educationPlaceHolder = 'placeholder="Enter education by comma(,) seperated"';
             	 }
             	 
             	 if(label == 'Notice Period'){
-            		 options = '<option value="">--Select--</option>';
+            		 options = '<option value="">--Select Notice Period--</option>';
             	 }
             	 
                 
@@ -482,21 +482,21 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
                              '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
                              '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country"  >'+
-                             '<option>--Select--</option>'+
+                             '<option>--Select Country--</option>'+
                              '</select>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
                              '<select class="chosen-select form-control"  '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State"  >'+
-                             '<option>--Select--</option>'+
+                             '<option>--Select State--</option>'+
                              '</select>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
                              '<select class="chosen-select form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="State"  >'+
-                             '<option>--Select--</option>'+
+                             '<option>--Select City--</option>'+
                              '</select>'+
                              '</div>';
                     		 

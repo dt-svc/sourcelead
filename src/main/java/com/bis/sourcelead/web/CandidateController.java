@@ -140,10 +140,16 @@ public class CandidateController {
 			HttpServletRequest request,
 			@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,
 			@RequestParam(value="candidateIdSearchId", required=false)String candidateIdSearchId) throws Exception {
+		
 		logger.debug("--------candidatesList------");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    Long candidateCount = 0L;
+		 
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
@@ -160,7 +166,12 @@ public class CandidateController {
 		}
 		
 		
-	   Long candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
+		 }else{
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+		 }
+	  
 	   model.addObject("candidateCount", candidateCount);
 	   
 		List<Countries> countryList = countriesService.getAllCountries();

@@ -79,6 +79,9 @@ function requirementTemplateList(){
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
 		                     	result = result +'<a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'<i class="fa fa-binoculars"></i></span></a>';
 		                     '</sec:authorize>';
+		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
+		                     	result = result +'<span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span>';
+		                     '</sec:authorize>';
 		                     result = result +"</div></td>";
 		                     if(null != opt.jobType && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 if(opt.jobType=='Other'){
