@@ -903,7 +903,7 @@ function customDate(){
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" placeholder="Start Date">                   ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';
-	result = result +'   <div class="col-md-5 paddingLeft" id="errEndDate">                                                                                            ';
+	result = result +'   <div class="col-md-5 paddingLeft paddingRight" id="errEndDate">                                                                                            ';
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" placeholder="End Date">                       ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';

@@ -130,6 +130,15 @@
 	             <span class="hidden">Last Name</span>
 	            </div>
             </div>
+            
+            <div class="form-group">
+	            <label class="col-md-3">Phone Number </label>
+	            <div class="col-md-9">
+	               <input type="text" name="mobilePhone"  id="mobilePhone"  value="${mobilePhone}" class="form-control" field-name="Phone Number" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone"  />
+	             <span class="hidden">Phone Number</span>
+	            </div>
+            </div>
+            
           
           
 </div>
@@ -372,6 +381,14 @@ function getUserDetails(){
 	        		 }else{
 	        			    $("#lastName").removeAttr("readonly", "readonly");
 	        			    $("#lastName").val('');
+	        		 }
+	        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#mobilePhone").attr("readonly", "readonly");
+		        		    $("#mobilePhone").val(json[2]);
+	        		 }else{
+	        			    $("#mobilePhone").removeAttr("readonly", "readonly");
+	        			    $("#mobilePhone").val('');
 	        		 }
 	        	}
 			 },

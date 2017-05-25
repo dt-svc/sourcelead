@@ -110,7 +110,13 @@ width: auto;
 								  </div>
 							  </div>
 							</form>
-					    </c:when>    
+					    </c:when>
+					     <c:otherwise>
+							    <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+						          	<i class="fa fa-clock-o fa-3x"></i>
+							        <p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							     </div>
+							    </c:otherwise>    
 					  </c:choose>
 		  		</div>
 		  		

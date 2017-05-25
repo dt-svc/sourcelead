@@ -120,6 +120,25 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			
 			return orgLocation;
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgRelations getOrgRelationById(Long id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	      String query = ("from OrgRelations orgrelation left join fetch orgrelation.locationId loc left join fetch loc.org  left join fetch orgrelation.responderLocationId cl left join fetch cl.org where orgrelation.id = :id");
+		  
+	       List<OrgRelations> orgRelations = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+	       
+	       OrgRelations orgLocation = null;
+			if(orgRelations != null && !orgRelations.isEmpty())
+			{
+				orgLocation = (OrgRelations) orgRelations.iterator().next();
+			}
+			
+			return orgLocation;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

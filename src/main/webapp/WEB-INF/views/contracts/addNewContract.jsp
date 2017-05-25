@@ -1428,8 +1428,12 @@ function getTaxPercentageValue(){
 </script>
 <script>
 function changeSaveButton(){
+	var userId = '${SourceLeadWeb_userId}';
 	 var approverId = $("#approver").val();
 	if(approverId !='' && approverId != null){
+		if(approverId == userId){
+			document.getElementById("save_approver_template").value="Approve";
+		}
 		document.getElementById("save_approver_template").style.display="block";
 		document.getElementById("save_template").style.display="none";
 	}else{
