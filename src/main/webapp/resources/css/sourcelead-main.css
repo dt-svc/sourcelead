@@ -5305,6 +5305,9 @@ float: none !important; padding: 0; color: #333;
 	background: #367fa9; width: 50px; position: absolute; top: 32.5px; right: 16.8px; padding: 4.8px 5px; text-align: center; min-height: 25px;
 	color:#fff;
 }
+.ReadTextFli.ReadTextFli90 {
+	width: 0px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

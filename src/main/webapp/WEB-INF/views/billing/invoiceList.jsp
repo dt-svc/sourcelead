@@ -574,7 +574,7 @@ function getInvoiceList(){
 				} 
 				result = result +'  </div> ';                                                                                                    
 		         
-				if(report.invoiceType=="Receivable" &&( report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
+				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
 					}else{
@@ -582,7 +582,12 @@ function getInvoiceList(){
 					}
 				}else{
 					if(report.invoiceStatus == "Accepted"){
-						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+						if(report.paymentStatus == "Paid"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+						}else{
+							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+						}
+						
 					}else{
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span>           ';	
@@ -592,24 +597,7 @@ function getInvoiceList(){
 						
 					}
 				}
-
-				if(report.invoiceType=="Payables" ){
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" >Pay</span>           ';	
-					}else{
-						if(report.invoiceStatus == "Accepted"){
-							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Pay</span>';
-						}else{
-							if(report.invoiceStatus == "Rejected"){
-								result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span> </td>          ';	
-							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> ';
-								
-							}
-							
-						}
-					}
-				}
+ 
 		 
 		        result = result +'</div>';
 		        result = result +'</td>';
