@@ -148,7 +148,7 @@ window.onload = function() {
 					 	 result = result + '                     <div class="row">            ';
 					 	 
 					 	 result = result + '                     <div class="col-md-5">            ';
-					 	 result = result + '                         <p class="text-danger"><label class="text-muted small col-md-6">Priortiy:</label> '+priority+'</p>   ';
+					 	 result = result + '                         <p class="text-danger"><label class="text-muted small col-md-6" style="width:45%;">Priority:</label> '+priority+'</p>   ';
 					 	 result = result + '                     </div>            ';
 
 					 	 result = result + '                     <div class="col-md-5">            ';
@@ -157,7 +157,7 @@ window.onload = function() {
 					 	 
 					 	result = result + '                     </div>            ';
 					 	 
-					 	result = result + '                         <p><label class="text-muted small col-md-2">Des.:</label> '+description+'</p>   ';
+					 	result = result + '                         <p><label class="text-muted small col-md-2" style="width:15.7%;">Des.:</label><div class="col-md-10 paddingLeft">'+description+'</div></p>';
 					 	 result = result + '                     </div>            ';
 					 	 result = result + '             </div>                    ';
 					 	 result = result + '     </div>                            ';
@@ -500,7 +500,11 @@ function getRequirements(){
             	  result = result + '<option value="">--- Select Requirement ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
-                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+'</option>';
+                 	var jobId = "";
+                 	if(null != opt.jobId && "" != opt.jobId && 'undefined' != opt.jobId){
+                 		jobId = " - "+opt.jobId;
+                 	}
+                 	 result = result +  '<option value="'+opt.id+'"> '+opt.jobTitle+''+jobId+'</option>';
                   }
                   $("#requirementsList").empty();
                   $("#requirementsList").append(result);

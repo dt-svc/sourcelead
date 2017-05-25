@@ -336,7 +336,7 @@ document.onkeydown=function(e){
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">
-              	<div class="clearfix msg">
+              	<div class="clearfix msg_blank">
                      All Caught UP!!! 
                   </div>
               	</c:if>
