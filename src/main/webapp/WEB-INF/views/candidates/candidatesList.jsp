@@ -4,6 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<meta name="format-detection" content="telephone=no">
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -331,6 +333,7 @@ function cpagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
+    $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 }
 </script> 
 
