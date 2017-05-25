@@ -23,7 +23,6 @@
      
 --%>
 
-<jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <script>
 $(document).ready(function() {
@@ -482,17 +481,17 @@ function prepareRequirementData(data){
            
 	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		        	result = result +'<div class="text-center pull-left mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
-		        }
+		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
 	        
 	        '</sec:authorize>';
 	        
 	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
-		   		 	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+	    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+
 			   	 }else{	
-			   	 	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>";
+					result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
 			   	 }
         }
 		else{
@@ -1596,6 +1595,8 @@ function requirementPipeline(requirementId){
     <!-- Project --> 
   </div>
 </section>
+
+<jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <!--   Error Message   -->
 <div class="vendor_wrap_mask"></div>

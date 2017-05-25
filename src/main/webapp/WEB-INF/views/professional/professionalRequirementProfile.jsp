@@ -122,7 +122,28 @@ function requirementProfile(requirementUUID){
 				 result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
 				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
-				 result = result +'        <h4 id="id1" title="'+json.jobTitle+'">'+json.jobTitle+'</h4>';
+				
+				 
+				 if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
+					 result = result +'<h4 id="id1">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'</h4>';
+				 }
+				 else if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != 'Other'){
+				     result = result +'<h4 id="id1">'+json.jobTitle+'-'+json.jobId+'</h4>';
+       			  }
+       			 else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
+			    	 result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobType+'</h4>';
+       			 }else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType == 'Other' &&  json.otherJobType != '' && json.otherJobType != null && json.otherJobType != 'undefined'){
+   			     	result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'</h4>';
+       			 }else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other' &&  json.otherJobType != '' && json.otherJobType != null && json.otherJobType != 'undefined'){
+      			    result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'</h4>';
+       			 }else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other'){
+         		    result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobType+'</h4>';
+       			}else{
+       			 	result = result+'<h4 id="id1">'+json.jobTitle+'</h4>';
+       			}
+				 
+				 
+				 
 				 result = result +'        <div class="hide-row" style="display: block;">';
 				 result = result +'          <div class="col-md-9">';
 				 result = result +'            <div class="row">';

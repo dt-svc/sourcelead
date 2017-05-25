@@ -260,6 +260,9 @@ public class SubmissionsRateController {
 		
 		ModelAndView model = new ModelAndView();
 		String permission = "YES";
+		if(requirementSubmission.getSubmissionStatus() != ApplicantSubmissionStatus.REQUEST_SENT){
+			permission = "NO";
+		}
 		
 		model.addObject("permission",permission);
 		model.addObject("rateStatus",rateStatus);
@@ -270,7 +273,7 @@ public class SubmissionsRateController {
 		
 		User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 		
-		if("Accepted".equalsIgnoreCase(rateStatus)){
+		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
 			
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
