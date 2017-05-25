@@ -995,5 +995,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
         return candidate;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long orgLocationId, Long userId,
+			String candidateType) throws Exception {
+		
+		logger.debug("getCandidatesCountByCandidateTypeOrgLocationIDAndUserId() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.recruiterUserId.id = :userId and candidate.candidateType = :candidateType ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
+		logger.debug("getCandidatesCountByCandidateTypeOrgLocationIDAndUserId() Method Ended..");
+		return results.get(0);
+	}
 }
 

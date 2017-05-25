@@ -149,12 +149,15 @@ public class InvoicePdfHelper {
 			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-				Employees employeeId=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
-				if(null != employeeId.getEmployeeId() && !"".equalsIgnoreCase(employeeId.getEmployeeId())){
-					table.addCell(getCell(employeeId.getEmployeeId(), Element.ALIGN_CENTER, font10));
+				if(null != invoiceLineItems.getCandidate().getConsultantUser()){
+					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
+						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+					}
 				}else{
 					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 				}
+			
 				StringBuffer name = new StringBuffer();
 				if (null != invoiceLineItems.getCandidate()) {
 					table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
@@ -307,9 +310,11 @@ public class InvoicePdfHelper {
 				Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
-					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
-					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
-						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+					if(null != invoiceLineItems.getCandidate().getConsultantUser()){
+						Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
+							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+						}
 					}else{
 						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}

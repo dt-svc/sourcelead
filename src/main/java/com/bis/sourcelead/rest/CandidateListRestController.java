@@ -123,11 +123,13 @@ public class CandidateListRestController {
 	  @Autowired
 	  RequirementSubmissionService requirementSubmissionService;
 	  
-	  
-	  
-	  
 	  @Autowired
 	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	  
+	  protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
+	  
 	 /**
 	   * @author David and sarath kumar
 	   * @since  aug 30 2016
@@ -272,6 +274,8 @@ public class CandidateListRestController {
 	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,
 			 @RequestParam(value="isAssociate", required=false) String  isAssociate,MultipartHttpServletRequest request) throws Exception {
 
+		 
+		 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if(itrator.hasNext()){
@@ -284,18 +288,16 @@ public class CandidateListRestController {
 			
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+			 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			
 			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
-			 
-			/*if(null != candidateStatus){
-				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
-			 }else{
-				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
-
-			 }*/
+			 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
+			 }
 			 
 		   	 //Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");

@@ -263,7 +263,7 @@ public class TimesheetSubmissionsRestController {
 				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;;
+				 String url = sourceleadUrl;
 				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg());
 				 emailMessage.setSubject(subject);
 				 emailMessage.setMessageBody(emailTemplate);
