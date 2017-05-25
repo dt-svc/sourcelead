@@ -419,7 +419,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 }
             	 
             	 if(label == "Education"){
-            		 educationPlaceHolder = 'placeholder="Enter educations by comma(,) seperated"';
+            		 educationPlaceHolder = 'placeholder="Enter education by comma(,) seperated"';
             	 }
             	 
             	 if(label == 'Notice Period'){
