@@ -1465,7 +1465,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				interviewStartTime = convertedDateStr;
-				globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).toString());
+//				globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).toString());
 			}
 			if (null != reqnterview.getEndTime()) {
 				DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
@@ -1476,7 +1476,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				interviewEndTime = convertedDateStr;
-				globalVarsMap.put("InterviewTime",sb.append(interviewEndTime).toString());
+//				globalVarsMap.put("InterviewTime",sb.append(interviewEndTime).toString());
 			}
 
 			if(null != reqnterview.getStartTime() && null != reqnterview.getEndTime()){

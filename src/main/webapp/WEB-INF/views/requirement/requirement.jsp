@@ -2525,6 +2525,10 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $("#selectContact").trigger('chosen:updated');
 		
 		 $("#clientCurrencyCodge").trigger('chosen:updated');
+		 
+		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
+		 $("#clientRateType").val("").trigger('change');
+		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 
 		 /* $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
@@ -2558,7 +2562,11 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
-		 $('select[name=clientRateType]').val(1);
+		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
+		 $("#clientRateType").val("").trigger('change');
+		 $('#clientDetails').find('p.jquery_form_error_message').remove();
+		 
+		 //$('select[name=clientRateType]').val(1);
 		// $('.selectpicker').selectpicker('refresh');
 		 $("#clientSubmissionForm").val('');
 		 $('#clientSubmissionForm').trigger("chosen:updated");
