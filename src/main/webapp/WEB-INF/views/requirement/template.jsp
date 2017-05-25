@@ -17,7 +17,7 @@
 
       <h2>Requirement Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Template List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Templates</div>
   </section>
   <div class="timesheet_out overflow_Auto">
     <div class="vendor_wrap">

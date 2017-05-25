@@ -177,7 +177,7 @@
                                     <option selected disabled>-- Select Priority --</option>
                                     <option>High</option>
                                     <option>Low</option>
-                                    <option>Mediam</option>
+                                    <option>Medium</option>
                                   </select>
                                 </div>
                                 

@@ -241,7 +241,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 
 							
-							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="clearfix mb">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="input-group er ratetype">';
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
