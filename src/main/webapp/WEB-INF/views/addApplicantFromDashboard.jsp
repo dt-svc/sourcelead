@@ -718,7 +718,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 <script>
 function getCandidateSelectionType(){
 	var output = "";
-	output = output + "<option value=''>-- Select --</option>"; 
+	output = output + "<option value=''>--Select Employment Type--</option>"; 
 	output = output + "<option value='C2C'>C2C</option>"; 
 	output = output + "<option value='C2C-1099'>C2C-1099</option>"; 
 	output = output + "<option value='W-2'>W-2</option>"; 
@@ -1177,7 +1177,7 @@ function getSubmissionCandidateCities(city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionCity').empty();
-	        	$('#submissionCity').append('<option value="">---Select State---</option>');
+	        	$('#submissionCity').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
