@@ -213,9 +213,9 @@ function validateUserName(){
 					     
 				       	else{
 				       		$('#userNameDiv').find('p.jquery_form_error_message').remove(); 
-				    	    $("input#userName").after("<p class='jquery_form_error_message'>User Name Already Existed</span>");
+				    	    $("input#userName").after("<p class='jquery_form_error_message'>Invalid User Name</span>");
 		    				$('input#userName').attr('record-exist','yes');
-		    				$('input#userName').attr('record-exist-errorMsg','User Name Already Existed'); 
+		    				$('input#userName').attr('record-exist-errorMsg','Invalid User Name'); 
 				       	}
 			       	}
 		    	   
@@ -253,9 +253,9 @@ function validateResetUserName(){
 					     
 				       	else{
 				       		$('#resetUserNameDiv').find('p.jquery_form_error_message').remove(); 
-				    	    $("input#resetUserName").after("<p class='jquery_form_error_message'>Invalid User Name</span>");
+				    	    $("input#resetUserName").after("<p class='jquery_form_error_message'>User Name Already Exists</span>");
 		    				$('input#resetUserName').attr('record-exist','yes');
-		    				$('input#resetUserName').attr('record-exist-errorMsg','Invalid User Name'); 
+		    				$('input#resetUserName').attr('record-exist-errorMsg','User Name Already Exists'); 
 				       	}
 			       	}
 		    	   
