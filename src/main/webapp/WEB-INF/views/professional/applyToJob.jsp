@@ -931,6 +931,13 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 
+	 var candidateTypeSelect = "";
+	 if(candidateType == 'FavCandidates'){
+		 candidateTypeSelect = "Favourite Candidates";
+	 }else{
+		 candidateTypeSelect = candidateType;
+	 }
+	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
@@ -953,7 +960,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	var output = "";
-			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+			        	output = output + "<option value=''>-- Select "+candidateTypeSelect+" --</option>"; 
 			        	for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
@@ -1413,15 +1420,10 @@ function getRecruiterCandidateDetails(){
 	 }
 	
 	 getAllSubmissionCandidateCountries();
+	 getCandidateStates();
+	 getCandidateCities();
+	 
 	 setRateTypesByLocation();
-     
-     $("#submissionCountry").on('change', function (e) {
-  	   getCandidateStates();
-  	   getCandidateCities();
-     });
-     $("#submissionState").on('change', function (e) {
-  	   getCandidateCities();
-     });
      
      dobDatePicker();
     
@@ -1565,15 +1567,10 @@ function getCandidateDetails(){
 	    });
      
      getAllSubmissionCandidateCountries();
+	 getCandidateStates();
+	 getCandidateCities();
+	 
 	 setRateTypesByLocation();
-     
-     $("#submissionCountry").on('change', function (e) {
-  	   getCandidateStates();
-  	   getCandidateCities();
-     });
-     $("#submissionState").on('change', function (e) {
-  	   getCandidateCities();
-     });
      
      dobDatePicker();
     

@@ -23,7 +23,6 @@
      
 --%>
 
-<jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <script>
 $(document).ready(function() {
@@ -1596,6 +1595,8 @@ function requirementPipeline(requirementId){
     <!-- Project --> 
   </div>
 </section>
+
+<jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <!--   Error Message   -->
 <div class="vendor_wrap_mask"></div>
