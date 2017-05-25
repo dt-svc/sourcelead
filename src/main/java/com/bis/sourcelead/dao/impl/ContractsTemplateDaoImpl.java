@@ -87,15 +87,33 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	@Transactional
 	public List<ContractsTemplate> getAllContractsTemplatesByContractTypeLandLocationId(Long orgLocationId, String contractType) throws Exception
 	{
-		if(contractType.equalsIgnoreCase("Vendor NSA")){
-			contractType = "NSA";
+		
+		String[] template = null;
+		if(null != contractType && !"".equals(contractType)){	
+			template = contractType.split(",");
 		}
-		if(contractType.equalsIgnoreCase("Vendor NDA")){
-			contractType = "NDA";
+		List<String> statusList = new ArrayList<>();
+		if(template != null){
+			for(int i=0;i<template.length;i++){
+				
+				if("Vendor NSA".equalsIgnoreCase(template[i])){
+					statusList.add("NSA");
+				}else if("Vendor NDA".equalsIgnoreCase(template[i])){
+					statusList.add("NDA");
+				}else{
+					statusList.add(template[i]);
+				}
+			}
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ContractsTemplate>  contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateType = :contractType and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setString("contractType", contractType).setCacheable(true).list();
+		List<ContractsTemplate>  contractsTemplateList = null;
+		if(null != statusList && !statusList.isEmpty()){
+			contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateType IN (:statusList) and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setParameterList("statusList", statusList).setCacheable(true).list();
+		}else{
+			contractsTemplateList = session.createQuery("from ContractsTemplate ct where ct.orgLocationId.id =:orgLocationId and ct.templateStatus = '0'" ).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+		}
+		
 		return contractsTemplateList;
 	}
 
