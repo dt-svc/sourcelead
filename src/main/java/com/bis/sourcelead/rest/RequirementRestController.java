@@ -533,7 +533,7 @@ public class RequirementRestController {
 		
 		
 		for(User user : usersList){
-	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
+	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId(),orgLocation.getId());
 	            user.setAssignJobCount(assign.size());
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
 				if(null != userRole){
