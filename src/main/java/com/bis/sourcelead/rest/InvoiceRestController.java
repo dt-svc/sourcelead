@@ -93,7 +93,6 @@ public class InvoiceRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
 	
-	private static DecimalFormat dformat = new DecimalFormat(".##");
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -218,6 +217,7 @@ public class InvoiceRestController {
 		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
 		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
@@ -229,7 +229,7 @@ public class InvoiceRestController {
 			}
 		}
 
-		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org);
+		Invoice invoice = invoiceService.saveInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType,org,currencyCode);
 		if(null !=invoice){
 			if(null != invoice.getProjectID()){
 				invoiceService.updateSubmissionApproverHiearachy(invoice.getSubmissionApproverHierarchyIds(),invoice.getInvoiceFrequency(),invoiceType);
@@ -936,9 +936,11 @@ public class InvoiceRestController {
          float hourlyRate = conversionUtil.getHourlyRate(contracts.getBillingAmount(), contracts.getBillingRatePer());
          if(!currencyCode.equalsIgnoreCase(contracts.getBillingRateType())){
         	 float coversionRate = conversionUtil.convert(contracts.getBillingRateType(),currencyCode,hourlyRate);
-        	 contracts.setBillingAmount(dformat.format(coversionRate));
+        	 double roundValue = (Math.round(coversionRate * 100.0) / 100.0);
+        	 contracts.setBillingAmount(String.valueOf(roundValue));
          }else{
-        	 contracts.setBillingAmount(dformat.format(hourlyRate));
+        	 double roundValue = (Math.round(hourlyRate * 100.0) / 100.0);
+        	 contracts.setBillingAmount(String.valueOf(roundValue));
          }
          resultJson = commonUtil.toJSON(contracts);	
          return resultJson;

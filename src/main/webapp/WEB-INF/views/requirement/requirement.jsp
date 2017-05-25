@@ -920,7 +920,7 @@ $(document).ready(function () {
                 <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
                 
-                 <i class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
+                  <i id="navbar" class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                
@@ -1957,6 +1957,20 @@ function removeApprovers(){
 	$('#sequentialApprover2').trigger('chosen:updated');
 	
 	
+	if(!$("#apprverReq").is(':checked')){
+	     
+        $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+    } 
+
+else{
+	
+	
+	 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
+	
+	
+}
+	
+	
 	
 }
 </script> 
@@ -2511,6 +2525,10 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $("#selectContact").trigger('chosen:updated');
 		
 		 $("#clientCurrencyCodge").trigger('chosen:updated');
+		 
+		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
+		 $("#clientRateType").val("").trigger('change');
+		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 
 		 /* $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
@@ -2544,7 +2562,11 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
-		 $('select[name=clientRateType]').val(1);
+		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
+		 $("#clientRateType").val("").trigger('change');
+		 $('#clientDetails').find('p.jquery_form_error_message').remove();
+		 
+		 //$('select[name=clientRateType]').val(1);
 		// $('.selectpicker').selectpicker('refresh');
 		 $("#clientSubmissionForm").val('');
 		 $('#clientSubmissionForm').trigger("chosen:updated");

@@ -57,6 +57,9 @@ public class InvoicePayment {
 	@Column(name = "PAYMENT_AMOUNT")
 	private String paymentAmount;
 	
+	@Column(name = "CURRENCY_CODE")
+	private String currencyCode;
+	
 	@Column(name = "PAYMENT_COMMENT",columnDefinition = "TEXT default NULL")
 	private String paymentComment;
 	
@@ -235,4 +238,15 @@ public class InvoicePayment {
 	public void setCreatedByName(String createdByName) {
 		this.createdByName = createdByName;
 	}
+
+	public String getCurrencyCode()
+	{
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode)
+	{
+		this.currencyCode = currencyCode;
+	}
+	
 }
