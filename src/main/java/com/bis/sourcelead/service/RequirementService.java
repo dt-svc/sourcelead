@@ -42,7 +42,7 @@ public interface RequirementService {
 	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception;
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception;
 	
 	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 
