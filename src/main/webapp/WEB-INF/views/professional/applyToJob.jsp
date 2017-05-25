@@ -725,6 +725,15 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '		 </div>';
 		result = result + '	 </div>';
 		result = result + '	 </div>';
+		
+	    result = result + '<div class="row">';
+	    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
+		result = result + '<label class="col-md-4">Primary Skill</label>';
+		result = result + '<div class="col-md-8">';
+		result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+		result = result + '</div>';
+		result = result + '</div>';
+		result = result + '</div>'; 
 	                        
 		
 		result = result + '<div class="form-footer clearfix">';
@@ -803,6 +812,15 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '	 </div>';
 		result = result + '	 </div>';
 		
+	    result = result + '<div class="row">';
+	    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
+		result = result + '<label class="col-md-4">Primary Skill</label>';
+		result = result + '<div class="col-md-8">';
+		result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+		result = result + '</div>';
+		result = result + '</div>';
+		result = result + '</div>'; 
+		
 		result = result + '<div class="row">';
 		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
 		result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
@@ -864,29 +882,55 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 					})
 			
 			
-	 //Adding Customized Skills to the list
-       var select, chosen;
+	  var select, chosen;
 	    select = $("#candidateSkills");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
-	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                  $("#candidateSkills option").each(function(){
-                        $(this).siblings("[value='"+ this.value+"']").remove();
-                  });
-                  //end
-       		$("#candidateSkills").trigger("chosen:updated");
-       		
-	        }
+	    
+	    
+	    $("#candidateSkills").chosen().change(function(event) {
+	    	 var sourceleadUrl ='${sourceleadUrl}';
+	    	var allSkills = $(event.target).val();
+	   
+	    	
+	    	$.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        success: function(data) {
+		        	var primarySkill = data;
+		        	      $("#primarySkill").val(primarySkill);
+		        	
+		        },
+		    });
+	    	
 	    });
+	    
+	    chosen.search_field.on('keyup', function(e)
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#candidateSkills").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#candidateSkills option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#candidateSkills").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	});
 	    //Adding Customized Skills to the list
 			
 	$("#candidateSkills").val('').trigger("chosen:updated");
@@ -931,6 +975,13 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 
+	 var candidateTypeSelect = "";
+	 if(candidateType == 'FavCandidates'){
+		 candidateTypeSelect = "Favourite Candidates";
+	 }else{
+		 candidateTypeSelect = candidateType;
+	 }
+	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
@@ -939,6 +990,9 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		 if(skillsDiv != null){
 			 document.getElementById("skillsDiv").style.display="none";
 			 $("#candidateSkills").val('').trigger("chosen:updated");
+			 
+			 document.getElementById("primarySkillDiv").style.display="none";
+			 $("#primarySkill").val('');
 		 }
 		 
 		 var newResumeDiv =  document.getElementById('newResumeDiv'); 
@@ -953,7 +1007,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	var output = "";
-			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+			        	output = output + "<option value=''>-- Select "+candidateTypeSelect+" --</option>"; 
 			        	for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
@@ -996,6 +1050,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("skillsDiv").style.display="";
+			 document.getElementById("primarySkillDiv").style.display="";
 			 document.getElementById("newResumeDiv").style.display="none";
 			 
 			 $("#candidateSkills").val('').trigger("chosen:updated");
@@ -1064,6 +1119,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 				        $("#candidateResumesList").append(output);
 				        
 				        document.getElementById("skillsDiv").style.display="none";
+				        document.getElementById("primarySkillDiv").style.display="none";
 				        document.getElementById("newResumeDiv").style.display="none";
 				        
 				        $('#newUploadFile').removeAttr('data-validation');
@@ -1413,15 +1469,10 @@ function getRecruiterCandidateDetails(){
 	 }
 	
 	 getAllSubmissionCandidateCountries();
+	 getCandidateStates();
+	 getCandidateCities();
+	 
 	 setRateTypesByLocation();
-     
-     $("#submissionCountry").on('change', function (e) {
-  	   getCandidateStates();
-  	   getCandidateCities();
-     });
-     $("#submissionState").on('change', function (e) {
-  	   getCandidateCities();
-     });
      
      dobDatePicker();
     
@@ -1565,15 +1616,10 @@ function getCandidateDetails(){
 	    });
      
      getAllSubmissionCandidateCountries();
+	 getCandidateStates();
+	 getCandidateCities();
+	 
 	 setRateTypesByLocation();
-     
-     $("#submissionCountry").on('change', function (e) {
-  	   getCandidateStates();
-  	   getCandidateCities();
-     });
-     $("#submissionState").on('change', function (e) {
-  	   getCandidateCities();
-     });
      
      dobDatePicker();
     
@@ -2249,6 +2295,8 @@ function parseProfessionalResume(){
 	 
 	 document.getElementById("skillsDiv").style.display="";
 	 $("#candidateSkills").val('').trigger("chosen:updated");
+	 document.getElementById("primarySkillDiv").style.display="";
+	 $("#primarySkill").val('');
 }
 </script>
 
