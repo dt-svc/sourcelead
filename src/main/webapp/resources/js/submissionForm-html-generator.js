@@ -423,7 +423,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId) {
             	 }
             	 
             	 if(label == 'Notice Period'){
-            		 options = '<option value="">--Select--</option>';
+            		 options = '<option value="">--Select Notice Period--</option>';
             	 }
             	 
                 
