@@ -2239,7 +2239,7 @@ function minMaxExperience(){
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
-	    
+	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
 	    
 	     $("#anyOfKeyword").empty();
 	     $("#allKeywords").empty();
