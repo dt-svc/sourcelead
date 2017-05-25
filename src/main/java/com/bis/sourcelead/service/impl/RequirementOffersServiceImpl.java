@@ -762,7 +762,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 					    requirementOffersDao.storeRequirementOffers(requirementOffers);
 			     }
-			      if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() != orgLocations.getId().longValue()){
+			      if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 			      sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
 			      }
 	    }else if(offerStatus.equalsIgnoreCase("OFFERREJECTED")){
@@ -777,7 +777,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			  }
-	    		if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() != orgLocations.getId().longValue()){
+	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
 			      }
 	    	
