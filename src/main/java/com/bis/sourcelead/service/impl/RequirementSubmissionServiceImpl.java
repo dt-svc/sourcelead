@@ -3258,6 +3258,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
 			    candidate.setSkillsName(candidateSkills);
 			    
+			    if(jsonObj.has("primarySkill") && !isNullOrEmpty(jsonObj.getString("primarySkill"))){
+					 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+				 }
+			    
 			    candidateDao.storeCandidate(candidate);
 				CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
