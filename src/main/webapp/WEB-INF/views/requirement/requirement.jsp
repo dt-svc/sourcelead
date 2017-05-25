@@ -783,7 +783,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary ${currencyCode}</label>
+                <label class="col-md-3">Bill Rate / Salary</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -802,7 +802,7 @@ $(document).ready(function () {
 	                </div>
 	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -2534,7 +2534,11 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $("#clientCurrencyCodge").trigger('chosen:updated');
 		 
 		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
-		 $("#clientRateType").val("").trigger('change');
+		 
+		 var isEdit = '${val}'
+		 if(isEdit != 'Y'){
+			$("#clientRateType").val("").trigger('change');
+		 }
 		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 
 		 /* $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
