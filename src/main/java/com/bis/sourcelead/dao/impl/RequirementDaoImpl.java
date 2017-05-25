@@ -305,10 +305,10 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();  
-		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId";
-		return session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
+		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId and reqassignto.roleId.orgLocations.id =:orgLocationId ";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 
