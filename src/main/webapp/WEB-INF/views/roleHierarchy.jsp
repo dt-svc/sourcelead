@@ -44,7 +44,7 @@
            </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" id="add_hierarchy"  class="btn btn-primary btn-sm" >Save</button>
+          <button type="button" id="add_hierarchy"  class="btn btn-primary btn-sm" onclick="storeHierarchyLevel()" >Save</button>
           <button type="button" class="btn btn-default btn-sm" onclick="flush();" data-dismiss="modal">Close</button>
         </div>
         </form:form>
@@ -110,50 +110,54 @@ backdrop: 'static'
  </script>
  
 
-<script type="text/javascript">
-var validationSettings = {
-        errorMessagePosition : 'element',
-       borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-   };  
-         $('body').on('submit', '#addnew_hierarchy', function(e){
-        	  if ($(this).validate(false, validationSettings)){
-        		    e.preventDefault(); 
-	          		
-        		    var frm = $('#addnew_hierarchy').serializeFormJSON();
-        	        var con = JSON.stringify(frm);
-        	        con = con.replace(/[{}]/g, "");
-        	        
-        	        //It will escape all the special characters
-       	        var jsonData = encodeURIComponent(con);
-           		var sourceleadUrl ='${sourceleadUrl}';
-           		$("#add_hierarchy").attr("disabled", "disabled");
-           		$("#hierarchyLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-           		
-           	     $.ajax({
-        		    	type: "POST",
-        		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-        		        success: function(data) {
-        		        	if(data != null && data != ''){
-        	   	        	    location.replace(sourceleadUrl+"/roleHierarchy");  
-        		        	}
-        			        
-        		        },
-        		    });
-                
-            	    return true;
-            }
-            else{
-            	return false;	
-               }
-            });
-         $('#add_hierarchy').showHelpOnFocus();
-         $('#add_hierarchy').validateOnBlur(false, validationSettings); 
-            
-     
-</script>  
 
+
+<script type="text/javascript">
+	function storeHierarchyLevel() {
+		
+		var validationSettings = {
+				errorMessagePosition : 'element',
+				borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd'
+			};
+		
+		 if ($('#addnew_hierarchy').validate(false, validationSettings)){ 
+			
+          		
+    		    var frm = $('#addnew_hierarchy').serializeFormJSON();
+    	        var con = JSON.stringify(frm);
+    	        con = con.replace(/[{}]/g, "");
+    	        
+    	        //It will escape all the special characters
+   	        var jsonData = encodeURIComponent(con);
+       		var sourceleadUrl ='${sourceleadUrl}';
+       		$("#add_hierarchy").attr("disabled", "disabled");
+       		$("#hierarchyLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+       		
+
+			$.ajax({
+			 	
+				type: "POST",
+		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(data) {
+		        	if(data != null && data != ''){
+	   	        	    location.replace(sourceleadUrl+"/roleHierarchy");  
+		        	}
+			        
+		        },
+					});
+			return true;
+		 }else{ 
+				return false;
+		 } 
+	} 
+	
+	$('body').on('blur', '#addnew_hierarchy', function() {
+		$("#addnew_hierarchy").showHelpOnFocus();
+		$("#addnew_hierarchy").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 <script type="text/javascript">
 (function ($) {

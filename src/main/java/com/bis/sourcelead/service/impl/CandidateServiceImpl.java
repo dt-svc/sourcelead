@@ -797,6 +797,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setSkillsName(candidateSkills);
 			}
 			
+			if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") !=null){
+				candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+			}
+			
 			
 			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);
@@ -990,6 +994,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId) throws Exception
 	{
 		return candidateDao.getCandidateByConsultantUserId(consultantUserId,orgLocationId);
+	}
+
+	@Override
+	public Long getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long orgLocationId, Long userId,
+			String candidateType) throws Exception {
+		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocationId, userId, candidateType);
 	}
 
 }
