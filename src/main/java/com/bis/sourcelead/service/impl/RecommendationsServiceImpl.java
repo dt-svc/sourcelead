@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -518,11 +519,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	private CandidateIndex getCandidateIndex(Candidate candidate) {
 		CandidateIndex canIndex = new CandidateIndex();
-		if(null != candidate.getExperienceMonths()){
-			canIndex.setExperienceMonths(candidate.getExperienceMonths());
+		if(StringUtils.isNotEmpty(candidate.getExperienceMonths())){
+			canIndex.setExperienceMonths(Integer.parseInt(candidate.getExperienceMonths()));
 		}
-		if(null != candidate.getExperienceYears()){
-			canIndex.setExperienceYears(candidate.getExperienceYears());
+		if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
+			canIndex.setExperienceYears(Integer.parseInt(candidate.getExperienceYears()));
 		}
 		canIndex.setRateType(candidate.getRateType());
 		if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate())){
@@ -739,21 +740,22 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		Integer Years = 0;
 		int recommendationExpMonthsMin = 0;
 		int recommendationExpMonthsMax = 0;
-		if(null != candidateIndex.getExperienceYears() && !"".equalsIgnoreCase(candidateIndex.getExperienceYears())){
-			if(candidateIndex.getExperienceYears().equalsIgnoreCase("25+")){
+		if(null != candidateIndex.getExperienceYears()){
+			Years = candidateIndex.getExperienceYears();
+			/*if(candidateIndex.getExperienceYears().equalsIgnoreCase("25+")){
 				Years = Integer.valueOf(25);	
 			}else{
 				Years = Integer.parseInt(candidateIndex.getExperienceYears());
-			}
+			}*/
 			 	
 		}
-		if(candidateIndex.getExperienceMonths() != null && !"".equalsIgnoreCase(candidateIndex.getExperienceMonths())){
-			 Months = Integer.parseInt(candidateIndex.getExperienceMonths());
+		if(null != candidateIndex.getExperienceMonths()){
+			 Months = candidateIndex.getExperienceMonths();
 		}
 		
 		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() && Years > 0 && Months > 0 ){
 
-			int  candidateExpMonths = (Integer.parseInt(candidateIndex.getExperienceYears()))*12 + (Integer.parseInt(candidateIndex.getExperienceMonths()));
+			int  candidateExpMonths = (candidateIndex.getExperienceYears())*12 + (candidateIndex.getExperienceMonths());
 			
 			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) &&  "undefined" != recommendedCustomizeScore.getCustomizeMinExperience() && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience()) && "undefiend" != recommendedCustomizeScore.getCustomizeMaxExperience() ){
 				

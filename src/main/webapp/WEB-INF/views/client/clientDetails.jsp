@@ -3,6 +3,7 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- client details View starts-->
+
 <script type="text/javascript">
 	function clientDetails(clientLocationId,orgRelationID) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -17,10 +18,15 @@
 						var state = "";
 						var country = "";
 						
-						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
+					/* if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
 							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
 							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
 							result = result+ '</div>';
+						}  */
+						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
+							result  = result + '<div class="success_pop" id="selector8123">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="clientDetailsMsgDiv">'+json.msg+'</span>';
+						    result  = result + '</div>';
 						}
 						
 						result = result+ '<div class="project_tabs_inn_table">';
@@ -148,7 +154,10 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
-						msgFadeIn();
+// 						msgFadeIn();
+
+						$("#selector8123").fadeIn(200);
+						$('#selector8123').delay(2000).fadeOut('slow');
 					}
 				});
 	}
@@ -415,8 +424,10 @@
 			   	type: "POST",
 			    url: sourceleadUrl+"/clientDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId,
 	   		    success: function(data) {
+	   		    	$("#selector8123").removeAttr("style");
+        			$("#selector8123").css({ display: "block" });
 	   		    	clientDetails(clientLocationId,orgRelationId);
-	   		    	
+// 	   		    	clientEditMsgFadein();
 	   		    }
 		 }); 
 	     	return true;
@@ -430,7 +441,12 @@
         $("#editClient_form").validateOnBlur(false, validationSettings);  
     });
 </script>
-
+<script>
+function clientEditMsgFadein(){
+  $("#selector8123").fadeIn(200);
+  $('#selector8123').delay(2000).fadeOut('slow');
+}
+  </script> 
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("companyWebsite").value;
@@ -656,5 +672,9 @@ function getAllCities(){
 	    setTimeout(function(){ 
 	    	$('#selector1').fadeOut('slow'); }, 500);
 	}
+</script> 
+<script>
+  $("#selector1").fadeIn(200);
+  $('#selector1').delay(2000).fadeOut('slow');
 </script> 
 <!-- End -->

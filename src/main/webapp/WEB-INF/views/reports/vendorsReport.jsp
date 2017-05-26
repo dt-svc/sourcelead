@@ -112,7 +112,11 @@ function prepareReportDataDiv(data){
         result = result + '</td>';
         
         result = result + '<td>';
-   		result = result + '<div class="small"><span>0</span></div>';
+        if(report.backoutCount != null && report.backoutCount != '' && report.backoutCount !='undefined'){
+           	result = result + '<div class="small"><span>'+report.backoutCount+'</span></div>';
+     		} else{
+    		result = result + '<div class="small"><span>0</span></div>';
+    		    }
         result = result + '</td>';
         
         result = result + '</tr>';
@@ -225,6 +229,7 @@ function prepareSpocReportDataDiv(data){
 	result = result + '    <th>Interviewed</th>';
 	result = result + '    <th>Offered</th>';
 	result = result + '    <th>Rejected</th>';
+	result = result + '    <th>Back-Out</th>';
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
@@ -275,6 +280,14 @@ function prepareSpocReportDataDiv(data){
            	result = result + '<div><span>'+report.rejectedCount+'</span></div>';
      		} else{
     		result = result + '<div><span>0</span></div>';
+    		    }
+        result = result + '</td>';
+        
+        result = result + '<td>';
+        if(report.backoutCount != null && report.backoutCount != '' && report.backoutCount !='undefined'){
+           	result = result + '<div class="small"><span>'+report.backoutCount+'</span></div>';
+     		} else{
+    		result = result + '<div class="small"><span>0</span></div>';
     		    }
         result = result + '</td>';
         

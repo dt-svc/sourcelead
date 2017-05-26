@@ -66,6 +66,11 @@ function getOrgName(){
  <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
+		document.getElementById("email").value="";
+		document.getElementById("firstName").value="";
+		document.getElementById("lastName").value="";
+		document.getElementById("phoneNumber").value="";
+		
 	});
 </script>
 
