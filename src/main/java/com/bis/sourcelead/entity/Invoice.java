@@ -112,6 +112,9 @@ public class Invoice {
 	@Column(name = "INVOICE_COMMENT",columnDefinition = "TEXT default NULL")
 	private String invoiceComment;
 	
+	@Column(name = "REJECT_REASON",columnDefinition = "TEXT default NULL")
+	private String rejectReason;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -798,4 +801,16 @@ public class Invoice {
 	public void setConvertCurrencyCode(String convertCurrencyCode) {
 		this.convertCurrencyCode = convertCurrencyCode;
 	}
+
+	public String getRejectReason()
+	{
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason)
+	{
+		this.rejectReason = rejectReason;
+	}
+	
+	
 }
