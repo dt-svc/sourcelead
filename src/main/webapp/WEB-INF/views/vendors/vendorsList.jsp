@@ -1415,7 +1415,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
-	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
@@ -1805,7 +1805,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.country != null && json.country !='' && json.country !='undefined'){
 								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1814,7 +1814,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.state != null && json.state !='' && json.state !='undefined'){
 								result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1823,7 +1823,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.city != null && json.city !='' && json.city !='undefined'){
 								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1843,7 +1843,7 @@ function getVendorOrgname(vendorOrgname){
 							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
 							}else{
 								
-								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+								result = result + '<span> --- </span><div class="clearfix"></div>';	
 							}
 							result = result + '</div>';
 							
@@ -1853,7 +1853,7 @@ function getVendorOrgname(vendorOrgname){
 								result = result + '<span title="'+json.vendorCreateduserName+'">'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
 							}else{
 								
-								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+								result = result + '<span> --- </span><div class="clearfix"></div>';	
 							}
 							result = result + '</div>';
 							result = result + '<div class="project_details_cta">';
@@ -1861,7 +1861,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.address != null && json.address !='' && json.address !='undefined'){
 								result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1870,7 +1870,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.billingAddress != null && json.billingAddress !='' && json.billingAddress !='undefined'){
 								result = result + '<span title="'+json.billingAddress+'">'+json.billingAddress+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 
@@ -1879,7 +1879,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.paymentTerms != null && json.paymentTerms !='' && json.paymentTerms !='undefined' && json.paymentTerms !='SelectPaymentTerms'){
 								result = result + '<span title="'+json.paymentTerms+'">'+json.paymentTerms+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							

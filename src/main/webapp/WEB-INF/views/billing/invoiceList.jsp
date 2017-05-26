@@ -671,6 +671,38 @@ function showPopUp(id,invoiceStatus,invoiceParentId){
     	 showMenu();
 }
 </script>
+
+<div id="popUp"></div>
+<script>
+function saveReasonforReceivable(id){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reasonForDelete").value;
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	  	  
+		}else{
+		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+		$.ajax({
+		   	type: "POST",
+		   	url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#popUp").empty();
+	 			 $(".project_inn_mask").fadeOut(200);
+		    	location.replace(sourceleadUrl+"/invoiceList");
+		    }
+	   });
+	}
+	  
+}
+</script>
+<script>
+function cancelTermination(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
 <script>
 function removePopup(){
 	if( document.getElementById("invoicePopupId") != null &&  document.getElementById("invoicePopupId") != 'undefined'){
@@ -733,7 +765,24 @@ function acceptedInvoice(id){
 }
 
 </script>
+
 <script>
+function rejectInvoice(id){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
+	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result + ' <div id="reasonForRejectDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforReceivable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<!-- <script>
 function rejectInvoice(id){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -747,7 +796,7 @@ function rejectInvoice(id){
     }); 
 }
 
-</script>
+</script> -->
 <script>
 function cancelbtn(){
 	  $("#recvPymntpop").fadeOut(200);

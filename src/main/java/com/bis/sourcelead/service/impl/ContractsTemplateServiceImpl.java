@@ -440,7 +440,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		vendorContracts.setContractUUID(contracts.getContractUUID());
+		if(null != vendorContracts)
+		{
+		 vendorContracts.setContractUUID(contracts.getContractUUID());
+		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
 		ContractsHistory contractsHistory = new ContractsHistory();

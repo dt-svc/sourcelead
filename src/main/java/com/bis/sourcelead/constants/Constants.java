@@ -190,6 +190,9 @@ public class Constants {
 	public static String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	public static String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
 	public static String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
+	public static String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
+	public static String INVOICE_REJECT_MAIL_VENDOR_EMAIL = "InvoiceRejectMailtoVendor";
+	public static String INVOICE_ACCEPT_MAIL_CLIENT_EMAIL = "InvoiceAcceptMailtoClient";
 	public static String UPDATED_USER_ROLE_NOTIFICATION = "UserRoleChanged";
 	public static String UPDATED_REQUIREMENT_EMAIL_TO_MANAGER = "updatedRequirementEmailToManager";
 	public static String UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER = "updatedRequirementNotificationToManager";
@@ -363,7 +366,7 @@ public class Constants {
 			"status" };
 	public static String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
-			"Rate" };
+			"Rate", "Vendor", "Vendor Contact"};
 	public static String[] REQUIREMENT_EXCEL_HEADERS = { "Requirement id", "Requirement Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
 			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
@@ -444,8 +447,7 @@ public class Constants {
 			"ClientAddress", "BillingAddress", "PaymentTerms" };
 	public static String[] VENDOR_CONTACTS_STATUS_DROPDOWN = { "New", "Active", "In-Active",
 			"Negotiation", "Contracted" };
-	public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "New", "Active", "In-Active",
-			"Negotiation", "Contracted" };
+	public static String[] CLIENT_CONTACTS_STATUS_DROPDOWN = { "New", "Active" };
 	public static String[] CLIENT_PAYMENT_TERMS = { "10 days", "15 days", "30 days", "45 days",
 			"60 days", "90 days" };
 	public static int level1 = 1;
