@@ -201,7 +201,20 @@ public class InvoiceServiceImpl implements InvoiceService{
      		}
      		invoice.setInvoiceType(Constants.Receivable);
         }
-       
+
+        //currency conversion
+        String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
+	        if(null != vendorCurrencyCode){
+	      	float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(jsonObj.getString("grandTotal")));
+	      	float exchangeAmoiunt = conversionUtil.singleConvert(loginOrgCurrencyCode, vendorCurrencyCode, 1);
+	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+	      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
+	      	invoice.setConvertAmount(String.valueOf(convertedAmount1));
+	      	invoice.setExchangeRate(String.valueOf(exchangeAmoiunt));
+	        }	
+	    }
+		
         invoice.setOwnerUserId(user);
 		invoice.setOrgLocation(orgLocation);
 		if(jsonObj.has("invoiceId") && !"".equalsIgnoreCase(jsonObj.getString("invoiceId"))){
@@ -384,7 +397,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.Payables)){
 			parentInvoice.setInvoiceType(Constants.Receivable);
 		}else{
-			parentInvoice.setInvoiceType(Constants.Payables);
+ 			parentInvoice.setInvoiceType(Constants.Payables);
 		}
 		String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
 		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
