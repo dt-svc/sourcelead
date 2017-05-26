@@ -1035,8 +1035,7 @@ function cancel(candidateId){
 		
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap minHeight_225" style="overflow-X:auto;">
-    
+    <div class="vendor_wrap minHeight_225">
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
@@ -1048,7 +1047,7 @@ function cancel(candidateId){
 					  <div class="candAdvsrchPop">
 					  <div class="row">
 						  <div class="col-md-4">
-							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+							  <label>Any of Keyword</label>
 							  <div class="clearfix">
 							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
                                     </select>
@@ -1056,14 +1055,14 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+							  <label>All Keywords</label>
 							  <div class="clearfix">
 							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
                                  </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+							  <label>Exclude Keyword</label>
 							  <div class="clearfix">
 							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                                  </select>
@@ -1249,7 +1248,7 @@ function cancel(candidateId){
 							  </div>
 						  </div> 
 						  <div class="col-md-4">
-							  <label>Exclude Education<i class="fa fa-info-circle" title="Exclude Education"></i></label>
+							  <label>Exclude Education</label>
 							  <div class="clearfix">
 								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
                                        <c:forEach var="edu" items="${educationsList}">
@@ -1259,7 +1258,7 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Certification<i class="fa fa-info-circle" title="Certification"></i></label>
+							  <label>Certification</label>
 							  <div class="clearfix">
 								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
                                   </select>
@@ -1268,14 +1267,14 @@ function cancel(candidateId){
 						  </div>
 						  <div class="clearfix">
 						  <div class="col-md-4">
-							  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Employers</label>
 							  <div class="clearfix">
 								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
                                   </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Exclude Employers</label>
 							  <div class="clearfix">
 								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
                                   </select>
@@ -1306,7 +1305,7 @@ function cancel(candidateId){
 			  </form:form>
       </div>
       <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
-      <div class="timesheet_head topfilters topfilters2 pull-right">
+      <div class="timesheet_head topfilters topfilters2 pull-right hdrFilter">
         <ul>
            <li id="filter2ApprovePop" style="display: none;"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
