@@ -11,7 +11,6 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-
 <%-- 
      @author : p.Laxman
      this script is for candidate Activation
@@ -1100,7 +1099,7 @@ function cancel(candidateId){
 						  
 						<div class="col-md-8">
 							<div class="row">
-								<div class="col-md-6">
+								<div class="col-md-6 payrate_p">
 									<label>Rate</label>
 									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
@@ -1119,7 +1118,7 @@ function cancel(candidateId){
 								         </div>
 								    </div>
 								</div> 
-							<div class="col-md-6">
+							<div class="col-md-6 payrate_p">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
 								<div id="maxRateDiv">
@@ -2238,7 +2237,7 @@ function minMaxExperience(){
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
-	    
+	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
 	    
 	     $("#anyOfKeyword").empty();
 	     $("#allKeywords").empty();

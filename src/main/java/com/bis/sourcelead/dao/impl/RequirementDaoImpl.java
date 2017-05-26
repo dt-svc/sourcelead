@@ -1174,5 +1174,33 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 	        return releasedJobsList;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations)
+				throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Requirement> releasedJobsList = null;
+			String query = "";
+			if(user != null && orgLocations != null){
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.orgLocationId =:orgLocationId and :userId IN (requirement.releasedBy)";
+				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocations.getId()).setLong( "userId", user.getId() ).setCacheable(true).list();
+			}
+	        return releasedJobsList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
+				Long relationId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Requirement> releasedJobsList = null;
+			String query = "";
+			if(parentreqIds != null && relationId != null){
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.parentRequirement.id IN (:parentreqIds) and requirement.clientId.id =:relationId";
+				releasedJobsList = session.createQuery(query).setParameterList("parentreqIds", parentreqIds).setLong("relationId", relationId).setCacheable(true).list();
+			}
+	        return releasedJobsList;
+		}
 		
 }
