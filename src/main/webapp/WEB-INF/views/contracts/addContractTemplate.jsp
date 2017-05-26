@@ -142,9 +142,6 @@
                  <li onclick="copyToClipboard('text_element36')"><i></i><p class="copyText" id="text_element36">[End date]</li>
                  <li onclick="copyToClipboard('text_element37')"><i></i><p class="copyText" id="text_element37">[Company Location]</p></li>
                 <li onclick="copyToClipboard('text_element38')"><i></i><p class="copyText" id="text_element38">[Company Name]</p></li>
-                <li onclick="copyToClipboard('text_element89')"><i></i><p class="copyText" id="text_element89">[Billing Rate]</li>
-                 <li onclick="copyToClipboard('text_element90')"><i></i><p class="copyText" id="text_element90">[Overtime]</li>
-                 <li onclick="copyToClipboard('text_element91')"><i></i><p class="copyText" id="text_element91">[Payment Term]</li>
                  <li onclick="copyToClipboard('text_element107')"><i></i><p class="copyText" id="text_element107">[State Of Jurisdiction]</p></li>
                  <li onclick="copyToClipboard('text_element111')"><i></i><p class="copyText" id="text_element111">[Offer Rate]</p></li>
                 <!--  <li onclick="copyToClipboard('text_element112')"><i></i><p class="copyText" id="text_element112">[Rate Per]</p></li>
@@ -165,9 +162,6 @@
                  <li onclick="copyToClipboard('text_element49')"><i></i><p class="copyText" id="text_element49">[End date]</li>
                  <li onclick="copyToClipboard('text_element50')"><i></i><p class="copyText" id="text_element50">[Company Location]</p></li>
                 <li onclick="copyToClipboard('text_element51')"><i></i><p class="copyText" id="text_element51">[Company Name]</p></li>
-                <li onclick="copyToClipboard('text_element92')"><i></i><p class="copyText" id="text_element92">[Billing Rate]</li>
-                 <li onclick="copyToClipboard('text_element93')"><i></i><p class="copyText" id="text_element93">[Overtime]</li>
-                 <li onclick="copyToClipboard('text_element94')"><i></i><p class="copyText" id="text_element94">[Payment Term]</li>
                  <li onclick="copyToClipboard('text_element108')"><i></i><p class="copyText" id="text_element108">[State Of Jurisdiction]</p></li>
                  <li onclick="copyToClipboard('text_element114')"><i></i><p class="copyText" id="text_element114">[Offer Rate]</p></li>
                 <!--  <li onclick="copyToClipboard('text_element115')"><i></i><p class="copyText" id="text_element115">[Rate Per]</p></li>
