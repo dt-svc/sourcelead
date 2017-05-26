@@ -41,9 +41,9 @@ public class CandidateIndex implements Serializable {
 
 	private String address;
 
-	private String experienceYears;
+	private Integer experienceYears;
 
-	private String experienceMonths;
+	private Integer experienceMonths;
 
 	private String designation;
 
@@ -271,19 +271,19 @@ public class CandidateIndex implements Serializable {
 		this.address = address;
 	}
 
-	public String getExperienceYears() {
+	public Integer getExperienceYears() {
 		return experienceYears;
 	}
 
-	public void setExperienceYears(String experienceYears) {
+	public void setExperienceYears(Integer experienceYears) {
 		this.experienceYears = experienceYears;
 	}
 
-	public String getExperienceMonths() {
+	public Integer getExperienceMonths() {
 		return experienceMonths;
 	}
 
-	public void setExperienceMonths(String experienceMonths) {
+	public void setExperienceMonths(Integer experienceMonths) {
 		this.experienceMonths = experienceMonths;
 	}
 
