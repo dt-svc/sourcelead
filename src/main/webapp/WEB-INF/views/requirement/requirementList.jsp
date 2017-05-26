@@ -2206,6 +2206,8 @@ function clearSearch(){
 	$('#state').val('').trigger('chosen:updated');
 	$('#city').val('').trigger('chosen:updated');
 	$('#noticePeriod').val('').trigger('chosen:updated');
+	$('#requirementTitle').val('').trigger('chosen:updated');
+	$('#jobId').val('').trigger('chosen:updated');
 }
 </script>
 
