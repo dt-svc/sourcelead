@@ -78,6 +78,24 @@ public class ConversionUtil {
 		return 0;
 	}
 	
+	public  float singleConvert(String fromCurrencyCode, String toCurrencyCode, float amount)
+	{
+		
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
+				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+			
+			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
+					+ fromCurrencyCode);
+			if (response != null) {
+				
+				String rate = response.getRates().get(toCurrencyCode);
+				float conversionRate = Float.valueOf((rate != null) ? rate : "0.0");
+				return conversionRate * amount;
+			}
+		}
+		return 0;
+	}
+	
 	// Method to get the response from API
 	private static CurrencyConversionResponse getResponse(String strUrl)
 	{

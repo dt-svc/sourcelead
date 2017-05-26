@@ -21,7 +21,7 @@ color:#337ab7 !important;
 .successBtn {
 background-color: #1ab394;
 border-color: #1ab394;
-cursor: pointer; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
 font-size: 13px; width: 75px;
 }
 </style>
@@ -251,6 +251,7 @@ font-size: 13px; width: 75px;
   
 <script>
 function receivePaymentPop1(invoiceId,total){
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
 	 var result = "";
 	result = result +'  <div class="modal-dialog modal-lg">';
@@ -293,11 +294,13 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked onclick="validMask();">           ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
+	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
 	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
 	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
+	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -391,6 +394,11 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 
 </script>
 
+<script>
+function cancelTermination(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
 <!-- modal pop --> 
 <script>
 function saveReceivePayment(invoiceId){
@@ -430,53 +438,7 @@ $('body').on('blur', '#receivePayment-form', function() {
 });
 </script>
 
-<!-- <script>
-function saveInvoice(saveType){
-	/* var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-         };  */
-	
-	   if ($('#invoice_form').validate(false, validationSettings)){  
-		    var frm = $('#invoice_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var form = $('#invoice_form')[0];
-	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        $.ajax({
-		    	type: "POST",
-		    	 data: formData,
-			      contentType : 'application/json; charset=utf-8',
-			      enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
-		        success: function(result) {
-		     		$("#invoiceLoading").removeAttr("style");
-		     		location.replace(sourceleadUrl+"/invoiceList");
-		     		
-		        },
-		    });  
-	         return true; 
-		
-	   }else{
-		return false;
-	  } 
-}
 
-$('body').on('blur', '#invoice_form', function() {
-	$("#invoice_form").showHelpOnFocus();
-	$("#invoice_form").validateOnBlur(false, validationSettings);  
-}); 
-</script> -->
 <script>
 function getPayableInvoiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -643,7 +605,7 @@ function getPayableInvoiceList(){
 				
 				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" title="Pay" >Paid</span> </td>          ';	
+						result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
@@ -658,16 +620,22 @@ function getPayableInvoiceList(){
 					}
 					
 				}else{
-					result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+					}else{
+						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+					}
+					
+					
 				}
 				
-				if(report.invoiceType=="Receivable"){
+				/* if(report.invoiceType=="Receivable"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span> </td>          ';	
 					}else{
 						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 					}
-				}
+				} */
 				 
 				 result = result +'</div>';
 				
@@ -800,7 +768,50 @@ function acceptedInvoice(id){
 }
 
 </script>
+
+<div id="popUp"></div>
 <script>
+function rejectInvoice(id){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
+	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result + ' <div id="reasonForRejectDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforPayable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function saveReasonforPayable(id){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reasonForDelete").value;
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	  	  
+		}else{
+		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+		$.ajax({
+		   	type: "POST",
+		   	url: sourceleadUrl+"/rejectInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceId="+id+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	$("#popUp").empty();
+	 			 $(".project_inn_mask").fadeOut(200);
+		    	location.replace(sourceleadUrl+"/payablesList");
+		    }
+	   });
+	}
+	  
+}
+</script>
+
+<!-- <script>
 function rejectInvoice(id){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -814,7 +825,7 @@ function rejectInvoice(id){
     }); 
 }
 
-</script>
+</script> -->
 <script>
 function cancelbtn(){
 	  $("#recvPymntpop").fadeOut(200);

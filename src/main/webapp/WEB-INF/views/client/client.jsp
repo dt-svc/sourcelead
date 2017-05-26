@@ -42,7 +42,7 @@ window.onload = function () {
 			<h2>Create Client</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
-			&raquo; Client</div>
+			&raquo; Create Client</div>
 	</section>
 	
 	<div class="content-area content-new clearfix">

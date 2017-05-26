@@ -178,7 +178,7 @@
               <input type="text" class="form-control" id="designationOtherType" name="designationOtherType" value="${candidate.designationOtherType}"  field-name="Job Type" value="">
             </div>
           </div>
-       
+       <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
@@ -196,7 +196,7 @@
 			</div>
 		</div>
 		</div>
-		
+		</c:if>
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
