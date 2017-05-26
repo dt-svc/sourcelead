@@ -17,7 +17,7 @@
 
       <h2>Requirement Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Template List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Templates</div>
   </section>
   <div class="timesheet_out overflow_Auto">
     <div class="vendor_wrap">
@@ -78,6 +78,9 @@ function requirementTemplateList(){
 	                    	 result = result +"<td><div class='proj_show tbldata-dotdot'>";
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
 		                     	result = result +'<a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'<i class="fa fa-binoculars"></i></span></a>';
+		                     '</sec:authorize>';
+		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
+		                     	result = result +'<span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span>';
 		                     '</sec:authorize>';
 		                     result = result +"</div></td>";
 		                     if(null != opt.jobType && opt.jobType !='' && opt.jobType !='undefined'){

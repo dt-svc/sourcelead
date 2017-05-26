@@ -166,6 +166,33 @@ public void sendNotificationToClientOrVendor(String actionLink,String rejectActi
 	
 	}
 
+
+public void sendNotificationToClientOrVendorWhenOwnerChange(String actionLink,String rejectActionLink, User loginUser,User fromUser, User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario, String spocUUID, OrgLocations clientOrgLocation) throws Exception{
+	
+	//new Notification logic
+	Notifications notification = new Notifications();
+	notification.setActionLink(actionLink);
+	notification.setRejectActionLink(rejectActionLink);
+	notification.setSpocUUID(spocUUID);
+	notification.setBody(emailScenario.getBody());
+	notification.setNotificationFrom(fromUser);
+	notification.setNotificationTo(toUser);
+	notification.setNotificationScenarioId(emailScenario);
+	notification.setMode(Constants.NOTIFICATION_UNREAD);
+	notification.setCreatedBy(loginUser.getUserCode());
+	notification.setCreatedDate(new Date());
+	notification.setLocationCode(clientOrgLocation.getLocationCode());
+	notification.setOrgCode(clientOrgLocation.getOrg().getOrgCode());
+	notification.setUserNotificationStatus("Sent");
+	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
+	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
+		notification.setUUID(emailScenario.getUUID());
+	}
+	
+	Notifications clientVendorNotification = notificationsService.saveNotification(notification);
+	
+	}
+
 public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
 	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,iAdressArray,attachmentList,submissionIds);
 	

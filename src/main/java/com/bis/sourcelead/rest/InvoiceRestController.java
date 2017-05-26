@@ -542,6 +542,10 @@ public class InvoiceRestController {
 						invoice.setClientContactEmail(invoice.getOwnerUserId().getEmail());	
 					}
 				}
+				invoice.setExchangeRate(invoice.getExchangeRate());
+				invoice.setConvertAmount(invoice.getConvertAmount());
+				invoice.setConvertCurrencyCode(invoice.getConvertCurrencyCode());
+				invoice.setCurrencyCode(invoice.getCurrencyCode());
 				
 				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));
 				invoice.setInvoiceDateStr(Constants.DF_DMY.format(invoice.getInvoiceDate()));
@@ -720,11 +724,14 @@ public class InvoiceRestController {
 				projectMember.setCandidateName(candidateName.toString());
 				if (null != projectMember.getEmployee().getUser().getId()) {
 					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
-					projectMember.setCandidateId(candidate.getId());
-					List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
-					if(null != contractList && contractList.size() >0){
-						projectMember.setContractsList(contractList);
+					if(null != candidate){
+						projectMember.setCandidateId(candidate.getId());
+						List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,Long.parseLong(orgRelationId),contractType);
+						if(null != contractList && contractList.size() >0){
+							projectMember.setContractsList(contractList);
+						}	
 					}
+					
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
@@ -753,34 +760,7 @@ public class InvoiceRestController {
 		return resultJson;
 	} 
 	
-//	commented by Rajashekar if if everything goes fine will delete later
-	
-	/*@RequestMapping(value = "/saveProjectInvoice", method = RequestMethod.POST)
-	public @ResponseBody String saveProjectInvoice(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "saveType", required = false) String saveType,
-			@RequestParam(value = "invoiceType", required = false) String invoiceType,MultipartHttpServletRequest request) throws Exception {
 
-		String json1 = "{" + json + "}";
-		String invoiceSaved = "failed";
-		JSONObject jsonObj = new JSONObject(json1);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		List<MultipartFile> attachedfileList = new ArrayList<MultipartFile>();
-		int attcahmentMaxRowNumber = Integer.parseInt(jsonObj.getString("invoiceAttcahmentMaxRowNumber"));
-		 final Map files = request.getFileMap();
-		for(int i=0;i<attcahmentMaxRowNumber;i++){
-			MultipartFile  multiFile = (MultipartFile)files.get(i+"invoicedocFile");
-			if(multiFile != null && !multiFile.isEmpty()){
-				attachedfileList.add(multiFile); 
-			}
-		}
-		Invoice invoice = invoiceService.saveProjectInvoice(jsonObj,user,orgLocation,saveType,attachedfileList,invoiceType);
-		invoiceService.getPdfFileForInvoice(invoice,orgLocation,user,org);
-		if(null !=invoice){
-			invoiceSaved = "success";
-		}
-		return "";
-}*/
 	
 	private List<Contracts> getSowContract(Long candidateId, OrgLocations orgLocation, Long orgRelationId, String contractType) throws Exception
 	{
@@ -826,6 +806,7 @@ public class InvoiceRestController {
 			for(SubmissionApproverHierarchy sah : sahList){
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
+				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
 				if(null != candidate){
 					StringBuilder empName =new StringBuilder();
@@ -868,42 +849,6 @@ public class InvoiceRestController {
 			}
 		}
 		return resultJson;
-		
-		/*List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndProjectId(startDate,endDate,orgLocation.getId(),Long.parseLong(projectId));
-		for(ProjectMembers projectMember :projectMembersList){
-			Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
-			if(null != candidate){
-				Map<String,Float> totalHours = projectMembersService.getTotalHours(projectMember.getId(),  startDate,  endDate);
-				StringBuilder empName =new StringBuilder();
-				if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
-					empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
-				}else{
-					empName.append(projectMember.getEmployee().getUser().getFirstName());
-				}
-				projectMember.setCandidateName(empName.toString());
-				if(null != candidate){
-					projectMember.setCandidateId(candidate.getId());
-				}
-				projectMember.setStartDate(startDateStr);
-				projectMember.setEndDate(endDateStr);
-				String billableHours = String.valueOf(totalHours.get("BILLABLE_HOURS"));;
-				String arr[] = billableHours.split("\\.");
-				StringBuilder sb = new StringBuilder();
-				if(arr[0].length()==2){
-					sb.append("0").append(arr[0]);
-				}else if(arr[0].length()==1){
-					sb.append("00").append(arr[0]);	
-				}
-				if(arr[1].length()==1){
-					sb.append(":").append("0").append(arr[1]);
-				}else{
-					sb.append(":").append(arr[1]);
-				}
-				projectMember.setTotalHours(sb.toString());
-				filteredMembersList.add(projectMember);
-			}
-		}*/
-		
 	} 
 	
 	
@@ -1005,7 +950,7 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType());
+		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType(),null);
 		return "success";
 	} 	
 	

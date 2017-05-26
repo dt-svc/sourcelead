@@ -140,7 +140,19 @@ public class ProjectMembers implements Serializable{
     @Transient
     private Long submissionApproverHierarchyId;
     
+    
     @Transient
+    private Long submissionInvoiceId;
+    
+    public Long getSubmissionInvoiceId() {
+		return submissionInvoiceId;
+	}
+
+	public void setSubmissionInvoiceId(Long submissionInvoiceId) {
+		this.submissionInvoiceId = submissionInvoiceId;
+	}
+
+	@Transient
     private List<Contracts> contractsList;
     
     
