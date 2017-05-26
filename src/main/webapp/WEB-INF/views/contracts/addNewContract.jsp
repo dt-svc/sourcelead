@@ -215,7 +215,7 @@
               <div class="col-md-8" id="errorvendorContact">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
-		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
+		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'required' : ''}" field-name="Vendor Contact">
 							    <option value=''>Select Vendor Contact</option>
 							    <c:forEach var="element" items="${orgSpocList}" >
 							    	<c:if test = "${element.tempOwnerId == contract.contactUser.id}">
@@ -253,7 +253,7 @@
               <div class="col-md-8" id="errorClientContact">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
-		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation=" ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Contact">
 							    <c:forEach var="element" items="${orgSpocList}" >
 							    	<c:if test = "${element.spocUserId == contract.contactUser.id}">
 								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>

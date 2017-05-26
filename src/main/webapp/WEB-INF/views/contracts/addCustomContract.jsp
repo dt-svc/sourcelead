@@ -216,7 +216,7 @@
               <div class="col-md-8" id="errorClientContact">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
-		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
+		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};" field-name="Client Contact">
 							    <c:forEach var="element" items="${orgSpocList}" >
 							    	<c:if test = "${element.spocUserId == contract.contactUser.id}">
 								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>

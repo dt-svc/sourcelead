@@ -66,6 +66,9 @@
 							result = result + '<strong>Phone No:</strong>';
 							if(json.spocMobilePhone !=null && json.spocMobilePhone !='' && json.spocMobilePhone !='undefined'){
 								result = result + '<span>'+json.spocMobilePhone+'</span>';
+							}else{
+								result = result + '<span> --- </span>';
+
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
