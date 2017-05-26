@@ -11,6 +11,13 @@
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor").Editor();
+			});
+       </script> 
 
 <style type="text/css">
 .modal-bodyCustom {
@@ -776,7 +783,7 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Bill Rate / Salary ${currencyCode}</label>
+                <label class="col-md-3">Bill Rate / Salary</label>
               <div class="col-md-9 pras ratetype">
 	              <div class="input-group">
 	              <c:set var="val" value="${requirement.isClientJob}"/>
@@ -795,7 +802,7 @@ $(document).ready(function () {
 	                </div>
 	                <input type="text" disabled="disabled" class="form-control" id="clientRate" name="clientRate" field-name="Client Rate" value="${requirement.clientRate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">
 	                <div class="input-group-btn selp-custom-min">
-	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Type" value="${requirement.clientRateType}" name="clientRateType">
+	                 <select disabled="disabled" class="selectpicker ratetype"  id="clientRateType" field-name="Client Rate Per" value="${requirement.clientRateType}" name="clientRateType">
 	                    
 			                <option value="">Rate Per</option>
 		                    <option ${requirement.clientRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -920,7 +927,7 @@ $(document).ready(function () {
                 <i class="fa fa-retweet" title="Sequential"></i>
                 </label>
                 
-                 <i class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
+                  <i id="navbar" class="glyphicon glyphicon-info-sign text-info ml" title="Sequential approval mechanism is hierarchy based Parallel approval mechanism is any approver can approve requirement"></i>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
                
@@ -1957,6 +1964,20 @@ function removeApprovers(){
 	$('#sequentialApprover2').trigger('chosen:updated');
 	
 	
+	if(!$("#apprverReq").is(':checked')){
+	     
+        $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+    } 
+
+else{
+	
+	
+	 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
+	
+	
+}
+	
+	
 	
 }
 </script> 
@@ -2511,6 +2532,14 @@ var existingValue = document.getElementById('isClientJob').value;
 		 $("#selectContact").trigger('chosen:updated');
 		
 		 $("#clientCurrencyCodge").trigger('chosen:updated');
+		 
+		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
+		 
+		 var isEdit = '${val}'
+		 if(isEdit != 'Y'){
+			$("#clientRateType").val("").trigger('change');
+		 }
+		 $('#clientDetails').find('p.jquery_form_error_message').remove();
 
 		 /* $('select[name=clientCurrencyCodgetIsClientVale]').val(1);
 		 $('.selectpicker').selectpicker('refresh');
@@ -2544,7 +2573,11 @@ var existingValue = document.getElementById('isClientJob').value;
 		 // $("#clientCurrencyCode").val('');
 			
 		 $('#clientRate').val('');
-		 $('select[name=clientRateType]').val(1);
+		 $("#clientCurrencyCode").val('${currencyCode}').trigger('change');
+		 $("#clientRateType").val("").trigger('change');
+		 $('#clientDetails').find('p.jquery_form_error_message').remove();
+		 
+		 //$('select[name=clientRateType]').val(1);
 		// $('.selectpicker').selectpicker('refresh');
 		 $("#clientSubmissionForm").val('');
 		 $('#clientSubmissionForm').trigger("chosen:updated");
@@ -2781,13 +2814,7 @@ function checkcheckbox(){
 }
 </script> -->
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-		<script>
-			$(document).ready(function() {
-				$("#txtEditor").Editor();
-			});
-       </script> 
+
 
 
 <script>

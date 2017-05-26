@@ -366,6 +366,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setUserName(registration.getEmail());
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
 		user.setIsMailSent(Status.Y);

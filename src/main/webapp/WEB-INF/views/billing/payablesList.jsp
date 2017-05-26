@@ -18,6 +18,12 @@ $(document).ready(function(){
 .invoiceId_Anchor a {
 color:#337ab7 !important;
 }
+.successBtn {
+background-color: #1ab394;
+border-color: #1ab394;
+cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+font-size: 13px; width: 75px;
+}
 </style>
 
 <section class="content-wraper">
@@ -245,6 +251,7 @@ color:#337ab7 !important;
   
 <script>
 function receivePaymentPop1(invoiceId,total){
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var paymentAmount = total.toFixed(2);
 	 var result = "";
 	result = result +'  <div class="modal-dialog modal-lg">';
@@ -287,11 +294,13 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                      <input   type="radio" name="paymentAmount" value="total" checked onclick="validMask();">           ';
 	result = result +'                      Total Due:          ';
 	result = result +'                      <input type="text" value="'+paymentAmount+'" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmount" name="totalAmount" readonly> ';
+	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>              ';
 	result = result +'                    <div class="col-md-6">      ';
 	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
 	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
+	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
 	result = result +'                </div>                          ';
@@ -424,53 +433,7 @@ $('body').on('blur', '#receivePayment-form', function() {
 });
 </script>
 
-<!-- <script>
-function saveInvoice(saveType){
-	/* var validationSettings = {
-	        errorMessagePosition : 'element',
-	       borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-         };  */
-	
-	   if ($('#invoice_form').validate(false, validationSettings)){  
-		    var frm = $('#invoice_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var form = $('#invoice_form')[0];
-	 	   var formData = new FormData(form); 
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        $.ajax({
-		    	type: "POST",
-		    	 data: formData,
-			      contentType : 'application/json; charset=utf-8',
-			      enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-			      dataType : 'json',
-		    	 url: sourceleadUrl+"/saveInvoice?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType, 
-		        success: function(result) {
-		     		$("#invoiceLoading").removeAttr("style");
-		     		location.replace(sourceleadUrl+"/invoiceList");
-		     		
-		        },
-		    });  
-	         return true; 
-		
-	   }else{
-		return false;
-	  } 
-}
 
-$('body').on('blur', '#invoice_form', function() {
-	$("#invoice_form").showHelpOnFocus();
-	$("#invoice_form").validateOnBlur(false, validationSettings);  
-}); 
-</script> -->
 <script>
 function getPayableInvoiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -637,7 +600,7 @@ function getPayableInvoiceList(){
 				
 				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" title="Pay" >Pay</span> </td>          ';	
+						result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
@@ -652,16 +615,22 @@ function getPayableInvoiceList(){
 					}
 					
 				}else{
-					result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+					}else{
+						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
+					}
+					
+					
 				}
 				
-				if(report.invoiceType=="Receivable"){
+				/* if(report.invoiceType=="Receivable"){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span> </td>          ';	
 					}else{
 						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
 					}
-				}
+				} */
 				 
 				 result = result +'</div>';
 				
@@ -919,7 +888,7 @@ function customDate(){
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" placeholder="Start Date">                   ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';
-	result = result +'   <div class="col-md-5 paddingLeft" id="errEndDate">                                                                                            ';
+	result = result +'   <div class="col-md-5 paddingLeft paddingRight" id="errEndDate">                                                                                            ';
 	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" placeholder="End Date">                       ';
 	result = result +'                                                                                                                                 ';
 	result = result +'   </div>                                                                                                                        ';

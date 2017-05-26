@@ -241,7 +241,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 
 							
-							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="clearfix mb">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="input-group er ratetype">';
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
@@ -820,7 +820,17 @@ function candidateProfile(candidateId,candidateType){
 							
 							result = result +'		<div class="clearfix">';
 							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
-							result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+							if(candidateType == "Candidates"){
+								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')">';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+								 '</sec:authorize>';
+							}else{
+								'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+								'</sec:authorize>';
+							}
+							
+							
 							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
 							result = result +'		</div>';
 							result = result + '<div class="clearfix"></div> ';
@@ -1024,24 +1034,36 @@ function candidateProfile(candidateId,candidateType){
 	    select = $("#skillName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
+	    
+	    
 	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                $("#skillName option").each(function(){
-                      $(this).siblings("[value='"+ this.value+"']").remove();
-                });
-                //end
-        		$("#skillName").trigger("chosen:updated");
-        		
-	        }
-	    });
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#skillName").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#skillName option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#skillName").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	});
+	    
+	    
 	    //Adding Customized Skills to the list
 	}
 

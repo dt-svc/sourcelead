@@ -940,6 +940,8 @@ function assignEmployeespagination(){
 		$(".myCheckbox").each(function() {
 							var localId = this.id;
 							if ($(this).is(':checked')) {
+								$(this).removeAttr('emp-assigned');
+								$(this).attr('emp-assigned','true');
 								var startDate = $("#startDate" + localId).val();
 								var endDate = $("#endDate" + localId).val();
 								result = result
@@ -970,7 +972,15 @@ function assignEmployeespagination(){
 </script>
 <script>
 function assignEmployeeCancel(){
-	$('#assignEmployeePagination tbody input[type="checkbox"]').prop('checked', false);
+	$(".myCheckbox").each(function() {
+		var empAssigned = $(this).attr('emp-assigned');
+		if(empAssigned != null && empAssigned != 'undefined' && empAssigned != '' && empAssigned == 'true'){
+		}
+		else{
+			$(this).prop('checked', false);
+		}
+		
+    });	
 }
 </script>
 

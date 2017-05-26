@@ -336,6 +336,19 @@ function errRemoveClientContact(){
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
+                   
+                   //New Div for currency conversion: srinivas l
+                  /*  result = result +'  <div class="row">';
+                   result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                   
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>USD</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   
+                   result = result +'  </div>';
+                   result = result +'  </div>'; */
+                 //New Div for currency conversion: srinivas l
+                   
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -508,23 +521,9 @@ function errRemoveClientContact(){
 		 	 }	 	
 	    }
 	       	 
-	     var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-	     
-	     var afterDiscountTotal = $("#afterDiscountTotal").val();
-	     
-		    for(var i=1; i< maxRowNum; i++){
-		         var taxType = $("#"+i+"taxdiscountType").val();
-		        
-		         var taxValue = $("#"+i+"taxdiscountvalue").val();
-		         var taxTotal = $("#"+i+"taxTotal").val();
-		         var tot = $("#grandTotal").val();
-		             
-	             var first=parseFloat(tot);
-	             var second=parseFloat(taxTotal); 
-	             var total  = (first+second);
-	             $("#grandTotal").val(total.toFixed());
-		    }
-		    
+	calculateTaxDiscount();
+	
+	
 		    var count = 0;
 		    var selectedAssociates = '';
 			var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
@@ -555,10 +554,6 @@ function errRemoveClientContact(){
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
 		}
-		
-		
-		
-		
 	}
 </script>
 
@@ -1177,7 +1172,12 @@ function pagination(){
 		 }else{
 			 calAddRowAmount("000","00",rowId);
 		 }
-		 
+		 conversion();
+  }
+  
+  
+  function  conversion(){
+// 	  alert("Hi");
   }
   
   function calAddRowAmount(hours,minute,rowId){
@@ -1482,9 +1482,11 @@ function calculateTaxDiscount(){
 	
 	var taxGrandTotal = 0;
 	for(var i=1; i<maxTaxRowNum; i++){
-		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
+		if($("#"+i+"taxTotal").val() != null && $("#"+i+"taxTotal").val() != '' && $("#"+i+"taxTotal").val() != 'undefined'){
+			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
+		}
+		
 	}
-	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
   

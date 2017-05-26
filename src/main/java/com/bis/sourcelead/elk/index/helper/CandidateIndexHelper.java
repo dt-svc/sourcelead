@@ -95,15 +95,15 @@ public class CandidateIndexHelper {
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
 				if(candidate.getExperienceYears().equalsIgnoreCase("25+")){
-					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS.toString());
+					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
 				}
 				else{
-					candidateIndex.setExperienceYears(candidate.getExperienceYears());
+					candidateIndex.setExperienceYears(Integer.parseInt(candidate.getExperienceYears()));
 				}
 				
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceMonths())){
-				candidateIndex.setExperienceMonths(candidate.getExperienceMonths());	
+				candidateIndex.setExperienceMonths(Integer.parseInt(candidate.getExperienceMonths()));	
 			}
 			
 			candidateIndex.setDesignation(candidate.getDesignation());

@@ -1681,7 +1681,7 @@ public class EMailJobScheduler {
 */
 	/**
 	 * @author prasanna
-	 * Fires on every 1 hour on every day emailJobScheduler.job.cron.everyminute.expression
+	 * Fires on every 30 min on every day emailJobScheduler.job.cron.everyminute.expression
 	 * @throws Exception 
 	 */
 	@Scheduled(cron = "0 0/1 * 1/1 * ?")
@@ -1739,7 +1739,6 @@ public class EMailJobScheduler {
 		            EnvelopesApi.ListStatusChangesOptions options = envelopesApi.new ListStatusChangesOptions();
 		            
 		            for (Contracts contracts : conList) {
-		            	if(null != contracts.getEnvelopId() ){
 		            		String parentFromStage = contracts.getTemplateSubmissionStatus();
 			            	if(contracts.getEndDate()!=null){
 			            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -1770,7 +1769,7 @@ public class EMailJobScheduler {
 			            	 }
 			            	}
 			            	
-			       
+			            	if(null != contracts.getEnvelopId() ){
 			            	if(!"FINALIZED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!"EXPIRED".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())&&!"completed".equalsIgnoreCase(contracts.getContractStatus())){
 				            	Envelope evp =  envelopesApi.getEnvelope(accountId, contracts.getEnvelopId());
 				            	if(evp.getStatus().equalsIgnoreCase("completed")&&!contracts.getTemplateSubmissionStatus().equalsIgnoreCase("FINALIZED")){
@@ -1846,6 +1845,7 @@ public class EMailJobScheduler {
 				        			}
 				            	}
 			            	}
+			            	}
 			            	contractsTemplateService.saveNewContract(contracts);
 			            	if(!parentFromStage.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 				            	ContractsHistory contractsHistory = new ContractsHistory();
@@ -1858,7 +1858,7 @@ public class EMailJobScheduler {
 			            	}
 			            	
 						}
-		            }
+		            
 				
 		        }
 		        catch (com.docusign.esign.client.ApiException ex)

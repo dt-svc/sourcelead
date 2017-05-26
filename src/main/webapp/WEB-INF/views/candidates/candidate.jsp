@@ -192,6 +192,7 @@
             </div>
           </div>
        
+       <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
 			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
@@ -209,7 +210,8 @@
 			</div>
 		</div>
 		</div>
-		
+		 </c:if>
+		 
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
@@ -612,19 +614,35 @@ function getCities(){
 		    	
 		    });
 		    
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var newSkill = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newSkill).text(newSkill);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
-		    });
+	    
+	    chosen.search_field.on('keyup', function(e)
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#candidateSkills").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#candidateSkills option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#candidateSkills").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+			    });
+		    
+		    
 		    //Adding Customized Skills to the list
 		    
 		    //Adding Customized Educations to the list

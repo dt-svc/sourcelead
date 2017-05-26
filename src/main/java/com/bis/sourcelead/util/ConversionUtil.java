@@ -7,10 +7,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.service.impl.InvoiceServiceImpl;
 import com.google.gson.Gson;
 /**
  * 
@@ -19,6 +22,8 @@ import com.google.gson.Gson;
  */
 @Component
 public class ConversionUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 	
     private static final String API_PROVDIER = "http://api.fixer.io/";
 	
@@ -73,6 +78,24 @@ public class ConversionUtil {
 		return 0;
 	}
 	
+	public  float singleConvert(String fromCurrencyCode, String toCurrencyCode, float amount)
+	{
+		
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
+				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+			
+			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
+					+ fromCurrencyCode);
+			if (response != null) {
+				
+				String rate = response.getRates().get(toCurrencyCode);
+				float conversionRate = Float.valueOf((rate != null) ? rate : "0.0");
+				return conversionRate * amount;
+			}
+		}
+		return 0;
+	}
+	
 	// Method to get the response from API
 	private static CurrencyConversionResponse getResponse(String strUrl)
 	{
@@ -81,8 +104,7 @@ public class ConversionUtil {
 		Gson gson = new Gson();
 		StringBuffer sb = new StringBuffer();
 		if (strUrl == null || strUrl.isEmpty()) {
-			
-			System.out.println("Application Error");
+			logger.info("Application Error");
 			return null;
 		}
 		URL url;
@@ -99,13 +121,34 @@ public class ConversionUtil {
 			stream.close();
 			response = gson.fromJson(sb.toString(), CurrencyConversionResponse.class);
 		} catch (MalformedURLException e) {
-			
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	public String getVendorOrgCurrencyCode(String country)
+	{
+	  String countryCurrencyCode = null;
+      if (Constants.COUNTRY_INDIA.equals(country)) {
+    	  countryCurrencyCode =  Constants.CURRENCYCODE_INR;
+		}
+		else if (Constants.COUNTRY_AUSTRALIA.equals(country)) {
+			 countryCurrencyCode =  Constants.CURRENCYCODE_AUD;
+		}
+		else if (Constants.COUNTRY_UNITEDSTATES.equals(country)) {
+			 countryCurrencyCode =  Constants.CURRENCYCODE_USD;
+		}
+		else if (Constants.COUNTRY_SINGAPORE.equals(country)) {
+			countryCurrencyCode =  Constants.CURRENCYCODE_SGD;
+		}
+		else if (Constants.COUNTRY_UNITEDKINGDOM.equals(country)) {
+			countryCurrencyCode =  Constants.CURRENCYCODE_GBP;
+		}
+		else if (Constants.COUNTRY_FRANCE.equals(country)) {
+			countryCurrencyCode =  Constants.CURRENCYCODE_EUR;
+		}
+      return countryCurrencyCode;
 	}
 }

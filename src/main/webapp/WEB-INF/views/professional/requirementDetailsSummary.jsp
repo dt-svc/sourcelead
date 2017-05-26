@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: Interview Template</title>
 <!-- Bootstrap -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
@@ -67,7 +68,6 @@ padding-right: 15px;
  top: 1px;
 }
 .stickyfooter {
-	position: absolute;
 	bottom: 0;
 	width: 100%;
 	height: 40px;
@@ -77,6 +77,12 @@ padding-right: 15px;
 }
 .require_wrap_details {
 min-height:100px;
+}
+.reqPadTop {
+	padding: 70px 10px 20px 10px;
+}
+.profile_details h4 {
+width: 950px;
 }
 </style>
 
@@ -202,11 +208,10 @@ function publicRequirementProfile(requirementUUID){
 		    		education = "NO DATA";
 		    	}
 		    	
-		    	
 				 result = result +'	<div class="container-fluid">';
-				 result = result +'    <div class="clients_side_wrap_inn">';
+				 result = result +'    <div class="clients_side_wrap_inn reqPadTop">';
 				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
-				 result = result +'        <h4 id="id1">'+json.jobTitle+'</h4>';
+				 result = result +'        <h4 id="id1" title="'+json.jobTitle+'">'+json.jobTitle+'</h4>';
 				 result = result +'        <div class="hide-row" style="display: block;">';
 				 result = result +'          <div class="col-md-9">';
 				 result = result +'            <div class="row">';
@@ -240,7 +245,7 @@ function publicRequirementProfile(requirementUUID){
 				        	 result = result +'<li>'+customSkill+'</li>';
 				        }
 			    	}else{
-	 					result = result +'<li>No Data</li>';
+	 					result = result +'<li>-----</li>';
 	 				}
 				 result = result +'                    </ul>';
 				 result = result +'                  </div>';
@@ -265,7 +270,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
 				 result = result +'            <div class="require_wrap_details"> ';
 				 result = result +'              <h2>Descriptions:</h2>';
-				 result = result +'              <textarea placeholder="Enter description">'+description+'</textarea>';
+				 result = result +'              <div class="RDdetails">'+description+'</div>';
 				 result = result +'              <h2>Other details:</h2>';
 				 result = result +'              <div class="require_one">';
 				 result = result +'                <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+positions+'</span>';

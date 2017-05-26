@@ -8,8 +8,16 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<script src="resources/js/formvalidator.js"></script>
 
+<script src="resources/js/formvalidator.js"></script>
+<style type="text/css">
+.cand-advsrch-popup .bs-caret {
+position: relative; top:8px;
+}
+.cand-advsrch-popup .bootstrap-select > .dropdown-toggle {
+padding-right: 0px;
+}
+</style>
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
@@ -70,20 +78,21 @@ window.onload = function () {
         <h2>Requirements<span class="select-fild"> </h2>  
         <div class="clearfix"></div>    
           </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
           <div class="clearfix"></div> 
          <div class="reportsCount req_Crowd clearfix">
           <ul>
           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-          <li><label class="mr"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
           </c:if>
-          <li id="crowd"><label class="mr"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
-          <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b id="referByMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedByMejobs" onchange="selectRequirementType('ReferredByMe');" value="ReferredByMe">&nbsp;Referred By Me</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-handshake-o"></i></span><b id="referByMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedByMejobs" onchange="selectRequirementType('ReferredByMe');" value="ReferredByMe">&nbsp;Referred By Me</label></b></li>
        	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-       	  <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b id="referToMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedToMejobs" onchange="selectRequirementType('ReferredToMe');" value="ReferredToMe">&nbsp;Referred To Me</label></b></li>
-          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b id="appliedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="appliedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Applied</label></b></li>
+       	  <li><label class="mr10"><span><i class="fa fa-handshake-o"></i></span><b id="referToMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedToMejobs" onchange="selectRequirementType('ReferredToMe');" value="ReferredToMe">&nbsp;Referred To Me</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-send-o"></i></span><b id="appliedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="appliedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Applied</label></b></li>
           </c:if>
           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b id="submittedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="submittedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Submitted</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-send-o"></i></span><b id="submittedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="submittedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Submitted</label></b></li>
           </c:if>
           </ul>
           <input type="hidden" name="requirementType" id="requirementType" value="" />
@@ -172,7 +181,7 @@ window.onload = function () {
                         <input type="text" class="form-control input-sm" value="" name="maxRate" id="maxRate" placeholder="Max Rate">
                         <div class="input-group-btn selp-custom-min custommin">
                           <select class="selectpicker">
-                            <option selected disabled>Per</option>
+                            <option selected disabled>Rate Per</option>
                             <option>Hourly</option>
                             <option>Weekly</option>
                             <option>Bi-weekly</option>
@@ -288,8 +297,8 @@ window.onload = function () {
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 
-              <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement('0');" class="btn btn-sm btn-primary"/>
-               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/> 
+              <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement('0');" class="btn btn-sm btn-success"/>
+               <input type="button" value="Clear" onClick="loadChosenRequirementScripts();" class="btn btn-sm btn-primary ml10"/> 
               </div>
             </div>
           </div>
@@ -827,8 +836,15 @@ function requirementsList(offset){
 			 					
 			 					result = result +'<div class="openPostDate">';
 			 					
+			 					var appliedDate = requirements.requirementAppliedDate;
+			 					if(appliedDate != null && appliedDate !="" && appliedDate !='undefined'){
+					             	var array = new Array();
+					             	array = appliedDate.split('-');
+					             	var dateApplied = (array[2] + "-" + array[1] + "-" + array[0]);
+					             }
+			 					
 			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+dateApplied+'</b>';
 			 					}else{
 			 						result = result +'<i class="fa fa-user-circle"></i> Submissions Count : <b>'+requirements.recruiterSubmissionsCount+'</b>';
 			 					}
@@ -891,12 +907,14 @@ function requirementsList(offset){
 
 <script>
 function searchRequirement(offset){
+	minMaxExperienceOfProfessional();
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }; 
+	
  if ($('#professional_requirement_search_form').validate(false, validationSettings)){  
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#professional_requirement_search_form').serializeFormJSON();
@@ -1391,6 +1409,8 @@ function loadChosenRequirementScripts(){
 	 $("#anyKeyWord").empty();
 	 $("#allReqKeyWord").empty();
 	 $("#excludeReqKeyWord").empty();
+	 $('#experienceId').find('p.jquery_form_error_message').remove(); 
+	 
 }
 </script>
 

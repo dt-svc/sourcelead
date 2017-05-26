@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -314,13 +315,26 @@ public class SubmissionsRateRestController {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
+		String expectedRateRN = "";
+		String expectedRateTypeRN = "";
+		String expectedRatePerRN = "";
 		if(null != requirementSubmissionTemplateFields){
 				if(null  != requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement()){
 					requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
 				}
+				
 				requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
 				requirementRateSubmission.setExpectedRateType(requirementSubmissionTemplateFields.getExpectedRateType());
 				requirementRateSubmission.setExpectedRatePer(requirementSubmissionTemplateFields.getExpectedRatePer());
+				
+				expectedRateRN = requirementSubmissionTemplateFields.getExpectedCTC();
+				expectedRateTypeRN = requirementSubmissionTemplateFields.getExpectedRateType();
+				expectedRatePerRN = requirementSubmissionTemplateFields.getExpectedRatePer();
+				
+				requirementRateSubmission.setExpectedRateRN(expectedRateRN);
+				requirementRateSubmission.setExpectedRateTypeRN(expectedRateTypeRN);
+				requirementRateSubmission.setExpectedRatePerRN(expectedRatePerRN);
+				
 				if(null != requirementSubmissionTemplateFields.getExpectedCTC() &&  null != requirementSubmissionTemplateFields.getExpectedRatePer()){
 					StringBuilder rateAndType = new StringBuilder();
 					requirementRateSubmission.setRateAndType(rateAndType.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());	
@@ -404,8 +418,11 @@ public class SubmissionsRateRestController {
 			
 			requirementRateSubmissionNegotiation.setIsNeedApplicantPermit(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getNeedApplicantPermit());
 			requirementRateSubmissionNegotiation.setSubmissionStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
+			
+			requirementRateSubmissionNegotiation.setExpectedRateRN(expectedRateRN);
+			requirementRateSubmissionNegotiation.setExpectedRateTypeRN(expectedRateTypeRN);
+			requirementRateSubmissionNegotiation.setExpectedRatePerRN(expectedRatePerRN);
 		}
-		
 		
 		if(allSubmissionRateHistory.isEmpty()){
 			allSubmissionRateHistory.add(requirementRateSubmission);
@@ -635,6 +652,7 @@ public class SubmissionsRateRestController {
 			requirementSubmission.setRejectedReason(rejectreason);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
