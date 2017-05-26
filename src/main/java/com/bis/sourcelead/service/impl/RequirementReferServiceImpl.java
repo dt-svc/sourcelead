@@ -192,7 +192,8 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setUserType(user.getUserType());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 emailMessage.setFromName(loginUser.toString());
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
@@ -374,7 +375,8 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setUserType(user.getUserType());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 emailMessage.setFromName(loginUser.toString());
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
