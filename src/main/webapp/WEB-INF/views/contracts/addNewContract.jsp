@@ -420,7 +420,7 @@
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 dropdown-select" id="errInvoice">
-                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Invoice Frequency" onchange="removeBillCycleValidation();">
+                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Billing cycle" onchange="removeBillCycleValidation();">
                     <option value="">Select Cycle</option>
                     <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
                     <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>

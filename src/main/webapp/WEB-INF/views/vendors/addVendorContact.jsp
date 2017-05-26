@@ -331,7 +331,16 @@ function getOrgDetails()
 				})
 </script>  -->
 
-
+ <script>
+	$(document).ready(function() {
+		document.getElementById("vendor_contact_form").reset();
+		document.getElementById("email").value="";
+		document.getElementById("firstName").value="";
+		document.getElementById("lastName").value="";
+		document.getElementById("phoneNumber").value="";
+		
+	});
+</script>
 <script type="text/javascript">
 	function saveVendorContact() {
 		var vendorName = document.getElementById("vendorName").value;

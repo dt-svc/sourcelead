@@ -66,21 +66,21 @@ $(document).ready(function(){
       <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeContract()"><i class="fa fa-close"></i></a>
       <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
       <div class="col-md-4 mt25">
-        <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="Import Candidate">
+        <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="New Contract">
           <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
           <strong class="clearfix">New Contract</strong> </a> </div>
       </div>
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-yellow"> <a href="<c:url value="/addCustomContract" />" title="Add Candidate">
+          <div class="small-widget bg-yellow"> <a href="<c:url value="/addCustomContract" />" title="Custom Contract">
             <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Custom Contract</strong> </a> </div>
         </div>
         </sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
+          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Existing Contract">
             <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Existing Contract</strong> </a> </div>
         </div>
@@ -161,7 +161,7 @@ $(document).ready(function(){
   
 </div>
 </section>
-
+<div id="deleteDocpopUp"></div>
 <div class="mask_time"></div> 
 <section class="contPopup" style="min-height:300px;">
 	<div id="viewPopupDiv"></div>
@@ -816,7 +816,7 @@ function preparedContractListWFA(data){
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
 	            		//result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
-	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
+	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectContract('+report.id+',\'REJECTED\');"></i></div>';
 	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 	            	  '</sec:authorize>';
 	            	  '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -2193,7 +2193,21 @@ function Check(val){
 }
 
 </script>
-
+<script>
+function rejectContract(recordId,status){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Document delete message here</p>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="terminateReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' ><input class='u_can_color' type='button'  value='Cancel' ></b>";
+	result = result +"	</div>";
+	$("#deleteDocpopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

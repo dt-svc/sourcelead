@@ -208,14 +208,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setFileType(multiFile.getContentType());
 		 }
 		
-		if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
-			contracts.setTypeOfContract("Custom");
-			vendorContracts.setTypeOfContract("Custom");
-		}else{
-			contracts.setTypeOfContract("New");
-			vendorContracts.setTypeOfContract("New");
+		if(null != vendorContracts){
+			if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
+				contracts.setTypeOfContract("Custom");
+				vendorContracts.setTypeOfContract("Custom");
+			}else{
+				contracts.setTypeOfContract("New");
+				vendorContracts.setTypeOfContract("New");
+			}
 		}
-		
 		if(null != vendorContracts){
 			vendorContracts.setTypeOfContract("New");
 		}
