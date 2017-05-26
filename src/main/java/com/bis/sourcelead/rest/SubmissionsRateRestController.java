@@ -652,6 +652,7 @@ public class SubmissionsRateRestController {
 			requirementSubmission.setRejectedReason(rejectreason);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
