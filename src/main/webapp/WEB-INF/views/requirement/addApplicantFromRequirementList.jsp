@@ -105,7 +105,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<label class="col-md-4">Employment<br/> Type<span class="paddingLeft">*</span></label>';
 	result = result + '<div class="col-md-8">';
 	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
-	result = result + '<option value="">--Select--</option>';
+	result = result + '<option value="">--Select Employment Type--</option>';
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
@@ -218,23 +218,31 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	    
 	    
 	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                  $("#candidateSkills option").each(function(){
-                        $(this).siblings("[value='"+ this.value+"']").remove();
-                  });
-                  //end
-       		$("#candidateSkills").trigger("chosen:updated");
-       		
-	        }
-	    });
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#candidateSkills").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#candidateSkills option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#candidateSkills").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	});
 	    //Adding Customized Skills to the list
 			
 	$("#candidateSkills").val('').trigger("chosen:updated");
@@ -711,7 +719,7 @@ $('body').on('submit', '#addApplicant_form', function(e){
 <script>
 function getCandidateSelectionType(){
 	var output = "";
-	output = output + "<option value=''>-- Select --</option>"; 
+	output = output + "<option value=''>--Select Employment Type--</option>"; 
 	output = output + "<option value='C2C'>C2C</option>"; 
 	output = output + "<option value='C2C-1099'>C2C-1099</option>"; 
 	output = output + "<option value='W-2'>W-2</option>"; 
@@ -1091,7 +1099,7 @@ function getAllSubmissionCandidateCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#submissionCountry').empty();
-        	$('#submissionCountry').append('<option value="">---Select---</option>');
+        	$('#submissionCountry').append('<option value="">---Select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${SourceLeadWeb_orgLocations.country}'){
             		$('#submissionCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1122,7 +1130,7 @@ function getCandidateStates(state){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionState').empty();
-	        	$('#submissionState').append('<option value="">---Select---</option>');
+	        	$('#submissionState').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	if(state != null && state != 'undefined' && json[i] == state){
 	            		$('#submissionState').append('<option value="'+state+'" selected>'+json[i]+'</option>');
@@ -1141,10 +1149,10 @@ function getCandidateStates(state){
 	    });
 	}else{
 		$('#submissionState').empty();
-    	$('#submissionState').append('<option value="">---Select---</option>');
+    	$('#submissionState').append('<option value="">---Select State---</option>');
     	$('#submissionState').trigger("chosen:updated");
     	$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select---</option>');
+    	$('#submissionCity').append('<option value="">---Select City---</option>');
         $('#submissionCity').trigger("chosen:updated");
 	}
 }
@@ -1170,7 +1178,7 @@ function getSubmissionCandidateCities(city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionCity').empty();
-	        	$('#submissionCity').append('<option value="">---Select---</option>');
+	        	$('#submissionCity').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
@@ -1186,7 +1194,7 @@ function getSubmissionCandidateCities(city){
 	    });
 	}else{
 		$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select---</option>');
+    	$('#submissionCity').append('<option value="">---Select City---</option>');
     	$('#submissionCity').trigger("chosen:updated");
 	}
 }

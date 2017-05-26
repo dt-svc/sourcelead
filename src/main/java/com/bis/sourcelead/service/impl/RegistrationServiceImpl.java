@@ -194,7 +194,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
 		User user = null;
 		UserRole uRole = null;
-		user = userService.findByEmail(registration.getEmail());
+		user = userService.findByUserName(registration.getEmail());
 		if(null != user){
 			   uRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		   }
@@ -366,6 +366,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		user.setUserName(registration.getEmail());
 		user.setPassword(sourceleadPasswordEncoder.encode(password));
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
+		user.setMobilePhone(registration.getMobilePhone());
 		user.setCreatedBy(user.getUserCode());
 		user.setCreatedDate(new Date());
 		user.setIsMailSent(Status.Y);
@@ -755,7 +756,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Override
 	public void addUserBySourcelead(User user, JSONObject jsonObj) throws Exception {
 		
-		User orgUser = userService.findByEmail(jsonObj.getString("userEmail"));
+		User orgUser = userService.findByUserName(jsonObj.getString("userEmail"));
 		UserRole userRole = new UserRole();
 		String password = null;
 		if(null == orgUser){

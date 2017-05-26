@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.itextpdf.text.log.SysoLogger;
 
 @Service
@@ -54,6 +56,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	 
+	 @Autowired
+	 private ConversionUtil conversionUtil;
 	 
 	 /*@Autowired
 	 private CandidateSkillsService candidateSkillsService;*/
@@ -461,31 +466,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
 					 reqCity = recommendedCustomizeScore.getCustomizeCity();
 				}
-				float reqPerMonthSal = 0;
+				float requirementHourlyRate = 0;
+				// changed rate logic
 				if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
-					int reqRate = Integer.parseInt(recommendedCustomizeScore.getCustomizeRate());
-					String reqRateType = recommendedCustomizeScore.getCustomizeRatetype();
-					if("Hourly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate *9;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Weekly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /7;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Bi-weekly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /14;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Semi-Monthly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /15;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Monthly".equalsIgnoreCase(reqRateType)){
-						reqPerMonthSal = reqRate;
-					}else if("Bi-Monthly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /60;
-						reqPerMonthSal = perDaySal * 30;
-					}else{
-						reqPerMonthSal = reqRate /12;
-					}
-				 }
+					requirementHourlyRate = conversionUtil.getHourlyRate(recommendedCustomizeScore.getCustomizeRate(), recommendedCustomizeScore.getCustomizeRatetype());
+				}
+				// rate logic end
 		    	    CandidateIndex candidateIndex = getCandidateIndex(candidate);
 					int matchedSkillCount = 0;
 					
@@ -501,7 +487,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
 					
 					//get the RatePercentage
-					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,reqPerMonthSal);
+					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,requirementHourlyRate);
 					
 					// get the NoticeperiodPercentage
 					noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
@@ -533,11 +519,11 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 
 	private CandidateIndex getCandidateIndex(Candidate candidate) {
 		CandidateIndex canIndex = new CandidateIndex();
-		if(null != candidate.getExperienceMonths()){
-			canIndex.setExperienceMonths(candidate.getExperienceMonths());
+		if(StringUtils.isNotEmpty(candidate.getExperienceMonths())){
+			canIndex.setExperienceMonths(Integer.parseInt(candidate.getExperienceMonths()));
 		}
-		if(null != candidate.getExperienceYears()){
-			canIndex.setExperienceYears(candidate.getExperienceYears());
+		if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
+			canIndex.setExperienceYears(Integer.parseInt(candidate.getExperienceYears()));
 		}
 		canIndex.setRateType(candidate.getRateType());
 		if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate())){
@@ -553,7 +539,6 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId) throws Exception {
-		logger.info("....getRecommendationsUpdateWithScoreByUsingElk Method Started...");
 		float locationPercentage = 0; // location 10%
 		float ratePercentage = 0;    // rate 20 %
 		float skillPercentage = 0; // skill = 20%
@@ -604,31 +589,12 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
 					 reqCity = recommendedCustomizeScore.getCustomizeCity();
 				}
-				float reqPerMonthSal = 0;
+				float requirementHourlyRate = 0;
+				// changed rate logic
 				if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
-					int reqRate = Integer.parseInt(recommendedCustomizeScore.getCustomizeRate());
-					String reqRateType = recommendedCustomizeScore.getCustomizeRatetype();
-					if("Hourly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate *9;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Weekly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /7;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Bi-weekly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /14;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Semi-Monthly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /15;
-						reqPerMonthSal = perDaySal * 30;
-					}else if("Monthly".equalsIgnoreCase(reqRateType)){
-						reqPerMonthSal = reqRate;
-					}else if("Bi-Monthly".equalsIgnoreCase(reqRateType)){
-						int perDaySal = reqRate /60;
-						reqPerMonthSal = perDaySal * 30;
-					}else{
-						reqPerMonthSal = reqRate /12;
-					}
-				 }
+					requirementHourlyRate = conversionUtil.getHourlyRate(recommendedCustomizeScore.getCustomizeRate(), recommendedCustomizeScore.getCustomizeRatetype());
+				}
+				// rate logic end
 				
 				for (SearchHit hit : searchHits) {
 					ObjectMapper mapper = new ObjectMapper();
@@ -664,7 +630,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
 					
 					//get the RatePercentage
-					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,reqPerMonthSal);
+					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,requirementHourlyRate);
 					
 					// get the NoticeperiodPercentage
 					noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
@@ -774,21 +740,22 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		Integer Years = 0;
 		int recommendationExpMonthsMin = 0;
 		int recommendationExpMonthsMax = 0;
-		if(null != candidateIndex.getExperienceYears() && !"".equalsIgnoreCase(candidateIndex.getExperienceYears())){
-			if(candidateIndex.getExperienceYears().equalsIgnoreCase("25+")){
+		if(null != candidateIndex.getExperienceYears()){
+			Years = candidateIndex.getExperienceYears();
+			/*if(candidateIndex.getExperienceYears().equalsIgnoreCase("25+")){
 				Years = Integer.valueOf(25);	
 			}else{
 				Years = Integer.parseInt(candidateIndex.getExperienceYears());
-			}
+			}*/
 			 	
 		}
-		if(candidateIndex.getExperienceMonths() != null && !"".equalsIgnoreCase(candidateIndex.getExperienceMonths())){
-			 Months = Integer.parseInt(candidateIndex.getExperienceMonths());
+		if(null != candidateIndex.getExperienceMonths()){
+			 Months = candidateIndex.getExperienceMonths();
 		}
 		
 		if(null != candidateIndex.getExperienceYears()  && null != candidateIndex.getExperienceMonths() && Years > 0 && Months > 0 ){
 
-			int  candidateExpMonths = (Integer.parseInt(candidateIndex.getExperienceYears()))*12 + (Integer.parseInt(candidateIndex.getExperienceMonths()));
+			int  candidateExpMonths = (candidateIndex.getExperienceYears())*12 + (candidateIndex.getExperienceMonths());
 			
 			if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) &&  "undefined" != recommendedCustomizeScore.getCustomizeMinExperience() && null != recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience()) && "undefiend" != recommendedCustomizeScore.getCustomizeMaxExperience() ){
 				
@@ -839,40 +806,17 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 * @param reqPerMonthSal
 	 * @return float
 	 */
-	private float getRatePercentage(CandidateIndex candidateIndex, float ratePercentage, RecommendedCustomizeScore recommendedCustomizeScore, float reqPerMonthSal) {
-		if(null != candidateIndex.getExpectedRate() && null != candidateIndex.getCurrentRate() && null != candidateIndex.getRateType()  && !"".equalsIgnoreCase(candidateIndex.getRateType())){
-			String candidateRateType = candidateIndex.getRateType();
-			String  expectedRate = candidateIndex.getExpectedRate().toString();
-			expectedRate = expectedRate.substring(0, expectedRate.length() - 2);
+	private float getRatePercentage(CandidateIndex candidateIndex, float ratePercentage, RecommendedCustomizeScore recommendedCustomizeScore, float requirementHourlyRate)
+	{
+		if (null != candidateIndex.getExpectedRate() && null != candidateIndex.getRateType()
+				&& !"".equalsIgnoreCase(candidateIndex.getRateType())) {
 			
-			float reqRate = Float.parseFloat(expectedRate);
-			//int reqRate = Integer.parseInt(expectedRate.toString());
-			float perMonthCandidateSal = 0;
-			if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(candidateRateType)){
-				float perDaySal = reqRate *9;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if(Constants.RATE_TYPE_WEEKLY.equalsIgnoreCase(candidateRateType)){
-				float perDaySal = reqRate /7;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if(Constants.RATE_TYPE_BI_WEEKLY.equalsIgnoreCase(candidateRateType)){
-				float perDaySal = reqRate /14;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if(Constants.RATE_TYPE_SEMI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-				float perDaySal = reqRate /15;
-				perMonthCandidateSal = perDaySal * 30;
-			}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(candidateRateType)){
-				perMonthCandidateSal = reqRate;
-			}else if(Constants.RATE_TYPE_BI_MONTHLY.equalsIgnoreCase(candidateRateType)){
-				float perDaySal = reqRate /60;
-				perMonthCandidateSal = perDaySal * 30;
-			}else{
-				perMonthCandidateSal = reqRate /12;
-			}
-			
-			if(perMonthCandidateSal<=reqPerMonthSal){
+			double candidateHourlyRate = conversionUtil.getHourlyRate(candidateIndex.getExpectedRate().toString(), candidateIndex.getRateType());
+			if (candidateHourlyRate <= requirementHourlyRate) {
 				ratePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore());
 			}
-		}else{
+		}
+		else {
 			ratePercentage = 0;
 		}
 		return ratePercentage;

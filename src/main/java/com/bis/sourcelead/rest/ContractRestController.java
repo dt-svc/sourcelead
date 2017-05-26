@@ -235,9 +235,9 @@ public class ContractRestController {
 
 	
 	@RequestMapping(value = "/getAllTemplatesByOrgLocationId", method = RequestMethod.GET)
-	public @ResponseBody String getAllTemplates(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody String getAllTemplates(@RequestParam(value = "templateType", required = false) String templateType , HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<ContractsTemplate> contractsTemplate = contractsTemplateService.getAllContractsTemplatesByOrgLocationid(orgLocation);
+		List<ContractsTemplate> contractsTemplate = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(), templateType);
 		return commonUtil.toJSON(contractsTemplate);
 	} 
 	

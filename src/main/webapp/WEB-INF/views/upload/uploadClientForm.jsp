@@ -29,7 +29,7 @@ margin:10px 220px 0;
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
       <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
-    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div>
+    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
     </section>
     <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
@@ -239,11 +239,19 @@ if ($('#upload_form').validate(false, validationSettings)){
  		    		$("#msgDiv").html("Please import valid Template");
  		    		msgFadein();
  		    	}else if(data == "success"){
+ 		    		$("#selector").removeClass("remove_pop");
+ 		    		$("#selector").addClass("success_pop");
  		    		$("#selector").removeAttr("style");
  	    			$("#selector").css({ display: "block" });
  		    		$("#msgDiv").html("Inserted successfully");
  		    		msgFadein();
  		    	}else{
+ 		    		$("#selector").removeClass("remove_pop");
+ 		    		$("#selector").addClass("success_pop");
+ 		    		$("#selector").removeAttr("style");
+ 	    			$("#selector").css({ display: "block" });
+ 		    		$("#msgDiv").html("Processed successfully");
+ 		    		msgFadein();
  		    		prepareExcelDataDiv(data);
  		    	}
  		    },
@@ -368,7 +376,9 @@ function prepareExcelDataDiv(data){
 	result = result + '</table>';
 	  $("#excelimportData").empty();
     $("#excelimportData").append(result);
-    excelimportDataPagination();
+	$('#uploadFile').val("");
+	$('#uploadBtn').val("");
+excelimportDataPagination();
 }
 </script>
 

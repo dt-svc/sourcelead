@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +57,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 
 	@Autowired
 	private ContractsTemplateDao contractsTemplateDao;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@Autowired
 	private UserService userService;
@@ -587,10 +591,31 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorName.append(contracts.getContactUser().getFirstName());	
 			}
 			contracts.setVendorContactName(vendorName.toString());
-			contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
+			
+			
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+			if(null != contracts && null != contracts.getStartDate()){
+				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = standardFormat.format(converteDate);
+				contracts.setStartDateStr(currentDateInTimezone);
+			}
+			if(null != contracts && null != contracts.getEndDate()){
+				String endTimeStr = Constants.TZ_DF.format(contracts.getEndDate());  
+				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
+				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
+				endDateInTimezone = standardFormat.format(endconverteDate);
+				contracts.setEndDateStr(endDateInTimezone);
+			}
+			
+			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
 			if(null != contracts.getEndDate()){
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
-			}
+			}*/
+			
 			if(null != contracts.getParentContractId()){
 			contracts.setParentId(contracts.getParentContractId().getId().toString());
 			}
@@ -881,7 +906,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);*/
@@ -951,7 +976,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);*/
@@ -1107,7 +1132,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1197,7 +1222,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);*/

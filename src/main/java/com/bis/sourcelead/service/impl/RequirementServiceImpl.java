@@ -917,7 +917,7 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = "";
+	 String url = sourceleadUrl;
 	 
 	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 	 notificationScenario.setBody(notificationbody);
@@ -1023,7 +1023,7 @@ private void updatedRequirementMailToManager(User loginUser,User managerUser, Re
 	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = "";
+	 String url = sourceleadUrl;
 	 
 	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 	 notificationScenario.setBody(notificationbody);
@@ -1133,7 +1133,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = "";
+	 String url = sourceleadUrl;
 	 
 	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 	 notificationScenario.setBody(notificationbody);
@@ -1258,8 +1258,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	}
 
 	@Override
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
-		return requirementDao.getUserAssignJobCount(userId);
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception {
+		return requirementDao.getUserAssignJobCount(userId, orgLocationId);
 	}
 
 
@@ -1365,7 +1365,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1456,7 +1456,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1555,7 +1555,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1828,7 +1828,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1930,7 +1930,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -2035,7 +2035,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = "";
+		String url = sourceleadUrl;
 		
 		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationbody);
@@ -2152,7 +2152,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -3345,6 +3345,20 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
 			Date startDateUTC, Date endDateUTC) throws Exception {
 		return requirementDao.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocationId, orgRelationId, startDateUTC, endDateUTC);
+	}
+
+
+	@Override
+	public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations)
+			throws Exception {
+		return requirementDao.getAllReleasedJobsBasedOnUserIdAndLocationId(user, orgLocations);
+	}
+
+
+	@Override
+	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
+			Long relationId) throws Exception {
+		return requirementDao.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds, relationId);
 	}
 	
 }

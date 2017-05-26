@@ -8,6 +8,14 @@
 <script src="resources/js/formvalidator.js"></script>
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<style type="text/css">
+.side-bar-active .subMenu{
+    display: none;
+}
+.side-bar-active .fa-fw {
+  position: absolute !important; right: 0 !important;
+}
+</style>
  <style type="text/css">
  table#assignEmployeePagination tr th {
  width:auto !important; height: 34px; line-height: 34px; vertical-align: middle; text-align:center;
@@ -323,7 +331,9 @@
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\',\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">'; 
 	                    		    result = result + '<a  onclick="reActiveProject(\''+opt.id+'\',\''+opt.empName+'\',\''+opt.projectAssignedDateStr+'\',\''+projectEndDateStr+'\',\''+opt.endDate+'\');flushReProject()" data-target="#Re-AssignProject" data-toggle="modal">Re-Assign &nbsp;</a><span class="show-reason">';
 		                    	if(opt.terminateReason != null && opt.terminateReason != '' && opt.terminateReason != 'undefined'){
-		                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason">'+opt.terminateReason+'</b>';
+		                    		result = result + '<b class="glyphicon glyphicon-comment text-success"></b><b class="reason edit-status">'+opt.terminateReason+'</b>';
+				        	 		//  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.terminateReason+'</p></div></i></div></td>';
+
 		                    	}else{
 		                    		result = result + '';	
 		                    	}

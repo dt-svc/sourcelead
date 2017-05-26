@@ -7,7 +7,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
 
 
 <!-- these files for autocomplete with tagit -->
@@ -23,6 +22,7 @@
      1.usage     : onclick on requirementList() ; 
      
 --%>
+
 
 <script>
 $(document).ready(function() {
@@ -481,17 +481,17 @@ function prepareRequirementData(data){
            
 	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-		        	result = result +'<div class="text-center pull-left mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
-		        }
+		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        }
 	        
 	        '</sec:authorize>';
 	        
 	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 	        	if(opt.isRequirementReleasedByuser == 'Y'){
-		   		 	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+	    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+
 			   	 }else{	
-			   	 	result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>";
+					result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
 			   	 }
         }
 		else{
@@ -1309,113 +1309,27 @@ function requirementPipeline(requirementId){
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenRequirementScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <form:form id="requirement_form" name="requirement_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup reqadvsrch candAdvsrch"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
-            <div class="row">
-             <!--  <div class="col-md-4">
-                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
-                
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyKeyWord" name="anyKeyWord"></select>
-					<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
-				 </div>
-              </div> -->
-            <!--   <div class="col-md-4">
-                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="All KeyWord" id="allReqKeyWord" name="allKeyWord"></select>
-					<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
-				 </div>
-                
-              </div> -->
-          <!--     <div class="col-md-4">
-                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
-                <div class="clearfix">
-				 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude KeyWord" id="excludeReqKeyWord" name="excludeKeyWord"></select>
-					<input type="text" class="form-control input-sm" placeholder="Any of Keyword">
-				 </div>
-                
-                
-              </div> -->
-            </div>
+            
             <div class="row">
               <div class="clearfix">
                 <div class="col-md-8">
                   <label>Title</label>
                   <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
+                    <select class="chosen-select form-control input-sm" multiple data-placeholder="Requirement Title" id="requirementTitle" name="requirementTitle">
+                    </select>
                   </div>
                 </div>
                   <div class="col-md-4">
                   <label>Id</label>
                   <div class="clearfix">
-                    <input type="text" id="jobId" name="jobId" class="form-control input-sm" placeholder="Requirement Id">
+                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Requirement Id" id="jobId" name="jobId">
+                    </select>
                   </div>
                 </div>
-            <%--    <div class="form-group">
-            <label class="col-md-3">Pay Rate/Salary${SourceLeadWeb_currencyCode}</label>
-            <div class="col-md-6">
-             <div class="input-group">
-                <div class="input-group-btn selp-custom-min">
-                  
-                  <select class="selectpicker" id="currencyCode" name="currencyCode" >
-               
-                <c:if test="${empty requirement.id}">
-	                 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
-	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
-	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
-	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
-	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
-                 </c:if>
-                 
-                 <c:if test="${! empty requirement.id}">
-	                 <option ${requirement.currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
-	                 <option ${requirement.currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
-	                 <option ${requirement.currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
-	                 <option ${requirement.currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
-	                 <option ${requirement.currencyCode  == 'SGD' ? 'selected' : ''}>SGD</option>
-	                 <option ${requirement.currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
-                 </c:if>
-                </select>
-                </div>
-                <input type="text" class="form-control" id="rate" name="rate" value="${requirement.rate}" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true"  value="">
-                <div class="input-group-btn selp-custom-min">
-                  <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Type">
-                    <option value="">Rate Per</option>
-                    <option ${requirement.rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
-                    <option ${requirement.rateType  == 'Weekly' ? 'selected' : ''}>Weekly</option>
-                    <option ${requirement.rateType  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
-                    <option ${requirement.rateType  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
-                    <option ${requirement.rateType  == 'Monthly' ? 'selected' : ''}>Monthly</option>
-                    <option ${requirement.rateType  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
-                    <option ${requirement.rateType  == 'Yearly' ? 'selected' : ''}>Yearly</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div> --%>
+           
               </div>
               <div class="clearfix">
-             <%--    <div class="col-md-4">
-                  <label>Experience</label>
-                  <div class="clearfix row">
-                    <div class="col-md-6">
-                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
-                       <option value="" selected>Min Years</option>
-                       <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-                      </select>
-                    </div>
-                    <div class="col-md-6">
-                      <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
-                         <option value="" selected>Max Years</option>
-                         <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-                      </select>
-                    </div>
-                  </div>
-                </div> --%>
+            
                 <div class="col-md-4">
                   <label>Requirement status </label>
                   <div class="clearfix">
@@ -1470,7 +1384,7 @@ function requirementPipeline(requirementId){
 						   <div class="col-md-4">
 							  <label>Country</label>
 							  <div class="clearfix adv-srh-chosen">
-								 <select class="chosen-select" name="country" id="country" field-name="Country" onchange="getStates();" >
+								 <select class="chosen-select" name="country" id="country" field-name="Country">
 								     <c:forEach var="cntry" items="${countryList}">
 							                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
 						                </c:forEach>
@@ -1629,22 +1543,25 @@ function requirementPipeline(requirementId){
           	<li> <a href="<c:url value='/team'/>"><i class="fa fa-plus"></i>Team</a></li>
           </sec:authorize>
           
-          <li>
-          <a onclick="getActions();" class="action" href="javascript:void(0)">Template
-          	<i class="fa fa-caret-down"></i>
-          </a>
-          <div class="action-pop">
-          <span>
-              <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-                 <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Requirement</a>
-               </sec:authorize> 
-
-              <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-                 <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Interview</a>
-             </sec:authorize> 
-          </span>
-          </div>
-          </li>
+	      <li>
+	      <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+	          <a onclick="getActions();" class="action" href="javascript:void(0)">Template
+	          	<i class="fa fa-caret-down"></i>
+	          </a>
+	          <div class="action-pop">
+	          <span>
+	              <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
+	                 <a href="<c:url value='/template'/>"><i class="fa fa-plus"></i>Requirement</a>
+	               </sec:authorize> 
+	
+	              <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
+	                 <a href="<c:url value='/interViewFeedBackTemplate'/>"><i class="fa fa-plus"></i>Interview</a>
+	             </sec:authorize> 
+	          </span>
+	          </div>
+	      </sec:authorize>
+	      </li>
+          
           <sec:authorize access="hasAnyRole('ROLE_EXPORT_REQUIREMENTS')">
            <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
             <div id="exportPop">
@@ -1681,6 +1598,8 @@ function requirementPipeline(requirementId){
     <!-- Project --> 
   </div>
 </section>
+
+<jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <!--   Error Message   -->
 <div class="vendor_wrap_mask"></div>
@@ -1906,11 +1825,7 @@ function changeStatus(requirementId){
 
 
 <script>
-/*     function mypop(){
-		$("#exportPop").toggle();
-		$(".export_pop, #filter2ApprovedPop").slideUp();
-    }
- */
+
 $('#mypop').click(function(){
 		$("#exportPop").toggle();
 		$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
@@ -1988,7 +1903,6 @@ function exportToExcel(){
 }
 
 </script>
-  </script> 
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -2025,23 +1939,7 @@ function getActions(){
 		}
 	</script> 
 
-<!-- <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
 
-});
- 		</script>  -->
 <script>
 function searchRequirement(){
 	var validationSettings = {
@@ -2148,80 +2046,60 @@ $('body').on('blur', '#requirement_form', function() {
 
 
 <script type="text/javascript">
-    	   var config = {
+    	   /*  var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
     				  '.chosen-select-no-single' : {disable_search_threshold:10},
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
-    	   }
+    	   }  */
+			
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
-		    select = $("#anyKeyWord");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    select = $("#requirementTitle");
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Title:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.on('keyup', function(e)
 		    {
-		    	var anyofKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		    	var reqTitle = this.value.replace(",","");
+		        if ((e.which == 13 || e.which == 188) && (reqTitle != null  && reqTitle != '' && reqTitle != 'undefined'))
 		        {
 		        	var par = this.parent;
-		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
+		            var option = $("<option>").val(reqTitle).text(reqTitle);
 		            select.append(option);
 		            select.find(option).prop('selected', true);
-                    $("#anyKeyWord option").each(function(){
+                    $("#requirementTitle option").each(function(){
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
-	        		$("#anyKeyWord").trigger("chosen:updated");
+	        		$("#requirementTitle").trigger("chosen:updated");
 	        		
 		        }
 		    });
+		    
 		    var selectone, chosenone;
-		    selectone = $("#allReqKeyWord");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    selectone = $("#jobId");
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Add Requirement ID:' });
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.on('keyup', function(e1)
 		    {
-		    	var allofKeyWord = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allofKeyWord != null  && allofKeyWord != '' && allofKeyWord != 'undefined'))
+		    	var reqId = this.value.replace(",","");
+		        if ((e1.which == 13 || e1.which == 188) && (reqId != null  && reqId != '' && reqId != 'undefined'))
 		        {
 		        	var par = this.parent;
-		            var option = $("<option>").val(allofKeyWord).text(allofKeyWord);
+		            var option = $("<option>").val(reqId).text(reqId);
 		            selectone.append(option);
 		            selectone.find(option).prop('selected', true);
-                    $("#allReqKeyWord option").each(function(){
+                    $("#jobId option").each(function(){
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
-	        		$("#allReqKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#excludeReqKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
-		    {
-		    	var excludeKeyWord = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyWord != null  && excludeKeyWord != '' && excludeKeyWord != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyWord).text(excludeKeyWord);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeReqKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeReqKeyWord").trigger("chosen:updated");
+	        		$("#jobId").trigger("chosen:updated");
 	        		
 		        }
 		    });
 		    
 		      $("#country").on('change', function (e) {
 		    	   getStates();
-		       });
+		       }); 
 		       $("#state").on('change', function (e) {
 		    	   getCities();
 		       });
@@ -2236,12 +2114,10 @@ $('body').on('blur', '#requirement_form', function() {
 
 <script>
 function loadChosenRequirementScripts(){
-	 $('#country').val('${loginCountryName}'); 
-     $('#state').val(''); 
-     $('#city').val('');
-     $("#anyKeyWord").val('').trigger("chosen:updated");
-	 $("#allReqKeyWord").val('').trigger("chosen:updated");
-	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
+	
+     $("#city").empty();
+	 $("#city").val('').trigger("chosen:updated");
+  
 	 $("#requirementTitle").val('').trigger("chosen:updated");
 	 $("#rate").val('').trigger("chosen:updated");
 	 $("#minExp").val('').trigger("chosen:updated");
@@ -2251,10 +2127,7 @@ function loadChosenRequirementScripts(){
 	 $("#education").val('').trigger("chosen:updated");
 	 $("#client").val('').trigger("chosen:updated");
 	 $("#skills").val('').trigger("chosen:updated"); 
-	 
-	 $("#anyKeyWord").empty();
-	 $("#allReqKeyWord").empty();
-	 $("#excludeReqKeyWord").empty();
+	
 }
 </script>
 
@@ -2336,7 +2209,4 @@ function clearSearch(){
 }
 </script>
 
-<!-- Country,State,City Script Ends Here -->	
-
-<jsp:include page="addApplicantFromRequirementList.jsp" />
 <jsp:include page="../masterFooter.jsp" />

@@ -53,15 +53,14 @@ public class UniversalSearchHelper {
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("ratePer", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchQuery("employeeId", keywd));
 		matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("userStatus", keywd));
-
+		matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", keywd));
 		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 
 		if (matcher.find()) {
 			Float expYears = Float.valueOf(matcher.group());
 			matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-			// matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("mobilePhone",
-			// keywd));
-			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
+			
+			String mobileKeywd =matcher.group().replaceAll("[+91]", "");
 			matchQueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
 		}
 

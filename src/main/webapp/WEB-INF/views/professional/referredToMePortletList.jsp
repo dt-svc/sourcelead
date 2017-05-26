@@ -6,13 +6,11 @@
 
 <!-- these files for export -->
 <link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
-<script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
 
@@ -36,7 +34,7 @@ $(document).ready(function() {
 	 
 	 var applicantStatus = "";
 	 if(requirementStatus == "SHORTLIST"){
-		 applicantStatus ="Shortlist";
+		 applicantStatus ="Shortlisted";
 	 }
 	 if(requirementStatus == "OFFERMADE"){
 		  applicantStatus = "Offered";
@@ -82,7 +80,7 @@ function myFunction(){
 	 $(".applicantStatus").empty('');
 	 var applicantStatus = "";
 	 if(requirementStatus == "SHORTLIST"){
-		 applicantStatus ="Shortlist";
+		 applicantStatus ="Shortlisted";
 	 }
 	 if(requirementStatus == "OFFERMADE"){
 		  applicantStatus = "Offered";
@@ -132,7 +130,7 @@ function portletListFilter(requirementStatus){
 	    	 result =result +'<select name = "navyOp" id="navyOp" onChange="myFunction();">'; 
 	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : 'referToMe') +' value = "referToMe">Refer To Me ('+json.referToMeJobs+')</span></option>';
 	    	 result =result +'<option '+ (requirementStatus == "" ? "selected" : '') +' value = "">Applied ('+json.appliedJobs+')</span></option>';
-	    	 result =result +'<option '+ (requirementStatus == "SHORTLIST" ? "selected" : '') +' value = "SHORTLIST">Short Listed ('+json.shortlistJobs+')</option>';
+	    	 result =result +'<option '+ (requirementStatus == "SHORTLIST" ? "selected" : '') +' value = "SHORTLIST">Shortlisted ('+json.shortlistJobs+')</option>';
 	    	 result =result +'<option '+ (requirementStatus == "INTERVIEW" ? "selected" : '') +' value = "INTERVIEW">Interviews ('+json.interviews+') </option>';
 	    	 result =result +'<option '+ (requirementStatus == "OFFERMADE" ? "selected" : '') +' value = "OFFERMADE">Offered ('+json.offeredJobs+') </option>';
 	    	 result =result +'<option '+ (requirementStatus == "REJECTED" ? "selected" : '') +' value = "REJECTED">Rejected ('+json.rejectedJobs+') </option>';
@@ -325,9 +323,16 @@ function portletListFilter(requirementStatus){
 function rejectedPagenatio(){  
     $('#professionalDashboardPortletPagenation').DataTable( { 
     	dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf'
-        ],
+    	buttons: [
+    	        	{
+    	                extend: 'excel',
+    	                title: 'Referred To Me List',
+    	            },
+    	            {
+    	                extend: 'pdf',
+    	                title: 'Referred To Me List',
+    	            }
+    	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,

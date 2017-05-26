@@ -80,10 +80,11 @@
 <script>
 window.onload = function () {
 	    socialInviterScripts();
-	    resetCredentials('Professional');
 		var contactUUID = '${contactUUID}';
 		if(contactUUID != null && contactUUID != '' && contactUUID != 'undefined'){
 			validateEmail('Professional');
+		}else{
+			resetCredentials('Professional');
 		}
 	};
 </script>
@@ -269,14 +270,14 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion registerwith">
-        <div class="company_logo pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
+        <div class="company_logo pull-left mb10"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user"></i>&nbsp;&nbsp;Professional</a></li>
           <c:if test="${empty contactUUID}">
           <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Individual Recruiter</a></li>
-          </c:if>
           <li><a data-toggle="tab" href="#employee"><i class="fa fa-address-book-o"></i>&nbsp;&nbsp;Employee</a></li>
+          </c:if>
           <input type="hidden" id="tabType" />
       </ul>
        <!--  <div class="regis_wrap_styles registered_widget_styles"> -->
@@ -292,7 +293,7 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt">
+            <div class="row mt10">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
@@ -335,6 +336,7 @@ window.onload = function () {
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="professionalRegistrationCheckTermsId">
                     I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+                    <input type="hidden" id="professionalRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
                     <button type="submit" id="register_button"  class="btn btn-primary btn_styles btn-block" title="Register">
@@ -359,7 +361,7 @@ window.onload = function () {
             <div class=" text-muted small mb10 text-center clearfix">
             -------------------------------------------------- ( OR ) --------------------------------------------------
             </div>
-            <div class="row mt">
+            <div class="row mt10">
             <div class="form-group clearfix">
                 <div class="col-xs-12 col-md-12 mb10">
                     <i class="fa fa-user-circle"></i>
@@ -402,6 +404,7 @@ window.onload = function () {
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="termsCheckoxId">
                     I agree terms of <a href="javascript:void(0)" onClick="termsConditon();" class="text-succcess">service and privacy policy</a>
+                    <input type="hidden" id="recruiterRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
                     <button type="submit" id="recruiter_register"  class="btn btn-primary btn_styles btn-block" title="Register">
@@ -703,6 +706,11 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#professionalRegistration_form', function(e){
+        	  $("#professionalRegistrationErrorMsg").val('');
+        	  if($("#professionalRegistrationCheckTermsId").is(':checked')){
+        		  $("#professionalRegistrationErrorMsg").val('NO');
+        	  }
+        	 
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	var frm = $('#professionalRegistration_form').serializeFormJSON();
@@ -761,6 +769,10 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#recruiterRegistration_form', function(e){
+        	 $("#recruiterRegistrationErrorMsg").val('');
+       	  	if($("#termsCheckoxId").is(':checked')){
+       			  $("#recruiterRegistrationErrorMsg").val('NO');
+       	  		}
         	  if ($(this).validate(false, validationSettings)){
         		e.preventDefault();
             	var frm = $('#recruiterRegistration_form').serializeFormJSON();

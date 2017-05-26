@@ -92,7 +92,7 @@ function getRequirementSubmissionDetails(submissionId,candidateId,requirementId)
 	    	   $.each(details, function( k, v ) {
 	    		   var value = '';
 	    		   if(v['value'] == null || v['value'] == '' || v['value'] == 'undefined'){
-	    			   var value = 'NO DATA';
+	    			   var value = '-----';
 	    		   }else{
 	    			   var value = v['value'];
 	    		   }
@@ -426,7 +426,7 @@ function getOfferDetails(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Joining Date</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7">No Data</p>';
+		                    	 result = result + '<p class="col-md-7">-----</p>';
 		                    	 result = result + '</div>';
 	                    	 }
 	                    	 
@@ -442,7 +442,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Position Type</strong>';
 	                        	 result = result + '</label>';
-	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">-----</p>';
 	                        	 result = result + '</div>';
 	                    	 }
 	                    	 
@@ -467,7 +467,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Rate</strong>';
 	                        	 result = result + '</label>';
-	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">No Data</p>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">------</p>';
 	                        	 result = result + '</div>';
 	                    	 }
 	                    	
@@ -698,7 +698,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
 			result = result + '<div class="input-group" id="uploadFileGroup">';
 			result = result + '<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
+			result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="professionaluploadBtn"  class="upload">';
 			result = result + '</span> </label>';
 			result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
 			result = result + '</div>';
@@ -725,6 +725,15 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '		 </div>';
 		result = result + '	 </div>';
 		result = result + '	 </div>';
+		
+	    result = result + '<div class="row">';
+	    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
+		result = result + '<label class="col-md-4">Primary Skill</label>';
+		result = result + '<div class="col-md-8">';
+		result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+		result = result + '</div>';
+		result = result + '</div>';
+		result = result + '</div>'; 
 	                        
 		
 		result = result + '<div class="form-footer clearfix">';
@@ -803,6 +812,15 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '	 </div>';
 		result = result + '	 </div>';
 		
+	    result = result + '<div class="row">';
+	    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
+		result = result + '<label class="col-md-4">Primary Skill</label>';
+		result = result + '<div class="col-md-8">';
+		result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
+		result = result + '</div>';
+		result = result + '</div>';
+		result = result + '</div>'; 
+		
 		result = result + '<div class="row">';
 		result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
 		result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
@@ -864,29 +882,55 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 					})
 			
 			
-	 //Adding Customized Skills to the list
-       var select, chosen;
+	  var select, chosen;
 	    select = $("#candidateSkills");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
-	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                  $("#candidateSkills option").each(function(){
-                        $(this).siblings("[value='"+ this.value+"']").remove();
-                  });
-                  //end
-       		$("#candidateSkills").trigger("chosen:updated");
-       		
-	        }
+	    
+	    
+	    $("#candidateSkills").chosen().change(function(event) {
+	    	 var sourceleadUrl ='${sourceleadUrl}';
+	    	var allSkills = $(event.target).val();
+	   
+	    	
+	    	$.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        success: function(data) {
+		        	var primarySkill = data;
+		        	      $("#primarySkill").val(primarySkill);
+		        	
+		        },
+		    });
+	    	
 	    });
+	    
+	    chosen.search_field.on('keyup', function(e)
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#candidateSkills").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#candidateSkills option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#candidateSkills").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	});
 	    //Adding Customized Skills to the list
 			
 	$("#candidateSkills").val('').trigger("chosen:updated");
@@ -931,6 +975,13 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 
+	 var candidateTypeSelect = "";
+	 if(candidateType == 'FavCandidates'){
+		 candidateTypeSelect = "Favourite Candidates";
+	 }else{
+		 candidateTypeSelect = candidateType;
+	 }
+	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType != 'parseCandidate'){
 		 $("#selectCandidateDiv").css("display","block");
@@ -939,6 +990,9 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		 if(skillsDiv != null){
 			 document.getElementById("skillsDiv").style.display="none";
 			 $("#candidateSkills").val('').trigger("chosen:updated");
+			 
+			 document.getElementById("primarySkillDiv").style.display="none";
+			 $("#primarySkill").val('');
 		 }
 		 
 		 var newResumeDiv =  document.getElementById('newResumeDiv'); 
@@ -953,7 +1007,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	var output = "";
-			        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+			        	output = output + "<option value=''>-- Select "+candidateTypeSelect+" --</option>"; 
 			        	for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
@@ -996,6 +1050,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 			 $('#uploadFile').attr("data-validation","required validatedoc "); 
 			 
 			 document.getElementById("skillsDiv").style.display="";
+			 document.getElementById("primarySkillDiv").style.display="";
 			 document.getElementById("newResumeDiv").style.display="none";
 			 
 			 $("#candidateSkills").val('').trigger("chosen:updated");
@@ -1064,6 +1119,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 				        $("#candidateResumesList").append(output);
 				        
 				        document.getElementById("skillsDiv").style.display="none";
+				        document.getElementById("primarySkillDiv").style.display="none";
 				        document.getElementById("newResumeDiv").style.display="none";
 				        
 				        $('#newUploadFile').removeAttr('data-validation');
@@ -1166,6 +1222,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 						 validateCandidateEmail();
 						 getAllSubmissionCandidateCountries();
 						 setRateTypesByLocation();
+						 dobDatePicker();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -1412,15 +1469,10 @@ function getRecruiterCandidateDetails(){
 	 }
 	
 	 getAllSubmissionCandidateCountries();
+	 getCandidateStates();
+	 getCandidateCities();
+	 
 	 setRateTypesByLocation();
-     
-     $("#submissionCountry").on('change', function (e) {
-  	   getCandidateStates();
-  	   getCandidateCities();
-     });
-     $("#submissionState").on('change', function (e) {
-  	   getCandidateCities();
-     });
      
      dobDatePicker();
     
@@ -1564,15 +1616,10 @@ function getCandidateDetails(){
 	    });
      
      getAllSubmissionCandidateCountries();
+	 getCandidateStates();
+	 getCandidateCities();
+	 
 	 setRateTypesByLocation();
-     
-     $("#submissionCountry").on('change', function (e) {
-  	   getCandidateStates();
-  	   getCandidateCities();
-     });
-     $("#submissionState").on('change', function (e) {
-  	   getCandidateCities();
-     });
      
      dobDatePicker();
     
@@ -1658,7 +1705,7 @@ function getAllSubmissionCandidateCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#submissionCountry').empty();
-        	$('#submissionCountry').append('<option value="">---Select---</option>');
+        	$('#submissionCountry').append('<option value="">--Select Country--</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${SourceLeadWeb_user.country}'){
             		$('#submissionCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1682,10 +1729,6 @@ function getCandidateStates(stateName){
 	
 	var countryName = $("#submissionCountry").val();
 	
-	if(stateName == null || stateName == "" || stateName =="undefined"){
-		stateName = document.getElementById("submissionState").value;
-	}
-	
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -1694,7 +1737,7 @@ function getCandidateStates(stateName){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionState').empty();
-	        	$('#submissionState').append('<option value="">---Select---</option>');
+	        	$('#submissionState').append('<option value="">--Select State--</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(stateName != null && stateName != "" && stateName !="undefined" && json[i] == stateName){
@@ -1712,10 +1755,10 @@ function getCandidateStates(stateName){
 	    });
 	}else{
 		$('#submissionState').empty();
-    	$('#submissionState').append('<option value="">---Select---</option>');
+    	$('#submissionState').append('<option value="">--Select State--</option>');
     	$('#submissionState').trigger("chosen:updated");
     	$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select---</option>');
+    	$('#submissionCity').append('<option value="">--Select City--</option>');
         $('#submissionCity').trigger("chosen:updated");
 	}
 }
@@ -1740,7 +1783,7 @@ function getCandidateCities(stateName,city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionCity').empty();
-	        	$('#submissionCity').append('<option value="">---Select---</option>');
+	        	$('#submissionCity').append('<option value="">--Select City--</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
@@ -1756,7 +1799,7 @@ function getCandidateCities(stateName,city){
 	    });
 	}else{
 		$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select---</option>');
+    	$('#submissionCity').append('<option value="">--Select City--</option>');
     	$('#submissionCity').trigger("chosen:updated");
 	}
 }
@@ -1910,6 +1953,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
  	    	url : sourceleadUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	
+	        	
 	        	if('${resumesCount}' > 0){
 	        		$("#loading").removeAttr("style");
 		        	$(".new_side_wrap").removeClass("new_side_wrap_active");
@@ -1929,9 +1973,8 @@ $('body').on('submit', '#applyToJob_form', function(e){
 		    			location.replace(sourceleadUrl+"/requirementProfileDetails?requirementUUID="+requirementUUID); 
 		    		}
 		    		
-		    		
 	        	}else{
-	        		 
+	        		location.replace(sourceleadUrl+"/professionalRequirements"); 
 	        	}
 	        },
 	    });  
@@ -2122,17 +2165,7 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
   }
 </script>
 
-<script>
-  $( function() {
-	  
-	  $('#DOB').datepicker({
-	      dateFormat: 'yy-mm-dd',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  });
-	  
-  } );
-</script>
+
 
 <script type="text/javascript">
 function setRateTypesByLocation(){
@@ -2161,7 +2194,7 @@ function setRateTypesByLocation(){
 
 
 <script>
- $(document.body).on('change', '#uploadBtn' ,function(){
+ $(document.body).on('change', '#professionaluploadBtn' ,function(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
  	 if(validate_fileupload(this.value)){
@@ -2222,6 +2255,7 @@ function setRateTypesByLocation(){
 						 validateCandidateEmail();
 						 getAllSubmissionCandidateCountries();
 						 setRateTypesByLocation();
+						 dobDatePicker();
 						 $("#loading").removeAttr("style");
 					},
 				});
@@ -2229,6 +2263,29 @@ function setRateTypesByLocation(){
  });
 
 </script> 
+
+<script type="text/javascript">
+function init(){
+	getAllSubmissionCandidateCountries();
+	      
+	       $("#submissionCountry").on('change', function (e) {
+	    	   getCandidateStates();
+	      	   getCandidateCities();
+	       });
+	       $("#submissionState").on('change', function (e) {
+	    	   getCandidateCities();
+	       });
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		  
+    setRateTypesByLocation();
+}
+</script>
+
+
 
 <script>
 function parseProfessionalResume(){
@@ -2238,6 +2295,8 @@ function parseProfessionalResume(){
 	 
 	 document.getElementById("skillsDiv").style.display="";
 	 $("#candidateSkills").val('').trigger("chosen:updated");
+	 document.getElementById("primarySkillDiv").style.display="";
+	 $("#primarySkill").val('');
 }
 </script>
 

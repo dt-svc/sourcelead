@@ -7,10 +7,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.service.impl.InvoiceServiceImpl;
 import com.google.gson.Gson;
 /**
  * 
@@ -20,31 +23,33 @@ import com.google.gson.Gson;
 @Component
 public class ConversionUtil {
 	
+	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
+	
     private static final String API_PROVDIER = "http://api.fixer.io/";
 	
 	/**
 	 * converting rate into per hour
 	 * @param rate
 	 * @param ratePer
-	 * @return double
+	 * @return float
 	 */
-	public double getHourlyRate(String rate, String ratePer)
+	public float getHourlyRate(String rate, String ratePer)
 	{
 		switch (ratePer) {
 			case Constants.RATE_TYPE_HOURLY:
-				return Double.parseDouble(rate);
+				return Float.parseFloat(rate);
 			case Constants.RATE_TYPE_WEEKLY:
-				return Double.parseDouble(rate) / 40;
+				return Float.parseFloat(rate) / 40;
 			case Constants.RATE_TYPE_BI_WEEKLY:
-				return Double.parseDouble(rate) / 80;
+				return Float.parseFloat(rate) / 80;
 			case Constants.RATE_TYPE_SEMI_MONTHLY:
-				return Double.parseDouble(rate) / 87;
+				return Float.parseFloat(rate) / 87;
 			case Constants.RATE_TYPE_MONTHLY:
-				return Double.parseDouble(rate) / 184;
+				return Float.parseFloat(rate) / 184;
 			case Constants.RATE_TYPE_BI_MONTHLY:
-				return Double.parseDouble(rate) / 87;
+				return Float.parseFloat(rate) / 87;
 			default:
-				return Double.parseDouble(rate) / 2088;
+				return Float.parseFloat(rate) / 2088;
 		}
 	}
 	
@@ -53,9 +58,9 @@ public class ConversionUtil {
 	 * @param fromCurrencyCode
 	 * @param toCurrencyCode
 	 * @param amount
-	 * @return double
+	 * @return float
 	 */
-	public  double convert(String fromCurrencyCode, String toCurrencyCode, double amount)
+	public  float convert(String fromCurrencyCode, String toCurrencyCode, float amount)
 	{
 		
 		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
@@ -66,11 +71,11 @@ public class ConversionUtil {
 			if (response != null) {
 				
 				String rate = response.getRates().get(toCurrencyCode);
-				double conversionRate = Double.valueOf((rate != null) ? rate : "0.0");
+				float conversionRate = Float.valueOf((rate != null) ? rate : "0.0");
 				return conversionRate * amount;
 			}
 		}
-		return 0.0;
+		return 0;
 	}
 	
 	// Method to get the response from API
@@ -81,8 +86,7 @@ public class ConversionUtil {
 		Gson gson = new Gson();
 		StringBuffer sb = new StringBuffer();
 		if (strUrl == null || strUrl.isEmpty()) {
-			
-			System.out.println("Application Error");
+			logger.info("Application Error");
 			return null;
 		}
 		URL url;
@@ -99,13 +103,34 @@ public class ConversionUtil {
 			stream.close();
 			response = gson.fromJson(sb.toString(), CurrencyConversionResponse.class);
 		} catch (MalformedURLException e) {
-			
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	public String getVendorOrgCurrencyCode(String country)
+	{
+	  String countryCurrencyCode = null;
+      if (Constants.COUNTRY_INDIA.equals(country)) {
+    	  countryCurrencyCode =  Constants.CURRENCYCODE_INR;
+		}
+		else if (Constants.COUNTRY_AUSTRALIA.equals(country)) {
+			 countryCurrencyCode =  Constants.CURRENCYCODE_AUD;
+		}
+		else if (Constants.COUNTRY_UNITEDSTATES.equals(country)) {
+			 countryCurrencyCode =  Constants.CURRENCYCODE_USD;
+		}
+		else if (Constants.COUNTRY_SINGAPORE.equals(country)) {
+			countryCurrencyCode =  Constants.CURRENCYCODE_SGD;
+		}
+		else if (Constants.COUNTRY_UNITEDKINGDOM.equals(country)) {
+			countryCurrencyCode =  Constants.CURRENCYCODE_GBP;
+		}
+		else if (Constants.COUNTRY_FRANCE.equals(country)) {
+			countryCurrencyCode =  Constants.CURRENCYCODE_EUR;
+		}
+      return countryCurrencyCode;
 	}
 }

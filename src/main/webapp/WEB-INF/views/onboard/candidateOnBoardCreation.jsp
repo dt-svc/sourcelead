@@ -77,213 +77,15 @@
                <form:form class="login-form clearfix"  id="onboardCandidate_form"  name="onboardCandidate_form" method="post" >
                <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
                 <p><strong>Employee Details</strong></p>
-                <div class="form-group">
+                <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">*</span></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="getCandidateDetails();getOfferDetails();" field-name="Candidate">
+                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Last Name</label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="lastName" name="lastName" value="" filed-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Street Address 1 <span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Street Address 2</label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Street Address 2" data-validation-optional="true"  data-validation="validate_Space">
-                  </div>
-                </div>
-                  
-                 <div class="form-group">
-                  <label class="col-md-3 control-label">Country <span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="--Select Country--" id="country" onchange="getStates();" name="country">
-                      <option disabled>Select Country</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="col-md-3 control-label">State</label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="--Select State--" onchange="getCities();" id="state" name="state">
-                      <option disabled>Select State</option>
-                      
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">City</label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="--Select City--" id="city" name="city">
-                      <option disabled>Select City</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Zipcode</label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="zipCode" name="zipCode"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >
-                  </div>
-                </div>
-
-                  
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Personal Email <span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="personalEmail" name="personalEmail" readonly="readonly">
-                  </div>
-                </div>
-                  
-                <div class="form-group" id="emailDiv">
-                  <label class="col-md-3 control-label">Company Email</label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">
-                  </div>
-                </div>
-                <div class="clearfix"></div>
-                <p><strong>Position Details</strong></p>
-                <!-- <div class="form-group">
-                  <label class="col-md-3 control-label">Department</label>
-                  <div class="col-md-6">
-                      <select class="form-control selectpicker">
-                          
-                      </select>
-                  </div>
-                </div> -->
-
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Role<span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                      <select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">
-                    </select>
-                  </div>
-                </div>
-
-                  <div class="form-group" id="dojDiv">
-                  <label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">
-                  </div>
-                </div>
-                  <div class="form-group" id="endDateDiv">
-                  <label class="col-md-3 control-label">End Date</label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Rate / Salary <span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="salaryRate" name="salaryRate">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Manager</label>
-                  <div class="col-md-6">
-                   <select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-md-3 control-label">Team</label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select Team" id="team" name="team">
-                    </select>
-                  </div>
-                </div>
-                
-                <div class="form-group" id="employmentTypeDiv">
-                  <label class="col-md-3 control-label">Employment Type</label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" onchange="getEmploymentType();" name="employmentType">
-                      <option value=""  selected="selected">Select Employment Type</option>
-                      <option value="C2C">C2C</option>
-                      <option value="W-2">W-2</option>
-                      <option value="C2H">C2H</option>
-                      <option value="Part Time">Part Time</option>
-                      <option value="Full Time">Full Time</option>
-                      <option value="Contract">Contract</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div class="form-group" id="otherEmploymentTypeDiv" style="display: none">
-                  <label class="col-md-3 control-label">Other Type<span class="text-danger">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="employmentOtherType" field-name="Other Type" name="employmentOtherType" >
-                  </div>
-                </div>
-                  
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Probation Notice</label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select Probation Notice" id="probationNotice" name="probationNotice">
-                      <option selected="selected" value="">Select Probation Notice</option>
-                      <option value="15 Days">15 Days</option>
-                      <option value="1 Month">1 Month</option>
-                      <option value="2 Months">2 Months</option>
-                      <option value="3 Months">3 Months</option>
-                    </select>
-                  </div>
-                </div>
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Termination Notice</label>
-                  <div class="col-md-6">
-                    <select class="chosen-select" data-placeholder="Select Termination Notice" id="terminationNotice" name="terminationNotice">
-                      <option selected="selected" value="">Select Termination Notice</option>
-                      <option value="15 Days">15 Days</option>
-                      <option value="1 Month">1 Month</option>
-                      <option value="2 Months">2 Months</option>
-                      <option value="3 Months">3 Months</option>
-                    </select>
-                  </div>
-                </div>
-                  
-                  
-                  <div class="form-group" id="dueDateDiv">
-                  <label class="col-md-3 control-label">Due Date</label>
-                  <div class="col-md-6">
-                   <input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">
-                  </div>
-                </div>
-
-                  <div class="form-group">
-                  <label class="col-md-3 control-label">Special Conditions</label>
-                  <div class="col-md-6">
-                      <textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>
-                  </div>
-                </div>
-                   <div class="form-group">
-                       <label class="col-md-3 control-label">Onboard Template</label>
-                  <div class="col-md-6">
-                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">
-                       </select>
-                  </div>
-                </div>
+               
+               <div id="onboardingCandidateDetailsDiv"></div>
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
@@ -914,9 +716,6 @@ function validateUploadFile(id)
   <script>
   function loadOnboardingDetails(){
 	  loadOfferAcceptedCandidates();
-	  loadCandidateRoles();
-	  loadTeams();
-	  loadOnBoardingTemplates();
   }
   </script>
   
@@ -1054,6 +853,7 @@ function validateUploadFile(id)
 			    		 
 			    		 if(json['positionType'] == 'Other'){
 			    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+			    			 $("#employmentOtherType").val(json['otherPositionType']);
 			    			 $("#employmentOtherType").attr("data-validation", "required");
 			    			 $("#employmentOtherType").removeAttr("data-validation-optional");
 			    		 }else{
@@ -1329,80 +1129,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 </script>
 
 
-<script>
-  $( function() {
-	  
-	  $('#startDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  
-	  	   onSelect : function(selected) {
-			var dt = toDate("#startDate");
-			dt.setDate(dt.getDate() + 1);
-			$("#endDate").datepicker("option", "minDate", dt);
-			$("#dueDate").datepicker("option", "minDate", dt);
-			addValidClass();
-		}
-	  });
-	  
-	  $('#endDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true, 
-	  	  
-	  	   onSelect : function(selected) {
-	  		var dt = toDate("#endDate");
-			dt.setDate(dt.getDate() - 1);
-			$("#startDate").datepicker("option", "maxDate", dt);
-			addValidClass();
-			}
-	  	
-	  });
-	  
-	  $('#dueDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true,
-	  	  
-	  	  onSelect : function(selected) {
-	  		var dt = toDate("#dueDate");
-			dt.setDate(dt.getDate() - 1);
-			$("#startDate").datepicker("option", "maxDate", dt);
-			addValidClass();
-			}
-	  });
-	  
-  } );
-</script>
 
-
-<script type="text/javascript"> 
-	function addValidClass(){
-		 var startDate = document.getElementById("startDate").value;
-		 if(startDate){
-			 $('#dojDiv').find('p.jquery_form_error_message').remove(); 
-		 }
-		 
-		 var endDate = document.getElementById("endDate").value;
-		 if(endDate){
-			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
-		 }
-		 
-		 var dueDate = document.getElementById("dueDate").value;
-		 if(dueDate){
-			 $('#dueDateDiv').find('p.jquery_form_error_message').remove(); 
-		 }
-}
-</script>
-
-<script>
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
-</script>
-  
   
  <script>
  function saveOnboardingCandidateDetails(saveType){
@@ -1479,6 +1206,8 @@ function toDate(selector) {
 	 }
 	 
 	 if(onBoardingUUID){
+		 
+	 addCandidateDetailsForOnboarding();
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
@@ -1626,13 +1355,8 @@ function toDate(selector) {
    	 
    	 getDashboardCandidateDetails();
      validateOnbardUserByCandidateId(candidateId,candidateName);
-    
-     
    	 getOfferDetails();
-   	 
-   	 loadCandidateRoles();
-	 loadTeams();
-	 loadOnBoardingTemplates();
+     addCandidateDetailsForOnboarding();
 	 
 	
  }
@@ -2403,3 +2127,320 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+
+
+<script>
+function addCandidateDetailsForOnboarding(){
+	
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	
+	 var result = "";
+	
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Last Name</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="lastName" name="lastName" value="" filed-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Street Address 1 <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Street Address 2</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="address2" name="address2" field-name="Street Address 2" data-validation-optional="true"  data-validation="validate_Space">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+     
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Country <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="--Select Country--" id="country" onchange="getStates();" name="country">';
+	 result = result +'<option disabled>Select Country</option>';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">State</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="--Select State--" onchange="getCities();" id="state" name="state">';
+	 result = result +'<option disabled>Select State</option>';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">City</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="--Select City--" id="city" name="city">';
+	 result = result +'<option disabled>Select City</option>';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Zipcode</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="zipCode" name="zipCode"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >';
+	 result = result +'</div>';
+	 result = result +'</div>';
+
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >';
+	 result = result +'</div>';
+	 result = result +'</div>';
+
+     
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Personal Email <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="personalEmail" name="personalEmail" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+     
+	 result = result +'<div class="form-group" id="emailDiv">';
+	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 result = result +'<p><strong>Position Details</strong></p>';
+
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Role<span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">';
+	 result = result +'</select>';
+	 result = result +' </div>';
+	 result = result +'</div>';
+
+	 result = result +'<div class="form-group" id="dojDiv">';
+	 result = result +'<label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group" id="endDateDiv">';
+	 result = result +'<label class="col-md-3 control-label">End Date</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Rate / Salary <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="salaryRate" name="salaryRate">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Manager</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Team</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Team" id="team" name="team">';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+   
+	 result = result +'<div class="form-group" id="employmentTypeDiv">';
+	 result = result +'<label class="col-md-3 control-label">Employment Type</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" onchange="getEmploymentType();" name="employmentType">';
+	 result = result +'<option value=""  selected="selected">Select Employment Type</option>';
+	 result = result +'<option value="W-2">W-2</option>';
+	 result = result +'<option value="C2H">C2H</option>';
+	 result = result +'<option value="Part Time">Part Time</option>';
+	 result = result +'<option value="Full Time">Full Time</option>';
+	 result = result +'<option value="Contract">Contract</option>';
+	 result = result +'<option value="Other">Other</option>';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+   
+	 result = result +'<div class="form-group" id="otherEmploymentTypeDiv" style="display: none">';
+	 result = result +'<label class="col-md-3 control-label">Other Type<span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="employmentOtherType" field-name="Other Type" name="employmentOtherType" >';
+	 result = result +'</div>';
+	 result = result +'</div>';
+     
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Probation Notice</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Probation Notice" id="probationNotice" name="probationNotice">';
+	 result = result +'<option selected="selected" value="">Select Probation Notice</option>';
+	 result = result +'<option value="15 Days">15 Days</option>';
+	 result = result +'<option value="1 Month">1 Month</option>';
+	 result = result +'<option value="2 Months">2 Months</option>';
+	 result = result +'<option value="3 Months">3 Months</option>';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Termination Notice</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Termination Notice" id="terminationNotice" name="terminationNotice">';
+	 result = result +'<option selected="selected" value="">Select Termination Notice</option>';
+	 result = result +'<option value="15 Days">15 Days</option>';
+	 result = result +'<option value="1 Month">1 Month</option>';
+	 result = result +'<option value="2 Months">2 Months</option>';
+	 result = result +'<option value="3 Months">3 Months</option>';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+     
+     
+	 result = result +'<div class="form-group" id="dueDateDiv">';
+	 result = result +'<label class="col-md-3 control-label">Due Date</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Special Conditions</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Onboard Template</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 
+	 
+	 $("#onboardingCandidateDetailsDiv").empty();
+   	 $("#onboardingCandidateDetailsDiv").append(result); 
+   	 
+	 loadCandidateRoles();
+	 loadTeams();
+	 loadOnBoardingTemplates();
+	 getDatesScript();
+   	 $("#loading").removeAttr("style");
+   	 
+   	 
+   	var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				});
+	
+}
+
+</script>
+
+<script>
+  function getDatesScript(){
+	  
+	  $('#startDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  
+	  	   onSelect : function(selected) {
+			var dt = toDate("#startDate");
+			dt.setDate(dt.getDate() + 1);
+			$("#endDate").datepicker("option", "minDate", dt);
+			$("#dueDate").datepicker("option", "minDate", dt);
+			addValidClass();
+		}
+	  });
+	  
+	  $('#endDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  
+	  	   onSelect : function(selected) {
+	  		var dt = toDate("#endDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#startDate").datepicker("option", "maxDate", dt);
+			addValidClass();
+			}
+	  	
+	  });
+	  
+	  $('#dueDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true,
+	  	  
+	  	  onSelect : function(selected) {
+	  		var dt = toDate("#dueDate");
+			dt.setDate(dt.getDate() - 1);
+			$("#startDate").datepicker("option", "maxDate", dt);
+			addValidClass();
+			}
+	  });
+	  
+  } 
+</script>
+
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var startDate = document.getElementById("startDate").value;
+		 if(startDate){
+			 $('#dojDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var endDate = document.getElementById("endDate").value;
+		 if(endDate){
+			 $('#endDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 var dueDate = document.getElementById("dueDate").value;
+		 if(dueDate){
+			 $('#dueDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
+
+<script>
+function validOnboardCandiate(){
+	
+	 var onboardCandidate = document.getElementById("onboardCandiate").value;
+	 if(onboardCandidate){
+		 $('#onboardCandidatesDiv').find('p.jquery_form_error_message').remove(); 
+	 }
+	
+}
+</script>
+
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+  

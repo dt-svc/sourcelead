@@ -252,6 +252,10 @@ function withdrawMyTimesheet(projectMemberId,timesheetFrequency){
 <!-- this script is for add row functionality at Timesheet screen -->
 <script>
 function addTimeSheetRow(projectId) {
+	 $('#0docFile').removeAttr('data-validation');
+	 $('#0docFile').attr("data-validation-optional","true"); 
+	 /* $('#0docFile').removeClass('error'); */
+	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){      
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
@@ -388,6 +392,14 @@ function addTimeSheetRow(projectId) {
 			var projectTaskId = maxRowNum+"task1Id"; 
 			
 			getProjectTasks(projectTaskId,projectId); 
+			
+		   var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
+		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
+			 $('#0docFile').removeAttr('data-validation-optional');
+			 $('#0docFile').attr("data-validation","required"); 
+			 $(".time_btn").removeAttr("disabled");
+			 $("#loadTime").removeAttr("style"); 
+		   }
 	    }	
 	}	
         
@@ -877,7 +889,7 @@ function addAttachment(){
           <div class="pull-left">
             <h2>Timesheets</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Timesheets</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
         </section>
          <div  id="loadTime"></div> 
          <div id="timesheetEntriesDiv"> 

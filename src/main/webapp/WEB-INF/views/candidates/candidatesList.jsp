@@ -4,6 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<meta name="format-detection" content="telephone=no">
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -331,6 +333,7 @@ function cpagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
+    $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 }
 </script> 
 
@@ -374,16 +377,16 @@ function candidateSideBar(candidateId){
 			            
 			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
+         			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
          			 		experienceMonths = ' ';  
          			 	 }
          			 	
-         			 	/* if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
              			 	designation = 'Designation'+'-'+json.designation;
              			 	}else{
              			 		designation = '';
-             			 	} */
+             			 } 
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
          			 	designationType = 'Employment Type'+ ' - '+json.designationType;
@@ -480,10 +483,10 @@ function candidateSideBar(candidateId){
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -529,14 +532,10 @@ function candidateSideBar(candidateId){
 						 result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
-			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			                    	 
-			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+'</li>';
-			             
+			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
+			            	 result = result+'<li>Experience -'+json.experienceYears+' Year/s '+experienceMonths+'</li>';
               		       }else{
-              		                                                	  
-              		     result = result+'<li>Experience ----</li>';  
-              		     
+              		   		 result = result+'<li>Experience ----</li>';  
               		       }
 			             result = result+'</ul>';
 			             
@@ -671,7 +670,7 @@ function candidateSideBar(candidateId){
 			             '</sec:authorize>';
 			             
 			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
-			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE_DOCUMENT\')">';
+			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
 			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
 			             '</sec:authorize>';
 			            
@@ -878,14 +877,14 @@ function refreshImageBlock(candidateId){
                 	 var json = JSON.parse(data);
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
-			             result = result+'<div class="well text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 result = result+'  <div class="btn-group uploadfile">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
+						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -1037,7 +1036,14 @@ function cancel(candidateId){
     <div class="pull-left">
       <h2>Candidate List - <span class="label label-success">${candidateCount}</span></h2>
     </div>
+    
+    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
+    </c:if> 
+    
+    <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Candidate List  </div>
+    </c:if> 
     
      <%-- <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
@@ -1063,7 +1069,7 @@ function cancel(candidateId){
 					  <div class="candAdvsrchPop">
 					  <div class="row">
 						  <div class="col-md-4">
-							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+							  <label>Any of Keyword</label>
 							  <div class="clearfix">
 							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
                                     </select>
@@ -1071,14 +1077,14 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+							  <label>All Keywords</label>
 							  <div class="clearfix">
 							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
                                  </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+							  <label>Exclude Keyword</label>
 							  <div class="clearfix">
 							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                                  </select>
@@ -1114,7 +1120,7 @@ function cancel(candidateId){
 						
 						<div class="col-md-8">
 							<div class="row">
-								<div class="col-md-6">
+								<div class="col-md-6 payrate_p">
 									<label>Rate</label>
 									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
@@ -1133,7 +1139,7 @@ function cancel(candidateId){
 								         </div>
 								    </div>
 								</div> 
-							<div class="col-md-6">
+							<div class="col-md-6 payrate_p">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
 								 <div id="maxRateDiv">
@@ -1264,7 +1270,7 @@ function cancel(candidateId){
 							  </div>
 						  </div> 
 						  <div class="col-md-4">
-							  <label>Exclude Education<i class="fa fa-info-circle" title="Exclude Education"></i></label>
+							  <label>Exclude Education</label>
 							  <div class="clearfix">
 								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
                                        <c:forEach var="edu" items="${educationsList}">
@@ -1274,7 +1280,7 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Certification<i class="fa fa-info-circle" title="Certification"></i></label>
+							  <label>Certification</label>
 							  <div class="clearfix">
 								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
                                   </select>
@@ -1283,14 +1289,14 @@ function cancel(candidateId){
 						  </div>
 						  <div class="clearfix">
 						  <div class="col-md-4">
-							  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Employers</label>
 							  <div class="clearfix">
 								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
                                   </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Exclude Employers</label>
 							  <div class="clearfix">
 								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
                                   </select>
@@ -1321,7 +1327,7 @@ function cancel(candidateId){
 			  </form:form>
       </div>
       <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
-      <div class="timesheet_head   customtimesheet-head topfilters topfilters2 pull-right">
+      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter">
         <ul>
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -2399,6 +2405,7 @@ function minMaxExperience(){
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
 	    
+	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
 	    
 	     $("#anyOfKeyword").empty();
 	     $("#allKeywords").empty();

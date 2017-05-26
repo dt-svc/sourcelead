@@ -40,12 +40,12 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 												      //This condition for org image     
 												      if(org != null && org.getId() != null){
 												    	  	if(StringUtils.isNotEmpty(org.getFileContentType())){
-												    	  	  tempHTML.append("<td><img src='"+url+"/displayOrgImage/"+org.getOrgCode()+"' width='auto' style='padding: 5px 20px; max-height:55px; background-color:#fff; margin: 5px auto; display:block;'></td>");
+												    	  	  tempHTML.append("<td style='text-align: center;'><img src='"+url+"/displayOrgImage/"+org.getOrgCode()+"' width='auto' style='padding: 5px 20px; max-height:55px; background-color:#fff; margin: 5px auto; display:block;'></td>");
 												    	  	}else{
 												    	  		 tempHTML.append("<td class='text-logo'><span class='tbldata-dotdot'  style='font-size: 28px; color: #fff; width: 600px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px; text-align:center; margin:0 auto; font-weight: 600;'>"+org.getOrgName()+"</span></td>");
 												    	  	}
 												      }else{
-												    	  tempHTML.append("<td><img src='"+url+"/resources/images/SourceLead-logo-white.png' width='300px' height='66px'></td>");
+												    	  tempHTML.append("<td style='text-align: center;'><img src='"+url+"/resources/images/SourceLead-logo-white.png' width='300px' height='66px'></td>");
 												      }
 												           
 										             tempHTML.append("</tr>");

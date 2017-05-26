@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -363,6 +365,11 @@ public class RequirementController {
 				}
 			}
 		}
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("currencyCode", countries.getCurrency());
+		}
 
 		return model;
 
@@ -578,14 +585,20 @@ public class RequirementController {
 		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
 		
+		String permission = "NO";
+		if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE){
+			permission = "YES";
+		}
+		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/offerAcceptOrReject");
 		model.addObject("offerStatus",offerStatus);
 		model.addObject("offerId",offerId);
 		model.addObject("requirementOffers",requirementOffers);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("permission",permission);
 		
-		if(offerStatus.equalsIgnoreCase("Accepted")){
+		if(offerStatus.equalsIgnoreCase("Accepted") && permission.equalsIgnoreCase("YES")){
 			
 		    if(null != requirementOfferHistories && !requirementOfferHistories.isEmpty() ){  
 			    if(offerStatus.equalsIgnoreCase("Accepted")){

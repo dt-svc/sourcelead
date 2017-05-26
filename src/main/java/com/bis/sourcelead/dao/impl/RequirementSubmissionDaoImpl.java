@@ -529,7 +529,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 
 		 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId "
-		 		+ " and rs.requirement.id = :requirementId "+subQuery+" and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERHIRED' ) ";
+		 		+ " and rs.requirement.id = :requirementId "+subQuery+" and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED' OR rs.submissionStatus = 'OFFERHIRED' ) "
+		 				+ " and rs.id NOT IN (select submission.sourceSubmission from RequirementSubmission submission) ";
 		 List<RequirementSubmission>  shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", loginOrgLocation.getId()).setLong( "requirementId", requirement.getId()).setCacheable(true).list();
 	     return shortListCandidatesList;
 	}
@@ -1874,20 +1875,42 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				Date endDate) throws Exception {
 			
 			 Session session = this.sessionFactory.getCurrentSession();
+			 String query = "";
 			 
-			 String query = "select count(*) from RequirementSubmission rs where rs.recruiterUserId.id = :recruiterUserId "
-			 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and rs.submissionStatus = :submissionStatus ";
-		     
-		     List<Long> appliedCount = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
-					   .setDate("endDate", endDate).setString("submissionStatus", submissionStatus).setCacheable(true).list();
-			 Integer count= 0;
-			 
-			 if(appliedCount != null && !appliedCount.isEmpty()){
-					count = appliedCount.get(0).intValue();
+			 if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
+				 query = "select count(*) from RequirementSubmission rs where rs.recruiterUserId.id = :recruiterUserId "
+					 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and (rs.submissionStatus = 'OFFERMADE' OR  rs.submissionStatus = 'OFFERACCEPTED') ";
+				 
+				 List<Long> appliedCount = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
+						   .setDate("endDate", endDate).setCacheable(true).list();
+				 
+				 Integer count= 0;
+				 
+				 if(appliedCount != null && !appliedCount.isEmpty()){
+						count = appliedCount.get(0).intValue();
+				 }
+				return count;
+				 
+			 }else{
+				 
+				 query = "select count(*) from RequirementSubmission rs where rs.recruiterUserId.id = :recruiterUserId "
+					 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and rs.submissionStatus = :submissionStatus ";
+				 
+				 List<Long> appliedCount = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
+						   .setDate("endDate", endDate).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+				 
+				 Integer count= 0;
+				 
+				 if(appliedCount != null && !appliedCount.isEmpty()){
+						count = appliedCount.get(0).intValue();
+				 }
+				return count;
+				 
 			 }
-			return count;
+			
 		}
-
+		
+		
 		@Override
 		@Transactional
 		public List<RequirementSubmission> getAllVendorsIdbyorgLocationId(OrgLocations orgLocation,Date startDateUTC,Date endDateUTC) {
@@ -1950,12 +1973,25 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 List<RequirementSubmission>  submissionsCountList = null ;
 				 String query;
 				 if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
-					 query = "from RequirementSubmission rs left join fetch rs.candidate left join fetch rs.requirement where rs.recruiterUserId.id = :recruiterUserId "
-						 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and rs.submissionStatus = :submissionStatus ";
-					     submissionsCountList = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
-								                                          .setDate("endDate", endDate).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+					 
+					 if(submissionStatus.equalsIgnoreCase("OFFERMADE")){
+						 
+						 query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.candidate left join fetch rs.requirement where rs.recruiterUserId.id = :recruiterUserId "
+							 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and (rs.submissionStatus = 'OFFERMADE' OR rs.submissionStatus = 'OFFERACCEPTED')  ";
+						     submissionsCountList = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
+									                                          .setDate("endDate", endDate).setCacheable(true).list();
+						     
+					 }else{
+						
+						 query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.candidate left join fetch rs.requirement where rs.recruiterUserId.id = :recruiterUserId "
+							 		+ "and (rs.createdDate BETWEEN :startDate and :endDate) and rs.submissionStatus = :submissionStatus ";
+						     submissionsCountList = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
+									                                          .setDate("endDate", endDate).setString("submissionStatus", submissionStatus).setCacheable(true).list();
+					 }
+					 
+					 
 				 }else{
-					 query = "from RequirementSubmission rs left join fetch rs.candidate  left join fetch rs.requirement where rs.recruiterUserId.id = :recruiterUserId and (rs.createdDate BETWEEN :startDate and :endDate) ";
+					 query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.candidate  left join fetch rs.requirement where rs.recruiterUserId.id = :recruiterUserId and (rs.createdDate BETWEEN :startDate and :endDate) ";
 					 submissionsCountList = session.createQuery(query).setLong("recruiterUserId", userId).setDate("startDate", startDate)
 							                                           .setDate("endDate", endDate).setCacheable(true).list();
 				 }
@@ -1963,6 +1999,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				
 				return submissionsCountList;
 		}
+		
+		
 
 		
 		@Override
@@ -1989,7 +2027,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String subQuery = "";
 			 
-			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.candidate.consultantUser user "
+			 String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.candidate.consultantUser user "
 			     		+ " left join fetch rs.recruiterUserId recruiter where rs.requirement.id = :requirementId and recruiter.id =:recruiterUserId ";
 			 
 			 List<RequirementSubmission> submissionList  = session.createQuery(query).setLong("recruiterUserId", recruiterUserId) .setLong("requirementId", requirementId).setCacheable(true).list();
@@ -2034,7 +2072,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 String from = "from RequirementSubmission reqSub left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes "; 
 				 String subQuery = "";
 			
-				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT' or reqSub.submissionStatus = 'CLIENT_INTERVIEW' or reqSub.submissionStatus = 'OFFERMADE')";
+				subQuery = " where reqSub.orgLocations.id =:loginOrgLocation  and reqSub.submissionStatus = 'SUBMIT_TO_CLIENT' ";
 				params.put("loginOrgLocation",loginOrgLocationId);
 			
 			Query query = null;
@@ -2121,7 +2159,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 
 			Session session = this.sessionFactory.getCurrentSession();
 			boolean flag = false;
-			String query ="from RequirementSubmission submission where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
+			String query ="from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
 			List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).setCacheable(true).list();
 			if(educationList !=null && educationList.size() >0){
 				flag = true;

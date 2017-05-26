@@ -15,6 +15,8 @@ public interface OrgRelationsService {
 	public OrgRelations addOrgRelations(OrgRelations OrgRelations)throws Exception;
 	
 	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId,Long clientOrgLocationId)throws Exception;
+	
+	public OrgRelations getOrgRelationById(Long id) throws Exception;
    
 //	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
 	

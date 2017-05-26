@@ -114,7 +114,7 @@ z-index: 9999999999 !important;
 								<c:if test="${!empty orgloc.user.id}">
 								<div class="form-group">
 								<div class="col-md-12 clearfix">
-								<h5>Primary Contact Details&nbsp; <c:if test="${userState == 'NOT_LOGGEDIN'}"><a id="edit-user" href="javascript:editPrimaryUser();"><i class="fa fa-edit"></i></a></c:if></h5>
+								<h5>Contact Details&nbsp; <c:if test="${userState == 'NOT_LOGGEDIN'}"><a id="edit-user" href="javascript:editPrimaryUser();"><i class="fa fa-edit" title="Edit Contact Details"></i></a></c:if></h5>
 								</div>
 								</div>
 								
@@ -129,7 +129,7 @@ z-index: 9999999999 !important;
 									<p class="tbldata-dotdot-me">${orgloc.user.lastName}</p>
 								</c:if>
 								<c:if test="${empty orgloc.user.lastName}">
-									<p>NO DATA</p>
+									<p>-----</p>
 								</c:if>
 								
 								</div>
@@ -145,7 +145,7 @@ z-index: 9999999999 !important;
 									<p>${orgloc.user.mobilePhone}</p>
 								</c:if>
 								<c:if test="${empty orgloc.user.mobilePhone}">
-									<p>NO DATA</p>
+									<p>-----</p>
 								</c:if>
 								</div>
 							</c:if>
@@ -167,8 +167,8 @@ z-index: 9999999999 !important;
 										<ul class="list-unstyled pull-left">
 				               				 <li>
 										    <c:if test="${module.id == '1'}">
-									         <label class="mr pull-left">
-							           		     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${module.moduleName}</p>
+									         <label class="mr pull-left NoPad">
+							           		     <p>${module.moduleName}</p>
 							           		  </label>
 							           		   <ul class="list-unstyled pull-left tree-checkbox">
 							                    	 <c:forEach var="submodules" items="${registeredSubModulesList}">
@@ -205,7 +205,7 @@ z-index: 9999999999 !important;
 					
 					</div>
 					<div class="clearfix">
-					<div class="pull-left">
+					<div class="pull-right">
 					<input type="button" value="Upgrade" onclick="updateModules();" id="save_button" class="btn btn-primary mr">
 					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/sourcelead/enrolledOrgsList'">
 					</div>
@@ -219,7 +219,7 @@ z-index: 9999999999 !important;
 	 						<form id="editPrimaryUser_form"  name="editPrimaryUser_form" method="post">
 	 						<div class="form-group">
 								<div class="col-md-12 clearfix">
-								<h5>Edit Primary User</h5>
+								<h5>Edit Contact Details</h5>
 								</div>
 							</div>
 							
@@ -238,9 +238,14 @@ z-index: 9999999999 !important;
 									<input type="text" value="${orgloc.user.email}" name="primaryUserEmail" id="primaryUserEmail" field-name="Email" onblur="validatePrimaryUserEmail()" data-validation="required validate_Space validate_email validate_length length2-100"  class="form-control">
 							</div>
 							
+							<div class="user_summary_edit_cta" id="phoneNumberDiv">
+								 <label>Phone Number</span></label>
+									<input type="text" value="${orgloc.user.mobilePhone}" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control">
+							</div>
+							
 							 
 				   			 <div class="clearfix"></div>
-							 <div class="user_summary_edit_cta">
+							 <div class="user_summary_edit_cta pull-right">
 							 <input class="us-btn" value="Save" id="update_primaryuser" onclick="validatePrimaryUserEmail();savePrimaryUserDetails();" type="submit" > <input class="us-btn us-btn_a" value="Cancel" onClick="editPrimaryUser();" type="button">
 							 </div>
 								
@@ -262,7 +267,7 @@ z-index: 9999999999 !important;
                             
                             <div class="clearfix mb10">
 	                              <div class="col-md-12" id="userEmailDiv">
-	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="userEmail" id="userEmail" class="form-control input-sm"  placeholder="Email">
+	                                <input type="text" data-validation="required validate_Space validate_length length2-100 validate_email"  field-name="Email" onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();"  name="userEmail" id="userEmail" class="form-control input-sm"  placeholder="Email*">
 	                              	<input type="hidden" name="registeredOrgLocationId" value="${registeredOrgLocationId}">
 	                              	<input type="hidden" name="registredOrgId" value="${orgId}">
 	                              </div>
@@ -270,7 +275,7 @@ z-index: 9999999999 !important;
                               
                              <div class="clearfix mb10">
 	                              <div class="col-md-12" id="firstNameDiv">
-	                                <input type="text" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" field-name="First Name" name="firstName" id="firstName" class="form-control input-sm"  placeholder="First Name">
+	                                <input type="text" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100" field-name="First Name" name="firstName" id="firstName" class="form-control input-sm"  placeholder="First Name*">
 	                              </div>
                               </div>
                               
@@ -385,23 +390,23 @@ function validatePrimaryUserEmail(){
 		        		var json = JSON.parse(data);
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#firstName").val(json.firstName);
-				        	$("#firstName").attr("disabled", true);
+				        	$("#firstName").attr("readonly", "readonly");
 				        	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
 			        		
 			        		if(json.lastName != null && json.lastName != ''){
 			        			$("#lastName").val(json.lastName);
-					        	$("#lastName").attr("disabled", true);
+					        	$("#lastName").attr("readonly", "readonly");
 			        		}else{
-			        			 $("#lastName").attr("disabled", false);
+			        			 $("#lastName").removeAttr("readonly");
 			        			 $("#lastName").val('');
 			        		}
 			        		
 			        		
 		        		}else{
-		        			 $("#firstName").attr("disabled", false);
+		        			 $("#firstName").removeAttr("readonly");
 		        			 $("#firstName").val('');
 		        			 
-		        			 $("#lastName").attr("disabled", false);
+		        			 $("#lastName").removeAttr("readonly");
 		        			 $("#lastName").val('');
 		        		}
 		        		
@@ -659,7 +664,7 @@ function getUserList(){
 	                    	 
 	                    	 result = result +'<tr>';
 	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+name+'>'+name+'</div></td>';
-	                    	 result = result +'<td><div class="tbltbldata-dotdot" title='+opt.email+'>'+opt.email+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-me" title='+opt.email+'>'+opt.email+'</div></td>';
 	                    	 result = result +'<td><div class="tbldata-dotdot-100" title='+mobilePhone+'>'+mobilePhone+'</div></td>';
 	                    	 result = result +'<td>'+opt.role+'</td>';
 	                    	 
@@ -818,7 +823,7 @@ function pagination(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-- Select Role --</option>"; 
+		        	output = output + "<option value=''>-- Select Role* --</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];

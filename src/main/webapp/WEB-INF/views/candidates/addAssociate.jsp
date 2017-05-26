@@ -132,7 +132,7 @@
        </div>
        
        <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
+         <label class="col-md-3">Employment Type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getDesignationType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select--</option>
@@ -280,43 +280,6 @@
         </div>
         
         
-         <div class="form-group">
-              <label class="col-md-3">Education</label>
-              <div class="col-md-9">
-                <select multiple data-placeholder="Select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
-                <c:forEach var="edu" items="${educationsList}">
-	                     <option value="${edu.name}">${edu.name}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
-       
-        
-        <div class="form-group">
-              <label class="col-md-3">Skills</label>
-              <div class="col-md-9">
-                <select multiple data-placeholder="Select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
-                <c:forEach var="skill" items="${skillsList}">
-	                     <option value="${skill.name}">${skill.name}</option>
-                </c:forEach>
-                </select>
-              </div>
-            </div>
-        
-         <div class="form-group">
-            <label class="col-md-3">Import Resume</label>
-            <div class="col-md-9">
-			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
-                 </span> </label>
-                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Import Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
-           </div>
-         </div>
-        </div>
-        
-         
-        
         <div class="form-group">
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
@@ -331,20 +294,70 @@
              
            </div>
           </div> 
+        
+        
+        <div class="form-group innerForm_formGroup">
+        <div class="form-group">
+            <label class="col-md-3">Import Resume</label>
+            <div class="col-md-9">
+			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
+               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
+                 </span> </label>
+                 <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
+           </div>
+         </div>
+        </div>
+        <div class="form-group">
+              <label class="col-md-3">Skills</label>
+              <div class="col-md-9 mySkillsUl">
+                <select multiple data-placeholder="Select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
+                <c:forEach var="skill" items="${skillsList}">
+	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+        </div>
            <div class="form-group">
           <label class="col-md-3">Primary Skill</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="primarySkill" name="primarySkill" value="${primarySkill}"  field-name="Primary Skill" data-validation="validate_Space validate_length length2-200" data-validation-optional="true">
           </div>
          </div>
-         
-         
-         <div class="form-group">
+        
+        
+        </div>
+        
+        <div class="form-group innerForm_formGroup">
+        
+        <div class="form-group">
+              <label class="col-md-3">Education</label>
+              <div class="col-md-9 mySkillsUl">
+                <select multiple data-placeholder="Select Education" class="chosenone-selectone form-control" name="candidateEducation" id="candidateEducation" data-validation="validate_Space" data-validation-optional="true">
+                <c:forEach var="edu" items="${educationsList}">
+	                     <option value="${edu.name}">${edu.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
           <label class="col-md-3">Summary</label>
           <div class="col-md-9">
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
+            
+            
+        </div>
+        
+         
+       
+        
+        
+         
+         
+         
         
           <div class="clearfix"></div>
          <div class="clearfix" id="newResumeDiv"  style="display: none;">
@@ -504,7 +517,7 @@ function getAllCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#country').empty();
-        	$('#country').append('<option value="">---select country---</option>');
+        	$('#country').append('<option value="">---Select Country---</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -535,14 +548,14 @@ function getStates(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select state---</option>');
+	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
 	            $('#city').empty();
-	            $('#city').append('<option value="">---select city---</option>');
+	            $('#city').append('<option value="">---Select City---</option>');
 	            $('#city').trigger("chosen:updated");
 	        },
 	        error: function(e){
@@ -550,10 +563,10 @@ function getStates(){
 	    });
 	}else{
 		$('#state').empty();
-    	$('#state').append('<option value="">---select state---</option>');
+    	$('#state').append('<option value="">---Select State---</option>');
     	$('#state').trigger("chosen:updated");
     	$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
         $('#city').trigger("chosen:updated");
 	}
 }
@@ -573,7 +586,7 @@ function getCities(){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select city---</option>');
+	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
 	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
 	            }
@@ -584,7 +597,7 @@ function getCities(){
 	    });
 	}else{
 		$('#city').empty();
-    	$('#city').append('<option value="">---select city---</option>');
+    	$('#city').append('<option value="">---Select City---</option>');
     	$('#city').trigger("chosen:updated");
 	}
 }
