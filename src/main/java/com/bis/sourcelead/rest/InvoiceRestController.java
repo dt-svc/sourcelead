@@ -919,6 +919,7 @@ public class InvoiceRestController {
 				invoiceDao.saveInvoce(parentInvoice);
 			}
 		}
+		// Accept invoice/bill mail
 		invoiceAcceptMailtoVendor(user,invoice,orgLocation,invoice.getInvoiceType());
 		return "success";
 	} 
@@ -1009,6 +1010,7 @@ public class InvoiceRestController {
 				invoiceDao.saveInvoce(parentInvoice);
 			}
 		}
+		// Reject invoice/bill mail
 		invoiceRejectMailtoVendor(user,invoice,orgLocation,invoice.getInvoiceType());
 		return "success";
 	} 
