@@ -1357,6 +1357,7 @@ function calculateDiscount(){
 				placeholder="Tax type" name='REPLACEROWIDtaxType'
 				id='REPLACEROWIDtaxType'> <input type="hidden"
 				name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
+				<input type= "hidden" id="submissionInvoiceId" name = "submissionInvoiceId">
 		</div>
 	</div>
 </div>
