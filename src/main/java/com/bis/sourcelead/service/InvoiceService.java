@@ -11,6 +11,7 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 
 public interface InvoiceService {
@@ -39,6 +40,6 @@ public interface InvoiceService {
 
 	void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType)throws Exception;
 
-	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType) throws Exception;
+	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception;
 
 }

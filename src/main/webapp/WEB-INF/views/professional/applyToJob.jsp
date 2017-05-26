@@ -1705,7 +1705,7 @@ function getAllSubmissionCandidateCountries(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#submissionCountry').empty();
-        	$('#submissionCountry').append('<option value="">---Select---</option>');
+        	$('#submissionCountry').append('<option value="">--Select Country--</option>');
             for(var i=0;i<json.length;i++){
             	if(json[i] == '${SourceLeadWeb_user.country}'){
             		$('#submissionCountry').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
@@ -1737,7 +1737,7 @@ function getCandidateStates(stateName){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionState').empty();
-	        	$('#submissionState').append('<option value="">---Select---</option>');
+	        	$('#submissionState').append('<option value="">--Select State--</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(stateName != null && stateName != "" && stateName !="undefined" && json[i] == stateName){
@@ -1755,10 +1755,10 @@ function getCandidateStates(stateName){
 	    });
 	}else{
 		$('#submissionState').empty();
-    	$('#submissionState').append('<option value="">---Select---</option>');
+    	$('#submissionState').append('<option value="">--Select State--</option>');
     	$('#submissionState').trigger("chosen:updated");
     	$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select---</option>');
+    	$('#submissionCity').append('<option value="">--Select City--</option>');
         $('#submissionCity').trigger("chosen:updated");
 	}
 }
@@ -1783,7 +1783,7 @@ function getCandidateCities(stateName,city){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#submissionCity').empty();
-	        	$('#submissionCity').append('<option value="">---Select---</option>');
+	        	$('#submissionCity').append('<option value="">--Select City--</option>');
 	            for(var i=0;i<json.length;i++){
 	            	var selected = '';
 	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
@@ -1799,7 +1799,7 @@ function getCandidateCities(stateName,city){
 	    });
 	}else{
 		$('#submissionCity').empty();
-    	$('#submissionCity').append('<option value="">---Select---</option>');
+    	$('#submissionCity').append('<option value="">--Select City--</option>');
     	$('#submissionCity').trigger("chosen:updated");
 	}
 }

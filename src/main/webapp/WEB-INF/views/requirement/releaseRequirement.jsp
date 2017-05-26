@@ -26,7 +26,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
       <div class="pull-left">
         <h2>Release Requirement</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Jobs</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Requirement</div>
     </section>
     <div class="content-area clearfix">
       <div id="accordion-sl" class="release-jobs">
