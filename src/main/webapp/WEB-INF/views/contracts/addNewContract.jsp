@@ -1101,7 +1101,6 @@ function hideCommonSOWFields(){
 
 <script type="text/javascript">
 	function saveNewContract(saveType) {
-		alert("fff");
 		if ($('#newcontract_form').validate(false, validationSettings)) {
 			var frm = $('#newcontract_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
