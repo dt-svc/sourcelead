@@ -137,7 +137,7 @@ function getViewInvoice(){
 	        		if(report.convertCurrencyCode != null && report.convertCurrencyCode != '' && report.convertCurrencyCode != 'undefined'){
 	        			convertCurrencyCode = report.convertCurrencyCode;
 	        		}else{
-	        			convertCurrencyCode = "--";
+	        			convertCurrencyCode = "";
 	        		}
 	        		
 	        		if(report.exchangeRate != null && report.exchangeRate != '' && report.exchangeRate != 'undefined'){
@@ -480,18 +480,17 @@ function getViewInvoice(){
 				result = result +'	                <label class="col-md-7 text-right"><strong>Total</strong></label>                  ';
 				result = result +'	                    <div class="col-md-5 text-right"><span class="pull-left">INR</span><span><strong>'+report.total+'</strong></span></div> ';
 				result = result +'	              </div>                                                                               ';
-				
-				  result = result +'  <div class="row">';
-                  result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-                  
-                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+'</span><div class="pull-right"><input class="ReadTextFli" readonly="" type="text">'+report.total+'</div></div></div>';
-                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>'+convertCurrencyCode+'</span><div class="pull-right"><input  class="ReadTextFli" readonly="" type="text">'+convertAmount+'</div></div></div>';
-                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+' 1 = '+convertCurrencyCode+' </span><div class="pull-right"><input  class="ReadTextFli ReadTextFli90" readonly="" type="text">'+exchangeRate+'</div></div></div>';
-                  
-                  result = result +'  </div>';
-                  result = result +'  </div>'; 				
-				
-				
+				if(convertCurrencyCode != null && convertCurrencyCode != '' && convertCurrencyCode != 'undefined'){
+					 result = result +'  <div class="row">';
+	                  result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+	                  
+	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+'</span><div class="pull-right"><input class="ReadTextFli" readonly="" type="text">'+report.total+'</div></div></div>';
+	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>'+convertCurrencyCode+'</span><div class="pull-right"><input  class="ReadTextFli" readonly="" type="text">'+convertAmount+'</div></div></div>';
+	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+' 1 = '+convertCurrencyCode+' </span><div class="pull-right"><input  class="ReadTextFli ReadTextFli90" readonly="" type="text">'+exchangeRate+'</div></div></div>';
+	                  
+	                  result = result +'  </div>';
+	                  result = result +'  </div>'; 	
+				}
 				result = result +'	              </div>                                                                               ';
 				
                   
