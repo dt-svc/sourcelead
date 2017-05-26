@@ -826,6 +826,7 @@ public class InvoiceRestController {
 			for(SubmissionApproverHierarchy sah : sahList){
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
+				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
 				if(null != candidate){
 					StringBuilder empName =new StringBuilder();
@@ -1005,7 +1006,7 @@ public class InvoiceRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
-		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType());
+		invoiceService.sendInvoiceMail(user,orgLocation,invoice,invoice.getInvoiceType(),null);
 		return "success";
 	} 	
 	

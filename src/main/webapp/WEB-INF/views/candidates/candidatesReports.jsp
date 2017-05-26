@@ -254,8 +254,8 @@ function toDate(selector) {
 
 <div class="pull-left reportBtns">
 
-	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
+	  <div class="reportBtn dropdown-select">
+		<select class="form-control" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
 <!-- 		 <option value="">select</option> -->
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
@@ -311,7 +311,7 @@ function toDate(selector) {
 			</li>
 			
 			
-			<li title="Consultants" class="colorTwo">
+			<li title="Associates" class="colorTwo">
 				<span><i class="fa fa-file-text"></i></span><b>${consultantCount}</b>
 			</li>
 			
