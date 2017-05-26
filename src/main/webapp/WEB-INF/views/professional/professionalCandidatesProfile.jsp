@@ -645,7 +645,7 @@ function professionalProfile(candidateId){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							}
 							else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> --- </textarea>';
 				    	        }
 							
 							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';

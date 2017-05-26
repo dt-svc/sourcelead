@@ -170,7 +170,7 @@ function requirementProfile(requirementUUID){
 				 
 				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-bell" title="Notice Period"></i><span>'+noticePeriod+'</span>';
+				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';
