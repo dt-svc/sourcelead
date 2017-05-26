@@ -594,21 +594,23 @@ public class InvoiceServiceImpl implements InvoiceService{
 					if(jsonObj.has(i+"submissionApproverHierarchyId") && !"".equalsIgnoreCase(jsonObj.getString(i+"submissionApproverHierarchyId"))){
 						submissionApproverHierarchyIds.add(jsonObj.getString(i+"submissionApproverHierarchyId"));
 					 }
+					if(jsonObj.has(i+"submissionInvoiceId")){
+						 if(null != jsonObj.getString(i+"submissionInvoiceId") && !"".equalsIgnoreCase(jsonObj.getString(i+"submissionInvoiceId"))){
+								
+						       List<TimesheetSubmissionsDocuments> documentList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(Long.parseLong(jsonObj.getString(i+"submissionInvoiceId")));
+					           if(null != documentList && documentList.size() >0){
+					        	   
+					        	   for(TimesheetSubmissionsDocuments document : documentList){
+					        		   
+					        		   docusList.add(document);
+					        	   }
+					        	   
+					        	  
+					           }
+						
+							 }
+					}
 					
-					 if(null != jsonObj.getString(i+"submissionInvoiceId") && !"".equalsIgnoreCase(jsonObj.getString(i+"submissionInvoiceId"))){
-							
-					       List<TimesheetSubmissionsDocuments> documentList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(Long.parseLong(jsonObj.getString(i+"submissionInvoiceId")));
-				           if(null != documentList && documentList.size() >0){
-				        	   
-				        	   for(TimesheetSubmissionsDocuments document : documentList){
-				        		   
-				        		   docusList.add(document);
-				        	   }
-				        	   
-				        	  
-				           }
-					
-						 }
 						
 					
 					 invoiceLineItems.setOrgLocation(orgLocation);
