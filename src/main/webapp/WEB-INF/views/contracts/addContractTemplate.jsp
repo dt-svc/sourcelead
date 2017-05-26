@@ -92,8 +92,8 @@
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			<!-- <textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea> -->
-			<textarea name="templateContent" class="form-control" id="txtEditor"></textarea>
+			 <textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea> 
+			<!-- <textarea name="templateContent" class="form-control" id="txtEditor"></textarea> -->
 		</div>  
 		
 		
@@ -268,20 +268,20 @@
 
 
 	
-<!-- <script src="resources/js/editor.js"></script>
+<script src="resources/js/editor.js"></script>
     <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
 			});
-</script>  -->
+</script>  
 
 
-<script src="resources/js/summernote.min.js"></script>
+<!-- <script src="resources/js/summernote.min.js"></script>
 <script src="resources/js/summernote.js"></script>
 <script>
 	$('#txtEditor').summernote();
-</script> 
+</script>  -->
 
 
 <script>
@@ -411,8 +411,8 @@ function generatePDF(id) {
 
 <script type="text/javascript">
 	function saveTemplate() {
-		// var ee = $("#txtEditor").val($('.Editor-editor').html()); 
-		var content = $('textarea[name="templateContent"]').html($('#txtEditor').code());
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+	//	var content = $('textarea[name="templateContent"]').html($('#txtEditor').code());
 		if ($('#template_form').validate(false, validationSettings)) {
 			var frm = $('#template_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
@@ -422,7 +422,7 @@ function generatePDF(id) {
 			var form = $('#template_form')[0];
 		    var formData = new FormData(form);
 		  	formData.append("json",jsonData);
-			alert(jsonData);
+			
 	  		
 			  //It will escape all the special characters
 	       // var jsonData = encodeURIComponent(con);
