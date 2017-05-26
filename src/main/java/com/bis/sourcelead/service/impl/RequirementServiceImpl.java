@@ -1258,8 +1258,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	}
 
 	@Override
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
-		return requirementDao.getUserAssignJobCount(userId);
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception {
+		return requirementDao.getUserAssignJobCount(userId, orgLocationId);
 	}
 
 
