@@ -554,7 +554,7 @@ function paymentHistroy(){
 					result = result +'              <td><div class="tbldata-dotdot-100">'+report.paymentDateStr+' </div></td>     ';
 					result = result +'              <td><div class="tbldata-dotdot-50">'+report.paymentMethod+'</div></td>            ';
 					result = result +'              <td><div class="tbldata-dotdot-50" title="'+report.paymentReferenceNumber+'">'+report.paymentReferenceNumber+'</div>              ';
-					result = result +'              </td><td><div class="tbldata-dotdot-50" title="'+paymentAmount+'">'+paymentAmount+'</div></td> ';
+					result = result +'              </td><td><div class="tbldata-dotdot-50" title="'+report.currencyCode+' '+paymentAmount+'">'+report.currencyCode+' &nbsp;&nbsp; '+paymentAmount+'</div></td> ';
 					result = result +'              <td>                                                          ';
 					result = result +'                <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">      ';
 // 					result = result +'                <p class="pull-left">'+fileName+'</p>                           ';
