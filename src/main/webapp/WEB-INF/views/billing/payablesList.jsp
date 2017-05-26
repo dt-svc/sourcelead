@@ -394,6 +394,11 @@ $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 
 </script>
 
+<script>
+function cancelTermination(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
 <!-- modal pop --> 
 <script>
 function saveReceivePayment(invoiceId){
