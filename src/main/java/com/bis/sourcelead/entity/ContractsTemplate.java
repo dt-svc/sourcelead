@@ -49,7 +49,7 @@ public class ContractsTemplate {
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
 	
-	@Column(name = "TEMPLATE_CONTENT",columnDefinition = "LONGTEXT default NULL")
+	@Column(name = "TEMPLATE_CONTENT",columnDefinition = "TEXT default NULL")
 	private String templateContent;
 	
 	@Column(name = "TEMPLATE_UUID")
