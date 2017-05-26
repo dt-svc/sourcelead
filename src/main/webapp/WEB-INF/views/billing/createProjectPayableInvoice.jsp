@@ -350,6 +350,7 @@ function populateInlineItemsGrid(data){
              result = result +' <input class="calendar paddingRight" id="'+i+'sdate-input" name="'+i+'invoiceStartDate" placeholder="Start Date" value='+opt.startDate+' type="text" readonly>';
              result = result +'<input class="calendar paddingLeft" id="'+i+'edate-input" name="'+i+'invoiceEndDate" placeholder="End Date" value='+opt.endDate+' type="text" readonly>';
              result = result +' <input type="hidden" value='+opt.submissionApproverHierarchyId+' id="'+i+'submissionApproverHierarchyId" name="'+i+'submissionApproverHierarchyId">';
+             result = result +' <input type="hidden" value='+opt.submissionInvoiceId+' id="'+i+'submissionInvoiceId" name="'+i+'submissionInvoiceId">';
              result = result +'</div>';
              result = result +' </td>';
              result = result +'<td>';

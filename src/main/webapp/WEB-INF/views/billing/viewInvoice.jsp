@@ -90,6 +90,7 @@ function getViewInvoice(){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
+	  var currencyCode = '${SourceLeadWeb_currencyCode}';
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID,
@@ -127,6 +128,31 @@ function getViewInvoice(){
 	        		}else{
 	        			clientContactEmail = "";
 	        		}
+	        		if(report.convertAmount != null && report.convertAmount != '' && report.convertAmount != 'undefined'){
+	        			convertAmount = report.convertAmount;
+	        		}else{
+	        			convertAmount = "--";
+	        		}
+	        		
+	        		if(report.convertCurrencyCode != null && report.convertCurrencyCode != '' && report.convertCurrencyCode != 'undefined'){
+	        			convertCurrencyCode = report.convertCurrencyCode;
+	        		}else{
+	        			convertCurrencyCode = "";
+	        		}
+	        		
+	        		if(report.exchangeRate != null && report.exchangeRate != '' && report.exchangeRate != 'undefined'){
+	        			exchangeRate = report.exchangeRate;
+	        		}else{
+	        			exchangeRate = "--";
+	        		}
+	        		
+	        		if(report.currencyCode != null && report.currencyCode != '' && report.currencyCode != 'undefined'){
+	        			currencyCode = report.currencyCode;
+	        		}else{
+	        			currencyCode = "--";
+	        		}
+	        		
+	        		
 					result = result +'		<div class="invoiceview_area clearfix">                                      ';
 					result = result +'          <div class="form-horizontal row">                                        ';
 					result = result +'            <div class="col-md-6">                                                 ';
@@ -443,36 +469,35 @@ function getViewInvoice(){
 					result = result +'	                                    </div>                                                         ';
 					result = result +'	                                </td>                                                              ';
 					result = result +'	                            </tr>                                                                  ';
-					result = result +'	                            <tr class="hide-row">                                                  ';
-					result = result +'	                                <td colspan="2">                                                   ';
-					result = result +'	                                </td>                                                              ';
-					result = result +'	                                <td>                                                               ';
-					result = result +'	                                <strong>Total: </strong>                                           ';
-					result = result +'	                                </td>                                                              ';
-					result = result +'	                                <td colspan="2" align="right"><strong>120000000.00</strong></td>   ';
-					result = result +'	                            </tr>                                                                  ';
 	    		}
-				
-				
-				
-				
 				result = result +'	                        </tbody>                                                                   ';
 				result = result +'	                    </table>                                                                       ';
 				result = result +'	            </div>                                                                                 ';
 				
 				}
 				
-				
-				
-				
 				result = result +'	                <div class="form-group mt">                                                        ';
 				result = result +'	                <label class="col-md-7 text-right"><strong>Total</strong></label>                  ';
 				result = result +'	                    <div class="col-md-5 text-right"><span class="pull-left">INR</span><span><strong>'+report.total+'</strong></span></div> ';
 				result = result +'	              </div>                                                                               ';
+				if(convertCurrencyCode != null && convertCurrencyCode != '' && convertCurrencyCode != 'undefined'){
+					 result = result +'  <div class="row">';
+	                  result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+	                  
+	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+'</span><div class="pull-right"><input class="ReadTextFli" readonly="" type="text">'+report.total+'</div></div></div>';
+	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>'+convertCurrencyCode+'</span><div class="pull-right"><input  class="ReadTextFli" readonly="" type="text">'+convertAmount+'</div></div></div>';
+	                  result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>'+currencyCode+' 1 = '+convertCurrencyCode+' </span><div class="pull-right"><input  class="ReadTextFli ReadTextFli90" readonly="" type="text">'+exchangeRate+'</div></div></div>';
+	                  
+	                  result = result +'  </div>';
+	                  result = result +'  </div>'; 	
+				}
 				result = result +'	              </div>                                                                               ';
+				
+                  
 				result = result +'	          </div>                                                                                   ';
 				result = result +'	            </div>   ';
 					
+				 
 	    		}
 				$("#viewInvoiceId").empty();  
 			    $("#viewInvoiceId").append(result)

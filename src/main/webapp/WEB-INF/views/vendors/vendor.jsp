@@ -40,7 +40,7 @@ window.onload = function () {
 			<h2>Create Vendor</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/vendorsList'/>"> Vendor List</a>
-			&raquo; Vendor</div>
+			&raquo; Create Vendor</div>
 	</section>
 	
 	<div class="content-area content-new clearfix">
