@@ -66,6 +66,11 @@ function getOrgName(){
  <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
+		document.getElementById("email").value="";
+		document.getElementById("firstName").value="";
+		document.getElementById("lastName").value="";
+		document.getElementById("phoneNumber").value="";
+		
 	});
 </script>
 
@@ -157,7 +162,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Client Contact Details</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 
