@@ -17,7 +17,7 @@ a { cursor:pointer;}
     height:auto;
     }
 .timesheet_head ul {
-    margin:0px 0px; padding: 2px 235px 2px 0px; float:right; height:auto; margin-top: 5px;
+    margin:0px 0px; padding: 2px 235px 2px 0px; float:right; height:auto; /*margin-top: 5px;*/
     }
 .timesheet_head ul.no_search {
     padding: 2px 15px 2px 0px;
@@ -4615,5 +4615,24 @@ text-align: center;
 }
 .timesheet_appr_table .fa-pencil-square-o {
 	color: #375d81;
+}
+.referWrap.referWrap_custom .form-group {
+    height: 80px;
+}
+
+.ExpAmount {
+	color: #368ee0 !important; background-color: transparent !important;
+}
+.ExpAmFild {
+	width:211px; float: left; border-radius: 0px 3px 3px 0px;
+}
+.expBtn {
+	padding:0px 230px 0px 0px;
+}
+.expBtn a {
+	padding:5px 12px; font-weight: 500; color: #333; display: inline-block;
+}
+.expBtn a:hover {
+	color: #458ac9;
 }
 
