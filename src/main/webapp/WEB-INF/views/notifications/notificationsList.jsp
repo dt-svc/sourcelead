@@ -28,7 +28,7 @@ window.onload = function () {
 	getNotificationtLists();
  };
 </script>
-
+<div id="loadAcceptDiv"></div>
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -149,11 +149,11 @@ function getNotificationtLists(){
 				    
 				    result = result +'   <td><div class="notiRej">';
 				     if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Rejected' && report.actionLink != null && report.actionLink != "" && report.actionLink != "undefined"){
-				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept"><i class="text-muted fa fa-check-circle"></i></a></span>';
+				    	result = result +'<span class="mailbox-trash"><a href="'+report.actionLink+'" title="Accept" onclick="loadingDiv();"><i class="text-muted fa fa-check-circle"></i></a></span>';
 				     }
 				  
 				    if(report.userNotificationStatus == "Sent" && report.userNotificationStatus != 'Accepted' && report.rejectActionLink != null && report.rejectActionLink != "" && report.rejectActionLink != "undefined"){
-				    	result = result +'<span class="mailbox-trash"><a href="'+report.rejectActionLink+'" title="Reject"><i class="text-muted fa fa-times"></i></a></span>';
+				    	result = result +'<span class="mailbox-trash"><a href="'+report.rejectActionLink+'" title="Reject" onclick="loadingDiv();"><i class="text-muted fa fa-times"></i></a></span>';
 				    }
 				  
 				   if(report.userNotificationStatus == 'Accepted'){
@@ -274,7 +274,11 @@ function deleleteAll() {
 	 
 }
 </script>
-
+<script type="text/javascript">
+function loadingDiv(){
+	$("#loadAcceptDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+}
+</script>
 
  <!-- Delete Notification end  -->
  
