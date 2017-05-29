@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
@@ -1087,5 +1088,31 @@ public class InvoiceServiceImpl implements InvoiceService{
 			submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 		}
 	
+	}
+	@Override
+	public CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal) throws Exception
+	{
+		CurrencyConversionResponse currencyConversionResponse = null;
+		OrgLocations vendorOrgLocation = null;
+		OrgRelations orgRelation = orgRelationsService.getOrRelationsById(orgRelationId);
+		if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+			vendorOrgLocation = orgRelation.getLocationId();
+		}
+		if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+			vendorOrgLocation = orgRelation.getResponderLocationId();
+		}
+		// currency conversion
+		String vendorCurrencyCode = conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+		if (!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)) {
+			if (null != vendorCurrencyCode) {
+				currencyConversionResponse = new CurrencyConversionResponse();
+				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(grandTotal));
+				float exchangeRate = conversionUtil.singleConvert(vendorCurrencyCode, loginOrgCurrencyCode, 1);
+				float exchangeCurrency = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+				currencyConversionResponse.setExchangeRate(exchangeRate);
+				currencyConversionResponse.setExchangeCurrency(exchangeCurrency);
+			}
+		}
+		return currencyConversionResponse;
 	}
 }

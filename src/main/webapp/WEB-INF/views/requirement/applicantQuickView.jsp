@@ -100,11 +100,19 @@ function applicantQuickViewProfile(submissionId,candidateId){
 			 		var res = [];
 			 		res = skill.split(',');
 			 		var minSkills = res.slice(1,20);
+			 		var totalSkills = res.length;
+ 			 		if(totalSkills > 20){
+ 			 			var remainingSkillsCount = totalSkills - 20;
+ 			 		}
+			 		
 	                qvSkills = "<ul>";
 	                for(i = 0; i<=minSkills.length ; i++){
 	                		if(res[i] != null && res[i] != '' && res[i] != 'undefined'){
 		                		qvSkills += "<li>" + res[i] + "</li>";
 		                	}
+	                		if(totalSkills > 20 && i == minSkills.length){
+	                			qvSkills += "<li style='background-color: #d0d0d0;'><i class='fa fa-plus'></i> " + remainingSkillsCount + " more</li>";
+	                		}
 	                }
 	                qvSkills += "</ul>"; 
 			 	}else{
