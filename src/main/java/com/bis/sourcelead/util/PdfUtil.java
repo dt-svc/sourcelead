@@ -314,10 +314,10 @@ public class PdfUtil {
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbCandStyle.toString(),font));
-	        cell1.setColspan(11);
+	        cell1.setColspan(12);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5});
+            table.setWidths(new int[]{4, 3, 3,5, 4, 3,4,3,5,3,4,4});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -442,6 +442,30 @@ public class PdfUtil {
 			candidateArray[9] = rateSB.append(candidate.getExpectedRate()).append("/").append(candidate.getRateType()).toString();
 		}else{
 			candidateArray[9] = "--";
+		}
+		if(null != candidate.getOrgRelationId()){
+				Org org = null;
+				if(candidate.getOrgRelationId().getResponderLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
+					org = candidate.getOrgRelationId().getLocationId().getOrg();
+				 }else if(candidate.getOrgRelationId().getLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
+					 org = candidate.getOrgRelationId().getResponderLocationId().getOrg();
+				 }
+				if(null != org){
+					candidateArray[10] = org.getOrgName();
+				}
+		}else{
+					candidateArray[10] = "--";
+		}
+		
+		if(null != candidate.getSpocId()){
+			if(null != candidate.getSpocId().getVendorUser().getLastName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getLastName())){
+				StringBuilder vendorName = new StringBuilder();
+				candidateArray[11] = vendorName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString();
+		}else if(null != candidate.getSpocId().getVendorUser().getFirstName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getFirstName())){
+				candidateArray[11] = candidate.getSpocId().getVendorUser().getFirstName();
+			}
+		}else{
+				candidateArray[11] = "--";
 		}
 		return candidateArray;
 		
