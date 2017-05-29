@@ -709,10 +709,10 @@ function requirementsList(offset){
 			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 			 				result = result +'<span>';
-			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
-			 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-			 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-			 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
+			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
+			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';
+			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
+			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
