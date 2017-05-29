@@ -196,13 +196,13 @@ function selectAllShortlisted(){
             });         
         } 
 	
-	 /* var selectedsubmissionslists = [];
+   var selectedsubmissionslists = [];
 	 $("input[name='submissionList[]']:checked").each( function (i) {
 		 selectedsubmissionslists[i] = $(this).val();
 	});
 	 
 	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
-	  */
+	  
 }
 </script> 
 
