@@ -1,9 +1,14 @@
+<link href="resources/css/summernote.css" rel="stylesheet">
+<link href="resources/css/summernote-bs3.css" rel="stylesheet">
+
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="resources/js/formvalidator.js"></script>
-<!-- <script src="resources/js/chosen.jquery.min.js"></script> --> 
+
+
+
 
 
 <!-- these files for autocomplete with tagit -->
@@ -87,7 +92,8 @@
 <div class="row newContrWrap">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 		<div class="col-md-9">
-			<textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea>
+			 <textarea id="txtEditor" name="templateContent"  class="form-control newContrtextarea"></textarea> 
+			<!-- <textarea name="templateContent" class="form-control" id="txtEditor"></textarea> -->
 		</div>  
 		
 		
@@ -260,13 +266,23 @@
 	<embed id="iFrame"  src="<c:url value='/testController'/>"></embed>
 </div>
 
- <script src="resources/js/editor.js"></script>
+
+	
+<script src="resources/js/editor.js"></script>
     <link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
 			});
-</script> 
+</script>  
+
+
+<!-- <script src="resources/js/summernote.min.js"></script>
+<script src="resources/js/summernote.js"></script>
+<script>
+	$('#txtEditor').summernote();
+</script>  -->
+
 
 <script>
 function previewshow(){
@@ -395,7 +411,8 @@ function generatePDF(id) {
 
 <script type="text/javascript">
 	function saveTemplate() {
-		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
+	//	var content = $('textarea[name="templateContent"]').html($('#txtEditor').code());
 		if ($('#template_form').validate(false, validationSettings)) {
 			var frm = $('#template_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
@@ -420,7 +437,7 @@ function generatePDF(id) {
 		  		        contentType:false, 
 		  	    	    dataType : 'json',
 						url : sourceleadUrl
-								+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}",
+							+ "/saveTemplate?${_csrf.parameterName}=${_csrf.token}", 
 						success : function(result) {
 							 /* generatePDF(result);  */
 							location.replace(sourceleadUrl+ "/orgContractTemplate");

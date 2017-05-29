@@ -765,7 +765,7 @@ function clearSearch(){
     	/* if(json.length != null && json.length != ''){ */
     	result = result +'<thead>';
     	result = result +'<tr>';
-    	result = result +'	<th>Client name</th>';
+    	result = result +'	<th>Client Name</th>';
     	result = result +'	<th>Website</th>';
     	result = result +'	<th>Location</th>';
     	result = result +'	<th>Tier</th>';
@@ -1013,11 +1013,11 @@ function preparedClientContacts(data){
 		   	/* if(json.length != null && json.length != ''){ */
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
-		   	result = result +'	<th>Name </th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client</th>';
+		   	result = result +'  <th>Client Contact</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1127,11 +1127,11 @@ function preparedClientContactListFromElk(data){
 		   	var result = "";
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
-		   	result = result +'	<th>Name</th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client</th>';
+		   	result = result +'  <th>Client Contact</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1909,7 +1909,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
-	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
