@@ -180,20 +180,29 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				
 				 //client summary contacts
 				 if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
-					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
-					 if(orgSpoc.getClientUser().getFirstName() !=null && orgSpoc.getClientUser().getLastName() !=null){
-						 spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
-					 }else{
-						 spocNameSB.append(orgSpoc.getClientUser().getFirstName());
+					 if(null != orgSpoc.getClientUser()){
+						 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
 					 }
-					 orgSpoc.setSpocName(spocNameSB.toString());
+					if(null != orgSpoc.getClientUser()){
+						if(orgSpoc.getClientUser().getFirstName() !=null && orgSpoc.getClientUser().getLastName() !=null){
+							 spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()); 
+						 }else{
+							 spocNameSB.append(orgSpoc.getClientUser().getFirstName());
+						 }
+						 orgSpoc.setSpocName(spocNameSB.toString());
+					}
 					 
-					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
+					if(null != orgSpoc.getClientUser()){
+						orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
+					}
+				
 					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
-					
-					 orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
+					if(null != orgSpoc.getClientUser()){
+						orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());	
+					}
+					if(null != orgSpoc.getVendorUser()){
 					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());
-					
+					}
 					 orgSpoc.setSpocLocationId(orgSpoc.getClientLocationId().getId());
 					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
 					 
@@ -205,9 +214,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					 if(orgSpoc.getClientUser().getFirstName() !=null && orgSpoc.getClientUser().getLastName() !=null){
 						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()); 
 					 }else{
-						 spocNameSB.append(spocNameSB.toString());
+						 spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
 					 }
-					 orgSpoc.setSpocName(orgSpoc.getVendorUser().getFirstName());
+					 orgSpoc.setSpocName(spocNameSB.toString());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
 					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
 					
@@ -497,9 +506,9 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	}
 
 	@Override
-	public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId) throws Exception
+	public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId, String responderType) throws Exception
 	{
-		return  orgSpocDao.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUserId,spocOwnderUserId,responderLocationId);
+		return  orgSpocDao.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUserId,spocOwnderUserId,responderLocationId,responderType);
 	}
 	
 	@Override
@@ -512,6 +521,24 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	public OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId) throws Exception
 	{
 		return orgSpocDao.getValidateOwnersByVendorUserIdAndSpocOwnerUserId(spocUserId, spocOwnderUserId, responderLocationId);
+	}
+
+	@Override
+	public List<OrgSpoc> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception
+	{
+		return orgSpocDao.getAllClientsByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<OrgSpoc> getSpoclistByDomain(Long orgRelationId, String domain) throws Exception
+	{
+		return orgSpocDao.getSpoclistByDomain(orgRelationId,domain);
+	}
+
+	@Override
+	public boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId)
+			throws Exception {
+		return orgSpocDao.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgRelationId, ownerUserId);
 	}
 	
 }

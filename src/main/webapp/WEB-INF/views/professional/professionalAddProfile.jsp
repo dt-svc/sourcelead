@@ -55,7 +55,7 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_user.email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
+            <input type="text" class="form-control" id="email" name="email" readonly="readonly" value="${SourceLeadWeb_user.email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" value="">
           <span class="hidden">Valid Email</span>
           </div>
         </div>
@@ -585,23 +585,31 @@ function getCities(){
 		    });
 		    
 		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var newSkill = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(newSkill).text(newSkill);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateSkills option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
-		    });
+				    {
+				    	   var skillsArray = this.value.split(",");
+					    	 if(skillsArray.length > 1){
+				        		 for (var i=0; i < skillsArray.length; i++) {
+				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+				        			 select.append(option);
+				 		             select.find(option).prop('selected', true);
+				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+				 	        		 $("#candidateSkills").trigger("chosen:updated");
+				                 }
+					    	 }else{
+				    			var newSkill = this.value.replace(","," ");
+				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				                {
+				    				 var option = $("<option>").val(newSkill).text(newSkill);
+				                     select.append(option);
+				                     select.find(option).prop('selected', true);
+				                     $("#candidateSkills option").each(function(){
+				                         $(this).siblings("[value='"+ this.value+"']").remove();
+				                   });
+				                   $("#candidateSkills").trigger("chosen:updated");
+				                }
+						       
+			    	         }
+		    	});
 		    //Adding Customized Skills to the list
 		    
 		    //Adding Customized Educations to the list

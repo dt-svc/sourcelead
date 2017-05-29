@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,8 +20,10 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.PathParam;
 
 import org.apache.commons.lang.StringUtils;
@@ -235,7 +242,12 @@ public class CrowdSourcingRequirementsRestController {
 	    	 boolQueryBuilder.must(anyLocationBoolQueryBuilder);
 	     }
 		 
-		 boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+	    
+	     BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+	     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
+		 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
 		
 	   
 	    try {
@@ -442,6 +454,7 @@ public class CrowdSourcingRequirementsRestController {
 	
 	public void calculateDaysAndSkills(List<RequirementIndex> requirementList) throws ParseException {
 		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		 formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		for (RequirementIndex requirement : requirementList) {
 			long diff = commonUtil.currentDate().getTime() - formatter.parse(requirement.getCreatedDate()).getTime();
 			
@@ -503,7 +516,7 @@ public class CrowdSourcingRequirementsRestController {
 				"orgLocations");
 		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, con,orgLocations,multiFile);
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
 		
 		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
@@ -585,7 +598,12 @@ public class CrowdSourcingRequirementsRestController {
 		     
 		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
 		     
-		     boolQueryBuilder.must(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+		     BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+		     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
+			 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
+			
 				
 			   
 			    try {
@@ -992,7 +1010,6 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/addCrowdSourcingUserContact", method = RequestMethod.POST)
 		public String addCrowdSourcingUserContact(@RequestParam(value = "json", required = false) String json,
 				HttpServletRequest request,HttpServletResponse response)
@@ -1673,18 +1690,15 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementCity(rr.getRequirementId().getCity());
 						rr.setRequirementRate(rr.getRequirementId().getRate());
 						rr.setRequirementRateType(rr.getRequirementId().getRateType());
-						//rr.setSubmissionStatus(rs.getSubmissionStatus());
 						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
-						RequirementRefer requirementRefer = requirementReferService.getAppliedRequirementReferByRequirementIdAndUserId(rr.getRequirementId().getId(), user.getId());
-						if(null != requirementRefer){
-							StringBuilder referredUser = new StringBuilder();
-							if(null != requirementRefer.getReferFromUser().getLastName()){
-								rr.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).append(" ").append(requirementRefer.getReferFromUser().getLastName()).toString());	
-							}else{
-								rr.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
-							}
-							rr.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+						
+						StringBuilder referredUser = new StringBuilder();
+						if(null != rr.getReferFromUser().getLastName()){
+							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).append(" ").append(rr.getReferFromUser().getLastName()).toString());	
+						}else{
+							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).toString());
 						}
+						rr.setReferredOn(Constants.DF_DMY.format(rr.getCreatedDate()));
 						
 					}
 					refer.setReferToMeList(referedToMeJobs);
@@ -2094,6 +2108,34 @@ public class CrowdSourcingRequirementsRestController {
 			 	}
 			 	return "Success";
 		 }
+		 
+		 
+		 
+		 @RequestMapping(value = "/displayContactUserImage/{contactUserId}", method = RequestMethod.GET)
+			public void displayContactUserImage(@PathVariable Long contactUserId, HttpServletRequest request, HttpServletResponse response,
+					HttpSession session) {
+
+				ReferContacts referContacts = null;
+				try {
+					referContacts = referContactsService.getReferContactsById(contactUserId);
+
+					if (referContacts != null && referContacts.getDocFile() != null) {
+						InputStream in = new ByteArrayInputStream(referContacts.getDocFile());
+						BufferedImage bi = ImageIO.read(in);
+						OutputStream out = response.getOutputStream();
+						ImageIO.write(bi, "jpg", out);
+						out.close();
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
+			}
 		 
 		 
 		

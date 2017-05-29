@@ -18,6 +18,14 @@ text-align:left;
 #skillName {
 width: 100%;
 }
+
+.iconpostion {
+position: relative; top:7px;
+}
+.chosen-container {
+    width: 100% !important;
+
+}
 </style>
 
 
@@ -36,386 +44,423 @@ function editCandidate(candidateId){
  if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 	  
 	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{   
-            			 
-            			 var lastName = '';
-         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
-         			 		lastName = json.lastName;            			 		
-         			 	}
-         			 	
-         			 	
-     			 	    var mobilePhone = '';
-         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-         			 		mobilePhone = json.mobilePhone;            			 		
-         			 	}
-         			 	
-         			 	var alternateMobilePhone = '';
-         			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
-         			 		alternateMobilePhone = json.alternateMobilePhone;            			 		
-         			 	}
-         			 	
-         			 	var designation = '';
-         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
-         			 		designation = json.designation;            			 		
-         			 	}
-         			 	var currentRate = '';
-         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-         			 		currentRate = json.currentRate;            			 		
-         			 	}
-         			 	var expectedRate = '';
-         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-         			 		expectedRate = json.expectedRate;            			 		
-         			 	}
-         			 	var experienceYears = '';
-         			 	if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-         			 		experienceYears = json.experienceYears;            			 		
-         			 	}
-         			 	
-         			 	var experienceMonths = '';
-         			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths;            			 		
-         			 	}else{
-         			 		experienceMonths = '';  
-         			 	 }
-         			 	
-         			 	var designationOtherType = '';
-         			 	if(json.designationOtherType != null && json.designationOtherType != '' && json.designationOtherType != 'undefined'){
-         			 		designationOtherType = json.designationOtherType;            			 		
-         			 	}else{
-         			 		designationOtherType = '';  
-         			 	 }
-         			 	
-	         			 	var summary = "";
-	         			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
-	         			 		summary = json.summary;            			 		
-	         			 	}else{
-	         			 		summary ="NO DATA";
-	         			 	}
-	         			 	
-	         			 	var primarySkill = '';
-	        			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
-	        			 		primarySkill = json.primarySkill;            			 		
-	        			 	}
-							var result ='';
-							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
-							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
-							result = result + '		      <div class="form-horizontal clearfix">';
-							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_Space required">';
-							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name">';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							
-							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
-							
-							if(json.candidateType == 'Consultant'){
+	        type : "POST",
+	         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+	         success :function(data) {  
+	              if(data != null && data != 'undefined' && data != ""){  
+	              	 var json = JSON.parse(data);
+	            			 	var lastName = '';
+	            			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
+	            			 		lastName = json.lastName;            			 		
+	            			 	}
+	        			 	    var mobilePhone = '';
+	            			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+	            			 		mobilePhone = json.mobilePhone;            			 		
+	            			 	}
+	            			 	
+	            			 	var alternateMobilePhone = '';
+	            			 	if(json.alternateMobilePhone != null && json.alternateMobilePhone != '' && json.alternateMobilePhone != 'undefined'){
+	            			 		alternateMobilePhone = json.alternateMobilePhone;            			 		
+	            			 	}
+	            			 	
+	            			 	var designation = '';
+	            			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+	            			 		designation = json.designation;            			 		
+	            			 	}
+	            			 	var currentRate = '';
+	            			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+	            			 		currentRate = json.currentRate;            			 		
+	            			 	}
+	            			 	var expectedRate = '';
+	            			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+	            			 		expectedRate = json.expectedRate;            			 		
+	            			 	}
+	            			 	var experienceYears = '';
+	            			 	if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
+	            			 		experienceYears = json.experienceYears;            			 		
+	            			 	}
+	            			 	
+	            			 	var experienceMonths = '';
+	            			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
+	            			 		experienceMonths = json.experienceMonths;            			 		
+	            			 	}else{
+	            			 		experienceMonths = '';  
+	            			 	 }
+	            			 	
+	            			 	var designationOtherType = '';
+	            			 	if(json.designationOtherType != null && json.designationOtherType != '' && json.designationOtherType != 'undefined'){
+	            			 		designationOtherType = json.designationOtherType;            			 		
+	            			 	}else{
+	            			 		designationOtherType = '';  
+	            			 	 }
+	            			 	
+	            			 	var summary = '';
+	            			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
+	            			 		summary = json.summary;            			 		
+	            			 	}
+	            			 	
+	            			 	var primarySkill = '';
+	            			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+	            			 		primarySkill = json.primarySkill;            			 		
+	            			 	}
+	            			 	if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
+	            			 		vendorName = json.vendorName;
+	            			 	}else{
+	            			 		vendorName = "";
+	            			 	}
+								var result ='';
+								result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
+								result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
+								result = result + '		      <div class="form-horizontal clearfix">';
+								result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 								
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" readonly="true">';
-							}
-							
-							if(json.candidateType == 'Candidate'){
-								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
-								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email" onblur="validateCandidateEmail();">';
+								result = result + '		        <div class="clearfix mb10">';
+								result = result + '		          <div class="col-md-6">';
+								result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
+								result = result + '		          </div>';
+								result = result + '		          <div class="col-md-6">';
+								result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+								result = result + '		          </div>';
+								result = result + '		        </div>';
+								if(json.isAssociate == 'Y'){
+								result = result + '	           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>';
 								}
-							result = result + '</div>';
-							
-							
-					
-							
-							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile" field-name="Mobile" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="alternateMobilePhone"  value="'+alternateMobilePhone+'" placeholder="Alternative Number" field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
-							result = result + '</div>';
-							
-							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							
-							
-							
-							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<select class="chosen-select form-control select-bg" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
-							result = result + '</select>';
-							result = result + '</div>';
-							
-							 
-							result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
-							result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value="'+json.country+'" />';
-							result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
-							
-							result = result + '<div class="col-md-6 custom-fields select-arrow">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
-							result = result + '</select>';
-							result = result + '</div>';
-							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
-							result = result + '</select>';
-							result = result + '</div>';
-							
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
-							result = result + '<option value="">--Select notice period--</option>';
-							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
-							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
-							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
-							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
-							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
-							result = result + ' </select>';
-							result = result + ' </div>';
-							
-							result = result + '</div>';
-							
-							
-							result = result + '<div class="clearfix mb10">';
-							
-                            result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType" name="designationType" field-name="Designation Type" onchange="updateDesignationType(this);">';
-							result = result + '<option value="">--Select Employment Type--</option>';
-							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
-							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
-							result = result + '<option  '+ (json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
-							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
-							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
-							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
-							result = result + ' </select>';
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							 
-							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Designation Other Type" field-name="Designation Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
-							result = result + '</div>';
-						
-							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
-							result = result + '<div class="input-group er ratetype">';
-							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
-			                  
-							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
-							result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
-							result = result + '<option   '+(json.currentRateCurrency == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
-							result = result + ' <option  '+(json.currentRateCurrency == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
-							result = result + '  <option '+(json.currentRateCurrency == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
-							result = result + '  <option '+(json.currentRateCurrency == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
-							result = result + '<option   '+(json.currentRateCurrency == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
-			                result = result + ' </select>';
-			                
-			                result = result + '</div>';
-							
-			                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
-							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Type">';
-							result = result + '<option value="">Rate Per</option>';
-							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
-							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
-							result = result + '<option  '+(json.currentRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-							result = result + '<option  '+(json.currentRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-							result = result + '<option  '+(json.currentRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
-							result = result + '<option  '+(json.currentRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
-							result = result + '<option '+(json.currentRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
-							result = result + ' </select>';
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							result = result + '</div>';
-							
-							
-							result = result + '<div class="col-md-6">';
-							
-							result = result + '<div class="input-group er ratetype">';
-							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
-			                  
-							result = result + ' <select class="selct-picker" id="expectedRateCurrencey" name="expectedRateCurrencey">';
-							result = result + ' <option '+(json.expectedRateCurrencey == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
-							result = result + '<option   '+(json.expectedRateCurrencey == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
-							result = result + ' <option  '+(json.expectedRateCurrencey == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
-							result = result + '  <option '+(json.expectedRateCurrencey == "GPB" ? "selected" : '') +'><a href="#">GPB</a></option>';
-							result = result + '  <option '+(json.expectedRateCurrencey == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
-							result = result + '<option   '+(json.expectedRateCurrencey == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
-			                result = result + ' </select>';
-			                
-			                result = result + '</div>';
-							
-							result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float" data-validation-optional="true">';
-							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="selct-picker" id="rateType" name="rateType" field-name="Rate Type">';
-							result = result + '<option value="">Rate Per</option>';
-							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
-							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
-							result = result + '<option  '+(json.rateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-							result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-							result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
-							result = result + '<option  '+(json.rateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
-							result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
-							result = result + ' </select>';
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							result = result + '</div>';
-							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
-							result = result + '<div class="row">';
-							
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							
-							result = result + '<select  class="input-sm form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
-							result = result + '<option value="">Select Year</option>';
-							
-							<c:forEach var="i" begin="0" end="24" >
-								result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
-							</c:forEach>
-							
-							if(json.experienceYears == "25"){
-								result = result  +'<option value="25" '+ (json.experienceYears == "25" ? "selected" : '') +'>25</option>';
-							}else{
-								result = result  +'<option>25</option>';
-							}
-							
-							result = result + '</select>';
-							result = result + '</div>';
-							
-							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							if(json.experienceYears == "25"){
-							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
-							result = result + '<option  disabled>Select Months</option>';
-							
-							<c:forEach var="i" begin="0" end="11" >
-							 	result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
-						    </c:forEach> 
-							
-							
-							result = result + '</select>';
-							}else{
-								result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
-								result = result + '<option  disabled>Select Months</option>';
+								// If Candidate Type equals Consultant email field should be Disable mode
 								
-								<c:forEach var="i" begin="0" end="11" >
-								 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
-							    </c:forEach>
+								result = result + '<div class="clearfix mb10">';
+								result = result + '<div class="col-md-6" id="emailDiv">';
+								if(json.candidateType == "Candidate"){
+									result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
+									result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+								}
+								 
+								if(json.candidateType == "Consultant"){
+								     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
+								}
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6">';
+								result = result + '<input type="text" class="form-control input-sm" name="mobilePhone"  value="'+mobilePhone+'" placeholder="Mobile" field-name="Mobile" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
+								result = result + '</div>';
+								
+								result = result + '</div>'; 
+								
+								result = result + '<div class="clearfix mb10">';
+								result = result + '<div class="col-md-6">';
+								result = result + '<input type="text" class="form-control input-sm" name="alternateMobilePhone"  value="'+alternateMobilePhone+'" placeholder="Alternative Number" field-name="Alternative Number" data-validation="validate_Space validate_length length9-20 validate_phone" data-validation-optional="true">';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6">';
+								result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" placeholder="Designation">';
+								result = result + '</div>';
+								
+								result = result + '</div>';
+								
+								
+								
+								result = result + '<div class="clearfix mb10">';
+								result = result + '<div class="col-md-6 custom-fields">';
+								result = result + '<select class="form-control" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
+								result = result + '</select>';
+								result = result + '</div>';
+								
+								 
+								result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
+								result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value="'+json.country+'" />';
+								result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
+								
+								result = result + '<div class="col-md-6 custom-fields select-arrow">';
+								result = result + '<select  class="form-control" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
+								result = result + '</select>';
+								result = result + '</div>';
+								result = result + '</div>';
+								
+								result = result + '<div class="clearfix mb10">';
+								
+								result = result + '<div class="col-md-6 custom-fields">';
+								result = result + '<select  class="form-control" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
+								result = result + '</select>';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+								result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+								result = result + '<option value="">--Select Notice Period--</option>';
+								result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
+								result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+								result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
+								result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
+								result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+								result = result + ' </select>';
+								result = result + ' </div>';
+								
+								result = result + '</div>';
+
+								
+								result = result + '<div class="clearfix mb10">';
+								result = result + '<div class="col-md-6">';
+								result = result + '<div class="input-group er ratetype">';
+								result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+								result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
+								result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+								result = result + '<option   '+(json.currentRateCurrency == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+								result = result + ' <option  '+(json.currentRateCurrency == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+								result = result + '  <option '+(json.currentRateCurrency == "GBP" ? "selected" : '') +'><a href="#">GBP</a></option>';
+								result = result + '  <option '+(json.currentRateCurrency == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+								result = result + '<option   '+(json.currentRateCurrency == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+				                result = result + ' </select>';
+				                
+				                result = result + '</div>';
+								
+				                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+								
+								result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+								result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Per">';
+								result = result + '<option value="">Rate Per</option>';
+								result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+								result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+								result = result + '<option  '+(json.currentRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+								result = result + '<option  '+(json.currentRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+								result = result + '<option  '+(json.currentRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+								result = result + '<option  '+(json.currentRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+								result = result + '<option '+(json.currentRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+								result = result + ' </select>';
+								result = result + '</div>';
+								
+								result = result + '</div>';
+								result = result + '</div>';
+								
+								
+								result = result + '<div class="col-md-6">';
+								
+								result = result + '<div class="input-group er ratetype">';
+								result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+				                  
+								result = result + ' <select class="selct-picker" id="expectedRateCurrencey" name="expectedRateCurrencey">';
+								result = result + ' <option '+(json.expectedRateCurrencey == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
+								result = result + '<option   '+(json.expectedRateCurrencey == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
+								result = result + ' <option  '+(json.expectedRateCurrencey == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
+								result = result + '  <option '+(json.expectedRateCurrencey == "GBP" ? "selected" : '') +'><a href="#">GBP</a></option>';
+								result = result + '  <option '+(json.expectedRateCurrencey == "SGD" ? "selected" : '') +'><a href="#">SGD</a></option>';
+								result = result + '<option   '+(json.expectedRateCurrencey == "EUR" ? "selected" : '') +'><a href="#">EUR</a></option>'; 
+				                result = result + ' </select>';
+				                
+				                result = result + '</div>';
+								
+								result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+								
+								result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+								result = result + '<select class="selct-picker" id="expectedRateType" name="rateType" field-name="Rate Per">';
+								result = result + '<option value="">Rate Per</option>';
+								result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+								result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+								result = result + '<option  '+(json.rateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+								result = result + '<option  '+(json.rateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+								result = result + '<option  '+(json.rateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+								result = result + '<option  '+(json.rateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+								result = result + '<option '+(json.rateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+								result = result + ' </select>';
+								result = result + '</div>';
+								
+								result = result + '</div>';
+								result = result + '</div>';
+								result = result + '</div>';
+								
+								result = result + '<div class="clearfix">';
+								result = result + '<div class="col-md-6">';
+								result = result + '<div class="form-group">';
+								
+								result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+								
+								result = result + '<select  class="form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
+								result = result + '<option value="">Select Year</option>';
+								
+								<c:forEach var="i" begin="0" end="24" >
+									result = result  +'<option value="${i}" '  + (json.experienceYears == "${i}" ? "selected" : '') +  '>${i}</option>';
+								</c:forEach>
+								
+								if(json.experienceYears == "25"){
+									result = result  +'<option value="25" '+ (json.experienceYears == "25" ? "selected" : '') +'>25</option>';
+								}else{
+									result = result  +'<option>25</option>';
+								}
 								
 								result = result + '</select>';
-							}
-							
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							result = result + '</div>';
-							
-							
-							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
-							result = result + '</div>';
-							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
-							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
-							result = result + ' </div>';
-							result = result + '</div>';
-							result = result + '</div>';
-							
-							result = result + '		        <div class="clearfix mr">';
-							result = result + '		          <div class="pull-right">';
-							result = result + '		            <button type="button" id="update_candidate"  onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '		            <button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
-							result = result + '		          </div>';
-							result = result + '		        </div>';
-							result = result + '		      </div>';
-							result  = result + '              </form>';
-							result = result + '		    </div>';
-							result = result + '		  </div>';
-							
-							
-							$("#profileEditPopup").empty(); 
-							$("#profileEditPopup").append(result); 
-							
-							$(".edit-details").toggleClass("edit-details-active");
-							$(".collapse-div").removeClass("edit-details-active");
-							updateDesignationType();
-							getAllCandidateCountries();
-							 getAllCandidateStates();
-							
-							
-							    var config = {
-									  '.chosen-select'           : {},
-									  '.chosen-select-deselect'  : {allow_single_deselect:true},
-									  '.chosen-select-no-single' : {disable_search_threshold:10},
-									  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-									  '.chosen-select-width'     : {width:"95%"}
-									}
-							    $("#candidateCountry").chosen();
-							    $("#candidateState").chosen();
-							    $("#candidateCity").chosen();
-							   
-							    
-							    $("#candidateCountry").on('change', function (e) {
-							 	   getAllCandidateStates();
-							    });
-							   
-							    $("#candidateState").on('change', function (e) {
-							 	   getCandidateCities();
-							    });
-							   
-							    $('.chosen-select').each(function() {
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
+								if(json.experienceYears == "25"){
+								result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
+								result = result + '<option  value="">Select Months</option>';
+								
+								<c:forEach var="i" begin="0" end="11" >
+								 	result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
+							    </c:forEach> 
+								
+								
+								result = result + '</select>';
+								}else{
+									result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+									result = result + '<option  value="">Select Months</option>';
+									
+									<c:forEach var="i" begin="0" end="11" >
+									 result = result  +'<option  value="${i}" '  + (json.experienceMonths == "${i}" ? "selected" : '') +  '>${i}</option>';
+								    </c:forEach>
+									
+									result = result + '</select>';
+								}
+								
+								result = result + '</div>';
+								
+								result = result + '</div>';
+								result = result + '</div>';
+								
+								
+								result = result + '		          <div class="col-md-6">';
+								result = result + '		            <input type="text" class="form-control" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+								result = result + '		          </div>';
+								
+								
+								result = result + '</div>';
+								
+								
+								result = result + '<div class="clearfix mb10">';
+								
+	                            result = result + '<div class="col-md-6 custom-fields">';
+								
+	                            result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+								result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Employment type" data-validation="required"  onchange="employementType();updateDesignationOtherType();">';
+								result = result + '<option value="">--Select Employment Type--</option>';
+								result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
+								result = result + ' <option '+(json.designationType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
+								result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+								result = result + ' <option '+(json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
+								result = result + ' <option '+(json.designationType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
+								result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
+								result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+								result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
+								result = result + ' </select>';
+								result = result + '</div>';
+								
+								result = result + '</div>';
+								 
+								
+								if(json.designationType == "Other"){
+								result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
+								result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+								result = result + '</div>';
+								  }
+								
+								
+								
+								
+							    result = result + '<span class="" id="hideVendor" style="display:none">'; 
+								result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
+								result = result + '<select  class="form-control" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
+								result = result + '</select>';
+								result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
+								result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
+								result = result + '</div>';
+								
+								result = result + '<div class="col-md-6 custom-fields select-arrow mt10" id="errorvendorContact">';
+								result = result + '<select  class="form-control" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
+								result = result + '</select>';
+								result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
+								result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
+								result = result + '</div>';
+								result = result + '</div>';
+								
+								result = result + '</span>';
+								
+								
+								result = result + '<div class="clearfix mb10 mt">';
+								result = result + '<div class="col-md-12">';
+								result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
+								result = result + ' </div>'; 
+								result = result + ' </div>'; 
+								result = result + '</div>';
+								
+								result = result + '<div class="clearfix mr">';
+								result = result + '<div class="pull-right">';
+								result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
+								result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
+								result = result + '		          </div>';
+								result = result + '		          </div>';
+								result = result + '		        </div>';
+								result = result + '		      </div>';
+								result  = result + '              </form>';
+								result = result + '		    </div>';
+								result = result + '		  </div>';
+								
+								
+								$("#profileEditPopup").empty(); 
+								$("#profileEditPopup").append(result); 
+								/* updateDesignationType(json.designationType); */
+								getAllCandidateCountries();
+								getVendorsByOrgLocation();
+								employementType();
+								getAllCandidateStates();
+								$(".edit-details").toggleClass("edit-details-active");
+								$(".collapse-div").removeClass("edit-details-active");
+								
+								  $("#candidateCountry").chosen();
+								  $("#candidateCountry").trigger("chosen:update");
+								  
+								  $("#candidateState").chosen();
+								  $("#candidateState").trigger("chosen:update");
+								  
+								  $("#candidateCity").chosen();
+								  $("#candidateCity").trigger("chosen:update");
+								  
+								  $("#vendorName").chosen();
+								  $("#vendorName").trigger("chosen:update");
+								  
+     							  $("#vendorcontactName").chosen();
+     							  $("#vendorcontactName").trigger("chosen:update");
+     							 $('.chosen-select').each(function() {
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
-								  });
-						
-            		 
-            		 }
-                }else{
-         	    	         var result ="";
-        		    	     result = result+"   <div class='row'>"; 
-        					 result = result+"	<div class='col-lg-12'>"; 
-        					 result = result+"		<div class='content-area clearfix'>"; 
-        					 result = result+"			<div class='blank-pages'>";
-        					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-        					 result = result+"			        <p>No Candidates Found</p>";
-        					 result = result+"			 </div>";
-        					 result = result+"		</div>"; 
-        					 result = result+"	</div>"; 
-        					 result = result+"  </div> "; 
-        					$("#profileEditPopup").empty();
-        				    $("#profileEditPopup").append(result); 
-                        }
-                 },
-                   
-              }); 
+								  })
+								   $(".chosen-container").css("width","100%");
+								$(function(){
+								    var config = {
+										  '.chosen-select'           : {},
+										  '.chosen-select-deselect'  : {allow_single_deselect:true},
+										  '.chosen-select-no-single' : {disable_search_threshold:10},
+										  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+										  '.chosen-select-width'     : {width:"95%"}
+										}
+								    $("#candidateCountry").on('change', function (e) {
+								 	   getAllCandidateStates();
+								    });
+								   
+								    $("#candidateState").on('change', function (e) {
+								 	   getCandidateCities();
+								    });
+								   
+								    $('.chosen-select').each(function() {
+											var $this = $(this);
+											$this.next().css({'width': '100%'});
+									  })
+								});
+	            		 
+	                }else{
+	         	    	         var result ="";
+	        		    	     result = result+"   <div class='row'>"; 
+	        					 result = result+"	<div class='col-lg-12'>"; 
+	        					 result = result+"		<div class='content-area clearfix'>"; 
+	        					 result = result+"			<div class='blank-pages'>";
+	        					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+	        					 result = result+"			        <p>No Candidates Found</p>";
+	        					 result = result+"			 </div>";
+	        					 result = result+"		</div>"; 
+	        					 result = result+"	</div>"; 
+	        					 result = result+"  </div> "; 
+	        					$("#profileEditPopup").empty();
+	        				    $("#profileEditPopup").append(result); 
+	                        }
+	                 },
+	                   
+	              }); 
 		 }
  getAllCandidateCountries();
 }
@@ -701,7 +746,7 @@ function candidateProfile(candidateId){
 							if(json.status == 0){
 								result = result + '<div class="project_tabs_inn_head"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> ';
 							}else{
-								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
+								result = result + '<div class="project_tabs_inn_head "> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org iconpostion"><i class="glyphicon glyphicon-pencil"></i>Edit</a> <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> ';
 
 							}
 							result = result + '<div id="profileEditPopup"></div>';
@@ -945,7 +990,9 @@ function removeSkillPopUp(candidateId){
 	function upDateCandidate(candidateId) {
 	
 		
-		 var rateType = document.getElementById("rateType").value; 
+		//This is commented by Laxman Because form is not submiting  check the  rates condiditons first and then open comment 
+		
+		/*  var rateType = document.getElementById("rateType").value; 
 		 if(rateType != null && rateType != ""){
 			 $('#expectedRate').removeAttr('data-validation-optional');
 			 $('#expectedRate').attr("data-validation","required"); 
@@ -985,7 +1032,7 @@ function removeSkillPopUp(candidateId){
 			 $('#currentRateType').removeAttr('data-validation');
 			 $('#currentRateType').attr("data-validation-optional","true"); 
 			 }
-			 
+			  */
 		 
 			
 		var validationSettings = {
@@ -995,19 +1042,15 @@ function removeSkillPopUp(candidateId){
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
-			
 			 var con = JSON.stringify(frm);
 				 con = con.replace(/[{}]/g, "");
 				var jsonData = encodeURIComponent(con);
-			  //It will escape all the special characters
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 						type : "POST",
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							/* location.replace(sourceleadUrl+"/candidatesList");  */
 							clientSideBar(candidateId);
 						},
 					});
@@ -1015,12 +1058,11 @@ function removeSkillPopUp(candidateId){
 		 }else{ 
 				return false;
 		 } 
-		 $('body').on('blur','#candidateProfileEdit_form',
-					function() {
-						$("#candidateProfileEdit_form").showHelpOnFocus();
-						$("#candidateProfileEdit_form").validateOnBlur(false,validationSettings);
-					});
 	} 
+	$('body').on('blur','#candidateProfileEdit_form', function() {
+		$("#candidateProfileEdit_form").showHelpOnFocus();
+		$("#candidateProfileEdit_form").validateOnBlur(false,validationSettings);
+	});
 </script>
 
 <script>
@@ -1330,6 +1372,30 @@ function updateDesignationType(){
 		$("#saveSkillBtnSpan").empty();
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
+		
+		var select, chosen;
+	    select = $("#skillName");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keyup', function(e)
+	    {
+	    	var newSkill = this.value.replace(",","");
+	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newSkill).text(newSkill);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+                $("#skillName option").each(function(){
+                      $(this).siblings("[value='"+ this.value+"']").remove();
+                });
+                //end
+        		$("#skillName").trigger("chosen:updated");
+        		
+	        }
+	    });
+		
 	}
 
 	function saveSkill(candidateId){
@@ -1447,35 +1513,34 @@ function updateDesignationType(){
 									}
 									
 									
-									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
 										startMonth=   opt.startMonth +' - ';
 									}else{
 										startMonth = " ";
-									}
+									} */
 									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear  +' TO ';
+									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+										startYear=   opt.startYear  +' To '+opt.endYear;
+									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+										startYear=   opt.startYear;
+									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+										startYear = opt.endYear;  
 									}else{
 										startYear = " ";
 									}
 									
-									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
 										endMonth = opt.endMonth +' - ';  
 									} else {
 										endMonth = " ";
-									}
+									} */
 									
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										endYear = opt.endYear;  
-									} else {
-										endYear = " ";
-									}
 									result = result +'   <li>';
 									result = result +'   <div class="clearfix">';
 									result = result +' <h3>'+name+'</h3>';
 									result = result +' <p>'+designation+'</p>';
 									result = result +' <p>';
-								    result = result + startMonth +''+startYear +' '+endMonth +''+endYear; 
+								    result = result + startYear; 
 									result = result +'  </p>';
 									result = result +'  </div>';
 									result = result +'</li>';
@@ -1544,21 +1609,20 @@ function educationSubmissionProfile(candidateId){
 		                    	 }else{
 		                    		 Educationaddress = " ";
 		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
+		                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr;
+		                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.endDateStr;
 		                    	 }else{
-		                    		 EducationstartDateStr = " ";
-		                    	 }
-		                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-		                    		 EducationendDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationendDateStr = " ";
+		                    		 EducationstartDateStr ='';
 		                    	 }
 			                        result = result +'                <li>';
 									result = result +'                  <div class="clearfix">';
 		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
 		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+' '+EducationendDateStr+'</p>';
+									result = result +'                    <p>'+EducationstartDateStr+'</p>';
 									result = result +'                  </div>';
 									result = result +'                </li>';
 		                     }
@@ -1605,22 +1669,22 @@ function certificationSubmissionProfile(candidateId){
 				            	}else{
 				            		scoreType = " ";
 				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+				            	
+				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString +' To '+opt.candidatevalidToDateToString;
+				            	}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
 				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+				            	}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidToDateToString;
 				            	}else{
 				            		candidatevalidFromDateToString = " ";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = " ";
 				            	}
 				            	
 								result = result +'                <li>';
 								result = result +'                  <div class="clearfix">';
 								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
 								result = result +'                    <p>'+opt.provider+' </p>';
-								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
 								result = result +'                  </div>';
 								result = result +'                </li>';
 							}
@@ -1636,3 +1700,154 @@ function certificationSubmissionProfile(candidateId){
      }); 
 }
 </script>
+<script>
+function updateDesignationOtherType(){
+	var employementType = $('#designationType1').val(); 
+	
+	if(employementType == 'C2C'){
+		document.getElementById("hideVendor").style.display="block";
+		 $('#vendorName').attr("data-validation","required"); 
+		 $('#vendorcontactName').attr("data-validation","required"); 
+	}else{
+		 document.getElementById("hideVendor").style.display="none";
+		 $('#vendorName').removeAttr("data-validation","required"); 
+		 $('#vendorcontactName').removeAttr("data-validation","required"); 
+		 
+		 $('#vendorName').val(''); 
+		 $('#vendorcontactName').val(''); 
+		 
+	}
+	
+	if(employementType == 'C2C-1099'){
+		 document.getElementById("hideVendor").style.display="block";
+		 $('#vendorName').attr("data-validation-optional", "true"); 
+		 $('#vendorcontactName').attr("data-validation-optional", "true");  
+		 
+		 $("#errorvendor").find("p.jquery_form_error_message").remove();
+		 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	}else{
+		 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+		 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+		 
+		 $('#vendorName').val(''); 
+		 $('#vendorcontactName').val(''); 
+	} 
+	
+	 
+	$('#designationType1 + p').remove();
+	
+}
+
+
+
+
+
+</script>
+<script>
+function employementType(){
+	 var employementType = $('#designationType1').val(); 
+		if(employementType == 'C2C'){
+			document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation","required"); 
+			 $('#vendorcontactName').attr("data-validation","required"); 
+		}else{
+			 document.getElementById("hideVendor").style.display="none";
+			 $('#vendorName').removeAttr("data-validation","required"); 
+			 $('#vendorcontactName').removeAttr("data-validation","required"); 
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+			 
+		}
+		
+		if(employementType == 'C2C-1099'){
+			 document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			 
+			 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		}else{
+			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+		} 
+		
+		 
+		$('#designationType1 + p').remove();
+		
+	 
+}
+</script>
+
+
+<script>
+ function getVendorsByOrgLocation(){
+	 var vendorName = $("#updateVendorName").val();
+	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorName').empty();
+		        	$('#vendorName').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendorName').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendorName').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            	  
+		            }
+		            $('#vendorName').trigger("chosen:updated");
+		            getVendorContactList();
+		            
+		        }
+		 });
+ }
+ </script>
+  <script>
+	 function  removeValiationVendor() {
+		$("#errorvendor").find("p.jquery_form_error_message").remove();
+	}
+</script>
+<script>
+	function  removeValiationVendorContact() {
+		 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+	}
+</script>
+  <script>
+ function getVendorContactList(){
+	$('#vendorcontactName').val('').trigger("chosen:updated");
+		 var orgRelationID = $('#vendorName').val();
+		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
+			 var vendorContactName = $("#updateVendorContactName").val();
+			 var vendorSpocId = $("#updateSpocId").val();
+		     var sourceleadUrl ='${sourceleadUrl}';
+			 $.ajax({
+				    type: "POST",
+			        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	$('#vendorcontactName').empty();
+			        	$('#vendorcontactName').append('<option value="">--select Vendor contact--</option>');
+			             for(var i=0;i<json.length;i++){
+			            	 var opt = json[i];
+			            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
+				            	}else{
+				            		$('#vendorcontactName').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
+				            	}
+			            } 
+			            $('#vendorcontactName').trigger("chosen:updated");
+			        }
+			 });  
+		 }
+		 
+ }
+ </script>

@@ -17,6 +17,8 @@ public interface OrgRelationsDao {
 
 	public OrgRelations getOrgRelationIdByOrgLocationIdAndClientLocationId(Long orgLocationId,Long clientOrgLocationId)throws Exception;
 	
+	public OrgRelations getOrgRelationById(Long id) throws Exception;
+	
 //	public Collection<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
 	
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
@@ -54,5 +56,7 @@ public interface OrgRelationsDao {
 	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
 
 	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
+
+	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType);
 
 }

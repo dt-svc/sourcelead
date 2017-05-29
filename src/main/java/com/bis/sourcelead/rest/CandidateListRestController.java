@@ -123,11 +123,13 @@ public class CandidateListRestController {
 	  @Autowired
 	  RequirementSubmissionService requirementSubmissionService;
 	  
-	  
-	  
-	  
 	  @Autowired
 	  private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	  
+	  protected boolean isNullOrEmpty(String str) {
+			return (str == null || "".equals(str.trim()));
+		}
+	  
 	 /**
 	   * @author David and sarath kumar
 	   * @since  aug 30 2016
@@ -147,7 +149,7 @@ public class CandidateListRestController {
 	 
 	 @RequestMapping(value = "/getCandidatesListByOrgLocationID")
 	 public String getCandidatesListByOrgLocationID(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,@RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
-			 @RequestParam(value="candidateType", required=false) String  candidateType,
+			 @RequestParam(value="candidateType", required=false) String  candidateType,@RequestParam(value="isAssociate", required=false) String  isAssociate,
 			 HttpServletRequest request) throws Exception {
 
 		String resultJson;
@@ -176,12 +178,23 @@ public class CandidateListRestController {
 				  boolQueryBuilder.must(QueryBuilders.matchQuery("status", 0));
 			}
 			
-			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+//			if(null != userRole && !userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
-					boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", candidateType));
+					if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.NO)){
+						boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", candidateType));
+					}
+					
 				}
-			}
+//			}
 			
+			
+			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", "Y"));
+				if(null != candidateType && !candidateType.isEmpty() && !candidateType.equalsIgnoreCase("All")){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", candidateType));
+				}
+				
+			}
 			
 			if(null != userRole && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
@@ -189,7 +202,7 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", 0));
 			}
 			
-			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("0")  && !updatedDateRange.equalsIgnoreCase("undefined")){
+			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange) && !updatedDateRange.equalsIgnoreCase("all")  && !updatedDateRange.equalsIgnoreCase("undefined")){
 				
 				// This Code is for  getting the sql enddate based on range
 		    	 Calendar c = Calendar.getInstance();
@@ -258,8 +271,11 @@ public class CandidateListRestController {
 	   * @throws NullPointer
 	   */
 	 @RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
-	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,MultipartHttpServletRequest request) throws Exception {
+	 public String searchCandidate(@RequestParam(value = "json", required = false) String json,@RequestParam(value="candidateStatus", required=false)Integer  candidateStatus,
+			 @RequestParam(value="isAssociate", required=false) String  isAssociate,MultipartHttpServletRequest request) throws Exception {
 
+		 
+		 
 		    MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if(itrator.hasNext()){
@@ -272,18 +288,16 @@ public class CandidateListRestController {
 			
 			 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+			 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			
 			 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 			 
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
 			 
-			 
-			/*if(null != candidateStatus){
-				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),candidateStatus.toString());
-			 }else{
-				  maxResults = candidateService.getCandidatesCountByOrgLocationID(loginOrgLocation.getId(),null);
-
-			 }*/
+			 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
+			 }
 			 
 		   	 //Exclude Keyword
 			 ArrayList<String> excludeKeyWordArray = getSearchKeywordsFromChosenSelectField(jsonObj, "excludeKeyWord");
@@ -538,7 +552,9 @@ public class CandidateListRestController {
 				}
 				
 				
-				
+				if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
+					boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				}
 				
 				List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -649,7 +665,7 @@ public class CandidateListRestController {
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<Candidate> candList = new ArrayList<Candidate>();
-		List<Candidate>   candidatesList = candidateService.getHotListCandidatesListByOrgLocationID(loginOrgLocation.getId(), candidateType);
+		List<Candidate>   candidatesList = candidateService.getAllActiveCandidatesCountForCampaignByLocationAndStatus(loginOrgLocation.getId());
 		
 		resultJson = commonUtil.toJSON(candidatesList);
 		return resultJson;
@@ -719,6 +735,26 @@ public class CandidateListRestController {
 				 }
 			}
 			
+			if(null != can.getOrgRelationId()){
+				can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
+				if(can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()){
+					can.setVendorName(can.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+				}
+				if(can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()){
+					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+				}
+				
+			}
+			if(null != can.getSpocId()){
+				StringBuilder contactName = new StringBuilder();
+				can.setVendorSpocId(can.getSpocId().getId().toString());
+				if(null != can.getSpocId().getClientUser().getLastName()){
+					can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ").append(can.getSpocId().getClientUser().getLastName()).toString());	
+				}else{
+					can.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+				}
+				
+			}
 			resultJson = commonUtil.toJSON(can);
 			return resultJson;
      }
@@ -913,8 +949,7 @@ public class CandidateListRestController {
 		   Candidate candidate = null;
 				try {
 					 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-					 candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(candidateId, loginOrgLocation.getId());
-					
+					 candidate = candidateService.getCandidateByCandidateId(candidateId);					
 					if(candidate != null && candidate.getDocFile() != null)
 					{
 						candidate.setFileContentType("image/jpeg");
@@ -960,10 +995,10 @@ public class CandidateListRestController {
 			
 			StringBuilder candidateCreateMsg = new StringBuilder();
 			candidate = candidateService.storeCandidate(jsonObj,loginOrgLocation,user,multiFile);
-				if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
+				/*if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg", candidateCreateMsg.append("Success!!  ").append(candidate.getFirstName()).append(" Details Updated").toString());
 
-				}
+				}*/
 
 			return "success";
 			
@@ -979,18 +1014,31 @@ public class CandidateListRestController {
 		 * @throws NullPointerException
 		 */ 
 	   @RequestMapping(value = "/deleteCandidateByCandidateId")
-	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
+	   public @ResponseBody  String deleteCandidateByCandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,
+			   @RequestParam(value="candidateType", required=false) String  candidateType,
+			   @RequestParam(value="reason", required=false) String  reason, HttpServletRequest request) throws Exception {
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 
+			String resultJson;
 			Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),loginOrgLocation.getId());
 			if(candidate != null){
 				
-					candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				
+					if(Constants.Associates.equalsIgnoreCase(candidateType)){
+						candidate.setIsAssociate(Constants.NO);
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
+						candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+					}
+						
+					if(Constants.Candidates.equalsIgnoreCase(candidateType)){
+						candidate.setIsAssociate(Constants.NO);
+						candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+					}
+				
+					//candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 					if(StringUtils.isNotEmpty(reason)){
 						candidate.setTerminateReason(reason);
 					}
-				
 				candidate.setUpdatedBy(user.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsFavourite(0);
@@ -1002,7 +1050,8 @@ public class CandidateListRestController {
 	
 			
 			}
-			return "success";
+			resultJson = commonUtil.toJSON(candidate);
+			return resultJson;
 		 }
 	   
 	   
@@ -1133,16 +1182,17 @@ public class CandidateListRestController {
 		 public void getCandidatesExportList(@RequestParam(value="candidateStatus", required=false) Integer  candidateStatus,
 				                             @RequestParam(value="updatedDateRange", required=false) String  updatedDateRange,
 				                             @RequestParam(value="exportType", required=false) String  exportType,
-				                             @RequestParam(value="candidateType", required=false) String  candidateType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+				                             @RequestParam(value="candidateType", required=false) String  candidateType,
+				                             @RequestParam(value="isAssociate", required=false) String  isAssociate,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
 	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType);
+			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType,isAssociate);
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
-			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName());
+			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName(),isAssociate);
 			}else{
-			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName());
+			file = candidateService.getCandidatePdf(candidatesList,org.getOrgName(),isAssociate);
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
@@ -1366,4 +1416,33 @@ public class CandidateListRestController {
 					return reportsList;
 			 }
 
+		   
+		   
+	   /**
+	    * @author Laxman
+	    * store the Favourite Associate 
+	    * @param candidateId
+	    * @param request
+	    * @return success
+	    * @throws Exception
+	    */
+		   
+		   @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
+		   @RequestMapping(value = "/saveAssociateAsFavourite", method = RequestMethod.POST)
+			public @ResponseBody String saveAssociateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				if(null != candidate){
+					if(null == candidate.getIsFavouriteAssociate() || candidate.getIsFavouriteAssociate().equals(Constants.RECORD_ACTIVE)){
+						candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
+					}else{
+						candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+					}
+					candidate.setTeamId(null);
+					candidateService.saveOrUpdateCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					
+				}
+				
+				return "success";
+			}
 	}

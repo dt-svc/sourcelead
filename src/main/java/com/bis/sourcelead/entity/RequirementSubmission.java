@@ -197,6 +197,12 @@ public class RequirementSubmission implements Serializable{
    	private Long resumeId;
     
     @Transient
+   	private String candidateSummary;
+    
+    @Transient
+   	private String designationType;
+    
+    @Transient
    	private String resumeUUID;
     
     @Transient
@@ -258,6 +264,9 @@ public class RequirementSubmission implements Serializable{
 	
 	@Transient
 	private String proposedSubmissionRate;
+	
+	@Transient
+	private String expectedRate;
 	
 	@Transient
 	private String clientSubmissionId;
@@ -337,6 +346,49 @@ public class RequirementSubmission implements Serializable{
 	@Transient
 	private String candidateSource;
 
+    @Transient
+	private String candidateUUID;
+    
+    @Transient
+	private String paymentType;
+    
+    @Transient
+	private String isClientSubmission;
+    
+    @Transient
+   	private String offerUUID;
+    
+    @Transient
+   	private String onboardUUId;
+    
+    @Transient
+   	private String onboardStatus;
+    
+    @Transient
+	private String lastRateStage;
+    
+    @Transient
+	private String lastRateIniUserCode;
+    
+    @Transient
+	private String lastRateIniLocId;
+    
+    @Transient
+	private String lastRateIniType;
+    
+    @Transient
+	private String facebookUrl;
+    
+	@Transient
+	private String linkedInUrl;
+    
+    @Transient
+	private String twitterUrl;
+    
+    @Transient
+	private String vendorLocationCode;
+    
+	
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -811,6 +863,46 @@ public class RequirementSubmission implements Serializable{
 	public void setProposedSubmissionRate(String proposedSubmissionRate) {
 		this.proposedSubmissionRate = proposedSubmissionRate;
 	}
+	
+	public String getExpectedRate() {
+		return expectedRate;
+	}
+
+	public void setExpectedRate(String expectedRate) {
+		this.expectedRate = expectedRate;
+	}
+
+	public String getLastRateStage() {
+		return lastRateStage;
+	}
+
+	public void setLastRateStage(String lastRateStage) {
+		this.lastRateStage = lastRateStage;
+	}
+
+	public String getLastRateIniUserCode() {
+		return lastRateIniUserCode;
+	}
+
+	public void setLastRateIniUserCode(String lastRateIniUserCode) {
+		this.lastRateIniUserCode = lastRateIniUserCode;
+	}
+
+	public String getLastRateIniLocId() {
+		return lastRateIniLocId;
+	}
+
+	public void setLastRateIniLocId(String lastRateIniLocId) {
+		this.lastRateIniLocId = lastRateIniLocId;
+	}
+
+	public String getLastRateIniType() {
+		return lastRateIniType;
+	}
+
+	public void setLastRateIniType(String lastRateIniType) {
+		this.lastRateIniType = lastRateIniType;
+	}
 
 	public String getClientSubmissionId() {
 		return clientSubmissionId;
@@ -876,6 +968,21 @@ public class RequirementSubmission implements Serializable{
 		this.numofrequestsent = numofrequestsent;
 	}
 
+	public String getCandidateSummary() {
+		return candidateSummary;
+	}
+
+	public void setCandidateSummary(String candidateSummary) {
+		this.candidateSummary = candidateSummary;
+	}
+
+	public String getDesignationType() {
+		return designationType;
+	}
+
+	public void setDesignationType(String designationType) {
+		this.designationType = designationType;
+	}
 
 	public String getState() {
 		return state;
@@ -1108,5 +1215,85 @@ public class RequirementSubmission implements Serializable{
 
 	public void setCandidateSource(String candidateSource) {
 		this.candidateSource = candidateSource;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public String getIsClientSubmission() {
+		return isClientSubmission;
+	}
+
+	public void setIsClientSubmission(String isClientSubmission) {
+		this.isClientSubmission = isClientSubmission;
+	}
+
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
+	}
+
+	public String getOnboardUUId() {
+		return onboardUUId;
+	}
+
+	public void setOnboardUUId(String onboardUUId) {
+		this.onboardUUId = onboardUUId;
+	}
+
+	public String getOnboardStatus() {
+		return onboardStatus;
+	}
+
+	public void setOnboardStatus(String onboardStatus) {
+		this.onboardStatus = onboardStatus;
+	}
+	
+	public String getFacebookUrl() {
+		return facebookUrl;
+	}
+
+	public void setFacebookUrl(String facebookUrl) {
+		this.facebookUrl = facebookUrl;
+	}
+
+	public String getLinkedInUrl() {
+		return linkedInUrl;
+	}
+
+	public void setLinkedInUrl(String linkedInUrl) {
+		this.linkedInUrl = linkedInUrl;
+	}
+
+	public String getTwitterUrl() {
+		return twitterUrl;
+	}
+
+	public void setTwitterUrl(String twitterUrl) {
+		this.twitterUrl = twitterUrl;
+	}
+
+	public String getVendorLocationCode() {
+		return vendorLocationCode;
+	}
+
+	public void setVendorLocationCode(String vendorLocationCode) {
+		this.vendorLocationCode = vendorLocationCode;
 	}
 }

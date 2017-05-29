@@ -46,12 +46,18 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Column(name = "Offer_Status")
 	private String offerStatus;
 	
+	@Column(name = "OFFER_UUID")
+	private String offerUUID;
+	
 	
 	@Column(name = "PAYMENT_MODE")
 	private String paymentMode;
 	
 	@Column(name = "POSITION_TYPE")
 	private String positionType;
+	
+	@Column(name = "OTHER_POSITION_TYPE")
+	private String otherPositionType;
 	
 	@Column(name = "Rejected_Reason" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -89,6 +95,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
     private Boolean requirementReleasedOrNot;
+	
+	@Transient
+    private String jobTitle;
+	
+	@Transient
+    private Long candidateId;
+	
+	@Transient
+    private String candidateName;
 	
 	
 	public Long getId() {
@@ -145,6 +160,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setPositionType(String positionType) {
 		this.positionType = positionType;
+	}
+	
+	
+	public String getOtherPositionType() {
+		return otherPositionType;
+	}
+
+	public void setOtherPositionType(String otherPositionType) {
+		this.otherPositionType = otherPositionType;
 	}
 
 	public String getRejectedReason() {
@@ -249,6 +273,38 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setRequirementReleasedOrNot(Boolean requirementReleasedOrNot) {
 		this.requirementReleasedOrNot = requirementReleasedOrNot;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
 	}
 	
 	

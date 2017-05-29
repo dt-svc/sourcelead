@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -158,7 +159,7 @@ public class RequirementRestController {
 	 */
 
 	@RequestMapping(value = "/storeRequirement", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirement(@RequestParam(value = "json", required = false) String json,
+	public @ResponseBody String storeRequirement(
 			MultipartHttpServletRequest request, @RequestParam(value = "saveType", required = false) String saveType)
 			throws Exception {
 
@@ -167,10 +168,12 @@ public class RequirementRestController {
 		if (itrator.hasNext()) {
 			multiFile = request.getFile(itrator.next());
 		}
-		json = json + ", saveType : " + saveType;
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		String json = request.getParameter("json");
+		//String jsonc = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json);
+		jsonObj.put("saveType", saveType);
 
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
@@ -210,11 +213,11 @@ public class RequirementRestController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE')")
 	@RequestMapping(value = "/storeRequirementTemplate", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirementTemplate(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+	public @ResponseBody String storeRequirementTemplate(HttpServletRequest request) throws Exception {
 		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
-		
+		/*String jsonc = "{" + json + "}";*/
+	//	JSONObject jsonObj = new JSONObject(jsonc);
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirementTemplate(jsonObj,orgLocation,user);
@@ -222,6 +225,7 @@ public class RequirementRestController {
 		return "success";
 		
 	}
+	
 	
 	
 	/**
@@ -307,11 +311,14 @@ public class RequirementRestController {
 									}
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
-									
+									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 									requirementService.acceptEmailScenario(loginUser, intiatorUser, requirement, location ,orgLocation);
+									}
 								} else if (status.equalsIgnoreCase("REJECTED")) {
+									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
-								}
+									}
+									}
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
 						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
@@ -329,7 +336,9 @@ public class RequirementRestController {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									if (null != level1approver) {
 										// this is for sending email to second level approver
+										if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 										requirementService.approverTwoEmailScenario(loginUser, approverUser, requirement, location,	orgLocation);
+									}
 									}
 									requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
 									requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
@@ -338,7 +347,9 @@ public class RequirementRestController {
 									requirementApproverHierarchy.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
 									requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
 									requirementApproverHierarchy.setRejectedReason(reason);
+									if(loginUser.getId().longValue() != requirement.getManagerUserId().getId().longValue()){
 									requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
+									}
 									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 									
 									// This is  to update  the level2 Approver Record For RejectedS
@@ -509,7 +520,7 @@ public class RequirementRestController {
 	    // This is made static as requirment action id is 146
 		
 		ArrayList<User> mynewList =  new ArrayList<User>();
-		LinkedHashSet<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
        
 		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
 		
@@ -522,7 +533,7 @@ public class RequirementRestController {
 		
 		
 		for(User user : usersList){
-	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
+	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId(),orgLocation.getId());
 	            user.setAssignJobCount(assign.size());
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
 				if(null != userRole){
@@ -837,4 +848,14 @@ public class RequirementRestController {
 			resultJson = toJSON(reqList);
 			return resultJson;
 		}
+	    
+	    @RequestMapping(value = "/getEditRequirementDetails", method = RequestMethod.GET)
+		public @ResponseBody String getEditRequirementDetails(@RequestParam(value="requirementId", required=false) String requirementId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	    	
+	    	Requirement requirement = null;
+	    	if(null !=requirementId && "" !=requirementId && "undefined" !=requirementId){
+	    	requirement =	requirementService.getRequirementDetailsById(Long.parseLong(requirementId));
+	    	}
+			return commonUtil.toJSON(requirement);
+		} 
 }

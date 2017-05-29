@@ -16,12 +16,12 @@ body{
 	background: #629794;
 	box-shadow:none;
 }
-.main-header span.logo {
+/* main-header span.logo {
 	background:none;
 }
-.main-header span.logo:hover {
+main-header span.logo:hover {
 	background:#5B908D;
-}
+} */
 .main-header .navbar .fa-bars:hover{
 	background:rgba(0, 0, 0, 0.2);
 }
@@ -122,6 +122,9 @@ ul.timesheet-menu li a:hover{
 	text-shadow:none;
     font-size: 13px;
     text-transform: uppercase;
+}
+.custom-navbar-inner .reportsH a .fa-pie-chart {
+	color: #333;
 }
 .bell {
     color: #333;
@@ -292,6 +295,12 @@ background-color: #629794;
 @media (max-width: 1024px){
 	.content-wraper, .footer-area {
 	margin-left: 0;
+	}
+	.main-header .navbar .custom-navbar ul.custom-navbar-inner li{
+	padding: 15px 12px;
+	}
+	.custom-navbar .login-user span.image img{
+		margin-top: 0;
 	}
 }
 @media (max-width: 1160px){

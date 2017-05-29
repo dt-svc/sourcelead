@@ -95,15 +95,15 @@ public class CandidateIndexHelper {
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
 				if(candidate.getExperienceYears().equalsIgnoreCase("25+")){
-					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS.toString());
+					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
 				}
 				else{
-					candidateIndex.setExperienceYears(candidate.getExperienceYears());
+					candidateIndex.setExperienceYears(Integer.parseInt(candidate.getExperienceYears()));
 				}
 				
 			}
 			if(StringUtils.isNotEmpty(candidate.getExperienceMonths())){
-				candidateIndex.setExperienceMonths(candidate.getExperienceMonths());	
+				candidateIndex.setExperienceMonths(Integer.parseInt(candidate.getExperienceMonths()));	
 			}
 			
 			candidateIndex.setDesignation(candidate.getDesignation());
@@ -138,6 +138,27 @@ public class CandidateIndexHelper {
 				candidateIndex.setIsFavourite(0);
 			}
 			
+			if(null != candidate.getIsFavouriteAssociate()){
+				candidateIndex.setIsFavouriteAssociate(candidate.getIsFavouriteAssociate());
+			}else{
+				candidateIndex.setIsFavouriteAssociate(0);
+			}
+			
+			if(null != candidate.getIsAssociate()){
+				candidateIndex.setIsAssociate(candidate.getIsAssociate());	
+			}
+			if(null != candidate.getSpocId()){
+				candidateIndex.setSpocId(candidate.getSpocId().getId());	
+			}else{
+				candidateIndex.setSpocId(null);
+			}
+			
+			if(null != candidate.getOrgRelationId()){
+				candidateIndex.setOrgRelationId(candidate.getOrgRelationId().getId());	
+			}else{
+				candidateIndex.setOrgRelationId(null);
+			}
+			
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
 			if(candidate.getCreatedDate() != null){
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -154,6 +175,8 @@ public class CandidateIndexHelper {
 			}
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
+			
+			candidateIndex.setCandidateUUID(candidate.getCandidateUUID());
 			
 		}
 		

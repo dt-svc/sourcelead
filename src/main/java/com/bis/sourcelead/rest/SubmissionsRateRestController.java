@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -156,7 +157,7 @@ public class SubmissionsRateRestController {
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setFromStage("NEW");
 			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			
@@ -178,19 +179,19 @@ public class SubmissionsRateRestController {
 //	}
 	
 	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
-	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "submissionId", required = false) Long submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
+	public @ResponseBody String storeNegotiation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "submissionId", required = false) String submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
 	 
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
 		
-		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(submissionId));
 		User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 		UserRole userRole =userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), requirementSubmission.getOrgLocations().getId());
 		
 		RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
 		
 		//RequirementRateSubmissionNegotiation  requirementRateSubmissionNegotiation = new RequirementRateSubmissionNegotiation();
-		RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(submissionId);
+		RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(Long.parseLong(submissionId));
 		
 		requirementRateSubmissionNegotiation.setRequirementsubmissionId(requirementSubmission);
 		if(jsonObj.has("rateProposal")){
@@ -207,7 +208,7 @@ public class SubmissionsRateRestController {
 		requirementRateSubmissionNegotiation.setInitiatorOrgLocationId(requirementSubmission.getCandidate().getOrgLocationId());
 		requirementRateSubmissionNegotiation.setRateStage(SubmissionRateStatus.NEWRATE);
 		if(jsonObj.has("comment") && jsonObj.getString("comment") != null && "" != jsonObj.getString("comment")){
-			requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("comment"));
+			requirementRateSubmissionNegotiation.setRateReason(jsonObj.getString("comment").trim());
 		}
 		
 		requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
@@ -233,10 +234,10 @@ public class SubmissionsRateRestController {
 		 
 		 Candidate candidate = requirementSubmission.getCandidate();
 		 OrgLocations orgLocations = requirementSubmission.getOrgLocations();
-		 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(submissionId);
+		 RequirementRateSubmissionNegotiation neogtation = requirementSubmissionService.getRequirementRateBySubmissionById(Long.parseLong(submissionId));
 		 
-		 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(submissionId, candidate.getId());
-		 StringBuilder tempHTML = requirementRateSubmissionNegotiationService.buildNegotiationHistory(negotiationList,requirement,candidate,submissionId,type);
+		 List<RequirementRateSubmissionNegotiation>  negotiationList = requirementRateSubmissionNegotiationService.getAllRateHistoryBySubmissionIdAndCandidateId(Long.parseLong(submissionId), candidate.getId());
+		 StringBuilder tempHTML = requirementRateSubmissionNegotiationService.buildNegotiationHistory(negotiationList,requirement,candidate,Long.parseLong(submissionId),type);
 		 if("user".equalsIgnoreCase(type)){
 			 requirementSubmissionService.userNegotiateEmail(requirement,userRole.getUser(),candidate,orgLocations,neogtation,tempHTML);
 		 }else{
@@ -314,13 +315,26 @@ public class SubmissionsRateRestController {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
+		String expectedRateRN = "";
+		String expectedRateTypeRN = "";
+		String expectedRatePerRN = "";
 		if(null != requirementSubmissionTemplateFields){
 				if(null  != requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement()){
 					requirementRateSubmission.setRequirementName(requirementSubmissionTemplateFields.getRequirementSubmission().getRequirement().getJobTitle());
 				}
+				
 				requirementRateSubmission.setExpectedRate(requirementSubmissionTemplateFields.getExpectedCTC());
 				requirementRateSubmission.setExpectedRateType(requirementSubmissionTemplateFields.getExpectedRateType());
 				requirementRateSubmission.setExpectedRatePer(requirementSubmissionTemplateFields.getExpectedRatePer());
+				
+				expectedRateRN = requirementSubmissionTemplateFields.getExpectedCTC();
+				expectedRateTypeRN = requirementSubmissionTemplateFields.getExpectedRateType();
+				expectedRatePerRN = requirementSubmissionTemplateFields.getExpectedRatePer();
+				
+				requirementRateSubmission.setExpectedRateRN(expectedRateRN);
+				requirementRateSubmission.setExpectedRateTypeRN(expectedRateTypeRN);
+				requirementRateSubmission.setExpectedRatePerRN(expectedRatePerRN);
+				
 				if(null != requirementSubmissionTemplateFields.getExpectedCTC() &&  null != requirementSubmissionTemplateFields.getExpectedRatePer()){
 					StringBuilder rateAndType = new StringBuilder();
 					requirementRateSubmission.setRateAndType(rateAndType.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());	
@@ -332,7 +346,7 @@ public class SubmissionsRateRestController {
 				}else{
 					requirementRateSubmission.setProposeByName(proposedByUser.getFirstName());
 				}
-				DateFormat date = new SimpleDateFormat( "yyyy-MM-dd");
+				DateFormat date = new SimpleDateFormat( "dd-MM-yyyy");
 				String commonDate = date.format(requirementSubmissionTemplateFields.getCreatedDate());
 				requirementRateSubmission.setCreatedDateStr(commonDate.toString());
 				requirementRateSubmission.setIsNeedApplicantPermit(requirementSubmissionTemplateFields.getRequirementSubmission().getNeedApplicantPermit());
@@ -404,8 +418,11 @@ public class SubmissionsRateRestController {
 			
 			requirementRateSubmissionNegotiation.setIsNeedApplicantPermit(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getNeedApplicantPermit());
 			requirementRateSubmissionNegotiation.setSubmissionStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
+			
+			requirementRateSubmissionNegotiation.setExpectedRateRN(expectedRateRN);
+			requirementRateSubmissionNegotiation.setExpectedRateTypeRN(expectedRateTypeRN);
+			requirementRateSubmissionNegotiation.setExpectedRatePerRN(expectedRatePerRN);
 		}
-		
 		
 		if(allSubmissionRateHistory.isEmpty()){
 			allSubmissionRateHistory.add(requirementRateSubmission);
@@ -610,6 +627,44 @@ public class SubmissionsRateRestController {
 			
 			return "SUCCESS";
 		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/storeApplicantRejectReason", method = RequestMethod.POST)
+		public @ResponseBody String storeApplicantRejectReason(@RequestParam(value = "submissionId", required = false) Long submissionId,
+				@RequestParam(value = "rejectreason", required = false) String rejectreason) throws Exception {
+			 
+			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+			
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+			}
+			
+			if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+			 StringBuilder candBuild = new StringBuilder();
+			 requirementSubmission.setUpdatedUser(candBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+			 }else{
+				 requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
+			 }
+			
+			requirementSubmission.setRejectedReason(rejectreason);
+
+			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			
+			Requirement requirement = requirementSubmission.getRequirement();
+			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+			requirementSubmissionService.applicantRejectMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations, rejectreason, null, null, submissionId);
+			return "success";
+		}
+	 
 	 
     private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

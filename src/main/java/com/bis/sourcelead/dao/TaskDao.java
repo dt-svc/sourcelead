@@ -3,7 +3,9 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.User;
 
 public interface TaskDao {
 
@@ -14,4 +16,17 @@ public interface TaskDao {
 	List<Tasks> tasksListByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String Status,String date, Date startDateUTC, Date endDateUTC)throws Exception;
 	
 	List<Tasks> getTaskByScheduledTime(String currentTime)throws Exception;
+	
+	Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocationCode ,User user) throws Exception;
+	
+	List<Tasks> getTasskByAssignedUserIdAndOrgLocationId(Long orgLocationId,Long userId)throws Exception;
+	
+    List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(Long orgLocationId,Long userId,Long onboardingId)throws Exception;
+	
+	List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(Long orgLocationId,Long userId,Long offboardingId)throws Exception;
+	
+	List<Tasks> getTasksListOffboardingId(Long offboardingId)throws Exception;
+	
+	List<Tasks> getTasksListOnboardingId(Long onboardingId)throws Exception;
+
 }

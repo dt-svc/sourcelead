@@ -22,17 +22,23 @@
     <%@page session="true"%>
 </head>
 
+<script type="text/javascript">
+window.onload = function () {
+	getOptionalServiceList();	
+ };
+</script>
 
 <body>
 <div class="regis_bg">
   <div class="container">
       
     <div class="outsoucing-registaion">
-        <div class="regis_logo"><img src="resources/images/mail-logo.png" alt="Sourcelead Logo" class="img-responsive" width="250"></div>
+        <div class="pull-left mb"><img src="resources/images/SourceLead-logo-white.png" alt="Sourcelead Logo" class="img-responsive" width="300"></div>
+      <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="javascript:void(0)"><i class="fa fa-retweet"></i>&nbsp;&nbsp;Reset Credentials</a></li>
       </ul>
-        <div class="regis_wrap_styles">
+        <div class="regis_wrap_styles regiswrapStyles">
         <c:if test="${not empty msg}">
 	        <div id="selector">
 		         <span><font color="green">${msg}</font></span>
@@ -75,6 +81,9 @@
                 </div>
             </div>
             
+            <div id="optionalServicesId"></div>
+            
+            
             <div class="clearfix mt10">
                 <div class="pull-right">
                     <button type="submit" id="submit_button"  class="btn btn-primary btn_styles mr" title="Save">
@@ -93,6 +102,41 @@
 <script src="resources/js/chosen.jquery.min.js"></script> 
 <script src="resources/js/formvalidator.js"></script>
 </body>
+
+
+
+<script type="text/javascript">
+function getOptionalServiceList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+$.ajax({
+      type: "POST",
+  	  url: sourceleadUrl+"/getOptionalValueList?${_csrf.parameterName}=${_csrf.token}",
+    	success: function(data) {
+		    var json = JSON.parse(data);
+		    var result = '';		
+		    result = result + '	<div class="form-group clearfix empCheckbox">';
+		    result = result + ' <div class="row">';
+		    result = result + ' <div class="clearfix">';   
+		    result = result + ' <p class="ml"><strong>Would like to</strong></p>';
+		    for (var i=0; i<json.length; i++)
+			{ 
+		    var report = json[i];
+			result = result + ' <span class="col-md-4">';
+			result = result + ' <input type="checkbox" value="'+report.id+'" name="Wouldliketo"><i>'+report.registerName+'</i>';
+			result = result + ' </span>';
+			}
+		    result = result + ' </div>';
+		    result = result + ' </div>';
+		    result = result + '	</div>';
+		    $("#optionalServicesId").empty();
+		    $("#optionalServicesId").append(result);		
+   },  
+});   
+
+}
+</script>
+
+
 
 
 <script type="text/javascript">
@@ -169,9 +213,9 @@ function validateUserName(){
 					     
 				       	else{
 				       		$('#userNameDiv').find('p.jquery_form_error_message').remove(); 
-				    	    $("input#userName").after("<p class='jquery_form_error_message'>User Name Already Existed</span>");
+				    	    $("input#userName").after("<p class='jquery_form_error_message'>Invalid User Name</span>");
 		    				$('input#userName').attr('record-exist','yes');
-		    				$('input#userName').attr('record-exist-errorMsg','User Name Already Existed'); 
+		    				$('input#userName').attr('record-exist-errorMsg','Invalid User Name'); 
 				       	}
 			       	}
 		    	   
@@ -209,9 +253,9 @@ function validateResetUserName(){
 					     
 				       	else{
 				       		$('#resetUserNameDiv').find('p.jquery_form_error_message').remove(); 
-				    	    $("input#resetUserName").after("<p class='jquery_form_error_message'>Invalid User Name</span>");
+				    	    $("input#resetUserName").after("<p class='jquery_form_error_message'>User Name Already Exists</span>");
 		    				$('input#resetUserName').attr('record-exist','yes');
-		    				$('input#resetUserName').attr('record-exist-errorMsg','Invalid User Name'); 
+		    				$('input#resetUserName').attr('record-exist-errorMsg','User Name Already Exists'); 
 				       	}
 			       	}
 		    	   

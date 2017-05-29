@@ -66,6 +66,8 @@ public interface UserRoleService {
 	public Boolean isUserAdmin(Long userId);
 	
 	public Boolean isUserAdminByOrgLocationId(Long userId, Long orgLocationId);
+	
+	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId);
 
 
 	
@@ -107,6 +109,8 @@ public interface UserRoleService {
 	 public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
 	 
 	 public List<UserRole> getUsersListByUserId(Long userId) throws Exception;
+	 
+	 List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception;
 
 	 public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String wEEKLY) throws Exception;
 

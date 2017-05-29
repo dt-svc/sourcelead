@@ -153,6 +153,9 @@ public class User implements Serializable{
 	@Column(name = "COUNTRY")
 	private String country;
 	
+	@Column(name ="REGISTER_OPTIONAL_SERVICE_ID")
+	private String registerOptionalServiceId;
+	
 	@Transient
 	private String isPrimaryAdmin;
 
@@ -164,6 +167,50 @@ public class User implements Serializable{
 	
 	@Transient
 	private String role;
+	
+	@Transient
+	private String assignedTeamId;
+	
+	@Transient
+	private String assignedTeam;
+	
+	@Transient
+	private String isAssignedOwner;
+	
+	@Transient
+    private long userRequirementsCount;
+	
+	@Transient
+    private long userApplicantsCount;
+	
+	@Transient
+    private long userCandidatesCount;
+	
+	@Transient
+    private long userShortlisteApplicantsCount;
+	
+	@Transient
+    private long userSubmittedApplicantsCount;
+	
+	@Transient
+    private long userInterviewedApplicantsCount;
+	
+	@Transient
+    private long userOfferedApplicantsCount;
+	
+	@Transient
+    private long userRejectedApplicantsCount;
+	
+	@Transient
+    private long userApplicantsBackOutCount;
+	
+	@Transient
+	private String dateOfJoin;
+	
+	@Transient
+	private String noticePeriod;
+	
+	
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -486,4 +533,126 @@ public class User implements Serializable{
 	public void setIsPrimaryAdmin(String isPrimaryAdmin) {
 		this.isPrimaryAdmin = isPrimaryAdmin;
 	}
+
+	public String getAssignedTeamId() {
+		return assignedTeamId;
+	}
+
+	public void setAssignedTeamId(String assignedTeamId) {
+		this.assignedTeamId = assignedTeamId;
+	}
+
+	public String getAssignedTeam() {
+		return assignedTeam;
+	}
+
+	public void setAssignedTeam(String assignedTeam) {
+		this.assignedTeam = assignedTeam;
+	}
+
+	public String getIsAssignedOwner() {
+		return isAssignedOwner;
+	}
+
+	public void setIsAssignedOwner(String isAssignedOwner) {
+		this.isAssignedOwner = isAssignedOwner;
+	}
+
+	public long getUserRequirementsCount() {
+		return userRequirementsCount;
+	}
+
+	public void setUserRequirementsCount(long userRequirementsCount) {
+		this.userRequirementsCount = userRequirementsCount;
+	}
+
+	public long getUserCandidatesCount() {
+		return userCandidatesCount;
+	}
+
+	public void setUserCandidatesCount(long userCandidatesCount) {
+		this.userCandidatesCount = userCandidatesCount;
+	}
+
+	public long getUserApplicantsCount() {
+		return userApplicantsCount;
+	}
+
+	public void setUserApplicantsCount(long userApplicantsCount) {
+		this.userApplicantsCount = userApplicantsCount;
+	}
+
+	public long getUserShortlisteApplicantsCount() {
+		return userShortlisteApplicantsCount;
+	}
+
+	public void setUserShortlisteApplicantsCount(long userShortlisteApplicantsCount) {
+		this.userShortlisteApplicantsCount = userShortlisteApplicantsCount;
+	}
+
+	public long getUserSubmittedApplicantsCount() {
+		return userSubmittedApplicantsCount;
+	}
+
+	public void setUserSubmittedApplicantsCount(long userSubmittedApplicantsCount) {
+		this.userSubmittedApplicantsCount = userSubmittedApplicantsCount;
+	}
+
+	public long getUserInterviewedApplicantsCount() {
+		return userInterviewedApplicantsCount;
+	}
+
+	public void setUserInterviewedApplicantsCount(long userInterviewedApplicantsCount) {
+		this.userInterviewedApplicantsCount = userInterviewedApplicantsCount;
+	}
+
+	public long getUserOfferedApplicantsCount() {
+		return userOfferedApplicantsCount;
+	}
+
+	public void setUserOfferedApplicantsCount(long userOfferedApplicantsCount) {
+		this.userOfferedApplicantsCount = userOfferedApplicantsCount;
+	}
+
+	public long getUserRejectedApplicantsCount() {
+		return userRejectedApplicantsCount;
+	}
+
+	public void setUserRejectedApplicantsCount(long userRejectedApplicantsCount) {
+		this.userRejectedApplicantsCount = userRejectedApplicantsCount;
+	}
+
+	public String getRegisterOptionalServiceId() {
+		return registerOptionalServiceId;
+	}
+
+	public void setRegisterOptionalServiceId(String registerOptionalServiceId) {
+		this.registerOptionalServiceId = registerOptionalServiceId;
+	}
+
+	public String getDateOfJoin() {
+		return dateOfJoin;
+	}
+
+	public void setDateOfJoin(String dateOfJoin) {
+		this.dateOfJoin = dateOfJoin;
+	}
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
+	public long getUserApplicantsBackOutCount() {
+		return userApplicantsBackOutCount;
+	}
+
+	public void setUserApplicantsBackOutCount(long userApplicantsBackOutCount) {
+		this.userApplicantsBackOutCount = userApplicantsBackOutCount;
+	}
+
+	
 }

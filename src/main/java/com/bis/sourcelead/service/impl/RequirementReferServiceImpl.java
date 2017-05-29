@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Contact_Source;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.RequirementReferService;
@@ -151,7 +152,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			referContacts.setUpdatedDate(new Date());
 			referContacts.setCreatedBy(user.getUserCode());
 			referContacts.setUpdatedBy(user.getUserCode());
-			referContacts.setContactSource(Constants.CROWD_SOURCING_SOURCE_SELF);
+			referContacts.setContactSource(Contact_Source.SELF);
 			
 			referContactsDao.addReferContacts(referContacts);
 			
@@ -191,14 +192,15 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
 		 emailMessage.setUserType(user.getUserType());
-		 
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 emailMessage.setFromName(loginUser.toString());
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 		 globalVarsMap.put("professinalName", professionalName);
 		 globalVarsMap.put("referedProfessionalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
+		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
 		
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -318,8 +320,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			userContacts = userContacts.replaceAll("\\[", "").replaceAll("\\]","");
 			
 			String[] contacts = userContacts.split(",");
-			Requirement requirement = new Requirement();
-			requirement.setId(Long.valueOf(jsonObj.getString("contactReferRequirementId")));
+			Requirement requirement = requirementDao.getRequirementByRequirementId(Long.valueOf(jsonObj.getString("contactReferRequirementId")));
 			
 			for(int i=0; i < contacts.length; i++){
 				ReferContacts referContacts = referContactsDao.getReferContactsById(Long.parseLong(contacts[i].replace("\"", "")));
@@ -338,9 +339,72 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 				refer.setPhoneNumber(referContacts.getContactUserPhone());
 				refer.setUpdatedBy(user.getUserCode());
 				requirementReferDao.addRequirementRefer(refer);
+				
+				sendEmailToContactUsers(user, referContacts, requirement, referContacts.getContactUserUUID());
 			}
 		}
 	
+	}
+	
+	
+	
+	public void sendEmailToContactUsers(User user,ReferContacts referContacts,Requirement requirement,String contactUUID) throws Exception {
+		
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 StringBuilder loginUser = new StringBuilder();
+		 
+		 if(!isNullOrEmpty(referContacts.getLastName())){
+			 professionalName = sb.append(referContacts.getFirstName()).append(" ").append(referContacts.getLastName()).toString();
+		 }else{
+			 professionalName = sb.append(referContacts.getFirstName()).toString();
+		 }
+		 
+
+		 if(!isNullOrEmpty(user.getLastName())){
+			 loginUser = loginUser.append(user.getFirstName()).append(" ").append(user.getLastName());
+		 }else{
+			 loginUser = loginUser.append(user.getFirstName());
+		 }
+		 
+		 emailMessage.setUserName(loginUser.toString());
+		 emailMessage.setToEmail(referContacts.getContactUserEmail());
+		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setCreatedBy(user.getUserCode());
+		 emailMessage.setUserType(user.getUserType());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 emailMessage.setFromName(loginUser.toString());
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
+		 globalVarsMap.put("professinalName", professionalName);
+		 globalVarsMap.put("referedProfessionalName", user.getUserName());
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REFER_REQUIREMENT_TO_PROFESSIONAL,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
 	}
 	
 

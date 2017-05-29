@@ -20,7 +20,7 @@ body{
 	background:#fff;
 }
 .main-header span.logo:hover {
-	background:#0cc2aa;
+	background:#ededed;
 }
 .main-header .navbar .fa-bars:hover{
 	background:rgba(0, 0, 0, 0.2);
@@ -165,6 +165,9 @@ ul.timesheet-menu li a:hover{
     color: #757575;
     text-shadow: none;
 }
+.custom-navbar-inner .reportsH a .fa-pie-chart {
+	color: #757575;
+}
 .bell {
     color: #757575;
 }
@@ -277,10 +280,6 @@ btn-default {
 .search-area .btn {
     border-radius: 20px 0 0 20px;
 }
-.main-header span.logo:hover
-{
-	background: rgba(0, 0, 0, 0.5);
-}
 .main-header span.logo:hover h1
 {
 	color:#fff !important;
@@ -339,6 +338,12 @@ btn-default {
 @media (max-width: 1024px){
 	.content-wraper, .footer-area {
 	margin-left: 0;
+	}
+	.main-header .navbar .custom-navbar ul.custom-navbar-inner li{
+	padding: 16px 10px;
+	}
+	.custom-navbar .login-user span.image img{
+		margin-top: 0;
 	}
 }
 @media (max-width: 1160px){

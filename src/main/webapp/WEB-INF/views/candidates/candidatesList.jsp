@@ -4,6 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<meta name="format-detection" content="telephone=no">
+
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
@@ -43,11 +45,12 @@
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
+<jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  </sec:authorize>
- 
+ <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  
 <script>
  window.onload = function() {
@@ -78,6 +81,7 @@ if(universalCanddateSearchList=="universalCanddateList")	 {
   }
   if(candidateKeyword == "candidateSearch"){
 	  candidateSideBar(candidateIdSearchId);
+	  candidateQuickViewProfile(candidateIdSearchId);
 	  candidateList();
 	  $("#upcandidateStatus").val('');
   }
@@ -118,15 +122,14 @@ else{
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  
-
 	var upcandidateStatus =   $('input[name=upcandidateStatus]:checked').val();
 	  
-	  
+	var isAssociate = "N";
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&candidateType="+candidateType,       
+            url: sourceleadUrl+"/getCandidatesListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateStatus="+candidateStatus+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType,       
             success :function(data) {
                 	 prepareCandidateList(data);
            },
@@ -210,19 +213,25 @@ else{
 		            	
 		            	
 	              result = result +"<tr>";
-	              result = result +"<td style='width : 25px;'>";
-	              result = result +"<div class='star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
+	              result = result +"<td style='width:40px; display: inline-block'>";
+
+	              if(opt.isAssociate == "Y"){
+	            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
+	              }
+
+	              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+opt.candidateId+"'>";
 	              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_HOTLIST\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	              result = result +"<input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
+	              result = result +"   <input type='checkbox' id='fav"+opt.candidateId+"' "+isFavourite+" onclick='addFavourite("+opt.candidateId+")'></input>";
 	              '</sec:authorize>';
 	             
 	              result = result +" <label></label>";
 	              result = result +"</div>";
+	              
 	              result = result +"</td>";
 	
 	             
 	              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+opt.candidateId+"); candidateSideBar("+opt.candidateId+");'><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              '</sec:authorize>';
 	              
 	              '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
@@ -257,7 +266,7 @@ else{
 	              
 	              result = result +"  <td><div ><span title='"+opt.email+"'>"+opt.email+"</span></div></td>";
 	             
-	              result = result +"  <td><div class='tbldata-dotdot'>"+mobilePhone+"</div></td>";
+	              result = result +"  <td><div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div></td>";
 	              
 	              result = result +"  <td><div><span title='"+location+"'>"+location+"</span></div></td>";
 	
@@ -307,9 +316,15 @@ function cpagination(){
  -->
 <script>
 function cpagination(){ 
+	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
+		"aaSorting": [[7,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -318,6 +333,7 @@ function cpagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
+    $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 }
 </script> 
 
@@ -337,7 +353,7 @@ var candidateStatusGlobal ="";
 function candidateSideBar(candidateId){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var loginUserId = '${SourceLeadWeb_userId}';
-	  var lo
+	  var candidateType = "Candidates";
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
@@ -361,7 +377,7 @@ function candidateSideBar(candidateId){
 			            
 			            var currencyCode = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
-         			 		experienceMonths = json.experienceMonths+'-'+'Months';            			 		
+         			 		experienceMonths = json.experienceMonths+'-'+'Month/s';            			 		
          			 	}else{
          			 		experienceMonths = ' ';  
          			 	 }
@@ -370,7 +386,7 @@ function candidateSideBar(candidateId){
              			 	designation = 'Designation'+'-'+json.designation;
              			 	}else{
              			 		designation = '';
-             			 	}
+             			 } 
          			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
          			 	designationType = 'Employment Type'+ ' - '+json.designationType;
@@ -467,10 +483,10 @@ function candidateSideBar(candidateId){
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -484,7 +500,7 @@ function candidateSideBar(candidateId){
 						 result = result+'  </div>'; */
 						 result = result+'  </div>';
 						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not supported</p>';
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 result = result+' </div>';
 						 result = result+' </div>';
@@ -502,12 +518,12 @@ function candidateSideBar(candidateId){
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
-			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
+// 			             result = result+'                        <li>Type - '+json.candidateType+'</li>';  
 			             
                          
 			             result = result+'                       </ul>';
 
-			             result = result+' <ul class="list-unstyled">';
+			             result = result+' <ul class="list-unstyled mrng0" >';
 						 result = result+'<li title="'+designation+'" class="tbldata-dotdot">'+designation+'</li>';
 						 result = result+'</ul>';
 						 
@@ -516,14 +532,10 @@ function candidateSideBar(candidateId){
 						 result = result+'</ul>';
 			             
 			             result = result+'<ul class="list-unstyled">';
-			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			                    	 
-			             result = result+'<li>Experience -'+json.experienceYears+' years '+experienceMonths+'</li>';
-			             
+			              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
+			            	 result = result+'<li>Experience -'+json.experienceYears+' Year/s '+experienceMonths+'</li>';
               		       }else{
-              		                                                	  
-              		     result = result+'<li>Experience ----</li>';  
-              		     
+              		   		 result = result+'<li>Experience ----</li>';  
               		       }
 			             result = result+'</ul>';
 			             
@@ -636,7 +648,9 @@ function candidateSideBar(candidateId){
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Profile</a></li>';
+
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -655,12 +669,19 @@ function candidateSideBar(candidateId){
 			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             '</sec:authorize>';
 			             
+			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
+			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
+			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+			             '</sec:authorize>';
+			            
+			            
 			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
-			              
+			              '<sec:authorize access="hasAnyRole(\'ROLE_CANDIDATE_REQUIREMENT_HISTORY\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Requirement History</a></li>';
+			              '</sec:authorize>';
 			              
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
@@ -681,6 +702,9 @@ function candidateSideBar(candidateId){
 						 result = result + '<div id="tab-5" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 
+						 result = result + '<div id="tab-9" class="project_tabs_inn">';
+			             result = result+'     </div>';
+						 
 						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
 						 result = result + '</div>';
 						 
@@ -688,7 +712,6 @@ function candidateSideBar(candidateId){
 						 result = result + '</div>';
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
-			             result = result+'     </div>';
 			             result = result+'   </div>';
 			             
 			             $("#candidateSideDiv").empty();  
@@ -696,7 +719,7 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId);
+						 candidateProfile(candidateId,candidateType);
 			 			 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -854,14 +877,14 @@ function refreshImageBlock(candidateId){
                 	 var json = JSON.parse(data);
 	                	 $("#candidateImageId").empty();
 	                	 var result = '';
-			             result = result+'<div class="well text-center clearfix">';
+			             result = result+'<div class="well well-sm text-center clearfix">';
 						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
 						 result = result+'   <img  id="userImage" onerror="predefineProfileImage(this);" src="<c:url value="/displayCandidateImage/'+candidateId+'"/>" alt="Profile Image" class=" img-responsive center-block img-circle">';
-						 result = result+'  <div class="btn-group uploadfile">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
+						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
+						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  onchange="loadFile(event,\''+candidateId+'\')" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
@@ -897,10 +920,10 @@ function addFavourite(candidateId){
 			success : function(result) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'star-rating activestar-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
 				}else{
 					 document.getElementById("favourite"+candidateId).removeAttribute("class")
-					 document.getElementById("favourite"+candidateId).className = 'star-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating' 
 				}
 				
 			},
@@ -1011,22 +1034,29 @@ function cancel(candidateId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Candidate List</h2>
+      <h2>Candidate List - <span class="label label-success">${candidateCount}</span></h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List</div>
     
-    <div class=" pull-left reportsH">
+    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
+    </c:if> 
+    
+    <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Candidate List  </div>
+    </c:if> 
+    
+     <%-- <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
 					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
-		</div>  
+		</div>   --%> 
 		
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-X:auto;">
+    <div class="vendor_wrap minHeight_225" style="overflow-X:auto;">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -1039,7 +1069,7 @@ function cancel(candidateId){
 					  <div class="candAdvsrchPop">
 					  <div class="row">
 						  <div class="col-md-4">
-							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+							  <label>Any of Keyword</label>
 							  <div class="clearfix">
 							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
                                     </select>
@@ -1047,14 +1077,14 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+							  <label>All Keywords</label>
 							  <div class="clearfix">
 							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
                                  </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+							  <label>Exclude Keyword</label>
 							  <div class="clearfix">
 							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                                  </select>
@@ -1069,7 +1099,7 @@ function cancel(candidateId){
 						<div class="col-md-8">
 						<label>Skills</label>
 							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="canSkills" name="candidateSkills">
 								<c:forEach var="skill" items="${skillsList}">
 								<option value="${skill.name}">${skill.name}</option>
 								</c:forEach>
@@ -1088,17 +1118,9 @@ function cancel(candidateId){
 						 
 					 </div>
 						
-						<div class="clearfix">
-						  <div class="col-md-4">
-						    <label>Designation</label>
-						     <div class="clearfix">
-						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
-                                     </select>
-						    </div>
-						</div>
 						<div class="col-md-8">
 							<div class="row">
-								<div class="col-md-6">
+								<div class="col-md-6 payrate_p">
 									<label>Rate</label>
 									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
@@ -1117,10 +1139,13 @@ function cancel(candidateId){
 								         </div>
 								    </div>
 								</div> 
-							<div class="col-md-6">
+							<div class="col-md-6 payrate_p">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
-									<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+								 <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+								</div>
+								<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
 										        <option value="Hourly">Hourly</option>
@@ -1132,14 +1157,21 @@ function cancel(candidateId){
 												<option value="Yearly">Yearly</option>
 				                            </select> 
 									</div>
-								    <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-									</div>
 								</div>
 							</div>
 						 </div>
 						 </div>
+						 
+						 <div class="clearfix">
+						  <div class="col-md-4">
+						    <label>Designation</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
+                                     </select>
+						    </div>
+							</div>
 						 </div>
+						 
 						  <div class="clearfix">
 						  <div class="col-md-4">
 							  <label>Experience</label>
@@ -1200,8 +1232,8 @@ function cancel(candidateId){
 								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
 								    <option value="">--Select country--</option>
 								     <c:forEach var="cntry" items="${countryList}">
-							                     <option value="${cntry.name}">${cntry.name}</option>
-						                </c:forEach>
+							                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+						              </c:forEach>
 				                 </select>
 							  </div>
 						  </div>
@@ -1238,7 +1270,7 @@ function cancel(candidateId){
 							  </div>
 						  </div> 
 						  <div class="col-md-4">
-							  <label>Exclude Education<i class="fa fa-info-circle" title="Exclude Education"></i></label>
+							  <label>Exclude Education</label>
 							  <div class="clearfix">
 								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
                                        <c:forEach var="edu" items="${educationsList}">
@@ -1248,7 +1280,7 @@ function cancel(candidateId){
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Certification<i class="fa fa-info-circle" title="Certification"></i></label>
+							  <label>Certification</label>
 							  <div class="clearfix">
 								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
                                   </select>
@@ -1257,21 +1289,21 @@ function cancel(candidateId){
 						  </div>
 						  <div class="clearfix">
 						  <div class="col-md-4">
-							  <label>Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Employers</label>
 							  <div class="clearfix">
 								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
                                   </select>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
-							  <label>Exclude Employers<i class="fa fa-info-circle" title="Employers"></i></label>
+							  <label>Exclude Employers</label>
 							  <div class="clearfix">
 								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
                                   </select>
 							  </div>
 						  </div>
 						  
-						   <div class="col-md-4">
+						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
 							  <div class="clearfix">
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
@@ -1280,20 +1312,22 @@ function cancel(candidateId){
 									  <option value="consultant">Consultant</option> 
 				                   </select>
 							  </div>
-						  </div>
+						  </div> -->
 						  </div>
 					  </div>
 					  </div>
 					  <div class="form-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate();" class="btn btn-sm btn-primary"/>
-                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-default ml10"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="searchCandidate(); minMaxExperience();" class="btn btn-sm btn-success"/>
+                               <input type="button"  value="Clear"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
+                               <!--  <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
 				  </div>
 			  </form:form>
       </div>
-      <div class="timesheet_head  customtimesheet-head hdr-styles pull-right">
+      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
+      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter">
         <ul>
            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span id="canDiv"> Status </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter2ApprovedPop" class="approved_pop">
@@ -1305,34 +1339,35 @@ function cancel(candidateId){
                   </div>                	
           </li>
           
-          <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')">
+<%--           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_CANDIDATES')"> --%>
           <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter3ApprovedPop" class="approved_pop">
                   	<ul>
 	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="candidateList();"  ><label for="candidateTypeAll">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="candidateList();"><label for="onlycandidate">Candidates</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="candidateList();"><label for="consultant">Consultants</label></li>
+						<li><input id="onlycandidate" type="radio" name="candidateType" value ="1"  onclick="candidateList();"><label for="onlycandidate">Favourite</label></li>
                     </ul>
                   </div>                	
           </li>
-          </sec:authorize>
+<%--           </sec:authorize> --%>
           
             <li id="filter1ApprovePop"><i class="fa fa-filter"></i><span id="candidateUpdiv">Updated</span><i class="glyphicon glyphicon-play" ></i>|
               	<div id="filter1ApprovedPop" class="approved_pop">
                   	<ul>
-                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
+                         <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="all"  onclick="candidateList();"  ><label for="candidateDayAgo">All</label></li>
+                           <li><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  onclick="candidateList();"  ><label for="candidateDayAgo">Today</label></li>
                          <li><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1"  onclick="candidateList();"  ><label for="candidateDayAgo">1 Day ago</label></li>
-						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Day ago</label></li>
+						<li><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3"  onclick="candidateList();"><label for="candidate3DayAgo">3 Days ago</label></li>
 						<li><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7"  onclick="candidateList();"><label for="candidate1WeekAgo">1 Week ago</label></li>
-						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Week ago</label></li>
-						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">Month ago</label></li>
-	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months</label></li>
+						<li><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="21"  onclick="candidateList();"><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30"  onclick="candidateList();"><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"  onclick="candidateList();"><label for="candidate3Months">3 Months ago</label></li>
                     </ul>
                   </div>                	
           </li>  
-          <li><b id="addmore"><i class="fa fa-plus"></i>&nbsp;<span>Add</span>&nbsp;<i class="glyphicon glyphicon-play"></i></b>
+          <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
+          <li><b id="addmore"><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>&nbsp;<span>Add Candidate</span></b>
           <div id="addmorepop" class="approved_pop">
-           <ul>
+           <%-- <ul>
              <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
               <li><a  onClick="addCandidate();" ><i class="fa fa-plus"></i>Add Candidate</a></li>
            </sec:authorize>
@@ -1344,13 +1379,14 @@ function cancel(candidateId){
            <sec:authorize access="hasAnyRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')">
               <li><a href="<c:url value='/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
            </sec:authorize>
-           </ul>
+           </ul> --%>
            </div>
           </li>
+          </sec:authorize>
           
           <li title="Import"><a href="uploadCandidateForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> 
           
-          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES')">
+          <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
           <li title="Export" id="candidate-export" class="mrPOP"><i class="glyphicon glyphicon-export expIcon"></i>
             <div class="export_pop">
               <ul>
@@ -1374,13 +1410,28 @@ function cancel(candidateId){
     
     <!-- Compnay details -->
     <div class="side_mask">
-       <div class="proj_close"></div>
+       <div class="proj_close" onclick="activeTab();"></div>
     </div>
-    <div class="clients_side_wrap">
+ <div class="clients_side_wrap quickviewTabs">
+    
+ <ul class="nav nav-tabs">
+    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
+    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed View</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="quickview" class="tab-pane fade in active">
+	    <!-- resumeView Starts -->
+	    <div id="candidateQuickViewDiv"></div>
+	    <!-- resumeView -->
+    </div>
+    <div id="detailview" class="tab-pane fade">
 	    <div class="clients_side_wrap_inn">
-		             <div id="candidateSideDiv">
-				     </div>  
-	    </div>			     
+	             <div id="candidateSideDiv">
+			     </div>  
+	    </div>
+	     </div>
+  </div>			     
     </div>
     <!-- Compnay details Ends --> 
   </div>
@@ -1393,6 +1444,17 @@ function cancel(candidateId){
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
+
+
+<script>
+function activeTab(){
+	$("#candDetailView").removeClass("active");
+	$("#candQuickView").addClass("active");
+	$("#quickview").addClass("active in");
+	$("#detailview").removeClass("active in");
+}
+</script>
+
  
 <!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
 <script>
@@ -1563,7 +1625,7 @@ function exportToPdf(){
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType;	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1604,7 +1666,7 @@ function exportToExcel(){
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable == ''){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType;	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1844,9 +1906,12 @@ function getCities(){
 	    $('#currency').val(''); 
 	    $('#rateType').val(''); 
 	    
-	    $('#country').val(''); 
-	    $('#state').val(''); 
-	    $('#city').val(''); 
+	    /* $('#country').val(''); 
+	    $("#country").val('').trigger("chosen:updated"); */
+	    /* $("#state").empty();
+	    $("#state").val('').trigger("chosen:updated"); */
+	    $("#city").empty();
+	    $("#city").val('').trigger("chosen:updated");
 	    $('#rateType').val(''); 
 
 	    $('#emailDiv').find('p.jquery_form_error_message').remove();
@@ -1866,7 +1931,7 @@ function getCities(){
 	    $("#certification").val('').trigger("chosen:updated");
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
-	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
@@ -2063,9 +2128,9 @@ function getCities(){
 		    });
 		    
 		    var selectnine, chosennine;
-		    selectnine = $("#candidateSkills");
+		    selectnine = $("#canSkills");
 		    selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Skill:' });
-		    chosennine = selecteight.data('chosen');
+		    chosennine = selectnine.data('chosen');
 		    chosennine.search_field.on('keyup', function(e9)
 		    {
 		    	var skills = this.value.replace(",","");
@@ -2075,10 +2140,10 @@ function getCities(){
 		            var option = $("<option>").val(skills).text(skills);
 		            selectnine.append(option);
 		            selectnine.find(option).prop('selected', true);
-                    $("#candidateSkills option").each(function(){
+                    $("#canSkills option").each(function(){
                           $(this).siblings("[value='"+ this.value+"']").remove();
                     });
-	        		$("#candidateSkills").trigger("chosen:updated");
+	        		$("#canSkills").trigger("chosen:updated");
 	        		
 		        }
 		    });
@@ -2127,7 +2192,7 @@ function getCities(){
                                 <i class="fa fa-file-text-o fa-4x"></i>
                                     <span class="fa fa-arrow-right"></span>
                                 </div>
-                                <strong class="clearfix">Parse Resume</strong>
+                                <strong class="clearfix">Import Candidate</strong>
                                 </a>
                         </div>
 					  </div>
@@ -2159,7 +2224,7 @@ function getCities(){
 			  </div>
       <div class="pop_mask"></div>
     
-    <div class="addconsultant-popup">
+    <%-- <div class="addconsultant-popup">
 				  <div class="row">
                       <div class="col-md-offset-2 col-md-8">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeConsultant()"><i class="fa fa-close"></i></a>
@@ -2199,7 +2264,7 @@ function getCities(){
                           </div>
                       </div>
 				  </div>
-			  </div>
+			  </div> --%>
     
     <script>
     //addcandidate-popup script
@@ -2216,7 +2281,7 @@ function getCities(){
     
      <script>
     //addConsultant-popup script
-    function addConsultant(){
+    /* function addConsultant(){
         $('.addconsultant-popup').fadeIn(200);
         $('.pop_mask').fadeIn(200);
         $('#addmorepop').slideUp(200);
@@ -2224,7 +2289,7 @@ function getCities(){
        function closeConsultant(){
         $('.addconsultant-popup').fadeOut(200);
         $('.pop_mask').fadeOut(200);
-       }
+       } */
     </script>
     
     
@@ -2266,7 +2331,7 @@ function getCities(){
 			//It will escape all the special characters
 			$("#search_candidate").attr("disabled", "disabled");
 			$("#search_candidate").addClass('button').val('Processing..');
-
+			var isAssociate = "N";
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -2275,7 +2340,7 @@ function getCities(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/searchCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&isAssociate="+isAssociate,
 						success : function(data) {
 							$("#search_candidate").addClass('button').val('Search');
 							$("#search_candidate").removeAttr("disabled");
@@ -2327,7 +2392,7 @@ function minMaxExperience(){
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
-	    $("#country").val('').trigger("chosen:updated");
+	 /*    $("#country").val('').trigger("chosen:updated"); */
 	    $("#state").val('').trigger("chosen:updated");
 	    $("#city").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");
@@ -2336,17 +2401,19 @@ function minMaxExperience(){
 	    $("#employers").val('').trigger("chosen:updated");
 	    $("#excludeEmployers").val('').trigger("chosen:updated");
 	    $("#applicantType").val('').trigger("chosen:updated");
-	    $("#candidateSkills").val('').trigger("chosen:updated");
+	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#designationType").val('').trigger("chosen:updated");
 	    
+	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
 	    
 	     $("#anyOfKeyword").empty();
 	     $("#allKeywords").empty();
 	     $("#excludeKeyWord").empty();
 	     $("#designation").empty();
 	      $("#minRate").val(''); 
+	     
 	      
 	     $("#currency").val('');
 	     $('.selectpicker').selectpicker('refresh');
@@ -2376,7 +2443,7 @@ function minMaxExperience(){
 	     $("#employers").val(''); 
 	     $("#excludeEmployers").val(''); 
 	     $("#applicantType").val('');
-	     $("#candidateSkills").val('');
+	     $("#canSkills").val('');
 	     $("#primarySkill").val('');
 	    
 	}

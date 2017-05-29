@@ -160,10 +160,23 @@ public class VendorRestController {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
+	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    
 	    OrgRelations orgRelation =orgRelationsService.getOrRelationsById(orgRelationId);
 	    Long releasedJobsSize =0l;
-		List<Requirement> vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+	    
+	    List<Requirement> vendorReleasedJobsList = null;
+	    if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+	    	vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendor(orgRelation.getLocationId().getId(),orgRelation.getId(),user,orgLocations);
+	    }else{
+	    	List<Requirement> reqlist = requirementService.getAllReleasedJobsBasedOnUserIdAndLocationId(user,orgLocations);
+		    List<Long> parentreqIds = new ArrayList<>();
+		    for(Requirement req : reqlist){
+		    	parentreqIds.add(req.getId());
+		    }
+		    vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds,orgRelation.getId());
+	    }
+		
 		if(null != vendorReleasedJobsList ){
 			
 			releasedJobsSize = (long) vendorReleasedJobsList.size();
@@ -671,7 +684,7 @@ public class VendorRestController {
 						BoolQueryBuilder tierAdvancedBoolQueryBuilder = QueryBuilders.boolQuery();
 						for(String keywd : tierAdvancedByArray){
 							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("initiatorLevel", keywd));
-							tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
+							//tierAdvancedBoolQueryBuilder.should(QueryBuilders.matchPhrasePrefixQuery("responderLevel", keywd));
 						}
 						boolQueryBuilder.must(tierAdvancedBoolQueryBuilder);
 					}

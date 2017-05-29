@@ -1,9 +1,13 @@
 package com.bis.sourcelead.web;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +20,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
@@ -31,6 +39,7 @@ import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -71,6 +80,9 @@ public class SubmissionsRateController {
 	
 	@Autowired
 	RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	
+	@Autowired
+	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -135,6 +147,7 @@ public class SubmissionsRateController {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			}
 			requirementSubmission.setFinalizedRate(requirementRateSubmissionNegotiation.getCurrentRate());
+			requirementSubmission.setFinalizedRateType(requirementRateSubmissionNegotiation.getCurrentRateType());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
@@ -148,7 +161,7 @@ public class SubmissionsRateController {
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			//requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION_ACCEPT);
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			
 			Requirement requirement = requirementSubmission.getRequirement();
@@ -233,9 +246,58 @@ public class SubmissionsRateController {
 		return model;
 
 	}
+	
+	
+	/**
+	 * This method is used to Accept or Reject Rate from Candidate.
+	 */
+	@RequestMapping(value = "/acceptOrRejectRequirement")
+	public ModelAndView acceptOrRejectRequirement(@RequestParam(value="rateStatus", required=false) String rateStatus,@RequestParam(value = "submissionId", required = false) Long submissionId,
+			 HttpServletRequest request) throws Exception {
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
+		
+		ModelAndView model = new ModelAndView();
+		String permission = "YES";
+		if(requirementSubmission.getSubmissionStatus() != ApplicantSubmissionStatus.REQUEST_SENT){
+			permission = "NO";
+		}
+		
+		model.addObject("permission",permission);
+		model.addObject("rateStatus",rateStatus);
+		model.addObject("submissionId",submissionId);
+		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.addObject("requirementSubmission",requirementSubmission);
+		model.setViewName("requirement/submissionRate");
+		
+		User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+		
+		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
+			
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			}
+			
+			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
+			
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			
+			Requirement requirement = requirementSubmission.getRequirement();
+			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
+			requirementSubmissionService.applicantAcceptMailAboutRequirement(requirement, user, requirementSubmission.getCandidate(), orgLocations);
+		}
+		return model;
+
+	}
 
 	
-    private String toJSON(Object obj){
+	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {
                 return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);

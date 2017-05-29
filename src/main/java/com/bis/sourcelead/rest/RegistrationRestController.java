@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
+import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -34,6 +36,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
+import com.bis.sourcelead.service.RegistrationOptionalServicesService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -82,6 +85,9 @@ public class RegistrationRestController {
 	 @Autowired
 		private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	 
+	 @Autowired
+	 private RegistrationOptionalServicesService registrationOptionalServicesService;
+	 
 	 @RequestMapping(value = "/getOrgsList")
 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
@@ -96,17 +102,19 @@ public class RegistrationRestController {
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
 			for(Org regOrg : orgsList){
+				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
 					regOrg.setEmail(regOrg.getUser().getEmail());
 					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
 					regOrg.setUserState(regOrg.getUser().getUserState());
 					regOrg.setMobilePhone(regOrg.getUser().getMobilePhone());
-					UserRole userRole = userRoleService.getUserByUserId(regOrg.getUser().getId());
+					regOrg.setRegisteredUserId(regOrg.getUser().getId());
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
 					if(null != userRole){
 						regOrg.setUserState(userRole.getUserState());
 					}
 				}
-				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
+				
 				if(null != orglocations){
 					regOrg.setLocation(orglocations.getCountry());
 				}
@@ -213,13 +221,21 @@ public class RegistrationRestController {
 	 			primaryUser.setFirstName(jsonObj.getString("primaryUserFirstName"));
 	 		 }
 	 		 
-	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
+	 		 if(jsonObj.has("primaryUserLastName") && !isNullOrEmpty(jsonObj.getString("primaryUserLastName"))){
 		 			primaryUser.setLastName(jsonObj.getString("primaryUserLastName"));
+	 		 }else{
+	 			primaryUser.setLastName(null);
 	 		 }
 	 		 
 	 		 if(!isNullOrEmpty(jsonObj.getString("primaryUserEmail"))){
 		 			primaryUser.setEmail(jsonObj.getString("primaryUserEmail"));
 		 			primaryUser.setUserName(jsonObj.getString("primaryUserEmail"));
+	 		 }
+	 		 
+	 		 if(jsonObj.has("mobilePhone") && !isNullOrEmpty(jsonObj.getString("mobilePhone"))){
+	 			primaryUser.setMobilePhone(jsonObj.getString("mobilePhone"));
+	 		 }else{
+	 			primaryUser.setMobilePhone(null);
 	 		 }
 	 		 
 	 		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
@@ -270,6 +286,33 @@ public class RegistrationRestController {
 	 
 	 
 	 
+	 
+	 @RequestMapping(value = "/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
+	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
+			 HttpServletRequest request) throws Exception {
+		 
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveProfessionalFromSocialInviter(jsonObj);
+	 	
+		 return "success";
+	   }
+	 
+	 @RequestMapping(value = "/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
+	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
+		 
+		 json = "{"+json+"}";
+		 
+		 JSONObject jsonObj = new JSONObject(json);
+		 	
+		 registrationService.saveIndividualRecruiterFromSocialInviter(jsonObj);
+		 return "success";
+	   }
+	 
+	 
+	 
 	 @RequestMapping(value = "/resetCredentials" , method = RequestMethod.POST)
 	 public  String resetCredentials(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
@@ -280,12 +323,35 @@ public class RegistrationRestController {
 		 if(null != user){
 			 user.setUserName(jsonObj.getString("resetUserName"));
 			 user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("password")));
+			 prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 			 userService.addUser(user);
 		 }
-	 	
-	 	
 		 return "success";
 	   }
+	 
+	 
+	 public void prepareRegisterOptionalServicesToAllForms(JSONObject jsonObj, User user) throws JSONException{
+			if(jsonObj.has("Wouldliketo") && !isNullOrEmpty(jsonObj.getString("Wouldliketo"))){
+					String WouldliketoString  = jsonObj.getString("Wouldliketo");
+				    String Wouldlike = replacejsonToString(WouldliketoString);
+					user.setRegisterOptionalServiceId(Wouldlike);
+			   }
+		}
+	 
+	 public String replacejsonToString(String replaceString){
+			String newReplacedString = null;
+			newReplacedString = replaceString.replaceAll("\\[", "").replaceAll("\\]","");
+			newReplacedString = newReplacedString.replaceAll("\"", "");
+			return newReplacedString;
+		}
+	 
+	 
+	 @RequestMapping(value = "/getOptionalValueList" , method = RequestMethod.POST)
+	 public  String getOptionalValueList(HttpServletRequest request) throws Exception {
+	 			String registerTypeTwo = "Would like to";
+				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
+				return commonUtil.toJSON(WouldLikeToList);
+	        }
 	 
 	 
 	

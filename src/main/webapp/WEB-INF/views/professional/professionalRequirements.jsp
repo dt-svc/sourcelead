@@ -8,10 +8,52 @@
 <script src="resources/js/jquery-fun.js"></script> 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
 <script src="resources/js/formvalidator.js"></script>
+<style type="text/css">
+.cand-advsrch-popup .bs-caret {
+position: relative; top:8px;
+}
+.cand-advsrch-popup .bootstrap-select > .dropdown-toggle {
+padding-right: 0px;
+}
+</style>
+<script type="text/javascript">
+var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
+function setPostValues(title,link,picture,description,comment){
+	 if (title) {
+         postdatavalues.title = title;
+     } 
+     if (link) {
+         postdatavalues.link = link;
+     }
+     if (picture) {
+         postdatavalues.picture = picture;
+     }
+     if (description) {
+         postdatavalues.description = description;
+     }
+     if (description) {
+         postdatavalues.comment = description;
+     }
+}
+function getPostValueDetails(){
+	 return postdatavalues;
+  }
 
-
-
+</script>
+<script>
+ function socialPostSucess(service,status){
+	 msgFadein();
+     $("#msgDiv").html(" Job is Successfully Posted on Your "+service+" Wall.");
+ }
+</script>
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script> 
 <script type="text/javascript">
 window.onload = function () {
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -36,28 +78,30 @@ window.onload = function () {
         <h2>Requirements<span class="select-fild"> </h2>  
         <div class="clearfix"></div>    
           </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
           <div class="clearfix"></div> 
          <div class="reportsCount req_Crowd clearfix">
           <ul>
           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-          <li><label class="mr"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
           </c:if>
-          <li id="crowd"><label class="mr"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
-          <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b id="referByMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedByMejobs" onchange="selectRequirementType('ReferredByMe');" value="ReferredByMe">&nbsp;Referred By Me</label></b></li>
+          <li id="crowd"><label class="mr10"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-handshake-o"></i></span><b id="referByMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedByMejobs" onchange="selectRequirementType('ReferredByMe');" value="ReferredByMe">&nbsp;Referred By Me</label></b></li>
        	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-       	  <li><label class="mr"><span><i class="fa fa-handshake-o"></i></span><b id="referToMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedToMejobs" onchange="selectRequirementType('ReferredToMe');" value="ReferredToMe">&nbsp;Referred To Me</label></b></li>
-          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b id="appliedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="appliedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Applied</label></b></li>
+       	  <li><label class="mr10"><span><i class="fa fa-handshake-o"></i></span><b id="referToMeActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="referedToMejobs" onchange="selectRequirementType('ReferredToMe');" value="ReferredToMe">&nbsp;Referred To Me</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-send-o"></i></span><b id="appliedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="appliedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Applied</label></b></li>
           </c:if>
           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-          <li><label class="mr"><span><i class="fa fa-send-o"></i></span><b id="submittedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="submittedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Submitted</label></b></li>
+          <li><label class="mr10"><span><i class="fa fa-send-o"></i></span><b id="submittedActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="submittedjobs" onchange="selectRequirementType('AppliedJobs');" value="AppliedJobs">&nbsp;Submitted</label></b></li>
           </c:if>
           </ul>
           <input type="hidden" name="requirementType" id="requirementType" value="" />
           </span>
           </div> 
 		  <div class="clearfix"></div>            
-               
-      
+        <div class="success_pop" id="selector" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+         </div>
     </section>
     
     <!-- Project -->
@@ -137,7 +181,7 @@ window.onload = function () {
                         <input type="text" class="form-control input-sm" value="" name="maxRate" id="maxRate" placeholder="Max Rate">
                         <div class="input-group-btn selp-custom-min custommin">
                           <select class="selectpicker">
-                            <option selected disabled>Per</option>
+                            <option selected disabled>Rate Per</option>
                             <option>Hourly</option>
                             <option>Weekly</option>
                             <option>Bi-weekly</option>
@@ -157,15 +201,16 @@ window.onload = function () {
                   <label>Experience</label>
                   <div class="clearfix row">
                     <div class="col-md-6">
-                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years">
+                      <select class="chosen-select" id="minExp" name="minExp"  data-placeholder="Min Years" onblur="minMaxExperienceOfProfessional();">
                        <option value="" selected>Min Years</option>
                        <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
 									</c:forEach>
                       </select>
                     </div>
+                     
                     <div class="col-md-6">
-                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years">
+                       <select class="chosen-select" id="maxExp" name="maxExp" data-placeholder="Max Years" onblur="minMaxExperienceOfProfessional();">
                          <option value="" selected>Max Years</option>
                          <c:forEach begin="0" end="24" varStatus="loop">
 									    <option value="${loop.index}">${loop.index} Years</option>
@@ -173,7 +218,11 @@ window.onload = function () {
                       </select>
                     </div>
                   </div>
+                  <div class="row" id="experienceId">
+		  <input type="hidden" name="expValidationId" id="expValidationId">
+		 </div>
                 </div>
+                
                 <div class="col-md-4">
                   <label>Notice Period</label>
                   <div class="clearfix">
@@ -183,7 +232,6 @@ window.onload = function () {
                       <option>1 Month</option>
                       <option>2 Months</option>
                       <option>3 Months</option>
-                      <option>4 Months</option>
                     </select>
                   </div>
                 </div>
@@ -249,11 +297,12 @@ window.onload = function () {
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 
-              <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement('0');" class="btn btn-sm btn-primary"/>
-               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/> 
+              <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement('0');" class="btn btn-sm btn-success"/>
+               <input type="button" value="Clear" onClick="loadChosenRequirementScripts();" class="btn btn-sm btn-primary ml10"/> 
               </div>
             </div>
           </div>
+          
           </form:form>
         </div> 
 		  	  		  	  
@@ -278,7 +327,7 @@ window.onload = function () {
 	    <div id="requirementsListLoading"></div>  
 	  <div id="requirementsList"></div>
 	  <a href="#" id="loadMoreSection" style="display: none;"><section class="loadJob" onclick="getViewMoreRecords();"><i id="viewMoreLoading"></i><span id="viewMore">View more</span></section></a>
-	   <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a>
+	  <%-- <a href="#" id="noMoreRecordsSection" style="display: none;"><section class="loadJob"><span id="viewMore">No More Records</span></section></a> --%>
 	  <a href="#" id="loadMoreSearchSection" style="display: none;"><section class="loadJob" onclick="getViewMoreSearchRecords();"><i id="viewMoreSearchLoading"></i><span id="viewSearchMore">View more</span></section></a>
 	  
 	 <div class="side_mask"><div class="proj_close"></div></div>
@@ -298,6 +347,27 @@ window.onload = function () {
 
 <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
 
+
+<script>
+//Function to validate if maxExpYears  value is more the minExpYears  value
+function minMaxExperienceOfProfessional(){
+	var maxExpYears = ($('#maxExp').val());
+     var minExpYears = ($('#minExp').val());
+    
+    if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
+        $('#experienceId').find('p.jquery_form_error_message').remove(); 
+		$('input#expValidationId').attr('class','error signin_fild');
+		$("input#expValidationId").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$('input#expValidationId').attr('record-exist','yes');
+		$('input#expValidationId').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+    }  else{
+    	$('#experienceId').find('p.jquery_form_error_message').remove(); 
+    	$('input#expValidationId').removeAttr( "class record-exist record-exist-errormsg");
+		$('#experienceId').find('p.jquery_form_error_message').remove();
+    } 
+}
+
+</script>
 
 <script type="text/javascript">
     	   var config = {
@@ -393,7 +463,15 @@ window.onload = function () {
 		        }
 		    });
 		    
-		    
+		 // here call experience validation
+		       $("#maxExp").on('change', function (e) {
+		    	   minMaxExperienceOfProfessional();
+		       });
+		       
+		       $("#minExp").on('change', function (e) {
+		    	   minMaxExperienceOfProfessional();
+		       });
+		       
 		      $("#country").on('change', function (e) {
 		    	   getStates();
 		       });
@@ -576,6 +654,11 @@ function requirementsList(offset){
 	 				
 			 				var requirements = json[i];
 			 				
+			 				var title="";
+							var link="";
+							var picture="";
+							var description='';
+							var comment='';
 			 				
 			 				var jobType = '';
 			 				var experience = '';
@@ -586,7 +669,7 @@ function requirementsList(offset){
 			 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 			 					jobType = requirements.jobType;
 			 				}else{
-			 					jobType = 'No Data';
+			 					jobType = '--';
 			 				}
 			 				
 			 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
@@ -603,7 +686,7 @@ function requirementsList(offset){
 			 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 			 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 			 				}else{
-			 					experience = 'No Data';
+			 					experience = '--';
 			 				}
 			 				
 			 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
@@ -615,34 +698,44 @@ function requirementsList(offset){
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 			 				}else{
-			 					rate = 'No Data';
+			 					rate = '--';
 			 				}
 			 				
-			 				
-			 				
+			 				description =  description+'Job Title:'+requirements.jobTitle+";";
+			 				description =  description+'Posted By :'+requirements.postedOrg+";";
+			 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 			 				result = '<section class="openCta">';
 			 				result = result +'<div class="OpenJob">';
 			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 			 				result = result +'<span>';
-			 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
-			 				result = result +'<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
-			 				result = result +'<b><i class="fa fa-map-marker"></i>'+location+'</b>';
-			 				result = result +'<b><i class="fa fa-money"></i>'+rate+'</b>';
+			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
+			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';
+			 				result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>';
+			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'</span>';
 			 				result = result +'<h5>';
 			 				result = result +'<strong>Skills :</strong>';
 			 				result = result +'<ul>';
 			 				
 			 				if(requirements.skillsList != null){
+			 					description =  description+'Skills :'+requirements.skillsList+";";
 			 					for(var j=0; j<requirements.skillsList.length; j++){
 				 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 				 				}
 			 				}else{
-			 					result = result +'<li>No Data</li>';
+			 					result = result +'<li>--</li>';
 			 				}
-			 				
-			 				
+			 				if(jobType != null && jobType != '' && jobType != 'undefined'){
+			 					description =  description+'Job Type:'+requirements.jobType+";";
+			 				}
+			 				if(experience != null && experience != '' && experience != 'undefined'){
+								description =  description+'Experience :'+experience+";";
+							}
+			 				if(location != null && location != '' && location != 'undefined'){
+			 					description =  description+'Job Location: '+location+";";
+							}
+			 				description =  description+'Posted :'+requirements.calDays+";";
 			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'</ul>';
 			 				result = result +'<div class="clearfix"></div>';
@@ -674,13 +767,12 @@ function requirementsList(offset){
 			 				
 			 				if(requirementType != "AppliedJobs"){
 			 					result = result +'<div class="openCtaRight">';
-				 				/* result = result +'<p>Share Requirement</p>';
+				 			  result = result +'<p>Share Requirement</p>';
 				 				result = result +'<span>';
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-				 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
-				 				result = result +'</span>'; */
+			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+				 				result = result +'</span>'; 
 				 				result = result +'<div class="openPostBtns">';
 				 				
 				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'N')){
@@ -744,8 +836,15 @@ function requirementsList(offset){
 			 					
 			 					result = result +'<div class="openPostDate">';
 			 					
+			 					var appliedDate = requirements.requirementAppliedDate;
+			 					if(appliedDate != null && appliedDate !="" && appliedDate !='undefined'){
+					             	var array = new Array();
+					             	array = appliedDate.split('-');
+					             	var dateApplied = (array[2] + "-" + array[1] + "-" + array[0]);
+					             }
+			 					
 			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+requirements.requirementAppliedDate+'</b>';
+			 						result = result +'<i class="fa fa-clock-o"></i> Applied on : <b>'+dateApplied+'</b>';
 			 					}else{
 			 						result = result +'<i class="fa fa-user-circle"></i> Submissions Count : <b>'+requirements.recruiterSubmissionsCount+'</b>';
 			 					}
@@ -768,15 +867,16 @@ function requirementsList(offset){
 			       	    	
 			       	    	if(requirements.noOfSearchHits >= 10){
 			       	    		document.getElementById("loadMoreSection").style.display="";
-			       	    		document.getElementById("noMoreRecordsSection").style.display="none";
+			       	    		/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 			       	    	}else{
 			       	    		document.getElementById("loadMoreSection").style.display="none";
-			       	    		document.getElementById("noMoreRecordsSection").style.display="";
+			       	    		/* document.getElementById("noMoreRecordsSection").style.display=""; */
 			       	    	}
 			       	    	
 			       	    	document.getElementById("loadMoreSearchSection").style.display="none";
 		            		
 				   }
+	 			 socialInviterScripts();
 	   		    }
           }else if(offset == 0){
 	   		     var result ="";
@@ -786,12 +886,12 @@ function requirementsList(offset){
 			    $("#requirementsList").append(result); 
 			    document.getElementById("loadMoreSection").style.display="none";
 			    document.getElementById("loadMoreSearchSection").style.display="none";
-			    document.getElementById("noMoreRecordsSection").style.display="none";
+			    /* document.getElementById("noMoreRecordsSection").style.display="none"; */
    		    }else{
    		    	
    		    	document.getElementById("viewMoreLoading").removeAttribute("class");
    		    	document.getElementById("loadMoreSection").style.display="none";
-   		    	document.getElementById("noMoreRecordsSection").style.display="";
+   		    	/* document.getElementById("noMoreRecordsSection").style.display=""; */
    		    	
    		    }
 	     
@@ -807,12 +907,14 @@ function requirementsList(offset){
 
 <script>
 function searchRequirement(offset){
+	minMaxExperienceOfProfessional();
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }; 
+	
  if ($('#professional_requirement_search_form').validate(false, validationSettings)){  
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#professional_requirement_search_form').serializeFormJSON();
@@ -858,7 +960,11 @@ function searchRequirement(offset){
 							 			for(var i=0; i<json.length; i++){
 							 				
 									 				var requirements = json[i];
-									 				
+									 				var title="";
+													var link="";
+													var picture="";
+													var description='';
+													var comment='';
 									 				
 									 				var jobType = '';
 									 				var experience = '';
@@ -866,11 +972,12 @@ function searchRequirement(offset){
 									 				var location = '';
 									 				
 									 				var jobId = '';
-									 				
+									 				description =  description+'Job Title:'+requirements.jobTitle +";";
+									 				description =  description+' Posted By :'+requirements.postedOrg+";";
 									 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
 									 					jobType = requirements.jobType;
 									 				}else{
-									 					jobType = 'No Data';
+									 					jobType = '--';
 									 				}
 									 				
 									 				if(requirements.jobId != null && requirements.jobId != '' && requirements.jobId != 'undefined'){
@@ -887,7 +994,7 @@ function searchRequirement(offset){
 									 				else if(requirements.minExperience != '' && requirements.maxExperience != ''){
 									 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
 									 				}else{
-									 					experience = 'No Data';
+									 					experience = '--';
 									 				}
 									 				
 									 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
@@ -899,9 +1006,9 @@ function searchRequirement(offset){
 									 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
 									 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
 									 				}else{
-									 					rate = 'No Data';
+									 					rate = '--';
 									 				}
-									 				
+									 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
 									 				result = result +'<div class="OpenJob">';
 									 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
@@ -915,16 +1022,24 @@ function searchRequirement(offset){
 									 				result = result +'<h5>';
 									 				result = result +'<strong>Skills :</strong>';
 									 				result = result +'<ul>';
-									 				
 									 				if(requirements.skillsList != null){
+									 					description =  description+'Skills :'+requirements.skillsList+";";
 									 					for(var j=0; j<requirements.skillsList.length; j++){
 										 					result = result +'<li>'+requirements.skillsList[j]+'</li>';
 										 				}
 									 				}else{
-									 					result = result +'<li>No Data</li>';
+									 					result = result +'<li>--</li>';
 									 				}
-									 				
-									 				
+									 				if(jobType != null && jobType != '' && jobType != 'undefined'){
+									 					description =  description+'Job Type:'+requirements.jobType+";";
+									 				}
+									 				if(experience != null && experience != '' && experience != 'undefined'){
+														description =  description+'Experience :'+experience+";";
+													}
+									 				if(location != null && location != '' && location != 'undefined'){
+									 					description =  description+'Job Location: '+location+";";
+													}
+									 				description =  description+'Posted :'+requirements.calDays+";";
 									 				result = result +'<div class="clearfix"></div>';
 									 				result = result +'</ul>';
 									 				result = result +'<div class="clearfix"></div>';
@@ -956,13 +1071,12 @@ function searchRequirement(offset){
 									 				
 									 				if(requirementType != "AppliedJobs"){
 									 					result = result +'<div class="openCtaRight">';
-										 				/* result = result +'<p>Share Requirement</p>';
-										 				result = result +'<span>';
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-linkedin-square"></i></a>';
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-twitter-square"></i></a>';				  
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a>';
-										 				result = result +'<a href="javascript:void(0)"><i class="fa fa-envelope-square"></i></a>';
-										 				result = result +'</span>'; */
+										 				 result = result +'<p>Share Requirement</p>';
+										 				 result = result +'<span>';
+									 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
+														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
+														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
+										 				result = result +'</span>'; 
 										 				result = result +'<div class="openPostBtns">';
 										 				
 										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
@@ -1004,10 +1118,10 @@ function searchRequirement(offset){
 									       	     
 									       	    if(requirements.noOfSearchHits >= 10){
 								       	    		document.getElementById("loadMoreSearchSection").style.display="";
-								       	    		document.getElementById("noMoreRecordsSection").style.display="none";
+								       	    		/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 								       	    	}else{
 								       	    		document.getElementById("loadMoreSearchSection").style.display="none";
-								       	    		document.getElementById("noMoreRecordsSection").style.display="";
+								       	    		/* document.getElementById("noMoreRecordsSection").style.display=""; */
 								       	    	}
 									       	  
 									       	     document.getElementById("viewMoreSearchLoading").removeAttribute("class");
@@ -1022,13 +1136,13 @@ function searchRequirement(offset){
 				    			    $("#requirementsList").append(result); 
 				    			    document.getElementById("loadMoreSection").style.display="none";
 				    			    document.getElementById("loadMoreSearchSection").style.display="none";
-				    			    document.getElementById("noMoreRecordsSection").style.display="";
+				    			   /*  document.getElementById("noMoreRecordsSection").style.display=""; */
 		               		 }else{
 		           		    	document.getElementById("viewMoreSearchLoading").removeAttribute("class");
-		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
-		           		    	document.getElementById("noMoreRecordsSection").style.display="none";
+		           		    	/* document.getElementById("noMoreRecordsSection").style.display="none"; */
 		               		 }
 					       	$("#requirementsListLoading").removeAttr("style"); 
+					        socialInviterScripts();
 						},
 					});  
 			return true;
@@ -1185,15 +1299,9 @@ function flushContactDetails(){
 </script>
 
 <script>
-function getContactsCount(){
-	var contactsCount =  $('#userContacts_chosen  span').size();
+function getContactsCount(e,params){
+	var contactsCount  = $('#userContacts option:selected').length;
 	$("#contactsCount").html(contactsCount);
-	$('#userContacts_chosen').next("p").remove();
-	
-	$('.search-choice-close').click(function() {
-		var contactsCount =  $('#userContacts_chosen  span').size();
-		$("#contactsCount").html(contactsCount);
-	});
 }
 </script>
 
@@ -1301,6 +1409,8 @@ function loadChosenRequirementScripts(){
 	 $("#anyKeyWord").empty();
 	 $("#allReqKeyWord").empty();
 	 $("#excludeReqKeyWord").empty();
+	 $('#experienceId').find('p.jquery_form_error_message').remove(); 
+	 
 }
 </script>
 
@@ -1518,3 +1628,4 @@ $('body').on('submit', '#referToContacts', function(e){
     	requirementsList('0')
     }
 </script>
+<jsp:include page="../socialinviterscripts.jsp" />

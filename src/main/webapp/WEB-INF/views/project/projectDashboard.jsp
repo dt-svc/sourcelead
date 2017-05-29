@@ -41,6 +41,12 @@ display: inline;
 .project_wrap {
 overflow-x: auto;
 }
+.proj_show span {
+	padding: 0px 15px 0px 0px;
+}
+.proj_show i {
+	position: absolute; right: 0px;
+}
 </style>
 <body>
       <!-- Content Area -->
@@ -55,7 +61,7 @@ overflow-x: auto;
           <div class="pull-left">
             <h2>Projects</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;ProjectList</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Projects</div>
         </section>
 
         
@@ -101,7 +107,7 @@ overflow-x: auto;
 		</div>
 		</c:if> --%>
 		<%-- <c:if test="${!empty projectsList}"> --%>
-		<div class="project_wrap">
+		<div class="project_wrap minHeight_225">
 		
 		<%-- <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();">
@@ -251,7 +257,7 @@ overflow-x: auto;
       </div> --%>
 		
 		
-        <div class="timesheet_head">
+        <div class="timesheet_head topfilters">
         	<ul>
 				<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Client</span><i class="glyphicon glyphicon-play"  ></i>|
                 	<div id="filter1ApprovedPop" class="approved_pop">
@@ -266,15 +272,15 @@ overflow-x: auto;
                 	<div id="filter2ApprovedPop" class="approved_pop">
                     	<ul>
                         	<li><input id="c5" type="checkbox" name="projectStatus" value ="All" onclick="filter();"  ><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">STARTED</label></li>
-							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">INPROGRESS</label></li>
-							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">COMPLETED</label></li>
-               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">ONHOLD</label></li>
+							<li><input id="c6" type="checkbox" name="projectStatus" value ="STARTED"  onclick="filter();"><label for="c6">Started</label></li>
+							<li><input id="c7" name="projectStatus" type="checkbox" value ="INPROGRESS"  onclick="filter();"><label for="c7">In-Progress</label></li>
+							<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="COMPLETED"  onclick="filter();"><label for="c8">Completed</label></li>
+               				<li><input id="c8" type="checkbox"  name="projectStatus"  type="checkbox" value ="ONHOLD"  onclick="filter();"><label for="c8">On-Hold</label></li>
                         </ul>
                     </div>                	
                 </li>
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_PROJECT')"> 
-	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Create Project</a></li>		
+	                   	<li><a href="<c:url value='/project'/>"><i class="fa fa-plus"></i>Add Project</a></li>		
 	             </sec:authorize>	
                 <div class="clearfix"></div>
             </ul>
@@ -507,9 +513,11 @@ $(document).ready(function() {
 
 <script>
 function pagination(){  
+	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#example').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+		"aaSorting": [[4,'desc']],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -625,16 +633,16 @@ function filter(){
    		    		}
    		    		result = result +'<td data-title="Status"><div>';
    		    		if(report.projectStatus == 'STARTED'){
-	    			  result = result +'<b>'+report.projectStatus+'</b>';
+	    			  result = result +'<b>Started</b>';
 	    			}
    		    		if(report.projectStatus == 'INPROGRESS'){
-  	    			  result = result +'<b class="proj_process">'+report.projectStatus+'</b>';
+  	    			  result = result +'<b class="proj_process">In-Progress</b>';
   	    			}
    		    		if(report.projectStatus == 'COMPLETED'){
-  	    			  result = result +'<b class="proj_active">'+report.projectStatus+'</b>';
+  	    			  result = result +'<b class="proj_active">Completed</b>';
   	    			}
    		    		if(report.projectStatus == 'ONHOLD'){
-  	    			  result = result +'<b class="proj_deactivate">'+report.projectStatus+'</b>';
+  	    			  result = result +'<b class="proj_deactivate">On-Hold</b>';
   	    			}
    		    		
    		    		result = result +'</div></td>';
@@ -687,6 +695,7 @@ function filter(){
 <script>
   $('#selector').delay(2000).fadeOut('slow');
 </script> 
+
  <script>
 // Edit pop
 $(document).ready(function() {	

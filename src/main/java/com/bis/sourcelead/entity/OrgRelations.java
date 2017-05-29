@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -141,6 +142,45 @@ public class OrgRelations implements Serializable{
 	
 	@Transient
 	private String msg;
+	
+	@Transient
+	private List<OrgRelations> matchedDomainClientList;
+	
+	@Transient
+	private List<OrgRelations> matchedClientNameList;
+	
+	@Transient
+	private Integer reqReleasedCount;
+	
+	@Transient
+	private Integer submittedCount;
+	
+	@Transient
+	private Integer shortlistedCount;
+	
+	@Transient
+	private Integer interviewedCount;
+	
+	@Transient
+	private Integer offeredCount;
+	
+	@Transient
+	private Integer rejectedCount;
+	
+	@Transient
+	private Integer backoutCount;
+	
+	@Transient
+	private String vendorName;
+	
+	@Transient
+	private String address;
+	
+	@Transient
+	private String billingAddress;
+	
+	@Transient
+	private String paymentTerms;
 	
 	public String getLevel() {
 		return level;
@@ -455,4 +495,113 @@ public class OrgRelations implements Serializable{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
+	public List<OrgRelations> getMatchedDomainClientList()
+	{
+		return matchedDomainClientList;
+	}
+
+	public void setMatchedDomainClientList(List<OrgRelations> matchedDomainClientList)
+	{
+		this.matchedDomainClientList = matchedDomainClientList;
+	}
+
+	public List<OrgRelations> getMatchedClientNameList()
+	{
+		return matchedClientNameList;
+	}
+
+	public void setMatchedClientNameList(List<OrgRelations> matchedClientNameList)
+	{
+		this.matchedClientNameList = matchedClientNameList;
+	}
+
+	public Integer getReqReleasedCount() {
+		return reqReleasedCount;
+	}
+
+	public void setReqReleasedCount(Integer reqReleasedCount) {
+		this.reqReleasedCount = reqReleasedCount;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public Integer getSubmittedCount() {
+		return submittedCount;
+	}
+
+	public void setSubmittedCount(Integer submittedCount) {
+		this.submittedCount = submittedCount;
+	}
+
+	public Integer getShortlistedCount() {
+		return shortlistedCount;
+	}
+
+	public void setShortlistedCount(Integer shortlistedCount) {
+		this.shortlistedCount = shortlistedCount;
+	}
+
+	public Integer getInterviewedCount() {
+		return interviewedCount;
+	}
+
+	public void setInterviewedCount(Integer interviewedCount) {
+		this.interviewedCount = interviewedCount;
+	}
+
+	public Integer getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(Integer offeredCount) {
+		this.offeredCount = offeredCount;
+	}
+
+	public Integer getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(Integer rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
+
+	public Integer getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(Integer backoutCount) {
+		this.backoutCount = backoutCount;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public String getPaymentTerms() {
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms) {
+		this.paymentTerms = paymentTerms;
+	}
+	
 }

@@ -40,7 +40,7 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Generate offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
+				result= result + '	            <div class="add_inter_head"> <span>Generate Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
@@ -162,14 +162,14 @@ function selectOfferApplicants(){
            </select>
      </div>
      <div class="positionRelative float select-field">
-     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="validate_length length1-20" data-validation-optional="true" onblur="validateRateAndRateType();">
+     	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="required validate_float validate_length length1-8" onclick="validateRateAndRateType();">
      </div>
    	 <div class="positionRelative float select-rateper select-field">
-           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Type" style="height: 30px;" onblur="validateRateAndRateType();">
+           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Per" style="height: 30px;" onchange="validateRateAndRateType();">
 	                 <option value="">Rate Per</option>
 	                 <option value="Hourly">Hourly</option>
 	                 <option value="Weekly">Weekly</option>
-	                 <option value="Bi-weekly">Bi-weekly</option>
+	                 <option value="Bi-weekly">Bi-Weekly</option>
 	                 <option value="Monthly">Monthly</option>
 	                 <option value="Bi-Monthly">Bi-Monthly</option>
 	                 <option value="Semi-Monthly">Semi-Monthly</option>
@@ -179,7 +179,7 @@ function selectOfferApplicants(){
 </div> 
 
 <div id="divOfferTd4" style="display: none; float: left;" class="select-field">
- 	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType">
+ 	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType" onchange="otherJobType(this);">
  	 				 <option value="" disabled selected>Select Type</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
@@ -190,7 +190,15 @@ function selectOfferApplicants(){
 	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}>Other</option>
 	                      
 	</select>
-</div>	              
+	<div id="REPLACEROWIDPositionTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDJobOtherType" name="REPLACEROWIDJobOtherType" class="form-control input-sm pavInp" placeholder="Other type" field-name="Other type"></div>
+</div>	  
+
+<!-- <div id="divOfferTd6" style="display: none; float: left;">
+       <select multiple class="blminwidth-50"  id="REPLACEROWIDJobOtherType" name="REPLACEROWIDJobOtherType" field-name="Other">
+			
+	  </select>
+</div> -->
+            
 <div id="divOfferTd5" style="display: none; float: left;">
 	<div class="input-group">
         <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
@@ -343,19 +351,20 @@ function validateRateAndRateType(){
 	
 	var offerAmount = document.getElementById("1Amount").value;
 		var paymentModeType = $("#1PaymentMode").val();
-	 if(paymentModeType != null && paymentModeType != "" && paymentModeType != 'undefined'){
+	 /* if(paymentModeType != null && paymentModeType != "" && paymentModeType != 'undefined'){
 			$('#1Amount').removeAttr('data-validation-optional');
 			 $('#1Amount').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
 		 }else{
 			 $('#1Amount').removeAttr('data-validation');
 			 $('#1Amount').attr("data-validation-optional","true"); 
-		 }
+		 } */
 		 
 	 if(offerAmount != null && offerAmount != ""){
+		 $('#1PaymentMode').find('p.jquery_form_error_message').remove();	
 		 $('#1PaymentMode').removeAttr('data-validation-optional');
 		 $('#1PaymentMode').attr("data-validation","required");
-		 $('#rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
 	 }else{
+		 $('#1Amount').append('p.jquery_form_error_message');	
 		 $('#1PaymentMode').removeAttr('data-validation');
 		 $('#1PaymentMode').attr("data-validation-optional","true"); 
 	 }
@@ -657,6 +666,22 @@ $(function(){
 function myOfferFunction(){
 	$("#isFlushCandidateRequired").val('Y');
 	getShortListAndSubmittedAndInterviewedCandidates();
+}
+</script>
+
+<script>
+function otherJobType(id){
+	var jobType = id.value;
+	if(jobType !=null && jobType != "" && jobType != "undefined" && jobType == 'Other'){
+		 document.getElementById(id.id+'Check').style.display="block";
+		 $('#'+id.id+'JobOtherType').removeAttr('data-validation-optional');
+		 $('#'+id.id+'JobOtherType').attr("data-validation","required validate_length length1-50");  
+	}else{
+		document.getElementById(id.id+'Check').style.display="none";
+		 $('#'+id.id+'JobOtherType').removeAttr("data-validation");
+		 $('#'+id.id+'JobOtherType').attr('data-validation-optional',"true");
+	}
+	
 }
 </script>
 

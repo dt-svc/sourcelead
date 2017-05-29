@@ -10,6 +10,7 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createOrg_form").reset();
+		getTimezonesList();
 	});
 </script>
 
@@ -29,7 +30,7 @@
           <div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">
              
             <div class="form-group">
-	            <label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
+	            <label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
 	              <input type="text" name="companyName" id="companyName"  value="${companyName}" class="form-control" onblur="validateCompanyName();"  field-name="Company Name" data-validation="required validate_Space validate_length length2-250" />
 	             <span class="hidden">Company</span>
@@ -39,7 +40,7 @@
             <div class="form-group">
 	            <label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name="Company Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="form-control" />
+	              <input type="text" name="website"  value="${website}"   id="companyWebsite"  onblur="validateWebsite();validateCompanyEmail();"  field-name=" Website" data-validation="required validate_Space validate_domain validate_length length2-100"    class="form-control" />
 	            <span class="hidden">Website</span>
 	            </div>
             </div>
@@ -48,8 +49,8 @@
              
              <div class="form-group">
 	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-	            <div class="col-md-9">
-	              <select class="form-control select-bg" name="country" field-name="Country" data-validation="required" value="${country}" >
+	            <div class="col-md-9 dropdown-select">
+	              <select class="form-control" name="country" id="countryListId" field-name="Country" data-validation="required" value="${country}" onchange="getTimezonesList();" >
 	                <option value="" >Select Location</option>
 	                <option value="Australia">Australia</option>
 	                <option value="France">France</option>
@@ -65,11 +66,7 @@
                <div class="form-group">
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
-					 <option value="" >Select Timezone</option>
-                        <c:forEach var="option" items="${timezoneList}">
-	                          <option value="${option.id}">${option.timeZoneId}</option>
-                         </c:forEach>
+					 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Time zone" data-validation="required" id="timeZone" name="timeZone">
                      </select>
                      <span class="hidden">Time Zone</span>
 				</div>
@@ -77,7 +74,8 @@
        
           <div class="form-group">
             <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
-            <div class="col-md-9 checkbox">
+            <div class="col-md-9 checkBox">
+            <div class="clearfix reMar">
 	            <c:forEach var="module" items="${modulesList}">
 	            <ul class="list-unstyled pull-left">
 	                <li>
@@ -97,9 +95,10 @@
 					 </li>
 				</ul>
 			    </c:forEach>
-            </div>
+			    </div>
             <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 
+            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 			    
+            </div>
           </div> 
           
           
@@ -111,7 +110,7 @@
             <div class="form-group">
 	            <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
-	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Company Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
+	              <input type="text" name="email" id="email"   value="${email}" onblur="validateCompanyEmail();validateWebsite();getUserDetails();" field-name="Email" data-validation="required validate_Space validate_email validate_length length2-100" class="form-control"  />
 	            <span class="hidden">Email</span>
 	            </div>
             </div>
@@ -131,6 +130,15 @@
 	             <span class="hidden">Last Name</span>
 	            </div>
             </div>
+            
+            <div class="form-group">
+	            <label class="col-md-3">Phone Number </label>
+	            <div class="col-md-9">
+	               <input type="text" name="mobilePhone"  id="mobilePhone"  value="${mobilePhone}" class="form-control" field-name="Phone Number" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone"  />
+	             <span class="hidden">Phone Number</span>
+	            </div>
+            </div>
+            
           
           
 </div>
@@ -360,19 +368,27 @@ function getUserDetails(){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
-	        			$("#firstName").attr("disabled", true);
+	        			$("#firstName").attr("readonly", "readonly");
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").removeAttr("readonly", "readonly");
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
-		        			$("#lastName").attr("disabled", true);
+		        			$("#lastName").attr("readonly", "readonly");
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").removeAttr("readonly", "readonly");
 	        			    $("#lastName").val('');
+	        		 }
+	        		
+	        		 if(json[2] != null && json[2] != ''){
+		        			$("#mobilePhone").attr("readonly", "readonly");
+		        		    $("#mobilePhone").val(json[2]);
+	        		 }else{
+	        			    $("#mobilePhone").removeAttr("readonly", "readonly");
+	        			    $("#mobilePhone").val('');
 	        		 }
 	        	}
 			 },
@@ -381,10 +397,10 @@ function getUserDetails(){
 	        }
 	    });
 	}else{
-		$("#firstName").attr("disabled", false);
+		$("#firstName").removeAttr("readonly");
 	    $("#firstName").val('');
 	    
-	    $("#lastName").attr("disabled", false);
+	    $("#lastName").removeAttr("readonly");
 	    $("#lastName").val('');
 	    
 	   
@@ -477,5 +493,56 @@ function validateCompanyEmail(){
 
         
 </script> 
+<script>
+function getTimezonesList(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var country = $('#countryListId').val();
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        output = output + "<option value=''>--Select--</option>";
+	        if(country == 'India'){
+    			output = output + "<option value='246' selected> Asia/Kolkata </option>";
+    		}else if(country == 'United States'){
+    			output = output + "<option value='132' selected> America/Chicago </option>";
+    		}else if(country == 'United Kingdom'){
+    			output = output + "<option value='333' selected> Europe/London </option>";
+    		}else if(country == 'Singapore'){
+    			output = output + "<option value='272' selected> Asia/Singapore </option>";
+    		}else if(country == 'France'){
+    			output = output + "<option value='342' selected> Europe/Paris </option>";
+    		}else if(country == 'Australia'){
+    			output = output + "<option value='298' selected> Australia/Adelaide </option>";
+    		}
+	        	for (var i=0; i<json.length; i++){
+	        		var opt = json[i];
+	        		output = output + "<option value='" +opt.id+ "'>"+opt.timeZoneId+"</option>";
+				}
+	        	$("#timeZone").empty();
+	        	$("#timeZone").append(output);
+	        	$("#timeZone").trigger("chosen:updated");
+	        }
+	 });
+}
+</script>
 
-
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+});
+</script>

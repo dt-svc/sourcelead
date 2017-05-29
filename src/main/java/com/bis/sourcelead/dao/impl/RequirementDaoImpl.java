@@ -1,7 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +21,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * 
@@ -45,6 +49,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@Autowired
 	UserRoleDao userRoleDao;
@@ -147,6 +154,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
 			params.put("approverUserId",user.getId());
+			params.put("userId",user.getId());
 			params.put("level1",1);
 			params.put("level2",2);
 			
@@ -187,6 +195,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		else{
 			query = session.createQuery(from+" "+subQuery+" "+subQuery7+"and requirement.clientId.id IN (:clientList) ORDER BY requirement.id DESC");
+			params.put("clientsList",clientsList);
 		}
 		
 		for (String str : query.getNamedParameters())
@@ -296,10 +305,10 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();  
-		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId";
-		return session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
+		String query = "from RequirementAssignTo reqassignto left join fetch reqassignto.teamId left join fetch reqassignto.roleId left join fetch reqassignto.assignUserId left join fetch reqassignto.requirementId  where reqassignto.assignUserId.id =:userId and reqassignto.roleId.orgLocations.id =:orgLocationId ";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setCacheable(true).list();
 	}
 
 
@@ -410,6 +419,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String whereCondition = subQuery;
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		query.setMaxResults(10);
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")){
@@ -671,9 +681,9 @@ public class RequirementDaoImpl implements RequirementDao {
 		String query = "";
 		if(orgRelationId != null && orgLocationId != null){
 			
-			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
+//			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
 			/*if("Admin".equalsIgnoreCase(userRole.getUserType())){*/
-				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL";
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id";
 				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
 			/*}else{
 				query = "from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and parentRequirement !='null' and requirement.spocId.createdBy =:loginUserCode";
@@ -774,7 +784,8 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional
 	public List<Requirement> getManagerAssignedRequirementsList(Long userId, Long orgLocationId) throws Exception {
 		Session session = sessionFactory.getCurrentSession();
-		String query = "from Requirement requirement left join fetch requirement.parentRequirement "
+		String query = "from Requirement requirement left join f"
+				+ "etch requirement.parentRequirement "
 					+ "where requirement.managerUserId.id = :userId and requirement.orgLocationId.id = :orgLocationId";
 		return session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
@@ -892,4 +903,304 @@ public class RequirementDaoImpl implements RequirementDao {
 	    return noticePeriodList.get(0);
 	}
 	
+	
+	
+
+@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId,User user)
+			throws Exception {
+		
+		     Session session = this.sessionFactory.getCurrentSession();
+		
+			 String requirementQuery = "from Requirement req where  ( (req.managerUserId.id =:userId)  or (req.createdBy =:userCode) or (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.assignUserId.id =:userId ) ) or (req.id IN (select  reqApproverHirerarchy.requirementId.id  from RequirementApproverHierarchy reqApproverHirerarchy  where  reqApproverHirerarchy.approverUserId.id =:userId ) ) ) and req.orgLocationId.id =:orgLocationId  ";
+	         List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
+	        		                                    .setLong( "userId", user.getId())
+	        		                                    .setLong( "orgLocationId", orgLocationId)
+	        		                                    .setString("userCode", user.getUserCode())
+	        		                                    .setCacheable(true)
+	        		                                    .list();
+  
+        return requirementList;
+	}
+
+     @Override
+     @Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId,User user)
+				throws Exception {
+			
+			      Session session = this.sessionFactory.getCurrentSession();
+			     
+			      String requirementQuery = "from Requirement req where  (req.id IN (select  reqAssignTo.requirementId.id  from RequirementAssignTo reqAssignTo  where  reqAssignTo.teamId.id IN ( select tm.id from Team  tm where tm.ownerUserId.id =:userId and tm.orgLocationsId.id =:orgLocationsId )) ) ";
+		          List<Requirement> requirementList = session.createQuery(requirementQuery.toString())
+		        		                                     .setLong( "userId", user.getId())
+		        		                                     .setLong( "orgLocationId", orgLocationId)
+		        		                                     .setCacheable(true)
+		        		                                     .list();
+		
+			return requirementList;
+		}
+
+
+     @Override
+ 	 @Transactional(rollbackFor = { Exception.class })
+ 	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)
+ 			throws Exception {
+ 		
+ 		Session session = this.sessionFactory.getCurrentSession();
+ 		
+ 		 java.sql.Date sqlCurrentDate = null;
+ 	     Date currentDate =  commonUtil.currentDate();
+ 		// for current Date Converting to Sql Date Format
+ 		 if(currentDate != null){
+ 				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+ 				java.sql.Timestamp sq = new java.sql.Timestamp(currentDate.getTime());
+ 		 }
+ 		
+ 		  String requirementQuery = "select count(*)  from Requirement req where   req.spocId.clientLocationId.id =:orgLocationId and  req.spocId.clientUser.id =:userId  and DATE(req.createdDate) =:sqlCurrentDate GROUP BY req.id";
+           List<Long> requirementList = session.createQuery(requirementQuery.toString())
+         		                                     .setLong( "userId", user.getId())
+         		                                     .setDate("sqlCurrentDate", sqlCurrentDate)
+         		                                     .setLong( "orgLocationId", orgLocationId)
+         		                                     .setCacheable(true)
+         		                                     .list();
+         Integer count = 0;
+   		if(requirementList != null && !requirementList.isEmpty()){
+   				count = requirementList.get(0).intValue();
+   		}
+   		return count;
+ 	}
+     
+     
+	 	@Override
+	 	@Transactional(rollbackFor = { Exception.class })
+	 	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId,  TeamMembers teamMembers) throws Exception {
+	 		
+	 		Session session = this.sessionFactory.getCurrentSession();
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.orgLocationId.id =:orgLocationId and  requirement.id  IN (select reqassign.requirementId.id  from RequirementAssignTo reqassign where reqassign.assignUserId.id =:userId  and reqassign.teamId.id =:teamId)";
+	 		
+	         List<Requirement> requirementList = session.createQuery(query).setLong("userId", teamMembers.getMemberUserId().getId()).setLong("teamId", teamMembers.getTeamId().getId()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	 		return requirementList;
+	 	}
+
+		@Override
+		 @Transactional(rollbackFor = { Exception.class })
+		public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,Date startDateUTC, Date endDateUTC)
+				throws Exception {
+			
+			Map<String, Object> params = new HashMap<String,Object>();
+			String subQueryDateRange = "";
+			
+			if(null != startDateUTC && null != endDateUTC){
+				subQueryDateRange = "and (requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC)";
+				  params.put("startDateUTC",startDateUTC);
+				  params.put("endDateUTC",endDateUTC);
+			}
+			
+			
+		    String queryString ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode "+subQueryDateRange+" ";
+			Session session = this.sessionFactory.getCurrentSession();
+		    params.put("orgLocationId",orgLocationId);
+		    params.put("userCode",user.getUserCode());
+			
+			/*String query ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+			long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();*/
+			    
+			    Query query = session.createQuery(queryString);
+			    for (String str : query.getNamedParameters())
+		        {
+					if(str.equalsIgnoreCase("startDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					if(str.equalsIgnoreCase("endDateUTC")){
+						query.setParameter( str, (Date) params.get(str) );
+					}
+					
+					if(str.equalsIgnoreCase("orgLocationId")){
+						query.setParameter(str, (long) params.get(str));
+					}
+					
+					if(str.equalsIgnoreCase("userCode")){
+						query.setParameter(str, params.get(str));
+					}
+					
+					
+		        }
+			    return (Long)query.uniqueResult();
+				
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId,Date startDateUTC, Date endDateUTC) {
+			Session session = this.sessionFactory.getCurrentSession();
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where   requirement.clientId.id =:relationId and  requirement.spocId.id =:spocId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC )";
+	        List<Requirement> requirementList = session.createQuery(query).setLong("relationId", relationId).setLong("spocId", spocId).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).setCacheable(true).list();
+	 		return requirementList;
+		}
+		
+		@Override
+	 	@Transactional(rollbackFor = { Exception.class })
+	 	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception {
+	 		
+	 		Session session = this.sessionFactory.getCurrentSession();
+	 		String subQuery = "";
+	 		if(sowType.equalsIgnoreCase("Client SOW")){
+	 			subQuery = "and requirement.isClientJob = 'Y' and requirement.clientId <> null ";
+	 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
+	 			subQuery = " ";
+	 		}
+	 		
+	 		String query = "from Requirement requirement left join fetch requirement.parentRequirement where  requirement.orgLocationId.id =:orgLocationId "+subQuery+" ORDER BY requirement.id DESC";
+	 		
+	         List<Requirement> requirementList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	 		return requirementList;
+	 	}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<String> getAllRequirementEducationByRequirementId(Long requirementId){
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select req.education from Requirement req where req.id =:requirementId";
+		    List<String> educationList = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+	        return educationList;
+		}
+		
+		@Transactional(rollbackFor = { Exception.class })
+		public Requirement getRequirementDetailsById(long requirementId){
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Requirement  requirement =  null;
+			List<Requirement>  requirementList = session.createQuery("from Requirement req where req.id =:requirementId").setLong("requirementId", requirementId).setCacheable(true).list();
+			if(null != requirementList && requirementList.size() >0){
+				requirement = requirementList.get(0);
+			}
+			return requirement;
+		}
+
+	
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays)
+				throws Exception {
+			Date currentDate =  commonUtil.currentDate();
+			java.sql.Date sqlCurrentDate = null;
+			
+			 if(currentDate != null){
+					sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+			 }
+			
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		     Calendar c = Calendar.getInstance();
+		      c.setTime(new Date()); // Now use today date.
+		    c.add(Calendar.DATE, -Integer.parseInt(numberOfDays)); // Adding  The DateRange days
+		    String updatedDate     = dateFormat.format(c.getTime());
+		    Date parsed = dateFormat.parse(updatedDate);
+		    java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = userDao.getUserById(userId);
+				
+		Map<String, Object> params = new HashMap<String,Object>();
+		
+		/*String subQueryRole = "";*/
+		String from = "from Requirement requirement left join fetch requirement.parentRequirement "; 
+		String subQuery = "";
+		//String dateBetween = "(requirement.createdDate BETWEEN :sqlCurrentDate AND :endDate) and ";
+		String dateBetween = "requirement.createdDate >=:endDate and requirement.createdDate <= :sqlCurrentDate and ";
+		
+		if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+			
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+			params.put("userId",userId);
+
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			params.put("userId",userId);
+			
+			if(subQuery1 != "" || subQuery2 != "" || subQuery3 !=""){
+				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")  or ("+subQuery3+") ) ";
+				params.put("orgLocationId",orgLocationId);
+				params.put("sqlCurrentDate",sqlCurrentDate);
+				params.put("endDate",endDate);
+			}
+		}else{
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT') ";
+			
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId",userId);
+			
+			if(subQuery1 != "" || subQuery2 !=""){
+				subQuery = "where "+dateBetween+" requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") or ("+subQuery2+")) ";
+				params.put("orgLocationId",orgLocationId);
+				params.put("sqlCurrentDate",sqlCurrentDate);
+				params.put("endDate",endDate);
+			}
+		}
+		
+		String whereCondition = subQuery;
+		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")){
+				query.setLong(str, (long) params.get( str ));
+			}
+			else{
+				query.setParameter( str, params.get( str ) );
+			}
+        	
+        }
+		return query.setCacheable(true).list();
+		
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId,
+				Long orgRelationId, Date startDateUTC, Date endDateUTC) {
+			logger.debug("getAllReleasedJobsForVendor start");
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Requirement> releasedJobsList = null;
+			String query = "";
+			if(orgRelationId != null && orgLocationId != null){
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC ) and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id";
+				releasedJobsList = session.createQuery(query).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).setCacheable(true).list();
+			}
+	        return releasedJobsList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations)
+				throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Requirement> releasedJobsList = null;
+			String query = "";
+			if(user != null && orgLocations != null){
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.orgLocationId =:orgLocationId and :userId IN (requirement.releasedBy)";
+				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocations.getId()).setLong( "userId", user.getId() ).setCacheable(true).list();
+			}
+	        return releasedJobsList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
+				Long relationId) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Requirement> releasedJobsList = null;
+			String query = "";
+			if(parentreqIds != null && relationId != null){
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.parentRequirement.id IN (:parentreqIds) and requirement.clientId.id =:relationId";
+				releasedJobsList = session.createQuery(query).setParameterList("parentreqIds", parentreqIds).setLong("relationId", relationId).setCacheable(true).list();
+			}
+	        return releasedJobsList;
+		}
+		
 }

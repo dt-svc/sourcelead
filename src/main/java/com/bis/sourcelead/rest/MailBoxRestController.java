@@ -161,8 +161,7 @@ public class MailBoxRestController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/sendEmailToUsers", method = RequestMethod.POST)
-	public String sendEmailToUsers(@RequestParam(value = "json", required = false) String json,
-			MultipartHttpServletRequest request) throws Exception {
+	public String sendEmailToUsers(MultipartHttpServletRequest request) throws Exception {
 		
 		MultipartFile multiFile = null;
 		Iterator<String> itrator = request.getFileNames();
@@ -170,8 +169,8 @@ public class MailBoxRestController {
 	        multiFile = request.getFile(itrator.next());
 		}
 		
-		String jsonc = "{" + json + "}";
-		JSONObject jsonObj = new JSONObject(jsonc);
+		/*String jsonc = "{" + json + "}";*/
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
 		
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -248,6 +247,9 @@ public class MailBoxRestController {
 	public String sendMailsToTrash(@RequestParam(value = "mailIds", required = false) String mailIds,HttpServletRequest request) throws Exception {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		UserMailBox mailbox = new UserMailBox();
+		String resultJson;
 		
 		if(!isNullOrEmpty(mailIds)){
 			String[] mailBoxIds = mailIds.split(",");
@@ -269,8 +271,13 @@ public class MailBoxRestController {
 			}
 		}
 		
+		Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Inbox");
+		Integer requestedUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(user.getId(), orgLocations.getId(), "Requested");
+		mailbox.setUnreadInboxCount(inboxUnreadMailsCount);
+		mailbox.setUnreadRequestedCount(requestedUnreadMailsCount);
 		
-		return "success";
+		resultJson = commonUtil.toJSON(mailbox);
+		return resultJson;
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_MAIL_BOX')")

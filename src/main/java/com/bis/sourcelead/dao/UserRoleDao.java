@@ -52,6 +52,8 @@ public interface UserRoleDao {
 	
 	public UserRole getUserByUserId(Long userId) throws Exception;
 	
+	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId);
+	
 	public Long getUsersCountByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	//Prasad Salina to get all the user ids baded on reportingManager userid
@@ -87,6 +89,8 @@ public interface UserRoleDao {
 	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId) throws Exception;
 	
 	public HashSet<UserRole> getAllUserTimeSheetSubmissionStatusCurrentWeek();
+	
+	List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	List<Long> getAllAssignedUsersIdsByReportingManagerId(Long reportingManagerId,Long orgLocationId);
 	

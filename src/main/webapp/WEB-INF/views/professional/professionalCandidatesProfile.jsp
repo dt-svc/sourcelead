@@ -140,7 +140,10 @@ function editCandidate(candidateId){
             			 	}else{
             			 		designationOtherType = '';  
             			 	 }
-            			 	
+            			 	var primarySkill = '';
+            			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+            			 		primarySkill = json.primarySkill;            			 		
+            			 	}
             			 	var summary = '';
             			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
             			 		summary = json.summary;            			 		
@@ -338,6 +341,9 @@ function editCandidate(candidateId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
+							
+							
+							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							if(json.experienceYears == "25+"){
 							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
@@ -363,8 +369,11 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '</div>';
-							result = result + '</div>';
+							result = result + '</div>';	
 							
+							result = result + '		          <div class="col-md-6">';
+							result = result + '		            <input type="text" class="form-control" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		          </div>';
 							
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
@@ -636,7 +645,7 @@ function professionalProfile(candidateId){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							}
 							else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> --- </textarea>';
 				    	        }
 							
 							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
@@ -663,7 +672,27 @@ function professionalProfile(candidateId){
 							
 							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
-							<c:forEach var="skill" items="${skillsList}">
+							$.each( json.allAndCandidateSkills, function( i, skill ){
+								  var existed = 0;
+					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
+						                var res = [];
+						                res = json.skillsName.split(",");
+						                res.forEach(function(item) {
+						                	if(skill == item){
+						                		existed = 1;
+						                		result = result + ' <option selected value="'+skill+'">'+skill+'</option>';
+						                	}
+						                });
+					                }
+					                if(existed == 0){
+					                	result = result + ' <option value="'+skill+'">'+skill+'</option>';
+					                }
+								  
+								});
+							
+							
+							
+							/* <c:forEach var="skill" items="${skillsList}">
 					                var existed = 0;
 					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
 						                var res = [];
@@ -678,7 +707,7 @@ function professionalProfile(candidateId){
 					                if(existed == 0){
 					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
 					                }
-			                </c:forEach>
+			                </c:forEach> */
 			                result = result + '</select>';
 							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
@@ -829,6 +858,34 @@ function professionalProfile(candidateId){
 		$("#saveSkillBtnSpan").empty();
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
+		
+		//Adding Customized Skills to the list
+        var select, chosen;
+	    select = $("#skillName");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keyup', function(e)
+	    {
+	    	var newSkill = this.value.replace(",","");
+	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newSkill).text(newSkill);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+                $("#skillName option").each(function(){
+                      $(this).siblings("[value='"+ this.value+"']").remove();
+                });
+                //end
+        		$("#skillName").trigger("chosen:updated");
+        		
+	        }
+	    });
+	    //Adding Customized Skills to the list
+		
+		
+		
 	}
 
 	function saveSkill(candidateId){
@@ -862,19 +919,21 @@ function professionalProfile(candidateId){
  function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
-	 if(skillName != null && skillName != '' && skillName !='undefined'){
-		 var sourceleadUrl ='${sourceleadUrl}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 if(skillName != null && skillName != '' && skillName !='undefined'){
+			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData
+		 }else{
+			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+""
+		 }
+		 
 		 $.ajax({  
 	          type : "POST",
-	          url: sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&skillName="+jsonData,        
+	          url: Urlcheck,        
 	          success :function(data) {
 	        	  getProfessionalInfo();
 	        },
 	          
 	     }); 
-	 }else{
-		 
-	 }
 	 
  }  
 </script>
@@ -916,19 +975,43 @@ function removeSkillPopUp(candidateId){
 		 if(expectedRate != null && expectedRate != ""){
 			 $('#expectedRateType').removeAttr('data-validation-optional');
 			 $('#expectedRateType').attr("data-validation","required"); 
-		 }else{
-		 $('#expectedRateType').removeAttr('data-validation');
-		 $('#expectedRateType').attr("data-validation-optional","true"); 
 		 }
+		 else{
+			 $('#expectedRateType').removeAttr('data-validation');
+			 $('#expectedRateType').attr("data-validation-optional","true"); 
+		 }
+		 
+		 
+		 var expectedRateType =  document.getElementById("expectedRateType").value; 
+		 if(expectedRateType != null && expectedRateType != "" && expectedRateType != 'undefined'){
+			 $('#expectedRate').removeAttr('data-validation-optional');
+			 $('#expectedRate').attr("data-validation","required"); 
+		 }else{
+			 $('#expectedRate').removeAttr('data-validation');
+			 $('#expectedRate').attr("data-validation-optional","true");
+		 }
+		 
 		 var currentRate = document.getElementById("currentRate").value; 
 			 if(currentRate != null && currentRate != ""){
 				
 				 $('#currentRateType').removeAttr('data-validation-optional');
 				 $('#currentRateType').attr("data-validation","required"); 
 			 }else{
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
+				 $('#currentRateType').removeAttr('data-validation');
+				 $('#currentRateType').attr("data-validation-optional","true"); 
 			 }
+			 
+			 
+			 
+			 var currentRateType =  document.getElementById("currentRateType").value; 
+			 if(currentRateType != null && currentRateType != "" && currentRateType != 'undefined'){
+				 $('#currentRate').removeAttr('data-validation-optional');
+				 $('#currentRate').attr("data-validation","required"); 
+			 }else{
+				 $('#currentRate').removeAttr('data-validation');
+				 $('#currentRate').attr("data-validation-optional","true");
+			 }
+			 
 			 
 		var validationSettings = {
 		        errorMessagePosition : 'element',
@@ -1251,35 +1334,34 @@ function removeSkillById(candidateId, skillId){
 									}
 									
 									
-									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+								/* 	 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
 										startMonth=   opt.startMonth +' - ';
 									}else{
 										startMonth = " ";
-									}
+									} */
 									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear  +' TO ';
+									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+										startYear=   opt.startYear  +' To '+opt.endYear;
+									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+										startYear=   opt.startYear;
+									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+										startYear = opt.endYear;  
 									}else{
 										startYear = " ";
 									}
 									
-									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
 										endMonth = opt.endMonth +' - ';  
 									} else {
 										endMonth = " ";
-									}
+									} */
 									
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										endYear = opt.endYear;  
-									} else {
-										endYear = " ";
-									}
 									result = result +'   <li>';
 									result = result +'   <div class="clearfix">';
 									result = result +' <h3>'+name+'</h3>';
 									result = result +' <p>'+designation+'</p>';
 									result = result +' <p>';
-								    result = result + startMonth +''+startYear +' '+endMonth +''+endYear; 
+								    result = result + startYear ; 
 									result = result +'  </p>';
 									result = result +'  </div>';
 									result = result +'</li>';
@@ -1348,21 +1430,20 @@ function educationSubmissionProfile(candidateId){
 		                    	 }else{
 		                    		 Educationaddress = " ";
 		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
+		                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr;
+		                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.endDateStr;
 		                    	 }else{
-		                    		 EducationstartDateStr = " ";
-		                    	 }
-		                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-		                    		 EducationendDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationendDateStr = " ";
+		                    		 EducationstartDateStr ='';
 		                    	 }
 			                        result = result +'                <li>';
 									result = result +'                  <div class="clearfix">';
 		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
 		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+' '+EducationendDateStr+'</p>';
+									result = result +'                    <p>'+EducationstartDateStr+'</p>';
 									result = result +'                  </div>';
 									result = result +'                </li>';
 		                     }
@@ -1409,22 +1490,21 @@ function certificationSubmissionProfile(candidateId){
 				            	}else{
 				            		scoreType = " ";
 				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString +' To '+opt.candidatevalidToDateToString;
+				            	}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
 				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+				            	}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+				            		candidatevalidFromDateToString = opt.candidatevalidToDateToString;
 				            	}else{
 				            		candidatevalidFromDateToString = " ";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = " ";
 				            	}
 				            	
 								result = result +'                <li>';
 								result = result +'                  <div class="clearfix">';
 								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
 								result = result +'                    <p>'+opt.provider+' </p>';
-								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
 								result = result +'                  </div>';
 								result = result +'                </li>';
 							}
@@ -1501,21 +1581,21 @@ function updateDesignationType(){
 function makeProfileAsPublic(){
 	var checked = document.getElementById("isProfilePublic").checked
 	if(checked == true){
-		alertMessage("Do you want to make your profile as public visibility?",checked);
+		alertMessageForPublicVisibility("Do you want to make your profile as public visibility?",checked);
 	}else{
-		alertMessage("Do you want to remove your profile from public visibility?",checked);
+		alertMessageForPublicVisibility("Do you want to remove your profile from public visibility?",checked);
 	}
 }
 </script>
 
 <script type="text/javascript">
-function alertMessage(message,checked){
+function alertMessageForPublicVisibility(message,checked){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsPublicVisibility();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+checked+");'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsPublicVisibility();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPublicVisibility("+checked+");'></b>";
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1525,7 +1605,7 @@ function alertMessage(message,checked){
 </script>
 
 <script type="text/javascript">
-function cancel(checked){
+function cancelPublicVisibility(checked){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	if(checked){

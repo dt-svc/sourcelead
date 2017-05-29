@@ -123,7 +123,7 @@ public class Candidate implements Serializable{
 	@Column(name = "EXPECTED_RATE_CURRENCY")
 	private String expectedRateCurrencey;
 	
-	@Column(name = "SUMMARY")
+	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
 	private String summary;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
@@ -149,6 +149,9 @@ public class Candidate implements Serializable{
 	@Column(name="IS_FAVOURITE")
 	private Integer isFavourite;
 	
+	@Column(name="IS_FAVOURITE_ASSOCIATE")
+	private Integer isFavouriteAssociate;
+	
 	@Column(name="TERMINATE_REASON")
 	private String terminateReason;
 
@@ -166,7 +169,20 @@ public class Candidate implements Serializable{
 	
 	@Column(name = "IS_PROFILE_PUBLIC")
 	private String isProfilePublic;
+
+	@Column(name = "CANDIDATE_UUID")
+	private String candidateUUID;
 	
+	@Column(name="IS_ASSOCIATE")
+	private String isAssociate;
+	
+	@ManyToOne
+    @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
+    private OrgRelations orgRelationId;
+	    
+	@ManyToOne
+    @JoinColumn(name="SPOC_ID", nullable=false )        
+    private OrgSpoc spocId;
 	
 	@Transient
 	private String skills;
@@ -186,8 +202,18 @@ public class Candidate implements Serializable{
 	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
 	private String skillsName ;
 	
+	@Column(name = "FACEBOOK_PROFILE_URL")
+	private String facebookUrl;
+	
 	@Column(name = "PRIMARY_SKILL")
 	private String primarySkill;
+	
+	@Column(name = "LINKEDIN_PROFILE_URL")
+	private String linkedUrl;
+	
+	@Column(name = "TWITTER_PROFILE_URL")
+	private String twitterUrl;
+	
 	
 	@OneToMany(mappedBy = "candidateId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -270,7 +296,21 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private String postedDateStr;
-		
+	 
+	 @Transient
+	 private String vendorName;
+	 
+	 @Transient
+	 private String vendorContactName;
+	 
+	@Transient
+	private String vendorOrgRelationId;
+	
+	@Transient
+	private String employeList;
+	
+	@Transient
+	private String vendorSpocId;
 	 
 	 @Transient
 	 private List<RequirementSubmission> requirementSubmisstions;
@@ -279,7 +319,24 @@ public class Candidate implements Serializable{
 	 private LinkedHashSet<String> allAndCandidateSkills;
 	 
 	 @Transient
+	 private LinkedHashSet<String> allAndCandidateEducation;
+	 
+	 @Transient
 	 private Integer candidateRequiementCount;
+	 
+	 @Transient
+	 private  List<String> candidateSkillsList;
+	 
+	 @Transient
+	 private String employer;
+	 
+	 @Transient
+	 private String sowContractName;
+	 
+	 
+	 @Transient
+	 private List<Contracts> contractsList;
+	 
 	 
 	public Long getId() {
 		return id;
@@ -719,6 +776,26 @@ public class Candidate implements Serializable{
 	}
 
 
+	public String getVendorOrgRelationId() {
+		return vendorOrgRelationId;
+	}
+
+
+	public void setVendorOrgRelationId(String vendorOrgRelationId) {
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+
+	public String getVendorSpocId() {
+		return vendorSpocId;
+	}
+
+
+	public void setVendorSpocId(String vendorSpocId) {
+		this.vendorSpocId = vendorSpocId;
+	}
+
+
 	public boolean getIsCandidateAdedd() {
 		return isCandidateAdedd;
 	}
@@ -746,6 +823,16 @@ public class Candidate implements Serializable{
 
 	public void setAllAndCandidateSkills(LinkedHashSet<String> allAndCandidateSkills) {
 		this.allAndCandidateSkills = allAndCandidateSkills;
+	}
+
+
+	public LinkedHashSet<String> getAllAndCandidateEducation() {
+		return allAndCandidateEducation;
+	}
+
+
+	public void setAllAndCandidateEducation(LinkedHashSet<String> allAndCandidateEducation) {
+		this.allAndCandidateEducation = allAndCandidateEducation;
 	}
 
 
@@ -1022,6 +1109,16 @@ public class Candidate implements Serializable{
 	}
 
 
+	public String getEmployeList() {
+		return employeList;
+	}
+
+
+	public void setEmployeList(String employeList) {
+		this.employeList = employeList;
+	}
+
+
 	public String getIsProfilePublic() {
 		return isProfilePublic;
 	}
@@ -1050,5 +1147,142 @@ public class Candidate implements Serializable{
 	public void setCandidateRequiementCount(Integer candidateRequiementCount) {
 		this.candidateRequiementCount = candidateRequiementCount;
 	}
+
+
+	public String getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(String isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+	
+	public OrgRelations getOrgRelationId() {
+		return orgRelationId;
+	}
+
+
+	public void setOrgRelationId(OrgRelations orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+
+	public String getVendorContactName() {
+		return vendorContactName;
+	}
+
+
+	public void setVendorContactName(String vendorContactName) {
+		this.vendorContactName = vendorContactName;
+	}
+
+
+	public OrgSpoc getSpocId() {
+		return spocId;
+	}
+
+	public void setSpocId(OrgSpoc spocId) {
+		this.spocId = spocId;
+	}
+
+
+	public Integer getIsFavouriteAssociate() {
+		return isFavouriteAssociate;
+	}
+
+
+	public void setIsFavouriteAssociate(Integer isFavouriteAssociate) {
+		this.isFavouriteAssociate = isFavouriteAssociate;
+	}
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+
+	public List<String> getCandidateSkillsList() {
+		return candidateSkillsList;
+	}
+
+
+	public void setCandidateSkillsList(List<String> candidateSkillsList) {
+		this.candidateSkillsList = candidateSkillsList;
+	}
+
+
+	public String getEmployer() {
+		return employer;
+	}
+
+
+	public void setEmployer(String employer) {
+		this.employer = employer;
+	}
+	
+	public String getFacebookUrl() {
+		return facebookUrl;
+	}
+
+
+	public void setFacebookUrl(String facebookUrl) {
+		this.facebookUrl = facebookUrl;
+	}
+
+
+	public String getLinkedUrl() {
+		return linkedUrl;
+	}
+
+
+	public void setLinkedUrl(String linkedUrl) {
+		this.linkedUrl = linkedUrl;
+	}
+
+
+	public String getTwitterUrl() {
+		return twitterUrl;
+	}
+
+
+	public void setTwitterUrl(String twitterUrl) {
+		this.twitterUrl = twitterUrl;
+	}
+
+
+	public String getSowContractName()
+	{
+		return sowContractName;
+	}
+
+
+	public void setSowContractName(String sowContractName)
+	{
+		this.sowContractName = sowContractName;
+	}
+
+
+	public List<Contracts> getContractsList()
+	{
+		return contractsList;
+	}
+
+
+	public void setContractsList(List<Contracts> contractsList)
+	{
+		this.contractsList = contractsList;
+	}
+	
 	
 }

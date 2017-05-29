@@ -8,6 +8,12 @@
  .require_wrap_details_cta b {
     width: 110px;
 }
+.require_wrap_details.require_textarea textarea {
+height: 225px;
+}
+.profile_details h4 {width: 68%;}
+ul.can-perdt li span { max-width: 80%;}
+
  </style>
 
 <script>
@@ -52,12 +58,12 @@ function requirementProfile(requirementUUID){
 		    	var json = JSON.parse(data);
 		    	var result = "";
 		    	if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
-		    		minExp = json.minExp +'&nbsp;Years';
+		    		minExp = json.minExp;
 		    	}else{
 		    		minExp = "";
 		    	}
 		    	if(json.maxExp != null && json.maxExp != '' && json.maxExp != 'undefined'){
-		    		maxExp = json.maxExp + '&nbsp;Years';
+		    		maxExp = json.maxExp;
 		    	}else{
 		    		maxExp = "";
 		    	}
@@ -96,7 +102,7 @@ function requirementProfile(requirementUUID){
 		    	if(json.description != null && json.description != '' && json.description != 'undefined'){
 		    		description = json.description;
 		    	}else{
-		    		description = "NO DATA";
+		    		description = "--";
 		    	}
 		    	if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
 		    		positions = json.positions;
@@ -107,7 +113,7 @@ function requirementProfile(requirementUUID){
 		    	if(json.education != null && json.education != '' && json.education != 'undefined'){
 		    		education = json.education;
 		    	}else{
-		    		education = "NO DATA";
+		    		education = "--";
 		    	}
 		    	if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
 		    		 noticePeriod = json.noticePeriod;
@@ -119,7 +125,28 @@ function requirementProfile(requirementUUID){
 				 result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
 				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
-				 result = result +'        <h4 id="id1">'+json.jobTitle+'</h4>';
+				
+				 
+				 if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
+					 result = result +'<h4 id="id1">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'</h4>';
+				 }
+				 else if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != 'Other'){
+				     result = result +'<h4 id="id1">'+json.jobTitle+'-'+json.jobId+'</h4>';
+       			  }
+       			 else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
+			    	 result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobType+'</h4>';
+       			 }else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType == 'Other' &&  json.otherJobType != '' && json.otherJobType != null && json.otherJobType != 'undefined'){
+   			     	result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobId+'-'+json.jobType+'-'+json.otherJobType+'</h4>';
+       			 }else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other' &&  json.otherJobType != '' && json.otherJobType != null && json.otherJobType != 'undefined'){
+      			    result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobType+'-'+json.otherJobType+'</h4>';
+       			 }else if(json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType == 'Other'){
+         		    result = result+'<h4 id="id1">'+json.jobTitle+'-'+json.jobType+'</h4>';
+       			}else{
+       			 	result = result+'<h4 id="id1">'+json.jobTitle+'</h4>';
+       			}
+				 
+				 
+				 
 				 result = result +'        <div class="hide-row" style="display: block;">';
 				 result = result +'          <div class="col-md-9">';
 				 result = result +'            <div class="row">';
@@ -133,11 +160,20 @@ function requirementProfile(requirementUUID){
 				 result = result +'                  <div class="row">';
 				 result = result +'                    <div class="col-md-12">';
 				 result = result +'                      <ul class="list-unstyled can-perdt">';
-				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Min Experience - '+minExp+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-black-tie"></i><span>Max Experience - '+maxExp+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-rupee"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker"></i><span>'+city+' '+state+' '+country+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-bell"></i><span>'+noticePeriod+'</span>';
+				 
+				 if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
+				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+'-'+json.maxExp+' years</span></li>';
+				 }else if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
+				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+' years</span></li>';
+				 }else if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'){
+				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.maxExp+' years</span></li>';
+				 }else{
+					 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
+				 }
+				 
+				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';
@@ -154,7 +190,7 @@ function requirementProfile(requirementUUID){
 				        	 result = result +'<li>'+customSkill+'</li>';
 				        }
 			    	}else{
-	 					result = result +'<li>No Data</li>';
+	 					result = result +'<li>--</li>';
 	 				}
 				 result = result +'                    </ul>';
 				 result = result +'                  </div>';
@@ -229,9 +265,9 @@ function requirementDetails(requirementUUID){
 		    	 result = result +'      <div class="project_side_wrap_inn_tabs" id="new-id">';
 				 result = result +'        <div class="timesheetHead">';
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
-				 result = result +'            <div class="require_wrap_details"> ';
+				 result = result +'            <div class="require_wrap_details require_textarea"> ';
 				 result = result +'              <h2>Descriptions:</h2>';
-				 result = result +'              <textarea placeholder="Enter description">'+description+'</textarea>';
+				 result = result +'              <div class="RDdetails">'+description+'</div>';
 				 result = result +'              <h2>Other details:</h2>';
 				 result = result +'              <div class="require_one">';
 				 result = result +'                <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+positions+'</span>';
@@ -373,10 +409,15 @@ function getSubmissionDetails(requirementUUID){
 			        	   
 			        	   
 			        	   result = result +'         <tr>';
-			        	   result = result +'         <td><div class="tbldata-dotdot-big proj_show"><div onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" class="tbldata-dotdot-me pull-left">'+report.candidateName+'</div><i class="fa fa-binoculars pull-right"></i></div></td>';
+			        	   result = result +'         <td><div class="tbldata-dotdot-big proj_show" onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+report.id+','+report.candidateId+','+report.requirementId+');" ><div class="tbldata-dotdot-me pull-left">'+report.candidateName+'</div><i class="fa fa-binoculars pull-right"></i></div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot-me">'+report.candidateEmail+'</div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.phoneNumber+'</div></td>';
-			        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.submissionStatus+'</div></td>';
+			        	   
+			        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
+			        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+			        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+			        	   }	
+			        	   result = result + '</div></td>';
 			        	   result = result +'         </tr>';
 			        	   
 		  				}
@@ -405,7 +446,7 @@ function referListPagenation(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -422,7 +463,7 @@ function submissionListPagenation(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

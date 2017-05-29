@@ -42,6 +42,8 @@
 <script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/bootstrap-select.min.js"></script>
 <script src="resources/js/themeswitcher.js"></script>
+<script src="resources/js/moment.min.js"></script>
+<script src="resources/js/datetime-moment.js"></script>
 <style>
 .dashboard-widget.dashboard-widget-icons{
 min-height: 225px !important;
@@ -192,8 +194,9 @@ document.onkeydown=function(e){
   <a href="${sourceleadUrl}/recruiterDashboard" title="Source Lead">
   </c:if>
   <i>
- <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
-    <h1>Source Lead</h1>
+ 	<!-- <img src="resources/images/SourceLead-logo-white.png" alt="Source Lead" class="img-responsive mt5"> -->
+ 	<img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5">
+  </i>
     </a> </span>
     <nav class="header-nav navbar">
     <a href="javascript:void(0)" class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
@@ -208,10 +211,10 @@ document.onkeydown=function(e){
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirement</option>
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirements</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
-	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidate</option>
+	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
 	           <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
@@ -222,7 +225,12 @@ document.onkeydown=function(e){
 	           <c:if test="${userTabs.tabName == 'Projects'}">
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if>
+	           
+	           <c:if test="${userTabs.tabName == 'Associates List'}">
+	           <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
+	           </c:if>
 			</c:forEach>
+	             
 		</select>
 			
 			
@@ -249,7 +257,8 @@ document.onkeydown=function(e){
 <div class="custom-navbar">
         <!-- login User details -->
         <div class="login-user">
-        <span class="image"> <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </span> <span class="pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span>
+        <span class="image">
+        <img class="img-circle" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="<c:url value='/displayUserImage/${SourceLeadWeb_userId}'/>"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span>
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
@@ -280,11 +289,22 @@ document.onkeydown=function(e){
 	            </div>
 	          </li>
             </c:if> --%>
+            
+            <li class="reportsH">
+					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
+	            </li>
+            
+            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+	            <li class="reportsH">
+					<a title="Reports" href="<c:url value='${sourceleadUrl}/recruitersReports'/>"><i class="fa fa-pie-chart"></i></a>
+	            </li>
+            </c:if>
+            
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-            	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </a></li>
+            	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
             </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-            <li> <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
+            <li> <a href="javascript:void(0)" title="Locations" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
 	              <div id="spockLinksList" style="display: none;">
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
@@ -312,11 +332,11 @@ document.onkeydown=function(e){
          
           <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li id="alert"> 
-          <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount}</span></a>
+          <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
             <div class="header-widget alert-area">
               <ul class="list-unstyled">
               <c:if test="${empty SourceLeadWeb_notificationList}">
-              	<div class="clearfix msg">
+              	<div class="clearfix msg_blank">
                      All Caught UP!!! 
                   </div>
               	</c:if>
@@ -349,7 +369,8 @@ document.onkeydown=function(e){
           </li>
           </c:if>
           
-          <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS','ROLE_ORG_SUBMISSION_TEMPLATE')"> 
+          <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
+           <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
@@ -360,23 +381,32 @@ document.onkeydown=function(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
-	                     <sec:authorize access="hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')"> 
+	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
 	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
 	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
 	                    	   <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     </sec:authorize>
-	                     
+
+						<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
+	                     <li><a href="<c:url value="/orgContractTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contract Template</a></li>
+						</sec:authorize>
+	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
+	                    	 <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Onboarding</a></li>
+	                      </sec:authorize>
+	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
+	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Offboarding</a></li>
+						  </sec:authorize>	
 	              </ul>
 	            </div>
 	          </li>
+          </sec:authorize>
          </sec:authorize>
          
          <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
             	<li id="settingArea"><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a>
             	<div class="setting-area">
             	<ul class="list-unstyled">
-            	<li><a href="<c:url value="/referRequirementList" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contacts</a></li>
             	<li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
             	</ul>
             	</div>
@@ -439,7 +469,7 @@ function notificationStatusAsRead(){
 	      type: "POST",
 	  	  url: sourceleadUrl+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode+"&locationCode="+locationCode,
 	  			  success :function(data) {
-	  				 $("span.label-warning").text(0);
+	  				 //$("span.label-warning").text(0);
       			 }							     
 	}); 
 	 /* $("#alert").click(function(){
@@ -1075,6 +1105,9 @@ function universalSearch(){
 	 var searchType = document.getElementById('searchType').value;
 	 var searchValue = document.getElementById('searchKey').value;
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 if(sourceleadUrl == ''){
+		 sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	 }
 	window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
 }
 </script>
@@ -1156,13 +1189,13 @@ jQuery('.main-header').removeClass('navbar-fixed-top');}
 });
 </script> -->
 <script>
-jQuery(window).scroll(function () {
+/* jQuery(window).scroll(function () {
 if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 100 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
 jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
 } else if (jQuery(window).scrollTop() <= 50){
 jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-20%"});
 }
-});
+}); */
 
 // Select picker updated script for universalSerch
 

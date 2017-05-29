@@ -147,7 +147,11 @@ function editCandidate(candidateId){
             			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
             			 		primarySkill = json.primarySkill;            			 		
             			 	}
-            			 	
+            			 	if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
+            			 		vendorName = json.vendorName;
+            			 	}else{
+            			 		vendorName = "";
+            			 	}
 							var result ='';
 							result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -162,7 +166,9 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
-							
+							if(json.isAssociate == 'Y'){
+							result = result + '	           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>';
+							}
 							// If Candidate Type equals Consultant email field should be Disable mode
 							
 							result = result + '<div class="clearfix mb10">';
@@ -170,6 +176,7 @@ function editCandidate(candidateId){
 							if(json.candidateType == "Candidate"){
 								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
 							}
 							 
 							if(json.candidateType == "Consultant"){
@@ -214,13 +221,14 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
+							
 							result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
 							result = result + '</select>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="input-sm form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
 							result = result + '<option value="">--Select Notice Period--</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
@@ -231,37 +239,9 @@ function editCandidate(candidateId){
 							result = result + ' </div>';
 							
 							result = result + '</div>';
+
 							
-							
-							result = result + '<div class="clearfix mb10">';
-							
-                            result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
-							result = result + '<select class="form-control" id="designationType1" name="designationType" field-name="Designation Type"  onchange="updateDesignationOtherType(this);">';
-							result = result + '<option value="">--Select Employment Type--</option>';
-							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
-							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
-							result = result + ' <option '+(json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
-							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
-							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
-							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
-							result = result + ' </select>';
-							result = result + '</div>';
-							
-							result = result + '</div>';
-							 
-							/*  result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
-							result = result + '</div>';  */
-							
-							if(json.designationType == "Other"){
-							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv">';
-							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
-							result = result + '</div>';
-							  }
-							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="clearfix mb">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<div class="input-group er ratetype">';
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
@@ -330,13 +310,13 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							result = result + '</div>';
 							
-							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="clearfix">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<div class="row">';
+							result = result + '<div class="form-group">';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							
-							result = result + '<select  class="input-sm form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
+							result = result + '<select  class="form-control" name="experienceYears"  id="experienceYears" field-name="Experience Years" onchange="javascript:disableMonths();">';
 							result = result + '<option value="">Select Year</option>';
 							
 							<c:forEach var="i" begin="0" end="24" >
@@ -354,7 +334,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							if(json.experienceYears == "25"){
-							result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" disabled="disabled">';
+							result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths" >';
 							result = result + '<option  value="">Select Months</option>';
 							
 							<c:forEach var="i" begin="0" end="11" >
@@ -364,7 +344,7 @@ function editCandidate(candidateId){
 							
 							result = result + '</select>';
 							}else{
-								result = result + '<select  class="input-sm form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
+								result = result + '<select  class="form-control" name="experienceMonths"  id="experienceMonths" field-name="experienceMonths">';
 								result = result + '<option  value="">Select Months</option>';
 								
 								<c:forEach var="i" begin="0" end="11" >
@@ -381,25 +361,72 @@ function editCandidate(candidateId){
 							
 							
 							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		            <input type="text" class="form-control" name="primarySkill" value="'+primarySkill+'" placeholder="Primary Skill" data-validation="validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							
 							
 							result = result + '</div>';
 							
+							
 							result = result + '<div class="clearfix mb10">';
-							result = result + '<div class="col-md-6">';
+							
+                            result = result + '<div class="col-md-6 custom-fields">';
+							
+                            result = result + '<div class="input-group-btn tblminwidth-75 ratetype select-field">';
+							result = result + '<select class="form-control" id="designationType1" name="designationType"  onchange="employementType();updateDesignationOtherType();" field-name="Employment type" data-validation="required">';
+							result = result + '<option value="">--Select Employment Type--</option>';
+							result = result + ' <option '+(json.designationType == "C2C" ? "selected" : '') +'>C2C</option>';
+							result = result + ' <option '+(json.designationType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
+							result = result + '<option  '+ (json.designationType == "W-2" ? "selected" : '') +'>W-2</option>';
+							result = result + ' <option '+(json.designationType == "C2H" ? "selected" : '') +'>C2H</option>';
+							result = result + ' <option '+(json.designationType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
+							result = result + '<option  '+(json.designationType == "Part Time" ? "selected" : '') +'>Part Time</option>';
+							result = result + '<option  '+(json.designationType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+							result = result + '<option  '+(json.designationType == "Other" ? "selected" : '') +'>Other</option>';
+							result = result + ' </select>';
+							result = result + '</div>';
+							
+							result = result + '</div>';
+							 
+							
+							result = result + '<div class="col-md-6 designationTypeDiv" id="designationTypeDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="designationOtherType"  id="designationOtherType1" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+							result = result + '</div>';
+							
+							
+							
+							
+						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
+							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
+							result = result + '</select>';
+							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
+							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields select-arrow mt10" id="errorvendorContact">';
+							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
+							result = result + '</select>';
+							result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
+							result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							result = result + '</span>';
+							
+							
+							result = result + '<div class="clearfix mb10 mt">';
+							result = result + '<div class="col-md-12">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
-							
 							result = result + '</div>';
-							
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
 							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
 							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
+							result = result + '		          </div>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							result = result + '		      </div>';
@@ -411,8 +438,14 @@ function editCandidate(candidateId){
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
 							/* updateDesignationType(json.designationType); */
+							
+							if(json.designationType == "Other"){
+								$("#designationTypeDiv").show();
+						      }
 							getAllCandidateCountries();
-							 getAllCandidateStates();
+							getVendorsByOrgLocation();
+							employementType();
+							getAllCandidateStates();
 							$(".edit-details").toggleClass("edit-details-active");
 							$(".collapse-div").removeClass("edit-details-active");
 							
@@ -428,7 +461,12 @@ function editCandidate(candidateId){
 							    $("#candidateCountry").chosen();
 							    $("#candidateState").chosen();
 							    $("#candidateCity").chosen();
+							    
+							    $("#vendorName").chosen();
+							    $("#vendorcontactName").chosen();
 							   
+							    
+							    
 							    
 							    $("#candidateCountry").on('change', function (e) {
 							 	   getAllCandidateStates();
@@ -610,11 +648,9 @@ function getCandidateCities(){
 --%>
 
 <script>
-function deleteCandidate(candidateId){
-	
+function deleteCandidate(candidateId,candidateType){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var reason = document.getElementById("rejectReason").value;
-	  
 	  if(reason == null || reason == '' || reason == 'undefined'){
 		      
 		      $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
@@ -624,10 +660,15 @@ function deleteCandidate(candidateId){
 		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason,        
+         url: sourceleadUrl+"/deleteCandidateByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != ""){
-            			 location.replace(sourceleadUrl+"/candidatesList");
+            	  var json = JSON.parse(data);
+            	  if(candidateType == 'Associates'){
+            		  location.replace(sourceleadUrl+"/associatesList");
+            	  }else{
+            		  location.replace(sourceleadUrl+"/candidatesList");
+            	  }
                 }
                  },
               }); 
@@ -657,7 +698,7 @@ function cancelAlert(){
      1.usage     : used in saveOrCancel() / alertMessage removeAlertMessage()
 --%>
 <script type="text/javascript">
-function removeCandidateAlertMessage(candidateId){
+function removeCandidateAlertMessage(candidateId,candidateType){
 	$("#profileEditPopup").fadeOut();
 	var result = "";
 	
@@ -665,7 +706,7 @@ function removeCandidateAlertMessage(candidateId){
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div class='rejectErrorMsgs'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteCandidate("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -715,7 +756,7 @@ function reActivateCandidateAlertMessage(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function candidateProfile(candidateId){
+function candidateProfile(candidateId,candidateType){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
@@ -733,7 +774,27 @@ function candidateProfile(candidateId){
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
 							}else{
-								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline"> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a></sec:authorize> <sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a> </sec:authorize></div>';
+								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline">';
+								   
+								   if(candidateType == "Candidates"){
+									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+									   result = result + ' <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   '</sec:authorize>'; 
+									   
+									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   '</sec:authorize>';
+								   }else{
+									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
+									   result = result + ' <a href="#" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   '</sec:authorize>'; 
+									   
+									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
+									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   '</sec:authorize>';
+								   }
+								   
+								   result = result + '</div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
@@ -742,7 +803,7 @@ function candidateProfile(candidateId){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							}
 							else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> --</textarea>';
 				    	        }
 							
 							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
@@ -759,7 +820,17 @@ function candidateProfile(candidateId){
 							
 							result = result +'		<div class="clearfix">';
 							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
-							result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+							if(candidateType == "Candidates"){
+								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')">';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+								 '</sec:authorize>';
+							}else{
+								'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+								'</sec:authorize>';
+							}
+							
+							
 							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
 							result = result +'		</div>';
 							result = result + '<div class="clearfix"></div> ';
@@ -963,24 +1034,36 @@ function candidateProfile(candidateId){
 	    select = $("#skillName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
+	    
+	    
 	    chosen.search_field.on('keyup', function(e)
-	    {
-	    	var newSkill = this.value.replace(",","");
-	        if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-	        {
-	        	var par = this.parent;
-	            var option = $("<option>").val(newSkill).text(newSkill);
-	            select.append(option);
-	            select.find(option).prop('selected', true);
-	          //to doesn't allow duplicates
-                $("#skillName option").each(function(){
-                      $(this).siblings("[value='"+ this.value+"']").remove();
-                });
-                //end
-        		$("#skillName").trigger("chosen:updated");
-        		
-	        }
-	    });
+			    {
+			    	   var skillsArray = this.value.split(",");
+				    	 if(skillsArray.length > 1){
+			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+			        			 select.append(option);
+			 		             select.find(option).prop('selected', true);
+			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+			 	        		 $("#skillName").trigger("chosen:updated");
+			                 }
+				    	 }else{
+			    			var newSkill = this.value.replace(","," ");
+			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			                {
+			    				 var option = $("<option>").val(newSkill).text(newSkill);
+			                     select.append(option);
+			                     select.find(option).prop('selected', true);
+			                     $("#skillName option").each(function(){
+			                         $(this).siblings("[value='"+ this.value+"']").remove();
+			                   });
+			                   $("#skillName").trigger("chosen:updated");
+			                }
+					       
+		    	         }
+	    	});
+	    
+	    
 	    //Adding Customized Skills to the list
 	}
 
@@ -1027,6 +1110,7 @@ function candidateProfile(candidateId){
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data == "success"){
            	  //candidateProfile(candidateId);
+            	  candidateQuickViewProfile(candidateId);
               }
        },
          
@@ -1083,13 +1167,13 @@ function candidateProfile(candidateId){
 		
 		rateValidations();
 		
+		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#candidateProfileEdit_form').serializeFormJSON();
 			
 			 var con = JSON.stringify(frm);
 			 con = con.replace(/[{}]/g, "");
-				
 			  //It will escape all the special characters
 			var jsonData = encodeURIComponent(con);
 			
@@ -1104,6 +1188,7 @@ function candidateProfile(candidateId){
 						success : function(result) {
 							/* location.replace(sourceleadUrl+"/candidatesList");  */
 							candidateSideBar(candidateId);
+							candidateQuickViewProfile(candidateId);
 						},
 					});
 			return true;
@@ -1395,25 +1480,24 @@ function removeSkillById(candidateId, skillId){
 										designation = " "; 
 									}
 									
-									
+									/* 
 									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
+										startMonth=   opt.startMonth;
 									}else{
 										startMonth = " ";
-									}
+									} */
 									
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear  +' TO ';
+										startYear=   opt.startYear;
 									}else{
 										startYear = " ";
 									}
 									
-									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
+									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+										endMonth = opt.endMonth;  
 									} else {
 										endMonth = " ";
-									}
-									
+									} */
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 										endYear = opt.endYear;  
 									} else {
@@ -1424,7 +1508,13 @@ function removeSkillById(candidateId, skillId){
 									result = result +' <h3>'+name+'</h3>';
 									result = result +' <p>'+designation+'</p>';
 									result = result +' <p>';
-								    result = result + startMonth +''+startYear +' '+endMonth +''+endYear; 
+								    if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+								    	result = result + startYear +' To '+endYear; 
+								    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+								    	result = result + startYear; 
+								    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+								    	result = result + endYear; 
+								    }
 									result = result +'  </p>';
 									result = result +'  </div>';
 									result = result +'</li>';
@@ -1433,6 +1523,7 @@ function removeSkillById(candidateId, skillId){
 								result = result +'            </div>';
 								result = result +'          </div>';
 								result = result +'        </div>';
+								$("#employeeSubmissionProfile").empty(); 
 								$("#employeeSubmissionProfile").append(result);
 						}
 					},
@@ -1494,7 +1585,7 @@ function educationSubmissionProfile(candidateId){
 		                    		 Educationaddress = " ";
 		                    	 }
 		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' TO ';
+		                    		 EducationstartDateStr = opt.startDateStr;
 		                    	 }else{
 		                    		 EducationstartDateStr = " ";
 		                    	 }
@@ -1507,8 +1598,14 @@ function educationSubmissionProfile(candidateId){
 									result = result +'                  <div class="clearfix">';
 		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
 		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+' '+EducationendDateStr+'</p>';
-									result = result +'                  </div>';
+		                    	    if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    	    result = result +'                    <p>'+EducationstartDateStr+' To '+EducationendDateStr+'</p>';
+		                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    	    	result = result +'                    <p>'+EducationstartDateStr+'</p>';
+		                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    	    	result = result +'                    <p>'+EducationendDateStr+'</p>';
+		                    	    }
+		                    	    result = result +'                  </div>';
 									result = result +'                </li>';
 		                     }
 							
@@ -1517,6 +1614,7 @@ function educationSubmissionProfile(candidateId){
 							result = result +'            </div>';
 							result = result +'          </div>';
 							result = result +'        </div>';
+						 $("#educationSubmissionProfile").empty(); 
 	                     $("#educationSubmissionProfile").append(result); 
         	  }
         },
@@ -1569,7 +1667,14 @@ function certificationSubmissionProfile(candidateId){
 								result = result +'                  <div class="clearfix">';
 								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
 								result = result +'                    <p>'+opt.provider+' </p>';
-								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && 
+										opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+									result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+									result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
+								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+									result = result +'                    <p> '+candidatevalidToDateToString+'</p>';
+								}
 								result = result +'                  </div>';
 								result = result +'                </li>';
 							}
@@ -1578,6 +1683,7 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'          </div>';
 							result = result +'        </div>';
 							
+							$("#certificationSubmissionProfile").empty();
 							$("#certificationSubmissionProfile").append(result); 
         	  }
         },
@@ -1593,9 +1699,11 @@ $('.selectpicker').selectpicker('refresh');
  function disableMonths() {
 	
          if ($("#experienceYears").val() == "25"){
-             $("#experienceMonths").attr("disabled", true);
-             $("#experienceMonths").val("disabled", true);
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').attr("disabled", false);
          }else{
+        	 $("#experienceMonths").val('');  
+        	 $('#experienceMonths').selectpicker('refresh');
         	 $("#experienceMonths").attr("disabled", false); 
 		 }    
  }
@@ -1603,9 +1711,8 @@ $('.selectpicker').selectpicker('refresh');
   
 <!-- Employment Type equals Other then Text Box will Open script here -->
 <script>
-function updateDesignationOtherType(typeVal){
+function updateDesignationOtherType(){
 	 var candidateType = $('#designationType1').val(); 
-	
 	if(candidateType == 'Other' &&  candidateType != '' && candidateType !='undefined'){
 		  document.getElementById("designationTypeDiv").style.display="block";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
@@ -1615,7 +1722,6 @@ function updateDesignationOtherType(typeVal){
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
 	} 
-	 
 }
 </script>
 
@@ -1625,6 +1731,10 @@ function updateDesignationOtherType(typeVal){
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = $('#email').val(); 
+	 var tempEmail = $('#tempEmail').val(); 
+	 
+	 if(tempEmail != email){
+	 
 	 var candidateType = $('#candidateType').val(); 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -1650,8 +1760,10 @@ function updateDesignationOtherType(typeVal){
 		        },
 		    });
 	 }
+	 }
  }
  </script>     
+ 
  
  <!-- Candidate Email validation script ends here -->
  
@@ -1703,3 +1815,110 @@ var currentRate = document.getElementById("currentRate").value;
 	 }
 }
 </script>
+
+
+<script>
+function employementType(){
+	 var employementType = $('#designationType1').val(); 
+		if(employementType == 'C2C'){
+			document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation","required"); 
+			 $('#vendorcontactName').attr("data-validation","required"); 
+		}else{
+			 document.getElementById("hideVendor").style.display="none";
+			 $('#vendorName').removeAttr("data-validation","required"); 
+			 $('#vendorcontactName').removeAttr("data-validation","required"); 
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+			 
+		}
+		
+		if(employementType == 'C2C-1099'){
+			 document.getElementById("hideVendor").style.display="block";
+			 $('#vendorName').attr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').attr("data-validation-optional", "true");  
+			 
+			 $("#errorvendor").find("p.jquery_form_error_message").remove();
+			 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+		}else{
+			 $('#vendorName').removeAttr("data-validation-optional", "true"); 
+			 $('#vendorcontactName').removeAttr("data-validation-optional", "true");  
+			 
+			 $('#vendorName').val(''); 
+			 $('#vendorcontactName').val(''); 
+		} 
+		$('#designationType1 + p').remove();
+}
+</script>
+
+
+<script>
+ function getVendorsByOrgLocation(){
+	 var vendorName = $("#updateVendorName").val();
+	 var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorName').empty();
+		        	$('#vendorName').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendorName').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendorName').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            	  
+		            }
+		            $('#vendorName').trigger("chosen:updated");
+		            getVendorContactList();
+		            
+		        }
+		 });
+ }
+ </script>
+ <script>
+ function  removeValiationVendor() {
+	$("#errorvendor").find("p.jquery_form_error_message").remove();
+}
+</script>
+<script>
+function  removeValiationVendorContact() {
+	 $("#errorvendorContact").find("p.jquery_form_error_message").remove();
+}
+</script>
+
+ <script>
+ function getVendorContactList(){
+	$('#vendorcontactName').val('').trigger("chosen:updated");
+		 var orgRelationID = $('#vendorName').val();
+		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
+			 var vendorContactName = $("#updateVendorContactName").val();
+			 var vendorSpocId = $("#updateSpocId").val();
+		     var sourceleadUrl ='${sourceleadUrl}';
+			 $.ajax({
+				    type: "POST",
+			        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        success: function(data) {
+			        	var json = JSON.parse(data);
+			        	$('#vendorcontactName').empty();
+			        	$('#vendorcontactName').append('<option value="">--select Vendor contact--</option>');
+			             for(var i=0;i<json.length;i++){
+			            	 var opt = json[i];
+			            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+			            		 $('#vendorcontactName').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+' ('+opt.ownerName+')</option>');
+				            	}else{
+				            		$('#vendorcontactName').append('<option value='+opt.id+' >'+opt.spocName+' ('+opt.ownerName+')</option>');
+				            	}
+			            } 
+			            $('#vendorcontactName').trigger("chosen:updated");
+			        }
+			 });  
+		 }
+		 
+ }
+ </script>

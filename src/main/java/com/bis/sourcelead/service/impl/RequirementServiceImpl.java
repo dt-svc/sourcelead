@@ -375,7 +375,7 @@ public class RequirementServiceImpl implements RequirementService {
 			 
 			if(jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isClient"))){
 					requirement.setIsClientJob(jsonObj.getString("isClient"));
-			}else if(jsonObj.has("isClient")){
+			}else {
 				requirement.setIsClientJob("N");
 			}
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
@@ -426,7 +426,7 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			
 			//requirement status 
-			if(jsonObj.has("saveType")){            
+			if(jsonObj.has("saveType")){   
 				
 				if(jsonObj.getString("saveType").equalsIgnoreCase("draft")){
 					requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
@@ -552,18 +552,22 @@ public class RequirementServiceImpl implements RequirementService {
 					  
 					  requirementApproverHierarchyList.add(rah);
 				  }
-				  
+				  String approverNames2 = jsonObj.getString("sequentialApprover2");
 				  if(jsonObj.has("sequentialApprover2") && StringUtils.isNotEmpty(jsonObj.getString("sequentialApprover2"))){
+					  
+					  User approverUsersabc = userService.getUserById(Long.parseLong(approverNames2));
 					  RequirementApproverHierarchy rah = new RequirementApproverHierarchy();
+					  
+					  //to remove the unselected approvers in Dropdown
+					  removedApproversInRequirementForSequential(approverUsersabc,requirement,Constants.LEVEL2);
+					  
 					  
 					  User approverUserId = new User();
 					  approverUserId.setId(Long.parseLong(jsonObj.getString("sequentialApprover2")));
 					  				  
 					  rah.setApproverUserId(approverUserId);
 					  
-					 //to remove the unselected approvers in Dropdown
-					  removedApproversInRequirementForSequential(approverUserId,requirement,Constants.LEVEL2);
-					  
+					
 					  
 					  rah.setRequirementId(requirement);
 					  
@@ -620,9 +624,28 @@ public class RequirementServiceImpl implements RequirementService {
 					int MaxCount = Integer.parseInt(assignedToMaxCount);
 						for (int c = 1; c < MaxCount; c++) {
 							RequirementAssignTo  requirementAssignTo;
-							User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+							//User assUser = userService.getUserById(Long.parseLong(jsonObj.getString("assignUserId"+c)));
+							
+							String [] selectedUser = jsonObj.getString("assignUserId"+c).split(",");
+							
+							//### to skip duplicate user IDs START>>>>>
+							boolean userExists = false;
+							for(RequirementAssignTo rat : requirementAssignToList){
+								userExists = rat.getAssignUserId().getId().equals(Long.parseLong(selectedUser[0]));
+								if(userExists){
+									break;
+								}
+							}
+							if(userExists){
+								continue;
+							}
+							//to skip duplicate user IDs END ######
+							
+							User assignedUser = new User();
+							assignedUser.setId(Long.parseLong(selectedUser[0]));
+							
 							if(requirement.getId() !=null){
-								 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assUser.getId());
+								 requirementAssignTo = requirementAssignToService.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(), assignedUser.getId());
 								if(requirementAssignTo == null){
 									requirementAssignTo = new RequirementAssignTo();
 								}
@@ -630,7 +653,23 @@ public class RequirementServiceImpl implements RequirementService {
 								requirementAssignTo = new RequirementAssignTo();
 							}
 							
-								Team team = new Team();
+							Team assignedTeam = null;
+							if(null != selectedUser[1] && !selectedUser[1].equalsIgnoreCase("") && !selectedUser[1].equalsIgnoreCase("undefined")){
+								assignedTeam = new Team();
+								assignedTeam.setId(Long.parseLong(selectedUser[1]));
+							}
+							requirementAssignTo.setTeamId(assignedTeam);
+							requirementAssignTo.setAssignUserId(assignedUser);
+							requirementAssignTo.setRequirementId(requirement);
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assignedUser.getId(),orgLocations.getId());
+							requirementAssignTo.setRoleId(userRole.getRoles());
+							requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+							requirementAssignTo.setCreatedBy(user.getUserCode());
+							requirementAssignTo.setUpdatedBy(user.getUserCode());
+							requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+							requirementAssignToList.add(requirementAssignTo);
+							
+								/*Team team = new Team();
 								Long teamId = 0L;
 								int teamReady = 0;
 								for(int count = teamCount; count > 0; count--){
@@ -655,7 +694,7 @@ public class RequirementServiceImpl implements RequirementService {
 								requirementAssignTo.setCreatedBy(user.getUserCode());
 								requirementAssignTo.setUpdatedBy(user.getUserCode());
 								requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
-								requirementAssignToList.add(requirementAssignTo);
+								requirementAssignToList.add(requirementAssignTo);*/
 							}
 						}
 				     
@@ -878,7 +917,7 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = "";
+	 String url = sourceleadUrl;
 	 
 	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 	 notificationScenario.setBody(notificationbody);
@@ -984,7 +1023,7 @@ private void updatedRequirementMailToManager(User loginUser,User managerUser, Re
 	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = "";
+	 String url = sourceleadUrl;
 	 
 	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 	 notificationScenario.setBody(notificationbody);
@@ -1094,7 +1133,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 	 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 	 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	 String url = "";
+	 String url = sourceleadUrl;
 	 
 	 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 	 notificationScenario.setBody(notificationbody);
@@ -1219,8 +1258,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	}
 
 	@Override
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception {
-		return requirementDao.getUserAssignJobCount(userId);
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception {
+		return requirementDao.getUserAssignJobCount(userId, orgLocationId);
 	}
 
 
@@ -1326,7 +1365,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1417,7 +1456,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1516,7 +1555,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1789,7 +1828,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1891,7 +1930,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1917,7 +1956,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(initiatorUser.getEmail());
+		emailMessage.setToEmail(requirement.getManagerUserId().getEmail());
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		StringBuilder msgBuild = new StringBuilder();
@@ -1930,10 +1969,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		} else {
 			globalVarsMap.put("reason", "--");
 		}
-		if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getUserName())) {
-			globalVarsMap.put("loginUserName", loginUser.getFirstName());
+		if (loginUser.getLastName() != null && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder loginName = new StringBuilder();
+			globalVarsMap.put("loginUserName", loginName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		} else {
-			globalVarsMap.put("loginUserName", "--");
+			globalVarsMap.put("loginUserName", loginUser.getFirstName());
 		}
 		StringBuilder userBuild = new StringBuilder();
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null	&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName()))  {
@@ -1963,10 +2003,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		}else{
 			globalVarsMap.put("requirementId-Name", requirement.getJobId());
 		}
-		if (loginUser.getUserName() != null && !"".equalsIgnoreCase(loginUser.getUserName()) ) {
-			globalVarsMap.put("jobInitiatorName", initiatorUser.getFirstName());
+		if (requirement.getManagerUserId().getLastName() != null && !"".equalsIgnoreCase(requirement.getManagerUserId().getLastName()) ) {
+			StringBuilder managerName = new StringBuilder();
+			globalVarsMap.put("jobInitiatorName", managerName.append(requirement.getManagerUserId().getFirstName()).append(" ").append(requirement.getManagerUserId().getLastName()).toString());
 		} else {
-			globalVarsMap.put("jobInitiatorName", "--");
+			globalVarsMap.put("jobInitiatorName", requirement.getManagerUserId().getFirstName());
 		}
 		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle()) ) {
 			globalVarsMap.put("requirementName", requirement.getJobTitle());
@@ -1994,7 +2035,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = "";
+		String url = sourceleadUrl;
 		
 		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationbody);
@@ -2008,7 +2049,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, initiatorUser, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario);
 	}
 	
 	@Override
@@ -2111,7 +2152,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -2535,7 +2576,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 					reqTemplate.setJobType(jsonObj.getString("jobType"));
 			}	
 			
-			if(jsonObj.has("jobOtherType") &&  "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
+		if(jsonObj.has("jobOtherType") && jsonObj.has("jobType") && "Other".equalsIgnoreCase(jsonObj.getString("jobType"))){
 				reqTemplate.setOtherJobType(jsonObj.getString("jobOtherType"));
 			}else{
 				reqTemplate.setOtherJobType(null);
@@ -2949,6 +2990,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
      	requirement.setJobType(requirementIndex.getJobType());
      	requirement.setOtherJobType(requirementIndex.getOtherJobType());
      	requirement.setJobTitle(requirementIndex.getJobTitle());
+     	String convertedStirng = requirementIndex.getCreatedDate();
+     	String convertedStirngArray[]  = convertedStirng.split("-");
+     	StringBuilder dateString = new StringBuilder();
+     	String dateConverted = dateString.append(convertedStirngArray[2]).append("-").append(convertedStirngArray[1]).append("-").append(convertedStirngArray[0]).toString();
+     	requirement.setPostedDateStr(dateConverted);
      	if(requirementIndex.getMinExperience() !=null){
      		requirement.setMinExp(requirementIndex.getMinExperience().toString());	
      	}
@@ -3231,5 +3277,88 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception {
 		return requirementDao.getNoticePeriodByRequirementId(requirementId);
 	}
+	
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserId(orgLocationId,user);
+	}
 
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId, User user)
+			throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(orgLocationId,user);
+	}
+	
+	@Override
+	public Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(orgLocationId,user);
+	}
+
+	@Override
+	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(
+			Long orgLocationId,  TeamMembers teamMembers) throws Exception {
+		return requirementDao.getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(orgLocationId,teamMembers);
+	}
+
+
+	@Override
+	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			 Date startDateUTC, Date endDateUTC) throws Exception {
+		
+		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC, endDateUTC);
+	}
+
+
+	@Override
+	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId, Date startDateUTC, Date endDateUTC) {
+		return requirementDao.getTotalRequirementsReleasedToSpoc(relationId, spocId,startDateUTC,endDateUTC);
+	}
+	
+	@Override
+	public List<Requirement> getRequirementsForSOWByOrgLocationId(
+			Long orgLocationId, String sowType) throws Exception {
+		return requirementDao.getRequirementsForSOWByOrgLocationId(orgLocationId, sowType);
+	}
+
+
+	@Override
+	public List<String> getAllRequirementEducationByRequirementId(Long requirementId){
+		return requirementDao.getAllRequirementEducationByRequirementId(requirementId);
+	}
+	
+	@Override
+	public Requirement getRequirementDetailsById(Long requirementId) throws Exception {
+		return requirementDao.getRequirementDetailsById(requirementId);
+	}
+	
+	@Override
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays)
+			throws Exception {
+		
+			return requirementDao.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(orgLocationId, userType, userId, userCode, numberOfDays);
+		
+	}
+
+
+	@Override
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
+			Date startDateUTC, Date endDateUTC) throws Exception {
+		return requirementDao.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocationId, orgRelationId, startDateUTC, endDateUTC);
+	}
+
+
+	@Override
+	public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations)
+			throws Exception {
+		return requirementDao.getAllReleasedJobsBasedOnUserIdAndLocationId(user, orgLocations);
+	}
+
+
+	@Override
+	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
+			Long relationId) throws Exception {
+		return requirementDao.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds, relationId);
+	}
+	
 }

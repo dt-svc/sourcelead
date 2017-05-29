@@ -15,11 +15,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -315,13 +318,14 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			    									   .setLong("responderLocationId", orgLocationId)
 			    									   .setString("responderType", type)
 			    									   .setCacheable(true).list();*/
+			 
 			   if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
-				   query = "select spoc.id from OrgSpoc spoc where spoc.clientUser.id = :userId ";
+				   query = "select spoc.id from OrgSpoc spoc where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId ";
 			   }else{
-				   query = "select spoc.id from OrgSpoc spoc where spoc.vendorUser.id = :userId ";
+				   query = "select spoc.id from OrgSpoc spoc where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
 			   }
 			   
-				ownersList = session.createQuery(query).setLong("userId", userId)
+				ownersList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
 			    									   .setCacheable(true).list();
 		    
 	        return ownersList;
@@ -350,12 +354,12 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			
 			if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
-				   query = "from OrgSpoc spoc where spoc.clientUser.id = :userId ";
+				   query = "from OrgSpoc spoc where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
 			   }else{
-				   query = "from OrgSpoc spoc where spoc.vendorUser.id = :userId ";
+				   query = "from OrgSpoc spoc where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
 			   }
 			
-			    spocsList = session.createQuery(query).setLong("userId", userId)
+			    spocsList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
 					   .setCacheable(true).list();
 			return spocsList;
 			
@@ -418,7 +422,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			 
-			Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId ");
+			Query query= session.createQuery("from OrgSpoc spoc where  spoc.orgRelations.id = :orgRelationId and spoc.spocStatus ='Active'");
 			List<OrgSpoc> spocsList = query.setLong("orgRelationId", orgRelationId).setCacheable(true).list();
 			 
 			return spocsList;
@@ -510,10 +514,15 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId) throws Exception
+		public OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId,Long responderLocationId, String responderType) throws Exception
 		{
+			Query query;
 			Session session = this.sessionFactory.getCurrentSession();
-			Query query= session.createQuery("from OrgSpoc spoc  where  spoc.clientUser.id =:spocUserId and spoc.ownerUser.id =:spocOwnderUserId and spoc.clientLocationId.id = :responderLocationId");
+			if("Client".equalsIgnoreCase(responderType)){
+				query= session.createQuery("from OrgSpoc spoc  where  spoc.clientUser.id =:spocUserId and spoc.ownerUser.id =:spocOwnderUserId and spoc.clientLocationId.id = :responderLocationId");
+			}else{
+				query= session.createQuery("from OrgSpoc spoc  where  spoc.vendorUser.id =:spocUserId and spoc.ownerUser.id =:spocOwnderUserId and spoc.vendorLocationId.id = :responderLocationId");
+			}
 			List<OrgSpoc> spocsList = query.setLong("spocUserId", spocUserId).setLong("spocOwnderUserId", spocOwnderUserId).setLong("responderLocationId", responderLocationId).setCacheable(true).list();
 			OrgSpoc orgSpoc = null;
 			if(spocsList != null && spocsList.size() > 0){
@@ -560,6 +569,52 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 				orgSpoc = spocsList.get(0);
 			}
 			return orgSpoc;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+			 //from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor'
+			Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org  where  (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor') ");
+			List<OrgSpoc> spocsList = query.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			 
+			return spocsList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<OrgSpoc> getSpoclistByDomain(Long orgRelationId, String domain) throws Exception
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+			 //from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = 'Vendor') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = 'Vendor'
+			Query query;
+			if("".equalsIgnoreCase(domain)){
+				query= session.createQuery("from OrgSpoc spoc left join fetch spoc.clientUser user where spoc.orgRelations.id = :orgRelations");
+			}else{
+				query= session.createQuery("from OrgSpoc spoc left join fetch spoc.vendorUser user where spoc.orgRelations.id = :orgRelations and user.email like '%"+domain+"%'");
+			}
+			List<OrgSpoc> spocsList = query.setLong("orgRelations", orgRelationId).setCacheable(true).list();
+			 
+			return spocsList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId)
+				throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> orgSpoc = new ArrayList<OrgSpoc>();
+			logger.debug("getOwnerUserExistedByOrgRelationIdAndOwnerUserId start");
+			orgSpoc = session.createQuery("from OrgSpoc spoc where spoc.orgRelations.id = :orgRelationId and spoc.ownerUser.id = :ownerUserId and spoc.status = '1' ").setLong("orgRelationId", orgRelationId).setLong("ownerUserId", ownerUserId).setCacheable(true).list();
+			logger.debug("getOwnerUserExistedByOrgRelationIdAndOwnerUserId End");
+			Boolean flag = false;
+			if (orgSpoc.size() > 0) {
+				flag = true;
+			} 
+			return flag;
 		}
 
 }

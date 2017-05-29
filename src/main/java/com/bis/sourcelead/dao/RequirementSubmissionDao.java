@@ -3,8 +3,6 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -20,6 +18,8 @@ import com.bis.sourcelead.entity.User;
 public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getRequirementSubmissionById(Long submissionId)throws Exception;
+	
+	RequirementSubmission getClientRequierementSubmission(Long submissionId)throws Exception;
 	
 	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
 	
@@ -37,7 +37,7 @@ public interface RequirementSubmissionDao {
 	
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId,User user,String loginUserRole) throws Exception;
 	
-	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
+	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(OrgLocations loginOrgLocation,Requirement requirement,User user,String loginUserRole) throws Exception;
 	
 	RequirementSubmission getRequirementSubmissionByIdAndSubmissionStatus(Long submissionId,String submissionStatus)throws Exception;
 	
@@ -163,6 +163,8 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
 			List<Long> applicantsList, Date startUTCDate, Date endUTCDate);
 	
+	Integer  getConsolidatedReportsForMailingForIndividualUserForToday(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+
 	Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
 	boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
@@ -171,5 +173,20 @@ public interface RequirementSubmissionDao {
 
 	List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId);
 	
+	List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId);
 	
+	List<RequirementSubmission> getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user,OrgLocations orgLocations, String status, Requirement requirement) throws Exception;
+	
+//	Long getCountOfAllApplicantsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
+
+	List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId);
+
+	Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
+
+	List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId, Date startDateUTC, Date endDateUTC);
+	
+	List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType);
+
+	List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId,
+			Long orgRelationId, Date startUTCDate, Date endUTCDate);
 }

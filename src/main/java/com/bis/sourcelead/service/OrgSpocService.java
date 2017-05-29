@@ -45,7 +45,7 @@ public interface OrgSpocService {
 	 * @return
 	 * @throws Exception
 	 */
-	OrgSpoc getOrgSpocById(Long Id) throws Exception;
+	OrgSpoc getOrgSpocById(Long spocId) throws Exception;
 	
 	/**To validate spoc email id while create new spoc
 	 * @author Prasad Salina
@@ -114,10 +114,16 @@ public interface OrgSpocService {
 
 	List<Long> getOwnerListByUserIdAndOrglocationId(User user, OrgLocations orgLocations, String type);
 	
-	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId,Long spocOwnderUserId, Long responderLocationId) throws Exception;
+	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId,Long spocOwnderUserId, Long responderLocationId, String responderType) throws Exception;
 
 	List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId,Long orgRelationId,Long orgLocationId) throws Exception;
 
 	OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId,Long spocOwnderUserId, Long responderLocationId)throws Exception;
+
+	List<OrgSpoc> getAllClientsByOrgLocationId(Long orgLocationId)throws Exception;
+
+	List<OrgSpoc> getSpoclistByDomain(Long id, String domain)throws Exception;
+	
+	boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId) throws Exception;
 
 }

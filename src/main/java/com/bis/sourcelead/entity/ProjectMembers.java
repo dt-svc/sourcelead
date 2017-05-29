@@ -125,6 +125,38 @@ public class ProjectMembers implements Serializable{
     @Column(name = "TERMINATE_REASON")
     private String terminateReason;
     
+    @Transient
+    private String totalHours;
+    
+    @Transient
+    private String candidateName;
+    
+    @Transient
+    private Long candidateId;
+    
+    @Transient
+    private String userRoleType;
+    
+    @Transient
+    private Long submissionApproverHierarchyId;
+    
+    
+    @Transient
+    private Long submissionInvoiceId;
+    
+    public Long getSubmissionInvoiceId() {
+		return submissionInvoiceId;
+	}
+
+	public void setSubmissionInvoiceId(Long submissionInvoiceId) {
+		this.submissionInvoiceId = submissionInvoiceId;
+	}
+
+	@Transient
+    private List<Contracts> contractsList;
+    
+    
+    
     @JsonIgnore
     @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonBackReference
@@ -399,6 +431,64 @@ public class ProjectMembers implements Serializable{
 
 	public void setProjectMembersList(List<ProjectMembers> projectMembersList) {
 		this.projectMembersList = projectMembersList;
+	}
+
+	public String getTotalHours()
+	{
+		return totalHours;
+	}
+
+	public void setTotalHours(String totalHours)
+	{
+		this.totalHours = totalHours;
+	}
+
+	public String getCandidateName()
+	{
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName)
+	{
+		this.candidateName = candidateName;
+	}
+
+	public Long getCandidateId()
+	{
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId)
+	{
+		this.candidateId = candidateId;
+	}
+
+	public String getUserRoleType() {
+		return userRoleType;
+	}
+
+	public void setUserRoleType(String userRoleType) {
+		this.userRoleType = userRoleType;
+	}
+
+	public Long getSubmissionApproverHierarchyId()
+	{
+		return submissionApproverHierarchyId;
+	}
+
+	public void setSubmissionApproverHierarchyId(Long submissionApproverHierarchyId)
+	{
+		this.submissionApproverHierarchyId = submissionApproverHierarchyId;
+	}
+
+	public List<Contracts> getContractsList()
+	{
+		return contractsList;
+	}
+
+	public void setContractsList(List<Contracts> contractsList)
+	{
+		this.contractsList = contractsList;
 	}
 
 }

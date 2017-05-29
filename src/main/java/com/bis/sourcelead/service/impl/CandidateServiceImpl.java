@@ -8,11 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -43,21 +41,24 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * 
@@ -111,6 +112,13 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	/**
 	 * @author prasad k
 	 * @since  aug 26 2016
@@ -142,7 +150,7 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = null;
 		if(jsonObj.has("candidateId") && jsonObj.getString("candidateId") != null && !"".equals(jsonObj.getString("candidateId"))){
 			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
-		}else{
+		}else{	
 			candidate = new Candidate();
 			candidate.setCreatedDate(commonUtil.currentDate());
 			candidate.setCreatedBy(user.getUserCode());
@@ -155,6 +163,9 @@ public class CandidateServiceImpl implements CandidateService {
 			}else{
 				candidate.setCandidateType("Candidate");
 			}
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidate.setIsFavourite(0);
+			candidate.setIsFavouriteAssociate(0);
 			
 		}
         
@@ -219,6 +230,8 @@ public class CandidateServiceImpl implements CandidateService {
 		if(jsonObj.has("expectedRateCurrencey") && jsonObj.getString("expectedRateCurrencey") !=null ){
 			candidate.setExpectedRateCurrencey(jsonObj.getString("expectedRateCurrencey"));
 		}
+		
+		
 		if(jsonObj.has("summary") && jsonObj.getString("summary") !=null){
 		candidate.setSummary(jsonObj.getString("summary"));
 		}
@@ -267,6 +280,22 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 		}
 
+		
+		
+		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+			candidate.setOrgRelationId(orgRelation);
+		}else{
+			candidate.setOrgRelationId(null);
+		}
+		
+		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			candidate.setSpocId(orgspoc);
+		}else{
+			candidate.setSpocId(null);
+		}
+		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 		candidate.setCandidateEducation(candidateEducationList);
 		
@@ -286,10 +315,15 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		}*/
 		
+		if(jsonObj.has("isAssociate") && jsonObj.getString("isAssociate") != null && Constants.YES.equalsIgnoreCase(jsonObj.getString("isAssociate"))){
+			candidate.setIsAssociate(Constants.YES);
+		}else{
+			candidate.setIsAssociate(Constants.NO);
+		}
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.currentDate());
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidate.setIsFavourite(0);
+		
 		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
@@ -297,7 +331,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
-		return savedCandidate;
+		return null;
 	}
 
 	@Override
@@ -318,8 +352,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate);
 		for(Candidate can :candidateList){
 			if(can.getUpdatedDate() != null){
 			 can.setCandidateUpdateDateToString(Constants.DF_DMY.format(can.getUpdatedDate()));
@@ -412,14 +446,20 @@ public class CandidateServiceImpl implements CandidateService {
  * Write candidate data to xls format
  */
 	@Override
-	public File getCandidateExcelFile(List<Candidate> candidatesList,String orgName) throws Exception {
+	public File getCandidateExcelFile(List<Candidate> candidatesList,String orgName,String isAssociate) throws Exception {
 		
 		Workbook createExcelworkbook =  new XSSFWorkbook();
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		 StringBuilder excelSheet = new StringBuilder();
-		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_candidate_").append(dateFormat.format(new Date())).toString());
+		 Sheet createExcelsheet;
+		 if(isAssociate.equalsIgnoreCase(Constants.YES)){
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_Associate_").append(dateFormat.format(new Date())).toString());	 
+		 }else{
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgName).append("_Candidate_").append(dateFormat.format(new Date())).toString());
+		 }
+		 
     	Row writeRow = null;
 		String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
@@ -430,7 +470,13 @@ public class CandidateServiceImpl implements CandidateService {
 	       	 column++;
 	        }
 	        StringBuilder orgNameSB = new StringBuilder();
-	        File file = File.createTempFile(orgNameSB.append(orgName).append("_candidates_").append(dateFormat.format(new Date())).toString(),".xls");
+	        File file;
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	 file = File.createTempFile(orgNameSB.append(orgName).append("_Associates_").append(dateFormat.format(new Date())).toString(),".xls");	
+	        }else{
+	        	 file = File.createTempFile(orgNameSB.append(orgName).append("_Candidates_").append(dateFormat.format(new Date())).toString(),".xls");
+	        }
+	        
 	        file.setReadable(true);
 	        /*File file = new File(orgName+"_candidates_"+dateFormat.format(new Date())+".xls");*/
 			 FileOutputStream fos = new FileOutputStream(file);
@@ -465,9 +511,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		writeRow.createCell(3).setCellValue(candidate.getMobilePhone());
 	}
 	
-	if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+	StringBuilder loc = new StringBuilder();
+	if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getCity()).append(",").append(candidate.getState()).append(",").append(candidate.getCountry()).toString());
+	}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
+		writeRow.createCell(4).setCellValue(loc.append(candidate.getState()).append(",").append(candidate.getCountry()).toString());
+	}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 		writeRow.createCell(4).setCellValue(candidate.getCountry());
+	}else{
+		writeRow.createCell(4).setCellValue("--");
 	}
+	
 	if(candidate.getDesignation() !=null && !"".equalsIgnoreCase(candidate.getDesignation())){
 		writeRow.createCell(5).setCellValue(candidate.getDesignation());
 	}
@@ -506,12 +560,32 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}else{
 		writeRow.createCell(9).setCellValue(candidate.getExpectedRate());
 	}
+	if(null != candidate.getOrgRelationId()){
+		if(null != candidate.getOrgRelationId().getResponderLocationId()){
+			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
+				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			}
+		}
+	}else{
+				writeRow.createCell(10).setCellValue("--");
+	}
+	
+	if(null != candidate.getSpocId()){
+		if(null != candidate.getSpocId().getVendorUser().getLastName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getLastName())){
+			StringBuilder vendorName = new StringBuilder();
+			writeRow.createCell(11).setCellValue(vendorName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+	}else if(null != candidate.getSpocId().getVendorUser().getFirstName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getFirstName())){
+			writeRow.createCell(11).setCellValue(candidate.getSpocId().getVendorUser().getFirstName());	
+		}
+	}else{
+			writeRow.createCell(11).setCellValue("--");
+	}
 	return createExcelsheet;
 }
 
 	@Override
-	public File getCandidatePdf(List<Candidate> candidatesList, String orgName) throws Exception {
-		return pdfUtil.createCandidatePdfTable(candidatesList,orgName);
+	public File getCandidatePdf(List<Candidate> candidatesList, String orgName,String isAssociate) throws Exception {
+		return pdfUtil.createCandidatePdfTable(candidatesList,orgName,isAssociate);
 	}
 
 	@Override
@@ -743,6 +817,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setSkillsName(candidateSkills);
 			}
 			
+			if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") !=null){
+				candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+			}
+			
 			
 			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
 			candidate.setCandidateEducation(candidateEducationList);
@@ -762,6 +840,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			return savedCandidate;
 	}
 
+	@Override
+	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		   return candidateDao.getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(orgLocations, user);
+	}
+			
 	@Override
 	public List<Candidate> getCandidateReportsListByOrgLocationID(Long orgLocationId, String candidateType)
 			throws Exception {
@@ -801,7 +886,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 		return candidateReportsList;
 	}
-
+	
+	@Override
+	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId,String employeementType) throws Exception
+	{
+		return candidateDao.getAllActiveAssociatesByOrglocationId(orgLocationId,employeementType);
+	}
+	
+	@Override
+	public Candidate getCandidateById(Long candidateId) throws Exception
+	{
+		return candidateDao.getCandidateById(candidateId);
+	}
+	
 	@Override
 	public List<User> getAllCandidateOwnersByLocationIdAndCandidateType(Long orgLocationId, String candidateType)
 			throws Exception {
@@ -843,5 +940,86 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getHotCandidateListByTeamIdAndOrgLocationId(teamId, orgLocationId);
 	}
 
+	@Override
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod) throws Exception {
+		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, timePeriod);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
+		return candidateDao.getAllActiveCandidatesCountForCampaignByLocationAndStatus(orgLocationId);
+	}
+	
+	@Override
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception {
+		return candidateDao.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,endDateUTC);
+	}
+
+	@Override
+	public Candidate getCandidateByUUID(String candidateUUID) throws Exception {
+		return candidateDao.getCandidateByUUID(candidateUUID);
+	}
+
+	@Override
+	public Long getCandidatesCountByOrgLocationIDAndStatus(Long orgLocationId, String candidateStatus, String isAssociate) throws Exception {
+		return candidateDao.getCandidatesCountByOrgLocationIDAndStatus(orgLocationId, candidateStatus, isAssociate);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllActiveCandidatesByLocation(orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId) throws Exception
+	{
+		return candidateDao.getAllActiveAssociatesByLocation(orgLocationId);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveAssociatesByLocationAndAssoicatesList(Long orgLocationId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveAssociatesByLocationAndAssoicatesList(orgLocationId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId, Long spocId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByLocationAndAssoicatesList(orgLocationId, spocId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId, Long spocId) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByLocation(orgLocationId, spocId);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(Long vendorOrgRelationId,
+			List<Long> associatesIds) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(vendorOrgRelationId, associatesIds);
+	}
+
+	@Override
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long orgLocationId) throws Exception {
+		return candidateDao.getAllActiveVendorAssociatesByOrgLocation(orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		return candidateDao.getCandidateByConsultantUserIdOrgRelationId(consultantUserId,orgLocationId,orgRelationId);
+	}
+
+	@Override
+	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId) throws Exception
+	{
+		return candidateDao.getCandidateByConsultantUserId(consultantUserId,orgLocationId);
+	}
+
+	@Override
+	public Long getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long orgLocationId, Long userId,
+			String candidateType) throws Exception {
+		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocationId, userId, candidateType);
+	}
 
 }

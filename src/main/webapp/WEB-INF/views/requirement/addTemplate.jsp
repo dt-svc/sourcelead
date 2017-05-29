@@ -18,12 +18,28 @@
 .pras.req-title p{
 bottom:-14px;
 }
+.ratetype p {
+bottom: -14px !important;
+left:-20px !important;
+}
+.pras.req-title p{
+bottom:-2px;
+}
+.form-control {
+padding: 6px 12px !important; height: 34px !important;
+}
+.bootstrap-select {
+width: 100% !important;
+}
 </style>
+
 
 
 <script>
 	$(document).ready(function() {
+		
 		document.getElementById("requirementtemplate_form").reset();
+		
 	});
 </script>
 
@@ -35,22 +51,24 @@ bottom:-14px;
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/template'/>">Template List </a>&raquo;
-			Add Template
+				href="<c:url value='/template'/>">Requirement Template List </a>&raquo;
+			Add Requirement Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
 		<form:form id="requirementtemplate_form" name="requirementtemplate_form" enctype='multipart/form-data'>
-			<div class="form-horizontal req-dtls myForm row mb">
+			<div class="form-horizontal req-dtls mb">
 				<div class="clearfix">
 					<div class="col-lg-12">
-						<h3>Add Template Details</h3>
+						<h3>Add Requirement Template Details</h3>
 					</div>
-
-					<div
-						class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
-						<div class="form-group" id="jobTitleDiv">
-							<label class="col-md-3">Title<span class="text-danger">*</span></label>
+<div class="clearfix"></div>
+					<div class="mt pras req-title">
+					
+					<div class="col-md-6">
+					
+					<div class="form-group" id="jobTitleDiv">
+							<label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
 							<div class="col-md-9">
 									<input type="text" id="jobTitle" name="jobTitle"
 										value="${requirement.jobTitle}" field-name="Job Title"
@@ -61,16 +79,65 @@ bottom:-14px;
 									<div class="input-group-btn selp-custom-min">
 									</div>
 							</div>
-						</div>
+					</div>
+						
+					<div class="form-group">
+								<label class="col-md-3">Employment Type</label>
+									<div class="col-md-9">
+										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+											<option value="">Select</option>
+											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
+											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
+											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
+											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
+											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
+											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
+											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
+										</select>
+								</div>
+					</div>
+						<div class="form-group">
+								<label class="col-md-3">Experience</label>
+								<div class="col-md-9">
+									<div class="row">
+										<div class="col-md-6">
+											<input type="text" class="form-control" placeholder="MinExp"
+												id="minExp" name="minExp" value="${requirement.minExp}"
+												field-name="MinExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+										<div class="col-md-6">
+											<input type="text" class="form-control" id="maxExp"
+												name="maxExp" placeholder="MaxExp"
+												value="${requirement.maxExp}" field-name="MaxExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+									</div>
+									<div class="row" id="expId">
+										<input type="hidden" name="expValidation" id="expValidation">
+									</div>
 	
-	                       
+								</div>
+							</div>
+
+					<div class="form-group" id="jobTypeDiv" style="display: none">
+							<label class="col-md-3">Employment Type</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
+								</div>
+					</div>
+					
+					</div>
+	
+	                  <div class="col-md-6">     
 	                       <div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
-								<select multiple class="chosen-select form-control"
-									name="education" id="education"
-									data-validation="validate_Space"
-									data-validation-optional="true">
+								<select multiple class="chosen-select form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
 									<c:forEach var="edu" items="${educationsList}">
 										<c:if
 											test="${fn:contains(requirement.reqEducationListString, edu.name)}">
@@ -105,7 +172,7 @@ bottom:-14px;
 						 <div class="form-group">
 			              <label class="col-md-3">Skills</label>
 			              <div class="col-md-9">
-			                <select multiple class="chosen-select form-control" name="skills" id="skills" data-validation-optional="true">
+			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">
 			               <c:forEach var="skill" items="${skillsList}">
 			               		<c:set var = "NUM" value = "${0}"/>
 			               		<c:forEach var="existedSkill" items="${requirement.reqSkillsListString}">
@@ -121,64 +188,7 @@ bottom:-14px;
 			                </select>
 			              </div>
 			            </div> 
-	                       
-							<div class="form-group">
-								<label class="col-md-3">Employment Type</label>
-									<div class="col-md-9">
-										<select class="selectpicker form-control" id="jobType" name="jobType" onChange="getJobType(this);">
-											<option value="">Select</option>
-											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
-											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
-											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
-											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
-											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
-											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
-											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
-										</select>
-								</div>
-							</div>
-
-						<div class="form-group" id="jobTypeDiv" style="display: none">
-							<label class="col-md-3">Employment Type</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
-								</div>
-						</div>
-					
-					
-
-
-						<div class="form-group">
-							<label class="col-md-3">Experience</label>
-							<div class="col-md-9">
-								<div class="row">
-									<div class="col-md-6">
-										<input type="text" class="form-control" placeholder="minExp"
-											id="minExp" name="minExp" value="${requirement.minExp}"
-											field-name="MinExp"
-											data-validation="validate_Space validate_float validate_length length1-5"
-											data-validation-optional="true" onblur="minMaxExperience();"
-											value="">
-									</div>
-									<div class="col-md-6">
-										<input type="text" class="form-control" id="maxExp"
-											name="maxExp" placeholder="maxExp"
-											value="${requirement.maxExp}" field-name="MaxExp"
-											data-validation="validate_Space validate_float validate_length length1-5"
-											data-validation-optional="true" onblur="minMaxExperience();"
-											value="">
-									</div>
-								</div>
-								<div class="row" id="expId">
-									<input type="hidden" name="expValidation" id="expValidation">
-								</div>
-
-							</div>
-						</div>
-
-						
-
-						<div class="form-group">
+					<%-- 	<div class="form-group">
 							<label class="col-md-3">Description</label>
 							<div class="col-md-9">
 								<textarea rows="2" class="form-control" id="description"
@@ -187,7 +197,18 @@ bottom:-14px;
 									data-validation="validate_length length2-5000"
 									data-validation-optional="true">${requirement.description}</textarea>
 							</div>
+						</div> --%>
+						
 						</div>
+						
+						<div class="clearfix"></div>
+						<div class="clearfix mb">
+				          <label class="col-md-3">Description</label>
+				          <div class="col-md-12 txtEditor_p">
+				          <textarea id="txtEditor" name="description" value="${requirement.description}" class="form-control newContrtextarea">${requirement.description}</textarea>
+				          </div>
+				        </div> 
+						
 
 					</div>
 				</div>
@@ -224,19 +245,34 @@ bottom:-14px;
 
         
 </script> 
+
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script>
+	$(document).ready(function() {
+		$("#txtEditor").Editor();
+		getEditRequirementDetails(requirementId);
+	});
+</script> 
+       
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
 		
-		
+		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
 			
 			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#requirementtemplate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-		    var jsonData = encodeURIComponent(con);
+			
+			var jsonData = JSON.stringify(frm);
+			
+		   //	var con = JSON.stringify(frm);
+		  //	con = con.replace(/[{}]/g, ""); 
+		
+		   // var jsonData = encodeURIComponent(con);
 			var form = $('#requirementtemplate_form')[0];
       		var formData = new FormData(form); 
+      		formData.append("json",jsonData);
 			//It will escape all the special characters
 			$("#store_RequirementTemplate").attr("disabled", "disabled");
 			$("#store_RequirementTemplate").addClass('button').val('Processing..');
@@ -250,7 +286,7 @@ bottom:-14px;
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl+"/storeRequirementTemplate?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 								location.replace(sourceleadUrl+"/template");
 						},
@@ -290,6 +326,7 @@ bottom:-14px;
 
 <script type="text/javascript">
 		window.onload = function () {
+			
 			var jobType = '${requirement.jobType}';
 			if(null != jobType && jobType != "" && jobType != "undefined" && jobType == 'Other'){
 				  document.getElementById("jobTypeDiv").style.display="block";
@@ -301,6 +338,8 @@ bottom:-14px;
 				  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 				  $("#jobOtherType").val('');
 			}
+			
+			
 		 };
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
@@ -429,5 +468,35 @@ function getJobType(jobType){
 }
 </script>
 
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor").Editor();
+			});
+       </script> 
+<script>
+function getEditRequirementDetails(requirementId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	if(requirementId !=''){
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getEditRequirementDetails?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId,
+			success : function(data) {
+				var json = JSON.parse(data);
+				$(".Editor-container").find('.Editor-editor').html(json['description']);
+			},
+		}); 
+	}
+	
+}
+</script>
 
+<script type="text/javascript">
+$(document).ready(function(){
+	var requirementId  = "${requirementId}";
+	getEditRequirementDetails(requirementId);
+	
+});
+</script>
 <jsp:include page="../masterFooter.jsp" />

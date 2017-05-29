@@ -28,7 +28,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		 */
 		
 		
-		tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' cellspacing='0' style='background-color:#F9F9F9;'>");
+		tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' cellspacing='0' style='background-color:#F9F9F9; font-family: arial;'>");
 				tempHTML.append("<tr>");
 						tempHTML.append("<td>");
 								tempHTML.append("<table width='100%' align='center' cellpadding='0' cellspacing='0' style='padding:10px 0px 10px 0px; background-color:#10a0e2;'>");
@@ -40,12 +40,12 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 												      //This condition for org image     
 												      if(org != null && org.getId() != null){
 												    	  	if(StringUtils.isNotEmpty(org.getFileContentType())){
-												    	  	  tempHTML.append("<td><img src='"+url+"/displayOrgImage/"+org.getOrgCode()+"' width='auto' style='padding: 5px 20px; max-height:55px; background-color:#fff; margin: 5px 0px;'></td>");
+												    	  	  tempHTML.append("<td style='text-align: center;'><img src='"+url+"/displayOrgImage/"+org.getOrgCode()+"' width='auto' style='padding: 5px 20px; max-height:55px; background-color:#fff; margin: 5px auto; display:block;'></td>");
 												    	  	}else{
-												    	  		 tempHTML.append("<td class='text-logo'><span class='tbldata-dotdot'  style='font-size: 25px; color: white; width: 300px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px;'>"+org.getOrgName()+"</span></td>");
+												    	  		 tempHTML.append("<td class='text-logo'><span class='tbldata-dotdot'  style='font-size: 28px; color: #fff; width: 600px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px; text-align:center; margin:0 auto; font-weight: 600;'>"+org.getOrgName()+"</span></td>");
 												    	  	}
 												      }else{
-												    	  tempHTML.append("<td><img src='"+url+"/resources/images/mail-logo.png' width='300px' height='71px'></td>");
+												    	  tempHTML.append("<td style='text-align: center;'><img src='"+url+"/resources/images/SourceLead-logo-white.png' width='300px' height='66px'></td>");
 												      }
 												           
 										             tempHTML.append("</tr>");
@@ -57,15 +57,15 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 		tempHTML.append("<table width='900'  bgcolor='#F9F9F9' align='center' style='background-color:#F9F9F9; margin:0px auto 12px auto; padding:25px 0px 10px 20px'  cellpadding='0' cellspacing='0'>");
 				tempHTML.append("<tr>");
 						tempHTML.append("<td>");
-					  	      tempHTML.append("<table width='900' style='margin:38px auto; font-family:'Segoe UI'; align='center' cellpadding='0' cellspacing='0' >");
+					  	      tempHTML.append("<table width='900' style='margin:30px auto; font-family:'arial'; align='center' cellpadding='0' cellspacing='0' >");
 						           tempHTML.append("<tr>");
 						                 tempHTML.append("<td>");
-						                         tempHTML.append("<div style='font-size:14px; color:#333333;'>");
+						                         tempHTML.append("<div style='font-size:16px; color:#333333; line-height: 20px;'>");
 		                                         tempHTML.append(body);
-		                                         tempHTML.append(" </div>");
+		                                         tempHTML.append("</div>");
 		                                         
 		                                         if(!isNullOrEmpty(signature)){
-									                    tempHTML.append("<div style='font-size:14px; color:#333333; '><br/><br/>");
+									                    tempHTML.append("<div style='font-size:16px; font-weight:600; color:#333333; line-height:20px;'><br/><br/>");
 														tempHTML.append(signature);
 													    tempHTML.append(" </div>");		
 												 }
@@ -90,8 +90,8 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 					         
 					            tempHTML.append("<tr>");    
 					                  tempHTML.append("<td>");
-					                       tempHTML.append("<p style='text-align:center; padding:10px 0px; margin:0px 0px; font-size:13px; font-weight:600; border-top:1px solid #333;'>");
-					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Legal Notices</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Terms of Use</a> | <a target='blank' href='http://www.sourcelead.com/' style='text-decoration:none; color:#333;'>Your Privacy Rights</a></p>");
+					                       tempHTML.append("<p style='text-align:center; padding:10px 0px; margin:0px 0px; font-size:14px; font-weight:600; border-top:1px solid #333;'>");
+					                       tempHTML.append("<a target='blank' href='http://www.sourcelead.com/about-us.html' style='text-decoration:none; color:#333;' title='About SourceLead'>About SourceLead</a> | <a target='blank' href='http://www.sourcelead.com/contact.html' style='text-decoration:none; color:#333;' title='Contact Us'>Contact Us</a> | <a target='blank' href='http://www.sourcelead.com/ats.html' style='text-decoration:none; color:#333;' title='ATS'>ATS</a> | <a target='blank' href='http://www.sourcelead.com/vms.html' style='text-decoration:none; color:#333;' title='VMS'>VMS</a> | <a target='blank' href='http://www.sourcelead.com/timesheet.html' style='text-decoration:none; color:#333;' title='Time Management'>Time Management</a></p>");
 					                  tempHTML.append("</td>");
 					            tempHTML.append("</tr>");
 					       tempHTML.append("</table>");

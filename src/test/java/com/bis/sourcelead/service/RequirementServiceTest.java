@@ -210,7 +210,8 @@ public class RequirementServiceTest {
 		@Test
 		public void getUserAssignJobCount()throws Exception{
 			Long userId= 1l;
-			List<RequirementAssignTo> requirementAssignTo = requirementService.getUserAssignJobCount(userId);
+			Long orgLocationId=1l;
+			List<RequirementAssignTo> requirementAssignTo = requirementService.getUserAssignJobCount(userId,orgLocationId);
 			for( RequirementAssignTo assignTo:requirementAssignTo){
 				assignTo.getApplicantCount();
 			}

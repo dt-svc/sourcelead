@@ -38,613 +38,599 @@ import com.bis.sourcelead.service.CandidateUploadFileService;
 
 /**
  * 
- * @author 
+ * @author
  * @date 6th July 2016
  */
 @Service
 public class CandidateUploadFileServiceImpl implements CandidateUploadFileService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateUploadFileServiceImpl.class);
-	
-	
 	@Autowired
 	private CandidateService candidateService;
 	
-	
-	
 	@Override
-	public String uploadCandidateFile(MultipartFile multipartFile, OrgLocations orgLocations, User user,
-		String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
-	
-	String isFileCreated = "";
-	String fileName = multipartFile.getOriginalFilename();
-
-	if (!fileName.toLowerCase().endsWith("csv")) {
-		isFileCreated = parseCandidatesXlsxandXlsData(multipartFile, orgLocations,user,isMailChecked,org,roleHierarchyId);
-	}/* else {
-		isFileCreated = parseCSVData(multipartFile,orgLocations,user,isMailChecked);
-	}*/
-	return isFileCreated;
-}
-
-
-
-/**
- * 
- * @param multipartFile
- * @param orgLocations
- * @param user 
- * @param isMailChecked 
- * @param roleHierarchyId 
- * @param org 
- * @return List<UsersImport>
- * @throws FileNotFoundException
- */
-private String parseCandidatesXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception {
-
-	String isFileCreated = "failure";
-	String fileName = multipartFile.getOriginalFilename();
-	Workbook createExcelworkbook = null ;
-
-	if (fileName.endsWith("xlsx")) {
-		createExcelworkbook = new XSSFWorkbook();
-	} else if (fileName.endsWith("xls")) {
-		createExcelworkbook = (Workbook) new HSSFWorkbook();
+	public String uploadCandidateFile(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception
+	{
+		
+		String isFileCreated = "";
+		String fileName = multipartFile.getOriginalFilename();
+		if (!fileName.toLowerCase().endsWith("csv")) {
+			isFileCreated = parseCandidatesXlsxandXlsData(multipartFile, orgLocations, user, isMailChecked, org, roleHierarchyId);
+		} /*
+			 * else { isFileCreated =
+			 * parseCSVData(multipartFile,orgLocations,user,isMailChecked); }
+			 */
+		return isFileCreated;
 	}
-
-	Sheet createExcelsheet = createExcelworkbook.createSheet("candidate");
-	createExcelsheet = setCandidateExcelHeader(createExcelsheet);
-
-	try {
-		File file = new File(multipartFile.getOriginalFilename());
-		multipartFile.transferTo(file);
-		FileInputStream fis = new FileInputStream(file);
-		Workbook workbook;
-		logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
+	
+	/**
+	 * 
+	 * @param multipartFile
+	 * @param orgLocations
+	 * @param user
+	 * @param isMailChecked
+	 * @param roleHierarchyId
+	 * @param org
+	 * @return List<UsersImport>
+	 * @throws FileNotFoundException
+	 */
+	private String parseCandidatesXlsxandXlsData(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception
+	{
+		
+		String isFileCreated = "failure";
+		String fileName = multipartFile.getOriginalFilename();
+		Workbook createExcelworkbook = null;
+		if (fileName.endsWith("xlsx")) {
+			createExcelworkbook = new XSSFWorkbook();
+		}
+		else if (fileName.endsWith("xls")) {
+			createExcelworkbook = (Workbook) new HSSFWorkbook();
+		}
+		Sheet createExcelsheet = createExcelworkbook.createSheet("candidate");
+		createExcelsheet = setCandidateExcelHeader(createExcelsheet);
+		try {
+			File file = new File(multipartFile.getOriginalFilename());
+			multipartFile.transferTo(file);
+			FileInputStream fis = new FileInputStream(file);
+			Workbook workbook;
+			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
 			boolean isValidated = false;
 			boolean isUserFound = false;
 			workbook = WorkbookFactory.create(fis);
-		int numberOfSheets = workbook.getNumberOfSheets();
-		for (int i = 0; i < numberOfSheets; i++) {
-			Sheet sheet = workbook.getSheetAt(i);
-			int count = 0;
-			Iterator<Row> rowIterator = sheet.iterator();
-			while (rowIterator.hasNext()) {
-				CandidatesImport candidateImport = new CandidatesImport();
-				Row row = rowIterator.next();
-				if (row.getRowNum() > 0) {
-					isValidated = validateCandidateExeclData(row,candidateImport,fileName,orgLocations);
-				}
-				if (isValidated) {
-					if (row.getRowNum() > 0) { // Excluding column names
-						logger.info("Reading Row :" + row.getRowNum() + " records");
-						
-						candidateImport.setFirstName(row.getCell(0).toString());
-						
-						if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
-							candidateImport.setLastName("");
-						} else {
-							candidateImport.setLastName(row.getCell(1).toString());
-						}
-						
-						candidateImport.setEmailId(row.getCell(2).toString().trim());
-
-						if (row.getCell(3) != null) {
-							String mobileNumber = getCellValueAsString(row.getCell(3),fileName);
-							candidateImport.setMobileNumber(mobileNumber);
-						} else {
-							candidateImport.setMobileNumber("");
-						}
-						
-						if (row.getCell(4) != null) {
-							String country = getCellValueAsString(row.getCell(4),fileName);
-							candidateImport.setCountry(country);;
-						} else {
-							candidateImport.setCountry(orgLocations.getCountry());
-						}
-						
-						if(row.getCell(5) != null){
-							String state = getCellValueAsString(row.getCell(5), fileName);
-							candidateImport.setState(state);
-						}else{
-							candidateImport.setState("");
-						}
-						
-						if(row.getCell(6) != null){
-							String city = getCellValueAsString(row.getCell(6), fileName);
-							candidateImport.setCity(city);
-						}else{
-							candidateImport.setCity("");
-						}
-						
-						if(row.getCell(7) != null){
-							String address = getCellValueAsString(row.getCell(7), fileName);
-							candidateImport.setAddress(address);
-						}else{
-							candidateImport.setAddress("");
-						}
-						
-						if(row.getCell(8) != null){
-							String designation = getCellValueAsString(row.getCell(8), fileName);
-							candidateImport.setDesignation(designation);
-						}else{
-							candidateImport.setDesignation("");
-						}
-						
-						if(row.getCell(9) != null){
-							String designationType = getCellValueAsString(row.getCell(9), fileName);
-							candidateImport.setDesignationType(designationType);
-						}else{
-							candidateImport.setDesignationType("");
-						}
-						
-						if(row.getCell(10) != null){
-							String experienceYears = getCellValueAsString(row.getCell(10), fileName);
-							candidateImport.setExperienceYears(experienceYears);
-						}else{
-							candidateImport.setExperienceYears("");
-						}
-
-						
-						if(row.getCell(11) != null){
-							String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
-							candidateImport.setExperienceMonths(experienceMonths);
-						}else{
-							candidateImport.setExperienceMonths("");
-						}
-						if(row.getCell(12) != null){
-							String expectedRate = getCellValueAsString(row.getCell(12), fileName);
-							candidateImport.setExpectedRate(expectedRate);
-						}else{
-							candidateImport.setExpectedRate("");
-						}
-						
-						if(row.getCell(13) != null){
-							String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
-							candidateImport.setExpectedRateType(expectedRateType);
-						}else{
-							candidateImport.setExpectedRateType("");
-						}
-						
-						if(row.getCell(14) != null){
-							String skillsName = getCellValueAsString(row.getCell(14), fileName);
-							candidateImport.setSkillsName(skillsName);
-						}else{
-							candidateImport.setSkillsName("");
-						}
-						
-						if(row.getCell(15) != null){
-							String education = getCellValueAsString(row.getCell(15), fileName);
-							candidateImport.setEducation(education);
-						}else{
-							candidateImport.setEducation("");
-						}
-						
-						if(row.getCell(16) != null){
-							String employers = getCellValueAsString(row.getCell(16), fileName);
-							candidateImport.setEmployers(employers);
-						}else{
-							candidateImport.setEmployers("");
-						}
-						
-						if(row.getCell(17) != null){
-							String primarySkill = getCellValueAsString(row.getCell(17), fileName);
-							candidateImport.setPrimarySkill(primarySkill);
-						}else{
-							candidateImport.setPrimarySkill("");
-						}
-					
-					   saveBulkCandidates(candidateImport,orgLocations, user, isMailChecked);
-						 
+			int numberOfSheets = workbook.getNumberOfSheets();
+			for (int i = 0; i < numberOfSheets; i++) {
+				Sheet sheet = workbook.getSheetAt(i);
+				int count = 0;
+				Iterator<Row> rowIterator = sheet.iterator();
+				while (rowIterator.hasNext()) {
+					CandidatesImport candidateImport = new CandidatesImport();
+					Row row = rowIterator.next();
+					if (row.getRowNum() > 0) {
+						isValidated = validateCandidateExeclData(row, candidateImport, fileName, orgLocations);
 					}
-			}else{
-				if (row.getRowNum() > 0) {
-					count++;
-					createCandidateErrorFile(row, createExcelsheet, count,candidateImport,fileName,org,orgLocations);
+					if (isValidated) {
+						if (row.getRowNum() > 0) { // Excluding column names
+							logger.info("Reading Row :" + row.getRowNum() + " records");
+							candidateImport.setFirstName(row.getCell(0).toString());
+							if (row.getCell(1) == null
+									|| "".equalsIgnoreCase(row.getCell(1).toString())) {
+								candidateImport.setLastName("");
+							}
+							else {
+								candidateImport.setLastName(row.getCell(1).toString());
+							}
+							candidateImport.setEmailId(row.getCell(2).toString().trim());
+							if (row.getCell(3) != null) {
+								String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
+								candidateImport.setMobileNumber(mobileNumber);
+							}
+							else {
+								candidateImport.setMobileNumber("");
+							}
+							if (row.getCell(4) != null) {
+								String country = getCellValueAsString(row.getCell(4), fileName);
+								candidateImport.setCountry(country);;
+							}
+							else {
+								candidateImport.setCountry(orgLocations.getCountry());
+							}
+							if (row.getCell(5) != null) {
+								String state = getCellValueAsString(row.getCell(5), fileName);
+								candidateImport.setState(state);
+							}
+							else {
+								candidateImport.setState("");
+							}
+							if (row.getCell(6) != null) {
+								String city = getCellValueAsString(row.getCell(6), fileName);
+								candidateImport.setCity(city);
+							}
+							else {
+								candidateImport.setCity("");
+							}
+							if (row.getCell(7) != null) {
+								String address = getCellValueAsString(row.getCell(7), fileName);
+								candidateImport.setAddress(address);
+							}
+							else {
+								candidateImport.setAddress("");
+							}
+							if (row.getCell(8) != null) {
+								String designation = getCellValueAsString(row.getCell(8), fileName);
+								candidateImport.setDesignation(designation);
+							}
+							else {
+								candidateImport.setDesignation("");
+							}
+							if (row.getCell(9) != null) {
+								String designationType = getCellValueAsString(row.getCell(9), fileName);
+								candidateImport.setDesignationType(designationType);
+							}
+							else {
+								candidateImport.setDesignationType("");
+							}
+							if (row.getCell(10) != null) {
+								String experienceYears = getCellValueAsString(row.getCell(10), fileName);
+								candidateImport.setExperienceYears(experienceYears);
+							}
+							else {
+								candidateImport.setExperienceYears("");
+							}
+							if (row.getCell(11) != null) {
+								String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
+								candidateImport.setExperienceMonths(experienceMonths);
+							}
+							else {
+								candidateImport.setExperienceMonths("");
+							}
+							if (row.getCell(12) != null) {
+								String expectedRate = getCellValueAsString(row.getCell(12), fileName);
+								candidateImport.setExpectedRate(expectedRate);
+							}
+							else {
+								candidateImport.setExpectedRate("");
+							}
+							if (row.getCell(13) != null) {
+								String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
+								candidateImport.setExpectedRateType(expectedRateType);
+							}
+							else {
+								candidateImport.setExpectedRateType("");
+							}
+							if (row.getCell(14) != null) {
+								String skillsName = getCellValueAsString(row.getCell(14), fileName);
+								candidateImport.setSkillsName(skillsName);
+							}
+							else {
+								candidateImport.setSkillsName("");
+							}
+							if (row.getCell(15) != null) {
+								String education = getCellValueAsString(row.getCell(15), fileName);
+								candidateImport.setEducation(education);
+							}
+							else {
+								candidateImport.setEducation("");
+							}
+							if (row.getCell(16) != null) {
+								String employers = getCellValueAsString(row.getCell(16), fileName);
+								candidateImport.setEmployers(employers);
+							}
+							else {
+								candidateImport.setEmployers("");
+							}
+							if (row.getCell(17) != null) {
+								String primarySkill = getCellValueAsString(row.getCell(17), fileName);
+								candidateImport.setPrimarySkill(primarySkill);
+							}
+							else {
+								candidateImport.setPrimarySkill("");
+							}
+							saveBulkCandidates(candidateImport, orgLocations, user, isMailChecked);
+						}
+					}
+					else {
+						if (row.getRowNum() > 0) {
+							count++;
+							createCandidateErrorFile(row, createExcelsheet, count, candidateImport, fileName, org, orgLocations);
+						}
+					}
+				}
+				if (!isValidated || isUserFound) {
+					FileOutputStream fos = null;
+					if (!fileName.endsWith("xlsx")) {
+						fos = new FileOutputStream("CandidateError.xls");
+					}
+					else {
+						fos = new FileOutputStream("CandidateError.xlsx");
+					}
+					createExcelworkbook.write(fos);
+					fos.close();
+				}
+				if (count > 0) {
+					if (!fileName.endsWith("xlsx")) {
+						isFileCreated = "CandidateError.xls";
+					}
+					else {
+						isFileCreated = "CandidateError.xlsx";
+					}
+				}
+				else {
+					isFileCreated = "success";
 				}
 			}
-			
-			}
-			if (!isValidated || isUserFound) {
-				FileOutputStream fos = null;
-				if(!fileName.endsWith("xlsx")){
-					fos = new FileOutputStream("CandidateError.xls");
-				}else{
-					 fos = new FileOutputStream("CandidateError.xlsx");
-				}
-				
-				createExcelworkbook.write(fos);
-				fos.close();
-			}
-			if(count > 0){
-				if(!fileName.endsWith("xlsx")){
-				isFileCreated = "CandidateError.xls";
-				}else{
-					isFileCreated = "CandidateError.xlsx";
-				}
-			}else{
-				isFileCreated = "success";
-			}
+			fis.close();
+		} catch (IOException e) {
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 		}
-		fis.close();
-	} catch (IOException e) {
-		 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-	}
-	return isFileCreated;
-}
-
-
-
-private void createCandidateErrorFile(Row row, Sheet createExcelsheet, int rowIndex, CandidatesImport candidateImport, String fileName, Org org, OrgLocations orgLocations) {
-	
-	Row writeRow = createExcelsheet.createRow(rowIndex);
-	if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-		String firstName = getCellValueAsString(row.getCell(0), fileName);
-		writeRow.createCell(0).setCellValue(firstName);
-	} else {
-		writeRow.createCell(0).setCellValue("");
+		return isFileCreated;
 	}
 	
-	if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
-		String lastName = getCellValueAsString(row.getCell(1), fileName);
-		writeRow.createCell(1).setCellValue(lastName);
-	} else {
-		writeRow.createCell(1).setCellValue("");
-	}
-	
-	if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-		String emailId = getCellValueAsString(row.getCell(2), fileName).toString();
-		emailId.trim();
-		writeRow.createCell(2).setCellValue(emailId);
-	} else {
-		writeRow.createCell(2).setCellValue("");
-	}
-	
-	if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
-		String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
-		writeRow.createCell(3).setCellValue(mobileNumber);
-	} else {
-		writeRow.createCell(3).setCellValue("");
-	}
-	
-	if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-		String country = getCellValueAsString(row.getCell(4), fileName);
-		writeRow.createCell(4).setCellValue(country);
-	} else {
-		writeRow.createCell(4).setCellValue("");
-	}
-	
-	if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
-		String state = getCellValueAsString(row.getCell(5), fileName);
-		writeRow.createCell(5).setCellValue(state);
-	} else {
-		writeRow.createCell(5).setCellValue("");
-	}
-	
-	if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
-		String city = getCellValueAsString(row.getCell(6), fileName);
-		writeRow.createCell(6).setCellValue(city);
-	} else {
-		writeRow.createCell(6).setCellValue("");
-	}
-	
-	if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-		String address = getCellValueAsString(row.getCell(7), fileName);
-		writeRow.createCell(7).setCellValue(address);
-	} else {
-		writeRow.createCell(7).setCellValue("");
-	}
-	
-	if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-		String designation = getCellValueAsString(row.getCell(8), fileName);
-		writeRow.createCell(8).setCellValue(designation);
-	} else {
-		writeRow.createCell(8).setCellValue("");
-	}
-	
-	if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-		String designationType = getCellValueAsString(row.getCell(9), fileName);
-		writeRow.createCell(9).setCellValue(designationType);
-	} else {
-		writeRow.createCell(9).setCellValue("");
-	}
-	
-	if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-		String experienceYears = getCellValueAsString(row.getCell(10), fileName);
-		writeRow.createCell(10).setCellValue(experienceYears);
-	} else {
-		writeRow.createCell(10).setCellValue("");
-	}
-	
-	if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
-		String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
-		writeRow.createCell(11).setCellValue(experienceMonths);
-	} else {
-		writeRow.createCell(11).setCellValue("");
-	}
-	
-	if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-		String expectedRate = getCellValueAsString(row.getCell(12), fileName);
-		writeRow.createCell(12).setCellValue(expectedRate);
-	} else {
-		writeRow.createCell(12).setCellValue("");
-	}
-	
-	if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
-		String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
-		writeRow.createCell(13).setCellValue(expectedRateType);
-	} else {
-		writeRow.createCell(13).setCellValue("");
-	}
-	
-	
-	if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
-		String skillsName = getCellValueAsString(row.getCell(14), fileName);
-		writeRow.createCell(14).setCellValue(skillsName);
-	} else {
-		writeRow.createCell(14).setCellValue("");
-	}
-	
-	if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
-		String education = getCellValueAsString(row.getCell(15), fileName);
-		writeRow.createCell(15).setCellValue(education);
-	} else {
-		writeRow.createCell(15).setCellValue("");
-	}
-	
-	if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
-		String employers = getCellValueAsString(row.getCell(16), fileName);
-		writeRow.createCell(16).setCellValue(employers);
-	} else {
-		writeRow.createCell(16).setCellValue("");
-	}
-	
-	if (row.getCell(17) != null && !"".equalsIgnoreCase(row.getCell(17).toString())) {
-		String primarySkill = getCellValueAsString(row.getCell(17), fileName);
-		writeRow.createCell(17).setCellValue(primarySkill);
-	} else {
-		writeRow.createCell(17).setCellValue("");
-	}
-	
-	writeRow.createCell(18).setCellValue(candidateImport.getReason());
-	
-	
-}
-
-private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception {
-
-//	boolean isValidated; 
-	if (row.getRowNum() > 0) { // Excluding column names
-
-		if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
-			candidateImport.setReason("Required fields mandatory");
-			return false;
+	private void createCandidateErrorFile(Row row, Sheet createExcelsheet, int rowIndex, CandidatesImport candidateImport, String fileName, Org org, OrgLocations orgLocations)
+	{
+		
+		Row writeRow = createExcelsheet.createRow(rowIndex);
+		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
+			String firstName = getCellValueAsString(row.getCell(0), fileName);
+			writeRow.createCell(0).setCellValue(firstName);
 		}
-		if(row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())){
-			candidateImport.setReason("Required fields mandatory");
-			return false;
-		}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString()) && !validateEmail(row.getCell(2).toString())){
-			candidateImport.setReason("Invalid Email");
-			return false;
-		}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())){
-			Candidate candidate = candidateService.findByCandidateEmail(row.getCell(2).toString(),orgLocations.getId());
-		   if(candidate !=null){
-			   candidateImport.setReason("Candidate already exist.!");
-			   return false;   
-		   }
+		else {
+			writeRow.createCell(0).setCellValue("");
+		}
+		if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+			String lastName = getCellValueAsString(row.getCell(1), fileName);
+			writeRow.createCell(1).setCellValue(lastName);
+		}
+		else {
+			writeRow.createCell(1).setCellValue("");
+		}
+		if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+			String emailId = getCellValueAsString(row.getCell(2), fileName).toString();
+			emailId.trim();
+			writeRow.createCell(2).setCellValue(emailId);
+		}
+		else {
+			writeRow.createCell(2).setCellValue("");
 		}
 		if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 			String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
-			if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
-				boolean isValidated = isMobileNumberValid(mobileNumber);
-				if (isValidated == false) {
-					candidateImport.setReason("Invalid MobileNumber");
-					return isValidated;
-				}	
-			}
+			writeRow.createCell(3).setCellValue(mobileNumber);
 		}
+		else {
+			writeRow.createCell(3).setCellValue("");
+		}
+		if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+			String country = getCellValueAsString(row.getCell(4), fileName);
+			writeRow.createCell(4).setCellValue(country);
+		}
+		else {
+			writeRow.createCell(4).setCellValue("");
+		}
+		if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+			String state = getCellValueAsString(row.getCell(5), fileName);
+			writeRow.createCell(5).setCellValue(state);
+		}
+		else {
+			writeRow.createCell(5).setCellValue("");
+		}
+		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+			String city = getCellValueAsString(row.getCell(6), fileName);
+			writeRow.createCell(6).setCellValue(city);
+		}
+		else {
+			writeRow.createCell(6).setCellValue("");
+		}
+		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+			String address = getCellValueAsString(row.getCell(7), fileName);
+			writeRow.createCell(7).setCellValue(address);
+		}
+		else {
+			writeRow.createCell(7).setCellValue("");
+		}
+		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
+			String designation = getCellValueAsString(row.getCell(8), fileName);
+			writeRow.createCell(8).setCellValue(designation);
+		}
+		else {
+			writeRow.createCell(8).setCellValue("");
+		}
+		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+			String designationType = getCellValueAsString(row.getCell(9), fileName);
+			writeRow.createCell(9).setCellValue(designationType);
+		}
+		else {
+			writeRow.createCell(9).setCellValue("");
+		}
+		if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+			String experienceYears = getCellValueAsString(row.getCell(10), fileName);
+			writeRow.createCell(10).setCellValue(experienceYears);
+		}
+		else {
+			writeRow.createCell(10).setCellValue("");
+		}
+		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+			String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
+			writeRow.createCell(11).setCellValue(experienceMonths);
+		}
+		else {
+			writeRow.createCell(11).setCellValue("");
+		}
+		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+			String expectedRate = getCellValueAsString(row.getCell(12), fileName);
+			writeRow.createCell(12).setCellValue(expectedRate);
+		}
+		else {
+			writeRow.createCell(12).setCellValue("");
+		}
+		if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+			String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
+			writeRow.createCell(13).setCellValue(expectedRateType);
+		}
+		else {
+			writeRow.createCell(13).setCellValue("");
+		}
+		if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+			String skillsName = getCellValueAsString(row.getCell(14), fileName);
+			writeRow.createCell(14).setCellValue(skillsName);
+		}
+		else {
+			writeRow.createCell(14).setCellValue("");
+		}
+		if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
+			String education = getCellValueAsString(row.getCell(15), fileName);
+			writeRow.createCell(15).setCellValue(education);
+		}
+		else {
+			writeRow.createCell(15).setCellValue("");
+		}
+		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
+			String employers = getCellValueAsString(row.getCell(16), fileName);
+			writeRow.createCell(16).setCellValue(employers);
+		}
+		else {
+			writeRow.createCell(16).setCellValue("");
+		}
+		if (row.getCell(17) != null && !"".equalsIgnoreCase(row.getCell(17).toString())) {
+			String primarySkill = getCellValueAsString(row.getCell(17), fileName);
+			writeRow.createCell(17).setCellValue(primarySkill);
+		}
+		else {
+			writeRow.createCell(17).setCellValue("");
+		}
+		writeRow.createCell(18).setCellValue(candidateImport.getReason());
 	}
 	
-	return true;
-}
-
-/**
- * Handles bulk candidate savings
- * @param userImport
- * @param orgLocations
- * @param loginUser 
- * @param isMailChecked 
- * @param fileName 
- * @throws Exception
- */
-	private void saveBulkCandidates(CandidatesImport candidatesImport,OrgLocations orgLocations, User user, String isMailChecked) throws Exception {
+	private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception
+	{
 		
-		JSONObject jsonObj = populateJsonObject(candidatesImport,orgLocations);
+		// boolean isValidated;
+		if (row.getRowNum() > 0) { // Excluding column names
+			if (row.getCell(0) == null || "".equalsIgnoreCase(row.getCell(0).toString())) {
+				candidateImport.setReason("Required fields mandatory");
+				return false;
+			}
+			if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
+				candidateImport.setReason("Required fields mandatory");
+				return false;
+			}
+			else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())
+					&& !validateEmail(row.getCell(2).toString())) {
+				candidateImport.setReason("Invalid Email");
+				return false;
+			}
+			else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+				Candidate candidate = candidateService.findByCandidateEmail(row.getCell(2).toString(), orgLocations.getId());
+				if (candidate != null) {
+					candidateImport.setReason("Candidate already exist.!");
+					return false;
+				}
+			}
+			if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+				String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
+				if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
+					boolean isValidated = isMobileNumberValid(mobileNumber);
+					if (isValidated == false) {
+						candidateImport.setReason("Invalid MobileNumber");
+						return isValidated;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Handles bulk candidate savings
+	 * 
+	 * @param userImport
+	 * @param orgLocations
+	 * @param loginUser
+	 * @param isMailChecked
+	 * @param fileName
+	 * @throws Exception
+	 */
+	private void saveBulkCandidates(CandidatesImport candidatesImport, OrgLocations orgLocations, User user, String isMailChecked) throws Exception
+	{
+		
+		JSONObject jsonObj = populateJsonObject(candidatesImport, orgLocations);
 		candidateService.storeCandidate(jsonObj, orgLocations, user, null);
-
-}
-
-private JSONObject populateJsonObject(CandidatesImport candidate,OrgLocations orgLocations) throws JSONException {
-	JSONObject jsonObj = new JSONObject();
-	jsonObj.put("firstName", candidate.getFirstName());
-	
-	if(null != candidate.getLastName()){
-	jsonObj.put("lastName", candidate.getLastName());
 	}
 	
-	jsonObj.put("email", candidate.getEmailId());
-	
-	if(null != candidate.getMobileNumber()){
-	jsonObj.put("mobilePhone", candidate.getMobileNumber());
-	}
-	
-	if(null != candidate.getCountry()){
-	jsonObj.put("country", candidate.getCountry());
-	}
-	
-	if(null != candidate.getState()){
-	jsonObj.put("state", candidate.getState());
-	}
-	
-	if(null != candidate.getCity()){
-	jsonObj.put("city", candidate.getCity());
-	}
-	
-	if(null != candidate.getAddress()){
-	jsonObj.put("address", candidate.getAddress());
-	}
-	
-	if(null != candidate.getDesignation()){
-	jsonObj.put("designation", candidate.getDesignation());
-	}
-	
-	if(null != candidate.getDesignationType() && !"".equals(candidate.getDesignationType())){
-	jsonObj.put("designationType", candidate.getDesignationType());
-	}else{
-		jsonObj.put("designationType", "C2C");
-	}
-	
-	if(null != candidate.getExperienceYears()){
-	jsonObj.put("experienceYears", candidate.getExperienceYears());
-	}
-	
-	if(null != candidate.getExperienceMonths()){
-	jsonObj.put("experienceMonths", candidate.getExperienceMonths());
-	}
-	
-	if(null != candidate.getExpectedRate()){
-	String rate = getExpectedRate(candidate.getExpectedRate());
-		if(null != rate){
-			jsonObj.put("expectedRate", rate);
-			
-			if(null != candidate.getExpectedRateType() && !"".equals(candidate.getExpectedRateType())){
-				jsonObj.put("rateType", candidate.getExpectedRateType());
-			}else{
-			//jsonObj.put("rateType", "Hourly");
-			
-				String countryCheck = orgLocations.getCountry();  
-			    switch(countryCheck){  
-			    case "India": jsonObj.put("rateType", "Yearly");
-			    break;  
-			    default: jsonObj.put("rateType", "Hourly");  
-			    } 
-			}
-			
-			if("India".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "INR");
-				
-			}else if("Australia".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "AUD");
-				
-			}else if("United States".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "USD");
-				
-			}else if("Singapore".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "SGD");
-				
-			}else if("United Kingdom".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "GBP");
-				
-			}else if("France".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "EUR");
-			}
-		}else{
-			 
-			if("India".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "INR");
-				
-			}else if("Australia".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "AUD");
-				
-			}else if("United States".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "USD");
-				
-			}else if("Singapore".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "SGD");
-				
-			}else if("United Kingdom".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "GBP");
-				
-			}else if("France".equals(orgLocations.getCountry())){
-				
-				jsonObj.put("expectedRateCurrencey", "EUR");
-			}
-
-			String countryCheck = orgLocations.getCountry();  
-		    switch(countryCheck){  
-		    case "India": jsonObj.put("rateType", "Monthly");
-		    break;  
-		    default: jsonObj.put("rateType", "Hourly");  
-		    } 
+	private JSONObject populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations) throws JSONException
+	{
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("firstName", candidate.getFirstName());
+		if (null != candidate.getLastName()) {
+			jsonObj.put("lastName", candidate.getLastName());
 		}
-	}
-	
-	if(null != candidate.getSkillsName()){
-	jsonObj.put("candidateSkills", candidate.getSkillsName());
-	}
-	
-	if(null != candidate.getPrimarySkill()){
-		jsonObj.put("primarySkill", candidate.getPrimarySkill());
-	}
-	
-	return jsonObj;
-}
-
-private String getExpectedRate(String expectedRate) {
-
-	String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
-	for (String s:Res){
-		if(isNumeric(s)){
-			return s;
+		jsonObj.put("email", candidate.getEmailId());
+		if (null != candidate.getMobileNumber()) {
+			jsonObj.put("mobilePhone", candidate.getMobileNumber());
 		}
+		if (null != candidate.getCountry()) {
+			jsonObj.put("country", candidate.getCountry());
+		}
+		if (null != candidate.getState()) {
+			jsonObj.put("state", candidate.getState());
+		}
+		if (null != candidate.getCity()) {
+			jsonObj.put("city", candidate.getCity());
+		}
+		if (null != candidate.getAddress()) {
+			jsonObj.put("address", candidate.getAddress());
+		}
+		if (null != candidate.getDesignation()) {
+			jsonObj.put("designation", candidate.getDesignation());
+		}
+		if (null != candidate.getDesignationType() && !"".equals(candidate.getDesignationType())) {
+			jsonObj.put("designationType", candidate.getDesignationType());
+		}
+		else {
+			jsonObj.put("designationType", "C2C");
+		}
+		if (null != candidate.getExperienceYears()) {
+			jsonObj.put("experienceYears", candidate.getExperienceYears());
+		}
+		if (null != candidate.getExperienceMonths()) {
+			jsonObj.put("experienceMonths", candidate.getExperienceMonths());
+		}
+		if (null != candidate.getExpectedRate()) {
+			String rate = getExpectedRate(candidate.getExpectedRate());
+			if (null != rate) {
+				jsonObj.put("expectedRate", rate);
+				if (null != candidate.getExpectedRateType()
+						&& !"".equals(candidate.getExpectedRateType())) {
+					jsonObj.put("rateType", candidate.getExpectedRateType());
+				}
+				else {
+					// jsonObj.put("rateType", "Hourly");
+					String countryCheck = orgLocations.getCountry();
+					switch (countryCheck) {
+						case "India":
+							jsonObj.put("rateType", "Monthly");
+							break;
+						default:
+							jsonObj.put("rateType", "Hourly");
+					}
+				}
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "EUR");
+				}
+			}
+			else {
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					jsonObj.put("expectedRateCurrencey", "EUR");
+				}
+				String countryCheck = orgLocations.getCountry();
+				switch (countryCheck) {
+					case "India":
+						jsonObj.put("rateType", "Monthly");
+						break;
+					default:
+						jsonObj.put("rateType", "Hourly");
+				}
+			}
+		}
+		if (null != candidate.getSkillsName()) {
+			jsonObj.put("candidateSkills", candidate.getSkillsName());
+		}
+		if (null != candidate.getPrimarySkill()) {
+			jsonObj.put("primarySkill", candidate.getPrimarySkill());
+		}
+		return jsonObj;
 	}
-	return null;
-}
-
+	
+	private String getExpectedRate(String expectedRate)
+	{
+		
+		String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
+		for (String s : Res) {
+			if (isNumeric(s)) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Check given string is numeric or not
 	 * 
 	 * @param str
 	 * @return
 	 */
-	public static boolean isNumeric(String str) {
+	public static boolean isNumeric(String str)
+	{
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
 	
-	
-	private String getCellValueAsString(Cell cell, String fileName) {
-	String cellValue = "";
-	if(fileName.toLowerCase().endsWith("xls")){
+	private String getCellValueAsString(Cell cell, String fileName)
+	{
+		String cellValue = "";
+		if (fileName.toLowerCase().endsWith("xls")) {
 			HSSFCell hssfCell = (HSSFCell) cell;
 			if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 				hssfCell.setCellType(Cell.CELL_TYPE_STRING);
 				String hssfCellValue = hssfCell.getStringCellValue();
 				if (hssfCellValue != null || !"".equalsIgnoreCase(hssfCellValue)) {
 					cellValue = hssfCellValue;
-				} 
-			}else{
+				}
+			}
+			else {
 				cellValue = cell.getStringCellValue();
 			}
-		}else{
+		}
+		else {
 			XSSFCell xssfCell = (XSSFCell) cell;
 			if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
 				xssfCell.setCellType(Cell.CELL_TYPE_STRING);
 				String xssfCellValue = xssfCell.getStringCellValue();
 				if (xssfCellValue != null || !"".equalsIgnoreCase(xssfCellValue)) {
 					cellValue = xssfCellValue;
-				} 
-			}else{
+				}
+			}
+			else {
 				cellValue = cell.getStringCellValue();
 			}
 		}
@@ -653,28 +639,33 @@ private String getExpectedRate(String expectedRate) {
 	
 	/**
 	 * Handles Mobile number valid or not
+	 * 
 	 * @param mobileNmber
 	 * @return
 	 */
-		private boolean isMobileNumberValid(String mobileNmber){
-			String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
-			boolean flag;
-			String mobNum = mobileNmber.trim();
-			if(mobNum.length() > 9 && mobNum.length() <= 20){
-				flag = mobNum.matches(regex);
-			}else{
-				flag=false;
-			}
-			return flag;
+	private boolean isMobileNumberValid(String mobileNmber)
+	{
+		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
+		boolean flag;
+		String mobNum = mobileNmber.trim();
+		if (mobNum.length() > 9 && mobNum.length() <= 20) {
+			flag = mobNum.matches(regex);
 		}
+		else {
+			flag = false;
+		}
+		return flag;
+	}
 	
 	/**
 	 * preparing excel headers (column names)
+	 * 
 	 * @param createExcelsheet
 	 * @return Sheet
 	 */
-	private Sheet setCandidateExcelHeader(Sheet createExcelsheet) {
-
+	private Sheet setCandidateExcelHeader(Sheet createExcelsheet)
+	{
+		
 		Row excelHeader = createExcelsheet.createRow(0);
 		excelHeader.createCell(0).setCellValue(Constants.CANDIDATE_FIRST_NAME);
 		excelHeader.createCell(1).setCellValue(Constants.CANDIDATE_LAST_NAME);
@@ -695,20 +686,21 @@ private String getExpectedRate(String expectedRate) {
 		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_EMPLOERS);
 		excelHeader.createCell(17).setCellValue(Constants.CANDIDATE_PRIMARY_SKILL);
 		excelHeader.createCell(18).setCellValue(Constants.FAILED_REASON);
-		
 		return createExcelsheet;
 	}
 	
 	/**
 	 * validate email
+	 * 
 	 * @param email
 	 * @return boolean
 	 */
-		private boolean validateEmail(String email) {
-			String emailId = email.trim();
-			Pattern pattern = Pattern.compile(
-					"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-			Matcher matcher = pattern.matcher(emailId);
-			return matcher.matches();
-		}
+	private boolean validateEmail(String email)
+	{
+		String emailId = email.trim();
+		Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		Matcher matcher = pattern.matcher(emailId);
+		return matcher.matches();
+	}
 }

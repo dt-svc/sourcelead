@@ -246,16 +246,44 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		params.put("userId",userId);
 		subquerys.add(subQuery);
 		
+
 		String subQuery3 = "";
 		String subQuery4 = "";
 		String subQuery5 = ""; 
+		String firstWord="";
+		String lastWord="";
+		String subQuery8="";
+		
+		String s1 =userName;
+		String withoutWhitespace = s1.trim();
+		if(!"".equalsIgnoreCase(withoutWhitespace) && withoutWhitespace.contains(" "))
+		{
+			 
+			 String[] words =withoutWhitespace.split("\\s");
+				 firstWord = words[0];
+				 lastWord = words[1];
+		
+		
+		}
+		
+		if(!firstWord.equals("") && !lastWord.equals("")){
+			 subQuery8 = " and ((userRole.user.firstName LIKE '" + firstWord + "%') OR (userRole.user.firstName LIKE '" + lastWord + "%') OR  (userRole.user.lastName LIKE '"+ firstWord + "%') OR  (userRole.user.lastName LIKE '"+ lastWord + "%'))";
+			 subquerys.add(subQuery8);
+		 }
+		
+		else{
+			 subQuery8 =""; 
+		 }
 		
 		 /*
 		  *  to check the if the search  parameter is given or not
 		 */
-		 if(!"".equalsIgnoreCase(userName)){
-			 subQuery3 = " and ( (userRole.user.firstName LIKE '" + userName + "%') OR (userRole.user.lastName LIKE '"+ userName + "%') OR (userRole.user.email LIKE '" + userName + "') )";
+		
+		 if(!"".equalsIgnoreCase(withoutWhitespace) && !withoutWhitespace.contains(" ")){
+			 subQuery3 = " and ((userRole.user.firstName LIKE '" + withoutWhitespace + "%') OR  (userRole.user.lastName LIKE '"+ withoutWhitespace + "%') OR (userRole.user.email LIKE '" + withoutWhitespace + "'))";
 			 subquerys.add(subQuery3);
+		
+		
 		 }else{
 			 subQuery3 =""; 
 		 }
@@ -631,6 +659,37 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				+ "OR (userRole.orgLocations.id =:orgLocationId) GROUP BY user.id ";
 		List<UserRole> usersList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setLong( "loginUserId", loginUserId).setCacheable(true).list();
 		return usersList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getAllActiveUsersListByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole where userRole.orgLocations.id = :orgLocationId and userRole.userState = 'ACTIVE' ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).setCacheable(true).list();
+		return userRoleList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId) {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("isUserAdmin By UserId start");
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user  where userRole.user =:userId "
+				+ "and userRole.orgLocations.id = :orgLocationId and userRole.isPrimary = '1' ")
+						   .setLong("userId", userId)
+						   .setLong("orgLocationId", orgLocationId) .setCacheable(true).list();
+		
+		logger.debug("isUserAdmin By UserId End");
+		
+		Boolean flag = false;
+		if (userRole.size() > 0) {
+			flag = true;
+		} 
+		return flag;
 	}
 
 	

@@ -37,7 +37,7 @@ function addInterview(requirementId){
 	result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 	result = result + '<input type="hidden" id="isFlushRequired" name="isFlushRequired">';
 	
-	 result = result + '<div class="add_inter_head"> <span>Add Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
+	 result = result + '<div class="add_inter_head"> <span>Schedule Interview</span><a href="javascript:void(0)" onClick="addInterviewRow();"><i class="fa fa-plus"></i> Add row</a>'; 
 // 	result = result + '<div class="add_inter_head"> <span> Schedule interview</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedInterviewApplicantsCount">0</b></span>';
 	result = result + '<div class="clearfix"></div>';
 	result = result + '</div>';
@@ -393,7 +393,7 @@ function validateTimeZone(){
 		      }
 		});
 		var cell3 = row.insertCell(3);
-		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
+		cell3.innerHTML = "<div class='pull-left timeZone' id='"+maxRowNum+"timeDiv'> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='Start Time' name='"+maxRowNum+"startTime' id='"+maxRowNum+"startTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' data-validation='required' field-name='Start Time'/></span> <span class='positionRelative'><input class='form-control input-sm timepicker' placeholder='End Time' name='"+maxRowNum+"endTime' id='"+maxRowNum+"endTime' onBlur='validateInterEndTime("+maxRowNum+");' type='text' field-name='End Time' /></span> </div> ";
 		
 		$("#"+maxRowNum+"startTime").timepicker({
 			'showDuration': true,
@@ -474,15 +474,13 @@ function removeInterviewvalidation(){
 }
 </script>
 <script type="text/javascript">
-	function validateEndTime(maxRowNum) {
+	function validateInterEndTime(maxRowNum) {
 		var rowId = $("#maxTsRowNum").val();
-		
 		 var allStartTimes = [];
 		 var allEndTimes = [];
 		 $("#"+maxRowNum+"timeDiv").find('p.jquery_form_error_message').remove();
 		 
 		for(i=1 ; i<=rowId; i++){
-			
 			var startTime = $("#"+(i)+"startTime").val();
 			 var endTime = $("#"+(i)+"endTime").val();
 			if(endTime != null && endTime != '' && endTime != 'undefined'){
@@ -583,6 +581,10 @@ function getNotifyToOtersVal(){
    	var isNofityToOthers = document.getElementById("notificationToOthers").value;
    		if(isNofityToOthers == "Y"){
    			validateOtherMail();
+   		}else{
+   			$('input#notificationToOthersEmails').removeAttr( "record-exist record-exist-errormsg");
+   			$('#notifyOthersDiv').find('p.jquery_form_error_message').remove(); 
+   		    $("#add_interview").removeAttr("disabled");
    		}
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();

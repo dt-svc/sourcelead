@@ -129,7 +129,7 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -365,7 +365,7 @@ function addTeam(){
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut+ '                <label>Team Member<b class="text-danger">*</b> </label>';
-	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" placeholder="Team Member *" data-validation="required validate_Space" field-name="Team Member">';
+	outPut = outPut + '<select multiple class="chosen-select form-control" name="memberUserId" id="memberUserId" data-placeholder="Select Team Members" data-validation="required validate_Space" field-name="Team Member">';
 		/* outPut = outPut + ' <option disabled >--Select Team Member--</option>';      */   
 		/* <c:forEach var="report" items="${usersList}">
 	         outPut = outPut + ' <option value="${report.id}">${report.firstName}&nbsp;${report.lastName}</option>';
@@ -660,7 +660,7 @@ function TeamMemberpagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -681,7 +681,7 @@ function TeamMemberpagination(){
     <div class="pull-left">
       <h2>Team</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Team</div>
+    <div class="pull-right brud-crum"> <a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Team</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -895,8 +895,8 @@ function deleteSelectedTeam(teamId){
    		    success: function(data) {
    		    	
    		    	if(data != null && data != 'undefined' && data != ""){
+   		    		    $("#loading"+teamId).removeAttr("style");
              			document.getElementById("deleteTeam"+teamId).remove();
-             			$("#loading"+teamId).removeAttr("style"); 
    		    	}
    		    }
 	     }); 
@@ -1263,7 +1263,7 @@ function cpagination(){
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

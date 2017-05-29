@@ -349,7 +349,7 @@ function cancelOrgImg(){
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
-                                    <h4 id="coolingOffHeading">Configure Cooling-Off Period</h4>
+                                    <h4 id="coolingOffHeading">Cooling-Off Period</h4>
                                     <div id="coolingOffLoading"></div>
                                 </div>
                             </div>
@@ -665,7 +665,7 @@ function configCoolingOff(){
 					result = result + '<form id="coolingOff_form"  name="coolingOff_form" method="post">'; 
 					
 					result = result + '<div class="form-group">';
-					result = result + '<label class="col-md-3">Cooling Off Period</label>';
+					result = result + '<label class="col-md-3">Cooling Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for requirement, because of applied recently."></i></label>';
 					result = result + '<div class="col-md-4 select-field selectChosen">';
 					result = result + '<select  class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
 					result = result + '		<option value="'+coolingOffPeriod+'" selected>'+coolingOffPeriod+'</option>';
@@ -691,9 +691,10 @@ function configCoolingOff(){
 					
 					result = result + '<div class="pull-right">';
 					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
-					
+					$("#coolingOffPeriodDiv").empty(); 
 					$("#coolingOffPeriodDiv").append(result);
 					
 					 var config = {
@@ -864,9 +865,9 @@ function loadSignature(){
 						if(opt.labelName != 'Logo'){
 						
 						if(opt.labelName == "Sign Off"){
-							result = result + '<div class="col-md-3" title="Text Box"><input type="text" name=\''+name+'\' field-name="Sign Off" data-validation="required validate_Space validate_length length2-100" value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
+							result = result + '<div class="col-md-3"><input type="text" name=\''+name+'\' field-name="Sign Off" data-validation="required validate_Space validate_length length2-100" value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm" placeholder="Text Box"></div>';
+							result = result + '<div class="col-md-3"><input type="text" '+readonly+' value="'+labelText+'" class="form-control input-sm"></div>';
 						}
 						
 						result = result + '<div class="col-md-2 select-field">';
@@ -908,19 +909,19 @@ function loadSignature(){
 						result = result + '<div class="pull-left positionRelative">';
 						result = result + '<label class="btn-styles">';
 						result = result + '<input type="checkbox" name="bold'+opt.id+'" id="bold'+opt.id+'" '+boldChecked+'  '+boldValue+' onclick="getboldStyle('+opt.id+')" >';
-						result = result + '<i class="btn btn-default btn-sm fa fa-bold '+boldClass+'" id="boldActive'+opt.id+'" ></i>';
+						result = result + '<i title="Bold" class="btn btn-default btn-sm fa fa-bold '+boldClass+'" id="boldActive'+opt.id+'" ></i>';
 						result = result + '</label>';
 						result = result + '</div>';
 						result = result + '<div class="pull-left positionRelative">';
 						result = result + '<label class="btn-styles">';
 						result = result + '<input type="checkbox" name="underline'+opt.id+'" id="underline'+opt.id+'" '+underlineChecked+' '+underlineValue+' onclick="getunderlineStyle('+opt.id+')" >';
-						result = result + '<i class="btn btn-default btn-sm fa fa-underline '+underlineClass+'" id="underlineActive'+opt.id+'"></i>';
+						result = result + '<i title="Underline" class="btn btn-default btn-sm fa fa-underline '+underlineClass+'" id="underlineActive'+opt.id+'"></i>';
 						result = result + '</label>';
 						result = result + '</div>';
 						result = result + '<div class="pull-left positionRelative">';
 						result = result + '<label class="btn-styles">';
 						result = result + '<input type="checkbox" name="italic'+opt.id+'" id="italic'+opt.id+'" '+italicChecked+' '+italicValue+' onclick="getitalicStyle('+opt.id+')" >';
-						result = result + '<i class="btn btn-default btn-sm fa fa-italic '+italicClass+'" id="italicActive'+opt.id+'"></i>';
+						result = result + '<i title="Italic" class="btn btn-default btn-sm fa fa-italic '+italicClass+'" id="italicActive'+opt.id+'"></i>';
 						result = result + '</label>';
 						result = result + '</div>';
 						result = result + '</div>';
@@ -942,6 +943,7 @@ function loadSignature(){
  					} 
 					result = result + '<div class="pull-right">';
 					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
 					
@@ -1169,7 +1171,14 @@ function restSignature(){
 }
 </script>
 
+<script>
+function cancelBtn(){
+// 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  location.replace(sourceleadUrl+"/dashboard");
+}
 
+</script>
 
 <script type="text/javascript">
         var validationSettings = {

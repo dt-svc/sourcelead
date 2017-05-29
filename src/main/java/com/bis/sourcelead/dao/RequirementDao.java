@@ -1,12 +1,13 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
-
-import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 
 public interface RequirementDao {
@@ -24,7 +25,7 @@ public interface RequirementDao {
 	
 	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId)throws Exception;
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId)throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
@@ -77,5 +78,31 @@ public interface RequirementDao {
 
 	String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
 
+	List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user) throws Exception ;
+	
+	List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId, User user)	throws Exception ;
+	
+	Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception ; 
 
+	List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId,  TeamMembers teamMembers) throws Exception ;
+	
+	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
+
+	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId, Date startDateUTC, Date endDateUTC);
+	
+	List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception ;
+
+	public List<String> getAllRequirementEducationByRequirementId(Long requirementId);
+	
+	Requirement getRequirementDetailsById(long parseLong)throws Exception;
+	
+	List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
+
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
+			Date startDateUTC, Date endDateUTC);
+
+	public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations)throws Exception;
+
+	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
+			Long relationId)throws Exception;
 }

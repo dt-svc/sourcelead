@@ -124,7 +124,7 @@ public class CandidateServiceTest {
 		public void getCandidatesListByOrgLocationID() throws Exception{
 			
 			List<Candidate> candidateList = new ArrayList<>();
-			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,Constants.CANDIDATE_ACTIVE,"","All");
+			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,Constants.CANDIDATE_ACTIVE,"","All","Y");
 			logger.info("getCandidatesListByOrgLocationID " + candidateList.size());
 
 			
@@ -215,7 +215,7 @@ public class CandidateServiceTest {
 			candidatesList.add(can1);
 			
 			String orgName="bis";
-			File file = candidateService.getCandidateExcelFile(candidatesList ,orgName);
+			File file = candidateService.getCandidateExcelFile(candidatesList ,orgName,"Y");
 			System.out.println("rakshith"+file.getName());
 		}
 		
@@ -237,7 +237,7 @@ public class CandidateServiceTest {
 			candidatesList.add(can1);
 			
 			String orgName="bis";
-			File file = candidateService.getCandidatePdf(candidatesList, orgName);
+			File file = candidateService.getCandidatePdf(candidatesList, orgName,"Y");
 			System.out.println("rakshith"+file.getName());
 			
 

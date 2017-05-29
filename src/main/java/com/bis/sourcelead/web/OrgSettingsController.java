@@ -53,7 +53,7 @@ public class OrgSettingsController {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_ORG_SETTINGS','ROLE_EDIT_ORG_SETTINGS')")
+	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
  	public ModelAndView orgSettings(HttpServletRequest request) throws Exception {
 		logger.debug("Org settings");
@@ -121,6 +121,32 @@ public class OrgSettingsController {
  			model.addObject("rolesHierarchyList", rolesHierarchyList);
  			
  			model.setViewName("roleHierarchy");
+ 			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			return model;
+ 	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/addDepartment")
+ 	public ModelAndView addDepartment(HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		    ModelAndView model = new ModelAndView();
+ 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+ 			/*List<RoleHierarchy> hierarchyList = roleHierarchyService.getRoleHierarchyByOrgLocationId(orgLocations.getId());
+ 			List<RoleHierarchy> rolesHierarchyList = new ArrayList<RoleHierarchy>();
+ 			
+ 			if(null != hierarchyList){
+ 				for(RoleHierarchy hierarchy : hierarchyList){
+ 					List<Roles> rolesList = rolesService.getUserRolesListByRoleHierarchyIdAndOrgLocationId(orgLocations.getId(), hierarchy.getId(),org.getOrgCode());
+ 					hierarchy.setRolesList(rolesList);
+ 					rolesHierarchyList.add(hierarchy);
+ 				}
+ 			}
+ 			
+ 			model.addObject("rolesHierarchyList", rolesHierarchyList);
+ 			*/
+ 			model.setViewName("department");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}

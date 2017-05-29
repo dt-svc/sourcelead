@@ -5,7 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script src="resources/js/formvalidator.js"></script>
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -13,15 +12,21 @@
 .text-center {
     text-align: center !important;
 }
+.paddingLeft {position: relative;}
+.paddingLeft .fa-clipboard {
+font-size: 16px; position: absolute; border: 1px solid #ccc; background-color: #eee; text-align:center;
+box-shadow: inset 0 1px 1px rgba(0,0,0,.075); color: #555; height: 30px; width: 30px; top:0; right:-20px;
+border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
+}
 </style>
 
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Release Jobs</h2>
+        <h2>Release Requirement</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Jobs</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Requirement</div>
     </section>
     <div class="content-area clearfix">
       <div id="accordion-sl" class="release-jobs">
@@ -33,7 +38,7 @@
           <h2 id="jobTitle" onclick="openVendors();">Profile</h2>
 
           <div class="content clearfix">
-            <div class="vendor_wrap">
+            <div class="vendor_wrap overflow_Auto">
               <div class="col-md-7 radioInline">
                 <!-- <select class="form-control selectpicker"  id="sele-rel"  onchange="listChange(this);">
                   <option id="cont" value ="releaseByContact">Release By Contact</option>
@@ -179,6 +184,7 @@
                         </select>
                       </div>
                     </div>
+
                     <div class="clearfix col-lg-12 hidden"> <span class="text-muted">Note:</span> <span class="text-info"><b>5%</b> will be sourcelead fund and remaining....</span> </div>
                   </div>
                   
@@ -186,6 +192,13 @@
                 </div>
               </div>
             </div>
+            
+            <label class="col-md-3 row"> Referral Link</label>
+            <div class="select-field col-md-6 paddingLeft row">
+            <input type="text" class="form-control input-sm" field-name="RefeeralLink" id="referralLink" name="referralLink" placeholder="Referral Link" readonly="readonly"> 
+            <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
+            </div>
+            
           </div>
         </div> 
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
@@ -257,6 +270,8 @@ function getPercentageValue(){
 <script> 
 $(document).ready(function(){
 	getVendorLists();
+	var referLink = "${sourceleadUrl}/openJobsPublicPage?requirementUUID=${requirementUUID}"
+	$("#referralLink").val(referLink);
 	
 	if('${SourceLeadWeb_vms}'  == 'Y'){
 		openVendors();
@@ -270,7 +285,7 @@ $(document).ready(function(){
 	}else{
 		$("#jobType").html('No Data');
 	}
-	
+	 
 	if('${jobRate}' != null && '${jobRate}' != '' && '${jobRate}' != 'jobRate'){
 		$("#jobRate").html('${jobRate}');
 	}else{
@@ -283,10 +298,41 @@ $(document).ready(function(){
 </script>
 
 <script>
+document.getElementById("copyButton").addEventListener("click", function() {
+    copyToClipboard(document.getElementById("referralLink"));
+});
+
+function copyToClipboard(elem) {
+    var targetId = "_hiddenCopyText_";
+    var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+    var origSelectionStart, origSelectionEnd;
+    if (isInput) {
+        target = elem;
+        origSelectionStart = elem.selectionStart;
+        origSelectionEnd = elem.selectionEnd;
+    } else {
+        target = document.getElementById(targetId);
+        target.textContent = elem.textContent;
+    }
+    var currentFocus = document.activeElement;
+    target.focus();
+    target.setSelectionRange(0, target.value.length);
+    var succeed;
+    try {
+    	  succeed = document.execCommand("copy");
+    } catch(e) {
+        succeed = false;
+    }
+    return succeed;
+}
+</script>
+
+<script>
 function releaseTo(){
 		var contactsIds = new Array();
 		var contactsTable = $('#candidatePagination').DataTable();
 		var contactsRowcollection =  contactsTable.$(".contactscheckbox:checked", {"page": "all"});
+		var requirementUUID = '${requirementUUID}';
 		contactsRowcollection.each(function()		
 		{
 			contactsIds.push($(this).attr('id'));
@@ -332,8 +378,7 @@ function releaseTo(){
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
 	 		            success :function(data) {
-	 							location.replace(sourceleadUrl+"/requirementList");
-	 		            },
+	 		            	location.replace(sourceleadUrl+"/releaseRequirementToClientOrVendors?requirementUUID="+requirementUUID);	 		            },
 	 		    });  
 	 	    }else{
 	 	    	$('span.jquery_form_error_message').show();
@@ -344,12 +389,17 @@ function releaseTo(){
 function releaseToOneContact(contactscheckboxId){
 	$('input:checkbox[name="contactscheckbox"]').prop('checked',false);
 	$("#" + contactscheckboxId).prop('checked', true);
+	$("#releaseToClientIconDiv"+contactscheckboxId).empty();
+	$("#releaseToClientIconDiv"+contactscheckboxId).prepend('<i class="fa fa-cog fa-spin"></i>');
 	releaseTo();
 }
 
 function releaseToOneVendor(vendorcheckboxId){
 	$('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
 	$("#" + vendorcheckboxId).prop('checked', true);
+	
+	$("#releaseToVendorIconDiv"+vendorcheckboxId).empty();
+	$("#releaseToVendorIconDiv"+vendorcheckboxId).prepend('<i class="fa fa-cog fa-spin"></i>');
 	releaseTo();
 }
 </script>
@@ -479,7 +529,7 @@ function getContactsLists(){
 			   		    	var json = JSON.parse(data);
 			   	        	var result = "";
 			   	        	var resultVendors = "";
-			                result = result +'<div class="require_wrap_table release-jobs-tbl">';
+			                result = result +'<div class="require_wrap_table release-jobs-tbl overflow_inherint">';
 			                result = result +'<table id="candidatePagination" class="display" cellspacing="0" width="100%">';
 			   	        	result = result +'<thead>';
 			   	        	result = result +'<tr>';
@@ -529,7 +579,7 @@ function getContactsLists(){
 					        		}
 									if(report.releasedRequirement =="false"){
 										'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-											result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
+											result = result +'<div id="releaseToClientIconDiv'+report.id+'"><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneContact('+report.id+');"></i></a></div>';
 										'</sec:authorize>';
 										'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 											result = result +'<div class="fa fa-bullhorn"></div>';
@@ -586,7 +636,7 @@ function getRewardType(rewardType){
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary active'
 	    document.getElementById("flatBtn").className = 'btn btn-sm btn-primary'
-    	$('#percentageRewardValue').attr("data-validation","required validate_float");  
+    	$('#percentageRewardValue').attr("data-validation","required validate_int");  
 		$('#percentageRewardValue').removeAttr('data-validation-optional');
 	    $('#flatRewardValue').removeAttr('data-validation');
 	    $('#flatRewardValue').attr("data-validation-optional","true"); 
@@ -602,7 +652,7 @@ function getRewardType(rewardType){
 		
 		document.getElementById("percentageBtn").className = 'btn btn-sm btn-primary'
 		document.getElementById("flatBtn").className = 'btn btn-sm btn-primary active'
-		$('#flatRewardValue').attr("data-validation","required validate_float");
+		$('#flatRewardValue').attr("data-validation","required validate_int");
 		$('#flatRewardValue').removeAttr('data-validation-optional');
 		$('#percentageRewardValue').removeAttr('data-validation');
 		$('#percentageRewardValue').attr("data-validation-optional","true"); 
@@ -641,7 +691,7 @@ function getVendorLists(){
    		    	/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
 	               			var json = JSON.parse(data);
 	           	        	var result = "";
-	                        result = result +'<div class="require_wrap_table release-jobs-tbl">';
+	                        result = result +'<div class="require_wrap_table release-jobs-tbl overflow_inherint">';
 	                        result = result +'<table id="vendorPagination" class="display" cellspacing="0" width="100%">';
 	           	        	result = result +'<thead>';
 	           	        	result = result +'<tr>';
@@ -676,7 +726,7 @@ function getVendorLists(){
 	           	        	 
 	           	        		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
 	           	        			result = result +'<td>';
-	           	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
+	           	        			result = result +'<div  class="tbldata-dotdot-sm">';
 	           	        			result = result +'<span title='+report.orgName+'>'+report.orgName+'</span>';
 	           	        			result = result +'</div>';
 	           	        			result = result +'</td>';
@@ -686,21 +736,21 @@ function getVendorLists(){
 	           	        		
 	           	        		if(location != null && location  != '' && location  != 'undefined'){
 	           	        			result = result +'<td>';
-	           	        			result = result +'<div  class="tbldata-dotdot-sm text-left">';
+	           	        			result = result +'<div  class="tbldata-dotdot-sm">';
 	           	        			result = result +'<span title="'+location+'">'+location+'</span>';
 	           	        			result = result +'</div>';
 	           	        			result = result +'</td>';
 	           	        		}else{
 	           	        			result = result +'<td><div>--</div></td>';
 	           	        		}
-	        	       		result = result +'<td><div class="tbldata-dotdot-sm text-left">'+report.noOfContatcs+'</div></td>';
-	        	       		result = result +' <td><div class="tbldata-dotdot-sm text-left"><span  title="'+report.level+'">'+report.level+'</span></td>';
+	        	       		result = result +'<td><div class="tbldata-dotdot-sm">'+report.noOfContatcs+'</div></td>';
+	        	       		result = result +' <td><div class="tbldata-dotdot-sm"><span  title="'+report.level+'">'+report.level+'</span></td>';
 	        	       		result = result +'<td>';
 	        	       		if(report.noOfNonReleasedContacts == 0){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
 	                		}else if(report.noOfNonReleasedContacts > 0){
 									'<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
-										result = result +'<div><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
+										result = result +'<div id="releaseToVendorIconDiv'+report.id+'"><a href="javascript:void(0)"><i class="fa fa-bullhorn" onclick="releaseToOneVendor('+report.id+');"></i></a></div>';
 									'</sec:authorize>';
 									'<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 										result = result +'<div class="fa fa-bullhorn"></div>';
@@ -748,7 +798,7 @@ function vendorPagination(){
        	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
        	"bLengthChange": false,
        	"bDestroy": true,
-       	"ordering": false,
+       	"ordering": true,
        	"oLanguage": {
         		"sSearch": "",
         		 "sZeroRecords": "", "sEmptyTable": ""
@@ -764,7 +814,7 @@ function candidatePagination(){
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

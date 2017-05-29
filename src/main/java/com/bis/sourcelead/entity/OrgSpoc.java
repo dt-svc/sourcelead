@@ -144,6 +144,36 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private String msg;
+	
+	@Transient
+	private Integer reqReleasedCount;
+	
+	@Transient
+	private Integer submittedCount;
+	
+	@Transient
+	private Integer shortlistedCount;
+	
+	@Transient
+	private Integer interviewedCount;
+	
+	@Transient
+	private Integer offeredCount;
+	
+	@Transient
+	private Integer rejectedCount;
+	
+	@Transient
+	private Integer backoutCount;
+	
+	@Transient
+	private String ownerUserName;
+	
+	@Transient
+	private String billingAddress;
+
+	@Transient
+	private String paymentTerms;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -438,6 +468,86 @@ public class OrgSpoc implements Serializable{
 
 	public void setClientRateType(String clientRateType) {
 		this.clientRateType = clientRateType;
+	}
+
+	public Integer getReqReleasedCount() {
+		return reqReleasedCount;
+	}
+
+	public void setReqReleasedCount(Integer reqReleasedCount) {
+		this.reqReleasedCount = reqReleasedCount;
+	}
+
+	public Integer getSubmittedCount() {
+		return submittedCount;
+	}
+
+	public void setSubmittedCount(Integer submittedCount) {
+		this.submittedCount = submittedCount;
+	}
+
+	public Integer getShortlistedCount() {
+		return shortlistedCount;
+	}
+
+	public void setShortlistedCount(Integer shortlistedCount) {
+		this.shortlistedCount = shortlistedCount;
+	}
+
+	public Integer getInterviewedCount() {
+		return interviewedCount;
+	}
+
+	public void setInterviewedCount(Integer interviewedCount) {
+		this.interviewedCount = interviewedCount;
+	}
+
+	public Integer getOfferedCount() {
+		return offeredCount;
+	}
+
+	public void setOfferedCount(Integer offeredCount) {
+		this.offeredCount = offeredCount;
+	}
+
+	public Integer getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(Integer rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
+
+	public Integer getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(Integer backoutCount) {
+		this.backoutCount = backoutCount;
+	}
+
+	public String getOwnerUserName() {
+		return ownerUserName;
+	}
+
+	public void setOwnerUserName(String ownerUserName) {
+		this.ownerUserName = ownerUserName;
+	}
+
+	public String getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(String billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
+	public String getPaymentTerms() {
+		return paymentTerms;
+	}
+
+	public void setPaymentTerms(String paymentTerms) {
+		this.paymentTerms = paymentTerms;
 	}
 	
 }

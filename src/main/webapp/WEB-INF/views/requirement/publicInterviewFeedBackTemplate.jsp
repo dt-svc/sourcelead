@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: Interview Template</title>
 <!-- Bootstrap -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
@@ -27,6 +28,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
+.paddingTop {
+padding-top: 55px;	
+}
 .viewTemplate .sjfb-field{
 margin: 0;
 }
@@ -34,25 +38,17 @@ margin: 0;
 position: relative;
 }
 .container.container-wraper{
-	padding: 15px;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	background: #fafafa;
-	border-radius:5px;
-	margin-top: 25px;
+	padding: 15px; box-sizing: border-box; border: 1px solid #ccc; background: #fafafa; border-radius:5px;
+	margin-top: 80px;
 }
 .container-wraper h3 {
-margin: 0;
-margin-bottom: 10px;
-font-size: 20px;
+margin: 0; margin-bottom: 10px; font-size: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field{
-display: inline-flex;
-margin-bottom: 20px;
+display: inline-flex; margin-bottom: 20px;
 }
 .container-wraper .viewTemplate .sjfb-field label {
-font-size:14px !important;
-font-weight: 600;
+font-size:14px !important; font-weight: 600;
 }
 .container-wraper viewTemplate .sjfb-field{
 width: 48.5%;
@@ -61,13 +57,10 @@ width: 48.5%;
 margin-left: 15px;
 }
 .choices label {
-width: auto !important;
-padding-right: 15px;
+width: auto !important; padding-right: 15px;
 }
 .choices input[type="checkbox"], .choices input[type="radio"]{
- margin-right: 10px;
- position: relative;
- top: 1px;
+ margin-right: 10px; position: relative; top: 1px;
 }
 .stickyfooter {
 	position: absolute;
@@ -433,17 +426,16 @@ $('body').on('blur', '#interviewTemplate_form', function() {
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
-    <h1>Source Lead</h1>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
     </nav>
    </header>
-   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container container-wraper positionRelative" style="display: none;"> </div>
-   <div id="viewInterviewTemplateList" class="container"></div>
-   <div id="viewInterviewTemplateNo" class="container"></div>
+   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative paddingTop" style="display: none;"> </div> 
+   <div id="cancelFeedbackDiv" class="container paddingTop container-wraper positionRelative" style="display: none;"> </div>
+   <div id="viewInterviewTemplateList" class="container paddingTop"></div>
+   <div id="viewInterviewTemplateNo" class="container paddingTop"></div>
    
    
    <footer class="clearfix stickyfooter">

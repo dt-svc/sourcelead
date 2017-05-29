@@ -20,6 +20,9 @@
 vendor_wrap {
 overflow-x: auto;
 }
+.dropdown-select.paddingNone select {
+border:none; background-color: none !important; padding:0 5px !important;
+}
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
@@ -37,8 +40,8 @@ overflow-x: auto;
           <div class="pull-left">
             <h2>Vendors<span class="select-fild">
                 	<select id="listOfVendors" onchange="listChange(this);">
-                  		 <option value="listbyVendor">List by vendor</option>
-                         <option value="listbyContact" selected="selected">List by contact</option> 
+                  		 <option value="listbyVendor" selected="selected">List by vendor</option>
+                         <option value="listbyContact" >List by contact</option> 
                     </select>
                 </span>            	
             </h2>
@@ -50,22 +53,22 @@ overflow-x: auto;
 
 <div class="timesheet_out timesheet_background">
  <!-- Advanced Search -->
-  <div class="timesheet_bg">
-  <div class="cand-advsrch pull-left">
+  <div class="clearfix">
+  <div class="cand-advsrch pull-left candAdvsrch">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
            
             <div class="row">
               <div class="col-md-4">
-                <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
+                <label>Any of Keyword</label>
 	                 <div class="clearfix">
 					        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
 	                        </select>
 				    </div>
               </div>
               <div class="col-md-4">
-                <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
+                <label>All Keywords</label>
                 <div class="clearfix">
                   <div class="clearfix">
 					  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
@@ -74,7 +77,7 @@ overflow-x: auto;
                 </div>
               </div>
               <div class="col-md-4">
-                <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
+                <label>Exclude Keyword</label>
                 <div class="clearfix">
 				  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
                      </select>
@@ -110,6 +113,7 @@ overflow-x: auto;
                     <select class="chosen-select" name="country" id="country" field-name="Country"  >
 						     <c:forEach var="cntry" items="${countryList}">
 					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
+ 
 				             </c:forEach>
 				     </select>
                   </div>
@@ -225,9 +229,9 @@ overflow-x: auto;
 										<select class="chosen-select form-control input-sm" multiple data-placeholder="Status" id="statusAdvanced" name="statusAdvanced">
 											<option value="Active">Active</option>
 											<option value="In-Active">In-Active</option>
-											<option value="New">New</option>
+											<!-- <option value="New">New</option>
 											<option value="Negotiation">Negotiation</option>
-											<option value="Contract">Contract</option>
+											<option value="Contract">Contract</option> -->
 									</select>
 						 </div>  
               	</div>
@@ -249,8 +253,9 @@ overflow-x: auto;
             </div>
             <div class="row form-footer custom_formfooter">
               <div class="pull-right mr"> 
-                <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-primary"/>
-                <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
+                <input type="button" value="Search" id="search_vendor" onclick="searchVendor();" class="btn btn-sm btn-success"/>
+                 <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/>
+              <!--   <input type="button" value="Cancel" onClick="closePop();" class="bbtn btn-sm btn-danger"/> -->
               
             </div>
             </form:form>
@@ -263,14 +268,15 @@ overflow-x: auto;
 
 
 
-<div class="vendor_wrap vendor_wrap_shadownone">
+<div class="vendor_wrap vendor_wrap_shadownone minHeight_225">
 
      
 
-	<div class="timesheet_head datatbl-filters customtimesheet-head">
+	<!-- <div class="timesheet_head datatbl-filters customtimesheet-head"> -->
+	<div class="timesheet_head datatbl-filters topfilters">
         	<ul>
         	
-        	<li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
+        	<%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
 		                	<div id="filter1ApprovedPop" class="approved_pop">
 		                    	<ul>
 		                    	  <c:forEach var="report" items="${vendor_list}">  
@@ -278,20 +284,20 @@ overflow-x: auto;
 								  </c:forEach>
 		                        </ul>
 		                    </div>                	
-		                </li>
+		                </li> --%>
 	               
-		                <li id= "filter3ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
+		                <li id= "filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
 	                	<div id="filter3ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactLists();"  ><label>Active</label></li>
 								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactLists();"><label>In-Active</label></li>
-								<li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
+								<!-- <li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
 								<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li>
+	               				<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li> -->
 	                        </ul>
 	                      </div>                	
 	                  </li>
-	                  <li  id="filter4ApprovePop"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
+	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
 	                	<div id="filter4ApprovedPop" class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactLists();"  ><label>Resend</label></li>
@@ -303,7 +309,7 @@ overflow-x: auto;
 	                  </li>
                   
 	                	 
-						<li id="contactLevel" style="display:none">
+						<li id="contactLevel" >
 					   <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
 		                	<div id="filter2ApprovedPop" class="approved_pop">
 		                    	<ul>
@@ -323,12 +329,12 @@ overflow-x: auto;
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
                        <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        </sec:authorize>
-                        <%-- <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
+                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
                        <li title="Import"><a href="<c:url value='/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-                 </sec:authorize>  --%>
+                 	   </sec:authorize> 
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
-                       	 <li title="Export" id="vendorImports" style="display:none">
+                       	 <li title="Export" id="vendorImports" >
 		                     <a  id="vendor-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
@@ -340,7 +346,7 @@ overflow-x: auto;
 		          </sec:authorize>
 		           
 		          <sec:authorize access="hasRole('ROLE_EXPORT_VENDOR_CONTACTS')"> 
-		            <li title="Export" id="VendorContactImports">
+		            <li title="Export" id="VendorContactImports" style="display:none">
 		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 			                    <div class="export_pop">
 				                <ul>
@@ -397,11 +403,39 @@ overflow-x: auto;
 	    $("#contactNameAdvanced").val('').trigger("chosen:updated");
 	    $("#emailAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");
-	    $("#citySearch").empty();
-	    $("#stateSearch").empty();
-	    $("#countrySearch").empty();
+	    $("#createdByAdvanced").val('').trigger("chosen:updated");
+		   /*  $("#country").val('').trigger("chosen:updated"); */
+		    $("#state").val('').trigger("chosen:updated");
+		    $("#city").val('').trigger("chosen:updated");
 	}
 </script>
+
+
+
+
+<script>
+function clearSearch(){
+	document.getElementById("vendorList_form").reset();
+	$('#anyOfKeyword').val('').trigger('chosen:updated');
+	$('#allKeywords').val('').trigger('chosen:updated');
+	$('#excludeKeyWord').val('').trigger('chosen:updated');
+	$('#orgNameAdvanced').val('').trigger('chosen:updated');
+/* 	$('#country').val('').trigger('chosen:updated'); */
+	$('#state').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	$('#tierAdvanced').val('').trigger('chosen:updated');
+	$('#createdByAdvanced').val('').trigger('chosen:updated');
+	$('#emailAdvanced').val('').trigger('chosen:updated');
+	$('#ownerAdvanced').val('').trigger('chosen:updated');
+	$('#orgAdvanced').val('').trigger('chosen:updated');
+	$('#statusAdvanced').val('').trigger('chosen:updated');
+	$('#invitationAdvanced').val('').trigger('chosen:updated');
+	$('#contactNameAdvanced').val('').trigger('chosen:updated');
+	$('#phoneNumberAdvanced').val('').trigger('chosen:updated');
+}
+</script>
+
+
 
 
 <script type="text/javascript">
@@ -747,15 +781,15 @@ overflow-x: auto;
 $(document).ready(function(){
 	//getVendorContactLists();
 	 vendorListCheck("${searchValue}","${universalVendorList}","${searchType}","${responderLocationId}","${orgRelationId}","${orgName}","${vendorKeyword}");
-    listChange("listbyContact");
-	document.getElementById('listOfVendors').value = 'listbyContact';
+    listChange("listbyVendor");
+	document.getElementById('listOfVendors').value = 'listbyVendor';
 });
 </script>
 
 <!-- Vendors list preparation from ELK result -->
 <script>
 function preparedVendorsListFromElk(data){
-			var json = JSON.parse(data);
+	var json = JSON.parse(data);
 		   	var result = "";
 		   	
 		   	result = result +'<thead>';
@@ -765,7 +799,7 @@ function preparedVendorsListFromElk(data){
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
 		 	result = result +'<th>Created By</th>';
-		   	result = result +'<th>Released Jobs</th>';
+		   	result = result +'<th>Released Requirements</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -794,14 +828,14 @@ function preparedVendorsListFromElk(data){
 		   		result = result +'<tr>';
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 		   			result = result +'<td>';
-		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+		   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		'</sec:authorize>';
 		   		
 		   		'<sec:authorize access="!hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 					result = result +'<td>';
-					result = result +'<div class="proj_show" ><span class="tbldata-dotdot-vsm" title="${report.orgName}">'+report.orgName+'</span>';
+					result = result +'<div class="proj_show"><span class="tbldata-dotdot-me" title="${report.orgName}">'+report.orgName+'</span>';
 					result = result +'</div>';
 					result = result +'</td>';
 				'</sec:authorize>';
@@ -810,7 +844,7 @@ function preparedVendorsListFromElk(data){
 		   		if( report.website != null && report.website != '' && report.website != 'undefined'){
 		   			result = result +'<td>';
 		   			result = result +'<div>';
-		   			result = result +'<span class="tbldata-dotdot-sm" title='+report.website+'>'+report.website+'</span>';
+		   			result = result +'<span class="tbldata-dotdot-vsm" title='+report.website+'>'+report.website+'</span>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		}else{
@@ -820,24 +854,24 @@ function preparedVendorsListFromElk(data){
 		   		if(location != null && location  != '' && location  != 'undefined'){
 		   			result = result +'<td>';
 		   			result = result +'<div>';
-		   			result = result +'<span class="tbldata-dotdot-me" title="'+location+'">'+location+'</span>';
+		   			result = result +'<span class="tbldata-dotdot" title="'+location+'">'+location+'</span>';
 		   			result = result +'</div>';
 		   			result = result +'</td>';
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 				
-		   	    result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
+		   	    result = result +' <td><div><span class="tbldata-dotdot_80" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
 		   	    
 		   	 if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
-					result = result +' <td><div>'+report.createdBy+'</div></td>';
+					result = result +' <td><div class="tbldata-dotdot-vsm">'+report.createdBy+'</div></td>';
 			   	}else{
 			   		result = result +'<td><div>---</div></td>';
 			   	}
-				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'">---</div></td>';
+				result = result +' <td><div id="releasedJobsCount'+report.orgRelationId+'" class="tbldata-dotdot_80">---</div></td>';
 				
 				if(null != report.noContacts && report.noContacts  != '' && report.noContacts  != 'undefined'){
-					result = result +'<td><div >'+report.noContacts+'</div></td>';
+					result = result +'<td><div class="tbldata-dotdot_80">'+report.noContacts+'</div></td>';
 				}else{
 					result = result +'<td><div >---</div></td>';
 				}
@@ -875,7 +909,7 @@ function preparedVendorsLists(data){
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
-		   	result = result +'<th>Released Jobs</th>';
+		   	result = result +'<th>Released Requirements</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -889,9 +923,9 @@ function preparedVendorsLists(data){
 		   		
 		   		var location = "";
 		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
-		   			location = report.country+", "+report.state+", "+report.city;
+		   			location = report.city+", "+report.state+", "+report.country;
 		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-		   			location = report.country+", "+report.state;
+		   			location = report.state+", "+report.country;
 		   		}else{
 		   			location = report.country;
 		   		}
@@ -981,7 +1015,6 @@ function getVendorListsElk(){
 	closePop();
 	var values = [];
 	var responderType = "Vendor";
-	
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
 			values.push($(this).val());
@@ -1007,7 +1040,7 @@ function pagination1(){
 	document.getElementById("vendorContactList").style.display="none";
     $('#vendorList').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1101,17 +1134,16 @@ function getVendorContactListsELK(){
 <!-- contact list preparation from ELK result -->
 <script>
 function preparedVendorContactListFromElk(data){
-	  
 			var json = JSON.parse(data);
 		   	var result = "";
 		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
+			result = result +'  <th>Vendor</th>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Vendor</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1128,6 +1160,8 @@ function preparedVendorContactListFromElk(data){
 		   		result = result +'<tr id="row'+report.id+'">';
 		   		
 		   		
+		   		result = result +'<td><div class="tbldata-dotdot-100" title="'+report.orgName+'">'+report.orgName+'</div></td>';
+		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 		   				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
@@ -1138,40 +1172,40 @@ function preparedVendorContactListFromElk(data){
 		   		
 		   		
 		   		
-		   		result = result +'<td><div><span title='+report.spocEmail+'>'+report.spocEmail+'</span></div></td>';
+		   		result = result +'<td><div class="tbldata-dotdot-vsm" title='+report.spocEmail+'>'+report.spocEmail+'</div></td>';
 		   		if(report.spocMobilePhone != null && report.spocMobilePhone  != '' && report.spocMobilePhone  != 'undefined'){
-		   			result = result +'<td><div><span>'+report.spocMobilePhone+'</span></div></td>';
+		   			result = result +'<td><div class="tbldata-dotdot-100" title="'+report.spocMobilePhone+'">'+report.spocMobilePhone+'</div></td>';
 		   		}else{
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 		   		// from ELK ownerNames
 		   		if(null != report.ownerNames  &&  '' != report.ownerNames  && 'undefined' != report.ownerNames){
-		   			result = result +'<td><div><span title="'+report.ownerNames+'">'+report.ownerNames+'</span></div></td>';
+		   			result = result +'<td><div class="tbldata-dotdot-100" title="'+report.ownerNames+'">'+report.ownerNames+'</div></td>';
 		   		}
 		   		//from db ownerName
 		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
-		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
+		   			result = result +'<td><div class="tbldata-dotdot-100" title="'+report.ownerName+'">'+report.ownerName+'</div></td>';
 		   		}
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
-		   		result = result + ' <td><div>';
+		   		
+		   		result = result + ' <td><div class="tblminwidth-30 dropdown-select paddingNone">';
    	        		if(report.invitationStatus == 'Rejected'){
    	        			result = result + '<span>'+report.spocStatus+'</span>';
    	        		}else{
    	        			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
    						result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
    						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-   						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+   						/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
    						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-   						result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+   						result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
    						result = result + ' </select>';
    						
    						result = result + '<span id="spocSpanState'+report.id+'"> </span>';
    	        		}
    	        		result = result + ' </div></td>';
 		   			
-   	        	result = result +' <td><div id="invitationStatus'+report.id+'">';	
+   	        	result = result +' <td><div id="invitationStatus'+report.id+'" class="tblminwidth-30">';	
 		   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
 		   		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i>';
 		   		}
@@ -1207,7 +1241,7 @@ function preparedVendorContactListFromElk(data){
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')";></i></div></td>';
+		   	    result = result + '<td><div class="tblminwidth-50"><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove vendor contact"></i></div></td>';
 		   	 '</sec:authorize>';
 		   	 
 		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
@@ -1238,7 +1272,7 @@ function preparedVendorContactList(data){
 		   	result = result +'<tr>';
 		   	result = result +'	<th>Name</th>';
 		   	result = result +'  <th>Email</th>';
-		   	result = result +'  <th>Ph. No</th>';
+		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
 		   	result = result +'  <th>Vendor</th>';
 		   	result = result +' <th>Status</th>';
@@ -1282,9 +1316,9 @@ function preparedVendorContactList(data){
 	        			result = result + ' <select id="spocState'+report.id+'" name="spocStatus" onChange="updateSpocStatus(\''+report.id+'\');">';
 						result = result + ' <option '+(report.spocStatus == "Active" ? "selected" : '') +'>Active</option>';
 						result = result + ' <option '+(report.spocStatus == "In-Active" ? "selected" : '') +'>In-Active</option>';
-						result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
+						/* result = result + ' <option '+(report.spocStatus == "New" ? "selected" : '') +'>New</option>';
 						result = result + ' <option '+(report.spocStatus == "Negotiation" ? "selected" : '') +'>Negotiation</option>';
-						result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>';
+						result = result + ' <option '+(report.spocStatus == "Contract" ? "selected" : '') +'>Contract</option>'; */
 						result = result + ' </select>';
 						
 						result = result + '<span id="spocSpanState'+report.id+'"> </span>';
@@ -1328,7 +1362,7 @@ function preparedVendorContactList(data){
 		   		/* result = result +'<td><div><a href="add-vendor.html"><i class="fa fa-edit"></i></a>';
 		   		result = result +'<i class="glyphicon glyphicon-trash"></i></div></td>'; */
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-		   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')";></i></div></td>';
+		   	    result = result + '<td><div><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelations.id+'\')"; title = "Remove vendor contact"></i></div></td>';
 		   	 '</sec:authorize>';
 		   	 
 		   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
@@ -1380,10 +1414,10 @@ function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Vendor delete message here</p>";
-	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
+	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
+	result = result + ' <div id="reasonForVendorSpocDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1395,14 +1429,13 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
-		 reason = encodeURIComponent(reason);
-		 $("#reasonForSpocDiv").empty();
-		
-		 $("#row"+spocId).empty();
-		 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-		 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-		
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+	  	  $("#reasonForVendorSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	  	  
+		}else{
+		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1419,13 +1452,6 @@ function saveReason1(spocId, orgRelationID){
 	 			 msgFadein();
 		    }
 	   });
-	}else{
-		if(reason){
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
-		
 	}
 	  
 }
@@ -1459,7 +1485,7 @@ function pagination(){
 	 document.getElementById("vendorList_paginate").style.display="none";  */
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1503,9 +1529,9 @@ function getClientDetails(){
    	        		
    	        		var location = "";
    	        		if(report.city != null && report.city != '' && report.city != 'undefined'){
-   	        			location = report.country+", "+report.state+", "+report.city;
+   	        			location = report.city+", "+report.state+", "+report.country;
    	        		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
-   	        			location = report.country+", "+report.state;
+   	        			location = report.state+", "+report.country;
    	        		}else{
    	        			location = report.country;
    	        		}
@@ -1599,6 +1625,7 @@ function pagination1(){
 	 document.getElementById("vendorList_paginate").style.display="none";  */
     $('#vendorList').DataTable( { 
     	"scrollCollapse": false,
+    	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1607,7 +1634,6 @@ function pagination1(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-		
     } );
 	 
 	 
@@ -1779,7 +1805,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.country != null && json.country !='' && json.country !='undefined'){
 								result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1788,7 +1814,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.state != null && json.state !='' && json.state !='undefined'){
 								result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1797,7 +1823,7 @@ function getVendorOrgname(vendorOrgname){
 							if(json.city != null && json.city !='' && json.city !='undefined'){
 								result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 							}else{
-								result = result + '<span>No Data</span><div class="clearfix"></div>';
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1810,14 +1836,14 @@ function getVendorOrgname(vendorOrgname){
 								result = result + '<span>No Data</span><div class="clearfix"></div>';	
 							}
 							result = result + '</div>'; */
-							
+
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Tier:</strong>';
 							if(json.level != null && json.level !='' && json.level !='undefined'){
 							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
 							}else{
 								
-								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+								result = result + '<span> --- </span><div class="clearfix"></div>';	
 							}
 							result = result + '</div>';
 							
@@ -1827,7 +1853,33 @@ function getVendorOrgname(vendorOrgname){
 								result = result + '<span title="'+json.vendorCreateduserName+'">'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
 							}else{
 								
-								result = result + '<span>No Data</span><div class="clearfix"></div>';	
+								result = result + '<span> --- </span><div class="clearfix"></div>';	
+							}
+							result = result + '</div>';
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Address :</strong>';
+							if(json.address != null && json.address !='' && json.address !='undefined'){
+								result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Billing Address :</strong>';
+							if(json.billingAddress != null && json.billingAddress !='' && json.billingAddress !='undefined'){
+								result = result + '<span title="'+json.billingAddress+'">'+json.billingAddress+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Payment Terms :</strong>';
+							if(json.paymentTerms != null && json.paymentTerms !='' && json.paymentTerms !='undefined' && json.paymentTerms !='SelectPaymentTerms'){
+								result = result + '<span title="'+json.paymentTerms+'">'+json.paymentTerms+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
 							result = result + '</div>';
 							
@@ -1866,7 +1918,7 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
-		 document.getElementById("vendorsList").style.display="none";
+// 		 document.getElementById("vendorsList").style.display="none";
 		 document.getElementById("vendorSatatus").style.display="none";
 		 document.getElementById("vendorInvitation").style.display="none";
          '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
@@ -1875,7 +1927,7 @@ function listChange(sel){
 		'<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="none";
 		 '</sec:authorize> ';
-		 document.getElementById("filter1ApprovePop").style.display="none";
+	//	 document.getElementById("filter1ApprovePop").style.display="none";
 		 document.getElementById("filter3ApprovePop").style.display="none";
 		 document.getElementById("filter4ApprovePop").style.display="none";
 		 //getVendorLists();
@@ -1886,9 +1938,9 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
-		 document.getElementById("vendorContactList_wrapper").style.display="block";
+		 //document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
-		 document.getElementById("vendorsList").style.display="block";
+// 		 document.getElementById("vendorsList").style.display="block";
 		 document.getElementById("vendorSatatus").style.display="block";
 		 document.getElementById("vendorInvitation").style.display="block";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
@@ -1897,10 +1949,9 @@ function listChange(sel){
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
 		 '</sec:authorize> ';
-		 document.getElementById("filter1ApprovePop").style.display="block";
+	//	 document.getElementById("filter1ApprovePop").style.display="block";
 		 document.getElementById("filter3ApprovePop").style.display="block";
 		 document.getElementById("filter4ApprovePop").style.display="block";
-		
 		 //getVendorContactLists();
 		 getVendorContactListsELK();
 	 }
@@ -2436,10 +2487,12 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
   }else{
 	  if(vendorKeyword == "vendorSearch" && vendorKeyword != null && vendorKeyword !="" && vendorKeyword != 'undefined'){
 	    	vendorSideBar(responderLocationId,orgRelationId,orgName);
-	    	getVendorContactListsELK();
+	    	//getVendorContactListsELK();
+	    	getVendorListsElk();
 	    }
 	else{
-		getVendorContactListsELK();
+		//getVendorContactListsELK();
+		getVendorListsElk();
 		}
   }
     

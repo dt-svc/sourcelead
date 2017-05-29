@@ -1,13 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,15 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementOffers;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.Timezone;
-import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -123,6 +118,18 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rsh where rsh.submissionId.id IN (:submissionIds)";
 		return session.createQuery(query).setParameterList("submissionIds", submissionIds).setCacheable(true).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmissionHistory> rhl = new ArrayList<RequirementSubmissionHistory>();
+		 String queryString ="from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs left join fetch rsh.interviewerId  where rs.orgLocations.id =:orgLocationID and rsh.toStage =:toStage and rsh.createdBy =:userCode and (rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC)";
+		 rhl = session.createQuery(queryString).setString("userCode", user.getUserCode()).setLong("orgLocationID", orgLocationId).setString("toStage", submissionStage).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+       return (long) rhl.size();
 	}
 
 }

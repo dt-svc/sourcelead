@@ -23,17 +23,22 @@
 function validateTaskName(){
 
 		var Taskname= $("#taskName").val();
+		var Taskdesc= $("#taskDescription").val();
 		var checkMaxTsRowNum = $("#maxTsRowNum").val();
 		for(i = 1; i<checkMaxTsRowNum;i++){
 			var oldTaskname = $("#" + i + "taskName").val()
-			if(oldTaskname == Taskname){
-				$("#save_task").hide();			
+			var oldTaskdesc = $("#" + i + "taskDescription").val()
+			if(oldTaskname == Taskname && oldTaskdesc == Taskdesc){
+// 				$("#save_task").hide();
+				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
+				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
 				$("input#taskName").after("<p class='jquery_form_error_message'>"+ Taskname+ " is Already Existed</span>");
 				document.getElementById("taskName").setAttribute('record-exist', 'yes');
 				document.getElementById("taskName").setAttribute('record-exist-errorMsg',Taskname+ ' is Already Existed');
 				break;
 			}else{
 				$("#save_task").show();
+				$('#taskNameDIV').find('p.jquery_form_error_message').remove(); 
 				$('input#taskName').removeAttr("record-exist record-exist-errormsg");
 			}
 			
@@ -104,7 +109,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3"> Project Description </label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length2-250"
+								<textarea class="form-control" rows="3" name="ProjectDescription" data-validation="validate_length length2-5000"
 									data-validation-optional="true"></textarea>
 								<span class="hidden">Project Description</span>
 							</div>
@@ -154,7 +159,7 @@ function validateTaskName(){
 												<table class="table table-bordered table-striped  clearfix" id="projectTaskTbl" cols="0">
 													<tr id="divTsRow0">
 														<th><input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />Task Name</th>
-														<th>Billable Type</th>
+														<th>Type</th>
 														<th>Description</th>
 														<th class="tblminwidth-75">Action</th>
 													</tr>
@@ -164,15 +169,16 @@ function validateTaskName(){
 											   <div class="form-horizontal row custom-form">
 													<div class="col-xs-12 col-lg-7">
 														<div class="form-group" id="taskNameDIV">
-															<label class="col-md-3">Task Name</label>
+															<label class="col-md-3">Task Name<span class="text-danger">*</span></label>
 															<div class="col-md-9">
 																<input type="text" value="" id="taskName" name="taskName" onkeyup="validateTaskName();" placeholder="Enter Task Name" class="form-control">
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-md-3">Billable Type</label>
+															<label class="col-md-3">Type</label>
 															<div class="col-md-9">
 																<select id="taskBillableType" name="taskBillableType" class=" form-control selectpicker">
+																  <option value="" selected>Select Type</option>
 																  <option value="Billable">Billable</option>
 																  <option value="Non-Billable">Non-Billable</option>
 																</select>
@@ -181,7 +187,7 @@ function validateTaskName(){
 														<div class="form-group" id="descriptionDiv">
 															<label class="col-md-3">Description</label>
 															<div class="col-md-9">
-																<textarea class="form-control" placeholder="Enter Task Description"  id="taskDescription" name="taskDescription"></textarea>
+																<textarea class="form-control" placeholder="Enter Task Description"  onkeyup="validateTaskName();" id="taskDescription" name="taskDescription"  data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
 															</div>
 														</div>
 													</div>
@@ -204,7 +210,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3">Mail to </label>
 							<div class="col-md-5">
-								<div class="checkbox">
+								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"  checked="checked" name="isMailToProjectManager"> 
 									Project Manager
 									</label>
@@ -214,7 +220,7 @@ function validateTaskName(){
 							
 						<sec:authorize access="hasAnyRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')"> 		
 							<div class="col-md-4">
-								<div class="checkbox">
+								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"  checked="checked"
 										name="isMailToTeamMembers">Team Members
 									</label>
@@ -236,7 +242,7 @@ function validateTaskName(){
 								class="text-danger">*&nbsp;</span></label>
 							<div class="col-md-9">
 								<div class="form-icon-min" id="chosen-level1Manager">
-									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Select Manager" data-validation="required" onchange="getLevel2Approvers();">
+									<select class="form-control chosen-select" name="level1Manager" id="level1Manager" field-name="Manager" data-validation="required" onchange="getLevel2Approvers();">
 										<option value="">-- Select Manager --</option>
 										<c:forEach var="option" items="${user_List}">
 											<option value="${option.id},${option.userType}">${option.firstName}
@@ -278,7 +284,7 @@ function validateTaskName(){
 
 							<div class="col-md-9">
 									<span class="icon-inside"> <i class="fa fa-search-plus"></i>
-										<input type="text" value="" placeholder="Select Assign Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();" readonly="readonly">
+										<input type="text" value="" placeholder="Select Team" id ="assignTeamModal"class="form-control" data-target="#assignTeam" data-toggle="modal" onclick="getTeamMembers();" readonly="readonly">
 									</span> <span data-target="#addTeam" data-toggle="modal"> 
 									</span>
 								<span class="hidden">Select Team</span>
@@ -327,8 +333,6 @@ function validateTaskName(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						
-						
 						<div class="form-group">
 		                  <label class="col-md-3">Invoice Frequency <span class="text-danger">*</span></label>
 		                  <div class="col-md-9" id="chosen-frequency">
@@ -345,7 +349,7 @@ function validateTaskName(){
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
-								<div class="checkbox">
+								<div class="checkBox">
 									<label> <input type="checkbox" value="Y"  
 										name="isTimesheetAttachmentRequired"> Timesheet Attachment Required
 									</label>
@@ -441,15 +445,15 @@ function getStatus(){
 	function addTasks() {
 		$('#taskNameDIV').find('p.jquery_form_error_message').remove();
 		$('#descriptionDiv').find('p.jquery_form_error_message').remove();
-		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200 || $("#taskDescription").val().length < 10 || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
+		if ($('#taskName').val() == '' || $("#taskDescription").val().length > 200  || $("#taskName").val().length > 100 || $("#taskName").val().length < 2) {
 			if ($('#taskName').val() == '') {
 				$("input#taskName") .after( "<p class='jquery_form_error_message'>Task Name is required</span>");
 			}
 			if(($('#taskName').val() != '' && $("#taskName").val().length < 2 )|| $("#taskName").val().length > 100){
 				$("input#taskName") .after( "<p class='jquery_form_error_message'>The values Entered must be between 2-100 characters</span>");
 			}
-			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2) || $("#taskDescription").val().length > 200) {
-				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-250 characters</span>");
+			if (($("#taskDescription").val() != '' && $("#taskDescription").val().length < 2 )  || $("#taskDescription").val().length > 200) {
+				$("textarea#taskDescription") .after( "<p class='jquery_form_error_message'>The values Entered must be between2-5000 characters</span>");
 			}
 			return true;
 		} 
@@ -659,6 +663,11 @@ function getStatus(){
 function flushProjectTasks(){
 	$("#taskName").val('');
 	$("#taskDescription").val('');
+	$("#addTaskText").html('Add Task');
+	$("#save_task").removeAttr('onclick');
+	$("#save_task").attr('onclick', 'addTasks();');
+	$("input#taskName").removeClass("error");
+	 $('input#taskName').removeAttr( "record-exist record-exist-errormsg");
 	$('#addTask').find('p.jquery_form_error_message').remove();	
 }
 </script>
@@ -675,11 +684,17 @@ function flushProjectTasks(){
 		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
+			/* var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, ""); */
+			
+			var jsonData = JSON.stringify(frm);
+			
+		    var form = $('#project_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData)
 
 			//It will escape all the special characters
-			var jsonData = encodeURIComponent(con);
+		//	var jsonData = encodeURIComponent(con);
 			
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#save_project").attr("disabled", "disabled");
@@ -688,8 +703,13 @@ function flushProjectTasks(){
 
 
 			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+						 type : "POST",
+						 data: formData,
+		  	    	     contentType : 'application/json; charset=utf-8',
+		  		         processData: false,
+		  		         contentType:false, 
+		  	    	     dataType : 'json',
+						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
 						success : function(result) {
 							if (result == 'projectDashboard') {
 								location.replace(sourceleadUrl
@@ -751,7 +771,7 @@ function flushProjectTasks(){
 							output = output + ' <table cols="0" id="assignEmployeePagination" class="table table-bordered table-striped  clearfix">';
 							output = output + ' <thead>';
 							output = output + ' <tr>';
-							output = output + ' <th>&nbsp;&nbsp;</th>';
+				            output = output+' <th><input type="checkbox" name="emp" id="projectChekId" onclick="totalCheck();"></th>';
 							output = output + ' <th>Name</th>';
 							output = output + ' <th>Email</th>';
 							output = output + ' <th>Role</th>';
@@ -875,7 +895,21 @@ function flushProjectTasks(){
 </script>
 <!-- this script is for Get the TeamMembers functionality Ends -->
 
-
+<script>
+function totalCheck() {
+	var checked = document.getElementById("projectChekId").checked  
+	
+    if(checked) {
+        $('.myCheckbox').each(function() {
+            this.checked = true;   
+        });
+    }else{
+        $('.myCheckbox').each(function() {
+            this.checked = false;      
+        });         
+    } 
+}
+</script>
 
 <script>
 function assignEmployeespagination(){  
@@ -906,6 +940,8 @@ function assignEmployeespagination(){
 		$(".myCheckbox").each(function() {
 							var localId = this.id;
 							if ($(this).is(':checked')) {
+								$(this).removeAttr('emp-assigned');
+								$(this).attr('emp-assigned','true');
 								var startDate = $("#startDate" + localId).val();
 								var endDate = $("#endDate" + localId).val();
 								result = result
@@ -936,7 +972,15 @@ function assignEmployeespagination(){
 </script>
 <script>
 function assignEmployeeCancel(){
-	$('#assignEmployeePagination tbody input[type="checkbox"]').prop('checked', false);
+	$(".myCheckbox").each(function() {
+		var empAssigned = $(this).attr('emp-assigned');
+		if(empAssigned != null && empAssigned != 'undefined' && empAssigned != '' && empAssigned == 'true'){
+		}
+		else{
+			$(this).prop('checked', false);
+		}
+		
+    });	
 }
 </script>
 
@@ -981,7 +1025,13 @@ function assignEmployeeCancel(){
                     mm='0'+mm
                 } 
                 var today = yyyy+'-'+mm+'-'+dd;
-				if(dummyDate < today){
+                var proStartDateTP = today.split("-");
+                var d1 = new Date(proStartDateTP[0], proStartDateTP[1] - 1, proStartDateTP[2]);
+                
+                var proEndDateTP = dummyDate.split("-");
+                var d2 = new Date(proEndDateTP[2], proEndDateTP[1] - 1, proEndDateTP[0]);
+                
+				if(d1 > d2){
 					$("#Satatus").empty();
 					$('#Satatus').append('<option >Completed</option>');
 				}else{

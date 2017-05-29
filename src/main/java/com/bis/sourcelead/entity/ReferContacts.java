@@ -5,16 +5,21 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.bis.sourcelead.enums.Contact_Source;
 
 @Entity
 @Table(name = "REFER_CONTACTS", catalog = "sourcelead")
@@ -36,6 +41,13 @@ public class ReferContacts implements Serializable{
     @JoinColumn(name="CONTACT_USER_ID")        
     private User contactUser;
 	
+	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] docFile;
+		
+	@Column(name = "FILE_CONTENT_TYPE")
+	private String fileContentType;
+
 	@ManyToOne
     @JoinColumn(name="ORGLOCATION_ID")        
     private OrgLocations orgLocationId;
@@ -68,8 +80,17 @@ public class ReferContacts implements Serializable{
 	private String updatedBy;
 	
 	@Column(name = "CONTACT_SOURCE")
-	private String contactSource;
+	@Enumerated(EnumType.STRING)
+	private Contact_Source contactSource;
 	
+	@Column(name = "JSON_OUTPUT" , columnDefinition = "TEXT default NULL")
+	private String jsonOutPut;
+	
+	@Column(name = "CONTACT_USER_PHONE2")
+	private String contactUserPhone2;
+	
+	@Column(name = "CONTACT_USER_EMAIL2")
+	private String contactUserEmail2;
 	
 	@Transient
 	private String contactUserName;
@@ -186,12 +207,53 @@ public class ReferContacts implements Serializable{
 		this.contactUserName = contactUserName;
 	}
 
-	public String getContactSource() {
+	public Contact_Source getContactSource() {
 		return contactSource;
 	}
 
-	public void setContactSource(String contactSource) {
+	public void setContactSource(Contact_Source contactSource) {
 		this.contactSource = contactSource;
 	}
+	
+	public byte[] getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile) {
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
+	
+	public String getJsonOutPut() {
+		return jsonOutPut;
+	}
+
+	public void setJsonOutPut(String jsonOutPut) {
+		this.jsonOutPut = jsonOutPut;
+	}
+
+	public String getContactUserPhone2() {
+		return contactUserPhone2;
+	}
+
+	public void setContactUserPhone2(String contactUserPhone2) {
+		this.contactUserPhone2 = contactUserPhone2;
+	}
+
+	public String getContactUserEmail2() {
+		return contactUserEmail2;
+	}
+
+	public void setContactUserEmail2(String contactUserEmail2) {
+		this.contactUserEmail2 = contactUserEmail2;
+	}
+	
 
 }

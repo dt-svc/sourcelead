@@ -93,14 +93,14 @@ function getUsersSearchResult(searchValue){
   </div>
       <section class="clearfix usersHeader positionRelative">
       
-      <div class="pull-left cand-advsrche">
+      <div class="pull-left cand-advsrche onboardBtn">
        <input id="searchElement" type="hidden"></input>
        
-			  <!-- <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
+			  <%--<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
 			  Advanced Search&nbsp;&nbsp;
 			  <i class="fa fa-search"></i>
-			  </a>  -->
-			  <form id="user_forms" name="user_forms"  >
+			  </a> 
+			   <form id="user_forms" name="user_forms"  >
 				  <div class="cand-advsrch-popup userAdvsrch" >
 					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
 					  <div class="row">
@@ -212,7 +212,7 @@ function getUsersSearchResult(searchValue){
 						  </div>
 					  </div>
 				  </div>
-			  </form>
+			  </form> --%>
       </div>
        
        
@@ -221,17 +221,17 @@ function getUsersSearchResult(searchValue){
        <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
           <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="flushAdvancedData();">
+               <select id="userState" onchange="getUsersList('manual');">
 				<option value="ACTIVE" >Active</option>
 				<option value="">All</option>
 				<option value="INACTIVE" >In Active</option>
-				<option value="NOT_LOGGEDIN">Not Logged IN</option>
+				<option value="NOT_LOGGEDIN">Not Logged in</option>
 			   </select>
           
           </li>
           
 		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="flushAdvancedData();">
+				<select id="userRole" onchange="getUsersList('manual');">
 				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
 				<!-- <option value="All" >All Roles</option> -->
 				<c:forEach var="roles" items="${rolesList}">
@@ -248,7 +248,7 @@ function getUsersSearchResult(searchValue){
 		  </li> 
 		
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
-	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Create</a></li>
+	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
 	       </sec:authorize>
 
 		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 

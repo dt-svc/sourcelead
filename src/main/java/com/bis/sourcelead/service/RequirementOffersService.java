@@ -39,5 +39,9 @@ public interface RequirementOffersService {
 	void offerRejectEmailScenario(User loginUser,OrgLocations loginOrgLocations,Requirement requirement,RequirementOffers requirementOffers,RequirementSubmission requirementSubmission) throws Exception;
 
 	List<RequirementOffers> getRequirementOfferSubmissionByIdAndOrgLocationId(Long submissionId, Long orgLocationId)throws Exception;
+	
+	List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	RequirementOffers getRequirementOffersByUUID(String offerUUId) throws Exception;
 }
 

@@ -51,6 +51,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateResumesService;
@@ -70,6 +72,7 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -160,6 +163,9 @@ public class RequirementListRestController {
 	 
 	 @Autowired
 	 EmailScenerioUtil emailScenerioUtil;
+	 
+	 @Autowired
+	 RequirementOfferHistoryService requirementOfferHistoryService;
 	 
 	 protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -513,8 +519,12 @@ public class RequirementListRestController {
 			           for (RequirementAssignTo assing : requirementAssignToListdb) { 
 			        	   RequirementAssignTo ra = new  RequirementAssignTo();
 			        	   StringBuilder assignUserSB = new StringBuilder();
+			        	   if(assing.getAssignUserId().getLastName() != null){
 			        	   ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).append(" ").append(assing.getAssignUserId().getLastName()).toString());
-					       if(assing.getRoleId() != null ){
+			        	   }else{
+				        	ra.setAssignedUserName(assignUserSB.append(assing.getAssignUserId().getFirstName()).toString());
+			        	   }
+			        	   if(assing.getRoleId() != null ){
 					    	   ra.setAssignedUserRole(assing.getRoleId().getDisplayName());
 					       }
 					       if(assing.getTeamId() != null ){
@@ -586,6 +596,26 @@ public class RequirementListRestController {
 									if(null != submissionType && submissionType.equalsIgnoreCase("OFFERMADE")){
 										List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(),loginOrgLocation.getId());
 										
+										if(requirementOffersList.size() == 0 && (ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString()) || ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString())
+												|| ApplicantSubmissionStatus.CLIENT_OFFERREJECTED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString()) || ApplicantSubmissionStatus.CLIENT_OFFERHIRED.toString().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().toString()))){
+											List<RequirementOfferHistory> offersList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(),loginOrgLocation.getId());
+											for(RequirementOfferHistory requirementOfferHistory : offersList){
+												RequirementOffers requirementOffershis = requirementOfferHistory.getOfferId();
+												requirementSubmission.setOfferId(requirementOffershis.getId());
+												if(requirementOffershis.getDateOfJoining() != null){
+													requirementSubmission.setOfferJoinDate(Constants.DMY.format(requirementOffershis.getDateOfJoining()));
+												}
+												if(requirementOffershis.getPositionType() != null){
+													requirementSubmission.setPositionType(requirementOffershis.getPositionType());
+												}
+												if(requirementOffershis.getAmount() != null){
+													requirementSubmission.setOfferRate(requirementOffershis.getAmount());
+												}
+												if(requirementOffershis.getFileName() != null){
+													requirementSubmission.setAttachment(requirementOffershis.getFileName());
+												}
+											}
+										}
 										
 										if(null != requirementOffersList && requirementOffersList.size() > 0){
 											RequirementOffers requirementOffers = requirementOffersList.get(0);
@@ -625,9 +655,12 @@ public class RequirementListRestController {
 										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									}
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
-									if(Constants.RECORD_ACTIVE ==  requirementSubmission.getCandidateResumes().getStatus()){
+									
+									/*if(Constants.RECORD_ACTIVE ==  requirementSubmission.getCandidateResumes().getStatus()){
 										requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
-									}
+									}*/
+									
+									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									
 									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
@@ -661,15 +694,26 @@ public class RequirementListRestController {
 									}
 									
 									
-										/*RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+									RequirementSubmission clientSubmission = requirementSubmissionService.getClientRequierementSubmission(requirementSubmission.getId());
+									
+										RequirementRateSubmissionNegotiation  pastRequirementRateSubmissionNegotiation = null;
+										if(clientSubmission != null && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+											pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(clientSubmission.getId());
+										}else{
+											pastRequirementRateSubmissionNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+										}
+										
 										if(pastRequirementRateSubmissionNegotiation != null){
 											if(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.VENDOR) || pastRequirementRateSubmissionNegotiation.getRateInitiatorType().equals(SubmissionRateStatus.CLIENT)){
 												requirementSubmission.setProposedSubmissionRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 											}else{
-												requirementSubmission.setExpectedCTC(pastRequirementRateSubmissionNegotiation.getExpectedRate());
+												requirementSubmission.setExpectedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 											}
-											
-										}*/
+											requirementSubmission.setLastRateIniLocId(pastRequirementRateSubmissionNegotiation.getInitiatorOrgLocationId().getId().toString());
+											requirementSubmission.setLastRateIniType(pastRequirementRateSubmissionNegotiation.getRateInitiatorType().getValue());
+											requirementSubmission.setLastRateIniUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+											requirementSubmission.setLastRateStage(pastRequirementRateSubmissionNegotiation.getRateStage().getValue());
+										}
 										
 										
 										
@@ -1347,7 +1391,7 @@ public class RequirementListRestController {
 							Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 							List<Candidate> candidateList = new ArrayList<>();
 							candidateList.add(candidate);
-							requirementSubmission.setScore(requirementSubmission.getCandidateScore()+"%");
+							requirementSubmission.setScore(requirementSubmission.getCandidateScore());
 							
 							}
 

@@ -4,6 +4,7 @@ package com.bis.sourcelead.dao;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
@@ -12,6 +13,8 @@ public interface ProjectMembersDao {
 
     public ProjectMembers saveProjectMember(ProjectMembers projectMembers) throws Exception;
  	
+    List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId)throws Exception;
+    
 	public ProjectMembers updateProjectMember(ProjectMembers projectMembers) throws Exception;
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
@@ -70,6 +73,10 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getAllProjectsByUserIdForCandidatesHotList(Long userId) throws Exception;
 	
 	public Collection<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status) throws Exception;
+	
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Date startDate,Date endDate,Long locationsId, Long approverUserId);
+
+	public Map<String, Float> getTotalHours(Long projectMemberId, Date startDate, Date endDate)throws Exception;
 	
 	
 	

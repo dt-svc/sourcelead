@@ -81,6 +81,8 @@ public class AddElkCandidate{
 					candidateIndex.setAddress(rs.getString("ADDRESS"));
 					candidateIndex.setSummary(rs.getString("SUMMARY"));
 					candidateIndex.setCandidateType(rs.getString("CANDIDATE_TYPE"));
+					candidateIndex.setCandidateUUID(rs.getString("CANDIDATE_UUID"));
+					
 					if(!isNullOrEmpty(rs.getLong("RECRUITER_USER_ID"))){
 						candidateIndex.setRecruiterUserId(rs.getLong("RECRUITER_USER_ID"));
 					}else{
@@ -99,17 +101,36 @@ public class AddElkCandidate{
 						candidateIndex.setIsFavourite(0);
 					}
 					
+					if(!isNullOrEmpty(rs.getString("IS_FAVOURITE_ASSOCIATE"))){
+					    candidateIndex.setIsFavouriteAssociate(rs.getInt("IS_FAVOURITE_ASSOCIATE"));
+					}else{
+						candidateIndex.setIsFavouriteAssociate(0);
+					}
+					
+					if(!isNullOrEmpty(rs.getString("IS_ASSOCIATE"))){
+					    candidateIndex.setIsAssociate(rs.getString("IS_ASSOCIATE"));
+					}
+					
+					if(!isNullOrEmpty(rs.getLong("ORG_RELATION_ID"))){
+					    candidateIndex.setOrgRelationId(rs.getLong("ORG_RELATION_ID"));
+					}
+					
+					if(!isNullOrEmpty(rs.getLong("SPOC_ID"))){
+					    candidateIndex.setSpocId(rs.getLong("SPOC_ID"));
+					}
+					
+					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_YEARS"))){
 						if(rs.getString("EXPERIENCE_YEARS").equalsIgnoreCase("25+")){
-							candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS.toString());
+							candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
 						}
 						else{
-							candidateIndex.setExperienceYears(rs.getString("EXPERIENCE_YEARS"));
+							candidateIndex.setExperienceYears(Integer.parseInt(rs.getString("EXPERIENCE_YEARS")));
 						}
 					}
 					
 					if(StringUtils.isNotEmpty(rs.getString("EXPERIENCE_MONTHS"))){
-						candidateIndex.setExperienceMonths(rs.getString("EXPERIENCE_MONTHS"));
+						candidateIndex.setExperienceMonths(Integer.parseInt(rs.getString("EXPERIENCE_MONTHS")));
 					}
 					candidateIndex.setDesignation(rs.getString("DESIGNATION"));
 					candidateIndex.setDesignationType(rs.getString("DESIGNATION_TYPE"));

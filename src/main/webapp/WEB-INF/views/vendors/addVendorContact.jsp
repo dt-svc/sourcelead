@@ -79,7 +79,7 @@
           <div class="pull-left">
             <h2>Add Vendor Contact</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Vendor Contact</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/vendorsList'/>"> Vendor List</a> &raquo; Add Vendor Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div>
@@ -88,9 +88,8 @@
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Select Vendor <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Vendor Name <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
-              <div class="form-icon">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="vendor Name" data-validation="required" onchange="validateEmail();getSpocUserDetails();">
                   <option value="">Select Vendor</option>
                    <c:forEach var="report" items="${vendorList}">
@@ -103,7 +102,7 @@
                  </c:forEach> 
                 </select>
                 <!-- Temporarily Commented.. because contact user doesnt exists, so issue occurs in enrolled org list -->
-                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> </div>
+                <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" style="display: none"></i> 
             </div>
           </div>
           </div>
@@ -147,7 +146,7 @@
 	            </div>
 	            
 	             <div class="form-group">
-	              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
+	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
 	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                 <c:forEach var="user" items="${userList}">
@@ -193,16 +192,18 @@
 	                <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
 	                  <option value="Active">Active</option>
 	                  <option value="In-Active">In-Active</option>
-	                  <option value="New">New</option>
+	                 <!--  <option value="New">New</option>
 	                  <option value="Negotiation">Negotiation</option>
-	                  <option value="Contract">Contract</option>
+	                  <option value="Contract">Contract</option> -->
 	                </select>
 	              </div>
 	            </div>
 	            
                 <div class="form-group">
-                  <div class="col-md-12 checkbox">
-                      <label><input type="checkbox" value="Y"
+                <label class="col-md-3"></label>
+                  <div class="col-md-9 checkBox">
+                      <label>
+                      <input type="checkbox" value="Y"
 							name="isMailSent" checked="checked">Send Invitation</label>
                   </div>
                 </div>
@@ -330,7 +331,16 @@ function getOrgDetails()
 				})
 </script>  -->
 
-
+ <script>
+	$(document).ready(function() {
+		document.getElementById("vendor_contact_form").reset();
+		document.getElementById("email").value="";
+		document.getElementById("firstName").value="";
+		document.getElementById("lastName").value="";
+		document.getElementById("phoneNumber").value="";
+		
+	});
+</script>
 <script type="text/javascript">
 	function saveVendorContact() {
 		var vendorName = document.getElementById("vendorName").value;

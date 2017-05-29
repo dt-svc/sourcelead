@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
@@ -58,6 +59,9 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	 private CommonUtil commonUtil;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
 	
 	@Autowired
 	private EmailScenarioService emailScenarioService;
@@ -332,7 +336,7 @@ public class TaskServiceImpl implements TaskService{
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = "";
+			 String url = sourceleadUrl;
 			 
 			 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 			 notificationScenario.setBody(notificationbody);
@@ -363,6 +367,39 @@ public class TaskServiceImpl implements TaskService{
 @Override
 public List<Tasks> getTaskByScheduledTime(String currentTime) throws Exception {
 	return taskDao.getTaskByScheduledTime(currentTime);
+}
+
+@Override
+public Long getTasksCompletedTodayByLocationCodeandUserId(OrgLocations orglocationCode, User user) throws Exception{
+	
+	return taskDao.getTasksCompletedTodayByLocationCodeandUserId(orglocationCode,user);
+}
+
+@Override
+public List<Tasks> getTasskByAssignedUserIdAndOrgLocationId(Long orgLocationId, Long userId) throws Exception {
+	return taskDao.getTasskByAssignedUserIdAndOrgLocationId(orgLocationId, userId);
+}
+
+@Override
+public List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(Long orgLocationId, Long userId,
+		Long onboardingId) throws Exception {
+	return taskDao.getTasskByAssignedUserIdAndOrgLocationIdAndOnboardingId(orgLocationId, userId, onboardingId);
+}
+
+@Override
+public List<Tasks> getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(Long orgLocationId, Long userId,
+		Long offboardingId) throws Exception {
+	return taskDao.getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(orgLocationId, userId, offboardingId);
+}
+
+@Override
+public List<Tasks> getTasksListOffboardingId(Long offboardingId) throws Exception {
+	return taskDao.getTasksListOffboardingId(offboardingId);
+}
+
+@Override
+public List<Tasks> getTasksListOnboardingId(Long onboardingId) throws Exception {
+	return taskDao.getTasksListOnboardingId(onboardingId);
 }
 }
 	

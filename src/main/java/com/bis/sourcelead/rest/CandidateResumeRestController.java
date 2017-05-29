@@ -90,7 +90,7 @@ public class CandidateResumeRestController {
 	*/
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = "/saveCandidateResume", method = RequestMethod.POST)
 	public @ResponseBody String saveCandidateResume(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId,MultipartHttpServletRequest request) throws Exception {
@@ -163,7 +163,7 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_DELETE_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
 	public @ResponseBody String terminateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, 
@@ -205,7 +205,7 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_PROFILE')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_EDIT_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = "/getResume", method = RequestMethod.POST)
 	public @ResponseBody String getResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, HttpServletRequest request) throws Exception {

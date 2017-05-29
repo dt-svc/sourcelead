@@ -139,6 +139,10 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
 	    success: function(data) {
 	    		 //$("#timesheetPopUp").removeAttr("style");
  	    	     $("#timesheetPopUp").empty();
+ 	    	     var closeElement = $('.proj_close');
+ 	    	      closeElement.removeAttr('onclick');
+ 	    	     closeElement.attr('onclick','timesheetApprovalTableRowByProjectMemberId("'+timesheetFrequency+'","'+projectMemberId+'","'+from+'Close");'); 
+ 	    	      
 			     $("#timesheetPopUp").append(data);
 			     maskme();
 			     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
@@ -189,7 +193,11 @@ function timesheetApprovalPopUpByProjectMemberId(timesheetFrequency,projectMembe
                
 <script>
 function addTimeSheetRow(projectId) {
-	          
+	 $('#0docFile').removeAttr('data-validation');
+	 $('#0docFile').attr("data-validation-optional","true"); 
+	 /* $('#0docFile').removeClass('error'); */
+	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove();  */
+	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){     
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -326,7 +334,15 @@ function addTimeSheetRow(projectId) {
 			
 			getProjectTasks(projectTaskId,projectId); 
 			
-		}	
+		   var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
+		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
+			 $('#0docFile').removeAttr('data-validation-optional');
+			 $('#0docFile').attr("data-validation","required"); 
+			 $(".time_btn").removeAttr("disabled");
+			 $("#loadTime").removeAttr("style"); 
+		   }
+	    }		
+	}	
         
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
@@ -435,7 +451,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    	 var table = $('#example').DataTable();
 			 table.row('#row'+projectMemberId+timesheetFrequency+'').remove().draw( false );
 		 }
-		 else{
+		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
 			 var sourceleadUrl ='${sourceleadUrl}';
 				$.ajax({
 			   	type: "POST",
@@ -445,9 +461,11 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 		     		    		 $(".side_mask").fadeOut(200); 
 		     	        		 $("body").css('overflow-y', 'scrool');
 		     	        		 $("#dynamic").removeAttr('style');
-					    		 $("#row"+projectMemberId).empty();
-						         $("#row"+projectMemberId).html(data);
-						        /* pagination(); */
+		     	        		 
+		     	        		 if(from == 'approverClose' || from == 'approver' ){
+		     	        			 $("#row"+projectMemberId).empty();
+							         $("#row"+projectMemberId).html(data);
+		     	        		 }
 					        
 					    }
 			    }); 
@@ -618,7 +636,7 @@ function deleteSubmissionDocument(submissionDocumentId){
 	<!-- addrow divs -->
 	 <div id="divadttTd1" style="display:none;" >   
 	      <div> 
-	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId pull-left" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+	       <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" data-validation="required" field-name="Task"  onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 	                   <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 	                       	<option value="${task.id}">${task.taskName}</option>
 	                    </c:forEach> --%>
@@ -728,7 +746,7 @@ function clearTimesheet(){
  	 		    	        if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus != 'new' && approvalStatus != 'draft'){
  	 		    	        	activeElement.addClass("current subColor");
  	 		    	        	activeElement.siblings().removeClass("current");
- 	 		    	        	activeElement.siblings().addClass("subColor");
+ 	 		    	        	//activeElement.siblings().addClass("subColor");
  	 		    	        }
  	 		    	        else if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus == 'draft'){
  	 		    	        	activeElement.addClass("current subColor");
@@ -830,10 +848,10 @@ function checkHours(){
 	    	 
 	 }else{
 	    	if(i == '1'){
-	    		result = result+"MonDay ,";
+	    		result = result+"Monday ,";
 	    	}
 	    	if(i == '2'){  
-	    		result = result+"TuesDay ,";
+	    		result = result+"Tuesday ,";
 	    	}
 	    	if(i == '3'){  
 	    		result = result+"Wednesday ,";
@@ -1258,10 +1276,10 @@ $(document).ready(function() {
 </script>	
 <script>
 function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	
 	 var msg = $("#reject"+projectMemberId+"message").val(); 
-	 if(msg.match(/^[^\s-](.*)*$/) != null){
-		 msg = encodeURIComponent(msg);
+	 var encodeMsg = msg;
+	 if(encodeMsg.match(/^[^\s-](.*)*$/) != null){
+		 var encodeMsg = encodeURIComponent(msg);
 		 $("#rejectReasonDiv").empty();
 		 var sourceleadUrl ='${sourceleadUrl}';
 	     var rowHtmlContent =  $("#row"+projectMemberId).html();
@@ -1279,19 +1297,20 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 	    $.ajax({
 	    type: "POST",
-	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+msg+"&approvalStatus=REJECTED",       
+	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+encodeMsg+"&approvalStatus=REJECTED",       
 	    success: function(data) {    
 	   	   // approvalList();
 	       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
-			    	 var table = $('#example').DataTable();
+	    	   var table = $('#example').DataTable();
 		   		 table.row('#row'+projectMemberId+startDate+'To'+endDate+'').remove().draw( false );
 		   }
 	   	   else{
-	   		  $("#row"+projectMemberId).empty();
+	   		  	  $("#row"+projectMemberId).empty();
 	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
 	 	    	  $("#status"+projectMemberId).html("REJECTED");
 	 	    	  $("#action"+projectMemberId).empty();
-	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='ts_app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");  
+	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");
+	 	    	  $("#row"+projectMemberId).hide();
 	   	   }
 	   	   cancelRejectSubmission(projectMemberId);
 	   	    pagination();
@@ -1375,9 +1394,9 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 
 <script>
 function pagination(){ 
-    $('#example').DataTable( { 
+    $('#example').DataTable( {
+    	"scrollX": true,    	
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1429,9 +1448,15 @@ function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
    					  endDate != null && endDate != '' && endDate != 'undefined'){
    			    	
    			    	  if(timesheetSubmissionStatus == 'approved'){
-   			    		  timesheetDivAfterSaving(startDate,endDate,"approved");
+   			    		 if(isSuperUser == 'true'){
+      			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
+      			    	 }
+   			    		 else{
+   			    			 timesheetDivAfterSaving(startDate,endDate,"approved");
+   			    		 }
+   			    		 
    			    	  }else{
-   			    		 if(isSuperUser == true){
+   			    		 if(isSuperUser == 'true'){
       			    		 timesheetDivAfterSaving(startDate,endDate,"draft");
       			    	 }
       			    	 else{

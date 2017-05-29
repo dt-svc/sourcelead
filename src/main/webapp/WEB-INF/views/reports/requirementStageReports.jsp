@@ -22,10 +22,20 @@
 <script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+
+<style type="text/css">
+.timesheet_head .glyphicon-play {
+right: 15px;
+}
+.vendor_wrap .timesheet_head ul li b{
+color: #333;
+}
+</style>
+
 <!-- ends files of export -->
 <!-- Content Area -->
 <script type="text/javascript">
@@ -70,12 +80,12 @@ function prepareReportDataDiv(data){
     	var report= json[i];
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div><span>'+report.jobTitle+'</span></div> ';
+        result = result + '<div><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
         if(report.clientName != null && report.clientName != '' && report.clientName !='undefined'&& report.clientName != null && report.clientName != ''){
-       	result = result + '<div><span>'+report.clientName+'</span></div>';
+       	result = result + '<div><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
  		} else{
 		result = result + '<div><span>---</span></div>';
 		    }
@@ -296,15 +306,17 @@ function getRequirementStageList(){
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
-					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Requirements Stages</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Requirements Stages</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -337,15 +349,14 @@ function getRequirementStageList(){
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
 		<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getRequirementStageCounts();"><i class="fa fa-pie-chart"></i></a>
+		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="getRequirementStageCounts();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
 	</span>
-	
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;">
+        <ul style="padding: 2px 300px 2px 0px;" id="statusDiv" style="display: block">
         <li>
-        	<b id="filter2ApprovePop"><i class="fa fa-filter"></i> <span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
+        	<b id="filter2ApprovePop"><i class="fa fa-filter paddingRight"></i>Status<span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
         	<div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
                 		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementStageList();">New</li>
@@ -700,6 +711,7 @@ function getCustomReports(){
 		$(".oneB").addClass("actRE");
 		$(".repTab1").hide();
 		$(".repTab2").show();
+		$("#statusDiv").css("display", "none");
 	});
 	$(".oneA").click(function(){
 		$(".oneB").removeClass("actRE");

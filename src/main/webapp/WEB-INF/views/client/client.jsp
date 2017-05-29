@@ -42,7 +42,7 @@ window.onload = function () {
 			<h2>Create Client</h2>
 		</div>
 		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a>
-			&raquo; Client</div>
+			&raquo; Create Client</div>
 	</section>
 	
 	<div class="content-area content-new clearfix">
@@ -126,6 +126,38 @@ window.onload = function () {
                   </select>
               </div>
             </div>
+            
+            
+            <div class="form-group ">
+				<label class="col-md-3">Address</label>
+				<div class="col-md-9">
+				<textarea id="addressId" name="address" rows="4" field-name="Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+			<div class="form-group ">
+				<label class="col-md-3">Billing Address</label>
+				<div class="col-md-9">
+				<textarea id="billingAddressId" rows="4" name="billingAddress" field-name="Billing Address" class="form-control" data-validation="validate_length length2-250" data-validation-optional="true"></textarea>
+				</div>
+			</div>
+			
+            <div class="clearfix mb"></div>
+             <div class="form-group">
+              <label class="col-md-3">Payment Term</label>
+              <div class="col-md-9">
+                  <select class="form-control selectpicker" id="PaymentTermId" name="PaymentTerm">
+                  <option selected="selected" disabled value="">Select Payment Term</option>
+                    <option value="10 days">10 days</option>
+                    <option value="15 days">15 days</option>
+                    <option value="30 days">30 days</option>
+                    <option value="45 days">45 days</option>
+                    <option value="60 days">60 days</option>
+                    <option value="90 days">90 days</option>
+                  </select>
+              </div>
+            </div>
+            
           </div>
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <h3>Contact Details</h3>
@@ -164,15 +196,15 @@ window.onload = function () {
                 <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
                   <option value="Active">Active</option>
                   <option value="In-Active">In-Active</option>
-                  <option value="New">New</option>
+                 <!--  <option value="New">New</option>
                   <option value="Negotiation">Negotiation</option>
-                  <option value="Contract">Contract</option>
+                  <option value="Contract">Contract</option> -->
                 </select>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9">
                 <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
                 <c:forEach var="user" items="${userList}">
@@ -186,7 +218,7 @@ window.onload = function () {
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3"></label>
-              <div class="col-md-9 checkbox">
+              <div class="col-md-9 checkBox">
                  <label> <input type="checkbox" value="Y"
 							name="isMailSent" checked="checked"> Send Invitation
 				</label>

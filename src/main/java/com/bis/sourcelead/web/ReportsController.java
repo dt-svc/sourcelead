@@ -15,9 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UserService;
@@ -38,6 +40,32 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	TabsService tabsService;
+	
+	@RequestMapping(value = "/recruitersReports")
+	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	 
+	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+	 
+	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+	 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+	 
+	 
+	 
+	 ModelAndView model = new ModelAndView();
+	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+	 model.addObject("userList", userList);
+	 model.addObject("requirementTabAccess", requirementTabAccess);
+	 model.addObject("vendorTabAccess", vendorTabAccess);
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.setViewName("reports/userReports");
+	 return model;
+		
+    }	
 	
 	 @RequestMapping(value = "/applicantsListForReports")
 		public ModelAndView applicantsListForReports() throws Exception {
@@ -96,5 +124,25 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.setViewName("reports/requirementAssignToReports");
 		 return model;	
+	 }	
+	 
+	 /**
+	  * @author Pavan Jampana
+	  * returns vendors report page 
+	  */
+	 @RequestMapping(value = "/vendorsReports")
+		public ModelAndView vendorsReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.setViewName("reports/vendorsReport");
+		 return model;
 	 }	
 }

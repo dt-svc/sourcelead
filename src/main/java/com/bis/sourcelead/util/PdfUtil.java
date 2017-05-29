@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -20,13 +21,19 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -41,6 +48,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -56,6 +64,10 @@ public class PdfUtil {
 	
 	@Autowired
 	UserRoleService userRoleService ;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
@@ -249,7 +261,7 @@ public class PdfUtil {
 	
 	
 	
-	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName) throws IOException {
+	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName,String isAssociate) throws IOException {
 
 		String[] headers = Constants.CANDIDATE_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
@@ -261,7 +273,13 @@ public class PdfUtil {
 
 	    
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(orgName).append("_Candidate_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file;
+	    if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	    	 file = File.createTempFile(fileSB.append(orgName).append("_Associate_").append(dateFormat.format(new Date())).toString(),".pdf");	
+	    }else{
+	    	 file = File.createTempFile(fileSB.append(orgName).append("_Candidate_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    }
+	    
 
 	    file.setReadable(true);
 	    
@@ -274,10 +292,21 @@ public class PdfUtil {
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbCandStyle = new StringBuilder();
-	        sbCandStyle.append(orgName).append(" ").append("Candidates");
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	sbCandStyle.append(orgName).append(" ").append("Associates");
+	        }else{
+	        	sbCandStyle.append(orgName).append(" ").append("Candidates");
+	        }
+	        
 
 	        StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" Candidates.").toString(),boldFont);
+	        Paragraph para = null;
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	para = new Paragraph(orgNameSB.append(orgName).append(" Associates").toString(),boldFont);
+	        }else{
+	        	para = new Paragraph(orgNameSB.append(orgName).append(" Candidates").toString(),boldFont);
+	        }
+            
 
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
@@ -285,10 +314,10 @@ public class PdfUtil {
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbCandStyle.toString(),font));
-	        cell1.setColspan(11);
+	        cell1.setColspan(12);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5});
+            table.setWidths(new int[]{4, 3, 3,5, 4, 3,4,3,5,3,4,4});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -315,7 +344,12 @@ public class PdfUtil {
                 table.completeRow();
             }
 	        
-	        document.addTitle("Candiate List Table");
+	        if(isAssociate.equalsIgnoreCase(Constants.YES)){
+	        	document.addTitle("Associate List Table");
+	        }else{
+	        	document.addTitle("Candiate List Table");
+	        }
+	        
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -350,7 +384,12 @@ public class PdfUtil {
 		if(candidate.getMobilePhone() !=null && !"".equalsIgnoreCase(candidate.getMobilePhone())){
 			candidateArray[3] = candidate.getMobilePhone();
 		}
-		if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
+		StringBuilder loc = new StringBuilder();
+		if(candidate.getCity() !=null && !"".equalsIgnoreCase(candidate.getCity())){
+			candidateArray[4] = loc.append(candidate.getCity()).append(",").append(candidate.getState()).append(",").append(candidate.getCountry()).toString();
+		}else if(candidate.getState() !=null && !"".equalsIgnoreCase(candidate.getState())){
+			candidateArray[4] = loc.append(candidate.getState()).append(",").append(candidate.getCountry()).toString();
+		}else if(candidate.getCountry() !=null && !"".equalsIgnoreCase(candidate.getCountry())){
 			candidateArray[4] = candidate.getCountry();
 		}else{
 			candidateArray[4] = "--";
@@ -403,6 +442,30 @@ public class PdfUtil {
 			candidateArray[9] = rateSB.append(candidate.getExpectedRate()).append("/").append(candidate.getRateType()).toString();
 		}else{
 			candidateArray[9] = "--";
+		}
+		if(null != candidate.getOrgRelationId()){
+				Org org = null;
+				if(candidate.getOrgRelationId().getResponderLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
+					org = candidate.getOrgRelationId().getLocationId().getOrg();
+				 }else if(candidate.getOrgRelationId().getLocationId().getId().longValue() == candidate.getOrgLocationId().getId().longValue()){
+					 org = candidate.getOrgRelationId().getResponderLocationId().getOrg();
+				 }
+				if(null != org){
+					candidateArray[10] = org.getOrgName();
+				}
+		}else{
+					candidateArray[10] = "--";
+		}
+		
+		if(null != candidate.getSpocId()){
+			if(null != candidate.getSpocId().getVendorUser().getLastName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getLastName())){
+				StringBuilder vendorName = new StringBuilder();
+				candidateArray[11] = vendorName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString();
+		}else if(null != candidate.getSpocId().getVendorUser().getFirstName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getFirstName())){
+				candidateArray[11] = candidate.getSpocId().getVendorUser().getFirstName();
+			}
+		}else{
+				candidateArray[11] = "--";
 		}
 		return candidateArray;
 		
@@ -720,7 +783,7 @@ public class PdfUtil {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
-            int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3};
+            int[] columnWidths = new int[]{3, 5, 5,3, 2,3,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
 	        table.completeRow();
 	        java.util.List<String[]> cantactsList = new ArrayList<>();
@@ -843,7 +906,7 @@ public class PdfUtil {
 			 }
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
-	        int[] columnWidths = new int[]{3, 5, 3,5, 2,3,3,5};
+	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
@@ -930,5 +993,7 @@ public class PdfUtil {
 	    cell.setBorder(0);
 	    cell.setBorderWidthBottom(2f);
 	    }
+	
+	
 	
 	}

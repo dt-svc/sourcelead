@@ -150,9 +150,9 @@ function vendorContacts(orgRelationID,clientLocationId){
 									result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
 									result = result + ' <option '+selected1+'>Active</option>';
 									result = result + ' <option '+selected2+'>In-Active</option>';
-									result = result + ' <option '+selected3+'>New</option>';
+									/* result = result + ' <option '+selected3+'>New</option>';
 									result = result + ' <option '+selected4+'>Negotiation</option>';
-									result = result + ' <option '+selected5+'>Contracted</option>';
+									result = result + ' <option '+selected5+'>Contracted</option>'; */
 									result = result + ' </select>';
 				        		}
 								result = result + ' </div></td>';
@@ -193,7 +193,7 @@ function vendorContacts(orgRelationID,clientLocationId){
 				                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
 				                result = result + '	    <td><div>';
                                        '<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_CONTACT\")">';
-                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateVendorSpoc(\''+json[i].id+'\',\''+orgRelationID+'\',\''+vendorLocationId+'\',\''+opt.spocName+'\');"></i>';
+                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateVendorSpoc(\''+json[i].id+'\',\''+orgRelationID+'\',\''+vendorLocationId+'\',\''+opt.spocName+'\');" title = "Remove vendor contact"></i>';
                                         '</sec:authorize>';
                 	                    result = result +'</div></td>';
 			                     }
@@ -252,10 +252,10 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Vendor delete message here</p>";
-	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
+	//result = result +"		<p>Vendor delete message here</p>";
+	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -267,9 +267,14 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
-		 reason = encodeURIComponent(reason);
-		$("#reasonForSpocDiv").empty();
+	if(reason == null || reason == '' || reason == 'undefined'){
+	      
+		  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+	  	  $("#reasonForSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+	  	  
+		}else{
+		  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+		
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -283,12 +288,6 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
    			    vendorConactTerminateMsgFadein();
 		    }
 	   });
-	}else{
-		if(reason){
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
 	}
 	  
 }
@@ -373,13 +372,13 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	 <label class="col-md-12">Status</label>';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	 <div class="col-md-12 dropdown-select">';
 	result = result  +'	  <select class="form-control" id="spocStatus" name="spocStatus">';
 	result = result  +'	   <option value="Active">Active</option>';
 	result = result  +'	   <option value="In-Active">In-Active</option>';
-	result = result  +'	   <option value="New">New</option>';
+	/* result = result  +'	   <option value="New">New</option>';
 	result = result  +'	   <option value="Negotiation">Negotiation</option>';
-	result = result  +'	   <option value="Contracted">Contracted</option>';
+	result = result  +'	   <option value="Contracted">Contracted</option>'; */
 	result = result  +'	  </select>';
 	result = result  +'	 </div>';
 	result = result  +'	 </div>';
@@ -441,9 +440,9 @@ function addContact(orgRelationID,clientLocationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	 $('html').click(function(){
+	 /* $('html').click(function(){
 		$(".edit-details").removeClass("edit-details-active");
-	   });	
+	   });	 */
 	 
 	 var config = {
 			  '.chosen-select'           : {},

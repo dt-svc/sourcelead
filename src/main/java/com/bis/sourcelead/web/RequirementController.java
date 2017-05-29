@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -256,29 +258,55 @@ public class RequirementController {
 	        
 		}*/
         
+		// skills and education list<Pojo(lookupdata)> to list<string> because customized skills were not appending in edit mode.
 		
 		if(requirement != null && requirement.getId() != null){
 
 			List<String> allReqSkills = requirementService.getAllRequirementSkillsByRequirementI(requirement.getId());
 				List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
-				LinkedHashSet<String> totSkils = new LinkedHashSet<String>();
-				if(!allReqSkills.contains(null)){
-					totSkils.addAll(skillsList);
-					totSkils.addAll(allReqSkills);
-					model.addObject("skillsList", totSkils);
-				}else{
-					model.addObject("skillsList", skillsList);
+				String skill = allReqSkills.get(0);
+				if(!"null".equalsIgnoreCase(skill) && null != skill){
+				String arr[] = skill.split(",");
+				for(String editSkillName : arr){
+					if(!skillsList.contains(editSkillName)){
+						skillsList.add(editSkillName);
+					}
 				}
-
+			      model.addObject("skillsList", skillsList);
+				}else{
+				  model.addObject("skillsList", skillsList);
+				} 
 		}else{
 			//List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			List<String> skillsList = lookUpDataService.getAllSkillsBySkillCategory();
 			model.addObject("skillsList", skillsList);
 		}
-		 
 		
-        List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-		model.addObject("educationsList", educationsList);
+		
+		
+		
+		
+		if(requirement != null && requirement.getId() != null){
+		List<String> newlyAddededucationList = requirementService.getAllRequirementEducationByRequirementId(requirement.getId());
+	       List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+	       
+	       String education = newlyAddededucationList.get(0);
+			if(!"null".equalsIgnoreCase(education) && null != education){
+			String arr[] = education.split(",");
+			for(String editEducationName : arr){
+				if(!educationsList.contains(editEducationName)){
+					educationsList.add(editEducationName);
+				}
+			}
+		      model.addObject("educationsList", educationsList);
+			}else{
+			  model.addObject("educationsList", educationsList);
+			} 
+		}else{
+         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+          List<String> educationsList = lookUpDataService.getLookUpDataByCategoryEducation();
+		  model.addObject("educationsList", educationsList);
+		}
 		
 		
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
@@ -286,8 +314,6 @@ public class RequirementController {
 		
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("all_users_List", allusersList);
-		
-		
 		
 		List<Requirement> jobsTemplateList = requirementService.getJobTitleByJobTemplateStatusAndOrgLocationId(orgLocations.getId());
 		model.addObject("jobsTemplateList", jobsTemplateList);	
@@ -339,6 +365,11 @@ public class RequirementController {
 				}
 			}
 		}
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		if(null != countries){
+        model.addObject("currencyCode", countries.getCurrency());
+		}
 
 		return model;
 
@@ -380,6 +411,9 @@ public class RequirementController {
 			
 			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
+			
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+			model.addObject("documentsList", documentsList);
 	
 			// This code is commented as not in use 
 	
@@ -551,14 +585,20 @@ public class RequirementController {
 		RequirementOffers requirementOffers  = requirementOffersService.getRequirementOfferId(offerId);
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
 		
+		String permission = "NO";
+		if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE){
+			permission = "YES";
+		}
+		
 		ModelAndView model = new ModelAndView();
 		model.setViewName("requirement/offerAcceptOrReject");
 		model.addObject("offerStatus",offerStatus);
 		model.addObject("offerId",offerId);
 		model.addObject("requirementOffers",requirementOffers);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("permission",permission);
 		
-		if(offerStatus.equalsIgnoreCase("Accepted")){
+		if(offerStatus.equalsIgnoreCase("Accepted") && permission.equalsIgnoreCase("YES")){
 			
 		    if(null != requirementOfferHistories && !requirementOfferHistories.isEmpty() ){  
 			    if(offerStatus.equalsIgnoreCase("Accepted")){

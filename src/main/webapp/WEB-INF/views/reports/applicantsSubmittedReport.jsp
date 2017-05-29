@@ -23,8 +23,8 @@
 <script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- ends files of export -->
@@ -66,7 +66,7 @@ function prepareReportDataDiv(data){
     	
     	 result = result + '<td>';
          if(report.candidateName != null && report.candidateName != '' && report.candidateName !='undefined'&& report.candidateName != null && report.applicantName != ''){
-        		result = result + '<div><span>'+report.candidateName+'</span></div>';
+        		result = result + '<div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div>';
   			} else{
  				result = result + '<div><span>---</span></div>';
  		    }
@@ -74,7 +74,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'&& report.orgName != null && report.orgName != ''){
-         		result = result + '<div><span>'+report.orgName+'</span></div>';
+         		result = result + '<div><span title="'+report.orgName+'">'+report.orgName+'</span></div>';
    			} else{
   				result = result + '<div><span>---</span></div>';
   		    }
@@ -82,7 +82,7 @@ function prepareReportDataDiv(data){
          
          result = result + '<td>';
          if(report.submittedBy != null && report.submittedBy != '' && report.submittedBy !='undefined'&& report.submittedBy != null && report.submittedBy != ''){
-         		result = result + '<div><span>'+report.submittedBy+'</span></div>';
+         		result = result + '<div><span title="'+report.submittedBy+'">'+report.submittedBy+'</span></div>';
    			} else{
   				result = result + '<div><span>---</span></div>';
   		    }
@@ -97,7 +97,7 @@ function prepareReportDataDiv(data){
          result = result + '</td>';
          
         result = result + '<td>';
-        result = result + '<div><span>'+report.requirementName+'</span></div> ';
+        result = result + '<div><span title="'+report.requirementName+'">'+report.requirementName+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
@@ -192,15 +192,17 @@ function requirementReportPagination(){
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
-					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Applicants Submitted</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Applicants Submitted</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -208,15 +210,15 @@ function requirementReportPagination(){
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
-	  <div class="reportBtn select-field">
+	  <div class="reportBtn dropdown-select">
 		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
-		 <option value="">select</option>
+<!-- 		 <option value="">-- select --</option> -->
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week</option>
+		  <option value="twoweeks">2 Weeks</option>
+		  <option value="month">1 Month</option>
+		  <option value="twomonths">2 Months</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
@@ -240,7 +242,7 @@ function requirementReportPagination(){
         <div class="reportA">
           <label>Clients</label>
           <div class="reportAChoo">
-           <select multiple data-placeholder="select client" class="chosen-select" multiple="true"  name="client" id="client" >
+           <select multiple  class="chosen-select" multiple="true"  name="client" id="client" data-placeholder="Select Client">
                 <c:forEach var="report" items="${add_clientList}">
 	                             <c:if test="${report.locationId.id == loginOrgLocId}">  
 	                                <option id="clientName${report.id}" name="clientNameById" value ="${report.id}"">${report.responderLocationId.org.orgName}</option>

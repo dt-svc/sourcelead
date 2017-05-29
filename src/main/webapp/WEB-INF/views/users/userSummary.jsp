@@ -23,14 +23,19 @@
 <link rel="stylesheet" href="resources/css/chosen.min.css">
 <script src="resources/js/chosen.jquery.min.js"></script> 
  -->
+<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+ 
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
 }
-
 .remove_user_pop input{
 	color: #333;
 }
+#editUserDiv .user_summary_edit_cta {
+min-height: 65px;
+}
+
 </style>
 
 <div class="wraper">
@@ -40,7 +45,7 @@
 			<div class="pull-left">
 				<h2>User Summary</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="usersList">Users List</a> &raquo; <span id = "fname"></a> </div>				
+			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="usersList">Users</a> &raquo; User Summary <span id = "fname"></a> </div>				
 		</section>
 
 		<!-- Timesheet -->
@@ -166,8 +171,6 @@ $(document).ready(function(){
 			    var roles = "";
 			    
 			    var socialLinks = "";
-			    
-			    
 			    if(json.user.linkedIn != null && json.user.linkedIn != "" && json.user.linkedIn != 'undefined' ){
 			    	socialLinks =  socialLinks + '&nbsp;&nbsp;<a href='+json.user.linkedIn+' title="linkedIn" target="_new"><i class="fa fa-linkedin-square text-primary fa-2x"></i></a>';
 			    }
@@ -189,13 +192,12 @@ $(document).ready(function(){
 			    	    submissionCountsResult = '<p>Projects<strong class="label label-default">'+projectsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Approved Timesheets<strong class="label label-success">'+approvedTimeSheetsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Rejected Timesheets<strong class="label label-warning">'+rejectedTimeSheetsCount+'</strong></p>';
-		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Timesheets<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
+		            	submissionCountsResult = submissionCountsResult +'<p>Waiting for Approval<strong class="label label-primary">'+waitingTimeSheetsCount+'</strong></p>';
 		            	submissionCountsResult = submissionCountsResult +'<p>Open Timesheets<strong class="label label-info">'+totalOpenTimeSheetCount+'</strong></p>';
 					    
 			    }
 			    
 			    var userName = '';
-			    
 			    if(json.user.lastName != null && json.user.lastName != '' && json.user.lastName != 'undefined'){
 			    	userName = json.user.firstName+" "+json.user.lastName;
 			    }else{
@@ -217,7 +219,7 @@ $(document).ready(function(){
 				    '</sec:authorize>';
 				      
 				    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_USER\')">'
-						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
 						result = result + ' <div id="remove_user_id" class="remove_user_pop" >';
 									
@@ -242,14 +244,7 @@ $(document).ready(function(){
 						
 					     result = result + ' <div id="editRoleDetailsList"></div>';
 						 result = result + ' </div>';
-						
-						  result = result + '<div class="clearfix mb10 mt">';
-						  result = result + '</div>';
-					      result = result + '<div class="clearfix"></div>';
-						  result = result + '<div class="user_summary_edit_cta">';
-						  result = result + '<input class="us-btn us-btn_a " type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
-						  result = result + '&nbsp;<input class="us-btn" onclick="cancelEditRole();" type="button" value="Cancel"/>';
-						  result = result + '</div>';
+						 
 						result = result + ' </form>';
 					 result = result + ' </div>';
 				}
@@ -305,6 +300,36 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				 if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Employment Type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				} 
+				 
+				 if(json.vendorName != null && json.vendorName != "" && json.vendorName != 'undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				<strong>Vendor:</strong><span class="fix">'+json.vendorName+'</span><div class="clearfix"></div>';
+						result = result + '			</div>';
+					} 
+				 
+				 if(json.designationOtherType != null && json.designationOtherType != "" && json.designationOtherType != 'undefined'){
+					 result = result + '			<div class="project_details_cta">';
+						result = result + '				<strong>Employment Other Type:</strong><span class="fix">'+json.designationOtherType+'</span><div class="clearfix"></div>';
+						result = result + '			</div>';
+				 }
+				 
+				 if(json.vendorContactName != null && json.vendorContactName != "" && json.vendorContactName != 'undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				<strong>Vendor Contact:</strong><span class="fix">'+json.vendorContactName+'</span><div class="clearfix"></div>';
+						result = result + '			</div>';
+					} 
+				
+				 if(json.currentCurrency != null && json.currentCurrency != "" && json.currentCurrency != 'undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>Currency:</strong><span class="fix" title="'+json.currentCurrency+'">'+json.currentCurrency+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+					}
+				 
 				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Rate:</strong><span class="fix" title="'+json.rate+'">'+json.rate+'</span><div class="clearfix"></div>';
@@ -346,17 +371,28 @@ $(document).ready(function(){
 					result = result + '			</div>';
 				}
 				
-				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
-					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Reason:</strong><span class="fix">'+json.terminateReason+'</span><div class="clearfix"></div>';
+				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				<strong>RoleChangeReason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
+				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Reason:</strong><span class="fix" title = "'+json.terminateReason+'">'+json.terminateReason+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
 				
+				 if(json.departmentName != null && json.departmentName != "" && json.departmentName != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Department Name:</strong><span class="fix" title="'+json.departmentName+'">'+json.departmentName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				} 
 				result = result + '	   </div>';				
-				result = result + ' <div class="user_summary_edit" id="editUserDiv"></div>';
+				/* result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>'; */
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	   </div>';
+				result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>';
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	</div>';
 				result = result + '</div>';
@@ -378,7 +414,6 @@ $(document).ready(function(){
 			  		$('.chosen-select').each(function() {
 			  			var $this = $(this);
 			  			$this.next().css({'width': '100%'});
-
 			           });
 	    
 	      },
@@ -628,9 +663,17 @@ function getChangeRole(userId,userRoleId){
 						result = result + '</div>';	
 					  }	
 				
-				 result = result + '<div class="col-md-12" id="reasonDiv">';
-				  result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
+				    result = result + '<div class="col-md-12 mb10 mt10" id="reasonDiv">';
+				    result = result + '<textarea rows="3" class="form-control input-sm" name="reason" id="reason" data-validation="required" field-name="Reason" placeholder="Change Reason"></textarea>';
 				  	result = result + '</div><br/>';
+				  	
+				  	 result = result + '<div class="clearfix mb10 mt">';
+					  result = result + '</div>';
+				      result = result + '<div class="clearfix"></div>';
+					  result = result + '<div class="user_summary_edit_cta clearfix">';
+					  result = result + '<input class="us-btn" type="button" value="Update" type="button" onclick="updateRole('+userId+');"/>';
+					  result = result + '&nbsp;<input class="us-btn us-btn_a" onclick="cancelEditRole();" type="button" value="Cancel"/>';
+					  result = result + '</div>';
 	        	
 	        	result = result + '</div>';	
 	        	
@@ -667,7 +710,35 @@ function getChangeRole(userId,userRoleId){
 }
 </script>
 
-
+<script>
+ function getDepartmentsList(){
+	 var updatedepartment = $("#updatedepartment").val();
+	 var updateDepartmentOrgRelationId = $("#updateDepartmentOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/getDepartmentsList?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#department').append('<option value="">--select Department --</option>');
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	            	  if(updatedepartment != null && updatedepartment != 'undefined' && updatedepartment  != ''){
+	            		  $('#department').append('<option '+ (opt.id == updateDepartmentOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.departmentName+'</option>');
+		            	}else{
+		            		$('#department').append('<option value='+opt.id+' >'+opt.departmentName+'</option>');	
+		            	}
+	        		
+				}
+	        	
+		        $('#department').trigger("chosen:updated");
+		        
+	        },
+	    });
+ }
+ 
+ </script>  
 
 
 
@@ -791,17 +862,29 @@ function getChangeRole(userId,userRoleId){
 })(jQuery);
 </script>
 
-<script type="text/javascript">
+ <script type="text/javascript">
  function validateDayHours() {
-	 var DayHours = document.getElementById("DayHours").value; 
+	
+	 var DayHours = document.getElementById("dayHoursEdit").value; 
 	 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-	if(DayHours > 24){
-		 $("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
-		 document.getElementById("DayHours").setAttribute('record-exist','yes');
-		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');
-	}else{
+	 var military = /^\s*([01]?\d|2[0-3]):[0-5]\d\s*$/i;
+     var standard = /^\s*(0?\d|1[0-2]):[0-5]\d(\s+(AM|PM))?\s*$/i;
+	
+	if(DayHours.match(military) || DayHours.match(standard)){
+		
 		 $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
-		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");
+		 $('input#dayHoursEdit').removeAttr( "record-exist record-exist-errormsg"); 
+	/* 	$("input#DayHours").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("DayHours").setAttribute('record-exist','yes');
+		 document.getElementById("DayHours").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours');  */
+	}else{
+		
+		$("input#dayHoursEdit").after("<p class='jquery_form_error_message'>Day Hours should less than 24 Hours</span>");
+		 document.getElementById("dayHoursEdit").setAttribute('record-exist','yes');
+		 document.getElementById("dayHoursEdit").setAttribute('record-exist-errorMsg','Day Hours should less than 24 Hours'); 
+	
+		/*  $('#DayHoursDiv').find('p.jquery_form_error_message').remove();
+		 $('input#DayHours').removeAttr( "record-exist record-exist-errormsg");  */
 	}
 	
  }
@@ -850,24 +933,25 @@ function getChangeRole(userId,userRoleId){
      var EmployeeId = document.getElementById("EmployeeId").value;
      var EmailId = document.getElementById("EmailId").value;
      var sourceleadUrl ='${sourceleadUrl}';
-     var RatePer = document.getElementById("RatePer").value;
-	 if(RatePer != null && RatePer != ""){
-		 $('#Rate').removeAttr('data-validation-optional');
-		 $('#Rate').attr("data-validation","required"); 
-	 }else{
-		 $('#Rate').removeAttr('data-validation');
-	 	 $('#Rate').attr("data-validation-optional","true"); 
-		 $('#RatePer').removeAttr('data-validation');
-	 	 $('#RatePer').attr("data-validation-optional","true"); 
-	 }
-     var Rate = document.getElementById("Rate").value;
-     if(Rate != null && Rate != ""){
-         $('#RatePer').removeAttr('data-validation-optional');
-         $('#RatePer').attr("data-validation","required");
-     }else{
-         $('#RatePer').removeAttr('data-validation');
-         $('#RatePer').attr("data-validation-optional","true");
-     }
+     
+     var RatePer = document.getElementById("RatePer").value; 
+		if(RatePer != null && RatePer != ""){
+			$('#Rate').removeAttr('data-validation-optional');
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+		}else{
+			$('#Rate').removeAttr('data-validation');
+			$('#Rate').attr("data-validation-optional","true"); 
+		}
+		 
+		var Rate = document.getElementById("Rate").value; 
+		if(Rate != null && Rate != ""){
+			$('#RatePer').removeAttr('data-validation-optional');
+			$('#RatePer').attr("data-validation","required");
+			$('#Rate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+		}else{
+			$('#RatePer').removeAttr('data-validation');
+			$('#RatePer').attr("data-validation-optional","true"); 
+		}
      
       if ($('#editUser_form').validate(false, validationSettings)){
     	  if(EmployeeId!=null&&EmployeeId!="" && empId != EmployeeId){
@@ -1113,6 +1197,7 @@ $("#editRoleDetailsList").empty();
 				var selected5 = '';
 				var selected6 = '';
 				var selected7 = '';
+				var selected8 = '';
 				
 				if(json.ratePer == 'Hourly'){
 						selected1 = 'selected';
@@ -1141,6 +1226,9 @@ $("#editRoleDetailsList").empty();
 				if(json.ratePer == 'Yearly'){
 						selected7 = 'selected';
 					}
+				if(json.ratePer == 'Bi-Monthly'){
+					selected8 = 'selected';
+				}
 				
 				var employeeId = "";
 			    var lastName = "";
@@ -1149,10 +1237,18 @@ $("#editRoleDetailsList").empty();
 			    var dailyHours = "";
 			    var emailId= "";
 			    var manager = "";
-			    
+			    var designationOtherType = "";
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
 				}
+				
+				if(json.designationOtherType != null && json.designationOtherType != "" && json.designationOtherType != 'undefined'){
+					designationOtherType = json.designationOtherType;
+				}
+				
+				/* if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
+					userEmploymentType = json.userEmploymentType;
+				} */
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
 					lastName = json.user.lastName;
@@ -1185,9 +1281,11 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>';
+					result = result + ' <label><strong>Role:</strong></label>';
+					result = result + '<div class="clearfix mt10"><span>'+json.roles.displayName+'</span></div>';
+					/* result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>'; */
 					result = result + ' </div>'; 
-					
+					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
 					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onKeyUp="validateEmployeeId('+json.id+','+json.user.id+');">';
@@ -1213,6 +1311,7 @@ $("#editRoleDetailsList").empty();
 						result = result + ' </div>';
 					}
 					
+					
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Manager</label>';
@@ -1230,10 +1329,71 @@ $("#editRoleDetailsList").empty();
 			 	     	result = result+"</select>"; 
 			 	     	result = result + ' </div>';
 					}
-		 	     	
-					result = result + ' <div class="user_summary_edit_cta">';
+					// moving date bottom to top
+					 result = result + ' <div class="user_summary_edit_cta">';
+					    result = result + ' <label>Department</label>';
+						result = result + '<select class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
+						result = result + '</select>';
+						result = result + '<input type="hidden" name="updatedepartment" id="updatedepartment" value="'+json.departmentName+'">';
+						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
+						result = result + '</div>'; 
+					
+						result = result + '<input type="hidden" value="'+json.userEmploymentType+'" id="hiddenId" >';
+
+						
+					   result = result + '<div class="user_summary_edit_cta">';
+ 					   result = result + ' <label>Employment type</label>';
+						result = result + '<select class="form-control" id="designationType" name="designationType"  onchange="getEmployeementType();updateUserDesignationOtherType();" field-name="Employment type">';
+						result = result + '<option value="">--Select Employment Type--</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2C" ? "selected" : '') +'>C2C</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2C-1099" ? "selected" : '') +'>C2C-1099</option>';
+						result = result + '<option  '+ (json.userEmploymentType == "W-2" ? "selected" : '') +'>W-2</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2H" ? "selected" : '') +'>C2H</option>';
+						result = result + ' <option '+(json.userEmploymentType == "C2H -1099" ? "selected" : '') +'>C2H -1099</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Part Time" ? "selected" : '') +'>Part Time</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Full Time" ? "selected" : '') +'>Full Time</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Other" ? "selected" : '') +'>Other</option>';
+						result = result + ' </select>';
+						result = result + '</div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '<div class="user_summary_edit_cta select-field" id="designationTypeDiv" style="display:none">';
+						result = result + ' <label>Employment Other Type </label>';
+						result = result + '<input type="text" class="form-control" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
+						result = result + '</div>';
+					    result = result + '<span class="" id="hideVendor" style="display:none">'; 
+						result = result + '<div class="user_summary_edit_cta" id="vendor">';
+						result = result + ' <label>Vendor</label>';
+						result = result + '<select  class="chosen-select form-control" name="vendors"  id="vendors" value="'+json.vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();">';
+						result = result + '</select>';
+						result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+json.vendorName+'">';
+						result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'">';
+						result = result + '</div>'; 
+						
+						result = result + '<div class="user_summary_edit_cta select-field" id="vendorContacterr">';
+						result = result + ' <label>Vendor Contact</label>';
+						result = result + '<select  class="chosen-select form-control" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact">';
+						result = result + '</select>';
+						result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
+						result = result + '<input type="hidden" name="updateSpocId" id="updateSpocId" value="'+json.vendorSpocId+'" />';
+						result = result + '</div>';
+						 
+						result = result + '</span>';
+						
+					
+					
+					
+					// moving date bottom to top
+					result = result + ' <div class="user_summary_edit_cta select-field">';
 					result = result + ' <label>Rate</label>';
-					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
+		            result = result+'  <select class="rate_sele" id="currentCurrency" name="currentCurrency"> ';
+					result = result + ' <option '+(json.currentCurrency == "INR" ? "selected" : '') +'>INR</option>';
+					result = result + ' <option '+(json.currentCurrency == "AUD" ? "selected" : '') +'>AUD</option>';
+					result = result + ' <option '+(json.currentCurrency == "USD" ? "selected" : '') +'>USD</option>';
+					result = result + ' <option '+(json.currentCurrency == "GBP" ? "selected" : '') +'>GBP</option>';
+					result = result + ' <option '+(json.currentCurrency == "SGD" ? "selected" : '') +'>SGD</option>';
+					result = result + '<option   '+(json.currentCurrency == "EUR" ? "selected" : '') +'>EUR</option>'; 
+					result = result+'</select>';
+					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
 					result = result + ' <option value="">-Rate Per-</option>';
 					result = result + ' <option '+selected1+'>Hourly</option>';
@@ -1241,30 +1401,33 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <option '+selected3+'>Weekly</option>';
 					result = result + ' <option '+selected4+'>Bi-Weekly</option>';
 					result = result + ' <option '+selected5+'>Semi-Monthly</option>';
+					result = result + ' <option '+selected8+'>Bi-Monthly</option>';
 					result = result + ' <option '+selected6+'>Monthly</option>';
 					result = result + ' <option '+selected7+'>Yearly</option>';
 					result = result + ' </select>';
 					result = result + ' </div>';	
 					
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of join</label>';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
 					}else{
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
 					}
 					result = result + ' </div>';	
 					
 					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
-					result = result + ' <input type="text" value="'+dailyHours+'" name="DayHours" id="DayHours" data-validation="validate_Space validate_int validate_length length1-2" data-validation-optional="true" onblur="validateDayHours();">';
+					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
+					
 					
 					result = result + ' <div class="clearfix"></div>';
-					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <input class="us-btn" value="Save" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
+					result = result + ' <div class="user_summary_edit_cta pull-right">';
+					result = result + ' <input class="us-btn" value="Update" id="update_user" type="button" onclick="updateUser('+json.id+','+userId+',\''+json.user.email+'\',\''+json.employeeId+'\');" > <input class="us-btn us-btn_a" value="Cancel" onClick="editUserDetails('+userId+');" type="button">';
 					result = result + ' </div>';
-					
+					 
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' </form>';
 				result = result + ' </div>';
@@ -1275,12 +1438,113 @@ $("#editRoleDetailsList").empty();
 				$(".error").removeClass("error");
 				$('#editUserDiv').find('p.jquery_form_error_message').remove();
 			    $("#editUserDiv").empty(); 
-			    $("#editUserDiv").append(result);  
+			    $("#editUserDiv").append(result);
+			    
+			    $("#vendorcontact").chosen();
+			    $("#vendorcontact, #user_department").trigger("chosen:updated");
+			    
+			    var config = {
+				  		  '.chosen-select'           : {},
+				  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  		  '.chosen-select-width'     : {width:"95%"}
+				  		}
+				  		for (var selector in config) {
+				  		  $(selector).chosen(config[selector]);
+				  		}
+				  		$('.chosen-select').each(function() {
+				  			var $this = $(this);
+				  			$this.next().css({'width': '100%'});
+				           });
+			    
+			    if(json.userEmploymentType == "Other"){
+			    	$("#designationTypeDiv").show();
+			      }
+			    getEmployeementType();
+			    getVendorsByOrgLocationId();
+			    getDepartmentsList();
+			    maskme(); 
 	        },
 		});
 }
 </script>
 
+
+<script>
+function updateUserDesignationOtherType(){
+	var userOtherType = $('#designationType').val(); 
+	if(userOtherType == 'Other' &&  userOtherType != '' && userOtherType !='undefined'){
+		  document.getElementById("designationTypeDiv").style.display="block";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+	}else{
+		   document.getElementById("designationTypeDiv").style.display="none";
+		  $("#designationOtherType").attr("data-validation-optional", "true");
+		  $("#designationOtherType").find('p.jquery_form_error_message').remove();
+	} 
+}
+</script>
+
+<script>
+ function getVendorsByOrgLocationId(){
+	 var vendorName = $("#updateVendorName").val();
+	var vendorOrgRelationId = $("#updateVendorOrgRelationId").val();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	//$('#vendors').empty();
+		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(vendorName != null && vendorName != 'undefined' && vendorName  != ''){
+		            		  $('#vendors').append('<option '+ (opt.id == vendorOrgRelationId ? "selected" : '') +' value="'+opt.id+'">'+opt.orgName+'</option>');
+			            	}else{
+			            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');	
+			            	}
+		            	  
+		            }
+		            $('#vendors').trigger("chosen:updated");
+		            getVendorContactList();
+		            
+		        }
+		 });
+ }
+ </script>
+
+<script>
+ function getVendorContactList(){
+	 $('#vendorcontact').val('').trigger("chosen:updated");
+	 var orgRelationID = $('#vendors').val();
+	 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
+		 var vendorContactName = $("#updateVendorContactName").val();
+		 var vendorSpocId = $("#updateSpocId").val();
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#vendorcontact').empty();
+		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		             for(var i=0;i<json.length;i++){
+		            	 var opt = json[i];
+		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
+		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
+			            	}else{
+			            		$('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+			            	}
+		            	 
+		            }
+		            $('#vendorcontact').trigger("chosen:updated");
+		        }
+		 });
+	 }
+ }
+ </script>
 
 <script>
 function getCalendar(){
@@ -1290,6 +1554,47 @@ function getCalendar(){
 }
 </script>
 
+<script>
+function getEmployeementType(){
+	
+	var employementType = $('#designationType').val(); 
+	//var abc = document.getElementById('hiddenId').value();
+	var preval = document.getElementById("hiddenId").value;
+	
+		if(employementType == 'C2C' || employementType == 'C2C-1099'){
+			if(employementType == preval){
+				document.getElementById("hideVendor").style.display="block";
+				 $('#vendors').attr("data-validation","required"); 
+				 $('#vendorcontact').attr("data-validation","required");
+				 getVendorsByOrgLocationId();
+			}else{
+				document.getElementById("hideVendor").style.display="block";
+			 $('#vendors').attr("data-validation","required"); 
+			 $('#vendorcontact').attr("data-validation","required"); 
+			  $('#vendors').val(''); 
+			 
+	            $('#vendors').trigger("chosen:updated");
+	            $('#vendorcontact').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontact').trigger("chosen:updated");
+			} 
+		}else{
+			 document.getElementById("hideVendor").style.display="none";
+			 $('#vendors').removeAttr("data-validation","required"); 
+			 $('#vendorcontact').removeAttr("data-validation","required"); 
+			 
+			 $('#vendors').val(''); 
+	            $('#vendors').trigger("chosen:updated");
+	            $('#vendorcontact').empty();
+		//	 $('#vendorcontact').val(''); 
+	           $('#vendorcontact').trigger("chosen:updated");
+
+			 
+		}
+		$('#designationType + p').remove();
+}
+</script>
+      
 
 <script>
 function removeUser(userId){
@@ -1494,8 +1799,8 @@ function removeUser(userId){
 						  	result = result + '</div>';
 						  result = result + '</div>';
 					  result = result + '<div class="clearfix"></div>';
-							result = result + '<div class="user_summary_edit_cta">';
-							result = result + '<input class="us-btn us-btn_a " type="button" value="Delete" type="button" onclick="deleteUser('+userId+');"/>';
+							result = result + '<div class="user_summary_edit_cta pull-right">';
+							result = result + '<input class="us-btn us-btn_a " type="button" value="Terminate" type="button" onclick="deleteUser('+userId+');"/>';
 								result = result + '&nbsp;<input class="us-btn" onclick="cancelUser();" type="button" value="Cancel"/>';
 								result = result + '</div>';
 	        	
@@ -2111,6 +2416,24 @@ function reActiveProject(projectMemberId,ProjectName,startDate,endDate,projectEn
 	});
  
 </script>
+
+
+
+<script>
+function maskme(){
+
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $("#dayHoursEdit").mask("Hh:Mm"); 
+}
+</script>
+
+
+
 <script type="text/javascript">
 function flushReProject(){
 	$('#Re-StartDate').val('');
@@ -2120,6 +2443,55 @@ function flushReProject(){
 }
 </script>
 
-<
 
-<!-- () -->
+<script>
+function editMe(local){
+
+ var id = local.id;
+	 var inputValue =  $("#"+id).val();
+	 var split = inputValue.split(':');
+	 var hours = split[0];
+	 var minutes = split[1];
+	 var hours1 = hours.charAt(0);
+	 var hours2 = hours.charAt(1);
+	 var min1 = minutes.charAt(0);
+	 var min2 = minutes.charAt(1);
+	
+	 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours1+":00");
+	 }
+	 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("0"+hours2+":00");
+	 }
+	 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val("00:"+min1+"0");
+	 }
+	 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val("00:0"+min2);
+	 }
+	 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":00");
+	 }
+	 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min1);
+	 }
+	 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
+		 $("#"+id).val(hours+":"+"0"+min2);
+	 }
+	 else if(!isNaN(hours)&& !isNaN(minutes)){
+		
+		  var hrmin= hours * 60;
+		  var totalMin = parseInt(hrmin) + parseInt(minutes);
+		  hours = Math.floor(totalMin / 60); 
+		  minutes = totalMin % 60;
+		  if(hours<=9){
+			  hours = "0"+hours;
+		  }
+		  if(minutes<=9){
+			  minutes = "0"+minutes;
+		  }
+		  $("#"+id).val(hours+":"+minutes);
+	 }
+	 }
+	 </script>
+	 

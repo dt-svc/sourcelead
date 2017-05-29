@@ -50,6 +50,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class RequirementOffersServiceImpl implements RequirementOffersService{
@@ -75,7 +76,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	private EmailScenarioService emailScenarioService;
 	
-	@Autowired
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -145,6 +146,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 									requirementOffers.setPositionType(jsonObj.getString(c+"PositionType"));
 								}
 								
+								if(jsonObj.has(c+"JobOtherType") && !jsonObj.getString(c+"JobOtherType").isEmpty()){
+									requirementOffers.setOtherPositionType(jsonObj.getString(c+"JobOtherType"));
+								}
+								
                                final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
                    		       final Map files = multiRequest.getFileMap();
                               
@@ -160,7 +165,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     							   requirementOffers.setFileContentType(multiFile.getContentType());
                                }
                                
-							  
+                                requirementOffers.setOfferUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 								requirementOffers.setStatus(Constants.RECORD_ACTIVE);
 								requirementOffers.setOfferStatus(Constants.OFFERMADE);
 								requirementOffers.setCreatedDate(new Date());
@@ -333,7 +338,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
             String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-            String url = "";
+            String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
            notificationScenario.setBody(notificationbody);
@@ -444,7 +449,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
          StringBuilder negotiationLinkBuilder=new StringBuilder();
          globalVarsMap.put("acceptLink",acceptLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Accepted&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
          globalVarsMap.put("rejectLink",rejectLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirementOffer?offerStatus=Rejected&offerId=").append(requirementOffers.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
-         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateUserRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
+         globalVarsMap.put("negotiationLink",negotiationLinkBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(requirementOffers.getSubmissionId().getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
         
         StringBuilder attachmentLinkBuilder=new StringBuilder();
         if(requirementOffers.getFileName() != null && !requirementOffers.getFileName().isEmpty() ){
@@ -467,7 +472,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
             String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
             String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-            String url = "";
+            String url = sourceleadUrl;
             
             String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
             notificationScenario.setSubject(notificationbody);
@@ -568,7 +573,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = "";
+		String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg());
@@ -651,7 +656,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = "";
+		String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocations.getOrg());
@@ -738,6 +743,18 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 						 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				  }
 		    	
+		    	//this condition is for candidate to Associate when offerAccepted 
+		    	if(requirementOffers.getSubmissionId().getCandidate().getOrgLocationId().getId().longValue() == orgLocations.getId().longValue()){
+		    		Candidate candidate = candidateService.getCandidateByCandidateId(requirementOffers.getSubmissionId().getCandidate().getId());
+			    	candidate.setIsAssociate(Constants.YES);
+			    	candidate.setUpdatedBy(loginUser.getUserCode());
+			    	candidate.setUpdatedDate(commonUtil.currentDate());
+			    	
+			    	candidateService.saveOrUpdateCandidate(candidate);
+			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		    	}
+		    	
+		    	
 		    	  //Changing the status of offerTable 
 			      if(requirementOffers  != null){
 					    requirementOffers.setOfferStatus("OFFERACCEPTED");
@@ -745,7 +762,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 					    requirementOffersDao.storeRequirementOffers(requirementOffers);
 			     }
+			      if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 			      sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
+			      }
 	    }else if(offerStatus.equalsIgnoreCase("OFFERREJECTED")){
 	    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 	    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
@@ -758,7 +777,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			  }
-	    		sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
+	    			sendOfferRejectedMail(requirementOffers,loginUser,orgLocations);
+			      }
 	    	
 	    	  //Changing the status of offerTable 
 			  if(requirementOffers  != null ){
@@ -1024,6 +1045,18 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	public List<RequirementOffers> getRequirementOfferSubmissionByIdAndOrgLocationId(Long submissionId, Long orgLocationId)
 			throws Exception {
 		return requirementOffersDao.getRequirementOfferSubmissionByIdAndOrgLocationId(submissionId,orgLocationId);
+	}
+
+
+	@Override
+	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception {
+		return requirementOffersDao.getOfferAcceptedCandidatesByOrgLocationId(orgLocationId);
+	}
+
+
+	@Override
+	public RequirementOffers getRequirementOffersByUUID(String offerUUId) throws Exception {
+		return requirementOffersDao.getRequirementOffersByUUID(offerUUId);
 	}
 
 

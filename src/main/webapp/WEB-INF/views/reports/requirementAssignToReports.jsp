@@ -22,8 +22,8 @@
 <script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- ends files of export -->
@@ -66,8 +66,8 @@ function prepareReportDataDiv(data){
 	result = result + '   <tr>';
 	result = result + '    <th>Requirement Title</th>';
 	result = result + '    <th>Posted on</th>';
-	result = result + '    <th>client</th>';
-	result = result + '    <th>owner</th>';
+	result = result + '    <th>Client</th>';
+	result = result + '    <th>Owner</th>';
 	result = result + '    <th>Assigned To</th>';
 	result = result + '    <th>Assigned On</th>';
 	result = result + '    <th>Team Name</th>';
@@ -81,30 +81,26 @@ function prepareReportDataDiv(data){
 	var report = json[i];
 			result = result + '<tr>';
 			result = result + '<td>';
-			result = result + '<div><span>' + report.jobTitle
-					+ '</span></div> ';
+			result = result + '<div><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
 			result = result + '</td>';
 
 			result = result + '<td>';
 			if (report.postedOn != null && report.postedOn != ''&& report.postedOn != 'undefined') {
-				result = result + '<div><span>' + report.postedOn
-						+ '</span></div>';
+				result = result + '<div><span>'+report.postedOn+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
 			result = result + '</td>';
 			result = result + '<td>';
 			if (report.client != null && report.client != ''&& report.client != 'undefined') {
-				result = result + '<div><span>' + report.client
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.client+'">'+report.client+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
 			result = result + '</td>';
 			result = result + '<td>';
 			if (report.owner != null && report.owner != ''&& report.owner != 'undefined') {
-				result = result + '<div><span>' + report.owner
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.owner+'">'+report.owner+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
@@ -112,8 +108,7 @@ function prepareReportDataDiv(data){
 
 			result = result + '<td>';
 			if (report.assignedUser != null && report.assignedUser != ''&& report.assignedUser != 'undefined') {
-				result = result + '<div><span>' + report.assignedUser
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.assignedUser+'">'+report.assignedUser+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
@@ -130,8 +125,7 @@ function prepareReportDataDiv(data){
 
 			result = result + '<td>';
 			if (report.teamName != null && report.teamName != '' && report.teamName != 'undefined') {
-				result = result + '<div><span>' + report.teamName
-						+ '</span></div>';
+				result = result + '<div><span title="'+report.teamName+'">'+report.teamName+'</span></div>';
 			} else {
 				result = result + '<div><span>---</span></div>';
 			}
@@ -234,11 +228,13 @@ function requirementReportPagination(){
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Requirement Assign To</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Requirement Assign To</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -247,15 +243,15 @@ function requirementReportPagination(){
 <form:form id="assign_requirement_form" name="assign_requirement_form" method="get">     
    <div class="timesheet_head">
       <div class="pull-left reportBtns">
-	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" name="reportType" onChange="custDates(); flushCustomDates();">
-		 <option value="">select</option>
+	  <div class="reportBtn dropdown_select">
+		<select class="form-control" id="reportTypeId" name="reportType" onChange="custDates(); flushCustomDates();">
+		 <option value="">-- Select --</option>
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week</option>
+		  <option value="twoweeks">2 Weeks</option>
+		  <option value="month">1 Month</option>
+		  <option value="twomonths">2 Months</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
@@ -282,7 +278,7 @@ function requirementReportPagination(){
       <div class="reportA">
           <label>Assign To</label>
           <div class="reportAChoo">
-           <select multiple data-placeholder="select member" class="chosen-select" multiple="true"  name="user" id="user" >
+           <select multiple data-placeholder="Select Member" class="chosen-select" multiple="true"  name="user" id="user" >
                 <c:forEach var="user" items="${userList}">
 	                     <%-- <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option> --%>
             			  <option value="${user.id}">${user.firstName} ${user.lastName}</option>

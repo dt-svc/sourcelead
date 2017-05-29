@@ -22,8 +22,8 @@
 <script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- ends files of export -->
@@ -83,12 +83,12 @@ function prepareReportDataDiv(data){
     	var report= json[i];
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div><span>'+report.requirementTitle+'</span></div> ';
+        result = result + '<div><span title="'+report.requirementTitle+'">'+report.requirementTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
         if(report.applicantName != null && report.applicantName != '' && report.applicantName !='undefined'){
-       	result = result + '<div><span>'+report.applicantName+'</span></div>';
+       	result = result + '<div><span title="'+report.applicantName+'">'+report.applicantName+'</span></div>';
  		} else{
 		result = result + '<div><span>---</span></div>';
 		    }
@@ -245,15 +245,17 @@ function requirementReportPagination(){
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
-					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/requirementList'/>"> Requirement List</a> &raquo; Applicants</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Applicants</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap overflow_Auto">
@@ -261,15 +263,15 @@ function requirementReportPagination(){
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
-	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
-		 <option value="">select</option>
+	  <div class="reportBtn dropdown-select">
+		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
+<!-- 		 <option value="">-- Select --</option> -->
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
+		  <option value="week">1 Week</option>
+		  <option value="twoweeks">2 Weeks</option>
+		  <option value="month">1 Month</option>
+		  <option value="twomonths">2 Months</option>
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
@@ -284,13 +286,13 @@ function requirementReportPagination(){
 	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	
 		<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart();"><i class="fa fa-pie-chart"></i></a>
+		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
+		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
 	</span>	
 	
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;" class="Pra11">
+      <!--   <ul style="padding: 2px 300px 2px 0px;" class="Pra11">
           <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>
             <div class="export_pop">
               <ul>
@@ -302,8 +304,8 @@ function requirementReportPagination(){
           </li>
 
           <div class="clearfix"></div>
-        </ul>
-        <div class="clearfix"></div>
+        </ul> -->
+        <div class="clearfix mt5"></div>
       </div>
  
   <div class="repTab1">  

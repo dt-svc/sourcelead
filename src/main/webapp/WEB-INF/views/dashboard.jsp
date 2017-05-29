@@ -27,6 +27,9 @@ float: none !important;
 .custom-datatble table{
  margin-top: 20px !important;
  }
+ #requirementList {
+	border-bottom: 1px solid #eae6e6;
+}
  .custom-datatble .dataTables_filter{
    top: -35px !important;
     padding: 0 !important;
@@ -101,8 +104,13 @@ overflow-x: auto;
 	    </div>
 	    	
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+	    	
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 					<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
+					</sec:authorize>
+					
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
+					<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
 					</sec:authorize>
 					
 			    <div class="clearfix row mb"> 

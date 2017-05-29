@@ -66,6 +66,11 @@ function getOrgName(){
  <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
+		document.getElementById("email").value="";
+		document.getElementById("firstName").value="";
+		document.getElementById("lastName").value="";
+		document.getElementById("phoneNumber").value="";
+		
 	});
 </script>
 
@@ -107,7 +112,7 @@ function getOrgDetails()
                <div class="modal-content">
                  <div class="modal-header">
                    <button data-dismiss="modal" class="close" type="button"><i class="fa fa-close"></i></button>
-                   <h4 class="modal-title">Select Client</h4>
+                   <h4 class="modal-title">Client Name</h4>
                  </div>
                  <div class="modal-body clearfix">
                    <div class="form-horizontal custom-form clearfix">
@@ -157,7 +162,7 @@ function getOrgDetails()
           <div class="pull-left">
             <h2>Add Client Contact</h2>
           </div>
-              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Client Contact Details</div>
+              <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/clientDashboard'/>"> Clients List</a> &raquo; Add Client Contact</div>
         </section>
         <div class="content-area content-new clearfix">
         <div id="loading"></div> 
@@ -166,7 +171,7 @@ function getOrgDetails()
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
           <div class="form-group">
-            <label class="col-md-3">Select Client <span class="text-danger">&nbsp;*</span></label>
+            <label class="col-md-3">Client Name <span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
               <div class="clearfix">
                 <select class="chosen-select form-control" id="vendorName" name="vendorName" field-name="client name" onchange="validateEmail();getSpocUserDetails();getRolesList();" data-validation="required">
@@ -217,9 +222,9 @@ function getOrgDetails()
 	            </div>
 	            
 	             <div class="form-group">
-	              <label class="col-md-3">Owner<span class="text-danger">&nbsp;*</span></label>
+	              <label class="col-md-3">Owner Name<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9">
-	                <select multiple data-placeholder="select owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
+	                <select multiple data-placeholder="Select Owner" class="chosen-select form-control" name="owner" id="owner" field-name="Owner"  data-validation="required">
 	                <c:forEach var="user" items="${userList}">
 		                     <option value="${user.id}" ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                </c:forEach>
@@ -251,9 +256,9 @@ function getOrgDetails()
 	                <select class="form-control selectpicker" id="spocStatus" name="spocStatus">
 	                  <option value="Active">Active</option>
 	                  <option value="In-Active">In-Active</option>
-	                  <option value="New">New</option>
+	                 <!--  <option value="New">New</option>
 	                  <option value="Negotiation">Negotiation</option>
-	                  <option value="Contract">Contract</option>
+	                  <option value="Contract">Contract</option> -->
 	                </select>
 	              </div>
 	            </div>

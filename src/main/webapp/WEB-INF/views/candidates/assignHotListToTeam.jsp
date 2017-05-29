@@ -23,30 +23,14 @@
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
-      <div class="timesheet_head hdr-styles">
-        <ul>
-          
-            <li id="teamDiv" style="display: none">
+      <div class="timesheet_head minHeight">
+            <ul>
+            <div id="teamDiv" style="display: none" class="mt5">
             	<select class="form-control chosen-select" id="team"  onchange="assignHotListToTeam();">
                </select>
-           	</li>
-           	
-           	
-          
-          <li id="filter3ApprovePop"><i class="fa fa-filter"></i><span id="typeDiv"> Type </span><i class="glyphicon glyphicon-play" id="candFilter" ></i>
-              	<div id="filter3ApprovedPop" class="approved_pop">
-                  	<ul>
-	                    <li><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" onclick="hotListCandidates();"  ><label for="c5">All</label></li>
-						<li><input id="onlycandidate" type="radio" name="candidateType" value ="Candidate"  onclick="hotListCandidates();"><label for="c6">Candidates</label></li>
-						<li><input id="consultant" type="radio"  name="candidateType" value ="Consultant"  onclick="hotListCandidates();"><label for="c7">Consultants</label></li>
-                    </ul>
-                  </div>                	
-          </li>
-          
+           	</div>
+           	</ul>
           <div class="clearfix"></div>
-        </ul>
-        
-        <div class="clearfix"></div>
       </div>
       <div class="candidate_wrap_table">
         <div id="candidateList"></div>
@@ -65,18 +49,16 @@
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
 	  
-	  var candTypeRadio = $('input[name=candidateType]');
-	  var candidateType = candTypeRadio.filter(':checked').val();
+	  /* var candTypeRadio = $('input[name=candidateType]');
+	  var candidateType = candTypeRadio.filter(':checked').val(); */
 	  
 	  
 	  $("#candidateList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 
 	  $.ajax({
            type : "POST",
-            url: sourceleadUrl+"/getHotListCandidates?${_csrf.parameterName}=${_csrf.token}&candidateType="+candidateType,       
+            url: sourceleadUrl+"/getHotListCandidates?${_csrf.parameterName}=${_csrf.token}",       
             success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-               		
 			    	     $("#candidateList").removeAttr("style");
 	                	 $("#candidateList").empty();
 	                	 var result = "";
@@ -86,7 +68,7 @@
 	                     result = result + ' <th><input type="checkbox" onclick="selectAllCandidates();"  id="selectallHotList" ></th>';   
 	                     result = result +"    <th>Name</th>"; 
 	                     result = result +"    <th>Designation</th>"; 
-	                     result = result +"    <th>Position type</th>"; 
+	                     result = result +"    <th>Employment Type</th>"; 
 	                     result = result +"    <th>Email</th>"; 
 	                     result = result +"    <th>Mobile</th>"; 
 	                     result = result +"    <th>Type</th>"; 
@@ -156,15 +138,6 @@
 	                     $("#noCandidates").val('');
 	                     $("#candidateList").append(result);
 	                     cpagination(); 
-                 }else{
-                	 $("#candidateList").removeAttr("style");
-  	    	         var result ="";
-					 result = result+"			<div class='dataTables_empty'></div>";
-					$("#noCandidates").val("nocandidate");
-					$("#candFilter").empty();
-					$("#candidateList").empty();
-				    $("#candidateList").append(result); 
-                 }
           },
             
        }); 

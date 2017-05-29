@@ -32,7 +32,10 @@
 					$("#accept").removeAttr("style");
 			}
 			if(rateStatus == 'Rejected'){
-				$("#reject").removeAttr("style");		
+				$("#reject").removeAttr("style");	
+			}
+			if(rateStatus == 'RejectedApplicant'){
+				$("#rejectApplicant").removeAttr("style");
 			}
 			if(rateStatus == 'Negotiate'){
 				$("#negotiation").removeAttr("style");		
@@ -59,8 +62,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
-    <h1>Source Lead</h1>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"></i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -69,7 +71,7 @@ width: auto;
   <!-- Header Area --> 
 
   <!-- Content Area -->
-  <section class="container">
+  <section class="container marTop">
 		<div class="row">
 		  		<div id="accept" style="display:none">
 					          <c:choose>
@@ -87,6 +89,38 @@ width: auto;
 							  </c:choose>
 						  </div>
 		  		</div>
+		  		
+		  		
+		  		<div id="rejectApplicant" style="display:none">
+			  		<c:choose>
+					    <c:when test="${permission=='YES'}">
+						    <form id="reject_form_applicant" name="reject_form_applicant" method="post" >
+					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
+								  <div class="col-md-6">
+									  <i class="fa fa-ban fa-3x"></i>
+									  <p class="reason-msg">You are not interested for the position <B> ${requirementSubmission.requirement.jobTitle}</B></p>
+								  </div>
+								  <div class="col-md-6" id="rejectApplicantIdDiv">
+									  <div class="col-md-12">
+										  <label>Reason for Reject</label>
+										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectApplicantId"></textarea>	
+									  </div>
+									  <div class="col-md-12 mt10"><button type="button" id="reject_Applicant" class="btn btn-sm btn-danger pull-right" onclick="storeApplicantRejectReason();">Submit</button></div>
+								  	
+								  </div>
+							  </div>
+							</form>
+					    </c:when>
+					     <c:otherwise>
+							    <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+						          	<i class="fa fa-clock-o fa-3x"></i>
+							        <p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementSubmission.requirement.jobTitle}</B></p>
+							     </div>
+							    </c:otherwise>    
+					  </c:choose>
+		  		</div>
+		  		
+		  		
 		  		<div id="reject" style="display:none">
 			  		<c:choose>
 					    <c:when test="${permission=='YES'}">
@@ -207,6 +241,33 @@ width: auto;
 			       
 	} 
 </script>
+
+<script type="text/javascript">
+	function storeApplicantRejectReason() {
+		$('#reject_Applicant').attr("disabled", true);
+			var sourceleadUrl = '${sourceleadUrl}';
+			var submissionId = '${submissionId}';
+			var rejectreason = document.getElementById("rejectApplicantId").value;
+			var frm = $('#reject_form_applicant').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl+"/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						success : function(data) {
+							if(data == "success"){
+								$('#rejectApplicantIdDiv').empty();
+								$('#rejectApplicantIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
+							}else if(data == "failure"){
+								$('#rejectApplicantIdDiv').empty();
+								$('#rejectApplicantIdDiv').append("<span>Your decision is already submitted !!</span>");	
+							}
+						},
+					});
+			       
+	} 
+</script>
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -226,9 +287,11 @@ width: auto;
 			var frm = $('#negotiation_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+		    var jsonData = encodeURIComponent(con);
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+con+"&submissionId="+submissionId+"&type="+type,
+						url : sourceleadUrl+'/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json='+jsonData+'&submissionId='+submissionId+'&type='+type,
 						success : function(result) {
 							$('#rateProposal').val('');
 							$('#rateType').val('');

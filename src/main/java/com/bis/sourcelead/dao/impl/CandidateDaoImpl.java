@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.CandidateHotList;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -133,7 +135,36 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 	}
+
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidatesCountByOrgLocationIDAndStatus(Long orgLocationId,String candidateStatus,String isAssociate) {
+		logger.debug("..getCandidatesCount() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		
+		String subQuery  = null;
+		if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.ACTIVE)){
+			subQuery = "and candidate.status = '1'"; 
+		}else if(null != candidateStatus && !candidateStatus.isEmpty() && candidateStatus.equalsIgnoreCase(Constants.INACTIVE)){
+			subQuery = "and candidate.status = '0'"; 
+		}else{
+			subQuery = "and (candidate.status = '1' or candidate.status = '0')";
+		}
+		
+		String subQuery1  = null;
+		if(isAssociate.equalsIgnoreCase(Constants.YES)){
+			subQuery1 = "and candidate.isAssociate = 'Y'"; 
+		}else{
+			subQuery1 = "and candidate.isAssociate = 'Y' OR candidate.isAssociate = 'N'";  
+		}
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId "+subQuery1+"  "+subQuery+" ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		logger.debug("..getCandidatesCount() Method Ended..");
+		return results.get(0);
+	}
 
 	/**
 	 * to Candidates List by OrgCode OrgLocationCode
@@ -148,7 +179,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate) throws Exception {
 
 		
 		String subQuery = null;
@@ -177,13 +208,28 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		String candidateTypeSubQuery = "";
-		if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
+		/*if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
 			
 			candidateTypeSubQuery = " and (cnadidate.candidateType = 'Candidate' OR cnadidate.candidateType = 'Consultant')";
 			
 		}else{
 			candidateTypeSubQuery = " and cnadidate.candidateType = '"+candidateType+"' ";
-		}
+		}*/
+		
+			if(candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("All")){
+				if(isAssociate.equalsIgnoreCase(Constants.YES)){
+					candidateTypeSubQuery = " and (cnadidate.isAssociate = 'Y')";
+				}else{
+					candidateTypeSubQuery = " and (cnadidate.isAssociate = 'N' OR cnadidate.isAssociate = 'Y' )";					
+				}
+				
+			}else{
+				if(isAssociate.equalsIgnoreCase(Constants.YES)){
+					candidateTypeSubQuery = " and (cnadidate.isFavouriteAssociate = '"+candidateType+"') ";
+				}else{
+					candidateTypeSubQuery = " and (cnadidate.isFavourite = '"+candidateType+"') ";
+				}
+			}
     	
 			
 		if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("undefined")){
@@ -394,8 +440,16 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllActiveCandidatesCountForCampaignByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";  
-		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).list();
+		
+		String subQuery = null;
+		if(type.equalsIgnoreCase(Constants.ASSOCIATE)){
+			subQuery = "candidate.isAssociate = 'Y' ";
+		}else{
+			subQuery = "candidate.isAssociate = 'N' ";
+		}
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "+subQuery+" and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";  
+		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){
 				count = candidatesCount.get(0).intValue();
@@ -410,7 +464,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllHotlistCandidatesCountNotAssignedToTeamByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isFavourite = '1' and candidate.teamId IS NULL ";  
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and (candidate.isFavourite = '1' OR candidate.isFavouriteAssociate = '1') and candidate.teamId IS NULL ";  
 		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){
@@ -425,9 +479,16 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		logger.debug("In getAllCandidatesCountForCampaignByTeam method");
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String subQuery = null;
+		if(type.equalsIgnoreCase(Constants.ASSOCIATE)){
+			subQuery = "candidate.isAssociate = 'Y' ";
+		}else{
+			subQuery = "candidate.isAssociate = 'N' ";
+		}
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.candidateType = :type and candidate.status = '1' and candidate.teamId.id IN (:teamId) ";  
-		List<Long> candidatesCount = session.createQuery(query.toString()).setString("type", type).setLong("orgLocationId", orgLocationId).setParameterList("teamId", teamId).list();
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "+subQuery+" and candidate.status = '1' and candidate.teamId.id IN (:teamId) ";  
+		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setParameterList("teamId", teamId).list();
 		Integer count = 0;
 		if(candidatesCount != null && !candidatesCount.isEmpty()){
 				count = candidatesCount.get(0).intValue();
@@ -526,6 +587,36 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public Integer getAllCandidatedsBasedOnCreatedByAndOrglocationCodeWhichAreCreatedToday(OrgLocations orgLocations,
+			User user) throws Exception {
+		
+		
+		java.sql.Date sqlCurrentDate = null;
+		Date currentDate =  commonUtil.currentDate();
+		// for current Date Converting to Sql Date Format
+		 if(currentDate != null){
+				sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		 }
+		 
+		List<Long> candidatesList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select count(*)  from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId  and cnadidate.createdBy =:userCode and  DATE(cnadidate.createdDate) = :sqlCurrentDate   ORDER BY cnadidate.id DESC";  
+		candidatesList = session.createQuery(query)
+										       .setLong("orgLocationId", orgLocations.getId())
+										       .setString("userCode", user.getUserCode())
+										       .setDate("sqlCurrentDate", sqlCurrentDate)
+										       .setCacheable(true)
+										       .list();
+		
+		  Integer count = 0;
+	  		if(candidatesList != null && !candidatesList.isEmpty()){
+	  				count = candidatesList.get(0).intValue();
+	  		}
+	  		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Long getCandidatesCountByCandidateTypeOrgLocationID(Long orgLocationId, String candidateType) {
 		
 		logger.debug("..getCandidatesCount() Method Started..");
@@ -604,6 +695,27 @@ public class CandidateDaoImpl implements CandidateDao {
         }
 		
 		return query.setCacheable(true).list();
+	}
+	
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveAssociatesByOrglocationId(Long orgLocationId , String employeementType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		List<Candidate> candidateList = null;
+		if(employeementType != null && employeementType != "" && employeementType != "undefined"){
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y'  and candidate.designationType =:employeementType and candidate.consultantUser IS NULL";
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("employeementType", employeementType).setCacheable(true).list();
+		}else{
+			query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and candidate.isAssociate ='Y' and candidate.consultantUser IS NULL"; 
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		}
+		  
+		 
+		
+		return candidateList;
 	}
 	
 	
@@ -687,6 +799,215 @@ public class CandidateDaoImpl implements CandidateDao {
 		 return candidateHotList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String timePeriod)
+			throws Exception {
+			
+		    String query ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+		    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();
+		    
+		    return count;
+	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where candidate.orgLocationId.id = :orgLocationId and candidate.isFavouriteAssociate = '1' and candidate.isAssociate ='Y' and candidate.teamId IS NULL  ";  
+		List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		
+		return candidateList;
+	}
+
+		
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateById(Long candidateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		logger.debug("getCandidateById start");
+		candidate = session.createQuery("from Candidate where id=:candidateId" ).setCacheable(true).setLong( "candidateId", candidateId ).setCacheable(true).list();
+		logger.debug("getCandidateById end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
+   	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC)
+			throws Exception {
+		
+			Map<String, Object> params = new HashMap<String,Object>();
+			String subQueryDateRange = "";
+			
+			if(null != startDateUTC && null != endDateUTC){
+				  subQueryDateRange = "and (candidate.createdDate >= :startDateUTC and candidate.createdDate <= :endDateUTC)";
+				  params.put("startDateUTC",startDateUTC);
+				  params.put("endDateUTC",endDateUTC);
+			}
+			
+			String queryString ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode "+subQueryDateRange+" ";
+			Session session = this.sessionFactory.getCurrentSession();
+		    params.put("orgLocationId",orgLocationId);
+		    params.put("userCode",user.getUserCode());
+			
+		    /*String query ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode";
+			Session session = this.sessionFactory.getCurrentSession();
+		    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();*/
+		    
+		    Query query = session.createQuery(queryString);
+		    for (String str : query.getNamedParameters())
+	        {
+				if(str.equalsIgnoreCase("startDateUTC")){
+					query.setParameter( str, (Date) params.get(str) );
+				}
+				if(str.equalsIgnoreCase("endDateUTC")){
+					query.setParameter( str, (Date) params.get(str) );
+				}
+				
+				if(str.equalsIgnoreCase("orgLocationId")){
+					query.setParameter(str, (long) params.get(str));
+				}
+				
+				if(str.equalsIgnoreCase("userCode")){
+					query.setParameter(str, params.get(str));
+				}
+	        }
+		    return (Long)query.uniqueResult();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByUUID(String candidateUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Candidate> candidate = new ArrayList<Candidate>();
+		logger.debug("getCandidateById start");
+		candidate = session.createQuery("from Candidate candidate where candidate.candidateUUID = :candidateUUID" ).setCacheable(true).setString("candidateUUID", candidateUUID ).setCacheable(true).list();
+		logger.debug("getCandidateById end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' ORDER BY cnadidate.id DESC";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveAssociatesByLocation(Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.status ='1' and candidate.isAssociate = 'Y' ORDER BY candidate.id DESC";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveAssociatesByLocationAndAssoicatesList(Long orgLocationId,
+			List<Long> associatesIds) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.id NOT IN (:associatesIds) ";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByLocationAndAssoicatesList(Long orgLocationId, Long spocId,
+			List<Long> associatesIds) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.spocId.id = :spocId and candidate.id NOT IN (:associatesIds) ";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByLocation(Long orgLocationId, Long spocId) throws Exception {
 	
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.spocId.id = :spocId  ";  
+        return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("spocId", spocId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocationAndAssoicatesList(Long vendorOrgRelationId,
+			List<Long> associatesIds) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgRelationId.id =:vendorOrgRelationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' and candidate.id NOT IN (:associatesIds) ";  
+        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setParameterList("associatesIds", associatesIds).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllActiveVendorAssociatesByOrgLocation(Long vendorOrgRelationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgRelationId.id =:vendorOrgRelationId and "
+				+ "candidate.status ='1' and candidate.isAssociate = 'Y' ";  
+        return  session.createQuery(query).setLong("vendorOrgRelationId", vendorOrgRelationId).setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByConsultantUserIdOrgRelationId(Long consultantUserId, Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Candidate candidate = null;
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId and candidate.orgRelationId.id= :orgRelationId";
+        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		if(null != candidateList && candidateList.size() >0){
+			candidate = candidateList.get(0);
+		}
+        return candidate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByConsultantUserId(Long consultantUserId, Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Candidate candidate = null;
+		String query = "from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
+        List<Candidate>  candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("consultantUserId", consultantUserId).setCacheable(true).list();
+		if(null != candidateList && candidateList.size() >0){
+			candidate = candidateList.get(0);
+		}
+        return candidate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long orgLocationId, Long userId,
+			String candidateType) throws Exception {
+		
+		logger.debug("getCandidatesCountByCandidateTypeOrgLocationIDAndUserId() Method Started..");
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.recruiterUserId.id = :userId and candidate.candidateType = :candidateType ";
+		List<Long> results = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("candidateType", candidateType).setCacheable(true).list();
+		logger.debug("getCandidatesCountByCandidateTypeOrgLocationIDAndUserId() Method Ended..");
+		return results.get(0);
+	}
 }
+

@@ -20,6 +20,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -37,12 +38,16 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
@@ -51,8 +56,12 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -109,7 +118,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
     private SourceleadELKBaseIndexer<UserIndex> sourceleadELKBaseIndexer;
 	
-	 
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
+	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
@@ -124,6 +138,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	OrgDao orgDao;
+	
+	@Autowired
+	private DepartmentService departmentService;
+	
+	@Autowired
+	private CandidateService  candidateService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -155,7 +175,7 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
-	   user = userDao.findByEmail(jsonObj.getString("email"));
+	   user = userDao.findByUserName(jsonObj.getString("email"));
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
 	   }
@@ -163,7 +183,7 @@ public class UserServiceImpl implements UserService {
 	   if(null == user){
 		   user = getUserDetails(jsonObj,loginuser.getUserCode());
 		   password = SourceLeadRandomCodeHelper.generateRandomPassword();
-		   user.setPassword(sourceleadPasswordEncoder.encode(password));
+ 		   user.setPassword(sourceleadPasswordEncoder.encode(password));
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -223,6 +243,20 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		//for updating cosultantUserId in candidate
+		if(jsonObj.has("associateId")&& !"".equalsIgnoreCase(jsonObj.getString("associateId"))){
+			Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("associateId")));
+			if(null != candidate){
+				candidate.setConsultantUser(user1);
+				candidate.setUpdatedBy(loginuser.getUserCode());
+				candidate.setUpdatedDate(commonUtil.currentDate());
+				candidateService.saveOrUpdateCandidate(candidate);
+				candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			}	
+		}
+		
+		
 		
 		//For saving Employee details (Every User is an Employee)
 		if(jsonObj.has("projectId") && !isNullOrEmpty(jsonObj.getString("projectId"))){
@@ -334,7 +368,8 @@ public class UserServiceImpl implements UserService {
 		
 		if(jsonObj.has("email")){
 			user.setUserName(jsonObj.getString("email"));
-		}
+		}  
+		
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);
@@ -342,7 +377,7 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 	
-	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) throws NumberFormatException, JSONException {
+	private UserRole getUserRoleDetails(JSONObject jsonObj,User user,String userCode, Long orgLocationsId) throws Exception {
 		UserRole userRole = new UserRole();
 		userRole.setUser(user);
 		
@@ -387,6 +422,11 @@ public class UserServiceImpl implements UserService {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		
+		if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+			
+			List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
+		}
+		
 		userRole.setRoles(roles);
 		userRole.setUserType(roles.getDisplayName());
 		userRole.setCreatedDate(commonUtil.currentDate());
@@ -396,7 +436,7 @@ public class UserServiceImpl implements UserService {
 		return userRole;
 	}
 	
-	private Employees getEmployeeDetails(User user,JSONObject jsonObj, Long orgLocationsId,String userCode) throws JSONException {
+	private Employees getEmployeeDetails(User user,JSONObject jsonObj, Long orgLocationsId,String userCode) throws NumberFormatException, Exception {
 		Employees employees = new Employees();
 		employees.setUser(user);
 		OrgLocations orgLocations = new OrgLocations();
@@ -408,11 +448,43 @@ public class UserServiceImpl implements UserService {
 		if(jsonObj.has("rate")){
 			employees.setRate(jsonObj.getString("rate"));
 		}
-		if(jsonObj.has("ratePer")){
-			employees.setRatePer(jsonObj.getString("ratePer"));
+		if(jsonObj.has("RatePer")){
+			employees.setRatePer(jsonObj.getString("RatePer"));
 		}
 		if(jsonObj.has("DayHours")){
 			employees.setDailyHours(jsonObj.getString("DayHours"));
+		}
+		if(jsonObj.has("currentCurrency")){
+			employees.setCurrentCurrency(jsonObj.getString("currentCurrency"));
+		}
+		
+		if(jsonObj.has("designationType")){
+			employees.setUserEmploymentType(jsonObj.getString("designationType"));
+		}
+		
+		if(jsonObj.has("designationOtherType")){
+			employees.setDesignationOtherType(jsonObj.getString("designationOtherType"));
+		}
+		
+		if(jsonObj.has("department") && !"".equalsIgnoreCase(jsonObj.getString("department"))){
+			Department department= departmentService.getDepartmentById(Long.parseLong(jsonObj.getString("department")));
+			employees.setDepartmentId(department);
+		}else{
+			employees.setDepartmentId(null);
+		}
+		
+		if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
+			employees.setOrgRelationId(orgRelation);
+		}else{
+			employees.setOrgRelationId(null);
+		}
+		
+		if(jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))){
+			OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(jsonObj.getString("vendorcontact")));
+			employees.setSpocId(orgspoc);
+		}else{
+			employees.setSpocId(null);
 		}
 		/*if(jsonObj.has("invoiceFrequency")){
 			if(jsonObj.getString("invoiceFrequency") != null && !"".equalsIgnoreCase(jsonObj.getString("invoiceFrequency"))){
@@ -490,12 +562,13 @@ public class UserServiceImpl implements UserService {
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(user.getFirstName());
+		 StringBuilder builder=new StringBuilder();
+		 emailMessage.setFirstName(builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		 emailMessage.setOrgLocationId(locationId);
@@ -503,7 +576,7 @@ public class UserServiceImpl implements UserService {
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 /*globalVarsMap.put("lastName",emailMessage.getLastName());*/
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
 		 globalVarsMap.put("role",userRole.getUserType());
@@ -848,7 +921,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public LinkedHashSet<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
+	public List<User> getUsersByTeamTypeAndTabId(Long id, String teamType, Long tabId) throws Exception {
 		return userDao.getUsersByTeamTypeAndTabId(id,teamType,tabId);
 	}
 
@@ -1017,7 +1090,8 @@ public class UserServiceImpl implements UserService {
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(user.getFirstName());
+		 StringBuilder builder=new StringBuilder();
+		 emailMessage.setFirstName(builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
@@ -1030,7 +1104,7 @@ public class UserServiceImpl implements UserService {
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 //globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
 		 globalVarsMap.put("role",userRole.getUserType());
@@ -1066,6 +1140,73 @@ public class UserServiceImpl implements UserService {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
 		
+	}
+
+	@Override
+	public void passwordResetMailToLoginUser(User user,OrgLocations orgLocations) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail("qa@sourcelead.com");
+		 emailMessage.setCreatedBy(user.getUserCode());
+		// StringBuilder msgBuild = new StringBuilder();
+		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 StringBuffer userNameStringBuffer =  new StringBuffer();
+		 if (user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName()) ) {
+			 globalVarsMap.put("userName",userNameStringBuffer.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 } else {
+				 globalVarsMap.put("userName", user.getFirstName());
+			}
+		
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.PASSWORD_RESET_MAIL_TO_USER,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.PASSWORD_RESET_MAIL_TO_USER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 notificationScenario.setBody(notificationbody);
+
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 String actionLink="";
+		 emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario);
+		}
+	
+	
+	@Override
+	public List<User> getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(
+			Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getAllUsersWithRequirementTabAccessAndMemeberInRequirementMemberOrgLocationIdAndTabId(orgLocationsId,tabId);
+	}
+
+	@Override
+	public LinkedHashSet<User> getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(Long orgLocationsId, User user, Long tabId) throws Exception
+		{
+		return userDao.getUsersListAsReoprtingManagersByOrgLocationIdHavingTabAccess(orgLocationsId,user,tabId);
+	}
+
+	@Override
+	public List<User> getUsersByOrgLocationIdExceptLoggedInUser(Long orgLocationsId, Long userId) throws Exception {
+		return userDao.getUsersByOrgLocationIdExceptLoggedInUser(orgLocationsId, userId);
 	}
 	
 }

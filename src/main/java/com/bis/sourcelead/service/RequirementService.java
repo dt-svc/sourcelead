@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.JsonParseException;
@@ -17,6 +18,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 
@@ -39,7 +42,7 @@ public interface RequirementService {
 	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId) throws Exception;
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception;
 	
 	public void  approverEmailScenario(User user,User approverUser,Requirement requirement, StringBuilder location,OrgLocations loginOrgLocation) throws Exception;
 
@@ -120,6 +123,35 @@ public interface RequirementService {
 	public List<Requirement> getAllReleasedRequirementsByParentId(Long parentRequirementId)throws Exception;
 
 	public String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
+	
+	// This method is if the user is requirement manager or approver or assignTo or creator   this method is for consolidated reports 
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId,User user)throws Exception;
+		
+	// This method is if the user is TeamLead this method is used for  consolidated reports
+	public List<Requirement> getAllRequirementsByOrglocationIdAndUserIdAsTeamLead(Long orgLocationId ,User user)throws Exception;
 
+	// This method is for  getting  the released requirements based on the user and orglocatinsId for consolidates reports for individual 
+	
+	Integer getAllRequirementsByOrglocationIdAndUserIdReleasedByUser(Long orgLocationId, User user)	throws Exception ; 
 
+	public List<Requirement> getAllRequirementsByOrglocationIdAndRequirementWhoAreAssignedToRequirement(Long orgLocationId, TeamMembers teamMembers)	throws Exception ; 
+	
+	Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
+
+	public List<Requirement> getTotalRequirementsReleasedToSpoc(Long relationId, Long spocId, Date startDateUTC, Date endDateUTC);
+	
+	public List<Requirement> getRequirementsForSOWByOrgLocationId(Long orgLocationId, String sowType) throws Exception;
+
+	public List<String> getAllRequirementEducationByRequirementId(Long requirementId);
+	
+	Requirement getRequirementDetailsById(Long requirementId) throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays) throws Exception;
+	
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId, Date startDateUTC, Date endDateUTC) throws Exception;
+
+	public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations)	throws Exception ;
+
+	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
+			Long relationId) throws Exception; 
 }

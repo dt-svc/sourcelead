@@ -74,7 +74,7 @@ public class CandidateEducationRestController {
 	 * 
 	 * @throws NullPointer
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
 	public @ResponseBody String storeCandidateEducation(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 
@@ -144,7 +144,7 @@ public class CandidateEducationRestController {
 	 * @throws Exception
 	 */
 	
-	@PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_DELETE_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/removeCandidateEducationBycandidateIdandcandidateEducationId")
 	public String removeCandidateEducationBycandidateIdandcandidateEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
 		String resultJson;
@@ -155,7 +155,8 @@ public class CandidateEducationRestController {
 		 return resultJson;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES')")
+	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/getCandidateEducationBycandidateIdandEducationId")
 	public String getCandidateEducationBycandidateIdandEducationId(@RequestParam(value = "candidateId", required = false) Long candidateId,@RequestParam(value = "candidateEducationId", required = false) Long candidateEducationId,HttpServletRequest request) throws Exception {
 		String resultJson;

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
@@ -55,8 +56,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
-    <h1>Source Lead</h1>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -68,13 +68,24 @@ width: auto;
   <section class="container">
 		<div class="row">
 		  		<div id="accept" style="display:none">
+		  				<c:choose>
+						 <c:when test="${permission=='YES'}">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
 							  <p class="reason-msg">You Have accepted the Offer for ${requirementOffers.submissionId.requirement.jobTitle}</p>
 							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
+							  </c:when> 
+							  <c:otherwise>
+							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+						          		<i class="fa fa-clock-o fa-3x"></i>
+							        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
+							  </c:otherwise>
+							  </c:choose>
 						  </div>
 		  		</div>
 		  		<div id="reject" style="display:none">
+		  		<c:choose>
+					   <c:when test="${permission=='YES'}">
 		  			<form id="reject_form" name="reject_form" method="post" >
 					          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 								  <div class="col-md-6">
@@ -90,7 +101,15 @@ width: auto;
 								  	
 								  </div>
 							  </div>
-					</form>							  
+					</form>		
+					 </c:when>    
+					 <c:otherwise>
+					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+				          		<i class="fa fa-clock-o fa-3x"></i>
+					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
+					        </div>
+					    </c:otherwise>
+					  </c:choose>					  
 		  		</div>
 		 </div>
   </section>

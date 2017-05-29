@@ -66,6 +66,10 @@ $(document).ready(function() {
         		    	  	$("#timesheetApprovalDiv").append(result);
         		    	  	prepareChosenScripts();
         		    	  	pagination();
+        		    	  	var checkEmptyList = document.getElementById("hideExportApproval").value;  
+        		    	  	if(checkEmptyList == 'EmptyList'){
+        		    			$('#exportHideId').hide();
+        		    		}
         		      }
         	    }); 
 	}
@@ -93,7 +97,7 @@ $(document).ready(function() {
           <div class="pull-left">
             <h2>Timesheet approval</h2>
           </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; TimeSheet List</div>
+            <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheet approval</div>
            <div class="clearfix"></div>
         </section>
 		<div id="timesheetApprovalDiv"></div>

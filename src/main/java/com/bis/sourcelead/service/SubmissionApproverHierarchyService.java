@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -42,6 +43,8 @@ public interface SubmissionApproverHierarchyService {
 	
 	public void sendReopenTimeSheetAcceptOrRejectMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLoc, String timesheetFrequency, String type, User reopenedUser) throws Exception;
 	
+	public Map<String,Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
+	
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForTheSubmission(Long submissionId,String approvalStatus);
 	
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId,Long projectId, String approvalStatus);
@@ -51,6 +54,8 @@ public interface SubmissionApproverHierarchyService {
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String approvalStatus);
 
 	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
+	
+	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId,Date frequencyStartDate,Date frequencyEndDate);
 	
 	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String submissionStatus); 
 
@@ -72,5 +77,8 @@ public interface SubmissionApproverHierarchyService {
 
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectMember(Long projectMemberId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus);
 
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
+	
+	public Map<String,Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId, Date startDate, Date endDate) throws Exception;
 	
 }

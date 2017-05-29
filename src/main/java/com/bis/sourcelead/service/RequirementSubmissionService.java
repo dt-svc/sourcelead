@@ -27,6 +27,8 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getRequirementSubmissionById(Long submissionId)throws Exception;
 	
+	RequirementSubmission getClientRequierementSubmission(Long submissionId)throws Exception;
+	
 	List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
 	
 	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole) throws Exception;
@@ -44,7 +46,7 @@ public interface RequirementSubmissionService {
 	public Integer getRequirementSubmissionsCountByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String submissionStatus,String dateRange,String userType,User user, Date startUTCDate, Date endUTCDate);
 	
 	//to get candidates for submit to client
-	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(Long id,Long requirementId) throws Exception;
+	List<RequirementSubmission> getAllShortLitstedCandidatesForClientSubmissionByRequirementId(OrgLocations loginOrgLocation,Requirement requirement,User user,String loginUserRole) throws Exception;
 	
 	
 	List<RequirementSubmission> getRequirementPerCandidate(Long candudateId) throws Exception;
@@ -227,6 +229,10 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getApplicantsListByOrgLocationAndUserId(OrgLocations loginOrgLocations,
 			List<Long> applicantsList, Date startUTCDate, Date endUTCDate);
 	
+	Integer  getConsolidatedReportsForMailingForIndividualUserForToday(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+ 
+	List<RequirementSubmission>  getAllSubmissionsfromVendorsBasedOnLocationIdAndUserId(User user, OrgLocations orgLocations,String status,Requirement requirement) throws Exception;
+	
 	Integer getRequirementHistoryCountByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
 	boolean isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
@@ -235,4 +241,17 @@ public interface RequirementSubmissionService {
 
 	List<Long> getSubmissionIdByCandidateId(List<Long> candidateIds, Long orgLocationId);
 	
+	List<RequirementSubmission> getOfferAcceptedCandidatesListByOrgLocationId(Long orgLocationId);
+	
+//	Long getCountOfAllApplicantsByCreatedUserAndOrglocationId(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
+
+	List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId);
+
+	Long getCountOfAllApplicantsByCreatedUserAndOrglocationIdByStage(Long orgLocationId, User user,String stage,String timePeriod) throws Exception ;
+
+	List<RequirementSubmission> getVendorSpocSubmissions(String userCode, Long orgLocationId, Date startDateUTC, Date endDateUTC);
+	
+	List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType);
+	
+	List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId, Long orgRelationId, Date startUTCDate, Date endUTCDate);
 }

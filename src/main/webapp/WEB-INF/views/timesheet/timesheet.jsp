@@ -42,7 +42,7 @@ $(document).ready(function() {
 	function timesheetEntriesDiv(){ 
 	               var sourceleadUrl ='${sourceleadUrl}';
 	               $("#timesheetEntriesDiv").empty();
-	               $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	        	   $.ajax({
 		      	          type : "POST",
 		          	      dataType : 'json',
@@ -99,7 +99,7 @@ $(document).ready(function() {
 	         var sourceleadUrl ='${sourceleadUrl}';
 	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetEntriesDivByProjectMemberId").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -131,8 +131,7 @@ $(document).ready(function() {
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         var projectMemberId = $("#projectMemberId").val();
 	         $("#timesheetDivByFrequency").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
-	        
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
      	          type : "POST",
          	      dataType : 'json',
@@ -189,7 +188,7 @@ $(document).ready(function() {
 	         var projectMemberId = $("#projectMemberId").val();
 	         var timesheetFrequency = $("#timesheetFrequency").val();
 	         $("#timesheetDivByTab").empty();
-	         $("#loadTime").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100; background-position:center; background-repeat:no-repeat; background-size:50px;');
+	         $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	         $.ajax({
     	          type : "POST",
         	      dataType : 'json',
@@ -213,7 +212,7 @@ $(document).ready(function() {
 	 		    	        if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus != 'new' && approvalStatus != 'draft'){
 	 		    	        	activeElement.addClass("current subColor");
 	 		    	        	activeElement.siblings().removeClass("current");
-	 		    	        	activeElement.siblings().addClass("subColor");
+	 		    	        	//activeElement.siblings().addClass("subColor");
 	 		    	        }
 	 		    	        else if(approvalStatus != null && approvalStatus != '' && approvalStatus != 'undefined' && approvalStatus == 'draft'){
 	 		    	        	activeElement.addClass("current subColor");
@@ -253,7 +252,11 @@ function withdrawMyTimesheet(projectMemberId,timesheetFrequency){
 <!-- this script is for add row functionality at Timesheet screen -->
 <script>
 function addTimeSheetRow(projectId) {
-	          
+	 $('#0docFile').removeAttr('data-validation');
+	 $('#0docFile').attr("data-validation-optional","true"); 
+	 /* $('#0docFile').removeClass('error'); */
+	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
+	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){      
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -390,7 +393,15 @@ function addTimeSheetRow(projectId) {
 			
 			getProjectTasks(projectTaskId,projectId); 
 			
-		}	
+		   var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
+		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
+			 $('#0docFile').removeAttr('data-validation-optional');
+			 $('#0docFile').attr("data-validation","required"); 
+			 $(".time_btn").removeAttr("disabled");
+			 $("#loadTime").removeAttr("style"); 
+		   }
+	    }	
+	}	
         
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
@@ -568,10 +579,10 @@ function checkHours(){
 	    	 
 	 }else{
 	    	if(i == '1'){
-	    		result = result+"MonDay ,";
+	    		result = result+"Monday ,";
 	    	}
 	    	if(i == '2'){  
-	    		result = result+"TuesDay ,";
+	    		result = result+"Tuesday ,";
 	    	}
 	    	if(i == '3'){  
 	    		result = result+"Wednesday ,";
@@ -878,9 +889,9 @@ function addAttachment(){
           <div class="pull-left">
             <h2>Timesheets</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Timesheets</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
         </section>
-         <div class="loadTime" id="loadTime"></div> 
+         <div  id="loadTime"></div> 
          <div id="timesheetEntriesDiv"> 
            
          </div>
@@ -896,12 +907,12 @@ function addAttachment(){
         <!-- ####  this div is for dummy timesheets entries ( useful for add rows )   below   ####-->
 				         <div id="divadttTd1" style="display:none;" >   
 				             <div> 
-				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="pull-left existedProjectTaskIdprojectId" data-validation="required" field-name="Task" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+				              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId" data-validation="required" field-name="Task" onchange="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
 				                          <%--  <c:forEach items="${sourcelead_tasksList}" var="task" varStatus="t">
 				                              	<option value="${task.id}">${task.taskName}</option>
 				                           </c:forEach> --%>
 				             </select>
-				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="pull-left addtaskfield removetaskfield"/>
+				             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>
 				             </div>
 				             
 				        </div>
@@ -1065,7 +1076,7 @@ function cancel(){
 function newSaveTimesheet(status,savingType){ 
 	
 	 $(".time_btn").attr("disabled", "disabled");
-	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;'); 
+	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
 	 checkHours();
 	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
 	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){

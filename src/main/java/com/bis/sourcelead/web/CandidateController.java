@@ -94,13 +94,10 @@ public class CandidateController {
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
 			}
-            
-            
             List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			
 			model.addObject("skillsList", skillsList);
 			
 			return model;
@@ -128,7 +125,6 @@ public class CandidateController {
 				model.addObject("educationsList", educationsList);
 				
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-				
 				model.addObject("skillsList", skillsList);
 				
 				return model;
@@ -144,10 +140,16 @@ public class CandidateController {
 			HttpServletRequest request,
 			@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,
 			@RequestParam(value="candidateIdSearchId", required=false)String candidateIdSearchId) throws Exception {
+		
 		logger.debug("--------candidatesList------");
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    Long candidateCount = 0L;
+		 
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("candidates/candidatesList");
@@ -163,6 +165,15 @@ public class CandidateController {
 		    model.addObject("searchType", "Candidate");
 		}
 		
+		
+		 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocations.getId(), user.getId(), "Candidate");
+		 }else{
+			 candidateCount = candidateService.getCandidatesCountByCandidateTypeOrgLocationID(orgLocations.getId(), "Candidate");
+		 }
+	  
+	   model.addObject("candidateCount", candidateCount);
+	   
 		List<Countries> countryList = countriesService.getAllCountries();
 		model.addObject("countryList", countryList);
 		
@@ -187,13 +198,16 @@ public class CandidateController {
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsList", educationsList);
 		
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Candidates);
-		
+		model.addObject("candidateType", "Candidates");
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		//this block is for success messages --@Yashoda
@@ -227,7 +241,7 @@ public class CandidateController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.Candidates);
+		sessionData.setNav(Constants.Associates);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
@@ -235,7 +249,6 @@ public class CandidateController {
 		return model;
 
 	}
-	
 	
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_CANDIDATE')")
@@ -274,9 +287,8 @@ public class CandidateController {
 		
 		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		 model.addObject("educationsList", educationsList);
-		
+		 
 		 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-		
 		 model.addObject("skillsList", skillsList);
 		
 		return model;

@@ -4,12 +4,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
  <jsp:include page="employeeSubmissionDetails.jsp" />
  <jsp:include page="educationSubmissionDetails.jsp" />
  <jsp:include page="certificationSubmissionDetails.jsp" />
+ <jsp:include page="documentsSubmissionDetails.jsp"></jsp:include>
  <jsp:include page="submissionCandidateProfile.jsp" />
  <jsp:include page="submissionCandidateResume.jsp" />
  <jsp:include page="../candidates/candidatesCommentsList.jsp"></jsp:include>
@@ -48,6 +49,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	
+	$("#detailViewLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,
@@ -81,9 +83,13 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    	   
 	    	   var designation = '';
 	    	   var experience = '';
+	    	   var noticeperiod = '';
 	    	   
+	    	   if(json.requirementSubmissionTemplateFields.noticePeriod != null && json.requirementSubmissionTemplateFields.noticePeriod != '' && json.requirementSubmissionTemplateFields.noticePeriod !='undefined'){
+	    		   noticeperiod = 'Notice Period -'+json.requirementSubmissionTemplateFields.noticePeriod;
+	    	   }
 	    	   if(json.requirementSubmissionTemplateFields.designation != null && json.requirementSubmissionTemplateFields.designation != '' && json.requirementSubmissionTemplateFields.designation !='undefined'){
-	    		   designation = json.requirementSubmissionTemplateFields.designation;
+	    		   designation ='Designation -'+json.requirementSubmissionTemplateFields.designation;
 	    	   }
 	    	   
 	    	   if(json.requirementSubmissionTemplateFields.workExperience != null && json.requirementSubmissionTemplateFields.workExperience != '' && json.requirementSubmissionTemplateFields.workExperience !='undefined'){
@@ -112,6 +118,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	    		   currentRatePer = json.requirementSubmissionTemplateFields.currentRatePer; 
 	    	   }else{
 	    		   currentRatePer = " ";
+	    	   }
+	    	   
+	    	   
+	    	   if(json.requirementSubmissionTemplateFields.expectedRateType != null && json.requirementSubmissionTemplateFields.expectedRateType != '' && json.requirementSubmissionTemplateFields.expectedRateType !='undefined'){
+	    		   expectedRateType = json.requirementSubmissionTemplateFields.expectedRateType; 
+	    	   }else{
+	    		   expectedRateType = " ";
+	    	   }
+	    	   
+	    	   if(json.requirementSubmissionTemplateFields.expectedRatePer != null && json.requirementSubmissionTemplateFields.expectedRatePer != '' && json.requirementSubmissionTemplateFields.expectedRatePer !='undefined'){
+	    		   expectedRatePer = json.requirementSubmissionTemplateFields.expectedRatePer; 
+	    	   }else{
+	    		   expectedRatePer = " ";
 	    	   }
 	    	   
 	    	   /* if(json.candidate.currentRateCurrency != null && json.candidate.currentRateCurrency != '' && json.candidate.currentRateCurrency !='undefined'){
@@ -161,6 +180,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + ' <ul class="list-unstyled">';
                result = result + ' <li><strong>'+designation+'</strong></li>';
                result = result + ' <li>'+experience+'</li>';
+               result = result + ' <li>'+noticeperiod+'</li>';
                result = result + ' </ul>';
                result = result + '</div>';
                result = result + '</div>';
@@ -177,11 +197,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                result = result + '</div>';
                result = result + '<div class="socialnetwork-details">';
                result = result + '<ul class="list-inline list-unstyled">';
-               result = result + '<li class="bg-facebook"><a href="javascript:void(0)"> <i class="fa fa-facebook-square"></i></a></li>';
-               result = result + '<li class="bg-twitter"><a href="javascript:void(0)"> <i class="fa fa-twitter-square"></i></a></li>';
-               result = result + '<li class="bg-google "><a href="javascript:void(0)"> <i class="fa fa-google-plus-square"></i></a></li>';
-               result = result + '<li class="bg-linked"><a href="javascript:void(0)"> <i class="fa fa-linkedin-square"></i></a></li>';
-               result = result + ' <li class="bg-web"><a href="javascript:void(0)"> <i class="fa fa-globe"></i></a></li>';
+               if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
+            	   result = result + '<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
+	            }
+               
+               if(json.linkedInUrl != null && json.linkedInUrl != '' && json.linkedInUrl != 'undefined'){
+            	   result = result + '<li class="bg-linked"><a href="'+json.linkedInUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
+  	            }
+               
+               if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
+            	   result = result + '<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
+	            }
+               
                result = result + ' </ul>';
                result = result + ' </div>';
                result = result + ' </div>';
@@ -189,7 +216,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <div class="col-md-6">';
 		       
 		       result = result + ' <div class="row">';
-		       result = result + ' <div class="col-md-6">';
+		       result = result + ' <div class="col-md-8 paddingRight">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
@@ -197,12 +224,12 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result +country +''+ state +''+ city
 		       result = result +'</li>';
 		       result = result + '<li><i class="fa fa-money"></i><b>Current Rate:&nbsp;</b>'+currentRate+'   '+currentRatePer+'/'+currentRateType+'</li>';
-		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+currentRatePer+'/'+currentRateType+'</li>';
+		       result = result + '<li><i class="fa fa-money"></i><b>Expected Rate:&nbsp;</b>'+expectedRate+'  '+expectedRatePer+'/'+expectedRateType+'</li>';
 		       result = result + '</ul>';
 		       result = result + ' </div>';
 		       
 		       
-		       result = result + ' <div class="col-md-6">';
+		       result = result + ' <div class="col-md-4">';
 			   
 			    result = result + '<div class="acceptreject-actions">';
 			    if(json.needApplicantPermit == 'Y'){
@@ -214,7 +241,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    <c:if test="${isManager == true || isAdmin == true}">
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){   
+			    	   		if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT' && json.submissionStatus != 'OFFERREJECTED' && json.submissionStatus != 'OFFERACCEPTED'){   
 								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
@@ -285,8 +312,8 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 						   }else{
 							   <c:if test="${isTeamMember == true && isManager == false && isAdmin == false}">
 							   		result = result +'<span id= "requestsDiv">';
-							   if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE'){
-									result = result + '	<li><i class="glyphicon glyphicon-share-alt labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
+							   		if(json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'OFFERREJECTED' && json.submissionStatus != 'OFFERACCEPTED'){
+							   			result = result + '	<li><i class="glyphicon glyphicon-share-alt labelsuccess" title="Request" onClick="requestFun('+submissionId+');"></i>';
 							   }
 									result = result + '		<div class="acceptreject-pop" id="request">';
 									result = result + '		</div>';
@@ -302,7 +329,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix" id="latestMessage">';
+	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -341,6 +368,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + '<li><a href="#tabb-4" onclick="employeeSubmissionDetails('+candidateId+');">Employer</a></li>';
 		       result = result + '<li><a href="#tabb-5" onclick="educationSubmissionDetails('+candidateId+');">Education</a></li>';
 		       result = result + '<li><a href="#tabb-6" onclick="certificationSubmissionDetails('+candidateId+');">Certifications</a></li>';
+		       result = result + '<li><a href="#tabb-8" onclick="documentsSubmissionDetails('+candidateId+');">Documents</a></li>';
                result = result + '<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+','+submissionId+');">Comments</a></li>';
 		       result = result + '<div class="clearfix"></div>';
 		       result = result + '</ul>';
@@ -363,12 +391,18 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       
 		       result = result + '<div id="tab-7" class="new-tabs_inn">';
 			   result = result + '</div>';
+			   
+			   result = result + '<div id="tabb-8" class="new-tabs_inn">';
+			   result = result + '</div>';
 		       
 		       result = result + '<div id="tabb-1" class="new-tabs_inn" style="display: block;">';
 
 		       result = result + '<div class="require_wrap_details">';
 		       if(json.submissionStatus == 'REJECTED'){
-		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		       }
+		       if(json.submissionStatus == 'BACKOUT'){
+		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
@@ -478,14 +512,25 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
           result = result + '</div>';
           }
           }
-getInternalInterviewsList(submissionId);
+        
+        
+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
+     getInternalInterviewsList(submissionId);
+'</sec:authorize>';
+          
+
 //getCustomerInterviewsList(submissionId,requirementId);
-getOfferDetails(submissionId);   
+
+
+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
+	getOfferDetails(submissionId);
+'</sec:authorize>';
 
 $("#viewCandidateDiv").empty();  
 $("#viewCandidateDiv").append(result);
 
 $("#tabb-1").show()
+$("#detailViewLoading").removeAttr("style");
 $(".new-tabs a").click(function(event) {
     event.preventDefault();
     $(this).parent().addClass("current");
@@ -541,13 +586,15 @@ function getInternalInterviewsList(submissionId){
          type : "POST",
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+              
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	
 	                	 $("#internalInterviewsList").empty();
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
    					     result = result + '<div class="content clearfix" style="display: block;">';
 	                     var json = JSON.parse(data);
+	                     
 	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 
@@ -594,7 +641,6 @@ function getInternalInterviewsList(submissionId){
 	                    	 /* if(report.timeZone != null && report.timeZone != 'undefined' && report.timeZone != ""){
 	                    		 timeZone = report.timeZone;
 	                    	 } */
-	                    	 
 	                    	 if(report.interviewId.location != null && report.interviewId.location != 'undefined' && report.interviewId.location != ""){
 	                    		 location = report.interviewId.location;
 	                    	 }
@@ -648,7 +694,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 if(report.interviewId.interviewStatus == "Attending"){
 	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
 	                    	 }
-	                    	 if(report.interviewId.interviewStatus == "Not Attending"){
+	                    	 if(report.interviewId.interviewStatus == "Not_Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Maybe"){
@@ -674,31 +720,31 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Details</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7">'+location+'</p>';
+	                    	 result = result + '<p class="col-md-7" tbldata-dotdot-me" title= "'+location+'">'+location+'</p>';
 	                    	 result = result + '</div>';
 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Interview Type</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+interviewType+'</p>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title= '+interviewType+'>'+interviewType+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
 	                    	 result = result + '<strong>Date</strong>';
 	                    	 result = result + '</label>';
-	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.dateOfInterviewStr+'</p>';
+	                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.dateOfInterviewStr+'>'+report.dateOfInterviewStr+'</p>';
 	                    	 result = result + '</div>';
 	                    	 
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<label class="col-md-5">';
-	                    	 result = result + '<strong>Time</strong>';
+	                    	 result = result + '<strong>Local Time</strong>';
 	                    	 result = result + '</label>';
                              if(report.endTimeStr != null && report.endTimeStr != 'undefined' && report.endTimeStr != ""){
-                            	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
+                            	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.startTimeStr+' to '+report.endTimeStr+'">'+report.startTimeStr+' to '+report.endTimeStr+' </p>';
 	                    	 }else{
-	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.startTimeStr+'</p>';
+	                    		 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.startTimeStr+'>'+report.startTimeStr+'</p>';
 	                    	 }
 	                    	 result = result + '</div>';
 	                    	 
@@ -707,16 +753,15 @@ function getInternalInterviewsList(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Interviewers</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.interviewersList+'</p>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.interviewersList+'">'+report.interviewersList+'</p>';
 		                    	 result = result + '</div>';
 	                    	 }
-	                    	 
 	                    	 if(report.remainderTime != null && report.remainderTime != 'undefined' && report.remainderTime != ""){
 	                    		 result = result + '<div class="row clearfix">';
 		                         result = result + '<label class="col-md-5">';
 		                         result = result + '<strong>Reminder details</strong>';
 		                         result = result + '</label>';
-		                         result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.remainderTime+'</p>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-me" title = "'+report.remainderTime+'">'+report.remainderTime+'</p>';
 		                         result = result + '</div>';
 	                    	 }
 	                         
@@ -724,7 +769,7 @@ function getInternalInterviewsList(submissionId){
 	                         result = result + '<label class="col-md-5">';
 	                         result = result + '<strong>Notified to</strong>';
 	                         result = result + '</label>';
-	                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
+	                         result = result + '<p class="col-md-7 tbldata-dotdot-me"><span id="'+report.id+'notifiedDiv">'+notifiedDetails+'<span></p>';
 	                         result = result + '</div>';
 	                         
 	                         if(report.rescheduleComment != null && report.rescheduleComment != '' && report.rescheduleComment != 'undefined'){
@@ -732,7 +777,7 @@ function getInternalInterviewsList(submissionId){
 		                         result = result + '<label class="col-md-5">';
 		                         result = result + '<strong>Reschedule Comment</strong>';
 		                         result = result + '</label>';
-		                         result = result + '<p class="col-md-7 tbldata-dotdot-big"><span title="'+report.rescheduleComment+'">'+report.rescheduleComment+'<span></p>';
+		                         result = result + '<p class="col-md-7 tbldata-dotdot-me"><span title="'+report.rescheduleComment+'">'+report.rescheduleComment+'<span></p>';
 		                         result = result + '</div>';
 	                         }
 	                        
@@ -741,7 +786,7 @@ function getInternalInterviewsList(submissionId){
 		                    	 result = result + '<label class="col-md-5">';
 		                    	 result = result + '<strong>Client Name:</strong>';
 		                    	 result = result + '</label>';
-		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
+		                    	 result = result + '<p class="col-md-7 tbldata-dotdot-me" title = '+report.clientName+'>'+report.clientName+'</p>';
 		                    	 result = result + '</div>';
 	                         }
 	                         
@@ -1246,6 +1291,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           	 }
  
         	 $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+        	 getOfferDetails(submissionId);
         	 
        },
          
@@ -1381,7 +1427,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
 		result = result+'	                            </span> </label>';
-		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="uploadFile" name="docFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
+		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
 		result = result+'	                        </div>';
 		result = result+'	                    </div>  ';  
 		result = result+'	                  </div>   '; 
@@ -1395,15 +1441,17 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#accpet-div').fadeOut();
 		$('#reject').fadeOut();
 		//attachmentValidationFun();
-		
+		 
 		/* upload file script for size validation 2MB*/
 	    var selectedFile = document.getElementById("docFile");
 	    selectedFile.addEventListener("change", function() {
 	      var docSize = this.files[0].size;
-	      $("#docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      $("#request_candidate").attr("disabled", false);
 	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#docFileuploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	    	  document.getElementById("subUploadFile").value = '';
+	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	    	  $("#request_candidate").attr("disabled", true);
 	      }
 	    });
 	    
@@ -1411,7 +1459,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	    document.getElementById("docFile").onchange = function () {
 			   //$("#uploadFile").dir(this.files[0]);
 		    	//document.getElementById("uploadFile").value = this.value;
-		    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+		    	$('#subUploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 		  
 		   }; 
 	};
@@ -1950,17 +1998,13 @@ function rescheduleInterView(interviewId,timezone,submissionId){
 	result = result + '			   <input type="hidden" id="interviewId" name="interviewId" value='+interviewId+' >';
 	result = result + '				  <h3>Reschedule</h3>';
 	result = result + '				  <div class="reSchPopCta">';									  	
-	result = result + '						<span>';
+	result = result + '						<span id="rescheduleDateDiv">';
 	result = result + '						<input type="text" class="form-control input-sm" placeholder="Date" id="rescheduleDate" name="rescheduleDate" data-validation="required" field-name="Interview Date">';
 	result = result + '						<i class="fa fa-calendar"></i>';
 	result = result + '						</span>	';									  	
-	result = result + '						<span class="timeDiv" id="timeDiv">';
-	result = result + '						<input type="text" class="form-control input-sm" placeholder="Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
-	//result = result + '						<i class="fa fa-clock-o"></i>';
-	//result = result + '						</span>';
-	//result = result + '						<span class="popTime">';
-	result = result + '						<input type="text" class="form-control input-sm" placeholder="Time" name="endTime" id="endTime" onBlur="validateEndTime();">';
-	//result = result + '						<i class="fa fa-clock-o"></i>';
+	result = result + '						<span class="timeDiv" id="rescheduleTimeDiv">';
+	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="Start Time" id="startTime" name="startTime" onBlur="validateEndTime();" data-validation="required" field-name="Start Time">';
+	result = result + '						<input type="text" class="timeicon form-control input-sm" placeholder="End Time" name="endTime" id="endTime" onBlur="validateEndTime();">';
 	result = result + '						</span>';
 	result = result + '				<div class="clearfix"></div> ';
 	result = result + '			<div class="form-group Pmess clearfix">';
@@ -2048,6 +2092,7 @@ $('#rescheduleDate').datepicker({
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
+		addValidClass();
 	}
 	});
 	
@@ -2056,8 +2101,22 @@ function rescheduleInterClose(){
 	$(".reSchPop").removeClass("reSchPopActive");
 }
 </script>
+
+<script type="text/javascript"> 
+	function addValidClass(){
+		 var StartDate = document.getElementById("rescheduleDate").value;
+		 if(StartDate){
+			 $('#rescheduleDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+}
+</script>
+
  <script>
  function rescheduleInterviewUpdate(submissionId){
+	 	if($("#notificationToOthers").prop('checked') == true){
+	 		validateOtherMail();
+		}
+		
 		if ($('#rescheduleInterview_form').validate(false, validationSettings)) {
 			var frm = $('#rescheduleInterview_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -2079,6 +2138,10 @@ function rescheduleInterClose(){
 		}
 	 
  }
+ $('body').on('blur', '#rescheduleInterview_form', function() {
+		$("#rescheduleInterview_form").showHelpOnFocus();
+		$("#rescheduleInterview_form").validateOnBlur(false, validationSettings);
+	});
  </script>
  <script>
    function validateTimeZone(){
@@ -2211,17 +2274,17 @@ function TimezonesRescheduleList(timezone){
 	function validateEndTime() {
 		 var allStartTimes = [];
 		 var allEndTimes = [];
-		 $("#timeDiv").find('p.jquery_form_error_message').remove();
+		 $("#rescheduleTimeDiv").find('p.jquery_form_error_message').remove();
 			var startTime = $("#startTime").val();
 			 var endTime = $("#endTime").val();
 			if(endTime != null && endTime != '' && endTime != 'undefined'){
 				if(startTime == endTime){
-					$("#timeDiv").find('p.jquery_form_error_message').remove();
+					$("#rescheduleTimeDiv").find('.text-danger').remove();
 			        $("#add_interview").removeAttr("disabled");
 			        $("#add_interview").attr("disabled", "disabled");
-			        $("#timeDiv").append("<p class='jquery_form_error_message'>End Time should greater than Start Time</span>");
+			        $("#rescheduleTimeDiv").append("<small class='text-danger'>End Time should greater than Start Time</small>");
 			    }else{
-			         $("#timeDiv").find('p.jquery_form_error_message').remove();
+			         $("#rescheduleTimeDiv").find('.text-danger').remove();
 			         $("#add_interview").removeAttr("disabled");
 			   	}
 			}
@@ -2253,7 +2316,7 @@ $("#notMail").click(function(){
 	
 <!-- this script using for interview feedback Ends -->
 <script type="text/javascript">
-function reActivateApplicant(submissionId,candidateId,requirementId){
+function reActivateApplicant(submissionId,candidateId,requirementId,type){
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
@@ -2261,7 +2324,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId){
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	        type : "POST",
-	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+	         url: sourceleadUrl+"/reActivateRejectedApplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            	   getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
@@ -2298,7 +2361,6 @@ function pipelineList(requirementId){
 	filterReq(requirementId,submissionType);
 }
 </script>
-
 
 
 

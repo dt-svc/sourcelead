@@ -69,6 +69,7 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                 	 result  = result + '           <th>Start date</th>';
 	                 	 result  = result + '           <th>End date</th>';
 	                 	 result  = result + '           <th>Owner</th>';
+	                 	 result  = result + '           <th>Description</th>';
 	                 	 result  = result + '           <th>Action</th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -113,6 +114,11 @@ function spocDocumentsList(clientLocationId,orgRelationId,userId,spocName){
 	                    	 
 	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
 	                    	      result  = result + ' <td><div><span title='+opt.ownerName+'>'+opt.ownerName+'</span></div></td>';
+	                    	 }else{
+	                    		 result  = result + ' <td><div><span>--</span></div></td>';
+	                    	 }
+	                    	 if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
+	                    	      result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
@@ -186,7 +192,7 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="docName"  id="docName" field-name="Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">                                          ';
+	result = result  +'                      <input type="text" name="docName"  id="docName" field-name="Document Name" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Document Name *">                                          ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';

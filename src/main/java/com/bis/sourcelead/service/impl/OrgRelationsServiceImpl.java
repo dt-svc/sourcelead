@@ -155,6 +155,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 						orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
 						orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
+						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrg().getClientAddress()));
+						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getOrg().getClientBillingAddress()));
+						orgRelation.setPaymentTerms((orgRelation.getResponderLocationId().getOrg().getPaymentTerm()));
 					}
 					orgRelation.setLevel(orgRelation.getInitiatorLevel());
 			 }
@@ -174,6 +177,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setPhone(orgRelation.getLocationId().getPhone());
 						orgRelation.setEmail(orgRelation.getLocationId().getEmail());
 						orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
+						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrg().getClientAddress()));
+						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getOrg().getClientBillingAddress()));
+						orgRelation.setPaymentTerms((orgRelation.getResponderLocationId().getOrg().getPaymentTerm()));
 					}
 					orgRelation.setLevel(orgRelation.getResponderLevel());
 			 } 
@@ -209,7 +215,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				if(user != null){
 					orgRelation.setVendorCreateduserName(vendorCreatedName.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}
-				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(),loginUserId,orgLocationId,"");
+				List<OrgSpoc> orgSpocs = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(),loginUserId,orgLocationId,"Client");
 				orgRelation.setNoOfContatcs(orgSpocs.size());
 				if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== orgLocationId.longValue()){
 					if(orgRelation.getResponderLocationId() != null){
@@ -271,7 +277,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				 
 				 if("Vendor".equalsIgnoreCase(relationType)){
 					 StringBuilder spocNameSB = new StringBuilder();
-					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
+					 if(null != orgSpoc.getClientUser() ){
+					   orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail()); 
+					 }
 					 if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
 						spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString(); 
 					 }else{
@@ -473,6 +481,17 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception {
 		return orgRelationsDao.getAllVendorsCountByOrgLocationId(orgLocationId,type);
 
+	}
+
+	@Override
+	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType)
+	{
+		return orgRelationsDao.getAllClientsByOrgLocationIdAndDomain(orgLocationId,domain,responderType);
+	}
+
+	@Override
+	public OrgRelations getOrgRelationById(Long id) throws Exception {
+		return orgRelationsDao.getOrgRelationById(id);
 	}
 	
 }

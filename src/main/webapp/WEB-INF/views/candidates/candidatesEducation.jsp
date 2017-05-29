@@ -11,6 +11,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+
 <style>
 .addUser-org {
     overflow-x: auto;
@@ -24,25 +26,39 @@
 --%>
 <script>
 function candidateEducation(candidateId){
-	
+	 var candidateType = '${candidateType}';
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
-		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt25">  ';
+		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt25">  ';
 	}else{
-		result = result  +'    <div class="project_tabs_inn_head addUser-org overflow_inherint mt10">  ';
+		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt10">  ';
 	}
 	
 	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 	
-		result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
-		'</sec:authorize>';
+		if(candidateType == "Candidates"){
+			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 	
+			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
+			'</sec:authorize>';
+		}else{
+			'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">'; 	
+			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
+			'</sec:authorize>';
+		}
+		
 	}else{
-		'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
-		'</sec:authorize>';
+		if(candidateType == "Candidates"){
+			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			'</sec:authorize>';
+		}else{
+			'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			'</sec:authorize>';
+		}
+		
 	}
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
@@ -61,6 +77,9 @@ function candidateEducation(candidateId){
     $("#tab-4").empty();  
     $("#tab-5").empty();  
     $("#tab-6").empty();  
+    $("#tab-7").empty();
+    $("#tab-8").empty();
+    $("#tab-9").empty();
     $("#tab-4").append(result);  
 	
     candidateEducationList(candidateId);
@@ -88,6 +107,7 @@ function candidateEducation(candidateId){
 --%>
 <script>
 function candidateEducationList(candidateId){
+	var candidateType = '${candidateType}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -180,12 +200,22 @@ function candidateEducationList(candidateId){
 	                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 	                    		 }
 	                    		 else{
-	                    			 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');"></a></sec:authorize>';	 
+	                    			 if(candidateType == "Candidates"){
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    			 }else{
+	                    				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+	                    			 }
+	                    				 
 	                    		 }
 	                    		 if(window.candidateStatusGlobal == '0'){
 									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 	                    		 }else{
-	                    			 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');"></i></sec:authorize></div></td>'; 
+	                    			 if(candidateType == "Candidates"){
+	                    				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
+	                    			 }else{
+	                    				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
+	                    			 }
+	                    			  
 	                    		 }
 	                    	}
 	                    	 result  = result + '</tr>';
@@ -266,7 +296,7 @@ function addEducation(candidateId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');">';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="name" data-validation=" required" onchange="validateEduname('+candidateId+');" onkeyup = "validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -462,7 +492,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10"> ';
-	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'>";
+	result = result + "<select  class='chosen-select form-control' name='name' id='name' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 		                /*  for (var j = 0; j < json.educationList.length; j++) {
 								var education = json.educationList[j];
 								   if(education.name == json.name){
@@ -558,7 +588,7 @@ function EditEducation(candidateId,candidateEducationId) {
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
 	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" name="address" class="form-control input-sm" value="'+address+'" placeholder="Address">                                                 ';
+	result = result  +'                      <input type="text" field-name="institute" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true" name="address" class="form-control input-sm" value="'+address+'" placeholder="Address">                                                 ';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'     ';
@@ -707,6 +737,7 @@ function candidateEducationStore(candidateId){
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
 				               			eduMsgFadein();
+				               			qveducationSubmission(candidateId);
 							    	}
 				                 }   
 				      }, 
@@ -881,6 +912,7 @@ function clearSearchKey() {
 		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
 							eduMsgFadein();
+							qveducationSubmission(candidateId);
 						},
 					});
 			return true;

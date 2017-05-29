@@ -111,8 +111,9 @@ function submitToClient(requirementId){
 			           
 			           if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
 			        	   result = result + '<td><div><span>'+report.finalizedRate+'</span></div></td>';
-				           }
-				       else{
+				         	}else if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+			        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
+				         	}else{
 				        	result = result + '<td><div><span>--</span></div></td>';
 			    	     }
 			           
@@ -124,7 +125,7 @@ function submitToClient(requirementId){
 			    	     }
 							result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
 							result = result + '<option value="">Rate Per</option>';
-							result = result + ' <option '+(report.submitToClientRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+							result = result + '<option '+(report.submitToClientRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+(report.submitToClientRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
 							result = result + '<option  '+(report.submitToClientRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
 							result = result + '<option  '+(report.submitToClientRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
@@ -212,10 +213,15 @@ function SCpagination(){
     $('#SCPagination').DataTable( { 
     	"scrollCollapse": false,
     	"scrollX": true,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bPaginate": false,
     	"bLengthChange": false,
     	"bDestroy": true,
+    	"aaSorting": [[1,'desc']],
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      	"sSearch": "",
      	 "sZeroRecords": "", "sEmptyTable": ""
@@ -374,7 +380,6 @@ function addEmailtemplate(requirementId){
 					result = result +'  <div class="pull-left">';
 				 	result = result +'    <h2>Mail Box</h2>';
 					result = result +'  </div>';	
-					result = result +'  <div class="pull-right brud-crum">Mail &raquo; Mail Box</div>';
 					result = result +'</section>';
 					result = result +'	<div class="content-area clearfix">';
 					result = result +'		<div class="form-horizontal compose-mail col-md-10 col-md-offset-1">';
@@ -407,7 +412,7 @@ function addEmailtemplate(requirementId){
 					result = result +'			<div class="col-md-12 clearfix mb10 mt10">';
 					result = result +'				<div class="col-md-12">';
 					result = result +'					<div class="clearfix txt-area">';
-					result = result +'						<textarea id="compose-textarea"  class="form-control" rows="2" placeholder="Message" style="height: 250px" name="mailBody" data-validation-optional="true" data-validation="validate_length length2-500">'+json.mailBody+'</textarea>';
+					result = result +'						<textarea id="compose-textarea"  class="form-control" rows="2" placeholder="Message" style="height: 250px" name="mailBody" data-validation-optional="true" data-validation="validate_length length2-1000">'+json.mailBody+'</textarea>';
 					result = result +'					</div>';
 					result = result +'				</div>';
 					result = result +'			</div>';
@@ -497,7 +502,20 @@ function addEmailtemplate(requirementId){
  }
 		 
  }else{
-	    var result = "";
+	 var selectedShortlists = [];
+	 var selectedShortlistsRate = [];
+	 var selectedShortlistsRatePer = [];
+	 $("input[name='shortlist[]']:checked").each( function (i) {
+		 selectedShortlists[i] = $(this).val();
+		 var rateId = $(this).val();
+		 var selectedRate = $("#submissionRate"+rateId).val();
+		 selectedShortlistsRate[i] = selectedRate;
+		 var rateIdper = $(this).val();
+		 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
+		 selectedShortlistsRatePer[i] = selectedRatePer;
+	  
+		 if(selectedRate != '' && selectedRatePer == ''){
+		 var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
@@ -507,7 +525,21 @@ function addEmailtemplate(requirementId){
 		$("#popUp").append(result);
 		$("#pipeline_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
- }
+		
+		}else if(selectedRate == '' && selectedRatePer != ''){
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Submission Rate is Required</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	 }
+ });	
+}
 }
 </script>
 
