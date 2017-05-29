@@ -66,21 +66,21 @@ $(document).ready(function(){
       <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeContract()"><i class="fa fa-close"></i></a>
       <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
       <div class="col-md-4 mt25">
-        <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="Import Candidate">
+        <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="New Contract">
           <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
           <strong class="clearfix">New Contract</strong> </a> </div>
       </div>
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-yellow"> <a href="<c:url value="/addCustomContract" />" title="Add Candidate">
+          <div class="small-widget bg-yellow"> <a href="<c:url value="/addCustomContract" />" title="Custom Contract">
             <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Custom Contract</strong> </a> </div>
         </div>
         </sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
+          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Existing Contract">
             <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Existing Contract</strong> </a> </div>
         </div>
@@ -161,7 +161,7 @@ $(document).ready(function(){
   
 </div>
 </section>
-
+<div id="deleteDocpopUp"></div>
 <div class="mask_time"></div> 
 <section class="contPopup" style="min-height:300px;">
 	<div id="viewPopupDiv"></div>
@@ -600,7 +600,7 @@ function preparedContractListDraft(data){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 		     	if(report.templateSubmissionStatus == "DRAFT"){
-		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
+		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
 		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -612,7 +612,7 @@ function preparedContractListDraft(data){
 		     		//result = result + '</div>';
 	     	  }
 	     	  else{
-	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
+	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 	     	  }
 		         result = result + '</div></td>';
 		     	 
@@ -672,7 +672,7 @@ function preparedContractListDraft(data){
 	         opt = opt + '<td>';
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
+	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -683,7 +683,7 @@ function preparedContractListDraft(data){
 	     		'</sec:authorize>';
 	     	  }
 	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
+	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
 	     	  }
 	     		opt = opt + '</div></td>';
 	     	
@@ -817,7 +817,7 @@ function preparedContractListWFA(data){
 	        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
 	            		//result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
 	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
-	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
+	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 	            	  '</sec:authorize>';
 	            	  '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			     		if(report.typeOfContract == "New"){
@@ -830,7 +830,7 @@ function preparedContractListWFA(data){
 
 	        	  }
 	        	  else{
-	        		  result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
+	        		  result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 	        	  }
 	        	  
 		     		 //result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
@@ -915,7 +915,7 @@ function preparedContractListWFA(data){
             		//opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
 
             		opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
-            		opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
+            		opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 
             		'</sec:authorize>';
             		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -929,7 +929,7 @@ function preparedContractListWFA(data){
         	  }
         	  else{
          	 	//opt = opt + '<div><span>--</span></div>';
-        		  opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
+        		  opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
         	  }
         	 // opt = opt + '<div class="tbldata-dotdot_80">';
 	     	 
@@ -1058,7 +1058,7 @@ function preparedContractListWTS(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';//Waiting to be signed
-		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
+		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 		         result = result + '</td>';
 		     	 
 		        result = result + '</tr>';
@@ -1126,7 +1126,7 @@ function preparedContractListWTS(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';//Waiting to be signed
-     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
+     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
      		 opt = opt + '</td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1254,7 +1254,7 @@ function preparedContractListWTV(data){
 
 	     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
 	            	 }
-	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
+	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 		         result = result + '</div></td>';
 		        result = result + '</tr>';
 		    }
@@ -1326,7 +1326,7 @@ function preparedContractListWTV(data){
 	         if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 	     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
 	     		}
-     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
+     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
      		 opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1444,7 +1444,7 @@ function preparedContractListFinalize(data){
 		         result = result + '</td>'; */
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
+		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 		         result = result + '</td>';
 		        result = result + '</tr>';
 		    }
@@ -1507,7 +1507,7 @@ function preparedContractListFinalize(data){
 	         opt = opt + '</td>'; */
 
 	         opt = opt + '<td>';
-     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
+     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
      		 opt = opt + '</td>';
      		 
 	     	 opt = opt + '</tr>';
@@ -1630,7 +1630,7 @@ function preparedContractListExpired(data){
 			     		result = result + '</div>';
 		     	  }
 		     	  else{ */
-		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
+		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 // 		     	  }
 			         result = result + '</div></td>';
 		     	 
@@ -1701,7 +1701,7 @@ function preparedContractListExpired(data){
 	     		opt = opt + '</div>';
 	     	  }
 	     	  else{ */
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
+	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
 // 	     	  }
 	     		opt = opt + '</div></td>';
 	     	
@@ -1822,7 +1822,7 @@ function preparedContractListRejected(data){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 		     	if(report.templateSubmissionStatus == "REJECTED"){
-		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
+		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			     		if(report.typeOfContract == "New"){
 			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1834,7 +1834,7 @@ function preparedContractListRejected(data){
 		     		result = result + '</div>';
 	     	  }
 	     	  else{
-	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
+	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 	     	  } 
 		         result = result + '</div></td>';
 		     	 
@@ -1900,7 +1900,7 @@ function preparedContractListRejected(data){
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "REJECTED" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
+	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1912,7 +1912,7 @@ function preparedContractListRejected(data){
 	     		opt = opt + '</div>';
 	     	  }
 	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
+	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
 	     	  }
 	     		opt = opt + '</div>';
 	     		 opt = opt + '</td>';
@@ -1972,9 +1972,9 @@ function vendorListContractsPaginationREJ(){
 </script>
 
 <script type="text/javascript">
-function previewContractPDF(id) {
+function previewContractPDF(uuid, templateName) {
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewContractPdf/'+id+'','_newtab');
+	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
 }</script>
 
 <script>
@@ -2194,7 +2194,21 @@ function Check(val){
 }
 
 </script>
-
+<script>
+function rejectContract(recordId,status){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Document delete message here</p>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="terminateReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' ><input class='u_can_color' type='button'  value='Cancel' ></b>";
+	result = result +"	</div>";
+	$("#deleteDocpopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />

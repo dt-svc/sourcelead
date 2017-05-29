@@ -97,17 +97,26 @@ public class Invoice {
 	@Column(name = "CURRENCY_CODE")
 	private String currencyCode;
 	
+	@Column(name = "EXCHANGE_RATE")
+	private String exchangeRate;
+	
+	@Column(name = "CONVERT_AMOUNT")
+	private String convertAmount;
+	
+	@Column(name = "CONVERT_CURRENCY_CODE")
+	private String convertCurrencyCode;
 	
 	@Column(name = "DUE_AMOUNT")
 	private String dueAmount;
 	
-	
 	@Column(name = "INVOICE_COMMENT",columnDefinition = "TEXT default NULL")
 	private String invoiceComment;
 	
+	@Column(name = "REJECT_REASON",columnDefinition = "TEXT default NULL")
+	private String rejectReason;
+	
 	@Column(name = "STATUS")
 	private String status;
-	
 	
 	@Column(name = "INVOICE_STATUS")
 	private String invoiceStatus;
@@ -171,7 +180,6 @@ public class Invoice {
 	
 	@Transient
 	private String dueDateStr;
-	
 
 	@Transient
 	private Long vendorOrgRelationId;
@@ -224,9 +232,6 @@ public class Invoice {
 	
 	@Transient
 	private Long invoiceParentId;
-	
-	
-	
 	
 	@Transient
 	private List<String> submissionApproverHierarchyIds;
@@ -773,5 +778,39 @@ public class Invoice {
 		this.currencyCode = currencyCode;
 	}
 
+	public String getExchangeRate() {
+		return exchangeRate;
+	}
+
+	public void setExchangeRate(String exchangeRate) {
+		this.exchangeRate = exchangeRate;
+	}
+
+	public String getConvertAmount() {
+		return convertAmount;
+	}
+
+	public void setConvertAmount(String convertAmount) {
+		this.convertAmount = convertAmount;
+	}
+
+	public String getConvertCurrencyCode() {
+		return convertCurrencyCode;
+	}
+
+	public void setConvertCurrencyCode(String convertCurrencyCode) {
+		this.convertCurrencyCode = convertCurrencyCode;
+	}
+
+	public String getRejectReason()
+	{
+		return rejectReason;
+	}
+
+	public void setRejectReason(String rejectReason)
+	{
+		this.rejectReason = rejectReason;
+	}
+	
 	
 }

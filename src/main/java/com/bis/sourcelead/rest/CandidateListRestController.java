@@ -185,7 +185,7 @@ public class CandidateListRestController {
 					}
 					
 				}
-//			}s
+//			}
 			
 			
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
@@ -202,7 +202,7 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", 0));
 			}
 			
-			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)   && !updatedDateRange.equalsIgnoreCase("0")  && !updatedDateRange.equalsIgnoreCase("undefined")){
+			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange) && !updatedDateRange.equalsIgnoreCase("all")  && !updatedDateRange.equalsIgnoreCase("undefined")){
 				
 				// This Code is for  getting the sql enddate based on range
 		    	 Calendar c = Calendar.getInstance();
