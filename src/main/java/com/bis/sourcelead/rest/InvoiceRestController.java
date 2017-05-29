@@ -884,19 +884,23 @@ public class InvoiceRestController {
  	public @ResponseBody  String getSowRateByContractId(@RequestParam(value = "contractId", required = false) Long contractId,
  			HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-		  String resultJson;
+		  String resultJson = "";
          Contracts contracts = contractsTemplateService.getContractById(contractId);
          String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-         float hourlyRate = conversionUtil.getHourlyRate(contracts.getBillingAmount(), contracts.getBillingRatePer());
-         if(!currencyCode.equalsIgnoreCase(contracts.getBillingRateType())){
-        	 float coversionRate = conversionUtil.convert(contracts.getBillingRateType(),currencyCode,hourlyRate);
-        	 double roundValue = (Math.round(coversionRate * 100.0) / 100.0);
-        	 contracts.setBillingAmount(String.valueOf(roundValue));
-         }else{
-        	 double roundValue = (Math.round(hourlyRate * 100.0) / 100.0);
-        	 contracts.setBillingAmount(String.valueOf(roundValue));
+         if(null != contracts.getBillingAmount() && null != contracts.getBillingRatePer()){
+        	 float hourlyRate = conversionUtil.getHourlyRate(contracts.getBillingAmount(), contracts.getBillingRatePer());
+             
+             if(!currencyCode.equalsIgnoreCase(contracts.getBillingRateType())){
+            	 float coversionRate = conversionUtil.convert(contracts.getBillingRateType(),currencyCode,hourlyRate);
+            	 double roundValue = (Math.round(coversionRate * 100.0) / 100.0);
+            	 contracts.setBillingAmount(String.valueOf(roundValue));
+             }else{
+            	 double roundValue = (Math.round(hourlyRate * 100.0) / 100.0);
+            	 contracts.setBillingAmount(String.valueOf(roundValue));
+             }
+             resultJson = commonUtil.toJSON(contracts);		 
          }
-         resultJson = commonUtil.toJSON(contracts);	
+        
          return resultJson;
  	}
 
