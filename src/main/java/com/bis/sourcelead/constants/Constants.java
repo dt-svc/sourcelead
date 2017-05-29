@@ -276,6 +276,7 @@ public class Constants {
 	public static int TAB_REQUIREMENT = 8;
 	public static int TAB_USER = 2;
 	public static int TAB_PROJECTS = 3;
+	public static int TAB_CONTRACTS = 16;
 	public static String Dashboard = "Dashboard";
 	public static String Users = "Users";
 	public static String Projects = "Projects";
