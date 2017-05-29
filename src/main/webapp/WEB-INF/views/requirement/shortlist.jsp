@@ -65,10 +65,10 @@ function candidateShortList(requirementId){
 	    			    result = result + '<tr>';
 	    			    result = result + '<td><input type="checkbox"  class="submissionsChecks" value='+report.id+' onclick="getCheckedCandidatesCount();"  name="submissionList[]" ></td>';
 	    			    
-			            result = result + '<td><div class="tbldata-dotdot-100">'+report.candidateName+'</div></td>';
+			            result = result + '<td><div class="tbldata-dotdot-100" title = "'+report.candidateName+'">'+report.candidateName+'</div></td>';
 			           
 			           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-			        	   result = result + '<td><div  class="tbldata-dotdot-100">'+report.candidateEmail+'</div></td>';
+			        	   result = result + '<td><div  class="tbldata-dotdot-100" title = "'+report.candidateEmail+'">'+report.candidateEmail+'</div></td>';
 				           }
 				       else{
 				        	result = result + '<td><div><span>--</span></div></td>';
@@ -196,13 +196,13 @@ function selectAllShortlisted(){
             });         
         } 
 	
-	 /* var selectedsubmissionslists = [];
+   var selectedsubmissionslists = [];
 	 $("input[name='submissionList[]']:checked").each( function (i) {
 		 selectedsubmissionslists[i] = $(this).val();
 	});
 	 
 	$("#checkedshortlistedCount").html(selectedsubmissionslists.length);
-	  */
+	  
 }
 </script> 
 

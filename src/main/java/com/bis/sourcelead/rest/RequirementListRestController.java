@@ -1391,7 +1391,7 @@ public class RequirementListRestController {
 							Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 							List<Candidate> candidateList = new ArrayList<>();
 							candidateList.add(candidate);
-							requirementSubmission.setScore(requirementSubmission.getCandidateScore()+"%");
+							requirementSubmission.setScore(requirementSubmission.getCandidateScore());
 							
 							}
 

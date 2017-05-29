@@ -593,34 +593,29 @@ function getEmployeementType(designationType){
 		        success: function(data) {
 		        	if(data != null && data != ''){
 		        		var json = JSON.parse(data);
+		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#FirstName").val(json.firstName);
-				        	$("#FirstName").attr("disabled", true);
+				        	$("#FirstName").attr("readonly", "readonly");
 				        	$('#FirstNameDiv').find('p.jquery_form_error_message').remove();
-			        		
-			        		if(json.lastName != null && json.lastName != ''){
-			        			$("#lastName").val(json.lastName);
-					        	$("#lastName").attr("disabled", true);
-			        		}else{
-			        			$("#lastName").attr("disabled", false);
-			        			 $("#lastName").val('');
-			        		}
-			        		
-			        		if(json.mobilePhone != null && json.mobilePhone != ''){
-			        			$("#phone").val(json.mobilePhone);
-					        	$("#phone").attr("disabled", true);
-			        		}else{
-			        			 $("#phone").attr("disabled", false);
-			        			 $("#phone").val('');
-			        		}
 		        		}else{
-		        			$("#FirstName").attr("disabled", false);
+		        			 $("#FirstName").removeAttr("readonly", "readonly");
 		        			 $("#FirstName").val('');
-		        			 
-		        			 $("#lastName").attr("disabled", false);
+		        		}
+		        		
+		        		if(json.lastName != null && json.lastName != ''){
+		        			$("#lastName").attr("readonly", "readonly");
+		        			$("#lastName").val(json.lastName);
+		        		}else{
+		        			 $("#lastName").removeAttr("readonly", "readonly");
 		        			 $("#lastName").val('');
-		        			 
-		        			 $("#phone").attr("disabled", false);
+		        		}
+		        		
+		        		if(json.mobilePhone != null && json.mobilePhone != ''){
+		        			$("#phone").val(json.mobilePhone);
+				        	$("#phone").attr("readonly", "readonly");
+		        		}else{
+		        			 $("#phone").removeAttr("readonly", "readonly");
 		        			 $("#phone").val('');
 		        		}
 		        		

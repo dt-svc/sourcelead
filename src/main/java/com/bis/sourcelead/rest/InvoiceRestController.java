@@ -1188,4 +1188,38 @@ public class InvoiceRestController {
 	} 
 	
 	
+	
+	@RequestMapping(value = "/getConversionExchangeRate", method = RequestMethod.GET)
+	public void getConversionExchangeRate(@RequestParam(value="invoiceId", required=false) String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		Long Id = null;
+     	Invoice parentInvoice  = invoiceService.getInvoicetByParentInvoiceId(Long.parseLong(invoiceId));
+     	if(parentInvoice.getParentInvoiceId() != null){
+     		Id = parentInvoice.getParentInvoiceId().getId();
+     	}else{
+     		Id = Long.parseLong(invoiceId); 
+     	}
+		Invoice invoice = invoiceService.getInvoicetById(Id);
+		response.setContentType("application/octet-stream");
+		StringBuilder fileName = new StringBuilder();
+	    response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(invoice.getFileName()).append("\"").toString());
+		InputStream inputStream = new ByteArrayInputStream(invoice.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
+	
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+	
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+	
+				inputStream.close();
+				outStream.close();
+	
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+	
+	}
 }
