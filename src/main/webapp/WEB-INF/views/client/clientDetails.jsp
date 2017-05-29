@@ -3,6 +3,7 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- client details View starts-->
+
 <script type="text/javascript">
 	function clientDetails(clientLocationId,orgRelationID) {
 		var sourceleadUrl = '${sourceleadUrl}';
@@ -17,10 +18,15 @@
 						var state = "";
 						var country = "";
 						
-						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
+					/* if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
 							result = result+ '<div class="success_pop" id="selector1" style="display: block;">';
 							result = result+ ' <i class="fa fa-check-circle"></i><span>'+json.msg+'</span>';
 							result = result+ '</div>';
+						}  */
+						if(json.msg != null && json.msg != "" && json.msg != 'undefined'){
+							result  = result + '<div class="success_pop" id="selector8123">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="clientDetailsMsgDiv">'+json.msg+'</span>';
+						    result  = result + '</div>';
 						}
 						
 						result = result+ '<div class="project_tabs_inn_table">';
@@ -53,7 +59,7 @@
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							result = result + '<span>'+json.country+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -62,7 +68,7 @@
 						if(json.state != null && json.state !='' && json.state !='undefined'){
 							result = result + '<span>'+json.state+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -71,7 +77,7 @@
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							result = result + '<span>'+json.city+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -81,7 +87,7 @@
 						if(json.vendorCreateduserName != null && json.vendorCreateduserName !='' && json.vendorCreateduserName !='undefined'){
 							result = result + '<span title='+json.vendorCreateduserName+'>'+json.vendorCreateduserName+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -90,7 +96,7 @@
 						if(json.address != null && json.address !='' && json.address !='undefined'){
 							result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -99,7 +105,7 @@
 						if(json.billingAddress != null && json.billingAddress !='' && json.billingAddress !='undefined'){
 							result = result + '<span title="'+json.billingAddress+'">'+json.billingAddress+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -108,7 +114,7 @@
 						if(json.paymentTerms != null && json.paymentTerms !='' && json.paymentTerms !='undefined' && json.paymentTerms != 'SelectPaymentTerms'){
 							result = result + '<span title="'+json.paymentTerms+'">'+json.paymentTerms+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -117,7 +123,7 @@
 						if(json.level != null && json.level !='' && json.level !='undefined'){
 							result = result + '<span>'+json.level+'</span><div class="clearfix"></div>';
 						}else{
-							result = result + '<span>No Data</span><div class="clearfix"></div>';
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 						
@@ -148,7 +154,10 @@
 											"display", "none");
 									$(tab).fadeIn();
 								});
-						msgFadeIn();
+// 						msgFadeIn();
+
+						$("#selector8123").fadeIn(200);
+						$('#selector8123').delay(2000).fadeOut('slow');
 					}
 				});
 	}
@@ -415,8 +424,10 @@
 			   	type: "POST",
 			    url: sourceleadUrl+"/clientDetailsUpdateUsingId?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId,
 	   		    success: function(data) {
+	   		    	$("#selector8123").removeAttr("style");
+        			$("#selector8123").css({ display: "block" });
 	   		    	clientDetails(clientLocationId,orgRelationId);
-	   		    	
+// 	   		    	clientEditMsgFadein();
 	   		    }
 		 }); 
 	     	return true;
@@ -430,7 +441,12 @@
         $("#editClient_form").validateOnBlur(false, validationSettings);  
     });
 </script>
-
+<script>
+function clientEditMsgFadein(){
+  $("#selector8123").fadeIn(200);
+  $('#selector8123').delay(2000).fadeOut('slow');
+}
+  </script> 
 <script type="text/javascript">
 	function validateWebsite() {
 		var website = document.getElementById("companyWebsite").value;
@@ -656,5 +672,9 @@ function getAllCities(){
 	    setTimeout(function(){ 
 	    	$('#selector1').fadeOut('slow'); }, 500);
 	}
+</script> 
+<script>
+  $("#selector1").fadeIn(200);
+  $('#selector1').delay(2000).fadeOut('slow');
 </script> 
 <!-- End -->

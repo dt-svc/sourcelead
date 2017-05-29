@@ -150,9 +150,9 @@ function vendorContacts(orgRelationID,clientLocationId){
 									result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+vendorLocationId+');">';
 									result = result + ' <option '+selected1+'>Active</option>';
 									result = result + ' <option '+selected2+'>In-Active</option>';
-									result = result + ' <option '+selected3+'>New</option>';
+									/* result = result + ' <option '+selected3+'>New</option>';
 									result = result + ' <option '+selected4+'>Negotiation</option>';
-									result = result + ' <option '+selected5+'>Contracted</option>';
+									result = result + ' <option '+selected5+'>Contracted</option>'; */
 									result = result + ' </select>';
 				        		}
 								result = result + ' </div></td>';
@@ -376,9 +376,9 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	  <select class="form-control" id="spocStatus" name="spocStatus">';
 	result = result  +'	   <option value="Active">Active</option>';
 	result = result  +'	   <option value="In-Active">In-Active</option>';
-	result = result  +'	   <option value="New">New</option>';
+	/* result = result  +'	   <option value="New">New</option>';
 	result = result  +'	   <option value="Negotiation">Negotiation</option>';
-	result = result  +'	   <option value="Contracted">Contracted</option>';
+	result = result  +'	   <option value="Contracted">Contracted</option>'; */
 	result = result  +'	  </select>';
 	result = result  +'	 </div>';
 	result = result  +'	 </div>';

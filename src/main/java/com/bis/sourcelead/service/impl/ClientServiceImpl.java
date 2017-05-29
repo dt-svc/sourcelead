@@ -895,7 +895,7 @@ public class ClientServiceImpl implements ClientService{
 					
 					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getVendorUser().getId().longValue()){
 						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
-						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+						sendEmailToClientContact(user,editUser,orgLocation,loginUser,orgSpoc);
 					}
 				}else if(null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)){
 					User user = orgSpoc.getVendorUser();
@@ -912,7 +912,7 @@ public class ClientServiceImpl implements ClientService{
 					
 					if(null != orgSpoc.getTempOwnerId() && orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()){
 						user= userService.getUserById(Long.parseLong(jsonObj.getString(owner)));
-						sendEmailToClientContact(user,editUser,orgLocation,loginUser);
+						sendEmailToClientContact(user,editUser,orgLocation,loginUser,orgSpoc);
 					}
 				}
 				
@@ -982,7 +982,7 @@ public class ClientServiceImpl implements ClientService{
 		}
 
 
-		private void sendEmailToClientContact(User user, User editUser, OrgLocations orgLocation,User loginUser) throws Exception {
+		private void sendEmailToClientContact(User user, User editUser, OrgLocations orgLocation,User loginUser, OrgSpoc orgSpoc) throws Exception {
 			 EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(editUser.getFirstName());
 			 emailMessage.setLastName(editUser.getLastName());
@@ -1030,7 +1030,16 @@ public class ClientServiceImpl implements ClientService{
 			 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 			 noificationEmailScenario.setBody(notificationbody);
 			 
-			 emailScenerioUtil.sendNotificationToClientOrVendor(actionLink, rejectActionLink, loginUser,user, editUser, orgLocation, noificationEmailScenario,spocUUID);
+			 OrgLocations clientOrgLocation = null;
+			 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgSpoc.getOrgRelations().getId());
+			 if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				clientOrgLocation = orgRelations.getLocationId();
+			 }else if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				 clientOrgLocation = orgRelations.getResponderLocationId();
+			 }
+			 
+			 
+			 emailScenerioUtil.sendNotificationToClientOrVendorWhenOwnerChange(actionLink, rejectActionLink, loginUser,loginUser, editUser, orgLocation, noificationEmailScenario,spocUUID,clientOrgLocation);
 			
 		}
 		

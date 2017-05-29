@@ -17,7 +17,7 @@
 
       <h2>Requirement Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Template List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Templates</div>
   </section>
   <div class="timesheet_out overflow_Auto">
     <div class="vendor_wrap">
@@ -75,11 +75,14 @@ function requirementTemplateList(){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>"; 
-	                    	 result = result +"<td><div class='proj_show tbldata-dotdot'>";
+	                    	 result = result +"<td>";
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +'<a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>" ><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'<i class="fa fa-binoculars"></i></span></a>';
+		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
 		                     '</sec:authorize>';
-		                     result = result +"</div></td>";
+		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
+		                     	result = result +'<div class="tbldata-dotdot"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span></div>';
+		                     '</sec:authorize>';
+		                     result = result +"</td>";
 		                     if(null != opt.jobType && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 if(opt.jobType=='Other'){
 		                    		 result = result +"<td><div><span title="+opt.otherJobType+">"+opt.otherJobType+"</span></div></td>";
