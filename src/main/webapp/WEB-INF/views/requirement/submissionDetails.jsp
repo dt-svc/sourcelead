@@ -590,7 +590,6 @@ function getInternalInterviewsList(submissionId){
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	
 	                	 $("#internalInterviewsList").empty();
-	                	 alert(data);
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
    					     result = result + '<div class="content clearfix" style="display: block;">';
