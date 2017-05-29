@@ -246,7 +246,7 @@ z-index: 9999999999 !important;
 							 
 				   			 <div class="clearfix"></div>
 							 <div class="user_summary_edit_cta pull-right">
-							 <input class="us-btn" value="Save" id="update_primaryuser" onclick="validatePrimaryUserEmail();savePrimaryUserDetails();" type="submit" > <input class="us-btn us-btn_a" value="Cancel" onClick="editPrimaryUser();" type="button">
+							 <input class="us-btn" value="Save" id="update_primaryuser" onclick="validatePrimaryUserEmail();savePrimaryUserDetails();" type="button" > <input class="us-btn us-btn_a" value="Cancel" onClick="editPrimaryUser();" type="button">
 							 </div>
 								
 							</form>
@@ -254,11 +254,16 @@ z-index: 9999999999 !important;
 					
 				</div>
 			</div>
+			
 			<div id="users" class="tab-pane fade">
+			 
+			 
+			 <div class="success_pop" id="mailSendSuccessMsg"  style="display: none;">
+	         		<i class="fa fa-check-circle"></i><span>Mail Send Successfully.</span>
+		      </div>
+			 
 			 <div class="project_tabs_inn_table vendor_wrap_inn_table mt">
 			 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="getRegisteredOrgRoles();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
-			 
-			 
 			 <!-- Popup Div -->
                     <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
                           <div class="form-horizontal clearfix">
@@ -784,6 +789,10 @@ function resendInvitation(userId){
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId, 
 			        success: function(result) {
+			        	
+			        	document.getElementById("mailSendSuccessMsg").style.display = 'block';
+			         	$("#mailSendSuccessMsg").fadeIn(150);
+			        	$('#mailSendSuccessMsg').delay(1000).fadeOut('slow'); 
 			        },
 			    });
 		 }
