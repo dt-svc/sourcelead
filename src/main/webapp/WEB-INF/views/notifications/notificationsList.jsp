@@ -77,7 +77,7 @@ window.onload = function () {
 						  <span></span>
 						</label>
 				</a>
-				<a href="#" onclick="deleleteAll();"><i class="fa fa-trash-o delete-icn"></i></a>
+				<a href="#" onclick="deleleteAll();"><i id="navbar1" class="fa"></i></a>
 				</div>
                 </div>
               </div>
@@ -121,7 +121,7 @@ function getNotificationtLists(){
 				    result = result +'	<tr>';
 					result = result +'	  <td class="noti-checkbox tblminwidth-50">';
 					result = result +'			<label>';
-					result = result +'			   <input type="checkbox" class="checkbox1 left" name="check[]" value="'+report.id+'" />';
+					result = result +'			   <input type="checkbox"  id="selectid" onclick="totalCheck1();" class="checkbox1 left" name="check[]" value="'+report.id+'" />';
 					result = result +'			  <span></span>';
 					result = result +'			</label>';
 					result = result +'	  </td>';
@@ -222,11 +222,34 @@ function getAll() {
 
 <script>
 $("#selectall").change(function () {
+	
     $("input:checkbox").prop('checked', $(this).prop("checked"));
+    
+	if($("#selectall").is(':checked')){
+        $("#navbar1").addClass("fa-trash-o delete-icn");
+    } 
+	else{
+			 $("#navbar1").removeClass("fa-trash-o delete-icn");
+		
+		
+	}
     
     //getAll();
 });
 
+</script>
+
+<script>
+function totalCheck1() {
+	if($("#selectid").is(':checked')){
+        $("#navbar1").addClass("fa-trash-o delete-icn");
+    } 
+	else{
+		 $("#navbar1").removeClass("fa-trash-o delete-icn");
+		
+		
+	}
+}
 </script>
 
 <script>
