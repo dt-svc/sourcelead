@@ -30,7 +30,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Update Profile</h2>
       </div>
-      <!-- <div class="pull-right brud-crum">Home » Profile</div> -->
+       <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Update Profile</div>
     </section>
     
   <!-- Profile Content Start-->
@@ -222,7 +222,7 @@ function getProfessionalInfo(){
 				 result = result +'	    <div class="col-md-3">';
 				 result = result +'	        <h5>Can Be Reach</h5>';
 				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
-				 result = result +'	            <li><a href="'+facebook+'"  title="FaceBook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
+				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+twitter+'" title="Twitter" class="btn-tw"><i class="fa fa-twitter-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+googlePlus+'" title="Google" class="btn-go"><i class="fa fa-google-plus-square fa-2x"></i></a></li>';
