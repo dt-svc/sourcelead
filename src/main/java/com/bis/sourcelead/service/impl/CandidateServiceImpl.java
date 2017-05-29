@@ -560,6 +560,26 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}else{
 		writeRow.createCell(9).setCellValue(candidate.getExpectedRate());
 	}
+	if(null != candidate.getOrgRelationId()){
+		if(null != candidate.getOrgRelationId().getResponderLocationId()){
+			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
+				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			}
+		}
+	}else{
+				writeRow.createCell(10).setCellValue("--");
+	}
+	
+	if(null != candidate.getSpocId()){
+		if(null != candidate.getSpocId().getVendorUser().getLastName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getLastName())){
+			StringBuilder vendorName = new StringBuilder();
+			writeRow.createCell(11).setCellValue(vendorName.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+	}else if(null != candidate.getSpocId().getVendorUser().getFirstName() && !"".equalsIgnoreCase(candidate.getSpocId().getVendorUser().getFirstName())){
+			writeRow.createCell(11).setCellValue(candidate.getSpocId().getVendorUser().getFirstName());	
+		}
+	}else{
+			writeRow.createCell(11).setCellValue("--");
+	}
 	return createExcelsheet;
 }
 

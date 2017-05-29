@@ -164,11 +164,11 @@ public class ContractRestController {
           sos.close();
 	}
 	
-	@RequestMapping(value = "/viewContractPdf/{id}", method = RequestMethod.GET)
-	public @ResponseBody  void viewContractPdf(@PathVariable("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/viewContractPdf/{uuid}/{templateName}", method = RequestMethod.GET)
+	public @ResponseBody  void viewContractPdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		//Contracts contract =	contractsTemplateService.getContractById(Long.parseLong(id));	
-		Contracts contract =	contractsTemplateService.getContractByContractUUID(id);		
+		Contracts contract =	contractsTemplateService.getContractByContractUUID(uuid);		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
