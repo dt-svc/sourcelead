@@ -182,6 +182,7 @@ window.onload = function() {
 function dashboardAddInterview(){
 	var selectedDate = $("#eventCalendar").val();
 	$('.action-pop').slideUp();
+	interviewTemplate();
 	var result = "";
 	result = result + '<div class="add_inter addinterview_dashboard">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
@@ -294,8 +295,23 @@ function dashboardAddInterview(){
 	result = result + '<div class="ne-ch">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
 	result = result + '</div>';
+	
+	
+	result = result + '<div id="emptyTemplate" style="dispaly:none">';
+	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
+	result = result + '<div class="chosen-select col-md-3 select-field">';
+	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
+	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
+	
+	
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	
+	
 	
 	result = result + '<div class="pull-right">';
 	result = result + '<button type="submit" id="add_interview" class="btn btn-sm btn-primary mr">Submit</button>';
@@ -337,6 +353,38 @@ function dashboardAddInterview(){
 	}).on('changeTime', function() {
         $("#1startTime").timepicker('option', 'maxTime', $(this).val());
     });
+}
+</script>
+
+<script>
+function interviewTemplate(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        var json = JSON.parse(data);
+	        var output = "";
+	        if(json.length > 0){
+	         	for (var i=0; i<json.length; i++)
+	 			{
+	 	        		var opt = json[i];
+	 	        		
+	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+	 			}
+	         	$("#interviewSubmissionTemplate").empty();
+	 	        $("#interviewSubmissionTemplate").append(output);
+	 	       
+	 	        $("#interviewSubmissionTemplate").chosen();
+	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+	 			$('.chosen-container').css({'width': '100% !important'});
+	 			
+	        }else{
+	        	$("#emptyTemplate").empty();
+	        }
+	       
+	        },
+	    });
 }
 </script>
 
