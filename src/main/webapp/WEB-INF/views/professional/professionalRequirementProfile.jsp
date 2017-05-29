@@ -11,6 +11,9 @@
 .require_wrap_details.require_textarea textarea {
 height: 225px;
 }
+.profile_details h4 {width: 68%;}
+ul.can-perdt li span { max-width: 80%;}
+
  </style>
 
 <script>
