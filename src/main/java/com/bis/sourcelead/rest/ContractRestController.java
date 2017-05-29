@@ -189,11 +189,11 @@ public class ContractRestController {
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 
-		if(null != contract.getEnvelopId()&& ("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
+		if("Custom".equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
 		
-		if(null == contract.getEnvelopId()&& ("Existing").equalsIgnoreCase(contract.getTypeOfContract())){
+		if("Existing".equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
   	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
