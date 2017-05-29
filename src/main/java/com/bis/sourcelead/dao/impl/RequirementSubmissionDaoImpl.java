@@ -2387,9 +2387,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 if(sowType.equalsIgnoreCase("Client SOW")){
 		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
-		 			subQuery = "and rs.vendorLocationId <> null and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
-			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
+			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
 			 String query = "from RequirementSubmission rs "+leftJoins+" where req.id = :requirementId "+subQuery+" ORDER BY rs.id DESC";
 			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		     return offerAcceptedCandidatesList;

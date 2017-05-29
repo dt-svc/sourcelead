@@ -308,7 +308,7 @@ $(document).ready(function () {
            <div class="form-group pras req-title" id="jobTitleDiv">
 	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
 	         <div class="col-md-9">
-	             <input type="text" id="jobTitle" name="jobTitle" value="${requirement.jobTitle}" field-name="Job Title"  data-validation="required validate_Space validate_length length1-250"   value="" class="form-control" onblur="getTemplateVal();">
+	             <input type="text" id="jobTitle" name="jobTitle" value="${fn:escapeXml(requirement.jobTitle)}"  field-name="Job Title"  data-validation="required validate_Space validate_length length1-250"   value="" class="form-control" onblur="getTemplateVal();">
 	         </div>
 	       </div>
 
@@ -397,10 +397,10 @@ $(document).ready(function () {
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6">
-	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                 <input type="text" class="form-control" placeholder="MinExp" id="minExp" name="minExp" value="${requirement.minExp}"  field-name="MinExp" data-validation="validate_Space validate_float validate_length length1-5" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
 	                <div class="col-md-6" >
-	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_length length1-3 validate_float" data-validation-optional="true" onblur="minMaxExperience();" value="">
+	                <input type="text" class="form-control" id="maxExp" name="maxExp" placeholder="MaxExp" value="${requirement.maxExp}"  field-name="MaxExp" data-validation="validate_Space validate_float validate_length length1-5" data-validation-optional="true" onblur="minMaxExperience();" value="">
 	                </div>
               </div>
               <div class="row" id="expId">
@@ -1310,11 +1310,10 @@ function validate_fileupload(fileName)
 			
 			var frm = $('#requirement_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
-			//con = con.replace(/[{}]/g, "");
 			
+			//con = con.replace(/[{}]/g, "");
 			//It will escape all the special characters
 			//var jsonData = encodeURIComponent(con);
-			
 			
 			var form = $('#requirement_form')[0];
       		var formData = new FormData(form); 
