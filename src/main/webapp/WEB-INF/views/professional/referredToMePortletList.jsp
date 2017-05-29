@@ -323,9 +323,16 @@ function portletListFilter(requirementStatus){
 function rejectedPagenatio(){  
     $('#professionalDashboardPortletPagenation').DataTable( { 
     	dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf'
-        ],
+    	buttons: [
+    	        	{
+    	                extend: 'excel',
+    	                title: 'Referred To Me List',
+    	            },
+    	            {
+    	                extend: 'pdf',
+    	                title: 'Referred To Me List',
+    	            }
+    	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,

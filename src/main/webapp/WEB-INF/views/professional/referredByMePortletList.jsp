@@ -277,14 +277,21 @@ function portletListFilter(requirementStatus){
 function rejectedPagenatio(){  
     $('#professionalDashboardPortletPagenation').DataTable( { 
     	dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf'
-        ],
+    	buttons: [
+  	        	{
+  	                extend: 'excel',
+  	                title: 'Referred By Me List',
+  	            },
+  	            {
+  	                extend: 'pdf',
+  	                title: 'Referred By Me List',
+  	            }
+  	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

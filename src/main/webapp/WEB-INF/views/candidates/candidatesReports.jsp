@@ -235,10 +235,10 @@ function toDate(selector) {
 				<ul>
 					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
 					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
-					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
@@ -253,9 +253,10 @@ function toDate(selector) {
       <div class="timesheet_head">
 
 <div class="pull-left reportBtns">
-	  <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
-		 <option value="">select</option>
+
+	  <div class="reportBtn dropdown-select">
+		<select class="form-control" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
+<!-- 		 <option value="">select</option> -->
 		  <option value="today">Today</option>
 		  <option value="yesterday">Yesterday</option>
 		  <option value="week">1 week</option>
@@ -291,7 +292,7 @@ function toDate(selector) {
    <div class="reportA">
           <label>Owner</label>
           <div class="reportAChoo">
-           <select multiple data-placeholder="select owner" class="chosen-select"   name="user" id="user" >
+           <select multiple data-placeholder="Select Owner" class="chosen-select"   name="user" id="user" >
                 <c:forEach var="user" items="${ownersList}">
             			  <option value="${user.userCode}">${user.firstName} ${user.lastName}</option>
                 </c:forEach>
@@ -310,7 +311,7 @@ function toDate(selector) {
 			</li>
 			
 			
-			<li title="Consultants" class="colorTwo">
+			<li title="Associates" class="colorTwo">
 				<span><i class="fa fa-file-text"></i></span><b>${consultantCount}</b>
 			</li>
 			

@@ -465,7 +465,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
@@ -717,7 +717,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
@@ -834,7 +834,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org);
@@ -944,7 +944,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
@@ -1180,7 +1180,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg);
@@ -1465,7 +1465,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				interviewStartTime = convertedDateStr;
-				globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).toString());
+//				globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).toString());
 			}
 			if (null != reqnterview.getEndTime()) {
 				DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
@@ -1476,7 +1476,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				interviewEndTime = convertedDateStr;
-				globalVarsMap.put("InterviewTime",sb.append(interviewEndTime).toString());
+//				globalVarsMap.put("InterviewTime",sb.append(interviewEndTime).toString());
 			}
 
 			if(null != reqnterview.getStartTime() && null != reqnterview.getEndTime()){
@@ -1542,7 +1542,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		String	subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String	body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String	signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String	url = "";
+		String	url = sourceleadUrl;
 			
 		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		notificationScenario.setBody(notificationbody);

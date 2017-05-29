@@ -25,7 +25,7 @@ public interface RequirementDao {
 	
 	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 
-	public List<RequirementAssignTo> getUserAssignJobCount(Long userId)throws Exception;
+	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId)throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
@@ -100,4 +100,9 @@ public interface RequirementDao {
 
 	public List<Requirement> getAllReleasedJobsForVendorBasedOnStartAndEndDates(Long orgLocationId, Long orgRelationId,
 			Date startDateUTC, Date endDateUTC);
+
+	public List<Requirement> getAllReleasedJobsBasedOnUserIdAndLocationId(User user, OrgLocations orgLocations)throws Exception;
+
+	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
+			Long relationId)throws Exception;
 }

@@ -619,7 +619,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
@@ -1945,7 +1945,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 				  	 User projectManager = userService.getUserById(approverUserId1.getId());
 				  	 StringBuilder fromNameBuilder=new StringBuilder();
 				     EmailMessage emailMessage = new EmailMessage();
-					 emailMessage.setFirstName(emp.getUser().getFirstName());
+				     StringBuilder builder=new StringBuilder();
+					 emailMessage.setFirstName(builder.append(emp.getUser().getFirstName()).append(" ").append(emp.getUser().getLastName()).toString());
 					 emailMessage.setLastName(emp.getUser().getLastName());
 					 emailMessage.setToEmail(emp.getUser().getEmail());
 					 emailMessage.setFromEmail(loginUser.getEmail());
@@ -1954,8 +1955,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 					 //setting the class filed values
 					 Map<String, String> globalVarsMap = new HashMap<String, String>();
-					 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
-					 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+					 StringBuilder sb=new StringBuilder();
+					 globalVarsMap.put("loginUserFirstName",sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+					// globalVarsMap.put("loginUserLastName",loginUser.getLastName());
 					 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
 					 globalVarsMap.put("managerLastName",projectManager.getLastName());
 					 globalVarsMap.put("employeeFirstName",emailMessage.getFirstName());
@@ -2116,7 +2118,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = "";
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
@@ -2243,7 +2245,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = "";
+				 String url = sourceleadUrl;
 				 
 				 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 				 notificationScenario.setBody(notificationbody);

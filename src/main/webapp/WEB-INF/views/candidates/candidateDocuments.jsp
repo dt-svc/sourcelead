@@ -14,8 +14,11 @@
 <style>
 .addUser-org {
     overflow-x: auto;
-    
 }
+.validation_p p.jquery_form_error_message {
+bottom:-25px !important;
+}
+
 </style>
 <%-- 
      @author : prasadK.
@@ -117,16 +120,16 @@ function candDocumentsList(candidateId){
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
 	    	             	 {
 	    	            	  if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
-	    	                   result = result +"  <td><div>"+opt.documentOtherType+"</div></td>";
+	    	                   result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
 	    	             	 }else{
-	    	             		result = result +"  <td><div>"+opt.documentType+"</div></td>"; 
+	    	             		result = result +"  <td><div title='"+opt.documentType+"'>"+opt.documentType+"</div></td>"; 
 	    	             	 }
 	    	             	 }else{
 	    	             		 result = result +"  <td><div>----</div></td>"; 
 	    	             	 }
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-	                    	 result  = result + ' <td><div><span title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></span></div></td>';
+	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>----</span></div></td>';
 	                    	 }
@@ -258,7 +261,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result + '</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
-	result = result+'<div class="col-md-12">';
+	result = result+'<div class="col-md-12 validation_p">';
 	result = result+'<div class="input-group positionRelative" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
@@ -456,6 +459,7 @@ function getDocument(candidateId, documentId){
         			 $("#uploadFile").removeAttr("data-validation");
         			 $("#docNameDiv").show();
         			 $("#docName").append(json.fileName);
+        			 $("#docName").prop('title', json.fileName);
         			 $("#docUpdateButton").show();
         			 if(json.documentType != null && json.documentType != "undefined" && json.documentType != ""){
         				

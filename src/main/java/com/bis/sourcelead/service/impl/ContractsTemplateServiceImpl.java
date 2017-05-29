@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +57,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 
 	@Autowired
 	private ContractsTemplateDao contractsTemplateDao;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@Autowired
 	private UserService userService;
@@ -208,14 +212,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setFileType(multiFile.getContentType());
 		 }
 		
-		if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
-			contracts.setTypeOfContract("Custom");
-			vendorContracts.setTypeOfContract("Custom");
-		}else{
-			contracts.setTypeOfContract("New");
-			vendorContracts.setTypeOfContract("New");
+		if(null != vendorContracts){
+			if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
+				contracts.setTypeOfContract("Custom");
+				vendorContracts.setTypeOfContract("Custom");
+			}else{
+				contracts.setTypeOfContract("New");
+				vendorContracts.setTypeOfContract("New");
+			}
 		}
-		
 		if(null != vendorContracts){
 			vendorContracts.setTypeOfContract("New");
 		}
@@ -435,7 +440,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		contracts.setUpdatedDate(new Date());
 		contracts.setUpdatedBy(user.getUserCode());
 		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-		vendorContracts.setContractUUID(contracts.getContractUUID());
+		if(null != vendorContracts)
+		{
+		 vendorContracts.setContractUUID(contracts.getContractUUID());
+		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
 		ContractsHistory contractsHistory = new ContractsHistory();
@@ -901,7 +909,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);*/
@@ -971,7 +979,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);*/
@@ -1127,7 +1135,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);
@@ -1217,7 +1225,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
 		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
+		 String url = sourceleadUrl;
 		 
 		/* String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		 notificationScenario.setBody(notificationbody);*/

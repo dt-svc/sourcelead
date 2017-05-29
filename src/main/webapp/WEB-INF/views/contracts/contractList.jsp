@@ -66,21 +66,21 @@ $(document).ready(function(){
       <div class="col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeContract()"><i class="fa fa-close"></i></a>
       <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
       <div class="col-md-4 mt25">
-        <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="Import Candidate">
+        <div class="small-widget bgGreen"> <a href="<c:url value="/addNewContract" />" title="New Contract">
           <div class="clearfix mb10"> <i class="fa fa-file-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
           <strong class="clearfix">New Contract</strong> </a> </div>
       </div>
  	</sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-yellow"> <a href="<c:url value="/addCustomContract" />" title="Add Candidate">
+          <div class="small-widget bg-yellow"> <a href="<c:url value="/addCustomContract" />" title="Custom Contract">
             <div class="clearfix mb10"><i class="fa fa-file-code-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Custom Contract</strong> </a> </div>
         </div>
         </sec:authorize>
 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
         <div class="col-md-4 mt25">
-          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Add Candidate">
+          <div class="small-widget bg-purple"> <a href="<c:url value="/addExistingContract" />" title="Existing Contract">
             <div class="clearfix mb10"><i class="fa fa-file-text-o fa-4x"></i> <span class="fa fa-plus"></span> </div>
             <strong class="clearfix">Existing Contract</strong> </a> </div>
         </div>
@@ -161,7 +161,7 @@ $(document).ready(function(){
   
 </div>
 </section>
-
+<div id="deleteDocpopUp"></div>
 <div class="mask_time"></div> 
 <section class="contPopup" style="min-height:300px;">
 	<div id="viewPopupDiv"></div>
@@ -1620,7 +1620,7 @@ function preparedContractListExpired(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
-			     	if(report.templateSubmissionStatus == "EXPIRED"){
+			     	/* if(report.templateSubmissionStatus == "EXPIRED"){
 			     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
 			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 				     		if(report.typeOfContract == "New"){
@@ -1629,9 +1629,9 @@ function preparedContractListExpired(data){
 			     		'</sec:authorize>';
 			     		result = result + '</div>';
 		     	  }
-		     	  else{
+		     	  else{ */
 		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
-		     	  }
+// 		     	  }
 			         result = result + '</div></td>';
 		     	 
 		        result = result + '</tr>';
@@ -1691,7 +1691,7 @@ function preparedContractListExpired(data){
 	         opt = opt + '<td>';
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	     	  if(output.templateSubmissionStatus == "EXPIRED" ){
+	     	  /* if(output.templateSubmissionStatus == "EXPIRED" ){
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
@@ -1700,9 +1700,9 @@ function preparedContractListExpired(data){
 	     		'</sec:authorize>';
 	     		opt = opt + '</div>';
 	     	  }
-	     	  else{
+	     	  else{ */
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
-	     	  }
+// 	     	  }
 	     		opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -2194,7 +2194,21 @@ function Check(val){
 }
 
 </script>
-
+<script>
+function rejectContract(recordId,status){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Document delete message here</p>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="terminateReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' ><input class='u_can_color' type='button'  value='Cancel' ></b>";
+	result = result +"	</div>";
+	$("#deleteDocpopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
