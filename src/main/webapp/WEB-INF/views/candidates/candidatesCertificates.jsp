@@ -397,13 +397,13 @@ function addCertification(candidateId) {
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="name"  placeholder="Name *" id="candidateName" ';
-		result  = result + '                      data-validation="required validate_Name validate_length length2-250" field-name="Name" >';
+		result  = result + '                      data-validation="required validate_length length2-250" field-name="Name" >';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-12">';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="provider" placeholder="Provider *" id="candidateProvider"';
-		result  = result + '                      data-validation="required validate_Name validate_length length2-250" field-name="Provider">';
+		result  = result + '                      data-validation="required validate_length length2-250" field-name="Provider">';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		
@@ -411,13 +411,13 @@ function addCertification(candidateId) {
 		result = result  +'	                     <div class="col-md-4" positionRelative>';
 		result = result  +'	                     <select class="chosen-select"  name="scoreType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
 		result = result  +' 					   <option value="" selected="selected">Score Type</option>';
-		result = result  +'	                       <option value="Percentage">%</option>';
+		result = result  +'	                       <option value="Percentage">Percentage</option>';
 		result = result  +'	                       <option value="CGPA">CGPA</option>';
 		result = result  +'	                       <option value="GRADE">GRADE</option>';
 		result = result  +'	                      </select>';
 		result = result  +'	                   </div>';
 		result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" readonly="readonly" onkeyup="selectScoreType();"';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 		result  = result + '                 	 </div>';
 		result = result  +'	                   </div>';
@@ -435,7 +435,7 @@ function addCertification(candidateId) {
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
 		result  = result + '                   <div class="col-md-6 positionRelative">';
-		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Validate To" ';
+		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Valid To" ';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 		result  = result + '                   </div>';
@@ -545,7 +545,7 @@ function addCertification(candidateId) {
 								result  = result + '                 <div class="clearfix mb10">';
 								result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
 								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.name+ '" name="name"  placeholder="Namedfds *" id="candidateName" ';
-								result  = result + '                      data-validation="required validate_Name validate_length length2-100 " field-name="Name" >';
+								result  = result + '                      data-validation="required validate_length length2-250" field-name="Name" >';
 								result  = result + '                   </div>';
 								result  = result + '                 </div>';
 								result  = result + '                 <div class="clearfix mb10">';
@@ -557,27 +557,27 @@ function addCertification(candidateId) {
 								
 								result  = result + '                 <div class="clearfix mb10">';
 								result = result  +'	                     <div class="col-md-4" positionRelative>';
-								result = result  +'	                     <select class="chosen-select"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();">';
+								result = result  +'	                     <select class="chosen-select"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();"  >';
 								result = result  +' 					   <option value="" selected="selected">Score Type</option>';
 								if (json.scoreType == "Percentage") {
-									result = result + '<option selected>Percentage</option>';
+									result = result + '<option selected value="Percentage">Percentage</option>';
 								} else {
-									result = result	+ '<option>Percentage</option>';
+									result = result	+ '<option value="Percentage">Percentage</option>';
 								}
 								if (json.scoreType == "CGPA") {
-									result = result	+ '<option selected>CGPA</option>';
+									result = result	+ '<option selected value="CGPA">CGPA</option>';
 								} else {
-									result = result	+ '<option>CGPA</option>';
+									result = result	+ '<option value="CGPA">CGPA</option>';
 								}
 								if (json.scoreType == "GRADE") {
-									result = result	+ '<option selected>GRADE</option>';
+									result = result	+ '<option selected value="GRADE">GRADE</option>';
 								} else {
-									result = result + '<option>GRADE</option>';
+									result = result + '<option value="GRADE">GRADE</option>';
 								}
 								result = result  +'	                      </select>';
 								result = result  +'	                   </div>';
 								result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
+								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
 								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
 								result  = result + '                 	 </div>';
 								result = result  +'	                   </div>';
@@ -597,7 +597,7 @@ function addCertification(candidateId) {
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 								}else{
 									
-									result  = result + '                     <input type="text" class="form-control input-sm"  value=" " name ="validFrom" placeholder="Valid From" ';
+									result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 									
@@ -607,12 +607,12 @@ function addCertification(candidateId) {
 								result  = result + '                   <div class="col-md-6 positionRelative">';
 								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
 									
-									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Validate To" ';
+									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 								}else{
 									
-									result  = result + '                     <input type="text" class="form-control input-sm" value = " " name="validTo" placeholder="Validate To" ';
+									result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
 									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
 									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
 								}
@@ -835,11 +835,11 @@ function removeCertification(candidateCertificationId,candidateId){
 function selectScoreType(){
 	
 	 var selectedText = document.getElementById("scoreType").value;
-	if(selectedText != null && selectedText !='' && selectedText !='undefined'){
+	/* if(selectedText != null && selectedText !='' && selectedText !='undefined'){
 		 $("#candidateScore").removeAttr("readonly");
 	}else{
 		 $("#candidateScore").attr("readonly", "readonly");
-	}
+	} */
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 if(selectedText =='Percentage'){
@@ -881,6 +881,39 @@ function selectScoreType(){
 		 }
 	  
 </script>
+
+
+<script type="text/javascript">
+function scoreAndScoreType(){
+	 var candidateScore = document.getElementById("candidateScore").value;
+	 var selectedText = document.getElementById("scoreType").value;
+	 var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	 var cgpanum = /^(([\d][\.])?([\d])|10)?$/
+	 var grades = /^([A-E][-+]{0,2})?$/
+	 if(candidateScore.match(floatNum)){
+		 $("#scoreType").val('Percentage'); 
+		 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove();
+		 $("#addCandidate").removeAttr("disabled");
+	 }
+	 if(candidateScore.match(grades)){
+		 $("#scoreType").val('GRADE'); 
+	 }
+	 if(candidateScore.match(cgpanum)){
+		 $("#scoreType").val('CGPA'); 
+	 }
+	 if(candidateScore == ''){
+		 $("#scoreType").val('');
+	 }
+	 
+}
+</script>
+
+
+
+
+
+
+
 
 
 <%-- 
