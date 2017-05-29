@@ -73,7 +73,7 @@ $(document).ready(function() {
             <li><a id="addPop" href="javascript:void(0)"><i class="fa fa-plus"></i>Add Contact</a>
             
             <form:form id="addcontact_form"  name="addcontact_form" method="post"> 
-				<div class="referWrap">
+				<div class="referWrap referWrap_custom">
 				<div id="loading"></div> 
 				  <div class="referWrapInn">
 					<div class="form-group col-md-6" id="firstNameDiv">
