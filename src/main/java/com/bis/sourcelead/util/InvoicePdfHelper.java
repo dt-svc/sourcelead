@@ -219,10 +219,27 @@ public class InvoicePdfHelper {
 			document.add(getTotalsTable(invoice));
 			document.add(discountTotaltable(invoice));
 			
-			p= new Paragraph("Grand Total: " + countryCurrency  +  invoice.getTotal(), font12b);
-	          p.setAlignment(Element.ALIGN_RIGHT );
-	          document.add(p);
+			p= new Paragraph("Grand Total  " + countryCurrency  +  "   "+ invoice.getTotal(), font12b);
+	        p.setAlignment(Element.ALIGN_RIGHT );
+	        document.add(p);
 			document.add(Chunk.NEWLINE);
+			
+			p= new Paragraph("Conversion From  "  + invoice.getCurrencyCode()  + "   "+ invoice.getTotal(), font12b);
+            p.setAlignment(Element.ALIGN_RIGHT );
+	        document.add(p);
+			document.add(Chunk.NEWLINE);
+			
+			p= new Paragraph("Conversion To  "  + invoice.getConvertCurrencyCode()  + "   "+ invoice.getConvertAmount(), font12b);
+	        p.setAlignment(Element.ALIGN_RIGHT );
+	        document.add(p);
+			document.add(Chunk.NEWLINE);
+			
+			p= new Paragraph("Exchange Rate  "  + invoice.getCurrencyCode()  +" 1 = "+invoice.getConvertCurrencyCode()+"   "+  invoice.getExchangeRate(), font12b);
+	        p.setAlignment(Element.ALIGN_RIGHT );
+	        document.add(p);
+			document.add(Chunk.NEWLINE);
+			
+			
 			LineSeparator ls = new LineSeparator();
 			ls.setAlignment(Element.ALIGN_BOTTOM);
 			document.add(new Chunk(ls));
@@ -379,10 +396,26 @@ public class InvoicePdfHelper {
 				document.add(getTotalsTable(invoice));
 				document.add(discountTotaltable(invoice));
 				
-				p= new Paragraph("Grand Total: " + countryCurrency  +  invoice.getTotal(), font12b);
-		          p.setAlignment(Element.ALIGN_RIGHT );
-		          document.add(p);
+				p= new Paragraph("Grand Total  " + countryCurrency  +  "   "+ invoice.getTotal(), font12b);
+		        p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
 				document.add(Chunk.NEWLINE);
+				
+				p= new Paragraph("Conversion From  "  + invoice.getCurrencyCode()  + "   "+ invoice.getTotal(), font12b);
+	            p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+				document.add(Chunk.NEWLINE);
+				
+				p= new Paragraph("Conversion To  "  + invoice.getConvertCurrencyCode()  + "   "+ invoice.getConvertAmount(), font12b);
+		        p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+				document.add(Chunk.NEWLINE);
+				
+				p= new Paragraph("Exchange Rate  "  + invoice.getCurrencyCode()  +" 1 = "+invoice.getConvertCurrencyCode()+"   "+  invoice.getExchangeRate(), font12b);
+		        p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+				document.add(Chunk.NEWLINE);
+				
 				LineSeparator ls = new LineSeparator();
 				ls.setAlignment(Element.ALIGN_BOTTOM);
 				document.add(new Chunk(ls));

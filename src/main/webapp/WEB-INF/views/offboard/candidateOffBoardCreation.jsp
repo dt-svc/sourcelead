@@ -426,22 +426,19 @@
 											</div>
                                       </div>
                                     </div>
-                                    </div>
-                                      
-                                      <!-- Form inline Due after --> 
-                                      
-                                    </div>
-                                    
+                                   </div>
                                   </div>
                                 </div>
+                                <div class="clearfix"></div>   
                                 <div class="col-md-12 mb10">
 		                               <div class="clearfix mb10">
 	                                   <label>Description</label>
 	                                  <textarea rows="2" placeholder="Description" id="taskdescription" name="taskdescription" class="form-control"></textarea>
 	                                </div>
 	                            </div>   
-	                                </div>
-                                </div>
+	                           </div>
+	                          </div>
+                             </div>
                                 
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
