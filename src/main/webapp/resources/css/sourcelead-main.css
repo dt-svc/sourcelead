@@ -319,7 +319,7 @@ margin-bottom: 5px; line-height: normal !important; padding-left: 10px;
 -webkit-transform: translateX(3000px); -ms-transform: translateX(3000px); transform: translateX(3000px);
 -webkit-transition: all 1s ease-in-out; -moz-transition: all 1s ease-in-out; -o-transition: all 1s ease-in-out;
 -ms-transition: all 1s ease-in-out; top: 50px; background: #3081cb; box-shadow: 1px 1px 2px #505050; color: #fff;
-min-height: 30px; padding: 0; position: absolute; right: 0; min-width: 175px; z-index: 1; border-radius: 0 0 3px 3px;
+min-height: 30px; padding: 0; position: absolute; right: 0; min-width: 185px; z-index: 1; border-radius: 0 0 3px 3px;
 -moz-border-radius: 0 0 3px 3px; -webkit-border-radius: 0 0 3px 3px;
 }
 #settingArea:hover .setting-area {
@@ -3032,7 +3032,7 @@ a.active-user:hover{
 }
 .edit-status {
    position: fixed !important; top: 45%; font-family:'Roboto', sans-serif  !important; font-size:14px; line-height:20px;
-   right:35%; margin:0px auto; font-weight:500; background-color: #fff; padding: 3px 5px 8px 10px;
+   right:35%; margin:0px auto; font-weight:500; background-color: #fff; padding: 3px 5px 8px 10px; color: #333;
    border-radius: 2px; display: none; box-shadow:0px 0px 10px rgba(0,0,0,0.6); z-index: 9999 !important;
    width: 280px; padding:15px; min-height:60px; text-align: left; word-wrap: break-word;
 }
@@ -3604,7 +3604,7 @@ border-radius: 3px; font-size: 12px; color: #3081CB; border: 1px solid #ccc;
  width: 650px;   
 }
 .filter-position .dataTables_filter {
-position: relative !important; top: 0 !important; z-index: 9999;
+position: relative !important; top: 0 !important; z-index: 999;
 }
 .filter-position {
 position: relative; top:-30px;
@@ -5313,13 +5313,6 @@ float: none !important; padding: 0; color: #333;
 }
 .hdrFilter .export_pop ul, .hdrFilter .approved_pop ul, .hdrFilter .export_pipline ul, .hdrFilter #exportPop ul {
     overflow: visible; min-height: 50px; max-height: inherit;
-}
-.ReadTextFli.ReadTextFli90 {
-	width: 0px;
-}
-.addon-currency {
-	background: #367fa9; width: 50px; position: absolute; top: 32.5px; right: 16.8px; padding: 4.8px 5px; text-align: center; min-height: 25px;
-	color:#fff;
 }
 .ReadTextFli.ReadTextFli90 {
 	width: 0px;
