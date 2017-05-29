@@ -958,7 +958,7 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[6] = "--";
 			}
 			if(requirementsub.getScore() != null && !"".equalsIgnoreCase(requirementsub.getScore())){
-				requirementArray[7] = requirementsub.getScore();
+				requirementArray[7] = requirementsub.getScore()+"%";
 			}else{
 				requirementArray[7] = "--";
 			}

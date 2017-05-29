@@ -590,14 +590,11 @@ function getInternalInterviewsList(submissionId){
         	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	
 	                	 $("#internalInterviewsList").empty();
-	                	 alert(data);
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
    					     result = result + '<div class="content clearfix" style="display: block;">';
-   					    alert("2");
 	                     var json = JSON.parse(data);
 	                     
-	                     alert("3");
 	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 
