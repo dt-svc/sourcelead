@@ -75,11 +75,19 @@ function candidateQuickViewProfile(candidateId){
 	         			 		var res = [];
 	         			 		res = skill.split(',');
 	         			 		var minSkills = res.slice(1,20);
+	         			 		var totalSkills = res.length;
+	         			 		if(totalSkills > 20){
+	         			 			var remainingSkillsCount = totalSkills - 20;
+	         			 		}
+	         			 		
 				                qvSkills = "<ul>";
 				                for(i = 0; i<=minSkills.length ; i++){
 				                		if(res[i] != null && res[i] != '' && res[i] != 'undefined'){
 					                		qvSkills += "<li>" + res[i] + "</li>";
 					                	}
+				                		if(totalSkills > 20 && i == minSkills.length){
+				                			qvSkills += "<li style='background-color: #d0d0d0;'><i class='fa fa-plus'></i> " + remainingSkillsCount + " more</li>";
+				                		}
 				                }
 				                qvSkills += "</ul>"; 
 	         			 	}else{
@@ -145,15 +153,15 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'          <div class="col-md-5 col-md-offset-1 paddingLeft">                                                                                                              ';
 					result = result+'              <div class="row">                                                                                                                               ';
 					if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-					result = result+'              <div class="col-md-12">                                                                                                                         ';
-					result = result+'                  <h4>Skills</h4>                                                                                                           ';
-					result = result+'                  <div class="skillsView row">                                                                                                                ';
-					result = result+'                  <div class="panel panel-default">                                                                                                                ';
-					result = result+'                  <div class="panel-body" id="skillsView"> '+qvSkills+'';
-					result = result+'                  </div>';
-					result = result+'                  </div>';
-					result = result+'                  </div>';
-					result = result+'               </div>';
+						result = result+'              <div class="col-md-12">                                                                                                                         ';
+						result = result+'                  <h4>Skills</h4>                                                                                                           ';
+						result = result+'                  <div class="skillsView row">                                                                                                                ';
+						result = result+'                  <div class="panel panel-default">                                                                                                                ';
+						result = result+'                  <div class="panel-body" id="skillsView"> '+qvSkills+'';
+						result = result+'                  </div>';
+						result = result+'                  </div>';
+						result = result+'                  </div>';
+						result = result+'               </div>';
 					}
 					//Certification Div
 					result = result + '<div id="qvcertificationSubmission"></div> ';
