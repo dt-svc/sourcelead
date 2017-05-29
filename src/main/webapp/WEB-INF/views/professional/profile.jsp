@@ -120,13 +120,13 @@ function getProfessionalInfo(){
 		    	 if(json.primarySkill != null  && json.primarySkill != '' && json.primarySkill != 'undefiend'){
 		    		 primarySkill = json.primarySkill;
 		    	 }else{
-		    		 primarySkill = "NO DATA";
+		    		 primarySkill = " --- ";
 		    	 }
 		    	 
 		    	 if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
 		    		 skillsName = json.skillsName;
 		    	 }else{
-		    		 skillsName = "NO DATA";
+		    		 skillsName = " --- ";
 		    	 }
 		    	 if(json.facebook != null  && json.facebook != '' && json.facebook != 'undefiend'){
 		    		 facebook = json.facebook;
@@ -208,19 +208,19 @@ function getProfessionalInfo(){
 				 result = result +'	        </div>';
 				 result = result +'	        <ul class="list-unstyled professional-details">';
 				 result = result +'	            <li><i class="fa fa-magnet" title="Designation"></i><strong>'+designation+'</strong></li>';
-				 result = result +'	            <li><i class="fa fa-magnet" title="Employment Type"></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
-				 result = result +'	            <li><i class="fa fa-history" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
+				 result = result +'	            <li><i class="fa fa-clock-o" title="Employment Type"></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
+				 result = result +'	            <li><i class="fa fa-briefcase" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
 				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
-				 result = result +'	            <li> <i class="fa fa-money" title="Current Rate"></i>';
+				 result = result +'	            <li> <i class="fa fa-rupee" title="Current Rate"></i>';
 				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateType+' '+currentRateCurrency+'</span>';
 				 result = result +'	            </li>';
-				 result = result +'	            <li> <i class="fa fa-money" title="Expected Rate"></i>';
+				 result = result +'	            <li> <i class="fa fa-rupee" title="Expected Rate"></i>';
 				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+rateType+' '+expectedRateCurrencey+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
-				 result = result +'	        <h5>Can Be Reach</h5>';
+				 result = result +'	        <h5>Can be Reached at</h5>';
 				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
 				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';
