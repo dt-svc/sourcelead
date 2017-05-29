@@ -4,8 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
- <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
- <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
  <jsp:include page="employeeSubmissionDetails.jsp" />
  <jsp:include page="educationSubmissionDetails.jsp" />
@@ -512,9 +512,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
           result = result + '</div>';
           }
           }
-getInternalInterviewsList(submissionId);
+        
+        
+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
+     getInternalInterviewsList(submissionId);
+'</sec:authorize>';
+          
+
 //getCustomerInterviewsList(submissionId,requirementId);
-getOfferDetails(submissionId);   
+
+
+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
+	getOfferDetails(submissionId);
+'</sec:authorize>';
 
 $("#viewCandidateDiv").empty();  
 $("#viewCandidateDiv").append(result);
@@ -576,13 +586,18 @@ function getInternalInterviewsList(submissionId){
          type : "POST",
          url: sourceleadUrl+"/getAllInternalInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
-              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+              
+        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	
 	                	 $("#internalInterviewsList").empty();
+	                	 alert(data);
 	                	 var result = "";
                     	 result = result + '<div class="clearfix">';
    					     result = result + '<div class="content clearfix" style="display: block;">';
+   					    alert("2");
 	                     var json = JSON.parse(data);
+	                     
+	                     alert("3");
 	                     
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 
