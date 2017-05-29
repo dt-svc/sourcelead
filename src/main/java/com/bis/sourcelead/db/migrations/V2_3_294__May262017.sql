@@ -35,7 +35,6 @@ INSERT INTO `sourcelead`.`ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('I
 #email_scenario
 INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `TEMPLATE_TYPE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('InvoiceAcceptMailtoVendor', 'Notification', 'InvoiceAcceptMailtoClient', 'Invoice Accept Mail To Client','org','{{InvoiceAcceptMailtoVendor.invoiceID}} Accomplished by {{InvoiceAcceptMailtoVendor.orgName}}','N', 'SLADMIN', 'sourceLead.com', 'in.sourceLead.com');
 
-===========================================================================
 
 
 #invoic accept
@@ -73,7 +72,6 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 
 
 
-==============================================================
 #invoice reject
 
 
@@ -111,7 +109,6 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 
 
 
-===============================================================================
 
 #Bill reject
 
