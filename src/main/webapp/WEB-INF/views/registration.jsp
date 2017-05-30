@@ -1016,8 +1016,8 @@ var config = {
 	</div>
 	<div class="stickyFooter row">
 	<div class="pull-right">
-	<button type="button" class="btn btn-danger btn-sm mr" onclick="closeProfileDetailsPop();"><i class="fa fa-close mr"></i>Reject</button>
-	<button type="button" class="btn btn-success btn-sm ml" id="acceptTermsId" onclick="acceptCheckBox();"><i class="fa fa-check mr"></i>Accept</button>
+	<button type="button" class="btn btn-danger btn-sm mr" id="rejectTermsId"  value="reject" onclick="closeProfileDetailsPop();rejectTermsCheckBox();"><i class="fa fa-close mr"></i>Reject</button>
+	<button type="button" class="btn btn-success btn-sm ml" id="acceptTermsId" value="accept" onclick="acceptCheckBox();"><i class="fa fa-check mr"></i>Accept</button>
 	</div>
 	</div>
 </div>
@@ -1025,18 +1025,38 @@ var config = {
 <script>
 function acceptCheckBox(){
 var tabType = document.getElementById("tabType").value;
-
+var acceptTerms = document.getElementById("acceptTermsId").value;
 if(tabType == "Recruiter"){
-		$("#termsCheckoxId").attr("checked","checked");
-		closeProfileDetailsPop();
+	if(acceptTerms == "accept"){
+		$("#termsCheckoxId").prop('checked', true);
+		}
 }
 if(tabType == "Professional"){
-		$("#professionalRegistrationCheckTermsId").attr("checked","checked");
-		closeProfileDetailsPop();
-}
+	if(acceptTerms == "accept"){
+		$("#professionalRegistrationCheckTermsId").prop('checked', true);
+	}
+  }
+closeProfileDetailsPop();
 }
 </script>
 
+<script type="text/javascript">
+function rejectTermsCheckBox(){
+	var tabType = document.getElementById("tabType").value;
+	var rejectTerms = document.getElementById("rejectTermsId").value;
+	if(tabType == "Recruiter"){
+		if(rejectTerms == "reject"){
+			$("#termsCheckoxId").prop('checked', false);
+		}
+	}
+	if(tabType == "Professional"){
+		if(rejectTerms == "reject"){
+			$("#professionalRegistrationCheckTermsId").prop('checked', false);
+		}
+	}
+	closeProfileDetailsPop();
+}
+</script>
 
 <script>
 function termsConditon() {

@@ -645,7 +645,7 @@ function professionalProfile(candidateId){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							}
 							else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> NO DATA</textarea>';
+					           	 result = result +'   <textarea placeholder="Enter description" readonly> --- </textarea>';
 				    	        }
 							
 							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
@@ -1581,21 +1581,21 @@ function updateDesignationType(){
 function makeProfileAsPublic(){
 	var checked = document.getElementById("isProfilePublic").checked
 	if(checked == true){
-		alertMessage("Do you want to make your profile as public visibility?",checked);
+		alertMessageForPublicVisibility("Do you want to make your profile as public visibility?",checked);
 	}else{
-		alertMessage("Do you want to remove your profile from public visibility?",checked);
+		alertMessageForPublicVisibility("Do you want to remove your profile from public visibility?",checked);
 	}
 }
 </script>
 
 <script type="text/javascript">
-function alertMessage(message,checked){
+function alertMessageForPublicVisibility(message,checked){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsPublicVisibility();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+checked+");'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='makeAsPublicVisibility();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPublicVisibility("+checked+");'></b>";
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1605,7 +1605,7 @@ function alertMessage(message,checked){
 </script>
 
 <script type="text/javascript">
-function cancel(checked){
+function cancelPublicVisibility(checked){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	if(checked){

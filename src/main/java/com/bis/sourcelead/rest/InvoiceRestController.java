@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -55,6 +56,7 @@ import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -69,6 +71,7 @@ import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -151,6 +154,9 @@ public class InvoiceRestController {
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -878,19 +884,23 @@ public class InvoiceRestController {
  	public @ResponseBody  String getSowRateByContractId(@RequestParam(value = "contractId", required = false) Long contractId,
  			HttpServletRequest request, HttpServletResponse response) throws Exception
  	{
-		  String resultJson;
+		  String resultJson = "";
          Contracts contracts = contractsTemplateService.getContractById(contractId);
          String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
-         float hourlyRate = conversionUtil.getHourlyRate(contracts.getBillingAmount(), contracts.getBillingRatePer());
-         if(!currencyCode.equalsIgnoreCase(contracts.getBillingRateType())){
-        	 float coversionRate = conversionUtil.convert(contracts.getBillingRateType(),currencyCode,hourlyRate);
-        	 double roundValue = (Math.round(coversionRate * 100.0) / 100.0);
-        	 contracts.setBillingAmount(String.valueOf(roundValue));
-         }else{
-        	 double roundValue = (Math.round(hourlyRate * 100.0) / 100.0);
-        	 contracts.setBillingAmount(String.valueOf(roundValue));
+         if(null != contracts.getBillingAmount() && null != contracts.getBillingRatePer()){
+        	 float hourlyRate = conversionUtil.getHourlyRate(contracts.getBillingAmount(), contracts.getBillingRatePer());
+             
+             if(!currencyCode.equalsIgnoreCase(contracts.getBillingRateType())){
+            	 float coversionRate = conversionUtil.convert(contracts.getBillingRateType(),currencyCode,hourlyRate);
+            	 double roundValue = (Math.round(coversionRate * 100.0) / 100.0);
+            	 contracts.setBillingAmount(String.valueOf(roundValue));
+             }else{
+            	 double roundValue = (Math.round(hourlyRate * 100.0) / 100.0);
+            	 contracts.setBillingAmount(String.valueOf(roundValue));
+             }
+             resultJson = commonUtil.toJSON(contracts);		 
          }
-         resultJson = commonUtil.toJSON(contracts);	
+        
          return resultJson;
  	}
 
@@ -1187,5 +1197,27 @@ public class InvoiceRestController {
 		return dueDateStr;
 	} 
 	
+	/**
+	 * Get exchange currency
+	 * @param orgRelationId
+	 * @param grandTotal
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 * @return CurrencyConversionResponse
+	 */
 	
+	@RequestMapping(value = "/getConversionExchangeRate", method = RequestMethod.GET)
+	@ResponseBody
+	public  String getConversionExchangeRate(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "grandTotal", required = false) String grandTotal, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String resultJson ="";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		CurrencyConversionResponse currencyConversionResponse = invoiceService.getExchangeCurrency(loginOrgCurrencyCode,orgLocation,orgRelationId,grandTotal);
+		if(null != currencyConversionResponse){
+			resultJson = commonUtil.toJSON(currencyConversionResponse);	
+		}
+        return resultJson;
+	}
 }
