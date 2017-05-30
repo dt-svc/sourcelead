@@ -285,7 +285,7 @@ if(type == 'C2C' || type == 'C2C-1099'){
 	 $('#vendors').attr("data-validation","required"); 
 	 $('#vendorcontact').attr("data-validation","required"); 
 	// $("#vendors").attr("data-validation", "true");
-	  getVendorsByOrgLocationId();
+	 // getVendorsByOrgLocationId();
 }else{
 	 document.getElementById("hideVendor").style.display="none";
 	 $('#vendors').removeAttr("data-validation","required"); 
@@ -654,11 +654,20 @@ function getAssociateUserDetails(){
 	 var reportingManager = document.getElementById("reportingManager").value;  
 	var sourceleadUrl ='${sourceleadUrl}';
 	var employeementType = document.getElementById("employeementType").value;
+	
+	if(employeementType == null || employeementType == ''){
+        $("#designationType").val('');
+		 $("#designationType").selectpicker('refresh');
+		 document.getElementById("hideVendor").style.display="none";
+		 document.getElementById("createUser_form").reset();
+		
+	}
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getActiveAssociateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+employeementType, 
 	        /* contentType: "application/json; charset=utf-8",
 	        dataType: "json", */
+	        
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
@@ -668,7 +677,6 @@ function getAssociateUserDetails(){
 	        		  $("#EmailId").val(json['email']);
 	        		  $("#phone").val(json['mobilePhone']);
 	        		  $("#designationType").val(json['designationType']);
-	        		  
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
 // 	        		  $("#RatePer").val(json['currentRateType']);
@@ -746,6 +754,7 @@ function getAssociateUserDetails(){
 			            	}
 		            }
 		            $('#vendors').trigger("chosen:updated");
+		            
 		        }
 		 });
  }
