@@ -246,47 +246,19 @@ public class RegistrationServiceImpl implements RegistrationService{
 			e.printStackTrace();
 		}
 		
-		//For saving Associate details 
-		/*Candidate candidate = getCandidateDetails(user,orgLocations);
-		try {
-			candidateService.addCandidate(candidate);
-			
-			//Update the Elk in Candidate
-			candidateService.saveOrUpdateCandidateElkDocument(candidate);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
-		
-		
-		
 		List<Integer> moduleIds = new ArrayList<Integer>();
 		 for (String s : org.getModulesId().split(",")){
 			 moduleIds.add(Integer.parseInt(s));
 		 }
 		 
-		 
-		/* 
-		  //commented by Prasad salina
-		  boolean flag = moduleIds.contains(Constants.MODULE_TIMESHEET);
-		  if(flag == true){
-			  saveProject(registration, orgLocations, user, employee);
- 		  }*/
+	
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
-//		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
-//		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
-//		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
-//		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
-		/*saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template","NDA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");*/
-		
-		/*
-		 * Saving USER DB data as ElasticSearch Documents
-		 */
+
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		
-		userService.sendEmail(user, loginUser, password,orgLocationsId);
+		userService.sendEmail(user, loginUser, password,orgLocations.getId());
 	
 	}
 	
@@ -842,7 +814,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(user.getFirstName());
+		 StringBuilder builder=new StringBuilder();
+		 emailMessage.setFirstName(builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
@@ -856,7 +829,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		// globalVarsMap.put("lastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());
 		 globalVarsMap.put("role",userRole.getUserType());

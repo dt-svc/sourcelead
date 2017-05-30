@@ -11,6 +11,9 @@
 .require_wrap_details.require_textarea textarea {
 height: 225px;
 }
+.profile_details h4 {width: 68%;}
+ul.can-perdt li span { max-width: 80%;}
+
  </style>
 
 <script>
@@ -170,7 +173,7 @@ function requirementProfile(requirementUUID){
 				 
 				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-bell" title="Notice Period"></i><span>'+noticePeriod+'</span>';
+				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';

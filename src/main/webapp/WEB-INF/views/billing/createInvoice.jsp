@@ -338,15 +338,17 @@ function errRemoveClientContact(){
                    result = result +'  </div>';
                    
                    //New Div for currency conversion: srinivas l
-                  /*  result = result +'  <div class="row">';
+                   result = result +'  <div class="row">';
                    result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
                    
-                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
-                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div class="paddingLeft col-md-6"><span>USD</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
-                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input name="" id="" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   
+                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+	                  
                    
                    result = result +'  </div>';
-                   result = result +'  </div>'; */
+                   result = result +'  </div>'; 
                  //New Div for currency conversion: srinivas l
                    
                    result = result +'  </div>';
@@ -410,7 +412,7 @@ function errRemoveClientContact(){
 		        	getSavedAttachments(json['invoiceDocumentsList']);
 		        	
 		        	$("#grandTotal").val(json['total']);
-		        	
+		        	$("#conversionFrom").val(json['total']);
 		        	$("#savedInvoiceId").val(json['id']);
 		        	
 		        	
@@ -509,6 +511,7 @@ function errRemoveClientContact(){
 		 		total = subtractValueFromRow-discountValue;
 		 		$("#discountTotal").val(discountValue);
 		 		$("#grandTotal").val(total);
+		 		$("#conversionFrom").val(total);
 		 		$("#afterDiscountTotal").val(total);
 		 		
 		 	  }
@@ -517,6 +520,7 @@ function errRemoveClientContact(){
 		 		total = subtractValueFromRow - perCentValue;
 		 		$("#discountTotal").val(perCentValue);
 		 		$("#grandTotal").val(total);
+		 		$("#conversionFrom").val(total);
 		 		$("#afterDiscountTotal").val(total);
 		 	 }	 	
 	    }
@@ -1177,7 +1181,24 @@ function pagination(){
   
   
   function  conversion(){
-// 	  alert("Hi");
+	   var orgRelationId = $("#clientOrgRelationId").val();
+	   var grandTotal = $("#grandTotal").val();
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   if(grandTotal != '' && grandTotal != 'undefined'){
+		   $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				success :function(data) {
+					if(data !='' && data != 'undefined' && data != null){
+						var json = JSON.parse(data);
+						$("#exchangeRate").html(json.exchangeRate);
+						$("#exchangeCurrency").html(json.exchangeCurrency);
+					}
+				},
+				});   
+	   }
+	  
+		
   }
   
   function calAddRowAmount(hours,minute,rowId){
@@ -1220,6 +1241,7 @@ function pagination(){
 	    $("#inoviceTotal").val(sum.toFixed(2));
 	    $("#hiddenTotal").val(sum.toFixed(2));
 	    $("#grandTotal").val(sum.toFixed(2));
+	    $("#conversionFrom").val(sum.toFixed(2));
 	    $("#afterDiscountTotal").val(sum.toFixed(2));
 	    
    /* =====================  After adding the rows calculate the discount start  ===================== */
@@ -1232,6 +1254,7 @@ function pagination(){
 			total = arroundGrand-discountValue;
 			$("#discountTotal").val(discountValue.toFixed(2));
 			$("#grandTotal").val(total.toFixed(2));
+			$("#conversionFrom").val(total.toFixed(2));
 			$("#afterDiscountTotal").val(total.toFixed(2));
 			
 		}
@@ -1240,6 +1263,7 @@ function pagination(){
 			total = arroundGrand - perCentValue;
 			$("#discountTotal").val(perCentValue.toFixed(2));
 			$("#grandTotal").val(total.toFixed(2));
+			$("#conversionFrom").val(total.toFixed(2));
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}
    }
@@ -1260,10 +1284,12 @@ function calculateDiscount(){
 			total = subTotal-discountValue;
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
 		
@@ -1275,10 +1301,12 @@ function calculateDiscount(){
 			total = subTotal - perCentValue;
 			$("#discountTotal").val(perCentValue.toFixed(2));
 			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
 		
@@ -1357,6 +1385,7 @@ function calculateDiscount(){
 				placeholder="Tax type" name='REPLACEROWIDtaxType'
 				id='REPLACEROWIDtaxType'> <input type="hidden"
 				name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
+				<input type= "hidden" id="submissionInvoiceId" name = "submissionInvoiceId">
 		</div>
 	</div>
 </div>
@@ -1441,6 +1470,7 @@ function calculateDiscount(){
         var second=parseFloat(taxTotal);
         total = (first-second);
         $("#grandTotal").val(total);
+        $("#conversionFrom").val(total);
        //=======================================
         
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
@@ -1489,6 +1519,7 @@ function calculateTaxDiscount(){
 	}
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
+	 $("#conversionFrom").val(grandTotal.toFixed(2));
   
 }
 </script>

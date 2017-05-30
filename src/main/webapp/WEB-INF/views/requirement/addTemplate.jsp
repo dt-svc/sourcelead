@@ -57,16 +57,18 @@ width: 100% !important;
 	</section>
 	<div class="content-area content-new clearfix">
 		<form:form id="requirementtemplate_form" name="requirementtemplate_form" enctype='multipart/form-data'>
-			<div class="form-horizontal req-dtls myForm row mb">
+			<div class="form-horizontal req-dtls mb">
 				<div class="clearfix">
 					<div class="col-lg-12">
 						<h3>Add Requirement Template Details</h3>
 					</div>
-
-					<div
-						class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt pras req-title">
-						<div class="form-group" id="jobTitleDiv">
-							<label class="col-md-3">Title<span class="text-danger">*</span></label>
+<div class="clearfix"></div>
+					<div class="mt pras req-title">
+					
+					<div class="col-md-6">
+					
+					<div class="form-group" id="jobTitleDiv">
+							<label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
 							<div class="col-md-9">
 									<input type="text" id="jobTitle" name="jobTitle"
 										value="${requirement.jobTitle}" field-name="Job Title"
@@ -77,9 +79,61 @@ width: 100% !important;
 									<div class="input-group-btn selp-custom-min">
 									</div>
 							</div>
-						</div>
+					</div>
+						
+					<div class="form-group">
+								<label class="col-md-3">Employment Type</label>
+									<div class="col-md-9">
+										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+											<option value="">Select</option>
+											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
+											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
+											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
+											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
+											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
+											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
+											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
+										</select>
+								</div>
+					</div>
+						<div class="form-group">
+								<label class="col-md-3">Experience</label>
+								<div class="col-md-9">
+									<div class="row">
+										<div class="col-md-6">
+											<input type="text" class="form-control" placeholder="MinExp"
+												id="minExp" name="minExp" value="${requirement.minExp}"
+												field-name="MinExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+										<div class="col-md-6">
+											<input type="text" class="form-control" id="maxExp"
+												name="maxExp" placeholder="MaxExp"
+												value="${requirement.maxExp}" field-name="MaxExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+									</div>
+									<div class="row" id="expId">
+										<input type="hidden" name="expValidation" id="expValidation">
+									</div>
 	
-	                       
+								</div>
+							</div>
+
+					<div class="form-group" id="jobTypeDiv" style="display: none">
+							<label class="col-md-3">Employment Type</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
+								</div>
+					</div>
+					
+					</div>
+	
+	                  <div class="col-md-6">     
 	                       <div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
@@ -134,63 +188,6 @@ width: 100% !important;
 			                </select>
 			              </div>
 			            </div> 
-	                       
-							<div class="form-group">
-								<label class="col-md-3">Employment Type</label>
-									<div class="col-md-9">
-										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-											<option value="">Select</option>
-											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
-											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
-											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
-											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
-											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
-											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
-											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
-										</select>
-								</div>
-							</div>
-
-						<div class="form-group" id="jobTypeDiv" style="display: none">
-							<label class="col-md-3">Employment Type</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
-								</div>
-						</div>
-					
-					
-
-
-						<div class="form-group">
-							<label class="col-md-3">Experience</label>
-							<div class="col-md-9">
-								<div class="row">
-									<div class="col-md-6">
-										<input type="text" class="form-control" placeholder="MinExp"
-											id="minExp" name="minExp" value="${requirement.minExp}"
-											field-name="MinExp"
-											data-validation="validate_Space validate_float validate_length length1-5"
-											data-validation-optional="true" onblur="minMaxExperience();"
-											value="">
-									</div>
-									<div class="col-md-6">
-										<input type="text" class="form-control" id="maxExp"
-											name="maxExp" placeholder="MaxExp"
-											value="${requirement.maxExp}" field-name="MaxExp"
-											data-validation="validate_Space validate_float validate_length length1-5"
-											data-validation-optional="true" onblur="minMaxExperience();"
-											value="">
-									</div>
-								</div>
-								<div class="row" id="expId">
-									<input type="hidden" name="expValidation" id="expValidation">
-								</div>
-
-							</div>
-						</div>
-
-						
-
 					<%-- 	<div class="form-group">
 							<label class="col-md-3">Description</label>
 							<div class="col-md-9">
@@ -202,7 +199,9 @@ width: 100% !important;
 							</div>
 						</div> --%>
 						
+						</div>
 						
+						<div class="clearfix"></div>
 						<div class="clearfix mb">
 				          <label class="col-md-3">Description</label>
 				          <div class="col-md-12 txtEditor_p">

@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>Custom Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;&raquo;<a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo;&raquo; Custom Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; Custom Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="loading"></div>
@@ -404,10 +404,11 @@
                       </div>
                     </div>
             </div>
+            <div class="clearfix"></div>
         </div>
         <!-- billing end -->
       </div>      
-      
+      </div>
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right mt">
@@ -1214,6 +1215,8 @@ function changeSaveButton(){
 	if(approverId !='' && approverId != null){
 		if(approverId == userId){
 			document.getElementById("save_approver_template").value="Approve";
+		}else{
+			document.getElementById("save_approver_template").value="Send For Approve";
 		}
 		document.getElementById("save_approver_template").style.display="block";
 		document.getElementById("save_template").style.display="none";
