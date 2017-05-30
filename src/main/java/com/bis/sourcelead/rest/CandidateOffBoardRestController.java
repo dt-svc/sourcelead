@@ -586,7 +586,11 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 					
 				    OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
 				    
-					return checkList.getCheckListJsonString();
+				    if(null != checkList){
+				    	return checkList.getCheckListJsonString();
+				    }else{
+				    	return null;
+				    }
 			    
 			   }
 			
