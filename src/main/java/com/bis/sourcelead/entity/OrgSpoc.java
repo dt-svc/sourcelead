@@ -171,6 +171,10 @@ public class OrgSpoc implements Serializable{
 	
 	@Transient
 	private String billingAddress;
+	
+	@Transient
+	private String stringDate;
+
 
 	@Transient
 	private String paymentTerms;
@@ -548,6 +552,16 @@ public class OrgSpoc implements Serializable{
 
 	public void setPaymentTerms(String paymentTerms) {
 		this.paymentTerms = paymentTerms;
+	}
+
+	public String getStringDate()
+	{
+		return stringDate;
+	}
+
+	public void setStringDate(String stringDate)
+	{
+		this.stringDate = stringDate;
 	}
 	
 }
