@@ -1747,7 +1747,7 @@ public class EMailJobScheduler {
 			    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
 			            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
 			            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-				        			if(null != childContarct.getParentContractId()){
+				        			if(null != childContarct && null != childContarct.getParentContractId()){
 				        				String fromStage = childContarct.getTemplateSubmissionStatus();
 				        				childContarct.setId(childContarct.getId());
 				        				childContarct.setTemplateSubmissionStatus("EXPIRED");
