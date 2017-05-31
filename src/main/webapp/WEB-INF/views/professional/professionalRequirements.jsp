@@ -67,7 +67,14 @@ window.onload = function () {
 		document.getElementById('crowd').className = 'ml'
 		document.getElementById('crowdActive').className = 'activeBackground'
 	}
-	requirementsList(0);
+	
+	if('${publicRequirementId}' != null && '${publicRequirementId}' != '' && '${publicRequirementId}' != 'undefined'){
+		removeReferPopUp();
+		applyToJob('${publicRequirementId}');
+	}else{
+		requirementsList(0);
+	}
+	
 	
  };
 </script>

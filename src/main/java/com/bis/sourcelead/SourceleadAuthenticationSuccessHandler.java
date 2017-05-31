@@ -49,12 +49,17 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
+	protected boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
+	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		ModelAndView model = new ModelAndView();
 		 String UUID = request.getParameter("UUID");
 		 String spocUUID = request.getParameter("spocUUID");
+		 String requirementUUID = request.getParameter("requirementUUID");
 		try{
 			 if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
 				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
@@ -87,7 +92,12 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
 	    		response.sendRedirect("/sourcelead/dashboard?invitation=true");
 	    	}else{
-	    		response.sendRedirect("/sourcelead/dashboard");
+	    		if(!isNullOrEmpty(requirementUUID)){
+	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID);
+	    		}else{
+	    			response.sendRedirect("/sourcelead/dashboard");
+	    		}
+	    		
 	    	}
 	    }
 	}

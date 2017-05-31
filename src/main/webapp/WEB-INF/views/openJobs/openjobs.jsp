@@ -928,7 +928,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'  </div>'
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
-				result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+'/login">Apply</a>';
+				result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
 				if(requirements.isCrowdSourcingJob == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 				}

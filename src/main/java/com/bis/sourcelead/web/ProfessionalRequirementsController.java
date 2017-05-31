@@ -92,7 +92,8 @@ public class ProfessionalRequirementsController {
 	
 	
 	 @RequestMapping(value = "/register")
-	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID) throws Exception {
+	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
+	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
 	 			ModelAndView model = new ModelAndView();
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
 	 			
@@ -106,13 +107,14 @@ public class ProfessionalRequirementsController {
 				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
 				model.addObject("WouldLikeToList",WouldLikeToList);
 	 			
-	 			if(!isNullOrEmpty(contactUUID)){
+	 			if(!isNullOrEmpty(contactUUID) && !isNullOrEmpty(requirementUUID)){
 	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
 	 				if(null == referContacts.getContactUser()){
 	 					model.addObject("firstName",referContacts.getFirstName());
 		 				model.addObject("lastName",referContacts.getLastName());
 		 				model.addObject("email",referContacts.getContactUserEmail());
 		 				model.addObject("contactUUID", contactUUID);
+		 				model.addObject("requirementUUID", requirementUUID);
 		 				model.setViewName("registration");
 	 				}else{
 	 					User user = userService.getUserById(referContacts.getContactUser().getId());
@@ -169,7 +171,7 @@ public class ProfessionalRequirementsController {
 	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
-		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
+		public ModelAndView professionalProfile(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false) String  requirementUUID) throws Exception {
 		    
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -206,7 +208,12 @@ public class ProfessionalRequirementsController {
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
-			    
+			    if(!isNullOrEmpty(requirementUUID)){
+			    	Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+				    	if(null != requirement){
+				    		model.addObject("publicRequirementId", requirement.getId());
+				    	}
+			    }
 				
 				model.setViewName("professional/professionalRequirements");
 				model.addObject("sourceleadUrl", sourceleadUrl);
