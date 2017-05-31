@@ -288,7 +288,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				params.put("userId",user.getId());
 				
 				if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 !="" ){
-					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")   )";
+					subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and req.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery6+")  OR ("+subQuery4+") OR ("+subQuery5+")   )";
 					params.put("loginOrgLocation",loginOrgLocation.getId());
 					params.put("requirementId",requirementId);
 				}
