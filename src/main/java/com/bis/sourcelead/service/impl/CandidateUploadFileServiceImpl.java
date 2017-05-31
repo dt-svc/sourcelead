@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -434,6 +436,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 					}
 				}
 			}
+			
 		}
 		return true;
 	}
@@ -455,7 +458,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		candidateService.storeCandidate(jsonObj, orgLocations, user, null);
 	}
 	
-	private JSONObject populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations) throws JSONException
+	private JSONObject populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations) throws JSONException, ParseException
 	{
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("firstName", candidate.getFirstName());
@@ -488,11 +491,26 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			jsonObj.put("designationType", "C2C");
 		}
 		if (null != candidate.getExperienceYears()) {
-			jsonObj.put("experienceYears", candidate.getExperienceYears());
+			if (candidate.getExperienceYears().matches("[-a-zA-Z]+")) {
+				jsonObj.put("experienceYears", "0");
+				jsonObj.put("experienceMonths", "0");
+			}else{
+				 String exp[] = getExperienceYearsAndMonths(candidate.getExperienceYears());
+					jsonObj.put("experienceYears", exp[0]);
+					if(!exp[1].matches("[a-zA-Z]+")){
+						if(!"years".equalsIgnoreCase(exp[1])){
+							
+						int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+						jsonObj.put("experienceMonths", String.valueOf(months));
+						}
+							
+					}
+					
+			}
 		}
-		if (null != candidate.getExperienceMonths()) {
+		/*if (null != candidate.getExperienceMonths()) {
 			jsonObj.put("experienceMonths", candidate.getExperienceMonths());
-		}
+		}*/
 		if (null != candidate.getExpectedRate()) {
 			String rate = getExpectedRate(candidate.getExpectedRate());
 			if (null != rate) {
@@ -582,6 +600,12 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		return jsonObj;
 	}
 	
+	private String[] getExperienceYearsAndMonths(String experience) {
+    
+		return experience.split("[\\p{Punct}\\s]+");
+		
+	}
+
 	private String getExpectedRate(String expectedRate)
 	{
 		
