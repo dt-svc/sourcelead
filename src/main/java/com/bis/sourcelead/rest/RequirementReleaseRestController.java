@@ -271,9 +271,17 @@ public class RequirementReleaseRestController {
 					
 		    if(contactsList != null){
 		    	for(OrgSpoc contact : contactsList){
-			    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
-			    	contact.setReleasedRequirement(isJobReleased.toString());
-			    	
+/*			    	Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
+*/			    	List<Requirement>  reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(requirementId), contact.getId());
+					
+					if(reqList.size()>0){
+			    	contact.setReleasedRequirement("true");
+			    	for(Requirement req11 : reqList){
+						contact.setStringDate(Constants.DMY.format(req11.getCreatedDate()));
+					}
+					}else{
+						contact.setReleasedRequirement("false");	
+					}
 			    	if(contact.getVendorUser().getFirstName() != null && contact.getVendorUser().getFirstName() != "" && contact.getVendorUser().getLastName() != null && contact.getVendorUser().getLastName() != "" ){
 						StringBuilder spocNameSB3 = new StringBuilder();
 						contact.setSpocName(spocNameSB3.append(contact.getVendorUser().getFirstName()).append(" ").append(contact.getVendorUser().getLastName()).toString());
@@ -369,10 +377,30 @@ public class RequirementReleaseRestController {
 						if(!contactsList.isEmpty()){
 							orgRelation.setNoOfContatcs(contactsList.size());
 							for(OrgSpoc orgSpoc : contactsList){
-								Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+								/*Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
 								if(isJobReleased.toString().equalsIgnoreCase("false")){
 									nonAssignedCount = nonAssignedCount + 1;
+								}*/
+								
+								List<Requirement>  reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+								
+								
+								if(reqList.size()>0){
+									orgSpoc.setReleasedRequirement("true");
+										Requirement requi  = reqList.get(0);
+										orgRelation.setStringDate(Constants.DMY.format(requi.getCreatedDate()));	
+									
+						    	/*for(Requirement req11 : reqList){
+						    		orgSpoc.setStringDate(Constants.DMY.format(req11.getCreatedDate()));
+								}*/
+								}else{
+									orgSpoc.setReleasedRequirement("false");	
+									nonAssignedCount = nonAssignedCount + 1;
 								}
+								
+								/*if(null != req.getParentRequirement().getCreatedDate()){
+								orgRelation.setStringCreatedDate(Constants.DMY.format(req.getParentRequirement().getCreatedDate()));
+								}*/
 							}
 							orgRelation.setNoOfNonReleasedContacts(nonAssignedCount);
 							if(orgRelation.getInitiatorLevel()!=null){
@@ -403,8 +431,23 @@ public class RequirementReleaseRestController {
 						if(!contactsList.isEmpty()){
 							orgRelation.setNoOfContatcs(contactsList.size()); 
 							for(OrgSpoc orgSpoc : contactsList){
-								Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+								/*Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
 								if(isJobReleased.toString().equalsIgnoreCase("false")){
+									nonAssignedCount = nonAssignedCount + 1;
+								}*/
+								List<Requirement>  reqList = requirementService.getRequirementListByParentRequirementIdAndSpocId(Long.parseLong(requirementId), orgSpoc.getId());
+								
+								
+								if(reqList.size()>0){
+									orgSpoc.setReleasedRequirement("true");
+										Requirement requi  = reqList.get(0);
+										orgRelation.setStringDate(Constants.DMY.format(requi.getCreatedDate()));	
+									
+						    	/*for(Requirement req11 : reqList){
+						    		orgSpoc.setStringDate(Constants.DMY.format(req11.getCreatedDate()));
+								}*/
+								}else{
+									orgSpoc.setReleasedRequirement("false");	
 									nonAssignedCount = nonAssignedCount + 1;
 								}
 							}

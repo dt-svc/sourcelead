@@ -94,7 +94,7 @@ function candidateResume(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function resMsgFadein() {
+	function resMsgFadeinResumes() {
 		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
@@ -124,6 +124,8 @@ function refreshResumeList(candidateId){
 	candidateResumesList(candidateId);
 }
 </script>
+
+<div id="deleteResumePopUp"></div> 
 
 
 
@@ -274,7 +276,7 @@ function addResume(candidateId) {
 		             				$("#resMsgDiv").html("Success!! New Resume added");
 		             			}		             			
 						 		candidateResumesList(candidateId);
-						 		resMsgFadein();
+						 		resMsgFadeinResumes();
 		            		 }
 							 /* $("#conMsg").fadeIn(200);
 							 $('#conMsg').delay(2000).fadeOut('slow'); */
@@ -416,8 +418,10 @@ function addResume(candidateId) {
      2.parameter : candidateId, resumeId
      3.ajax url implementation in CandidateResumeRestController.
 --%>
+
 <script>
 function deleteResume(candidateId, resumeId){
+
 	var sourceleadUrl ='${sourceleadUrl}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
@@ -432,13 +436,16 @@ function deleteResume(candidateId, resumeId){
          			 $("#resMsgDiv").html("Resume deleted");
         			 $("#popUpDivResume").removeClass("edit-details-active");
         		     candidateResumesList(candidateId);
-        		     resMsgFadein();
+        		     resMsgFadeinResumes();
    		    	}
    		    },
 	     });
-}
+
+	
+	
 }
 </script>
+
 
 
 <%-- 

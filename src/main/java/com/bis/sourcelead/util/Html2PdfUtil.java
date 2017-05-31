@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,10 +24,13 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -36,6 +42,12 @@ public class Html2PdfUtil {
 	
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
@@ -95,6 +107,7 @@ public class Html2PdfUtil {
 	
 	 private String replacePlaceHolders(String templateBody, Contracts contracts, OrgLocations orgLocation, Org org) throws Exception {
 	        
+		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 	        String orgName = contracts.getContractOrgLocationId().getOrg().getOrgName();
 	        /*if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getLocationId().getOrg().getOrgName();
@@ -134,7 +147,17 @@ public class Html2PdfUtil {
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Name]")){
 	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrg().getOrgName());
 		            }else if(matchPattern.group().equalsIgnoreCase("[Associate Name]")){
-	                    matchPattern.appendReplacement(sb, org.getOrgName());
+		            	if(null != contracts.getRequirementSubmission().getId()){
+			            	RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
+			            	if(null != reqSub.getCandidate().getLastName()){
+								matchPattern.appendReplacement(sb, reqSub.getCandidate().getFirstName()+" "+reqSub.getCandidate().getLastName());	
+							}else{
+								matchPattern.appendReplacement(sb, reqSub.getCandidate().getFirstName());
+							}
+		            	}
+		            	else{
+		            		matchPattern.appendReplacement(sb,"");
+		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
 		            	if(null !=contracts.getRequirementSubmission().getRequirement().getId()){
@@ -178,11 +201,19 @@ public class Html2PdfUtil {
 	                }
 	    			
 		            else if(matchPattern.group().equalsIgnoreCase("[Start Date]")){
-	                    matchPattern.appendReplacement(sb, Constants.DF_DMY.format(contracts.getStartDate()));
+		            	String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
+	            		String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
+	            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+	            		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+	                    matchPattern.appendReplacement(sb, Constants.DF_DMY.format(convertedDate));
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[End date]")){
 		            	if(null != contracts.getEndDate()){
-		            		matchPattern.appendReplacement(sb, Constants.DF_DMY.format(contracts.getEndDate()));
+		            		String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());  
+		            		String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
+		            		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		            		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+		            		matchPattern.appendReplacement(sb, Constants.DF_DMY.format(convertedDate));
 		            	}
 		            	else{
 		            		matchPattern.appendReplacement(sb,"");

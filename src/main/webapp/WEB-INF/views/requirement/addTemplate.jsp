@@ -42,7 +42,15 @@ width: 100% !important;
 		
 	});
 </script>
-
+<script src="resources/js/editor.js"></script>
+<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+		<script>
+			$(document).ready(function() {
+				$("#txtEditor").Editor();
+				// append text in edit mode in richtextarea
+				$('.Editor-editor').html($('#txtEditor').text());
+			});
+       </script> 
 <!-- Content Area -->
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -205,7 +213,7 @@ width: 100% !important;
 						<div class="clearfix mb">
 				          <label class="col-md-3">Description</label>
 				          <div class="col-md-12 txtEditor_p">
-				          <textarea id="txtEditor" name="description" value="${requirement.description}" class="form-control newContrtextarea">${requirement.description}</textarea>
+				          <textarea id="txtEditor" name="description"  class="form-control newContrtextarea">${requirement.description}</textarea>
 				          </div>
 				        </div> 
 						
@@ -246,17 +254,10 @@ width: 100% !important;
         
 </script> 
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-<script>
-	$(document).ready(function() {
-		$("#txtEditor").Editor();
-		getEditRequirementDetails(requirementId);
-	});
-</script> 
        
 <script type="text/javascript">
 	function storeRequiremetTemplate() {
+		
 		
 		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		 if ($('#requirementtemplate_form').validate(false, validationSettings)){ 
@@ -364,7 +365,7 @@ width: 100% !important;
 	    	   getCities();
 	       });
 		       
-	     
+	       
            
             //Adding Customized Educations to the list
 	        var selectone, chosenone;
@@ -468,13 +469,7 @@ function getJobType(jobType){
 }
 </script>
 
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
-		<script>
-			$(document).ready(function() {
-				$("#txtEditor").Editor();
-			});
-       </script> 
+
 <script>
 function getEditRequirementDetails(requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -485,6 +480,7 @@ function getEditRequirementDetails(requirementId){
 			success : function(data) {
 				var json = JSON.parse(data);
 				$(".Editor-container").find('.Editor-editor').html(json['description']);
+				
 			},
 		}); 
 	}
@@ -495,6 +491,7 @@ function getEditRequirementDetails(requirementId){
 <script type="text/javascript">
 $(document).ready(function(){
 	var requirementId  = "${requirementId}";
+	
 	getEditRequirementDetails(requirementId);
 	
 });

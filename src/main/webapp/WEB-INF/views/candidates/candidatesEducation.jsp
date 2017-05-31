@@ -90,7 +90,7 @@ function candidateEducation(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function eduMsgFadein() {
+	function eduMsgFadeinFunction() {
 		$("#selector4").fadeIn(200);
         $('#selector4').delay(2000).fadeOut('slow');
 	}
@@ -736,7 +736,7 @@ function candidateEducationStore(candidateId){
 				            			$("#selector4").css({ display: "block" });
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
-				               			eduMsgFadein();
+				               			eduMsgFadeinFunction();
 				               			qveducationSubmission(candidateId);
 							    	}
 				                 }   
@@ -805,7 +805,7 @@ function removeEducation(candidateEducationId,candidateId){
             			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
              			 candidateEducationList(candidateId);
-             			 eduMsgFadein();
+             			eduMsgFadeinFunction();
 			    	}
                } 
         },
@@ -911,7 +911,7 @@ function clearSearchKey() {
 		            			$("#selector4").css({ display: "block" });
 		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
-							eduMsgFadein();
+							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 						},
 					});

@@ -341,10 +341,10 @@ function errRemoveClientContact(){
                    result = result +'  <div class="row">';
                    result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
                    
-                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span>INR</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span id="loginCurrencyCode" class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
                    
-                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
-	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
 	                  
                    
                    result = result +'  </div>';
@@ -413,6 +413,10 @@ function errRemoveClientContact(){
 		        	
 		        	$("#grandTotal").val(json['total']);
 		        	$("#conversionFrom").val(json['total']);
+		        	 $("#exchangeCurrency").html(json['convertAmount']);
+		        	 $("#exchangeRate").html(json['exchangeRate']);
+		        	  
+		        	 
 		        	$("#savedInvoiceId").val(json['id']);
 		        	
 		        	
@@ -1182,6 +1186,7 @@ function pagination(){
   
   function  conversion(){
 	   var orgRelationId = $("#clientOrgRelationId").val();
+	   var currencyCode = '${SourceLeadWeb_currencyCode}';
 	   var grandTotal = $("#grandTotal").val();
 	   var sourceleadUrl ='${sourceleadUrl}';
 	   if(grandTotal != '' && grandTotal != 'undefined'){
@@ -1193,6 +1198,8 @@ function pagination(){
 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
+						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
 					}
 				},
 				});   
