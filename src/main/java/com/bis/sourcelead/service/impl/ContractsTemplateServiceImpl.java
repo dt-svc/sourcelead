@@ -782,7 +782,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			childContract.setDescription(contracts.getDescription());
 			childContract.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 			childContract.setStatus("0");
-				if(null != contracts.getContractType() && !"".equalsIgnoreCase(contracts.getContractType()) && "custom".equalsIgnoreCase(contracts.getContractType())){
+				if(null != contracts.getTypeOfContract() && !"".equalsIgnoreCase(contracts.getTypeOfContract()) && "custom".equalsIgnoreCase(contracts.getTypeOfContract())){
 					childContract.setTypeOfContract("Custom");
 				}else{
 					childContract.setTypeOfContract("New");
@@ -849,7 +849,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 				
 				  if(null != upadatedContracts.getContactUser()){
-					  Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
+					  Contracts con = null;
+					  if(null != contracts.getTypeOfContract() && !"".equalsIgnoreCase(contracts.getTypeOfContract()) && "custom".equalsIgnoreCase(contracts.getTypeOfContract())){
+						  con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(upadatedContracts.getContactUser(),contracts,orgLocation,user,upadatedContracts,org);
+					  }
+					  else{
+						  con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
+					  }
 					  upadatedContracts.setDocId(con.getTempdocId());
 					  upadatedContracts.setEnvelopId(con.getTempEnvId());
 					  upadatedContracts.setContractStatus(con.getContractStatus());
