@@ -1022,4 +1022,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(orgLocationId, userId, candidateType);
 	}
 
+	@Override
+	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception {
+		return candidateDao.getCandidatesListByOrgLocationIDAndUserId(orgLocationId, userId);
+	}
+
 }

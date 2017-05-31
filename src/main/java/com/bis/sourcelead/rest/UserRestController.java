@@ -195,6 +195,7 @@ public class UserRestController {
 	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
     public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 if(candidateId !=null){
 		Candidate candidate   = candidateService.getCandidateById(candidateId);
 		if(null != candidate.getOrgRelationId()){
 			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
@@ -219,6 +220,8 @@ public class UserRestController {
 		
 		
 		return commonUtil.toJSON(candidate);
+		}
+		return "success";
 		
 	}
 

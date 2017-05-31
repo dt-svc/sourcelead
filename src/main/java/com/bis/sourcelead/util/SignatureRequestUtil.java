@@ -142,7 +142,7 @@ public class SignatureRequestUtil {
 		signHere.setDocumentId(doc.getDocumentId());
 		signHere.setPageNumber(numberOfPages.toString());
 		signHere.setRecipientId("1");
-		signHere.setXPosition("500");
+		signHere.setXPosition("250");
 		signHere.setYPosition("750");
 
 		// can have multiple tabs, so need to add to envelope as a single element list
@@ -266,7 +266,7 @@ public class SignatureRequestUtil {
 				signHere.setDocumentId(doc.getDocumentId());
 				signHere.setPageNumber(numberOfPages.toString());
 				signHere.setRecipientId("1");
-				signHere.setXPosition("500");
+				signHere.setXPosition("250");
 				signHere.setYPosition("750");
 
 				// can have multiple tabs, so need to add to envelope as a single element list
