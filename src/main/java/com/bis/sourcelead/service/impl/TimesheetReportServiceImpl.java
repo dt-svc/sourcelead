@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -842,11 +844,19 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			}
 		}
 		
-		
+		String replacedOrgName = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		timesheetReportsExcelBorder(createExcelworkbook);
 		StringBuilder sheetName = new StringBuilder();
-		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(orgLocations.getOrg().getOrgName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
+		
+		Pattern special = Pattern.compile ("[a-zA-Z0-9]*");
+		Matcher hasSpecial = special.matcher(orgLocations.getOrg().getOrgName());
+		if(!hasSpecial.matches()){
+		 replacedOrgName = orgLocations.getOrg().getOrgName().replaceAll("\\\\", " ").replaceAll("/", " ").replaceAll("[^a-zA-Z0-9][-]", "");
+		}else{
+		 replacedOrgName = orgLocations.getOrg().getOrgName();
+		}
+		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(replacedOrgName).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
 		Row writeRow = null;
 		createExcelsheet = gettimesheetReportsExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,weekFrequencyDates);
 		
@@ -859,7 +869,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 column++;
          }
 		 StringBuilder fileSB = new StringBuilder();
-		 file = File.createTempFile(fileSB.append(orgLocations.getOrg().getOrgName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".xls");
+		 file = File.createTempFile(fileSB.append(replacedOrgName).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".xls");
 		 file.setReadable(true);
 		 FileOutputStream fos = new FileOutputStream(file);
 		 try {
