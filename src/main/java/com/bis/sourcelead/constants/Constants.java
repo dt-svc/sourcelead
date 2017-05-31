@@ -559,8 +559,8 @@ public class Constants {
 	public static final String CURRENCYCODE_GBP = "GBP";
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
-	public static final String MY_EXPENCES = "My Expences";
-	public static final String EXPENCES_APPROVAL =  "Expences Approval";
+	public static final String MY_EXPENSES = "My Expenses";
+	public static final String EXPENSES_APPROVAL =  "Expenses Approval";
 	
 	
 	

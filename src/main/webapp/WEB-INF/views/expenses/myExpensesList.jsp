@@ -6,7 +6,7 @@
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>My Expences</h2>
+      <h2>My Expenses</h2>
     </div>
     </section>
  </section>
