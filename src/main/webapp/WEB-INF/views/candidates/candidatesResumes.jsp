@@ -125,6 +125,8 @@ function refreshResumeList(candidateId){
 }
 </script>
 
+<div id="deleteResumePopUp"></div> 
+
 
 
 <%-- 
@@ -416,8 +418,10 @@ function addResume(candidateId) {
      2.parameter : candidateId, resumeId
      3.ajax url implementation in CandidateResumeRestController.
 --%>
+
 <script>
 function deleteResume(candidateId, resumeId){
+
 	var sourceleadUrl ='${sourceleadUrl}';
 	var message = confirm("You are choosing to delete the resume");
 	if (message == true) {
@@ -436,9 +440,12 @@ function deleteResume(candidateId, resumeId){
    		    	}
    		    },
 	     });
-}
+
+	
+	
 }
 </script>
+
 
 
 <%-- 

@@ -206,7 +206,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
 	        if(null != vendorCurrencyCode){
 	      	float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(jsonObj.getString("grandTotal")));
-	      	float exchangeAmoiunt = conversionUtil.singleConvert(vendorCurrencyCode,loginOrgCurrencyCode, 1);
+	      	float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,1);
 	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
 	      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
 	      	invoice.setConvertAmount(String.valueOf(convertedAmount1));
@@ -1107,10 +1107,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 			if (null != vendorCurrencyCode) {
 				currencyConversionResponse = new CurrencyConversionResponse();
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(grandTotal));
-				float exchangeRate = conversionUtil.singleConvert(vendorCurrencyCode, loginOrgCurrencyCode, 1);
+				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode, 1);
 				float exchangeCurrency = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
 				currencyConversionResponse.setExchangeRate(exchangeRate);
 				currencyConversionResponse.setExchangeCurrency(exchangeCurrency);
+				currencyConversionResponse.setVendorCurrencyCode(vendorCurrencyCode);
 			}
 		}
 		return currencyConversionResponse;
