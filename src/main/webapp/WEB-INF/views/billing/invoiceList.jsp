@@ -132,6 +132,15 @@ $(document).ready(function(){
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
+                    
+                      		<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+					        	<div id="exportPop" class="ExpPop">
+					              <ul>
+					                <li onclick="exportToReceivablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+					                <li onclick="exportToReceivableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+					              </ul>
+					            </div>
+					          </li>                    
                     	
                       <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                         <div class="approved_pop" id="invoiceTabOne">
@@ -631,6 +640,21 @@ function getInvoiceList(){
 	
 }
 </script>
+
+<script>
+
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+		$("#filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+ });
+ $("html").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ $("#exportPop, #mypop").click(function(e) {  
+     e.stopPropagation();
+ });
+</script>
+
 <script>
 function invoicePagination(){  
 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
@@ -1014,6 +1038,68 @@ function searchResults(){
 	} 
 }
 
+</script>
+
+<script>
+function exportToReceivablePdf(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var invoiceStatus = [];
+	 var paymentStatus = [];
+	 
+		$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+	    {
+			invoiceStatus.push($(this).val());
+	    });
+		
+		$('input:checkbox[name=paymentStatus]:checked').each(function() 
+		 {
+			paymentStatus.push($(this).val());
+		});
+		
+		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&exportType=pdf&invoiceType=receivable";
+			/*  var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200); */
+}
+</script>
+
+<script>
+function exportToReceivableExcel(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var invoiceStatus = [];
+	 var paymentStatus = [];
+	 
+		$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+	    {
+			invoiceStatus.push($(this).val());
+	    });
+		
+		$('input:checkbox[name=paymentStatus]:checked').each(function() 
+		 {
+			paymentStatus.push($(this).val());
+		});
+		
+		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&exportType=xls&invoiceType=receivable";
+			/*  var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200); */
+}
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	

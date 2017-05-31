@@ -401,6 +401,9 @@ public class Constants {
 			"Phone Number", "Owner", "Role", "Status" };
 	public static final String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER = { "CandidateName",
 			"PhoneNumber", "Work Experience", "status" };
+	public static final String[] BILLING_HEADERS = { "Invoice_Id", "Client_Name",
+			"Client_Contact_Name"," Client_Contact_Email", "Client_Phone ", "Invoice_Date", "Due_Date", "Total_Amount", "Due_Amount",
+			"Paid_Amount", "Invoice_Status", "Payment_Status", "Linked_Invoice_Id"};
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";

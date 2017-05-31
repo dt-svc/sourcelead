@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -26,18 +29,26 @@ import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -563,4 +574,199 @@ public class InvoicePdfHelper {
 		}
 			return table;
 	}
+	
+	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName) throws Exception {
+		String[] headers = Constants.BILLING_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
+	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+	    StringBuilder sbReq =new StringBuilder();
+	    sbReq.append(orgName).append("_Billing_").append(dateFormat.format(new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append(orgName).append("_Billing_").append(dateFormat.format(new Date())).toString(),".pdf");
+
+	    file.setReadable(true);
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
+	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myBordColor);
+	        StringBuilder sbReqStyle = new StringBuilder();
+	        sbReqStyle.append(orgName).append(" ").append("Billing");
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append("Billing.").toString(),boldFont);
+
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        // Create an instance of PdfPTable. After that we transform the header and
+            List orderedList = new List(List.ORDERED);
+	        orderedList.add(new ListItem("Title  :"));
+	        orderedList.add(new ListItem("Company Name :"));
+	        orderedList.add(new ListItem("Duration  :"));
+	        orderedList.add(new ListItem("Total Unpaid Amount :"));
+	        orderedList.add(new ListItem("Total Paid Amount :"));
+	        orderedList.add(new ListItem("Total Unbilled Amount  :"));
+	        document.add(orderedList);
+            PdfPTable table = new PdfPTable(headers.length);
+            Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
+	        cell1.setColspan(13);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5});
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+	            cell.setBackgroundColor(myColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> invoices = new ArrayList<>();
+	        for(Invoice invoice : invoiceList){
+	        	invoices.add(prepareBillingToArray(invoice));
+	        }
+	        
+	        for (String[] invoiceArray: invoices) {
+                for (int i = 0; i < invoiceArray.length; i++) {
+                    String datum = invoiceArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        
+	        document.addTitle("Billing List Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+	}
+	
+	
+	private static void headerCellStyle(PdfPCell cell){
+	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    cell.setPaddingTop(0f);
+	    cell.setPaddingBottom(7f);
+	    cell.setBackgroundColor(new BaseColor(0,121,182));
+	    cell.setBorder(0);
+	    cell.setBorderWidthBottom(2f);
+	    }
+	
+	
+	
+	private String[] prepareBillingToArray(Invoice invoice) {
+		
+	String billingArray[] = new String[Constants.BILLING_HEADERS.length];
+	
+	if(null != invoice.getInvoiceId() && !"".equalsIgnoreCase(invoice.getInvoiceId())){
+		billingArray[0] = invoice.getInvoiceId();
+	}else{
+		billingArray[0] = "--";
+	}
+	
+	Org org = null;
+	if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
+			org = invoice.getOrgRelationID().getLocationId().getOrg();
+	}else if(invoice.getOrgRelationID().getLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
+			 org = invoice.getOrgRelationID().getResponderLocationId().getOrg();
+	}
+	if(null != org){
+			billingArray[1] = org.getOrgName();
+	}else{
+			billingArray[1] = "--";
+	}
+	
+	
+	if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
+		StringBuilder contactName = new StringBuilder();
+		billingArray[2] = contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString();
+	}else if(null != invoice.getContactUser().getFirstName()){
+		billingArray[2] = invoice.getContactUser().getFirstName();
+	}else{
+		billingArray[2] = "--";
+	}
+	if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
+		billingArray[3] = invoice.getContactUser().getEmail(); 
+	}else{
+		billingArray[3] =  "--";
+	}
+
+	if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
+		billingArray[4] = invoice.getContactUser().getMobilePhone();
+	}else{
+		billingArray[4] = "--";
+	}
+	
+	if(null != invoice.getInvoiceDate() && !"".equalsIgnoreCase(invoice.getInvoiceDate().toString())){
+		billingArray[5] = invoice.getInvoiceDate().toString();
+	}else{
+		billingArray[5] = "--";
+	}
+	
+	if(null != invoice.getDueDate() && !"".equalsIgnoreCase(invoice.getDueDate().toString())){
+		billingArray[6] = invoice.getDueDate().toString();  
+	}else{
+		billingArray[6] = "--";
+	}
+	
+	if(null != invoice.getTotal() && !"".equalsIgnoreCase(invoice.getTotal())){
+		billingArray[7] = invoice.getTotal();
+	}else{
+		billingArray[7] = "--";
+	}
+	
+	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount())){
+		billingArray[8] = invoice.getDueAmount();
+	}else{
+		billingArray[8] = "--";
+	}
+	
+	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount()) ){
+		billingArray[9] = invoice.getDueAmount();
+	}else{
+		billingArray[9] = "--";
+	}
+	
+	
+	if(null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())){
+		billingArray[10] = invoice.getInvoiceStatus();
+	}else{
+		billingArray[10] = "--";
+	}
+	
+	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
+		billingArray[11] = invoice.getPaymentStatus();
+	}else{
+		billingArray[11] = "--";
+	}
+	
+	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
+		billingArray[12] = invoice.getPaymentStatus();
+	}else{
+		billingArray[12] = "--";
+	}
+	
+	return billingArray;
+	
+	}
+	
+	
 }

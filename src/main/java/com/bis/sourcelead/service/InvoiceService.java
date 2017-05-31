@@ -45,4 +45,6 @@ public interface InvoiceService {
 
 	CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal)throws Exception;
 
+	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType) throws Exception;
+
 }
