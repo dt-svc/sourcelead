@@ -163,7 +163,7 @@ public class CandidateResumeRestController {
 	* @throws Exception
 	*/
 	
-	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_DELETE_ASSOCIATE_RESUMES')")
+	 @PreAuthorize("hasAnyRole('ROLE_VIEW_DELETE_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_VIEW_DELETE_ASSOCIATE_RESUMES','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/terminateResume", method = RequestMethod.POST)
 	public @ResponseBody String terminateResume(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "resumeId", required = false) String resumeId, 
