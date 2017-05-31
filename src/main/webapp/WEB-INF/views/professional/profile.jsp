@@ -28,7 +28,7 @@ $(document).ready(function(){
         
      <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Update Profile</h2>
+        <h2>Profile</h2>
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Update Profile</div>
     </section>

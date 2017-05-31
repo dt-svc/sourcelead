@@ -32,7 +32,12 @@
     <div class="pull-left">
       <h2>Add Candidate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
+    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+   	 <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
+    </c:if>
+     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+   	 <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
+    </c:if>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -504,7 +509,7 @@ function getAllCountries(){
         	$('#country').empty();
         	$('#country').append('<option value="">---select country---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
+            	if(json[i] == '${SourceLeadWeb_loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{

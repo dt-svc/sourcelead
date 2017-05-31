@@ -1238,6 +1238,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	}
 	
 	
+	@Override
+	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception {
+		return requirementDao.getRequirementListByParentRequirementIdAndSpocId(requirementId, spocId);
+	
+	}
 	/**
 	 * @author prasad k
 	 * @since  sep 14 2016

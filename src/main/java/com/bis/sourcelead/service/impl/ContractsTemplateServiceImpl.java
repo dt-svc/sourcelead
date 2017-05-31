@@ -221,9 +221,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorContracts.setTypeOfContract("New");
 			}
 		}
-		if(null != vendorContracts){
+		/*if(null != vendorContracts){
 			vendorContracts.setTypeOfContract("New");
-		}
+		}*/
 		
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
@@ -650,9 +650,26 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorName.append(contracts.getContactUser().getFirstName());	
 			}
 			contracts.setVendorContactName(vendorName.toString());
-			contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
+			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
 			if(null != contracts.getEndDate()){
 				contracts.setEndDateStr(Constants.DF_DMY.format(contracts.getEndDate()));	
+			}*/
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+			if(null != contracts && null != contracts.getStartDate()){
+				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
+				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				currentDateInTimezone = standardFormat.format(converteDate);
+				contracts.setStartDateStr(currentDateInTimezone);
+			}
+			if(null != contracts && null != contracts.getEndDate()){
+				String endTimeStr = Constants.TZ_DF.format(contracts.getEndDate());  
+				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
+				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
+				endDateInTimezone = standardFormat.format(endconverteDate);
+				contracts.setEndDateStr(endDateInTimezone);
 			}
 			if(null != contracts.getParentContractId()){
 			contracts.setParentId(contracts.getParentContractId().getId().toString());
@@ -765,7 +782,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			childContract.setDescription(contracts.getDescription());
 			childContract.setTemplateSubmissionStatus("WAITING_TO_BE_SIGNED");
 			childContract.setStatus("0");
-			childContract.setTypeOfContract("New");
+				if(null != contracts.getTypeOfContract() && !"".equalsIgnoreCase(contracts.getTypeOfContract()) && "custom".equalsIgnoreCase(contracts.getTypeOfContract())){
+					childContract.setTypeOfContract("Custom");
+				}else{
+					childContract.setTypeOfContract("New");
+				}
+		//	childContract.setTypeOfContract("New");
 			childContract.setContractUUID(contracts.getContractUUID());
 				if("Vendor MSA".equalsIgnoreCase(contracts.getContractType()) || "Vendor SOW".equalsIgnoreCase(contracts.getContractType())|| "Vendor NDA".equalsIgnoreCase(contracts.getContractType()) || "Vendor NSA".equalsIgnoreCase(contracts.getContractType())){
 					if("Vendor MSA".equalsIgnoreCase(contracts.getContractType())){
@@ -827,7 +849,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 				
 				  if(null != upadatedContracts.getContactUser()){
-					  Contracts con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
+					  Contracts con = null;
+					  if(null != contracts.getTypeOfContract() && !"".equalsIgnoreCase(contracts.getTypeOfContract()) && "custom".equalsIgnoreCase(contracts.getTypeOfContract())){
+						  con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(upadatedContracts.getContactUser(),contracts,orgLocation,user,upadatedContracts,org);
+					  }
+					  else{
+						  con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org);
+					  }
 					  upadatedContracts.setDocId(con.getTempdocId());
 					  upadatedContracts.setEnvelopId(con.getTempEnvId());
 					  upadatedContracts.setContractStatus(con.getContractStatus());
