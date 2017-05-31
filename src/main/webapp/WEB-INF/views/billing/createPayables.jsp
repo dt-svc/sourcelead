@@ -342,6 +342,22 @@ function errRemoveVendorContact(){
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly="readonly"></div>';
                    result = result +'  </div>';
+                   
+                   //New Div for currency conversion: srinivas l
+                   result = result +'  <div class="row">';
+                   result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                   
+                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                   
+                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+	                  
+                   
+                   result = result +'  </div>';
+                   result = result +'  </div>'; 
+                 //New Div for currency conversion: srinivas l
+                   
+                   
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -402,6 +418,9 @@ function errRemoveVendorContact(){
 		        	getSavedAttachments(json['invoiceDocumentsList']);
 		        	
 		        	$("#grandTotal").val(json['total']);
+		        	$("#conversionFrom").val(json['total']);
+		        	 $("#exchangeCurrency").html(json['convertAmount']);
+		        	 $("#exchangeRate").html(json['exchangeRate']);
 		        	
 		        	$("#savedInvoiceId").val(json['id']);
 		        	
@@ -501,6 +520,7 @@ function errRemoveVendorContact(){
 		 		total = subtractValueFromRow-discountValue;
 		 		$("#discountTotal").val(discountValue);
 		 		$("#grandTotal").val(total);
+		 		$("#conversionFrom").val(total);
 		 		$("#afterDiscountTotal").val(total);
 		 		
 		 	  }
@@ -509,6 +529,7 @@ function errRemoveVendorContact(){
 		 		total = subtractValueFromRow - perCentValue;
 		 		$("#discountTotal").val(perCentValue);
 		 		$("#grandTotal").val(total);
+		 		$("#conversionFrom").val(total);
 		 		$("#afterDiscountTotal").val(total);
 		 	 }	 	
 	    }
@@ -1187,8 +1208,34 @@ function pagination(){
 			 calAddRowAmount("000","00",rowId);
 		 }
 	    
-	  
+		 conversion();
   }
+  
+  
+  function  conversion(){
+	   var orgRelationId = $("#vendorOrgRelationId").val();
+	   var currencyCode = '${SourceLeadWeb_currencyCode}';
+	   var grandTotal = $("#grandTotal").val();
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   if(grandTotal != '' && grandTotal != 'undefined'){
+		   $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				success :function(data) {
+					if(data !='' && data != 'undefined' && data != null){
+						var json = JSON.parse(data);
+						$("#exchangeRate").html(json.exchangeRate);
+						$("#exchangeCurrency").html(json.exchangeCurrency);
+						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+					}
+				},
+				});   
+	   }
+	  
+		
+ }
+  
   
   function calAddRowAmount(hours,minute,rowId){
 	  
@@ -1230,6 +1277,7 @@ function pagination(){
 	    $("#inoviceTotal").val(sum.toFixed(2));
 	    $("#hiddenTotal").val(sum.toFixed(2));
 	    $("#grandTotal").val(sum.toFixed(2));
+	    $("#conversionFrom").val(sum.toFixed(2));
 	    $("#afterDiscountTotal").val(sum.toFixed(2));
 	    
    /* =====================  After adding the rows calculate the discount start  ===================== */
@@ -1242,6 +1290,7 @@ function pagination(){
 			total = arroundGrand-discountValue;
 			$("#discountTotal").val(discountValue.toFixed(2));
 			$("#grandTotal").val(total.toFixed(2));
+			$("#conversionFrom").val(total.toFixed(2));
 			$("#afterDiscountTotal").val(total.toFixed(2));
 			
 		}
@@ -1250,6 +1299,7 @@ function pagination(){
 			total = arroundGrand - perCentValue;
 			$("#discountTotal").val(perCentValue.toFixed(2));
 			$("#grandTotal").val(total.toFixed(2));
+			$("#conversionFrom").val(total.toFixed(2));
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}
    }
@@ -1271,10 +1321,12 @@ function calculateDiscount(){
 			total = subTotal-discountValue;
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total);
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
 		
@@ -1286,10 +1338,12 @@ function calculateDiscount(){
 			total = subTotal - perCentValue;
 			$("#discountTotal").val(perCentValue);
 			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total.toFixed(2));
 		}else{
 			$("#discountTotal").val(subTotal);
 			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
 		
@@ -1497,6 +1551,7 @@ function calculateTaxDiscount(){
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
+	$("#conversionFrom").val(grandTotal.toFixed(2));
   
 }
 </script>
