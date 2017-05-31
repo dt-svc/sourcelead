@@ -19,8 +19,8 @@ public class ExpencesController {
 	
 	
 	
-	@RequestMapping(value = "/myExpencesList")
-	public ModelAndView myExpencesList(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/myExpensesList")
+	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		
@@ -29,12 +29,12 @@ public class ExpencesController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.MY_EXPENCES);
+		sessionData.setNav(Constants.MY_EXPENSES);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("expences/myExpencesList");
+		model.setViewName("expenses/myExpensesList");
 		
 		return model;
 
@@ -42,8 +42,8 @@ public class ExpencesController {
 	
 	
 	
-	@RequestMapping(value = "/expencesApprovalList")
-	public ModelAndView expencesApprovalList(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/expensesApprovalList")
+	public ModelAndView expensesApprovalList(HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		
@@ -52,12 +52,12 @@ public class ExpencesController {
 		{
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.EXPENCES_APPROVAL);
+		sessionData.setNav(Constants.EXPENSES_APPROVAL);
 		
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("expences/expencesApprovalList");
+		model.setViewName("expenses/expensesApprovalList");
 		
 		return model;
 
