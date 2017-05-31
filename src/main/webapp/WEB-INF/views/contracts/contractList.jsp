@@ -2088,7 +2088,7 @@ function mainTabEnable(local){
         $("#sign").addClass("wSig");
         $("#verify").removeClass("wVer");
         $("#finalised").removeClass("fin");
-        $("#expired").removeClass("expi");
+        $("#expired").removeClass("exp");
         $("#rejected").removeClass("rej");
         
         $("#contractStage").val("WAITING_TO_BE_SIGNED");
