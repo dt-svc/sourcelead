@@ -41,6 +41,12 @@ display: inline;
 .project_wrap {
 overflow-x: auto;
 }
+.proj_show span {
+	padding: 0px 15px 0px 0px;
+}
+.proj_show i {
+	position: absolute; right: 0px;
+}
 </style>
 <body>
       <!-- Content Area -->

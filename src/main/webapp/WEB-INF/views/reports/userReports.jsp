@@ -439,6 +439,7 @@ function getCustomReports(){
                      result = result +"<th><i class='fa fa-handshake-o fa-2x'></i><div class='small'>Interviewed</div></th>"; 
                      result = result +"<th><i class='fa fa-envelope-open-o fa-2x'></i><div class='small'>Offered</div></th>"; 
                      result = result +"<th><i class='fa fa-ban fa-2x'></i><div class='small'>Rejected</div></th>";
+                     result = result +"<th><i class='fa fa-arrow-circle-left fa-2x'></i> <div class='small'>Back-Out</div></th>";
                      result = result +"  </tr>"; 
                      result = result +"</thead>";
                      result = result +"<tbody>"; 
@@ -514,6 +515,12 @@ function getCustomReports(){
                     	 }else{
                     		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
                     	 }
+                    	 
+                    	 if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
+                   		  result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
+	                   	 }else{
+	                   		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	                   	 }
 	                    
 	                     result = result +"</tr>";
                      }
