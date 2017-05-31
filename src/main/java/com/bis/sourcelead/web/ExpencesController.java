@@ -12,58 +12,39 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
 public class ExpencesController {
-
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	
-	
-	
 	@RequestMapping(value = "/myExpensesList")
-	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception {
+	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception
+	{
 		
 		ModelAndView model = new ModelAndView();
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(null == sessionData)
-		{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.MY_EXPENSES);
-		
-		request.getSession().setAttribute("sessionData",sessionData);
-		
+		request.getSession().setAttribute("sessionData", sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/myExpensesList");
-		
 		return model;
-
 	}
 	
-	
-	
 	@RequestMapping(value = "/expensesApprovalList")
-	public ModelAndView expensesApprovalList(HttpServletRequest request) throws Exception {
+	public ModelAndView expensesApprovalList(HttpServletRequest request) throws Exception
+	{
 		
 		ModelAndView model = new ModelAndView();
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(null == sessionData)
-		{
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.EXPENSES_APPROVAL);
-		
-		request.getSession().setAttribute("sessionData",sessionData);
-		
+		request.getSession().setAttribute("sessionData", sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/expensesApprovalList");
-		
 		return model;
-
 	}
-	
-	
-	
-	
 }
