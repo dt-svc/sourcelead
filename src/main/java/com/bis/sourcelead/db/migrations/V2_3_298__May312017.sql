@@ -10,7 +10,7 @@ UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='14' WHERE `ID`='20';
 UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='14' WHERE `ID`='21';
 UPDATE `sourcelead`.`TABS` SET `TAB_ORDER`='14' WHERE `ID`='22';
 
-INSERT INTO `sourcelead`.`TABS` (`ID`, `TAB_NAME`, `TAB_ORDER`) VALUES ('23', 'Expences', '10');
+INSERT INTO `sourcelead`.`TABS` (`ID`, `TAB_NAME`, `TAB_ORDER`) VALUES ('23', 'Expenses', '10');
 INSERT INTO `sourcelead`.`TABS` (`ID`, `TAB_NAME`, `TAB_ID`, `SUB_TAB_ORDER`, `TAB_ORDER`) VALUES ('24', 'My Expenses', '23', '1', '10');
 INSERT INTO `sourcelead`.`TABS` (`ID`, `TAB_NAME`, `TAB_ID`, `SUB_TAB_ORDER`, `TAB_ORDER`) VALUES ('25', 'Expenses Approval', '23', '2', '10');
 
