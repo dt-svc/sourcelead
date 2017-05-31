@@ -285,6 +285,17 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 			
+			try {
+				Countries countries = countriesService.getCountriesByCountryName(user.getCountry());
+				if(null != countries){
+					SourceLeadSessionManager.setSessionAttribute(request, "currencyCode", countries.getCurrency());
+					SourceLeadSessionManager.setSessionAttribute(request, "loginCountryName", countries.getName());
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			Candidate candidate = null;
 			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
