@@ -167,7 +167,7 @@ public class LoginSessionController {
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0;
 		Integer billingTabsCount = 0;
-		Integer expencesTabCount = 0;
+		Integer expensesTabCount = 0;
 		
 		if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
 			OrgLocations orgLocations = userRole.getOrgLocations();
@@ -185,8 +185,8 @@ public class LoginSessionController {
 						billingTabsCount = billingTabsCount+1;
 					}
 					
-					if(tabs.getTabName().equalsIgnoreCase("My Expences") || tabs.getTabName().equalsIgnoreCase("Expences Approval")){
-						expencesTabCount = expencesTabCount+1;
+					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
+						expensesTabCount = expensesTabCount+1;
 					}
 				}
 				
@@ -195,7 +195,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "expencesTabCount", expencesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 			
 			
 			String[] modules = org.getModulesId().split(",");
@@ -343,7 +343,7 @@ public class LoginSessionController {
 			Collection<Tabs> tabsList = null;
 			Integer associatesTabsCount = 0;
 			Integer billingTabsCount = 0;
-			Integer expencesTabCount = 0;
+			Integer expensesTabCount = 0;
 			
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
@@ -357,8 +357,8 @@ public class LoginSessionController {
 						billingTabsCount = billingTabsCount+1;
 					}
 					
-					if(tabs.getTabName().equalsIgnoreCase("My Expences") || tabs.getTabName().equalsIgnoreCase("Expences Approval")){
-						expencesTabCount = expencesTabCount+1;
+					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
+						expensesTabCount = expensesTabCount+1;
 					}
 				}
 				
@@ -367,7 +367,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "expencesTabCount", expencesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
 			
 			
 			String[] modules = org.getModulesId().split(",");

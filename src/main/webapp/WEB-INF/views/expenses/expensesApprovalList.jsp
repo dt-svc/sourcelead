@@ -6,7 +6,7 @@
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Expences Approval List</h2>
+      <h2>Expenses Approval List</h2>
     </div>
     </section>
  </section>
