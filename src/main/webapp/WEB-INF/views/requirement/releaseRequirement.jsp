@@ -538,6 +538,7 @@ function getContactsLists(){
 			   	        	result = result +'  <th>Email</th>';
 			   	        	result = result +' <th>Phone</th>';
 			   	        	result = result +' <th>Owner</th>';
+			   	        	result = result +' <th>Released On</th>';
 			   	        	result = result +' <th>Vendor</th>';
 			   	        	result = result +' <th>Release</th>';
 			   	        	result = result +'</tr>';
@@ -569,6 +570,13 @@ function getContactsLists(){
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title="'+report.ownerName+'"><span>'+report.ownerName+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			if(null != report.stringDate && '' != report.stringDate && 'undefined' != report.stringDate){
+					        				result = result +'<div title="'+report.stringDate+'"><span>'+report.stringDate+'</span></div>';
+					        			}else{
+					        				result = result +'<div title=""><span>---</span></div>';
+					        			}
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title=""><span>'+report.orgName+'</span></div>';
@@ -698,6 +706,7 @@ function getVendorLists(){
 	           	            result = result +'<th class="text-center"><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
 	           	        	result = result +'  <th>Name</th>';
 	           	        	result = result +'  <th>Location</th>';
+	           	        	result = result +' <th>Released On</th>';
 	           	        	result = result +' <th>No. of contacts</th>';
 	           	        	result = result +' <th>Level</th>';
 	           	        	result = result +' <th>Release</th>';
@@ -743,9 +752,17 @@ function getVendorLists(){
 	           	        		}else{
 	           	        			result = result +'<td><div>--</div></td>';
 	           	        		}
+	           	        		result = result +'<td>';
+			        			if(null != report.stringDate && '' != report.stringDate && 'undefined' != report.stringDate){
+			        				result = result +'<div title="'+report.stringDate+'"><span>'+report.stringDate+'</span></div>';
+			        			}else{
+			        				result = result +'<div title=""><span>---</span></div>';
+			        			}
+			        			result = result +'</td>';
 	        	       		result = result +'<td><div class="tbldata-dotdot-sm">'+report.noOfContatcs+'</div></td>';
 	        	       		result = result +' <td><div class="tbldata-dotdot-sm"><span  title="'+report.level+'">'+report.level+'</span></td>';
 	        	       		result = result +'<td>';
+	        	       		
 	        	       		if(report.noOfNonReleasedContacts == 0){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
 	                		}else if(report.noOfNonReleasedContacts > 0){
@@ -756,6 +773,7 @@ function getVendorLists(){
 										result = result +'<div class="fa fa-bullhorn"></div>';
 									'</sec:authorize>';
 	                		}
+	        	       		
 	                		result = result +'</td>';
 	           	        	result = result +'</tr>';
 	           				}

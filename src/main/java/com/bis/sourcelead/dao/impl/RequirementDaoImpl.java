@@ -291,7 +291,15 @@ public class RequirementDaoImpl implements RequirementDao {
 		return flag;
 	}
 	
-
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+				String query = "from Requirement requirement where requirement.parentRequirement.id = :requirementId and requirement.spocId = :spocId ";
+				List<Requirement> requirementList = session.createQuery(query).setLong("requirementId", requirementId).setLong("spocId", spocId).setCacheable(true).list();
+		 return requirementList;
+	}
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)
