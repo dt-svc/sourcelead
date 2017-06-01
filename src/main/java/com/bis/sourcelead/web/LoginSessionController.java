@@ -215,6 +215,8 @@ public class LoginSessionController {
 				}
 			}
 			
+			userRole.setNewlyLoginUser(Constants.NO);
+			userRoleService.addUserRole(userRole);
 			
 			setLoginSession(request, authentication,user,userRole);
 			
@@ -308,12 +310,16 @@ public class LoginSessionController {
 			Candidate candidate = null;
 			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
+				StringBuilder redirectUrl = new StringBuilder();
 				
 				if(!isNullOrEmpty(requirementUUID)){
-					StringBuilder redirectUrl = new StringBuilder();
 					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				}else{
-					model.setViewName("professional/professionalDashboard");
+					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
+						response.sendRedirect(redirectUrl.append("/sourcelead/professionalPraseCandidate").toString());
+					}else{
+						model.setViewName("professional/professionalDashboard");
+					}
 				}
 				
 			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
@@ -326,6 +332,9 @@ public class LoginSessionController {
 					model.setViewName("recruiter/recruiterDashboard");
 				}
 			}
+			
+			userRole.setNewlyLoginUser(Constants.NO);
+			userRoleService.addUserRole(userRole);
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
@@ -362,6 +371,9 @@ public class LoginSessionController {
 			Integer associatesTabsCount = 0;
 			Integer billingTabsCount = 0;
 			Integer expensesTabCount = 0;
+			
+			userRole.setNewlyLoginUser(Constants.NO);
+			userRoleService.addUserRole(userRole);
 			
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
