@@ -91,6 +91,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		Sheet createExcelsheet = createExcelworkbook.createSheet("candidate");
 		createExcelsheet = setCandidateExcelHeader(createExcelsheet);
 		try {
+			int count = 0;
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
@@ -102,7 +103,6 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
-				int count = 0;
 				Iterator<Row> rowIterator = sheet.iterator();
 				while (rowIterator.hasNext()) {
 					CandidatesImport candidateImport = new CandidatesImport();
@@ -237,7 +237,22 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 						}
 					}
 				}
-				if (!isValidated || isUserFound) {
+				if (count > 0) {
+					FileOutputStream fos = null;
+					if(!fileName.endsWith("xlsx")){
+						fos = new FileOutputStream("CandidateError.xls");
+						isFileCreated = "CandidateError.xls";
+					}else{
+						 fos = new FileOutputStream("CandidateError.xlsx");
+						 isFileCreated = "CandidateError.xlsx";
+					}
+					
+					createExcelworkbook.write(fos);
+					fos.close();
+				}else {
+					isFileCreated = "success";
+				}
+				/*if (!isValidated || isUserFound) {
 					FileOutputStream fos = null;
 					if (!fileName.endsWith("xlsx")) {
 						fos = new FileOutputStream("CandidateError.xls");
@@ -255,10 +270,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 					else {
 						isFileCreated = "CandidateError.xlsx";
 					}
-				}
-				else {
-					isFileCreated = "success";
-				}
+				}*/
+				
 			}
 			fis.close();
 		} catch (IOException e) {
