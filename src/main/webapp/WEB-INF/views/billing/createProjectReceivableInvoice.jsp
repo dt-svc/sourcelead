@@ -209,6 +209,22 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <label class="col-md-7 text-right"><strong>Total</strong></label>
                     <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
               </div>
+              
+              
+               <!-- New Div for currency conversion: srinivas l -->
+                  <div class="row">
+                    <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">
+                   
+                   <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>
+                   
+                      <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>
+	              <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>
+	                  
+                   
+                     </div>
+                   </div>
+                 <!-- New Div for currency conversion: srinivas l -->
+              
               </div>
           </div>
         </div>
@@ -216,6 +232,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
         <!-- Adding Content Starts herer -->
         <div id="lineItemPopUp"></div>
           <!-- Drap and Drop Table Row --> 
+          <div id="receivableAlertPopUp"></div>
       
           <footer class="form-footer">
               <div class="pull-right mr">
@@ -431,6 +448,7 @@ function populateInlineItemsGrid(data){
         $("#tableBody").empty();
         $("#tableBody").append(result);
         maskme();
+        $("#currencyCode").html(currencyCode);
         document.getElementById("bottomGrid").style.display="block";
         document.getElementById("bottomGrid").style.display="block";
         document.getElementById("lineItemAddRows").style.display="block";
@@ -441,13 +459,38 @@ function populateInlineItemsGrid(data){
         document.getElementById("bottomGrid").style.display="none";
         document.getElementById("lineItemAddRows").style.display="none";
         document.getElementById("tableBody").style.display="none";
-        alert("No MembersFound");
+//         alert("No MembersFound");
         /* getProjectsList(); */
+        alertMessageInReceivable()
     }
     
 }
 </script>
 
+
+
+<script type="text/javascript">
+function alertMessageInReceivable(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>No Members Found</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelReceivableAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReceivableAlert();'></b>";
+	result = result +"	</div>";
+	$("#receivableAlertPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelReceivableAlert(){
+	$("#receivableAlertPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 <script>
@@ -768,7 +811,33 @@ function getSowRate(id){
 		 }else{
 			 calAddRowAmount("000","00",rowId);
 		 }
+     		conversion();
   }
+  
+  
+  function  conversion(){
+	   var orgRelationId = $("#clientOrgRelationId").val();
+	   var currencyCode = '${SourceLeadWeb_currencyCode}';
+	   var grandTotal = $("#grandTotal").val();
+	   var sourceleadUrl ='${sourceleadUrl}';
+	   if(grandTotal != '' && grandTotal != 'undefined'){
+		   $.ajax({
+				type : "GET",
+				url: sourceleadUrl+"/getConversionExchangeRate?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
+				success :function(data) {
+					if(data !='' && data != 'undefined' && data != null){
+						var json = JSON.parse(data);
+						$("#exchangeRate").html(json.exchangeRate);
+						$("#exchangeCurrency").html(json.exchangeCurrency);
+						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
+						$("#convertedCurrencyCode").html(currencyCode +' to '+ json.vendorCurrencyCode);
+					}
+				},
+				});   
+	   }
+	  
+		
+ }
   
   function calAddRowAmount(hours,minute,rowId){
 	  var rate = $("#"+rowId+"rate").val();
@@ -800,6 +869,7 @@ function calculateSum(){
 	  $("#inoviceTotal").val(sum.toFixed(2));
 	  $("#subTotal").val(sum.toFixed(2));
 	  $("#grandTotal").val(sum.toFixed(2));
+	  $("#conversionFrom").val(sum.toFixed(2));
 	  $("#afterDiscountTotal").val(sum.toFixed(2));
 	  calculateDisCount();
 	  calculateTaxDiscount();
@@ -853,6 +923,7 @@ function calculateDisCount(){
 					 		 var total = subTotal-discountValue;
 					 		 $("#discountTotal").val(discountValue); 
 					 		$("#grandTotal").val(total);
+					 		$("#conversionFrom").val(total);
 					 		$("#afterDiscountTotal").val(total.toFixed(2));
 					 		
 					 	  }
@@ -861,6 +932,7 @@ function calculateDisCount(){
 					 		 var total = subTotal - perCentValue;
 					 		 $("#discountTotal").val(perCentValue);
 					 		$("#grandTotal").val(total);
+					 		$("#conversionFrom").val(total);
 					 		$("#afterDiscountTotal").val(total.toFixed(2));
 					 	 }
 					 	 calculateTaxDiscount();
@@ -972,6 +1044,7 @@ function calculateDisCount(){
         var second=parseFloat(taxTotal);
         total = (first-second);
         $("#grandTotal").val(total); 
+        $("#conversionFrom").val(total);
        //=======================================
         
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
@@ -994,6 +1067,7 @@ function singleRowTaxDiscount(){
         total = parseInt(afterDiscountTotal) + parseInt(taxValue);
         $("#0taxTotal").val(taxValue);
         $("#grandTotal").val(total);
+        $("#conversionFrom").val(total);
     }
     if(taxType == 'percentage'){
         var perCentValue = (afterDiscountTotal * taxValue)/100;
@@ -1002,6 +1076,7 @@ function singleRowTaxDiscount(){
         total = (first+second).toFixed(2);
         $("#0taxTotal").val(first);
         $("#grandTotal").val(total);
+        $("#conversionFrom").val(total);
     }   
 }
 </script>
@@ -1042,6 +1117,7 @@ function calculateTaxDiscount(){
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
+	$("#conversionFrom").val(grandTotal.toFixed(2));
   
 }
 </script>
@@ -1270,6 +1346,10 @@ var validationSettings = {
 		        	getSavedAttachments(json['invoiceDocumentsList']);
 		        	
 		        	$("#grandTotal").val(json['total']);
+		        	$("#conversionFrom").val(json['total']);
+		        	 $("#exchangeCurrency").html(json['convertAmount']);
+		        	 $("#exchangeRate").html(json['exchangeRate']);
+		        	  
 		        	
 		        	$("#savedInvoiceId").val(json['id']); 
 		        	
@@ -1584,6 +1664,7 @@ function flushValues(){
 	$("#subTotal").val('0.0');
 	$("#afterDiscountTotal").val('0.0');
 	$("#grandTotal").val('0.0');
+	$("#conversionFrom").val('0.0');
 	
 }
 function errDueDate(){
