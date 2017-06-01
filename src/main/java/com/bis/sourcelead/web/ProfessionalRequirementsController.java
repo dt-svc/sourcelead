@@ -225,6 +225,7 @@ public class ProfessionalRequirementsController {
 				    			model.addObject("publicSubmissionId", submission.getId());
 				    		}
 				    		model.addObject("publicRequirementId", requirement.getId());
+				    		model.addObject("publicRequirementTitle", requirement.getJobTitle());
 				    	}
 			    }
 				
