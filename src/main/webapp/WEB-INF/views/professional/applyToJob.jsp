@@ -753,6 +753,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 				
 		result = result + '<div class="row">';
+		result = result + '<h3>&nbsp;&nbsp;&nbsp;'+jobTitle+'</h3>';
 		result = result + '<div class="venk clearfix">';
 		result = result + '<div class="col-md-7 radioInline">';
 		result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
