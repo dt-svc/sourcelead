@@ -245,6 +245,44 @@
 	                 <li class="${sessionData.nav == 'Payables' ? 'side-nav-active' : ''}"><a href="<c:url value='/payablesList'/>" title="Payables"><span><i class="fa fa-money"></i></span><i class="subMenu">Payables</i></a></li>
 	                 </c:if>
 	                 
+	                 
+	                 
+	                 
+	                 <c:if test="${SourceLeadWeb_expensesTabCount == 2 && userTabs.tabName == 'My Expenses'}">
+	                   <li class="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval' ? 'side-nav-active' : ''}">
+														  
+							  <a href="#" class="expencesLi" title="Expenses">
+								<span><i class="fa fa-money"></i></span>
+							  <i class="subMenu">Expenses</i> <i class="fa fa-fw fa-caret-down"></i>
+							  </a>
+							  
+						   
+						   <c:if test="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval'}">
+                              <ul class="collapses" style="display: none">
+                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='/myExpensesList'/>" title="My Expenses">My Expenses</a></li>
+                                  <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval">Expenses Approval</a></li>
+                              </ul>
+                           </c:if>
+                              
+                           <c:if test="${sessionData.nav != 'My Expenses' || sessionData.nav != 'Expenses Approval'}">
+                           <ul class="collapses" style="display: none">
+                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='/myExpensesList'/>" title="My Expenses">My Expenses</a></li>
+                               <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval">Expenses Approval</a></li>
+                           </ul>
+                           </c:if>
+                              
+						  </li>
+	                 </c:if>
+	                 
+	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
+	                   <li class="${sessionData.nav == 'My Expenses' ? 'side-nav-active' : ''}"><a href="<c:url value='/myExpensesList'/>" title="My Expenses"><span><i class="fa fa-money"></i></span><i class="subMenu">My Expenses</i></a></li>
+	                 </c:if>
+	                 
+	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
+	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'side-nav-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval"><span><i class="fa fa-money"></i></span><i class="subMenu">Expenses Approval</i></a></li>
+	                 </c:if>
+	                 
+	                 
 
           </c:forEach>
           

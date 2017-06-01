@@ -158,6 +158,8 @@ var validationSettings = {
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#submit_button").attr("disabled", "disabled");
+         	 	
+         	 	var requirementUUID = '${requirementUUID}';
          		
             	 $.ajax({
           	      type: "POST",
@@ -167,7 +169,12 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/login");  
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/login?requirementUUID="+requirementUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/login");  
+			        		}
+			        		
 			        	}
 			        	
 			        },  

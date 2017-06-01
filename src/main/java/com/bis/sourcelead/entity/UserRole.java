@@ -83,6 +83,9 @@ public class UserRole implements Serializable{
     @Column(name = "DESIGNATION")
 	private String designation;
     
+    @Column(name = "NEWLY_LOGIN_USER")
+	private String newlyLoginUser;
+    
     @Column(name = "STATUS")
 	private String status;
 	
@@ -716,6 +719,16 @@ public class UserRole implements Serializable{
 	public void setDepartmentName(String departmentName)
 	{
 		this.departmentName = departmentName;
+	}
+
+	public String getNewlyLoginUser()
+	{
+		return newlyLoginUser;
+	}
+
+	public void setNewlyLoginUser(String newlyLoginUser)
+	{
+		this.newlyLoginUser = newlyLoginUser;
 	}
 
 	
