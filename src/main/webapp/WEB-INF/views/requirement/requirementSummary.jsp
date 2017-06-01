@@ -3808,33 +3808,80 @@ function documentpaginationBackout(){
     $("#requirementsPaginationBackout").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
+<div class='project_inn_mask'></div>
 <div id="popUp"></div>
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	$("#reasonForApplicantDiv").empty();
-	$("#reasonForReject").val("");
-	var subId = submissionId;
-	var reqId = requirementId;
-	var subType = submissionType;
-	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
-	if(selectBox == "backout"){
-		backOutApplicant(submissionId,requirementId,submissionType);
-	}else if(selectBox == "Reject"){
-    	var result = "";
-		result = result +"	<div class='project_inn_mask'></div>";
-		result = result +"	   <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
-// 		result = result +"<form id='myForm'>";
-		result = result +"		<p>Applicant reject message here</p>";
-		result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
-		result = result + ' <div id="reasonForApplicantDiv"/>';
-		result = result +"		<input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
-// 		result = result +"</form>";
-		result = result +"	</div>";
-		$("#popUp").append(result);
-		$("#rejectApplicant"+submissionId).slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
+    $("#reasonForApplicantDiv").empty();
+    $("#reasonForReject").val("");
+    $("#designationType").val('');
+    //$("#rejectedCategory").val("");
+    $("#rejectedCategory").selectpicker('refresh');
+    var subId = submissionId;
+    var reqId = requirementId;
+    var subType = submissionType;
+    var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
+    if(selectBox == "backout"){
+        backOutApplicant(submissionId,requirementId,submissionType);
+    }else if(selectBox == "Reject"){
+        var result = "";
+        //result = result +"    <div class='project_inn_mask'></div>";
+        result = result +"       <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+//         result = result +"<form id='myForm'>";
+        
+        result = result +"    <div class='col-md-12 inputOther mt10 inputOther'>";
+        result = result +"    <div class='dropdown-select' id='rejectedCategorytDiv'>";
+        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='true'>";
+        result = result +"<option selected value=''>--Select Category--</option>";
+        result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
+        result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
+        result = result +"<option value='Bad Fit'>Bad Fit</option>";
+        result = result +"<option value='Salary'>Salary</option>";
+        result = result +"<option value='Interview Rejection'>Interview Rejection</option>";
+        result = result +"<option value='Other'>Other</option>";
+        result = result +"</select>";
+        result = result +"    </div>";
+       
+        
+        result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
+        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' >";
+        result = result +" </div>";
+        
+        result = result +" </div>";
+        
+        //result = result +"        <p>Applicant reject message here</p>";
+        result = result +"        <textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
+        result = result + ' <div id="reasonForApplicantDiv"/>';
+        result = result +"        <input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+//         result = result +"</form>";
+        result = result +"    </div>";
+        $("#popUp").append(result);
+        $("#rejectApplicant"+submissionId).slideDown(200);
+        $(".project_inn_mask").fadeIn(200);
     }
+}
+</script>
+
+
+<script>
+function getRejectedCategory(){
+	var rejectedCategory = document.getElementById("rejectedCategory").value;
+	if(rejectedCategory == 'Other'){
+		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
+		 $("#rejectedCategoryOther").removeAttr("data-validation-optional");
+		// $('#rejectedCategoryOther').attr("data-validation","required"); 
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+		
+		
+	//	$("#rejectedCategoryOther").attr("data-validation","required validate_AlphaNumber validate_Space validate_length length1-100")
+	}else{
+		$("#rejectedCategoryOther").attr("data-validation-optional","true");
+		$("#rejectedCategoryOther").removeAttr("data-validation");
+		document.getElementById("rejectOtherCategoryDiv").style.display="none";
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+	
 }
 </script>
 
@@ -3842,7 +3889,9 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 function cancelRejectApplicant(submissionId,requirementId,submissionType){ 
 	$("#rejectApplicant"+submissionId).fadeOut(200);
 	$(".project_inn_mask").fadeOut(200);
-	/* $("#remove_user_pop, .project_inn_mask").fadeOut(200); */
+	 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+	 document.getElementById("rejectOtherCategoryDiv").style.display="none";
+	 $("#rejectedCategory").val("");
 	if(submissionType == 'all'){
 		requirementPipeline(requirementId,submissionType);
 	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
@@ -3869,36 +3918,57 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reason ;
-	var rejectedReason;
 	
-	 if ($('#reasonForReject').length){
-		 rejectedReason = document.getElementById("reasonForReject").value; 
+	 var reason= document.getElementById("reasonForReject").value;
+	 var rejectedCategoryType= document.getElementById("rejectedCategory").value; 
+	 var rejectedCategoryOther= document.getElementById("rejectedCategoryOther").value;
+	 
+	 if((reason == null || reason == '' || reason == 'undefined') || (rejectedCategoryType == null || rejectedCategoryType == '' || rejectedCategoryType == 'undefined') || (rejectedCategoryOther == null || rejectedCategoryOther == '' || rejectedCategoryOther == 'undefined')){
+	      
+		 if(reason != null && reason != '' && reason != 'undefined'){
+			 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+		 }else{
+				 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+		  	  $("#reasonForApplicantDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+		 }
 		 
-		 //It will escape all the special characters
-	      reason = encodeURIComponent(rejectedReason);
+		 if(rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined'){
+			 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+		 }else{
+				 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+		  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
+		 }
+		 if(rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined' && rejectedCategoryType == 'Other'){
+		
+			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
+			 $("#rejectOtherCategoryDiv").append("<p class='jquery_form_error_message'>Other Type Is Required</p>");
+			 
+			 if(rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
+				 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
+			 }
+			 
+		 }
+		 
+		 else{
+		 
+			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
+	  	 
 	 }
-	 else{
-		 reason = '';
-	 }
-	if(reason.match(/^[^\s-](.*)*$/) != null){
-		$("#reasonForApplicantDiv").empty();
+	  	  
+		}else{
+		  
+			$("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+		  $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/rejectApplicant?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionId="+submissionId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/rejectApplicant?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionId="+submissionId+"&reason="+reason+"&rejectedCategoryType="+rejectedCategoryType+"&rejectedCateoryOther="+rejectedCategoryOther,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
    			    requirementPipeline(requirementId,submissionType);
 		    }
 	   });
-	}else{
-		if(rejectedReason){
-			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
-	}
 }
 </script>
 
