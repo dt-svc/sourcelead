@@ -72,9 +72,9 @@ window.onload = function () {
 		removeReferPopUp();
 		
 		if('${publicSubmissionId}' != null && '${publicSubmissionId}' != '' && '${publicSubmissionId}' != 'undefined'){
-			getSubmissionDetailsSideBar('${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
+			getSubmissionDetailsSideBar('${publicRequirementTitle}','${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
 		}else{
-			applyToJob('${publicRequirementId}');
+			applyToJob('${publicRequirementTitle}','${publicRequirementId}');
 		}
 	}else{
 		requirementsList(0);
@@ -790,17 +790,17 @@ function requirementsList(offset){
 				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'N')){
 				 					
 				 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-				 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
+				 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
 				 					}
 				 					
 				 					if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
-					 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Submit</a>';
+					 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Submit</a>';
 				 					 }
 				 				}
 				 				
 				 				if((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'Y'){
 				 					
-				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
+				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar(\''+requirements.jobTitle+'\','+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 				 					
 				 				}
 				 				
@@ -841,7 +841,7 @@ function requirementsList(offset){
 			 					result = result +'<div class="appliedWrap">';
 			 					
 			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-			 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply"><i class="fa fa-check-circle"></i></a>';
+			 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar(\''+requirements.jobTitle+'\','+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply"><i class="fa fa-check-circle"></i></a>';
 			 					}else{
 			 						result = result +'<i class="fa fa-check-circle"></i>';
 			 					}
@@ -1093,16 +1093,16 @@ function searchRequirement(offset){
 										 				
 										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
 										 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+');"  class="jobApply">Apply</a>';
 										 					}
 										 					
 										 					if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
-											 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Submit</a>';
+											 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+');"  class="jobApply">Submit</a>';
 										 					}
 										 				}
 										 				
 										 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
-										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
+										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar(\''+requirements.jobTitle+'\','+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 										 				}
 										 				
 										 				
