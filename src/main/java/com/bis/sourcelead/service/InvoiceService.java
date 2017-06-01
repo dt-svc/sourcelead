@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
@@ -45,6 +46,6 @@ public interface InvoiceService {
 
 	CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal)throws Exception;
 
-	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType) throws Exception;
+	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount) throws Exception;
 
 }

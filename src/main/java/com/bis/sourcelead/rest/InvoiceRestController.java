@@ -55,6 +55,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -1236,8 +1237,11 @@ public class InvoiceRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,null,null,invoiceType);
+			
+			InvoiceAmount totalStagesAmount = getTotalAmountInBilling(invoiceList);
+			
 			File file= null;
-			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrg().getOrgName(),exportType);
+			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrg().getOrgName(),exportType,totalStagesAmount);
 	
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
@@ -1256,5 +1260,58 @@ public class InvoiceRestController {
 			file.delete();
 		}
 		}
+
+
+	private InvoiceAmount getTotalAmountInBilling(List<Invoice> invoiceList) throws ParseException {
+
+		InvoiceAmount invoiceAmount = new InvoiceAmount();
+		
+		double totalUnpaidOverDueAmount = 0;
+		double totalUnpaidOpenAmount = 0;
+		double totalPaidAmount = 0;
+		double totalUnbilledAmount = 0;
+		
+		for(Invoice invoice : invoiceList){
+			
+			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
+					Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String currentDate = sdf.format(new Date());
+				Date todayDate = sdf.parse(currentDate);
+				
+				String dueDate = sdf.format(invoice.getDueDate());
+				Date invoiceDueDate = sdf.parse(dueDate);
+				
+				double dueAmount = Double.parseDouble(invoice.getDueAmount());
+				
+				if(dueAmount > 0){
+				
+					if(todayDate.after(invoiceDueDate)){
+						totalUnpaidOverDueAmount = totalUnpaidOverDueAmount + Double.parseDouble(invoice.getDueAmount());
+					}else{
+						totalUnpaidOpenAmount = totalUnpaidOpenAmount + Double.parseDouble(invoice.getDueAmount());
+					}
+				}
+				
+				
+			}
+			
+			
+			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && Constants.INVOICE_STATUS_PAID.equalsIgnoreCase((invoice.getPaymentStatus())) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+				Double paidAmount1 = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
+				String convertedPaidAmount = String.valueOf(paidAmount1);
+				totalPaidAmount = totalPaidAmount + Double.parseDouble(convertedPaidAmount);
+			}
+			if(Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
+				totalUnbilledAmount = totalUnbilledAmount + Double.parseDouble(invoice.getDueAmount());
+			}
+		}
+		invoiceAmount.setTotalOverDueUnpaidAmount(totalUnpaidOverDueAmount);
+		invoiceAmount.setTotalOpenUnpaidAmount(totalUnpaidOpenAmount);
+		invoiceAmount.setTotalPaidAmount(totalPaidAmount);
+		invoiceAmount.setTotalUnbilledAmount(totalUnbilledAmount);
+		return invoiceAmount;
+	}
 	
 }

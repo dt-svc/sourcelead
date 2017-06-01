@@ -24,6 +24,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
@@ -575,7 +576,7 @@ public class InvoicePdfHelper {
 			return table;
 	}
 	
-	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName) throws Exception {
+	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName,InvoiceAmount totalStagesAmount) throws Exception {
 		String[] headers = Constants.BILLING_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -606,12 +607,12 @@ public class InvoicePdfHelper {
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
             List orderedList = new List(List.ORDERED);
-	        orderedList.add(new ListItem("Title  :"));
-	        orderedList.add(new ListItem("Company Name :"));
+	        orderedList.add(new ListItem("Company Name :" +orgName));
 	        orderedList.add(new ListItem("Duration  :"));
-	        orderedList.add(new ListItem("Total Unpaid Amount :"));
-	        orderedList.add(new ListItem("Total Paid Amount :"));
-	        orderedList.add(new ListItem("Total Unbilled Amount  :"));
+	        orderedList.add(new ListItem("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount()));
+	        orderedList.add(new ListItem("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount()));
+	        orderedList.add(new ListItem("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount()));
+	        orderedList.add(new ListItem("Total Unbilled Amount  :"+totalStagesAmount.getTotalUnbilledAmount()));
 	        document.add(orderedList);
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
@@ -740,7 +741,9 @@ public class InvoicePdfHelper {
 	}
 	
 	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount()) ){
-		billingArray[9] = invoice.getDueAmount();
+		Double paidAmount = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
+		String convertedPaidAmount = String.valueOf(paidAmount);
+		billingArray[9] = convertedPaidAmount;
 	}else{
 		billingArray[9] = "--";
 	}

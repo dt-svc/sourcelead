@@ -642,15 +642,18 @@ function getInvoiceList(){
 </script>
 
 <script>
-
 $('#mypop').click(function(){
 		$("#exportPop").toggle();
-		$("#filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
+		$("#filter2ApprovedPop, #filter1ApprovedPop, .action-pop, .approved_pop").slideUp();
  });
  $("html").click(function(){
 	$("#exportPop, .ExpPop").hide(200);
  });
- $("#exportPop, #mypop").click(function(e) {  
+ $(".billing_dashboard, .nav-tabs").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ 
+ $("#exportPop, #mypop, .nav-tabs, .billing_dashboard").click(function(e) {  
      e.stopPropagation();
  });
 </script>
@@ -899,10 +902,10 @@ function validMask(){
 $(document).ready(function() {
     $("#invoiceID1").click(function(){
 		$("#invoiceTabOne").slideToggle(0);
-		$("#paymentTabOne").slideUp(200);
+		$("#paymentTabOne, #exportPop").slideUp(200);
 	});
     $("html").click(function() {
-        $("#invoiceTabOne").slideUp(0);
+        $("#invoiceTabOne, #exportPop").slideUp(0);
     });
     $("#invoiceTabOne, #invoiceID1, .tab-pane, .billing_dashboard, .nav-tabs").click(function(e) {
         e.stopPropagation();
@@ -916,11 +919,11 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#paymentID1").click(function(){
 		$("#paymentTabOne").slideToggle(0);
-		$("#invoiceTabOne").slideUp(200);
+		$("#invoiceTabOne, #exportPop").slideUp(200);
 	});
     $("html").click(function() {
         //$("#paymentTabOne").slideUp(0);
-        $("#paymentTabOne").slideUp(200);
+        $("#paymentTabOne, #exportPop").slideUp(200);
     });
     $("#paymentTabOne, #paymentID1, .tab-pane, .billing_dashboard, .nav-tabs").click(function(e) {
         e.stopPropagation();

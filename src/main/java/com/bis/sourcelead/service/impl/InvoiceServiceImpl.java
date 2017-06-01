@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
@@ -1127,7 +1128,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType) throws Exception {
+	public File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1135,7 +1136,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName);
 			int column = 0;
 			for (Invoice invoice : invoiceList) {
 				writeRow = createExcelsheet.createRow(column + 13);
@@ -1152,7 +1153,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				e.printStackTrace();
 			}
 		}else{
-			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName);
+			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount);
 		}
 			return file;
 	}
@@ -1207,7 +1208,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	}
 	
 	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount()) ){
-		writeRow.createCell(9).setCellValue(invoice.getDueAmount());
+		Double paidAmount = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
+		String convertedPaidAmount = String.valueOf(paidAmount);
+		writeRow.createCell(9).setCellValue(convertedPaidAmount);
 	}
 	
 	if(null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())){
@@ -1225,7 +1228,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	return createExcelsheet;
 	}
 
-private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName) {
 	
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
@@ -1234,10 +1237,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	createExcelsheet.setColumnWidth(1, 10000);
 
 	Cell cell1 = writeRow.createCell(0);
-	cell1.setCellValue("Title :");
+	cell1.setCellValue("Company name :");
 	cell1.setCellStyle(style);
 	Cell cell2 = writeRow.createCell(1);
-//    cell2.setCellValue(requirementSubCount.getDraftRequirementCount());
+    cell2.setCellValue(orgName);
 	cell2.setCellStyle(style);
 
 	writeRow = createExcelsheet.createRow(2);
@@ -1245,7 +1248,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	createExcelsheet.setColumnWidth(1, 10000);
 
 	Cell cell3 = writeRow.createCell(0);
-	cell3.setCellValue("Company name :");
+	cell3.setCellValue("Duration :");
 	cell3.setCellStyle(style);
 
 	Cell cell4 = writeRow.createCell(1);
@@ -1257,25 +1260,25 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	createExcelsheet.setColumnWidth(1, 10000);
 
 	Cell cell5 = writeRow.createCell(0);
-	cell5.setCellValue("Duration : ");
+	cell5.setCellValue("Total Unpaid Amount(Open) : ");
 	cell5.setCellStyle(style);
 
 	Cell cell6 = writeRow.createCell(1);
-//	cell6.setCellValue(requirementSubCount.getNewRequirementCount());
+	cell6.setCellValue(totalStagesAmount.getTotalOpenUnpaidAmount());
 	cell6.setCellStyle(style);
-	
 	
 	writeRow = createExcelsheet.createRow(4);
 	createExcelsheet.setColumnWidth(0, 10000);
 	createExcelsheet.setColumnWidth(1, 10000);
 
 	Cell cell7 = writeRow.createCell(0);
-	cell7.setCellValue("Total Unpaid Amount : ");
+	cell7.setCellValue("Total Unpaid Amount(OverDue) : ");
 	cell7.setCellStyle(style);
 
 	Cell cell8 = writeRow.createCell(1);
-//	cell8.setCellValue(requirementSubCount.getSubmittedRequirementCount());
+	cell8.setCellValue(totalStagesAmount.getTotalOverDueUnpaidAmount());
 	cell8.setCellStyle(style);
+	
 	
 	writeRow = createExcelsheet.createRow(5);
 	createExcelsheet.setColumnWidth(0, 10000);
@@ -1286,7 +1289,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell9.setCellStyle(style);
 
 	Cell cell10 = writeRow.createCell(1);
-//	cell10.setCellValue(requirementSubCount.getOnHoldRequirementCount());
+	cell10.setCellValue(totalStagesAmount.getTotalPaidAmount());
 	cell10.setCellStyle(style);
 	
 	writeRow = createExcelsheet.createRow(6);
@@ -1298,8 +1301,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell11.setCellStyle(style);
 
 	Cell cell12 = writeRow.createCell(1);
-//	cell12.setCellValue(requirementSubCount.getCancelRequirementCount());
+	cell12.setCellValue(totalStagesAmount.getTotalUnbilledAmount());
 	cell12.setCellStyle(style);
+	
 	String headers [] = Constants.BILLING_HEADERS;
 	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
 	return createExcelsheet;
