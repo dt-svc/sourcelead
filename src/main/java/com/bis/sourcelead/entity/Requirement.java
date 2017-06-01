@@ -78,8 +78,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE")
 	private String rate;
 	
+	@Column(name = "MAX_RATE")
+	private String maxRate;
+	
 	@Column(name = "RATE_TYPE") 
 	private String rateType;
+	
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -121,6 +125,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "REQUIREMENT_UUID")
 	private String requirementUUID;
 	
+	@Column(name = "INDUSTRY_NAME")
+	private String industryName;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
@@ -137,6 +144,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
+	
+
+	@Column(name = "TRAVEL_ALLOWANCE")
+	private String travelAllowance;
 	
 	@Column(name = "POSTED_ORG_NAME")
 	private String postedOrgName;
@@ -285,7 +296,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String[] reqSkillsList;
 	
 	@Transient
+	private String reqIndustryList;
+	
+	@Transient
 	private String reqSkillsListString;
+	
+	@Transient
+	private String industrySavedName;
 	
 	@Transient
 	private ArrayList<String> approverNames;
@@ -1260,6 +1277,55 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.noticePeriod = noticePeriod;
 	}
 
+	public String getIndustryName()
+	{
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName)
+	{
+		this.industryName = industryName;
+	}
+
+	public String getMaxRate()
+	{
+		return maxRate;
+	}
+
+	public void setMaxRate(String maxRate)
+	{
+		this.maxRate = maxRate;
+	}
+
+	public String getIndustrySavedName()
+	{
+		return industrySavedName;
+	}
+
+	public void setIndustrySavedName(String industrySavedName)
+	{
+		this.industrySavedName = industrySavedName;
+	}
+
+	public String getReqIndustryList()
+	{
+		return reqIndustryList;
+	}
+
+	public void setReqIndustryList(String reqIndustryList)
+	{
+		this.reqIndustryList = reqIndustryList;
+	}
+
+	public String getTravelAllowance()
+	{
+		return travelAllowance;
+	}
+
+	public void setTravelAllowance(String travelAllowance)
+	{
+		this.travelAllowance = travelAllowance;
+	}
 
 	
 }
