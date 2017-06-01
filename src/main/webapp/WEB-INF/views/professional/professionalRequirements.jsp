@@ -70,7 +70,12 @@ window.onload = function () {
 	
 	if('${publicRequirementId}' != null && '${publicRequirementId}' != '' && '${publicRequirementId}' != 'undefined'){
 		removeReferPopUp();
-		applyToJob('${publicRequirementId}');
+		
+		if('${publicSubmissionId}' != null && '${publicSubmissionId}' != '' && '${publicSubmissionId}' != 'undefined'){
+			getSubmissionDetailsSideBar('${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
+		}else{
+			applyToJob('${publicRequirementId}');
+		}
 	}else{
 		requirementsList(0);
 	}

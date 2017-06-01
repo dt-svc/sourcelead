@@ -106,15 +106,18 @@ public class ProfessionalRequirementsController {
 				
 				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
 				model.addObject("WouldLikeToList",WouldLikeToList);
+				
+				if(!isNullOrEmpty(requirementUUID)){
+					model.addObject("requirementUUID", requirementUUID);
+				}
 	 			
-	 			if(!isNullOrEmpty(contactUUID) && !isNullOrEmpty(requirementUUID)){
+	 			if(!isNullOrEmpty(contactUUID)){
 	 				ReferContacts referContacts = referContactsService.getReferContactsByUUID(contactUUID);
 	 				if(null == referContacts.getContactUser()){
 	 					model.addObject("firstName",referContacts.getFirstName());
 		 				model.addObject("lastName",referContacts.getLastName());
 		 				model.addObject("email",referContacts.getContactUserEmail());
 		 				model.addObject("contactUUID", contactUUID);
-		 				model.addObject("requirementUUID", requirementUUID);
 		 				model.setViewName("registration");
 	 				}else{
 	 					User user = userService.getUserById(referContacts.getContactUser().getId());
@@ -134,10 +137,15 @@ public class ProfessionalRequirementsController {
 	 	}
 	 
 	 @RequestMapping(value = "/resetloginCredentials")
-	 	public ModelAndView resetloginCredentials(HttpServletRequest request) {
+	 	public ModelAndView resetloginCredentials(HttpServletRequest request,
+	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID) {
 	 			ModelAndView model = new ModelAndView();
 	 			model.setViewName("resetloginCredentials");
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			
+	 			if(!isNullOrEmpty(requirementUUID)){
+	 				model.addObject("requirementUUID", requirementUUID);
+	 			}
 	 			
 	 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
 	  			if(!isNullOrEmpty(msg)){
@@ -211,6 +219,11 @@ public class ProfessionalRequirementsController {
 			    if(!isNullOrEmpty(requirementUUID)){
 			    	Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 				    	if(null != requirement){
+				    		
+				    		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndRequirementId(candidateId, requirement.getId());
+				    		if(null != submission){
+				    			model.addObject("publicSubmissionId", submission.getId());
+				    		}
 				    		model.addObject("publicRequirementId", requirement.getId());
 				    	}
 			    }

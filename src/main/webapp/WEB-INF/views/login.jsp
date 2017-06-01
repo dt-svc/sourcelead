@@ -70,7 +70,7 @@
 	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
 	            <input type="submit" value="Submit" class="sign_btn" />
 	            <div class= "clearfix"></div>
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
 	            
 	            
             </form>          

@@ -318,7 +318,13 @@ public class LoginSessionController {
 				
 			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
-				model.setViewName("recruiter/recruiterDashboard");
+				
+				if(!isNullOrEmpty(requirementUUID)){
+					StringBuilder redirectUrl = new StringBuilder();
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+				}else{
+					model.setViewName("recruiter/recruiterDashboard");
+				}
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
