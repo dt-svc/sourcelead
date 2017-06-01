@@ -496,7 +496,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				jsonObj.put("experienceMonths", "0");
 			}else{
 				 String exp[] = getExperienceYearsAndMonths(candidate.getExperience());
-				 if(exp.length >0){
+				 if(exp.length >1){
 					 jsonObj.put("experienceYears", exp[0]);
 						if(!exp[1].matches("[a-zA-Z]+")){
 							if(!"years".equalsIgnoreCase(exp[1])){
@@ -506,8 +506,15 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 								
 						} 
 				 }else{
-					 jsonObj.put("experienceYears", "0");
-					 jsonObj.put("experienceMonths", "0");
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 jsonObj.put("experienceYears", String.valueOf(years));
+						 jsonObj.put("experienceMonths", "0");
+					 }else{
+						 jsonObj.put("experienceYears", "0");
+						 jsonObj.put("experienceMonths", "0");
+					 }
+					 
 				 }
 					
 					
