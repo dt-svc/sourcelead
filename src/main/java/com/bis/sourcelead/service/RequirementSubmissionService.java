@@ -254,4 +254,6 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType);
 	
 	List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId, Long orgRelationId, Date startUTCDate, Date endUTCDate);
+	
+	RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
 }

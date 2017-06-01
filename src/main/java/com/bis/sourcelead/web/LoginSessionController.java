@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Team;
@@ -159,7 +160,8 @@ public class LoginSessionController {
 	}
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
-	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
+	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
+			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletResponse response) throws Exception {
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
@@ -302,13 +304,27 @@ public class LoginSessionController {
 				e.printStackTrace();
 			}
 			
+						
 			Candidate candidate = null;
 			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
-				model.setViewName("professional/professionalDashboard");
+				
+				if(!isNullOrEmpty(requirementUUID)){
+					StringBuilder redirectUrl = new StringBuilder();
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+				}else{
+					model.setViewName("professional/professionalDashboard");
+				}
+				
 			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
-				model.setViewName("recruiter/recruiterDashboard");
+				
+				if(!isNullOrEmpty(requirementUUID)){
+					StringBuilder redirectUrl = new StringBuilder();
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+				}else{
+					model.setViewName("recruiter/recruiterDashboard");
+				}
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
@@ -318,6 +334,8 @@ public class LoginSessionController {
 			
 			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			model.addObject("timezone",timezone.getTimeZoneId());
+			
+			
 		}
 	   
 		return model;

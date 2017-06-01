@@ -4203,4 +4203,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(orgLocationId,orgRelationId, startUTCDate, endUTCDate);
 	}
 
+	@Override
+	public RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId, Long requirementId) throws Exception
+	{
+		return requirementSubmissionDao.getRequirementSubmissionByCandidateIdAndRequirementId(candidateId, requirementId);
+	}
+
 }
