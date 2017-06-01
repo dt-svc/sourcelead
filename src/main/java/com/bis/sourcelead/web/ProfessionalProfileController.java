@@ -146,6 +146,15 @@ public class ProfessionalProfileController {
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Profile);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 			model.addObject("skillsList", skillsList);
 			model.addObject("candidateId", candidateId);
 			

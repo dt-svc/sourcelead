@@ -166,9 +166,9 @@ display: none;}
 
 	<div class="innerPageSearch">
 		<section class="searchWrap">
-			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" class="searchHome"></span>
-			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" id="openJobsLocationId" class="searchHome"></span>
-			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId"></p></span>
+			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
+			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
+			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId" value="${openJobsExperience}"></p></span>
 			<span><input type="button" value="Search" class="searchBtn" onclick="getOpenJobsELKList(); clearFilters();"></span>
 			<h3><b id="ADS">Advanced Search</b></h3>
 			<div class="clear"></div>
@@ -928,7 +928,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'  </div>'
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
-				result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+'/login">Apply</a>';
+				result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
 				if(requirements.isCrowdSourcingJob == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 				}
