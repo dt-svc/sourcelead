@@ -65,11 +65,12 @@
 	            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	            <input type="hidden" name="UUID" value="${UUID}" />
 	            <input type="hidden" name="spocUUID" value="${spocUUID}" />
+	            <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
 	            
 	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
 	            <input type="submit" value="Submit" class="sign_btn" />
 	            <div class= "clearfix"></div>
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
+	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
 	            
 	            
             </form>          

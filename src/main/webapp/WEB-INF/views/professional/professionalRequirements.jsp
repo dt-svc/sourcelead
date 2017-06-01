@@ -67,7 +67,19 @@ window.onload = function () {
 		document.getElementById('crowd').className = 'ml'
 		document.getElementById('crowdActive').className = 'activeBackground'
 	}
-	requirementsList(0);
+	
+	if('${publicRequirementId}' != null && '${publicRequirementId}' != '' && '${publicRequirementId}' != 'undefined'){
+		removeReferPopUp();
+		
+		if('${publicSubmissionId}' != null && '${publicSubmissionId}' != '' && '${publicSubmissionId}' != 'undefined'){
+			getSubmissionDetailsSideBar('${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
+		}else{
+			applyToJob('${publicRequirementId}');
+		}
+	}else{
+		requirementsList(0);
+	}
+	
 	
  };
 </script>
