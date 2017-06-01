@@ -2404,6 +2404,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setCacheable(true).list();
 		    return subList;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId, Long requirementId) throws Exception
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+			
+		     String query = "from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId ";
+		     List<RequirementSubmission> requirementSubmissionList = session.createQuery(query).setLong( "candidateId", candidateId).setLong( "requirementId", requirementId).setCacheable(true).list();
+		   
+		     if(requirementSubmissionList != null && requirementSubmissionList.size() >0){
+					return requirementSubmissionList.get(0);
+				}else{
+					return null;
+				}
+		}
 		
   }
 

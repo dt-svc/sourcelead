@@ -692,7 +692,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '</div>';
 		}
 		else{
-			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();">&nbsp;Import Candidate</label>';
+			result = result + '<label class="mr"><input type="radio" onClick="parseProfessionalResume();">&nbsp;Import Resume</label>';
 			
 			result = result + '<div class="col-md-5 pull-right">';
 			result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
