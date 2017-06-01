@@ -121,6 +121,7 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 				  try {
 					  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
 	        			  userRole.setUserState(Status.ACTIVE);
+	        			  userRole.setNewlyLoginUser(Constants.YES);
 	        			  userRoleService.addUserRole(userRole);
 
 	        			  /*
