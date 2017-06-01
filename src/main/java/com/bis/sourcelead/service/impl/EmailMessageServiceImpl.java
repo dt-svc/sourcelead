@@ -399,7 +399,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				if(submissionIds.length >= 10){
 					mimeMultipart = createResumeZipFile(submissionIds);
 					}else{
-					attachmentList = createResumesWithoutZip(submissionIds);
+					List<EmailAttachment> attachmentListNewlyAdded = createResumesWithoutZip(submissionIds);
+					attachmentList.addAll(attachmentListNewlyAdded);
 					}
 			}
 			 
