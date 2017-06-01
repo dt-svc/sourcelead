@@ -24,20 +24,20 @@ background-color: #fff !important;
 
 
 <script>
-function applyToJob(requirementId,referId){
+function applyToJob(jobTitle,requirementId,referId){
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
-	getRequirementSubmissionTemaplate(requirementId,referId);
+	getRequirementSubmissionTemaplate(jobTitle,requirementId,referId);
 }
 </script>
 
 <script>
-function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
+function getSubmissionDetailsSideBar(jobTitle,submissionId,candidateId,requirementId){
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
-	getRequirementSubmissionDetails(submissionId,candidateId,requirementId);
+	getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requirementId);
 }
 </script>
 
@@ -74,7 +74,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 
 
 <script>
-function getRequirementSubmissionDetails(submissionId,candidateId,requirementId){
+function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	
@@ -110,6 +110,7 @@ function getRequirementSubmissionDetails(submissionId,candidateId,requirementId)
 	   			//Submission Details
 	   			 result = result + '<div class="row">';
 	   			 result = result + '<div class="col-md-6">';
+	   			 result = result + '<h3>'+jobTitle+'</h3>';
 	  			 result = result + '<div class="release-jobs submissionDetails">';
 			     result = result + '<div class="clearfix sub-details">';
 			     result = result + ' <h2 class="active">Submission Details</h2>';
@@ -661,7 +662,7 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 </script>
 
 <script>
-function getRequirementSubmissionTemaplate(requirementId,referId){
+function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var candidateId = '${candidateId}';
 	 generateOrgSubmissionForm(sourceleadUrl,requirementId) 
@@ -679,7 +680,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		}
 		
 		result = result + '<div class="row">';
-		
+		result = result + '<h3>&nbsp;&nbsp;&nbsp;'+jobTitle+'</h3>';
 		result = result + '<div class="venk clearfix">';
 		
 		if('${resumesCount}' > 0){
@@ -752,6 +753,7 @@ function getRequirementSubmissionTemaplate(requirementId,referId){
 		result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 				
 		result = result + '<div class="row">';
+		result = result + '<h3>&nbsp;&nbsp;&nbsp;'+jobTitle+'</h3>';
 		result = result + '<div class="venk clearfix">';
 		result = result + '<div class="col-md-7 radioInline">';
 		result = result + '<label class="mr"><input type="radio" checked="checked" value="Candidates" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Candidate\');">Candidates</label>';
