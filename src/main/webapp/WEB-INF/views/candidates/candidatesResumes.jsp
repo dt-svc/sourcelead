@@ -393,10 +393,8 @@ function addResume(candidateId) {
 				result = result + "	<div class='col-lg-12'>";
 				result = result + "		<div class='content-area clearfix'>";
 				result = result + "			<div class='blank-pages'>";
-				result = result
-						+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				result = result
-						+ "			        <p>No resumes Found</p>";
+				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+				result = result + "			        <p>No resumes Found</p>";
 				result = result + "			 </div>";
 				result = result + "		</div>";
 				result = result + "	</div>";
@@ -441,7 +439,7 @@ function deleteResume(candidateId, resumeId){
    		    },
 	     });
 
-	
+	}
 	
 }
 </script>

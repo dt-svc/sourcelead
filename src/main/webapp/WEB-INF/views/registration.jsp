@@ -722,6 +722,7 @@ var validationSettings = {
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          		var contactUUID = '${contactUUID}';
+         		var requirementUUID = '${requirementUUID}';
          		
          		var wantedToBeIds = [];
 	       		$("input[name='wantedtobeList']:checked").each( function (i) {
@@ -742,7 +743,12 @@ var validationSettings = {
                 	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID,		  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		}
+			        		
 			        	}
 			        	
 			        },  
@@ -782,6 +788,8 @@ var validationSettings = {
 		        
 		        var jsonData = encodeURIComponent(con);
 		        
+		        var requirementUUID = '${requirementUUID}';
+		        
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#recruiter_register").attr("disabled", "disabled");
@@ -803,7 +811,11 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		}
 			        	}
 			        	
 			        },  
