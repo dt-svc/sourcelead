@@ -962,7 +962,7 @@ public class InvoiceRestController {
 		 StringBuilder stringBuildername = new StringBuilder();
 			globalVarsMap.put("clientorVendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
 			globalVarsMap.put("invoiceID", invoice.getInvoiceId());
-			globalVarsMap.put("totalAmount", invoice.getTotal());
+			globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
 			globalVarsMap.put("date", createdDate);
 			globalVarsMap.put("dueDate", dueDate);
 			globalVarsMap.put("orgName", loginOrgLocation.getOrg().getOrgName());
@@ -1314,4 +1314,27 @@ public class InvoiceRestController {
 		return invoiceAmount;
 	}
 	
+
+	@RequestMapping(value = "/generateAutomaticInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public  String generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		long startTime = System.currentTimeMillis();
+		String resultJson ="";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		logger.info("*******************************invoiceType = "+invoiceType);
+		logger.info("*******************************loginOrgCurrencyCode = "+loginOrgCurrencyCode);
+		
+		Invoice invoice = invoiceService.getAutomaticInvoice(orgLocation,loginOrgCurrencyCode,invoiceType,user);
+
+	      long stopTime = System.currentTimeMillis();
+	      long elapsedTime = stopTime - startTime;
+	      logger.info("*****************************Final Response time = "+elapsedTime+" Millis");
+		
+		resultJson = commonUtil.toJSON("");	
+        return resultJson;
+	}
+
 }
