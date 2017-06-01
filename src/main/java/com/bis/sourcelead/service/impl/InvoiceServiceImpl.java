@@ -30,6 +30,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +55,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
@@ -57,7 +64,9 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
@@ -1127,6 +1136,188 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
+	public File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount) throws Exception {
+		
+		File file = null;
+		if (!"pdf".equalsIgnoreCase(exportType)) {
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName);
+			int column = 0;
+			for (Invoice invoice : invoiceList) {
+				writeRow = createExcelsheet.createRow(column + 13);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
+				column++;
+			}
+			 file = File.createTempFile(orgName + "_Billing_" + dateFormat.format(new Date()),".xls");
+			 file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount);
+		}
+			return file;
+	}
+	
+	
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoice) {
+		
+	
+	if(null != invoice.getInvoiceId() && !"".equalsIgnoreCase(invoice.getInvoiceId())){
+		writeRow.createCell(0).setCellValue(invoice.getInvoiceId());
+	}
+	
+	Org org = null;
+	if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
+			org = invoice.getOrgRelationID().getLocationId().getOrg();
+	}else if(invoice.getOrgRelationID().getLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
+			 org = invoice.getOrgRelationID().getResponderLocationId().getOrg();
+	}
+	if(null != org){
+		writeRow.createCell(1).setCellValue(org.getOrgName());
+	}
+	
+	if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
+		StringBuilder contactName = new StringBuilder();
+		writeRow.createCell(2).setCellValue(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+	}else if(null != invoice.getContactUser().getFirstName()){
+		writeRow.createCell(2).setCellValue(invoice.getContactUser().getFirstName());
+	}
+	
+	if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
+		writeRow.createCell(3).setCellValue(invoice.getContactUser().getEmail()); 
+	}
+	
+	if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
+		 writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
+	}
+	
+	if(null != invoice.getInvoiceDate() && !"".equalsIgnoreCase(invoice.getInvoiceDate().toString())){
+		 writeRow.createCell(5).setCellValue(invoice.getInvoiceDate().toString());
+	}
+	
+	if(null != invoice.getDueDate() && !"".equalsIgnoreCase(invoice.getDueDate().toString())){
+		writeRow.createCell(6).setCellValue(invoice.getDueDate().toString());  
+	}
+	
+	if(null != invoice.getTotal() && !"".equalsIgnoreCase(invoice.getTotal())){
+		writeRow.createCell(7).setCellValue(invoice.getTotal());
+	}
+	
+	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount())){
+		writeRow.createCell(8).setCellValue(invoice.getDueAmount());
+	}
+	
+	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount()) ){
+		Double paidAmount = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
+		String convertedPaidAmount = String.valueOf(paidAmount);
+		writeRow.createCell(9).setCellValue(convertedPaidAmount);
+	}
+	
+	if(null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())){
+		 writeRow.createCell(10).setCellValue(invoice.getInvoiceStatus());
+	}
+	
+	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
+		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
+	}
+	
+	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
+		writeRow.createCell(12).setCellValue(invoice.getPaymentStatus());
+	}
+		
+	return createExcelsheet;
+	}
+
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName) {
+	
+	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+
+	writeRow = createExcelsheet.createRow(1);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell1 = writeRow.createCell(0);
+	cell1.setCellValue("Company name :");
+	cell1.setCellStyle(style);
+	Cell cell2 = writeRow.createCell(1);
+    cell2.setCellValue(orgName);
+	cell2.setCellStyle(style);
+
+	writeRow = createExcelsheet.createRow(2);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell3 = writeRow.createCell(0);
+	cell3.setCellValue("Duration :");
+	cell3.setCellStyle(style);
+
+	Cell cell4 = writeRow.createCell(1);
+//	cell4.setCellValue(requirementSubCount.getOpenRequirementCount());
+	cell4.setCellStyle(style);
+
+	writeRow = createExcelsheet.createRow(3);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell5 = writeRow.createCell(0);
+	cell5.setCellValue("Total Unpaid Amount(Open) : ");
+	cell5.setCellStyle(style);
+
+	Cell cell6 = writeRow.createCell(1);
+	cell6.setCellValue(totalStagesAmount.getTotalOpenUnpaidAmount());
+	cell6.setCellStyle(style);
+	
+	writeRow = createExcelsheet.createRow(4);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell7 = writeRow.createCell(0);
+	cell7.setCellValue("Total Unpaid Amount(OverDue) : ");
+	cell7.setCellStyle(style);
+
+	Cell cell8 = writeRow.createCell(1);
+	cell8.setCellValue(totalStagesAmount.getTotalOverDueUnpaidAmount());
+	cell8.setCellStyle(style);
+	
+	
+	writeRow = createExcelsheet.createRow(5);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell9 = writeRow.createCell(0);
+	cell9.setCellValue("Total Paid Amount : ");
+	cell9.setCellStyle(style);
+
+	Cell cell10 = writeRow.createCell(1);
+	cell10.setCellValue(totalStagesAmount.getTotalPaidAmount());
+	cell10.setCellStyle(style);
+	
+	writeRow = createExcelsheet.createRow(6);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell11 = writeRow.createCell(0);
+	cell11.setCellValue("Total Unbilled Amount : ");
+	cell11.setCellStyle(style);
+
+	Cell cell12 = writeRow.createCell(1);
+	cell12.setCellValue(totalStagesAmount.getTotalUnbilledAmount());
+	cell12.setCellStyle(style);
+	
+	String headers [] = Constants.BILLING_HEADERS;
+	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
+	return createExcelsheet;
+}
+
+	@Override
 	public Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user) throws Exception
 	{
 		
@@ -1529,4 +1720,5 @@ public class InvoiceServiceImpl implements InvoiceService{
      	}
 		return contractsList;
 	}
+>>>>>>> a52a991f207fb8d17808d6848c19192141d0d5f8
 }

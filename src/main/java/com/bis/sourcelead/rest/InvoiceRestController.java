@@ -1,10 +1,14 @@
 package com.bis.sourcelead.rest;
 
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,6 +55,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
@@ -1222,6 +1228,93 @@ public class InvoiceRestController {
 	}
 	
 	
+	@RequestMapping(value = "/getBillingExportList")
+	public void getBillingExportList(@RequestParam(value = "invoiceStatus", required = false) String invoiceStatus,
+			@RequestParam(value = "paymentStatus", required = false) String paymentStatus,
+			@RequestParam(value = "exportType", required = false) String exportType,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			List<Invoice> invoiceList = invoiceService.invoiceListByOrgLocationId(orgLocations.getId(),invoiceStatus,paymentStatus,null,null,invoiceType);
+			
+			InvoiceAmount totalStagesAmount = getTotalAmountInBilling(invoiceList);
+			
+			File file= null;
+			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrg().getOrgName(),exportType,totalStagesAmount);
+	
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+			mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+			if(file != null){
+			file.delete();
+		}
+		}
+
+
+	private InvoiceAmount getTotalAmountInBilling(List<Invoice> invoiceList) throws ParseException {
+
+		InvoiceAmount invoiceAmount = new InvoiceAmount();
+		
+		double totalUnpaidOverDueAmount = 0;
+		double totalUnpaidOpenAmount = 0;
+		double totalPaidAmount = 0;
+		double totalUnbilledAmount = 0;
+		
+		for(Invoice invoice : invoiceList){
+			
+			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) &&
+					Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus()) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String currentDate = sdf.format(new Date());
+				Date todayDate = sdf.parse(currentDate);
+				
+				String dueDate = sdf.format(invoice.getDueDate());
+				Date invoiceDueDate = sdf.parse(dueDate);
+				
+				double dueAmount = Double.parseDouble(invoice.getDueAmount());
+				
+				if(dueAmount > 0){
+				
+					if(todayDate.after(invoiceDueDate)){
+						totalUnpaidOverDueAmount = totalUnpaidOverDueAmount + Double.parseDouble(invoice.getDueAmount());
+					}else{
+						totalUnpaidOpenAmount = totalUnpaidOpenAmount + Double.parseDouble(invoice.getDueAmount());
+					}
+				}
+				
+				
+			}
+			
+			
+			if(!Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) && !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus()) && Constants.INVOICE_STATUS_PAID.equalsIgnoreCase((invoice.getPaymentStatus())) || Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())){
+				Double paidAmount1 = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
+				String convertedPaidAmount = String.valueOf(paidAmount1);
+				totalPaidAmount = totalPaidAmount + Double.parseDouble(convertedPaidAmount);
+			}
+			if(Constants.REQUIREMENT_STATUS.equalsIgnoreCase(invoice.getInvoiceStatus()) || Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())){
+				totalUnbilledAmount = totalUnbilledAmount + Double.parseDouble(invoice.getDueAmount());
+			}
+		}
+		invoiceAmount.setTotalOverDueUnpaidAmount(totalUnpaidOverDueAmount);
+		invoiceAmount.setTotalOpenUnpaidAmount(totalUnpaidOpenAmount);
+		invoiceAmount.setTotalPaidAmount(totalPaidAmount);
+		invoiceAmount.setTotalUnbilledAmount(totalUnbilledAmount);
+		return invoiceAmount;
+	}
+	
+
 	@RequestMapping(value = "/generateAutomaticInvoice", method = RequestMethod.POST)
 	@ResponseBody
 	public  String generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1243,4 +1336,5 @@ public class InvoiceRestController {
 		resultJson = commonUtil.toJSON("");	
         return resultJson;
 	}
+
 }
