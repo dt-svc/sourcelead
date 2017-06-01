@@ -629,7 +629,7 @@ public class ContractRestController {
 		 	
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
-		 		if(orgRelations.getLocationId().getId() == orgLocation.getId()){
+		 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
 		 			contract.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
 				}	
 				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
