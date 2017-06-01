@@ -396,7 +396,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			
 			//create resumes zip.
 			if(emailMessage != null && Constants.YES.equalsIgnoreCase(emailMessage.getSendResumes())){
-				mimeMultipart = createResumeZipFile(submissionIds);
+				if(submissionIds.length >= 10){
+					mimeMultipart = createResumeZipFile(submissionIds);
+					}else{
+					attachmentList = createResumesWithoutZip(submissionIds);
+					}
 			}
 			 
 			if (attachmentList.size() > 0) {
@@ -427,6 +431,38 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		}
 	
 	}
+	
+	private List<EmailAttachment> createResumesWithoutZip(String[] submissionIds) throws Exception
+	{
+		List<EmailAttachment> emailAttachmentList = new ArrayList<>();
+		if (submissionIds != null && !"".equals(submissionIds) && submissionIds.length > 0) {
+			List<Long> tempSubmissionIds = new ArrayList<>();
+			for (int i = 0; i < submissionIds.length; i++) {
+				tempSubmissionIds.add(Long.valueOf(submissionIds[i]));
+			}
+			List<Long> submissionResumeIds = requirementSubmissionService.getResumeIdsByRequirementSubmissionId(tempSubmissionIds);
+			if (submissionResumeIds != null && !submissionResumeIds.isEmpty()) {
+				try {
+					List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesByIds(submissionResumeIds);
+					if (candidateResumesList != null && !candidateResumesList.isEmpty()) {
+						int i = 0;
+						for (CandidateResumes wte : candidateResumesList) {
+							EmailAttachment emailAttachment = new EmailAttachment();
+							emailAttachment.setDocFile(wte.getDocFile());
+							emailAttachment.setName(wte.getFileName());
+							emailAttachment.setType(wte.getFileContentType());
+							i++;
+							emailAttachmentList.add(emailAttachment);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return emailAttachmentList;
+	}
+	
 	
 	private MimeMultipart createResumeZipFile(String[] submissionIds) throws Exception {
 		MimeMultipart mimeMultipart = new MimeMultipart();
