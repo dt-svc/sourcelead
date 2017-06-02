@@ -102,6 +102,9 @@ public class UserRole implements Serializable{
 	private String userRoleName;
 	
 	@Transient
+	private String currencyConversionWithCountry;
+	
+	@Transient
 	private String employeeId;
 	
 	@Transient
@@ -716,6 +719,16 @@ public class UserRole implements Serializable{
 	public void setDepartmentName(String departmentName)
 	{
 		this.departmentName = departmentName;
+	}
+
+	public String getCurrencyConversionWithCountry()
+	{
+		return currencyConversionWithCountry;
+	}
+
+	public void setCurrencyConversionWithCountry(String currencyConversionWithCountry)
+	{
+		this.currencyConversionWithCountry = currencyConversionWithCountry;
 	}
 
 	
