@@ -4789,9 +4789,9 @@ function getRateListDiv(submissionId, candidateId){
           		 if( data.indexOf('Sign In') >= 0){
 		    		location.replace(sourceleadUrl);
 		    	 }
-          		 else if (data.indexOf('exception') >= 0) {
+          		 /* else if (data.indexOf('exception') >= 0) {
           			 location.replace(sourceleadUrl+"/errorPage");
-          		 }else{
+          		 } */else{
           			var expectedRate = json[0].expectedRateRN;
           			if(expectedRate != null && expectedRate != '' && expectedRate != 'undefined'){
           				expectedRate = expectedRate;
