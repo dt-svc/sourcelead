@@ -287,6 +287,26 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setIndustryName(jsonObj.getString("industryName"));
 			}
 			
+			if(jsonObj.has("projectDurationMonths")){
+				requirement.setProjectDurationMonths(jsonObj.getString("projectDurationMonths"));
+			}
+			
+			
+			if(jsonObj.has("projectDurationYears")){
+				requirement.setProjectDurationYears(jsonObj.getString("projectDurationYears"));
+			}
+			
+			
+			if(jsonObj.has("closedDate") && !isNullOrEmpty(jsonObj.getString("closedDate")) && !"".equalsIgnoreCase(jsonObj.getString("closedDate"))){
+				try {
+					   SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					   requirement.setClosedDate(sdf.parse(jsonObj.getString("closedDate")));
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}
+			
+			
 			if(jsonObj.has("noticePeriod")){
 				requirement.setNoticePeriod(jsonObj.getString("noticePeriod"));	
 				String noticePeriod =null;
@@ -837,6 +857,13 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 		
+private boolean isNullOrEmpty(String string)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 private void updatedRequirementMailToAssignedMembers(User loginUser, User assUser, Requirement requirement,
 			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
 	
