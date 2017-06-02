@@ -467,13 +467,19 @@
 						var projectEndDate = json.endDateStr;
 						$('#endDateStr1').datepicker({
 							dateFormat : 'dd-mm-yy',
+							showOn: 'focus',
+				            showButtonPanel: true,
+				            closeText: 'Clear', 
 							changeMonth: true,
 							changeYear: true, 
 							minDate : dt,
-							onClose : function() {
-							},
-							onSelect : function(selected) {
+							onClose : function(selected) {
 								addValidClass();
+								var event = arguments.callee.caller.caller.arguments[0];
+				                // If "Clear" gets clicked, then really clear it
+				                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+				                    $(this).val('');
+				                }
 							}
 						});
 
