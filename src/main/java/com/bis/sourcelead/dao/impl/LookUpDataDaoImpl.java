@@ -109,5 +109,14 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	    List<String> educationList = session.createQuery(query.toString()).setCacheable(true).list();
 	    return educationList;
 	}
+	
+	@Override
+	public List<String> getAllSkillsByIndustryCategory()
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "select lookupdata.name from LookUpData lookupdata where lookupdata.category = 'Industries' ";
+	    List<String> educationList = session.createQuery(query.toString()).setCacheable(true).list();
+	    return educationList;
+	}
 
 }
