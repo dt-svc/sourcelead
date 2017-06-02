@@ -461,7 +461,7 @@
 						//Assign date of project member
 						var selected = json.startDateStr;
 						var dt = toDate("#startDateStr1");
-						dt.setDate(dt.getDate() + 1);
+						dt.setDate(dt.getDate());
 
 						//Main project end date
 						var projectEndDate = json.endDateStr;

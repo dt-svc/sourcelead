@@ -374,7 +374,7 @@
 						 var selected = jsonData.projectAssignedDateStr;
 						 var from = selected.split("-");
 						 var dt = new Date(from[2], from[1] - 1, from[0]);
-	 		             dt.setDate(dt.getDate() + 1);
+	 		             dt.setDate(dt.getDate());
 	 		             
 	 		             //Main project end date
 	 		             var projectEndDate = jsonData.endDate;
