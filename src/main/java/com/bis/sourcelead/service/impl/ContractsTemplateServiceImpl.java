@@ -253,6 +253,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		contracts.setContractTitle(jsonObj.getString("contractTitle").trim());
+		
 		if(null != vendorContracts){
 			vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
 			vendorContracts.setContractsTemplate(contractsTemplate);
@@ -375,9 +376,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		
-		contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
-		if(null != vendorContracts){
-			vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+		if(jsonObj.has("invoiceFrequency") && null != jsonObj.getString("invoiceFrequency") && !"".equals(jsonObj.getString("invoiceFrequency")) ){
+			contracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			if(null != vendorContracts){
+				vendorContracts.setInvoiceFrequency(jsonObj.getString("invoiceFrequency"));
+			}
 		}
 		
 		if(jsonObj.has("paymentFrequency") && null != jsonObj.getString("paymentFrequency") && !"".equals(jsonObj.getString("paymentFrequency")) ){

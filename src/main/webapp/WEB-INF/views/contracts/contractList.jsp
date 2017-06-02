@@ -179,11 +179,13 @@ function PopUp(contractUUID){
        url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
     	   $("#viewPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	   
     	    var result = '';
     	    var json = JSON.parse(data);
 			result = result +	'<div class="contPopupHead clearfix">';
 			result = result +	'<h4>'+json.contractTitle+'</h4>';
 			result = result +	'<span>';
+			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
 				if('New' == json.typeOfContract){
 					result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
@@ -211,7 +213,7 @@ function PopUp(contractUUID){
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractType+'</div>';
 			result = result +	'	</div>';
 			
-			if('Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
+			if(json.templateName != null && 'Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i  title="View Template" class="fa fa-eye" onclick="previewTemplatePDF(\''+json.contractsTemplate.templateUUID+'\', \''+json.contractsTemplate.templateName+'\')"></i></a></div>';
@@ -399,12 +401,11 @@ function PopUp(contractUUID){
 			result = result +	'		<div class="col-md-4 col-sm-4">Updated By</div>';
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.updatedByName+'</div>';
 			result = result +	'	</div>';
-			
+
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Added From</div>';
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.typeOfContract+'</div>';
 			result = result +	'	</div>';
-			
 			
 			result = result +	'</div>';
 			result = result +	'</div>';
@@ -496,11 +497,12 @@ function getTemplateList(){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#verifyDiv").css("display", "none");
 		$("#signedDiv").css("display", "block");
-	}
-	if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
+	}else if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#signedDiv").css("display", "none");
 		$("#verifyDiv").css("display", "block");
+	}else{
+		$("#filterContractTypePop-2").css("display", "none");
 	}
 	
 	

@@ -63,7 +63,7 @@
               <div class="col-md-8" id="titleDiv">
 	              <c:choose>
 				    <c:when test="${!empty contract.contractTitle}">
-				        <input type="text" readonly class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_length length1-250" field-name="Contract Title">
+				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
 				    </c:when>
 				    <c:otherwise>
 				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
@@ -491,10 +491,10 @@
         <div class="col-lg-12">
           <div class="pull-right mt">
           <input type="hidden" name="contrId" id="contrId" value="${contract.id}"/>
-            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary ml10 pull-left">
-            <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
+            <input type="button" value="Draft" id="draft_template" onmouseover="validateContractTitle();" onclick="saveNewContract('DRAFT'); " class="btn btn-primary ml10 pull-left">
+            <input type="button" value="Send" id="save_template" onclick="validateContractTitle();saveNewContract('PENDING'); " class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
 
-            <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
+            <input type="button" value="Send For Approve" id="save_approver_template" onclick=" validateContractTitle(); saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
             <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
@@ -1498,14 +1498,18 @@ function validateContractTitle(){
 		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
 		        success: function(data) {
 		        	if(data == 'true'){
+		        		  $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		  $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
 						  $("#save_template").attr("disabled", "disabled");
+						  $("#draft_template").attr("disabled", "disabled");
 		        	}
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#save_template" ).addClass('button').val('Send');
                         $("#save_template").removeAttr("disabled");
+                        $("#draft_template").removeAttr("disabled");
 		        	}
 		        	}
 		        });
