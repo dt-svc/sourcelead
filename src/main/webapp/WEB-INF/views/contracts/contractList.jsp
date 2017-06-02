@@ -167,6 +167,69 @@ $(document).ready(function(){
 	<div id="viewPopupDiv"></div>
 </section>
 
+<section class="DocAccPopup">
+	<div class="DocAccPopupHead clearfix"><h4>Requested Documents</h4><span><i class="fa fa-times" onclick="contPopClose();"></i></span></div>
+	<form:form id="contractDoc_form" name="contractDoc_form" method="post">
+		<div id="DocAccPopupDiv"></div>
+	
+<!-- 	<div class="col-xs-12 col-sm-12 col-md-12 clearfix myForm DocAccWrap">
+            <div class="form-group">
+              <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+				<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only">
+					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
+	                <input name="uploadBtn" id="uploadBtn" style="display: none;" multiple="" class="upload" type="file">
+	                </span> </label>
+					<input class="form-control padSm" readonly="" id="uploadFile" name="docFile" value="" placeholder="Upload File" type="text">
+				</div>
+              </div>			
+			</div>
+			
+			<div class="clearfix"></div>
+        </div> -->
+        
+<div class="clearfix DocAccWrapFoot">
+		<!-- <input type="button" value="Submit" class="btn btn-primary padSm"> -->
+		 <input type="button" value="Submit" id="save_Doc" onclick="saveDocContract();" class="btn btn-primary padSm">
+		<input type="button" value="Cancel" class="btn btn-default padSm" onclick="contPopClose();">
+      </div>
+</form:form>
+</section>
+
+<script type="text/javascript">
+	function saveDocContract() {
+		if ($('#contractDoc_form').validate(false, validationSettings)) {
+			var frm = $('#contractDoc_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+	        var jsonData = encodeURIComponent(con);
+	        var form = $('#contractDoc_form')[0];
+ 	 	    var formData = new FormData(form); 
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 		$.ajax({
+	 			 type: "POST",
+		    	 data: formData,
+			     contentType : 'application/json; charset=utf-8',
+			     enctype: 'multipart/form-data',
+		         processData: false,
+		         contentType:false,
+			     dataType : 'json',
+						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+							//location.replace(sourceleadUrl+"/contractListbyStatus");
+						},
+					}); 
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#contractDoc_form', function() {
+		$("#contractDoc_form").showHelpOnFocus();
+		$("#contractDoc_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 <script>
 function PopUp(contractUUID){
@@ -414,11 +477,6 @@ function PopUp(contractUUID){
 	  }); 
 }
 
-function contPopClose(){
-	$("#viewPopupDiv").empty();
-	$(".mask_time").fadeOut(200);
-	$(".contPopup").fadeOut(100);
-}
 
 function previewTemplatePDF(uuid, templateName){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -558,8 +616,8 @@ function preparedContractListDraft(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Doc Count</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -587,14 +645,15 @@ function preparedContractListDraft(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'|';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result + report.endDateStr+'</div>';
+		         }else{
+		        	 result = result + '--</div>';
+		         }
 		         result = result + '</td>';
 		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         }
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -630,8 +689,8 @@ function preparedContractListDraft(data){
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
 	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Doc count</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
@@ -659,14 +718,15 @@ function preparedContractListDraft(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+' | ';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +output.endDateStr+'</div>';
+	         }else{
+	        	 opt = opt + '--</div>';
+	         }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         }
+	        	 opt = opt + '<div class="tblminwidth-75">'+output.reqDocCount+'</div>';
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -755,8 +815,8 @@ function preparedContractListWFA(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Doc Count</th>'; 
 // 		result = result + '    <th>Contract Type</th>';
 		result = result + '    <th>Approver</th>';
 		result = result + '    <th>Action</th>';
@@ -787,14 +847,16 @@ function preparedContractListWFA(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
-		         result = result + '</td>';
-		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+' | ';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
+		        	 result = result + report.endDateStr+'</div>';
 		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         } 
+		        	 result = result + '--</div>';
+		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
 		         result = result + '</td>';
 		         /* result = result + '<td>';
 		         result = result + '<div><span>'+report.contractType+'</span></div>';
@@ -883,15 +945,17 @@ function preparedContractListWFA(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+' | ';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +output.endDateStr+'</div>';
+	         }else{
+	        	 opt = opt + '--</div>';
+	         }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
-	         result = result + '</td>';
+	        	 opt = opt + '<div class="tblminwidth-75">'+output.reqDocCount+'</div>';
+	         opt = opt + '</td>';
+	         
 	         /* opt = opt + '<td>';
 	         opt = opt + '<div><span>'+output.contractType+'</span></div>';
 	         opt = opt + '</td>'; */
@@ -1006,8 +1070,8 @@ function preparedContractListWTS(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Doc Count</th>'; 
 // 		result = result + '    <th>Received On</th>';
 		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
@@ -1037,15 +1101,16 @@ function preparedContractListWTS(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+' | ';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result + report.endDateStr+'</div>';
+		         }else{
+		        	 result = result + '--</div>';
+		         }
 		         result = result + '</td>';
 		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         } 
-		         result = result + '</td>';
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>';
+		        result = result + '</td>';
 		         
 		         //to be change for Received On
 		         
@@ -1106,15 +1171,18 @@ function preparedContractListWTS(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
-	         opt = opt + '</td>';
-	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+' | ';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
+	        	 opt = opt +output.endDateStr+'</div>';
 	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
+	        	 opt = opt + '--</div>';
+	         }
 	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+	         opt = opt + '</td>';
+	         
 
 	         //to be changed for Received on
 	         /* opt = opt + '<td>';
@@ -1198,8 +1266,8 @@ function preparedContractListWTV(data){
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Vendor Contact</th>';
 // 		result = result + '    <th>Signed On</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Doc Count</th>'; 
 		result = result + '    <th>Billing Cycle</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -1233,15 +1301,16 @@ function preparedContractListWTV(data){
 		         result = result + '</td>'; */
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+' | ';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result + report.endDateStr+'</div>';
+		         }else{
+		        	 result = result + '--</div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         }
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1306,16 +1375,18 @@ function preparedContractListWTV(data){
 	         opt = opt + '</td>'; */
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+' | ';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +output.endDateStr+'</div>';
+	         }else{
+	        	 opt = opt + '--</div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
+	         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
 	         opt = opt + '</td>';
+	         
 
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span>'+output.invoiceFrequency+'</span></div>';
@@ -1397,8 +1468,8 @@ function preparedContractListFinalize(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Doc Count</th>'; 
 // 		result = result + '    <th>Finalized On</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -1427,15 +1498,16 @@ function preparedContractListFinalize(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+' | ';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result + report.endDateStr+'</div>';
+		         }else{
+		        	 result = result + '--</div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         }
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
 		         result = result + '</td>';
 		         
 		         //need to change for finalized on
@@ -1494,12 +1566,17 @@ function preparedContractListFinalize(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'|';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
+	        	 opt = opt +output.endDateStr+'</div>';
 	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
+	        	 opt = opt + '--</div>';
 	         }
 	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	        	 opt = opt + '<div class="tblminwidth-75">'+output.reqDocCount+'</div>';
+	         opt = opt + '</td>';
+	         
 	         
 	       //need to change for Finalized on
 	         /* opt = opt + '<td>';
@@ -1578,8 +1655,8 @@ function preparedContractListExpired(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End Date</th>'; 
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Doc Count</th>';  
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -1607,15 +1684,16 @@ function preparedContractListExpired(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'|';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result + report.endDateStr+'</div>';
+		         }else{
+		        	 result = result + '--</div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         }
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1677,16 +1755,17 @@ function preparedContractListExpired(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'|';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +output.endDateStr+'</div>';
+	         }else{
+	        	 opt = opt + '--</div>';
+	         }
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	        	 opt = opt + '<div class="tblminwidth-75">'+output.reqDocCount+'</div>';
 	         opt = opt + '</td>';
 	         
-	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
-	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
 	         
@@ -1803,15 +1882,16 @@ function preparedContractListRejected(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'|';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result + report.endDateStr+'</div>';
+		         }else{
+		        	 result = result + '--</div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         }
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
 		         result = result + '</td>';
 		         
 		         //need to be changed for Rejected by
@@ -1882,16 +1962,17 @@ function preparedContractListRejected(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'|';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +output.endDateStr+'</div>';
+	         }else{
+	        	 opt = opt + '--</div>';
+	         }
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	        	 opt = opt + '<div class="tblminwidth-75">'+output.reqDocCount+'</div>';
 	         opt = opt + '</td>';
 	         
-	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
-	         opt = opt + '</td>';
 	         opt = opt + '<td>';
 	         // need to be changed for Rejected By
 	         /* opt = opt + '<td>';
@@ -2207,6 +2288,78 @@ function rejectContract(recordId,status){
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+function CountClick(contractUUID,parentId){
+	$(".mask_time").fadeIn(200);
+	$(".DocAccPopup").fadeIn(100);	
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
+       success :function(data) {
+    	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	    var json = JSON.parse(data);
+    	    var result= "";
+    	    result = result + ' <input type="hidden" id="maxDocCount" name="maxDocCount" value="'+json.length+'" />';
+    	    for (var i = 0; i < json.length; i++) {
+    	      var opt=json[i];
+			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix myForm DocAccWrap">                                                            ';
+			  result = result +'	     <div class="form-group">                                                                                                             ';
+			  result = result +'	       <label class="col-md-4">'+opt.fileName+'</label>                                                 ';
+			  if(opt.docFile!=null){
+				  result = result +'	       <div class="col-md-8">                                                                                                             ';
+				  result = result +'	       <label class="col-md-4">uploaded</label>                                                 ';
+				  result = result +'	       </div>			                                                                                                                  ';
+			  }
+			  else{
+				  if(parentId=="--"){
+				  result = result +'	       <div class="col-md-8">                                                                                                             ';
+				  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+				  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+				  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+				  result = result +'	             </span> </label>                                                                                                                 ';
+				  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+				  result = result +'				</div>                                                                                                                            ';
+				  result = result +'	       </div>			                                                                                                                  ';
+				  }
+			  }
+			  result = result +'			</div>                                                                                                                                ';
+			  result = result +'			<div class="clearfix"></div>                                                                                                          ';
+			  result = result +'	 </div>                                                                                                                                   ';
+			  result = result + ' <input type="hidden" id="docId'+(i+1)+'" name="docId'+(i+1)+'" value="'+opt.id+'" />';
+    	    }
+			  $("#DocAccPopupDiv").empty();
+			  $("#DocAccPopupDiv").append(result);
+       },
+	  }); 
+	
+	
+}
+function contPopClose(){
+	$("#viewPopupDiv").empty();
+	$(".mask_time").fadeOut(200);
+	$(".contPopup").fadeOut(100);
+	$(".DocAccPopup").fadeOut(100);	
+}
+function check(id){
+document.getElementById("uploadBtn"+id).onchange = function () {
+    document.getElementById("uploadFile"+id).value = this.value.split( '\\' ).pop();;
+    };
+    
+    /* upload file script for size validation 2MB*/
+    var selectedFile = document.getElementById("uploadBtn"+id);
+    selectedFile.addEventListener("change", function() {
+      var docSize = this.files[0].size;
+      $("#uploadFileGroup"+id).find('p.jquery_form_error_message').remove();
+      if(docSize > 2097152){
+    	  document.getElementById("uploadFile"+id).value = '';
+    	  $("#uploadFileGroup"+id).append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+      }
+    });
 }
 </script>
 

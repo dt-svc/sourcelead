@@ -11,9 +11,11 @@ import java.io.StringReader;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +38,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -49,6 +53,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -80,6 +85,9 @@ public class ContractRestController {
 	ContractsTemplateService contractsTemplateService;
 	
 	@Autowired
+	ContractRequestDocumentsDao contractRequestDocumentsDao;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Autowired
@@ -108,6 +116,9 @@ public class ContractRestController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	ContractRequestDocumentsService contractRequestDocumentsService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(
@@ -748,5 +759,44 @@ public class ContractRestController {
 			return commonUtil.toJSON(contractsCount);
 		 
 	 }
+	 
+	 @RequestMapping(value = "/getDocsByContractUUID", method = RequestMethod.GET)
+		public @ResponseBody String getDocsByContractUUID(@RequestParam(value = "contractUUID", required = false) String contractUUID, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 	Contracts contract =	contractsTemplateService.getContractByContractUUID(contractUUID);
+		 	
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
+    		if(null != contract.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateDao.getContractById(contract.getParentContractId().getId());
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+    		}else{
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+    		} 
+			return commonUtil.toJSON(contractRequestDocumentsList);
+		}
+	 @RequestMapping(value = "/saveDocContracts", method = RequestMethod.POST)
+		public @ResponseBody String saveDocContracts(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+			final Map files = multiRequest.getFileMap();
+			int maxCount = Integer.parseInt(jsonObj.getString("maxDocCount"));
+			for (long c = 1; c <= maxCount; c++) {
+				if(jsonObj.has("docId"+c) && !jsonObj.getString("docId"+c).isEmpty()){
+					ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(jsonObj.getString("docId"+c)));
+					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+jsonObj.getString("docId"+c));
+					contractRequestDocuments.setDocFile(multiFile.getBytes());
+					contractRequestDocuments.setFileType(multiFile.getContentType());
+					contractRequestDocuments.setCreatedDate(new Date());
+					contractRequestDocuments.setUpdatedDate(new Date());
+					contractRequestDocuments.setCreatedBy(user.getUserCode());
+					contractRequestDocuments.setUpdatedBy(user.getUserCode());
+					contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+				}
+			}
+			
+			return "success";
+		}
 }

@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -58,6 +60,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Autowired
 	private ContractsTemplateDao contractsTemplateDao;
 	
+
+/*	@Autowired
+	ContractsTemplateService contractsTemplateService;*/
+	
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -66,6 +73,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private ContractRequestDocumentsService contractRequestDocumentsService;
 	
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
@@ -183,8 +193,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts = new Contracts();
 		}
 		
-		//Contracts contracts = new Contracts();
-		//Contracts vendorContracts = new Contracts();
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         
@@ -205,6 +213,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 			}
 		}
+		
 		
 		if(multiFile != null){
 			contracts.setDocFile(multiFile.getBytes());
@@ -446,6 +455,24 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
+		
+		int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
+		for (long c = 1; c < maxCount; c++) {
+			ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+			if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
+				contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
+			}
+			if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
+				contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
+			}
+			contractRequestDocuments.setContractId(savedContracts);
+			contractRequestDocuments.setCreatedDate(new Date());
+			contractRequestDocuments.setCreatedBy(user.getUserCode());
+			contractRequestDocuments.setUpdatedDate(new Date());
+			contractRequestDocuments.setUpdatedBy(user.getUserCode());
+			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+		}
+		
 		ContractsHistory contractsHistory = new ContractsHistory();
 		contractsHistory.setContractsId(savedContracts);
 		contractsHistory.setFromStage("NEW");
@@ -545,7 +572,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			  if(null != vendorContactsUser && null == approverUser && !"DRAFT".equalsIgnoreCase(saveType)){
 				  Contracts con = null;
-				  if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
+				  /*if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
 					  con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(vendorContactsUser,contracts,orgLocation,user,savedContracts,org);
 				  }else{
 					  con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
@@ -563,7 +590,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedContracts);
 		        	if(null != vendorContracts){
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
-		        	}
+		        	}*/
 			  }
 		}
 		return savedContracts;
@@ -623,7 +650,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setParentId(contracts.getParentContractId().getId().toString());
 			}
 			else{
-				contracts.setParentId("");
+				contracts.setParentId("--");
 			}
 
 			if(null != contracts.getApproverUser() ){
@@ -634,6 +661,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
 				}
 			}
+			//Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+			Integer countOfDoc = 0;
+    		if(null != contracts.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateDao.getContractById(contracts.getParentContractId().getId());
+    			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(parentcontracts.getId());
+    			contracts.setReqDocCount(countOfDoc);
+    		}else{
+    			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
+    			contracts.setReqDocCount(countOfDoc);
+    		}
+			
 			}
 		for(Contracts contracts :clientcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
@@ -686,7 +724,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setApproverUserName(contracts.getApproverUser().getFirstName());
 				}
 			}
-			
+			Integer countOfDoc = 0;
+    		if(null != contracts.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateDao.getContractById(contracts.getParentContractId().getId());
+    			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(parentcontracts.getId());
+    			contracts.setReqDocCount(countOfDoc);
+    		}else{
+    			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
+    			contracts.setReqDocCount(countOfDoc);
+    		}
 		}
 		
 		contractsForList.setVendorcontractsList(vendorcontractsList);
