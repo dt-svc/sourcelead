@@ -159,7 +159,8 @@ public class HomeController {
 
 	@RequestMapping(value = "/login",  method = { RequestMethod.GET, RequestMethod.POST })
 	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,
-			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request,HttpServletResponse response) {
+			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+			@RequestParam(value = "referUUID", required = false) String referUUID,HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -189,6 +190,10 @@ public class HomeController {
 	  			
 	  			if(!isNullOrEmpty(requirementUUID)){
 	  				 model.addObject("requirementUUID", requirementUUID);
+	  			}
+	  			
+	  			if(!isNullOrEmpty(referUUID)){
+	  				 model.addObject("referUUID", referUUID);
 	  			}
   			
 			 model.setViewName("login");

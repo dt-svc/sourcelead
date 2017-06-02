@@ -74,7 +74,7 @@ window.onload = function () {
 		if('${publicSubmissionId}' != null && '${publicSubmissionId}' != '' && '${publicSubmissionId}' != 'undefined'){
 			getSubmissionDetailsSideBar('${publicRequirementTitle}','${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
 		}else{
-			applyToJob('${publicRequirementTitle}','${publicRequirementId}');
+			applyToJob('${publicRequirementTitle}','${publicRequirementId}','${publicReferId}');
 		}
 	}else{
 		requirementsList(0);

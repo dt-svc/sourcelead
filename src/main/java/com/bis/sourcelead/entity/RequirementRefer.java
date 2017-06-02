@@ -56,6 +56,9 @@ public class RequirementRefer implements Serializable {
 	@Column(name = "REFER_STATUS")
 	private String referStatus;
 	
+	@Column(name = "REFER_UUID")
+	private String referUUID;
+	
 	@Column(name = "REFER_FROM_EMAIL")
 	private String referFromEmail;
 	
@@ -586,5 +589,15 @@ public class RequirementRefer implements Serializable {
 
 	public void setRequirementJobType(String requirementJobType) {
 		this.requirementJobType = requirementJobType;
+	}
+
+	public String getReferUUID()
+	{
+		return referUUID;
+	}
+
+	public void setReferUUID(String referUUID)
+	{
+		this.referUUID = referUUID;
 	}
 }
