@@ -183,6 +183,7 @@ $(document).ready(function(){
                         </div>
                       </li>                      
                       <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
+                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       <div class="clearfix"></div>
                     </ul>
                     <div class="clearfix"></div>
@@ -666,6 +667,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId){
 		 }
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+	     result = result +'      <li onclick="linkInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
@@ -1012,6 +1014,28 @@ function searchResults(){
 			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
 		}
 	} 
+}
+
+</script>
+
+<script type="text/javascript">
+function linkInvoice(invoiceId){
+	alert(invoiceId);
+}
+</script>
+
+
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable", 
+             success: function(data) {
+            	 alert("success");
+        },
+    });  
 }
 
 </script>
