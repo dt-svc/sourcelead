@@ -303,7 +303,7 @@ function PopUp(contractUUID){
 			if(null != json.description && "" != json.description && 'undefined' != json.description){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.description+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
 				result = result +	'	</div>';
 			}
 			
@@ -372,7 +372,14 @@ function PopUp(contractUUID){
 			if(null != json.tax && "" != json.tax && 'undefined' != json.tax){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Tax</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
+				var abc = json.taxType;
+				if(abc == "Percentage"){
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' %</div>';
+				}else{
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
+				}
+				
+				//result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
 				result = result +	'	</div>';
 			}
 			
