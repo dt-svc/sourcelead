@@ -3,4 +3,3 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','REAS
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','REASON_OTHER_TYPE','VARCHAR(100) NULL AFTER `REASON_TYPE`');
 
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_REFER','REFER_UUID','VARCHAR(20) NULL AFTER `REFER_STATUS`');
