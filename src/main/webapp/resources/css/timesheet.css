@@ -1415,7 +1415,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     background-color:#ff4b4b;
     }          
 .project_tabs_inn_table.vendor_wrap_inn_table div span {
-    max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;
+    max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; margin: 0px auto;
     }  
 .project_tabs_inn_table.vendor_wrap_inn_table div span.mid-span {
     max-width:300px;
@@ -1626,10 +1626,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }  
 .user_summary_edit.user_summary_edit_a .us-btn {
     margin:0px 0px !important;
-    }
-.calendar {
-    background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
-    }          
+    } 
          
 .client_summary_edit {
     left:0px; height:auto;
@@ -3740,10 +3737,10 @@ position: relative; padding: 0px 0px 5px 0px;
 }
 
 .propWrap {
-	background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.2); border-radius: 3px;
+	background-color: #f5f5f5; box-shadow: 0px 0px 3px rgba(0,0,0,0.2); border-radius: 3px;
 }
 .propWrapLeft {
-	width: 55%; float: right; padding: 25px 25px;
+	width: 50%; float: right; padding: 25px 25px; background-color: #fff; min-height: 250px;
 }
 .propWrapHead {
 	text-align:center; margin: 0px 0px 0px 0px; background-color: #dedede; position: relative; padding: 7px 0px 0px; min-height: 32px;
@@ -3768,8 +3765,7 @@ position: relative; padding: 0px 0px 5px 0px;
 	text-align:center;
 }
 .propWrapRight {
-	background-color: #f5f5f5; min-height: 500px; width: 45%; float: left; border-left: 2px solid #fff;
-	padding: 20px;
+	min-height: 250px; width: 50%; float: left; border-left: 2px solid #fff; padding: 20px;
 }
 .propWrapRight h2 {
 	padding:0px 0px 8px; margin: 0px 0px 8px; font-size: 18px; font-weight: 400; color: #545454; border-bottom: 1px dotted #ccc;
@@ -3791,7 +3787,7 @@ position: relative; padding: 0px 0px 5px 0px;
 }
 .propHelp {
 	padding:10px 15px; background-color: #dcffdc; font-size: 13px; font-weight: 400; color: #3a543a; line-height: 20px;
-	border-radius: 4px; border: 1px solid #abeaab; margin: 30% 0px 25px 0px;
+	border-radius: 4px; border: 1px solid #abeaab; margin: 10px 0px 15px 0px;
 }
 .propBtn {
 	text-align: right;
@@ -4187,13 +4183,13 @@ position: relative; padding: 0px 0px 5px 0px;
 	/*background-color: #de3434;*/ color: #0cc26e;
 }
 .timesheetRepTab table div.week span.reje {
-	/*background-color: #de3434;*/ color: #de3434;
+	/*background-color: #de3434;*/ color: #e10404;
 }
 .timesheetRepTab table div.week span.draft {
 	/*background-color: #656565;*/ color: #656565;
 }
 .timesheetRepTab table div.week span.subm {
-	/*background-color: #f17c38;*/ color: #f17c38;
+	/*background-color: #f17c38;*/ color: #ff7143;
 }
 .timesheetRepTab .progress {
 	margin: 0px; height: 14px; cursor: pointer;
@@ -4552,7 +4548,7 @@ text-align: center;
 	max-height: 400px; overflow-y: auto;
 }
 .expensTableView {
-	max-height: 400px; overflow-y: auto; padding: 0px 10px; margin-bottom: 20px;
+	max-height: 400px; overflow-y: auto; padding: 0px 10px; margin-bottom: 15px;
 }
 .expensTableView table tr:nth-child(even) {background: #fff;}
 .expensTableView table tr:nth-child(odd) {background: #fff;}   
@@ -4619,7 +4615,6 @@ text-align: center;
 .referWrap.referWrap_custom .form-group {
     height: 80px;
 }
-
 .ExpAmount {
 	color: #368ee0 !important; background-color: transparent !important;
 }
@@ -4635,4 +4630,77 @@ text-align: center;
 .expBtn a:hover {
 	color: #458ac9;
 }
+
+.propWrapTime {
+	padding: 0px 0px 0px 0px;
+}
+.propWrapTime .btn {
+	width: 100%; font-size: 16px; padding: 4px 0px;
+}
+.expBtnApp {
+	padding: 0px 15px 15px; text-align: right;
+}
+.expBtnApp input {
+	margin: 0px 0px 0px 5px;
+}
+
+
+
+
+.miDHei {
+height:60px !important;
+}
+.reqAddWrap {
+padding: 15px; border: none !important;
+}
+.reqAddWrap table {
+border: 1px solid #ccc;
+}
+.reqAddWrap table tr th {
+border: none !important; padding: 5px 10px; background-color: #dddddd; font-size: 15px; font-weight: 500;
+color: #454545;
+}
+.reqAddWrap table tr td {
+border: none !important; padding: 10px;
+}
+.reqAddWrap table tr:nth-child(even) {background: #fff;}
+.reqAddWrap table tr:nth-child(odd) {background: #f1f1f1;} 
+.padSm {
+padding: 3px 10px !important; height: 28px;
+}
+.DocAccPopup {
+width:800px; background-color: #fff; position: fixed; border-radius:5px; z-index: 100000; margin:0px auto;
+left: 0px; right: 0px; top: 10%; max-height: 80%; overflow-y: auto; box-shadow:0px 0px 5px rgba(0,0,0,0.5);
+display: none;
+}
+.DocAccPopupHead {
+border-bottom: 1px solid #ccc; padding: 15px;
+}
+.DocAccPopupHead h4 {
+display: inline-block; width: 88%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+padding: 3px 0px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #454545;
+}
+.DocAccPopupHead span {
+display: block; float: right;
+}
+.DocAccPopupHead i {
+font-size: 19px; padding: 3px 5px; cursor: pointer; color: #368ee0; margin: 0px 0px 0px 5px;
+}
+.DocAccPopupHead i.fa-times {
+color: #ff7474; font-size: 20px;
+}
+.DocAccWrap {
+padding: 20px 10px 5px;
+}
+.DocAccWrapFoot {
+padding: 15px 25px 25px; text-align: right;
+}
+.Cursor {
+cursor: pointer;
+}
+
+.ui-datepicker-current {
+display:none;
+}
+
 
