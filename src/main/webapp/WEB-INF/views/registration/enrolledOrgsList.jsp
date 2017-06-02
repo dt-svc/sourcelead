@@ -109,13 +109,13 @@ window.onload = function () {
 		    	    if(org.mobilePhone != null && org.mobilePhone != ''){
 	 			    	mobilePhone = org.mobilePhone;
 	 			    }else{
-	 			    	mobilePhone = "&nbsp;No Data"
+	 			    	mobilePhone = "---"
 	 			    }
 	 				
 	 				if(org.email != null && org.email != ''){
 	 			    	email = org.email;
 	 			    }else{
-	 			    	email = "No Data"
+	 			    	email = "---"
 	 			    }
 	 				
 	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
