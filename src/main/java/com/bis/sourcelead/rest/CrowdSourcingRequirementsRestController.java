@@ -1774,7 +1774,8 @@ public class CrowdSourcingRequirementsRestController {
 					if(!isNullOrEmpty(refer.getReferStatus()) && refer.getReferStatus().equalsIgnoreCase("Applied")){
 						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndUserId(refer.getRequirementId().getId(), refer.getReferToUser().getId());
 						if(null != submission){
-							refer.setRequirementSubmissionStatus(submission.getSubmissionStatus().getValue());
+							refer.setRequirementSubmissionStatus(submission.getSubmissionStatus().toString());
+							refer.setRejectedReason(submission.getRejectedReason());
 						}
 					}
 					requirementReferList.add(refer);
