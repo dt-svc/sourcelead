@@ -27,11 +27,11 @@ private static final long serialVersionUID = 1L;
 	private Long id;
 	
 	@ManyToOne
-    @JoinColumn(name="EXPENSES", nullable=false )        
+    @JoinColumn(name="EXPENSESID", nullable=false )        
     private Expenses expensesId;
 	
 	@ManyToOne
-    @JoinColumn(name="EXPENSE_CATEGORY", nullable=false )        
+    @JoinColumn(name="EXPENSES_CATEGORY_ID", nullable=false )        
     private ExpensesCategory expensesCategoryId;
 	
 	@Column(name = "EXPENSE_DATE")
