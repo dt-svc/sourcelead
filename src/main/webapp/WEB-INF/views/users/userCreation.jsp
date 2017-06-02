@@ -870,7 +870,7 @@ function getAssociateUserDetails(){
  
  
 <!-- start script for datepicker -->
-<!-- <script>
+<script>
   $( function() {
 	  
 	  $('#DateofJoin').datepicker({
@@ -881,7 +881,7 @@ function getAssociateUserDetails(){
 	  });
 	  
   } );
-</script> -->
+</script>
 <!-- end script for datepicker -->
 
  
@@ -1003,20 +1003,3 @@ function editMe(local){
 	 }
 	 </script>
 
-<script>
-$(document).ready(function () {
-    $("#DateofJoin").datepicker({
-            showOn: 'focus',
-            dateFormat: 'dd-mm-yy',
-            showButtonPanel: true,
-            closeText: 'Clear', // Text to show for "close" button
-            onClose: function () {
-                var event = arguments.callee.caller.caller.arguments[0];
-                // If "Clear" gets clicked, then really clear it
-                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-                    $(this).val('');
-                }
-            }
-    });
-});
-</script>
