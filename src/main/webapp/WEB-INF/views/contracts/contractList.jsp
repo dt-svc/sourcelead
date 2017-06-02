@@ -188,7 +188,7 @@ $(document).ready(function(){
 			<div class="clearfix"></div>
         </div> -->
         
-<div class="clearfix DocAccWrapFoot">
+<div class="clearfix DocAccWrapFoot" id="saveAction">
 		<!-- <input type="button" value="Submit" class="btn btn-primary padSm"> -->
 		 <input type="button" value="Submit" id="save_Doc" onclick="saveDocContract();" class="btn btn-primary padSm">
 		<input type="button" value="Cancel" class="btn btn-default padSm" onclick="contPopClose();">
@@ -1109,9 +1109,13 @@ function preparedContractListWTS(data){
 		         }
 		         result = result + '</td>';
 		         result = result + '<td>';
-		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>';
-		        result = result + '</td>';
-		         
+		         if(report.reqDocCount!="0"){
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 result = result + '<div class="tblminwidth-75 ">'+report.reqDocCount+'</div>';
+		         }	 
+		         result = result + '</td>';
 		         //to be change for Received On
 		         
 		         /* result = result + '<td>';
@@ -1140,8 +1144,8 @@ function preparedContractListWTS(data){
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
 	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Doc Count</th>';
 // 	opt = opt + '    <th>Received On</th>';
 	opt = opt + '    <th>Status</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -1180,7 +1184,12 @@ function preparedContractListWTS(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         if(output.reqDocCount!="0"){
 	         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+	         }
+	         else{
+	        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+	         }
 	         opt = opt + '</td>';
 	         
 
@@ -1310,7 +1319,13 @@ function preparedContractListWTV(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>';
+		         if(report.reqDocCount!="0"){
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 result = result + '<div class="tblminwidth-75 ">'+report.reqDocCount+'</div>';
+		         }	 
+		         
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1340,8 +1355,8 @@ function preparedContractListWTV(data){
 	opt = opt + '    <th>Owner</th>';
 	opt = opt + '    <th>Client Contact</th>';
 // 	opt = opt + '    <th>Signed On</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Doc Count</th>'; 
 	opt = opt + '    <th>Billing Cycle</th>';
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -1382,11 +1397,14 @@ function preparedContractListWTV(data){
 	        	 opt = opt + '--</div>';
 	         }
 	         opt = opt + '</td>';
-	         
 	         opt = opt + '<td>';
-	         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+	         if(output.reqDocCount!="0"){
+		         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+		         }
+		         else{
+		        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+		         }
 	         opt = opt + '</td>';
-	         
 
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span>'+output.invoiceFrequency+'</span></div>';
@@ -2316,15 +2334,18 @@ function CountClick(contractUUID,parentId){
 				  result = result +'	       </div>			                                                                                                                  ';
 			  }
 			  else{
-				  if(parentId=="--"){
-				  result = result +'	       <div class="col-md-8">                                                                                                             ';
-				  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
-				  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
-				  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
-				  result = result +'	             </span> </label>                                                                                                                 ';
-				  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
-				  result = result +'				</div>                                                                                                                            ';
-				  result = result +'	       </div>			                                                                                                                  ';
+				  if(parentId!="--"){
+					  result = result +'	       <div class="col-md-8">                                                                                                             ';
+					  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+					  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+					  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+					  result = result +'	             </span> </label>                                                                                                                 ';
+					  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+					  result = result +'				</div>                                                                                                                            ';
+					  result = result +'	       </div>			                                                                                                                  ';
+				  }
+				  else{
+					  $("#saveAction").empty(); 
 				  }
 			  }
 			  result = result +'			</div>                                                                                                                                ';
