@@ -7,4 +7,4 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','TRAVEL_ALLOWANC
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','INDUSTRY_NAME','VARCHAR(50) NULL  AFTER `TRAVEL_ALLOWANCE`');
 
 
-
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_REFER','REFER_UUID','VARCHAR(20) NULL AFTER `REFER_STATUS`');
