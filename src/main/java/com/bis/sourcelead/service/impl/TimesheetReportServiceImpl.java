@@ -341,7 +341,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
 				    	    	}
 				    	    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
-				    	    		approvalStatus = Submission_ApprovalStatus.APPROVED;
+				    	    		approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
 				    	    	}
 				    	    	Float  weekBillableHours = 0f;
 				    	    	if(sah.getWeekBillableHoursMap().get(entry.getKey()) != null){
@@ -724,8 +724,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
 	    	    	}
 	    	    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
-	    	    		approvalStatus = Submission_ApprovalStatus.APPROVED;
-	    	    	}
+		    	    	approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
+		    	    }
 		    	    if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
 		    	    	 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
 		    	    }
@@ -983,7 +983,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
 		    	}
 		    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
-    	    		approvalStatus = Submission_ApprovalStatus.APPROVED;
+    	    		approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
     	    	}
 	    	    if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
 	    	    	 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
