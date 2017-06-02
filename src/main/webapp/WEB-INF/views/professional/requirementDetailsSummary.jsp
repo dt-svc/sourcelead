@@ -149,6 +149,7 @@ function publicRequirementProfile(requirementUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';
+	var referUUID = '${referUUID}';
 	
 	$.ajax({
 	   	type: "GET",
@@ -258,7 +259,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'         <div class="openPostBtns">';
 				 
 				 result = result +'<a href="'+sourceleadUrl+'" class="refer">Refer</a>';
-				 result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'" class="jobApply">Apply</a>';
+				 result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>';
 				 
 				
 				 result = result +'          </div>';

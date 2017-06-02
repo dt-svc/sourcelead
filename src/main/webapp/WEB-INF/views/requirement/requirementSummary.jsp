@@ -655,22 +655,22 @@ function sideBar(requirementId){
 			        result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
 			    	   }
 			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' -'+json.maxRate+'- '+json.currencyCode+' / '+json.rateType+'</span></li>';
 			       }
 			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else{
@@ -690,6 +690,7 @@ function sideBar(requirementId){
 			        else{
 				     result = result+' <li><i class="fa fa-map-marker" title="Location"></i><span title="'+json.country+'">'+json.country+'</span></li>';
 			        }
+			        result = result+' <li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 			        result = result+'</ul>';
 			        result = result+'</div>';
 			        result = result+'<div class="col-md-7">';
@@ -1087,7 +1088,14 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            
+				            if(json.industryName != null && json.industryName != '' && json.industryName != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Industry:</b>'+json.industryName+'';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Industry:</b> <span> -- </span>';	
+					            }
+					            result = result +'       <div class="clearfix"></div>';
+					            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
