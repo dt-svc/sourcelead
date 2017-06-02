@@ -60,6 +60,7 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		 String UUID = request.getParameter("UUID");
 		 String spocUUID = request.getParameter("spocUUID");
 		 String requirementUUID = request.getParameter("requirementUUID");
+		 String referUUID = request.getParameter("referUUID");
 		try{
 			 if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
 				 Notifications notifications = notificationsService.getNotificationsByUUID(UUID);
@@ -92,9 +93,13 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
 	    		response.sendRedirect("/sourcelead/dashboard?invitation=true");
 	    	}else{
-	    		if(!isNullOrEmpty(requirementUUID)){
+	    		if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
 	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID);
-	    		}else{
+	    		}
+	    		else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
+	    			response.sendRedirect("/sourcelead/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
+	    		}
+	    		else{
 	    			response.sendRedirect("/sourcelead/dashboard");
 	    		}
 	    		

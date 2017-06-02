@@ -1766,14 +1766,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			List<RequirementSubmission>  submissionsCountList = null ;
 			String query;
 			if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
-				 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where "
+				 query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate where "
 				 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 				 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 				 		+ "rs.submissionStatus = :submissionStatus";
 				   submissionsCountList = session.createQuery(query).setLong("userId", userId).setString("submissionStatus", submissionStatus)
 			    		                                            .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
 			}else{
-				 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where "
+				 query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate where "
 				 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 				 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate))";
 			     
@@ -2009,7 +2009,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				throws Exception {
 			 
 			Session session = this.sessionFactory.getCurrentSession();
-		     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.candidate.consultantUser user "
+		     String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.candidate.consultantUser user "
 		     		+ "where rs.requirement.id = :requirementId and user.id =:userId ";
 		     List<RequirementSubmission> submissionList = session.createQuery(query).setLong( "requirementId", requirementId).setLong( "userId", userId).setCacheable(true).list();
 		   

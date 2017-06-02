@@ -74,7 +74,7 @@ window.onload = function () {
 		if('${publicSubmissionId}' != null && '${publicSubmissionId}' != '' && '${publicSubmissionId}' != 'undefined'){
 			getSubmissionDetailsSideBar('${publicRequirementTitle}','${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
 		}else{
-			applyToJob('${publicRequirementTitle}','${publicRequirementId}');
+			applyToJob('${publicRequirementTitle}','${publicRequirementId}','${publicReferId}');
 		}
 	}else{
 		requirementsList(0);
@@ -90,7 +90,14 @@ window.onload = function () {
         <h2>Requirements<span class="select-fild"> </h2>  
         <div class="clearfix"></div>    
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+           <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           </c:if>
+           
+           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+           <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           </c:if>
+          
           <div class="clearfix"></div> 
          <div class="reportsCount req_Crowd clearfix">
           <ul>
