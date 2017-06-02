@@ -8,3 +8,5 @@ CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','INDUSTRY_NAME',
 
 
 CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_REFER','REFER_UUID','VARCHAR(20) NULL AFTER `REFER_STATUS`');
+
+CALL sourcelead.AlterTableAddColumn ('sourcelead','CANDIDATE_OFF_BOARDING','EMPLOYMENT_TYPE','VARCHAR(100) NULL AFTER `ROLE`');
