@@ -158,6 +158,12 @@ public class RequirementController {
 				
 			}
 			
+			
+			if(null !=requirement.getClosedDate()){
+				
+				requirement.setClosedDateStringFormat(Constants.DMY.format(requirement.getClosedDate()));
+			}
+			
 			if(requirement != null && requirement.getId() != null){
 				String storedNoticeperiodList = requirementService.getNoticePeriodByRequirementId(requirement.getId());
 						model.addObject("noticePeriod", storedNoticeperiodList);
