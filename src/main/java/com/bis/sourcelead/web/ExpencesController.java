@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Controller
 public class ExpencesController {
@@ -43,6 +44,8 @@ public class ExpencesController {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.MY_EXPENSES);
+		String expensesId  = SourceLeadRandomCodeHelper.generateRandomExpensesIdCode();
+		model.addObject("ExpensesId", expensesId);
 		request.getSession().setAttribute("sessionData", sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");

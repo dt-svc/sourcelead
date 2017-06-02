@@ -25,9 +25,9 @@
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
                 <div class="form-group">
-                  <label class="col-md-3">Expenses Id<span class="text-danger">&nbsp;*</span></label>
+                  <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="First Name" value="">
+                    <input type="text" class="form-control" name="First Name" value="${ExpensesId}">
                   </div>
                 </div>  
                 
