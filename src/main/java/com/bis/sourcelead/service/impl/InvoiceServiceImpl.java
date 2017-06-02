@@ -1720,5 +1720,17 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
      	}
 		return contractsList;
 	}
+	
+	
+	@Override
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId,Long orgLocationId,String invoiceType)
+	{
+		return invoiceDao.getClientBasedInvoiceLists(orgRelationId,orgLocationId,invoiceType);
+	}
+	@Override
+	public void linkInvoice(Invoice invoice) throws Exception
+	{
+      invoiceDao.saveInvoce(invoice);		
+	}
 
 }

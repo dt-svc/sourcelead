@@ -53,7 +53,7 @@ $(document).ready(function(){
               </select>
               
               <div class="custom_search">
-              <div id="customDateDivId"></id>
+              <div id="customDateDivId"></div>
             </div>
           </div>
             </div>
@@ -380,9 +380,14 @@ function removeErr(){
 <div id="recvPymntpop" class="modal" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
-
-
 <!-- modal pop --> 
+
+  <!-- modal pop -->
+<div class="side_mask" style="display: none"></div>
+<div class="modal modal_invoice" style="display: none;">
+   <div id="linkPopup" ></div>
+</div>
+<!-- modal pop -->
 <script>
 function saveReceivePayment(invoiceId){
 	 if ($('#receivePayment-form').validate(false, validationSettings)){  
@@ -694,7 +699,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId){
 		 }
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
-	     result = result +'      <li onclick="linkInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Link Invoice</li>';
+	     result = result +'      <li onclick="linkInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
@@ -1109,10 +1114,115 @@ function exportToReceivableExcel(){
 
 <script type="text/javascript">
 function linkInvoice(invoiceId){
-	alert(invoiceId);
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	     url : sourceleadUrl+"/getClientBasedInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId+"&invoiceType=receivable",
+			success: function(data) {
+			var result = "";
+			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
+			result = result +'    <div class="modal-content">                                                                                               ';
+			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
+			result = result +'      <div class="modal-header">                                                                                              ';
+			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
+			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
+			result = result +'      </div>                                                                                                                  ';
+			result = result +'      <div class="modal-body clearfix">                                                                                       ';
+			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
+			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
+			result = result +'      <table>                                                                                                                 ';
+			result = result +'        <thead>                                                                                                               ';
+			result = result +'          <tr>                                                                                                                ';
+			result = result +'            <th>&nbsp;                                                                                                        ';
+			result = result +'                                                                                                                              ';
+			result = result +'              </th>                                                                                                           ';
+			result = result +'            <th>ID</th>                                                                                                       ';
+			result = result +'            <th>Contact Person</th>                                                                                           ';
+			result = result +'            <th>Due date</th>                                                                                                 ';
+			result = result +'            <th>Bill date</th>                                                                                                ';
+			result = result +'            <th>Total</th>                                                                                                    ';
+			result = result +'            <th>Due Amount</th>                                                                                               ';
+			result = result +'            <th>Status</th>                                                                                                   ';
+			result = result +'          </tr>                                                                                                               ';
+			result = result +'        </thead>                                                                                                              ';
+			result = result +'        <tbody>                                                                                                               ';
+			if(data != null && data != 'undefined' && data != ""){ 
+			var json = JSON.parse(data);
+			for (var i = 0; i < json.length; i++) { 
+			var opt = json[i]; 
+			result = result +'          <tr>                                                                                                                ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'                <input type="radio" value='+opt.id+' name="linkedInvoice">                                                                     ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot-100">'+opt.invoiceId+'</div>                                                                   ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>                                                    ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tblminwidth-50">'+opt.dueDateStr+'</div>                                                                    ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tblminwidth-50">'+opt.invoiceDateStr+'</div>                                                                     ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot_80">'+opt.total+'</div>                                                                 ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot_80">'+opt.dueAmount+'</div>                                                                 ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot_100">'+opt.invoiceStatus+'</div>                                                                    ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'          </tr>                                                                                                               ';
+			}
+			}else{
+	 			result = result +'          <tr>';
+				result = result +'                <td valign="top" colspan="10" class="dataTables_empty"></td>';
+				result = result +'          </tr>';
+			}
+			result = result +'        </tbody>                                                                                                              ';
+			result = result +'      </table>                                                                                                                ';
+			result = result +'    </div>                                                                                                                    ';
+			result = result +'     <div class="clearfix mt10">                                                                                              ';
+			result = result +'         <div class="pull-right">                                                                                             ';
+			result = result +'             <button type="button" class="btn btn-primary" onClick="mergeInvoice();"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
+			result = result +'         </div>                                                                                                               ';
+			result = result +'     </div>                                                                                                                   ';
+			result = result +'    </div>                                                                                                                    ';
+			result = result +'    <!-- Pop Link Invoice Pop -->                                                                                             ';
+			result = result +'  </div>                                                                                                                      ';
+			result = result +'</div>                                                                                                                        ';
+		
+			$("#linkPopup").empty();
+			$("#linkPopup").append(result);
+			$('.modal.modal_invoice').fadeIn(200);
+	        $('.side_mask').fadeIn(200);
+		},
+	 }); 
 }
 </script>
 
+
+ <!-- Script for Linked Invoice pop -->
+    <script>
+        $(".sendReminder").click(function(){
+        $('.modal.modal_invoice').fadeIn(200);
+        $('.side_mask').fadeIn(200);
+        });
+        
+        $(".close, .cancel").click(function(){
+        $('.modal.modal_invoice').fadeOut(200);
+        $('.side_mask').fadeOut(200);
+        });
+        function closeLinkInvoice(){
+            $('.modal.modal_invoice').fadeOut(200);
+            $('.side_mask').fadeOut(200);
+        }
+    </script>
+    <!-- Script for Linked Invoice pop -->
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
@@ -1125,6 +1235,26 @@ function generateAutomaticInvoice(){
             	 alert("success");
         },
     });  
+}
+</script>
+
+<script>
+function mergeInvoice(){
+	var masterInvoiceId = $('#masterInvoiceId').val();
+	var linkRadio = $('input[name=linkedInvoice]');
+	var checkVal = linkRadio.filter(':checked').val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+   	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
+            success: function(data) {
+            	if(data != null && data !=''){
+            		location.replace(sourceleadUrl+"/invoiceList");	
+            	}
+           	
+       },
+   });  
 }
 </script>
 

@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -49,5 +50,9 @@ public interface InvoiceService {
 	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount) throws Exception;
 
 	Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user)throws Exception;
+
+	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocationId, String invoiceType);
+
+	void linkInvoice(Invoice invoice)throws Exception;
 
 }

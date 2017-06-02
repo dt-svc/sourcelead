@@ -1337,4 +1337,53 @@ public class InvoiceRestController {
         return resultJson;
 	}
 
+	@RequestMapping(value = "/getClientBasedInvoiceList", method = RequestMethod.POST)
+	@ResponseBody
+	public String getClientBasedInvoiceList(@RequestParam(value = "invoiceType", required = false) String invoiceType,@RequestParam(value = "invoiceId", required = false) String invoiceId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String resultJson ="";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Invoice invoice = invoiceService.getInvoicetById(Long.parseLong(invoiceId));
+		OrgRelations orgRelId = invoice.getOrgRelationID();
+		
+		List<Invoice> clientinvoiceList = invoiceService.getClientBasedInvoiceLists(orgRelId.getId(),orgLocation.getId(),invoiceType);
+		List<Invoice> clientList = new ArrayList<Invoice>();
+		for(Invoice invce : clientinvoiceList){
+			if(invce.getId().longValue() != Long.parseLong(invoiceId)){
+				invce.setInvoiceDateStr(conversionUtil.getDateAsString(invce.getInvoiceDate()));
+				invce.setDueDateStr(conversionUtil.getDateAsString(invce.getDueDate()));
+				
+				if(null != invce.getContactUser().getLastName()){
+				StringBuilder username = new StringBuilder();
+				invce.setClientContactName(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
+				}else{
+					invce.setClientContactName(invce.getContactUser().getFirstName());
+				}
+				clientList.add(invce);
+			}
+		}
+		if (null != clientList && clientList.size() > 0){
+		resultJson = commonUtil.toJSON(clientList);	
+		}
+		return resultJson;
+	}
+	
+	
+	@RequestMapping(value = "/linkInvoice", method = RequestMethod.POST)
+	@ResponseBody
+	public String linkInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "checkVal", required = false) Long  id, 
+			@RequestParam(value = "masterInvoiceId", required = false) Long  masterInvoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String resultJson ="";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Invoice masterInvoice = invoiceService.getInvoicetById(masterInvoiceId);
+		Invoice invoice = invoiceService.getInvoicetById(id);
+		invoice.setLinkInvoiceReferenceId(masterInvoice.getId());
+		invoice.setLinkInvoiceRefInvoiceId(masterInvoice.getInvoiceId());
+		invoiceService.linkInvoice(invoice);
+		resultJson = commonUtil.toJSON(invoice);	
+		return resultJson;
+	}
+	
 }
