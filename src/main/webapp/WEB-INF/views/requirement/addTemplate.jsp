@@ -177,7 +177,7 @@ width: 100% !important;
 							</div>
 						</div>  --%>
 						
-						 <div class="form-group">
+						 <div class="form-group mt25">
 			              <label class="col-md-3">Skills</label>
 			              <div class="col-md-9">
 			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">
