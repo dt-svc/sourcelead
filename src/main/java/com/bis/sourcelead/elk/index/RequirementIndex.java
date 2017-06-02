@@ -23,6 +23,8 @@ public class RequirementIndex {
 	
 	private Float rate;
 	
+	private Float maxRate;
+	
 	private String rateType;
 	
 	private String minExperience;
@@ -95,6 +97,8 @@ public class RequirementIndex {
 	
 	private String calDays;
 	
+	private String travelAllownace;
+	
 	private String postedOrg;
 	
 	private List<String> skillsList;
@@ -110,6 +114,8 @@ public class RequirementIndex {
 	private Long referId;
 	
 	private String referedUser;
+	
+	private String industryName;
 	
 	private Integer noOfSearchHits;
 	
@@ -632,6 +638,38 @@ public class RequirementIndex {
 	public void setNoticePeriod(String[] noticePeriod) {
 		this.noticePeriod = noticePeriod;
 
+	}
+
+	
+
+	public String getIndustryName()
+	{
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName)
+	{
+		this.industryName = industryName;
+	}
+
+	public Float getMaxRate()
+	{
+		return maxRate;
+	}
+
+	public void setMaxRate(Float maxRate)
+	{
+		this.maxRate = maxRate;
+	}
+
+	public String getTravelAllownace()
+	{
+		return travelAllownace;
+	}
+
+	public void setTravelAllownace(String travelAllownace)
+	{
+		this.travelAllownace = travelAllownace;
 	}
 	
 }
