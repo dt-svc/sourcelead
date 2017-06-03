@@ -787,13 +787,15 @@ public class ContractRestController {
 				if(jsonObj.has("docId"+c) && !jsonObj.getString("docId"+c).isEmpty()){
 					ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(jsonObj.getString("docId"+c)));
 					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+jsonObj.getString("docId"+c));
-					contractRequestDocuments.setDocFile(multiFile.getBytes());
-					contractRequestDocuments.setFileType(multiFile.getContentType());
-					contractRequestDocuments.setCreatedDate(new Date());
-					contractRequestDocuments.setUpdatedDate(new Date());
-					contractRequestDocuments.setCreatedBy(user.getUserCode());
-					contractRequestDocuments.setUpdatedBy(user.getUserCode());
-					contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+					if(multiFile != null){
+						contractRequestDocuments.setDocFile(multiFile.getBytes());
+						contractRequestDocuments.setFileType(multiFile.getContentType());
+						contractRequestDocuments.setCreatedDate(new Date());
+						contractRequestDocuments.setUpdatedDate(new Date());
+						contractRequestDocuments.setCreatedBy(user.getUserCode());
+						contractRequestDocuments.setUpdatedBy(user.getUserCode());
+						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+					}
 				}
 			}
 			

@@ -217,7 +217,7 @@ $(document).ready(function(){
 			     dataType : 'json',
 						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							//location.replace(sourceleadUrl+"/contractListbyStatus");
+							location.replace(sourceleadUrl+"/contractListbyStatus");
 						},
 					}); 
 			return true;
@@ -2328,7 +2328,7 @@ function CountClick(contractUUID,parentId){
 			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix myForm DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
 			  result = result +'	       <label class="col-md-4">'+opt.fileName+'</label>                                                 ';
-			  if(opt.docFile!=null){
+			  if(opt.docFile != null && opt.docFile !="" ){
 				  result = result +'	       <div class="col-md-8">                                                                                                             ';
 				  result = result +'	       <label class="col-md-4">uploaded</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';

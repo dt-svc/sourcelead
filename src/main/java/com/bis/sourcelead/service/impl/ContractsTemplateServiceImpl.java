@@ -461,7 +461,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
 			if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
 				contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
-			}
+			
 			if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
 				contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
 			}
@@ -471,6 +471,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contractRequestDocuments.setUpdatedDate(new Date());
 			contractRequestDocuments.setUpdatedBy(user.getUserCode());
 			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+			}
 		}
 		
 		ContractsHistory contractsHistory = new ContractsHistory();
