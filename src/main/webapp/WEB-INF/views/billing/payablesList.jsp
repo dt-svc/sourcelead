@@ -1122,7 +1122,6 @@ function generateAutomaticInvoice(){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&contractType=vendorSow", 
              success: function(data) {
-            	 alert("success");
         },
     });  
 }
