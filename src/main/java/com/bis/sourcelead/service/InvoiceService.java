@@ -48,6 +48,6 @@ public interface InvoiceService {
 
 	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount) throws Exception;
 
-	Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user)throws Exception;
+	Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
 
 }

@@ -406,10 +406,12 @@ public class InvoiceRestController {
 			}
 				
 			StringBuilder contactName = new StringBuilder();
-			if(invoice.getContactUser().getLastName() != null){
-				invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
-			}else{
-				invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+			if(null != invoice.getContactUser()){
+				if(invoice.getContactUser().getLastName() != null){
+					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());	
+				}else{
+					invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+				}
 			}
 			if(null != invoice.getDueDate()){
 				invoice.setDueDateStr(Constants.DF_DMY.format(invoice.getDueDate()));	
@@ -755,6 +757,8 @@ public class InvoiceRestController {
 				StringBuilder sb = new StringBuilder();
 				if (arr[0].length() == 2) {
 					sb.append("0").append(arr[0]);
+				}else if(arr[0].length() == 3){
+					sb.append(arr[0]);
 				}
 				else if (arr[0].length() == 1) {
 					sb.append("00").append(arr[0]);
@@ -841,7 +845,10 @@ public class InvoiceRestController {
 					StringBuilder sb = new StringBuilder();
 					if(arr[0].length()==2){
 						sb.append("0").append(arr[0]);
-					}else if(arr[0].length()==1){
+					}else if(arr[0].length()==3){
+						sb.append(arr[0]);	
+					}
+					else if(arr[0].length()==1){
 						sb.append("00").append(arr[0]);	
 					}
 					if(arr[1].length()==1){
@@ -1314,27 +1321,30 @@ public class InvoiceRestController {
 		return invoiceAmount;
 	}
 	
-
+    /**
+     * Gnearate auto genarated invoices
+     * @param invoiceType
+     * @param contractType
+     * @param request
+     * @param response
+     * @return String
+     * @throws Exception
+     */
 	@RequestMapping(value = "/generateAutomaticInvoice", method = RequestMethod.POST)
 	@ResponseBody
-	public  String generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		long startTime = System.currentTimeMillis();
-		String resultJson ="";
+		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		logger.info("*******************************invoiceType = "+invoiceType);
-		logger.info("*******************************loginOrgCurrencyCode = "+loginOrgCurrencyCode);
-		
-		Invoice invoice = invoiceService.getAutomaticInvoice(orgLocation,loginOrgCurrencyCode,invoiceType,user);
-
-	      long stopTime = System.currentTimeMillis();
-	      long elapsedTime = stopTime - startTime;
-	      logger.info("*****************************Final Response time = "+elapsedTime+" Millis");
-		
-		resultJson = commonUtil.toJSON("");	
-        return resultJson;
+		Invoice invoice = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType);
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+		logger.info("Final Response time = " + elapsedTime+ " Millis");
+		resultJson = commonUtil.toJSON("");
+		return resultJson;
 	}
 
 }
