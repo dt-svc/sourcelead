@@ -1760,5 +1760,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		}
 		return contractsList;
 	}
+	@Override
+	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationID) throws Exception
+	{
+		return invoiceDao.getInvoiceByOrgLocationId(orgLocationID);
+	}
 
 }

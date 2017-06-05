@@ -25,4 +25,6 @@ public interface InvoiceDao{
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception;
 
 	Invoice getInvoicetBySelfJoinInvoiceId(Long parentInvoiceId) throws Exception;
+
+	List<Invoice> getInvoiceByOrgLocationId(Long orgLocationID)throws Exception;
 }

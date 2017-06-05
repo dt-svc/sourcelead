@@ -206,5 +206,15 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			return null;
 		}
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> invoiceList = session.createQuery("from Invoice invoice  where invoice.orgLocation =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' " ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		return invoiceList;
+	}
 	 
 }

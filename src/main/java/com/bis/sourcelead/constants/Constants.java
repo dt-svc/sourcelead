@@ -262,6 +262,7 @@ public class Constants {
 	public static final String MODULE_VMS_STR = "3";
 	public static final String MODULE_TIMESHEET_STR = "4";
 	public static final int TAB_VENDOR = 9;
+	public static final int TAB_BILLING = 20;
 	public static final int TAB_CLIENT = 7;
 	public static final int TAB_MY_TIMESHEET = 5;
 	public static final int TAB_TIMESHEET_APPROVAL = 6;
@@ -569,6 +570,16 @@ public class Constants {
 	public static final String VENDOR_SOW ="vendorSow";
 	public static final String MY_EXPENSES = "My Expenses";
 	public static final String EXPENSES_APPROVAL =  "Expenses Approval";
+	
+	public static final String THIS_MONTH =  "THIS_MONTH";
+	public static final String THIS_QUARTER =  "THIS_QUARTER";
+	public static final String THIS_YEAR =  "THIS_YEAR";
+	public static final String LAST_30DAYS =  "LAST_30DAYS";
+	public static final String LAST_MONTH =  "LAST_MONTH";
+	public static final String LAST_QUARTER =  "LAST_QUARTER";
+	public static final String LAST_YEAR =  "LAST_YEAR";
+	public static final String CUSTOM =  "CUSTOM";
+	
 	
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
 	
