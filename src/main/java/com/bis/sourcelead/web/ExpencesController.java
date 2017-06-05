@@ -49,6 +49,22 @@ public class ExpencesController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/expenses")
+	public ModelAndView expenses(HttpServletRequest request) throws Exception
+	{
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (null == sessionData) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.MY_EXPENSES);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("expenses/expenses");
+		return model;
+	}
+	
 	
 	@RequestMapping(value = "/expensesApprovalList")
 	public ModelAndView expensesApprovalList(HttpServletRequest request) throws Exception
