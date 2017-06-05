@@ -925,7 +925,10 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		jsonObj.put("submissionOffersList", requirementOffers.getSubmissionId().getId());
 		
-		jsonObj.put("owner", loginUser.getId());
+		/*
+		 * to allow default owner un-comment the below line --Pavan jampana
+		 */
+//		jsonObj.put("owner", loginUser.getId());
 		
 		jsonObj.put("orgRelationId", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
 		

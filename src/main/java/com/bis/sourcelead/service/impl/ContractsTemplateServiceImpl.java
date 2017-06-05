@@ -268,8 +268,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setContractsTemplate(contractsTemplate);
 		}
 		
-		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
-		contracts.setOwnerUserId(ownerUser);
+		User ownerUser = null;
+		if(jsonObj.has("owner") && null != jsonObj.getString("owner") && !"".equals(jsonObj.getString("owner"))){
+			ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
+			contracts.setOwnerUserId(ownerUser);
+		}
 
 		Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
 		String currentTimeStr = Constants.TZ_DF.format(startTime);  
@@ -448,9 +451,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
 		contracts.setCreatedDate(new Date());
-		contracts.setCreatedBy(user.getUserCode());
+		if(null != user){
+			contracts.setCreatedBy(user.getUserCode());
+			contracts.setUpdatedBy(user.getUserCode());
+		}
 		contracts.setUpdatedDate(new Date());
-		contracts.setUpdatedBy(user.getUserCode());
 		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		if(null != vendorContracts)
 		{
@@ -458,37 +463,43 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
-		
-		int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
-		for (long c = 1; c < maxCount; c++) {
-			ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
-			if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
-				contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
-			
-			if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
-				contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
-			}
-			contractRequestDocuments.setContractId(savedContracts);
-			contractRequestDocuments.setCreatedDate(new Date());
-			contractRequestDocuments.setCreatedBy(user.getUserCode());
-			contractRequestDocuments.setUpdatedDate(new Date());
-			contractRequestDocuments.setUpdatedBy(user.getUserCode());
-			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+		if(jsonObj.has("maxTaxRowNum")){
+			int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
+			for (long c = 1; c < maxCount; c++) {
+				ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+				if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
+					contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
+				
+				if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
+					contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
+				}
+				contractRequestDocuments.setContractId(savedContracts);
+				contractRequestDocuments.setCreatedDate(new Date());
+				if(null != user){
+					contractRequestDocuments.setCreatedBy(user.getUserCode());
+					contractRequestDocuments.setUpdatedBy(user.getUserCode());
+				}
+				contractRequestDocuments.setUpdatedDate(new Date());
+				contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+				}
 			}
 		}
+		
 		
 		ContractsHistory contractsHistory = new ContractsHistory();
 		contractsHistory.setContractsId(savedContracts);
 		contractsHistory.setFromStage("NEW");
 		contractsHistory.setToStage(savedContracts.getTemplateSubmissionStatus());
 		contractsHistory.setCreatedDate(new Date());
-		contractsHistory.setCreatedBy(user.getUserCode());
+		if(null != user){
+			contractsHistory.setCreatedBy(user.getUserCode());
+			contractsHistory.setUpdatedBy(user.getUserCode());
+		}
 		contractsHistory.setUpdatedDate(new Date());
-		contractsHistory.setUpdatedBy(user.getUserCode());
 		contractsTemplateDao.saveContractsHistory(contractsHistory);
 		
-		if(null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
-			if(!jsonObj.has("approver") && ownerUser.getId().longValue() != user.getId().longValue()){
+		if(null != user && null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
+			if(!jsonObj.has("approver") && null != ownerUser && ownerUser.getId().longValue() != user.getId().longValue()){
 				sendMailToOwner(savedContracts,user,org,orgLocation);
 			}
 		}
@@ -567,9 +578,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				childContractsHistory.setFromStage("NEW");
 				childContractsHistory.setToStage(savedChildContracts.getTemplateSubmissionStatus());
 				childContractsHistory.setCreatedDate(new Date());
-				childContractsHistory.setCreatedBy(user.getUserCode());
+				if(null != user){
+					childContractsHistory.setCreatedBy(user.getUserCode());
+					childContractsHistory.setUpdatedBy(user.getUserCode());
+				}
 				childContractsHistory.setUpdatedDate(new Date());
-				childContractsHistory.setUpdatedBy(user.getUserCode());
 				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 			}
 			
