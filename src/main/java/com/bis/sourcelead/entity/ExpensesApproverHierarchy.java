@@ -20,9 +20,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 *
 * @author  Pradeep Reddy
 *          
-*          |Ver_Number|  |Modifier|   |Comments|
-*          -----------   ----------   ---------- 
-* @version    1.0       Pradeep Reddy  
+*          |Ver_Number|  |Modified By|   |Modified On|  |Comments|
+*          -----------   -------------   -------------  ----------
+* @version    1.0        Pradeep Reddy     New_File       New_File
 * 
 * @since   2017-06-02
 */
@@ -49,13 +49,13 @@ private Expenses expenseId;
 @Column(name = "EXPENSE_STATUS")
 private int expenseStatus;
 
-@Column(name = "EXPENSE_APPROVALSTATUS")
+@Column(name = "EXPENSE_APPROVAL_STATUS")
 private int expenseApprovalStatus;
 
 @Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
 private String rejectedReason;
 
-@Column(name = "ACTIONPERFORMEDBY", columnDefinition = "TEXT default NULL")
+@Column(name = "ACTION_PERFORMEDBY", columnDefinition = "TEXT default NULL")
 private String actionPerformed;
 
 @Column(name = "STATUS")

@@ -21,9 +21,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 *
 * @author  Pradeep Reddy
 *          
-*          |Ver_Number|  |Modifier|   |Comments|
-*          -----------   ----------   ---------- 
-* @version    1.0       Pradeep Reddy  
+*          |Ver_Number|  |Modified By|   |Modified On|  |Comments|
+*          -----------   -------------   -------------  ----------
+* @version     1.0       Pradeep Reddy      New_File      New_File
 * 
 * @since   2017-06-02
 */
