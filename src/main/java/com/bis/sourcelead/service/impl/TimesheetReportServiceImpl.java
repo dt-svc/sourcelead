@@ -477,7 +477,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	    	 }
 	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
 	    	    		 combinedApprovalClass = "class='proj_process'";
-	    	    		  combinedApprStatus = "Submit For Approval";
+	    	    		  combinedApprStatus = "Submitted";
 	    	    	 }
 	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
 	    	    		 combinedApprovalClass = "class='bgGReen'";
