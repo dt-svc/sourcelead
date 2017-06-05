@@ -94,7 +94,7 @@ function candidateResume(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function resMsgFadein() {
+	function resMsgFadeinResumes() {
 		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
@@ -276,7 +276,7 @@ function addResume(candidateId) {
 		             				$("#resMsgDiv").html("Success!! New Resume added");
 		             			}		             			
 						 		candidateResumesList(candidateId);
-						 		resMsgFadein();
+						 		resMsgFadeinResumes();
 		            		 }
 							 /* $("#conMsg").fadeIn(200);
 							 $('#conMsg').delay(2000).fadeOut('slow'); */
@@ -393,10 +393,8 @@ function addResume(candidateId) {
 				result = result + "	<div class='col-lg-12'>";
 				result = result + "		<div class='content-area clearfix'>";
 				result = result + "			<div class='blank-pages'>";
-				result = result
-						+ "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				result = result
-						+ "			        <p>No resumes Found</p>";
+				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+				result = result + "			        <p>No resumes Found</p>";
 				result = result + "			 </div>";
 				result = result + "		</div>";
 				result = result + "	</div>";
@@ -421,54 +419,31 @@ function addResume(candidateId) {
 
 <script>
 function deleteResume(candidateId, resumeId){
-	
-	resumeDeleteMessage(candidateId, resumeId);
-}
-</script>
 
-<script type="text/javascript">
-function resumeDeleteMessage(candidateId, resumeId){
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>You are choosing to delete the resume</p>";
-	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDeleteResume();'></b>";
-	result = result +"	</div>";
-	
-	$("#deleteResumePopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-
-}
-</script>
-
-<script type="text/javascript">
-function cancelDeleteResume(){
-	$("#deleteResumePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-
-<script>
-function deleteSelectedResume(candidateId, resumeId){
 	var sourceleadUrl ='${sourceleadUrl}';
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-		    success: function(data) {
-		    	
-		    	if(data != null && data != 'undefined' && data != ""){
-		    		 $("#deleteResumePopUp").empty();
-	    		 	 $(".project_inn_mask").fadeOut(200);
-    		         candidateResumesList(candidateId);
-    		    
-		    	}
-		    },
-     });
+	var message = confirm("You are choosing to delete the resume");
+	if (message == true) {
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
+   		    success: function(data) {
+   		    	
+   		    	if(data != null && data != 'undefined' && data != ""){
+        			 $("#selector2").removeAttr("style");
+         			 $("#selector2").css({ display: "block" });
+         			 $("#resMsgDiv").html("Resume deleted");
+        			 $("#popUpDivResume").removeClass("edit-details-active");
+        		     candidateResumesList(candidateId);
+        		     resMsgFadeinResumes();
+   		    	}
+   		    },
+	     });
+
+	}
+	
 }
 </script>
+
 
 
 <%-- 

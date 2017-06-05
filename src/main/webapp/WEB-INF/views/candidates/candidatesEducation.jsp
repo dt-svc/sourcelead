@@ -90,7 +90,7 @@ function candidateEducation(candidateId){
 
 <!-- Show success message after form submission script -->
 <script>
-	function eduMsgFadein() {
+	function eduMsgFadeinFunction() {
 		$("#selector4").fadeIn(200);
         $('#selector4').delay(2000).fadeOut('slow');
 	}
@@ -736,7 +736,7 @@ function candidateEducationStore(candidateId){
 				            			$("#selector4").css({ display: "block" });
 			            				$("#eduMsgDiv").html("Success!! New Education added");
 				               			candidateEducationList(candidateId);
-				               			eduMsgFadein();
+				               			eduMsgFadeinFunction();
 				               			qveducationSubmission(candidateId);
 							    	}
 				                 }   
@@ -779,6 +779,31 @@ $('body').on('blur', '#education_form', function() {
 
 
 
+  
+  
+  <script type="text/javascript">
+function deleteEduPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteEduPopUp"></div> 
+
+<script type="text/javascript">
+function removeEducation(candidateEducationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Education</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEduPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
    
 <%-- 
      @author : david.
@@ -787,7 +812,7 @@ $('body').on('blur', '#education_form', function() {
 
       
 <script>
-function removeEducation(candidateEducationId,candidateId){
+function deleteSelectedEducation(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -804,8 +829,9 @@ function removeEducation(candidateEducationId,candidateId){
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
-             			 eduMsgFadein();
+             			eduMsgFadeinFunction();
 			    	}
                } 
         },
@@ -911,7 +937,7 @@ function clearSearchKey() {
 		            			$("#selector4").css({ display: "block" });
 		            			$("#eduMsgDiv").html("Education details updated");
 							candidateEducationList(candidateId)
-							eduMsgFadein();
+							eduMsgFadeinFunction();
 							qveducationSubmission(candidateId);
 						},
 					});

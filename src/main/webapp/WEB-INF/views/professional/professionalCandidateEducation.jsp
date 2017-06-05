@@ -657,10 +657,40 @@ $('body').on('blur', '#education_form', function() {
      @author : david.
      this script is for remove professionalCandidateEducation.
 --%>
+<script>
+function removeEducation(candidateEducationId, candidateId){
+	
+	alertMessageforEdu(candidateEducationId, candidateId);
+}
+</script>
+
+<script type="text/javascript">
+function cancelEdu(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteEmp2PopUp"></div> 
+
+<script type="text/javascript">
+function alertMessageforEdu(candidateEducationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Education</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEdu("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelEdu();'></b>";
+	result = result +"	</div>";
+	$("#deleteEmp2PopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 
       
 <script>
-function removeEducation(candidateEducationId,candidateId){
+function deleteSelectedEdu(candidateEducationId,candidateId){
  var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
@@ -677,6 +707,7 @@ function removeEducation(candidateEducationId,candidateId){
             			 $("#selector4").css({ display: "block" });
             			 $("#eduMsgDiv").html("Education deleted");
              			 $("#popUpDiv").removeClass("edit-details-active");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			 candidateEducationList(candidateId);
              			 eduMsgFadein();
 			    	}

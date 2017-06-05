@@ -182,6 +182,19 @@ public class OrgRelations implements Serializable{
 	@Transient
 	private String paymentTerms;
 	
+	@Transient
+	private String stringDate;
+	
+	public String getStringDate()
+	{
+		return stringDate;
+	}
+
+	public void setStringDate(String stringDate)
+	{
+		this.stringDate = stringDate;
+	}
+
 	public String getLevel() {
 		return level;
 	}
@@ -200,7 +213,6 @@ public class OrgRelations implements Serializable{
 
 	@Transient
 	private Long vendorlocationId;
-	
 	
 	
 	public String getVendorCreateduserName() {
@@ -603,5 +615,5 @@ public class OrgRelations implements Serializable{
 	public void setPaymentTerms(String paymentTerms) {
 		this.paymentTerms = paymentTerms;
 	}
-	
+
 }

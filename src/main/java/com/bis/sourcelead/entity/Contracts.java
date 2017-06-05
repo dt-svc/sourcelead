@@ -196,6 +196,19 @@ public class Contracts {
 	private String parentId;
 	
 	@Transient
+	private Integer reqDocCount;
+	
+	public Integer getReqDocCount()
+	{
+		return reqDocCount;
+	}
+
+	public void setReqDocCount(Integer reqDocCount)
+	{
+		this.reqDocCount = reqDocCount;
+	}
+
+	@Transient
 	List<Contracts> vendorcontractsList;
 	
 	@Transient
