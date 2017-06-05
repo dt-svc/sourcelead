@@ -210,6 +210,9 @@ public class User implements Serializable{
 	@Transient
 	private String noticePeriod;
 	
+	@Transient
+	private String employmentType;
+	
 	
 
 	public Status getPreviousUserState() {
@@ -652,6 +655,16 @@ public class User implements Serializable{
 
 	public void setUserApplicantsBackOutCount(long userApplicantsBackOutCount) {
 		this.userApplicantsBackOutCount = userApplicantsBackOutCount;
+	}
+
+	public String getEmploymentType()
+	{
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType)
+	{
+		this.employmentType = employmentType;
 	}
 
 	

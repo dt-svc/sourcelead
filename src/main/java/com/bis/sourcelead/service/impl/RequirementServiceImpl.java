@@ -283,7 +283,29 @@ public class RequirementServiceImpl implements RequirementService {
 					requirement.setDescription(jsonObj.getString("description"));	
 			}if(jsonObj.has("coolingOff")){
 				requirement.setReqCoolingOffPeriod(jsonObj.getString("coolingOff"));
+			}if(jsonObj.has("industryName")){
+				requirement.setIndustryName(jsonObj.getString("industryName"));
 			}
+			
+			if(jsonObj.has("projectDurationMonths")){
+				requirement.setProjectDurationMonths(jsonObj.getString("projectDurationMonths"));
+			}
+			
+			
+			if(jsonObj.has("projectDurationYears")){
+				requirement.setProjectDurationYears(jsonObj.getString("projectDurationYears"));
+			}
+			
+			
+			if(jsonObj.has("closedDate") && !isNullOrEmpty(jsonObj.getString("closedDate")) && !"".equalsIgnoreCase(jsonObj.getString("closedDate"))){
+				try {
+					   SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					   requirement.setClosedDate(sdf.parse(jsonObj.getString("closedDate")));
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}
+			
 			
 			if(jsonObj.has("noticePeriod")){
 				requirement.setNoticePeriod(jsonObj.getString("noticePeriod"));	
@@ -299,13 +321,20 @@ public class RequirementServiceImpl implements RequirementService {
 				noticePeriod = noticePeriod.replaceAll("\"", "");
 		  	    requirement.setNoticePeriod(noticePeriod);
 			}
-			
+			if(jsonObj.has("travelAllowance")){
+				requirement.setTravelAllowance(jsonObj.getString("travelAllowance"));
+			}
 			if(jsonObj.has("currencyCode")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("currencyCode"))){
 					requirement.setCurrencyCode(jsonObj.getString("currencyCode"));
 				}
+				
+			}
 			
-			}if(jsonObj.has("priority")){
+				if(jsonObj.has("maxRate")){
+					requirement.setMaxRate(jsonObj.getString("maxRate"));
+			}
+			if(jsonObj.has("priority")){
 				if(!"".equalsIgnoreCase(jsonObj.getString("priority"))){
 					requirement.setPriority(jsonObj.getString("priority"));
 				}
@@ -828,6 +857,13 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 		
+private boolean isNullOrEmpty(String string)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 private void updatedRequirementMailToAssignedMembers(User loginUser, User assUser, Requirement requirement,
 			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
 	
@@ -2607,6 +2643,15 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 					reqTemplate.setRateType(jsonObj.getString("rateType"));
 				} 
 				
+				if(jsonObj.has("industryName") && !"".equalsIgnoreCase(jsonObj.getString("industryName"))){
+					reqTemplate.setIndustryName(jsonObj.getString("industryName"));
+				}
+					if(jsonObj.has("maxRate") && !"".equalsIgnoreCase(jsonObj.getString("maxRate"))){
+					reqTemplate.setMaxRate(jsonObj.getString("maxRate"));
+				}
+					if(jsonObj.has("travelAllowance") && !"".equalsIgnoreCase(jsonObj.getString("travelAllowance"))){
+						reqTemplate.setTravelAllowance(jsonObj.getString("travelAllowance"));
+					}
 				if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
 					reqTemplate.setDescription(jsonObj.getString("description"));
 				}
@@ -2732,7 +2777,10 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getAllRequirementSkillsByRequirementI(requirementId);
 	}
 	
-
+	@Override
+	public List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception {
+		return requirementDao.getAllRequirementIndustryByRequirementId(requirementId);
+	}
 /*	@Override
 	public List<String> getAllSkillsBySkillCategory() throws Exception{
 		return lookUpDataService.getAllSkillsBySkillCategory();

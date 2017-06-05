@@ -6,6 +6,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,5 +136,11 @@ public class ConversionUtil {
 			countryCurrencyCode =  Constants.CURRENCYCODE_EUR;
 		}
       return countryCurrencyCode;
+	}
+	
+	public Date getDateFromString(String dateStr) throws ParseException{
+		String pattern = "dd-MM-yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.parse(dateStr);
 	}
 }

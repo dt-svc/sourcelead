@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
@@ -93,7 +94,8 @@ public class ProfessionalRequirementsController {
 	
 	 @RequestMapping(value = "/register")
 	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
-	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
+	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+	 			@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
 	 			ModelAndView model = new ModelAndView();
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
 	 			
@@ -109,6 +111,10 @@ public class ProfessionalRequirementsController {
 				
 				if(!isNullOrEmpty(requirementUUID)){
 					model.addObject("requirementUUID", requirementUUID);
+				}
+				
+				if(!isNullOrEmpty(referUUID)){
+					model.addObject("referUUID", referUUID);
 				}
 	 			
 	 			if(!isNullOrEmpty(contactUUID)){
@@ -138,13 +144,18 @@ public class ProfessionalRequirementsController {
 	 
 	 @RequestMapping(value = "/resetloginCredentials")
 	 	public ModelAndView resetloginCredentials(HttpServletRequest request,
-	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID) {
+	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+	 			@RequestParam(value = "referUUID", required = false) String referUUID) {
 	 			ModelAndView model = new ModelAndView();
 	 			model.setViewName("resetloginCredentials");
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
 	 			
 	 			if(!isNullOrEmpty(requirementUUID)){
 	 				model.addObject("requirementUUID", requirementUUID);
+	 			}
+	 			
+	 			if(!isNullOrEmpty(referUUID)){
+	 				model.addObject("referUUID", referUUID);
 	 			}
 	 			
 	 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg");
@@ -179,7 +190,8 @@ public class ProfessionalRequirementsController {
 	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
-		public ModelAndView professionalProfile(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false) String  requirementUUID) throws Exception {
+		public ModelAndView professionalProfile(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
+				@RequestParam(value="referUUID", required=false) String  referUUID) throws Exception {
 		    
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -225,7 +237,15 @@ public class ProfessionalRequirementsController {
 				    			model.addObject("publicSubmissionId", submission.getId());
 				    		}
 				    		model.addObject("publicRequirementId", requirement.getId());
+				    		model.addObject("publicRequirementTitle", requirement.getJobTitle());
 				    	}
+			    }
+			    
+			    if(!isNullOrEmpty(referUUID)){
+			    	RequirementRefer refer = requirementReferService.getRequirementReferByReferUUID(referUUID);
+			    	if(null != refer){
+			    		model.addObject("publicReferId", refer.getId());
+			    	}
 			    }
 				
 				model.setViewName("professional/professionalRequirements");
@@ -326,13 +346,15 @@ public class ProfessionalRequirementsController {
 	 
 	 @RequestMapping(value = "/referRequirementToProfessional")
 		public ModelAndView referRequirementToProfessional(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-				@RequestParam(value = "contactUUID", required = false) String contactUUID) {
+				@RequestParam(value = "contactUUID", required = false) String contactUUID,
+				@RequestParam(value = "referUUID", required = false) String referUUID) {
 			
 		 ModelAndView model = new ModelAndView();
 		 model.setViewName("professional/requirementDetailsSummary");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("contactUUID", contactUUID);
 		 model.addObject("requirementUUID", requirementUUID);
+		 model.addObject("referUUID", referUUID);
 		 return model;
 			
 		}
