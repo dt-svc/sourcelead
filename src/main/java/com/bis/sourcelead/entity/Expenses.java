@@ -32,7 +32,7 @@ private static final long serialVersionUID = 1L;
     private OrgLocations orgLocationId;
 	
 	@ManyToOne
-	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
+	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	private ProjectMembers projectMembers;
 	
 	@Column(name = "EXPENSE_ID")

@@ -54,8 +54,16 @@ public class RequirementHelper {
 			requirementIndex.setJobTitle(requirement.getJobTitle());
 			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setOtherJobType(requirement.getOtherJobType());
-			
+			requirementIndex.setIndustryName(requirement.getIndustryName());
+			requirementIndex.setTravelAllownace(requirement.getTravelAllowance());
 			requirementIndex.setReqCoolingOffPeriod(requirement.getReqCoolingOffPeriod());
+			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
+			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
+			
+			
+			if (null != requirement.getMaxRate() && !"".equals(requirement.getMaxRate())) {
+				requirementIndex.setMaxRate(Float.parseFloat(requirement.getMaxRate()));
+			}
 			
 			if (null != requirement.getRate() && !"".equals(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
@@ -76,9 +84,12 @@ public class RequirementHelper {
 			requirementIndex.setState(requirement.getState());
 			requirementIndex.setCity(requirement.getCity());
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy());
+			
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
 			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 String reqclosedDate = dateFormat.format(requirement.getClosedDate());
+				requirementIndex.setClosedDate(reqclosedDate);
 			 String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
 			requirementIndex.setCreatedDate(reqcreatedDate);
 			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());

@@ -27,9 +27,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 * @since   2017-06-02
 */
 
+/**
+ * @author BIS101
+ *
+ */
 @Entity
-@Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntries")
+@Table(name = "EXPENSES_APPROVER_HIERARCHY", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesApproverHierarchy")
 public class ExpensesApproverHierarchy implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -39,18 +43,18 @@ private static final long serialVersionUID = 1L;
 private Long id;
 
 @ManyToOne
-@JoinColumn(name="PROJECT_APPROVER_HIERARCHY", nullable=false )        
-private Expenses hierarchyId;
+@JoinColumn(name="HIERARCHY_ID", nullable=false )        
+private ProjectApproverHierarchy hierarchyId;
 
 @ManyToOne
-@JoinColumn(name="EXPENSES", nullable=false )        
+@JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
 
 @Column(name = "EXPENSE_STATUS")
-private int expenseStatus;
+private String expenseStatus;
 
 @Column(name = "EXPENSE_APPROVAL_STATUS")
-private int expenseApprovalStatus;
+private String expenseApprovalStatus;
 
 @Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
 private String rejectedReason;
@@ -73,101 +77,125 @@ private Date updatedDate;
 @Column(name = "UPDATED_BY")
 private String updatedBy;
 
-public Long getId() {
+public Long getId()
+{
 	return id;
 }
 
-public void setId(Long id) {
+public void setId(Long id)
+{
 	this.id = id;
 }
 
-public Expenses getHierarchyId() {
+public ProjectApproverHierarchy getHierarchyId()
+{
 	return hierarchyId;
 }
 
-public void setHierarchyId(Expenses hierarchyId) {
+public void setHierarchyId(ProjectApproverHierarchy hierarchyId)
+{
 	this.hierarchyId = hierarchyId;
 }
 
-public Expenses getExpenseId() {
+public Expenses getExpenseId()
+{
 	return expenseId;
 }
 
-public void setExpenseId(Expenses expenseId) {
+public void setExpenseId(Expenses expenseId)
+{
 	this.expenseId = expenseId;
 }
 
-public int getExpenseStatus() {
+public String getExpenseStatus()
+{
 	return expenseStatus;
 }
 
-public void setExpenseStatus(int expenseStatus) {
+public void setExpenseStatus(String expenseStatus)
+{
 	this.expenseStatus = expenseStatus;
 }
 
-public int getExpenseApprovalStatus() {
+public String getExpenseApprovalStatus()
+{
 	return expenseApprovalStatus;
 }
 
-public void setExpenseApprovalStatus(int expenseApprovalStatus) {
+public void setExpenseApprovalStatus(String expenseApprovalStatus)
+{
 	this.expenseApprovalStatus = expenseApprovalStatus;
 }
 
-public String getRejectedReason() {
+public String getRejectedReason()
+{
 	return rejectedReason;
 }
 
-public void setRejectedReason(String rejectedReason) {
+public void setRejectedReason(String rejectedReason)
+{
 	this.rejectedReason = rejectedReason;
 }
 
-public String getActionPerformed() {
+public String getActionPerformed()
+{
 	return actionPerformed;
 }
 
-public void setActionPerformed(String actionPerformed) {
+public void setActionPerformed(String actionPerformed)
+{
 	this.actionPerformed = actionPerformed;
 }
 
-public String getStatus() {
+public String getStatus()
+{
 	return status;
 }
 
-public void setStatus(String status) {
+public void setStatus(String status)
+{
 	this.status = status;
 }
 
-public Date getCreatedDate() {
+public Date getCreatedDate()
+{
 	return createdDate;
 }
 
-public void setCreatedDate(Date createdDate) {
+public void setCreatedDate(Date createdDate)
+{
 	this.createdDate = createdDate;
 }
 
-public String getCreatedBy() {
+public String getCreatedBy()
+{
 	return createdBy;
 }
 
-public void setCreatedBy(String createdBy) {
+public void setCreatedBy(String createdBy)
+{
 	this.createdBy = createdBy;
 }
 
-public Date getUpdatedDate() {
+public Date getUpdatedDate()
+{
 	return updatedDate;
 }
 
-public void setUpdatedDate(Date updatedDate) {
+public void setUpdatedDate(Date updatedDate)
+{
 	this.updatedDate = updatedDate;
 }
 
-public String getUpdatedBy() {
+public String getUpdatedBy()
+{
 	return updatedBy;
 }
 
-public void setUpdatedBy(String updatedBy) {
+public void setUpdatedBy(String updatedBy)
+{
 	this.updatedBy = updatedBy;
 }
 
-}
-	
+
+}	

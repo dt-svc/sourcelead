@@ -16,7 +16,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "EXPENSES_CATEGORY", catalog = "sourcelead")
+@Table(name = "EXPENSE_CATEGORY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesCategory")
 public class ExpensesCategory implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -36,8 +36,8 @@ public class ExpensesCategory implements Serializable {
 	@Column(name = "CATEGORY_TYPE")
 	private String categoryType;
 	
-	@Column(name = "AMOUNT")
-	private float AMOUNT;
+	@Column(name = "ALLOWED_AMOUNT")
+	private float allowedAmount;
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -88,13 +88,12 @@ public class ExpensesCategory implements Serializable {
 	public void setCategoryType(String categoryType) {
 		this.categoryType = categoryType;
 	}
-
-	public float getAMOUNT() {
-		return AMOUNT;
+	public float getAllowedAmount() {
+		return allowedAmount;
 	}
 
-	public void setAMOUNT(float aMOUNT) {
-		AMOUNT = aMOUNT;
+	public void setAllowedAmount(float allowedAmount) {
+		this.allowedAmount = allowedAmount;
 	}
 
 	public String getDescription() {

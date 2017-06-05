@@ -397,4 +397,22 @@ public class RequirementReferDaoImpl implements RequirementReferDao {
 		return referList;
 	
 	}
+
+
+	@Override
+	@Transactional
+	public RequirementRefer getRequirementReferByReferUUID(String referUUID) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementRefer> requirementRefer = new ArrayList<RequirementRefer>();
+		logger.debug("getRequirementReferByReferUUID start");
+		requirementRefer = session.createQuery("from RequirementRefer refer left join fetch refer.referFromUser user left join fetch refer.requirementId requirement "
+				+ "where refer.referUUID = :referUUID" ).setString("referUUID", referUUID).setCacheable(true).list();
+		logger.debug("getRequirementReferByReferUUID end");
+		if (requirementRefer.size() > 0) {
+			return requirementRefer.get(0);
+		} else {
+			return null;
+		}
+	}
 }

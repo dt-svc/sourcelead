@@ -78,8 +78,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE")
 	private String rate;
 	
+	@Column(name = "MAX_RATE")
+	private String maxRate;
+	
 	@Column(name = "RATE_TYPE") 
 	private String rateType;
+	
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -121,6 +125,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "REQUIREMENT_UUID")
 	private String requirementUUID;
 	
+	@Column(name = "INDUSTRY_NAME")
+	private String industryName;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
@@ -137,6 +144,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
+	
+
+	@Column(name = "TRAVEL_ALLOWANCE")
+	private String travelAllowance;
 	
 	@Column(name = "POSTED_ORG_NAME")
 	private String postedOrgName;
@@ -225,11 +236,25 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@Column(name = "PROJECT_DURATION_YEARS")
+	private String projectDurationYears;
+	
+	@Column(name = "PROJECT_DURATION_MONTHS")
+	private String projectDurationMonths;
+	
+	
+	@Column(name = "REQUIRMENT_CLOSED_DATE")
+	private Date closedDate;
+	
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
+	
+	@Transient
+	private String closedDateStringFormat;
 	
 	@Transient
 	private String clientSubmissionTemplate;
@@ -285,7 +310,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String[] reqSkillsList;
 	
 	@Transient
+	private String reqIndustryList;
+	
+	@Transient
 	private String reqSkillsListString;
+	
+	@Transient
+	private String industrySavedName;
 	
 	@Transient
 	private ArrayList<String> approverNames;
@@ -1260,6 +1291,94 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.noticePeriod = noticePeriod;
 	}
 
+	public String getIndustryName()
+	{
+		return industryName;
+	}
 
-	
+	public void setIndustryName(String industryName)
+	{
+		this.industryName = industryName;
+	}
+
+	public String getMaxRate()
+	{
+		return maxRate;
+	}
+
+	public void setMaxRate(String maxRate)
+	{
+		this.maxRate = maxRate;
+	}
+
+	public String getIndustrySavedName()
+	{
+		return industrySavedName;
+	}
+
+	public void setIndustrySavedName(String industrySavedName)
+	{
+		this.industrySavedName = industrySavedName;
+	}
+
+	public String getReqIndustryList()
+	{
+		return reqIndustryList;
+	}
+
+	public void setReqIndustryList(String reqIndustryList)
+	{
+		this.reqIndustryList = reqIndustryList;
+	}
+
+	public String getTravelAllowance()
+	{
+		return travelAllowance;
+	}
+
+	public void setTravelAllowance(String travelAllowance)
+	{
+		this.travelAllowance = travelAllowance;
+	}
+
+	public String getProjectDurationYears()
+	{
+		return projectDurationYears;
+	}
+
+	public void setProjectDurationYears(String projectDurationYears)
+	{
+		this.projectDurationYears = projectDurationYears;
+	}
+
+	public String getProjectDurationMonths()
+	{
+		return projectDurationMonths;
+	}
+
+	public void setProjectDurationMonths(String projectDurationMonths)
+	{
+		this.projectDurationMonths = projectDurationMonths;
+	}
+
+	public Date getClosedDate()
+	{
+		return closedDate;
+	}
+
+	public void setClosedDate(Date closedDate)
+	{
+		this.closedDate = closedDate;
+	}
+
+	public String getClosedDateStringFormat()
+	{
+		return closedDateStringFormat;
+	}
+
+	public void setClosedDateStringFormat(String closedDateStringFormat)
+	{
+		this.closedDateStringFormat = closedDateStringFormat;
+	}
+
 }

@@ -29,8 +29,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 */
 
 @Entity
-@Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntries")
+@Table(name = "EXPENSES_ENTRIES_DOCUMENTS", catalog = "sourcelead")
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntriesDocuments")
 public class ExpensesEntryDocuments implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ private static final long serialVersionUID = 1L;
 private Long id;
 
 @ManyToOne
-@JoinColumn(name="EXPENSES_ENTRIES", nullable=false )        
+@JoinColumn(name="EXPENSES_ENTRIES_ID", nullable=false )        
 private Expenses expensesEntriesId;
 
 @Column(name = "DOC_FILE",columnDefinition="mediumblob")
