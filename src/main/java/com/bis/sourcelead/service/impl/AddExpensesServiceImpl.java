@@ -72,7 +72,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	expenses.setUpdatedBy(loginUser.getUserCode());
 	expenses.setCreatedDate(CommonUtil.currentDate());
 	expenses.setUpdatedDate(CommonUtil.currentDate());
-	
+	expenses.setStatus(Constants.EXPENSES_STATUS);
 	addExpensesDao.storeAddExpensesData(expenses);
 }
 
