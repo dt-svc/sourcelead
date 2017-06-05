@@ -104,14 +104,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		
 		String query =null;
-		List<Invoice> invoiceList = null;
-		if(null != startDateUTC && null != endDateUTC ){
 		 query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC"; 
-		 invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
-		}else{
-		 query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" ";
-		 invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
-		}
+		 List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return invoiceList;
 	}
 	
