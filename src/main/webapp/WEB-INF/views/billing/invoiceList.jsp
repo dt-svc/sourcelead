@@ -1267,12 +1267,13 @@ function generateAutomaticInvoice(){
 <script>
 function mergeInvoice(parentTotalAmount){
 	var masterInvoiceId = $('#masterInvoiceId').val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
 	var checkVal = linkRadio.filter(':checked').val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var total = $('#linkedReceivableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
-	showDiffAmountPopup(calculatedAmount);
+	showDiffAmountPopup(calculatedAmount,currencyCode);
 	
 	 $.ajax({
    	 type: "POST",
@@ -1286,11 +1287,11 @@ function mergeInvoice(parentTotalAmount){
 </script>
 
 <script>
-function showDiffAmountPopup(calculatedAmount){
+function showDiffAmountPopup(calculatedAmount,currencyCode){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Variation Amount  = "+calculatedAmount+"</p>";
+	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
