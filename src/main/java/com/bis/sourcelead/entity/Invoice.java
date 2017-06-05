@@ -70,8 +70,6 @@ public class Invoice {
     @JoinColumn(name="PARENT_INVOICE_ID")        
 	private Invoice parentInvoiceId;
 	
-	
-	
 	@Column(name = "LINK_INVOICE_REF_INVOICE_ID")
 	private String linkInvoiceRefInvoiceId;
 	
