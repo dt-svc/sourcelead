@@ -455,7 +455,7 @@ function flushDate(){
               result = result +'<span class="label label-primary">Hired</span>';
               
               result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
-              result = result +'<a href="#"><span class="count">0</span></a>';
+              result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
               result = result +'</div>';
@@ -578,7 +578,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<span class="label label-primary">Hired</span>';
               
               result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
-              result = result +'<a href="#"><span class="count">0</span></a>';
+              result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
               result = result +'</div>';

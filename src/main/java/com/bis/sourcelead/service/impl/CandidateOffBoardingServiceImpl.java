@@ -115,6 +115,10 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 			candidateOffBoarding.setRole(jsonObj.getString("role"));
 		}
 		
+		if(jsonObj.has("employmentType") && !isNullOrEmpty(jsonObj.getString("employmentType"))){
+			candidateOffBoarding.setEmploymentType(jsonObj.getString("employmentType"));
+		}
+		
 		
 		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
 			candidateOffBoarding.setEndDate(commonUtil.getDateFormat(jsonObj.getString("endDate")));

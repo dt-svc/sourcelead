@@ -401,7 +401,9 @@ public class RequirementListRestController {
 			if(requirementId !=null && !requirementId.isEmpty()){
 				Requirement requirement = requirementService.getRequirementByRequirementId(Long.valueOf(requirementId));
 				User intiatorUser = userService.getUserByUserCode(requirement.getCreatedBy());
-
+				if(null != requirement.getClosedDate() ){
+				requirement.setClosedDateStringFormat(Constants.DMY.format(requirement.getClosedDate()));
+				}
 				// to get the RequirementApproverHierarchy to set the Status
 				    Boolean isLoginUserAsApprover = false;
 					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(Long.parseLong(requirementId), user.getId());

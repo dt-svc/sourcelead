@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Team;
@@ -159,7 +160,9 @@ public class LoginSessionController {
 	}
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
-	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication) throws Exception {
+	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
+			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response) throws Exception {
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
@@ -213,6 +216,8 @@ public class LoginSessionController {
 				}
 			}
 			
+			userRole.setNewlyLoginUser(Constants.NO);
+			userRoleService.addUserRole(userRole);
 			
 			setLoginSession(request, authentication,user,userRole);
 			
@@ -302,14 +307,39 @@ public class LoginSessionController {
 				e.printStackTrace();
 			}
 			
+						
 			Candidate candidate = null;
 			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
-				model.setViewName("professional/professionalDashboard");
+				StringBuilder redirectUrl = new StringBuilder();
+				
+				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+				}
+				else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+				}
+				else{
+					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
+						response.sendRedirect(redirectUrl.append("/sourcelead/professionalPraseCandidate").toString());
+					}else{
+						model.setViewName("professional/professionalDashboard");
+					}
+				}
+				
 			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
-				model.setViewName("recruiter/recruiterDashboard");
+				
+				if(!isNullOrEmpty(requirementUUID)){
+					StringBuilder redirectUrl = new StringBuilder();
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+				}else{
+					model.setViewName("recruiter/recruiterDashboard");
+				}
 			}
+			
+			userRole.setNewlyLoginUser(Constants.NO);
+			userRoleService.addUserRole(userRole);
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
@@ -318,6 +348,8 @@ public class LoginSessionController {
 			
 			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			model.addObject("timezone",timezone.getTimeZoneId());
+			
+			
 		}
 	   
 		return model;
@@ -344,6 +376,9 @@ public class LoginSessionController {
 			Integer associatesTabsCount = 0;
 			Integer billingTabsCount = 0;
 			Integer expensesTabCount = 0;
+			
+			userRole.setNewlyLoginUser(Constants.NO);
+			userRoleService.addUserRole(userRole);
 			
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());

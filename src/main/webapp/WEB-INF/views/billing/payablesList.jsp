@@ -192,6 +192,7 @@ font-size: 13px; width: 75px;
                       </li>
                       <li>
                       <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
+                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       </li>  
                       <div class="clearfix"></div>
                     </ul>
@@ -377,7 +378,7 @@ function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
 	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && ((event.which) < 48 || (event.which) > 57)) {
 	                event.preventDefault();
 	            }
 	        });
@@ -596,7 +597,11 @@ function getPayableInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
 				result = result +'         </td> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';
+				if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
+					result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
+				}else{
+					result = result +'<div class="tbldata-dotdot-vsm" title="">--</div>  ';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
@@ -1305,6 +1310,19 @@ function cancel(){
 function cancelExport(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&contractType=vendorSow", 
+             success: function(data) {
+        },
+    });  
 }
 </script>
 

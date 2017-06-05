@@ -49,7 +49,7 @@ public interface InvoiceService {
 
 	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception;
 
-	Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user)throws Exception;
+	Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocationId, String invoiceType);
 
