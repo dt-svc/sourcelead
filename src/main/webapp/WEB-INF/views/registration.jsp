@@ -723,6 +723,7 @@ var validationSettings = {
          		var sourceleadUrl ='${sourceleadUrl}';
          		var contactUUID = '${contactUUID}';
          		var requirementUUID = '${requirementUUID}';
+         		var referUUID = '${referUUID}';
          		
          		var wantedToBeIds = [];
 	       		$("input[name='wantedtobeList']:checked").each( function (i) {
@@ -743,8 +744,9 @@ var validationSettings = {
                 	  url: sourceleadUrl+"/registerAsProfessional?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&contactUUID="+contactUUID,		  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
-			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID);  
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
+			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
 			        		}else{
 			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
 			        		}

@@ -72,9 +72,9 @@ window.onload = function () {
 		removeReferPopUp();
 		
 		if('${publicSubmissionId}' != null && '${publicSubmissionId}' != '' && '${publicSubmissionId}' != 'undefined'){
-			getSubmissionDetailsSideBar('${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
+			getSubmissionDetailsSideBar('${publicRequirementTitle}','${publicSubmissionId}','${SourceLeadWeb_candidateId}','${publicRequirementId}')
 		}else{
-			applyToJob('${publicRequirementId}');
+			applyToJob('${publicRequirementTitle}','${publicRequirementId}','${publicReferId}');
 		}
 	}else{
 		requirementsList(0);
@@ -90,7 +90,14 @@ window.onload = function () {
         <h2>Requirements<span class="select-fild"> </h2>  
         <div class="clearfix"></div>    
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+           <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           </c:if>
+           
+           <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+           <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           </c:if>
+          
           <div class="clearfix"></div> 
          <div class="reportsCount req_Crowd clearfix">
           <ul>
@@ -790,17 +797,17 @@ function requirementsList(offset){
 				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'N')){
 				 					
 				 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-				 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
+				 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Apply</a>';
 				 					}
 				 					
 				 					if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
-					 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Submit</a>';
+					 					  result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+','+requirements.referId+');"  class="jobApply">Submit</a>';
 				 					 }
 				 				}
 				 				
 				 				if((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe") && requirements.isJobApplied == 'Y'){
 				 					
-				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
+				 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar(\''+requirements.jobTitle+'\','+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 				 					
 				 				}
 				 				
@@ -841,7 +848,7 @@ function requirementsList(offset){
 			 					result = result +'<div class="appliedWrap">';
 			 					
 			 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-			 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply"><i class="fa fa-check-circle"></i></a>';
+			 						result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar(\''+requirements.jobTitle+'\','+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply"><i class="fa fa-check-circle"></i></a>';
 			 					}else{
 			 						result = result +'<i class="fa fa-check-circle"></i>';
 			 					}
@@ -1093,16 +1100,16 @@ function searchRequirement(offset){
 										 				
 										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
 										 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Apply</a>';
+										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+');"  class="jobApply">Apply</a>';
 										 					}
 										 					
 										 					if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
-											 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob('+requirements.requirementId+');"  class="jobApply">Submit</a>';
+											 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+');"  class="jobApply">Submit</a>';
 										 					}
 										 				}
 										 				
 										 				if(requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'Y'){
-										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar('+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
+										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();getSubmissionDetailsSideBar(\''+requirements.jobTitle+'\','+requirements.submissionId+','+candidateId+','+requirements.requirementId+');" class="jobApply">Applied</a>';
 										 				}
 										 				
 										 				
