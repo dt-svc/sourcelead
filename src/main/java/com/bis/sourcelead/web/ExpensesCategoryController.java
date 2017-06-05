@@ -9,15 +9,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.ExpensesCategoryService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -34,7 +35,10 @@ public class ExpensesCategoryController {
 	CommonUtil commonUtil;
 	
 	@Autowired
-	private ExpensesCategoryService ExpensesCategoryService;
+	private ExpensesCategoryService expensesCategoryService;
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
 	
 	
 	
@@ -44,14 +48,21 @@ public class ExpensesCategoryController {
 	
 	
 	@RequestMapping(value = "/expenseCategory")
- 	public ModelAndView expenseCategory(HttpServletRequest request) {
+ 	public ModelAndView expenseCategory(HttpServletRequest request) throws Exception {
 		
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    
 		    ModelAndView model = new ModelAndView();
 		    commonUtil.highLightMenu(Constants.OrgSettings, request);
- 			//model.setViewName("expenses/expenseCategory");
- 			model.setViewName("expenses/expenseCategory");
+		    
+		    List<LookUpData> lookUpExpCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+		    model.addObject("lookUpExpCatList", lookUpExpCatList);
+		    
+		    
+		    List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLocations.getId());
+		    model.addObject("expensesCategoryList", expensesCategoryList);
+		    
+		    model.setViewName("expenses/expenseCategory");
  			model.addObject("sourceleadUrl", sourceleadUrl);
  			return model;
  	}
