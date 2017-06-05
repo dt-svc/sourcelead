@@ -41,8 +41,6 @@ public List<ProjectMembers> getAllProjectsForExpenses(OrgLocations orgLoc,User l
 	
 	}
 
-
-
 @Override
 public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc) throws NumberFormatException, Exception {
 	Expenses expenses = new Expenses();
@@ -53,7 +51,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		expenses.setPurpose(jsonObj.getString("expensePurpose"));
 	 }
 	if (jsonObj.has("expenseProject") && !(jsonObj.getString("expenseProject").isEmpty())){
-		ProjectMembers projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("expenseProject")));
+		ProjectMembers projMembers = projectMembersService.getProjectMemberByUserIdAndProjectId(loginUser.getId(), Long.parseLong(jsonObj.getString("expenseProject")));
 		expenses.setProjectMembers(projMembers);
 	}
 	if (jsonObj.has("clientNameExpense") && !(jsonObj.getString("clientNameExpense").isEmpty())){
@@ -72,7 +70,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	expenses.setUpdatedBy(loginUser.getUserCode());
 	expenses.setCreatedDate(CommonUtil.currentDate());
 	expenses.setUpdatedDate(CommonUtil.currentDate());
-	
+	expenses.setStatus(Constants.EXPENSES_STATUS);
 	addExpensesDao.storeAddExpensesData(expenses);
 }
 
