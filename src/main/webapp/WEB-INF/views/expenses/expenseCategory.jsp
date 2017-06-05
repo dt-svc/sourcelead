@@ -23,282 +23,371 @@
 
 <div class="project_wrap">
 
-<div class="project_tabs_inn_head">
-  <a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Category</a> 
-
-  <!-- Popup Div -->
-  <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
-	<div class="form-horizontal clearfix">
-  
-	  <div class="clearfix mb10">
-		<div class="col-md-12">
-		  <input type="text" class="form-control input-sm" value="" placeholder="Category Name *">
-		</div>
-	  </div>
-	  <div class="clearfix mb10">
-		<div class="col-md-12">
-			<div class="btn-group btn_Block pull-left">
-			  <button type="button" class="btn btn-sm btn-primary active" id="percentageBtn" value="percentage" onclick="getRewardType('Percentage')">%</button>
-			  <button type="button" class="btn btn-sm btn-primary" id="flatBtn" value="flat" onclick="getRewardType('Flat')">Flat</button>
-			  <input name="rewardType" id="rewardType" value="Percentage" type="hidden">
-			</div>
-		  <input type="text" class="form-control input-sm ExpAmFild" value="" placeholder="Amount *">
-			<div class="clearfix"></div>
-		</div>
-	  </div>	  
-	  <div class="clearfix mb10">
-		<div class="col-md-12">
-		  <textarea rows="2" placeholder="Description" class="form-control"></textarea>
-		</div>
-	  </div>
-	  <div class="clearfix mr">
-		<button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
-	  </div>
-	</div>
-  </div>
-  <!-- Popup Div --> 
-
-</div>
-    <div class="project_wrap_table">
-    	<table>
-        	<tbody>
-			</tbody><thead>
-            	<tr>
-                    <th>Category Name</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                    <th>Descrption</th>
-                    <th>Action</th>
-                </tr>
-			</thead>	
-                <tbody>
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Flat</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Flat</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Flat</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Flat</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Percentage</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Percentage</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr>
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Flat</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Percentage</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Flat</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr> 
-                <tr>
-                	<td><div>Category 1</div></td>
-                    <td><div>5000</div></td>
-                    <td><div>Percentage</div></td>
-                    <td><div>Descrption Descrption</div></td>
-                    <td>
-                    	<div class="tbldata-dotdot_50">
-                   		 	<i class="fa fa-pencil-square-o"></i>
-                    		 <i class="glyphicon glyphicon-trash"></i>
-						</div>
-                    </td>
-                </tr>	
-            </tbody>
-        </table>
-	</div>
-	
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
+	<div class="timesheet_head candidateHead">
+	  <ul class="mt10">
+	  <li><a href="javascript:void(0)" class="addcon-pop" onclick="addExpenseCategory();"> <i class="glyphicon glyphicon-plus"></i>Add Category</a> 
+	  </li></ul>
 	<div class="clearfix"></div>
-</nav>	
-    
-	
-	
-</div>
-		
-      </div>  
-	
-  <!--   Error Message   -->
-  <div class="vendor_wrap_mask"></div>
-  <div class="vendor_error">
-    <textarea placeholder="Enter message"></textarea>
-    <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-  
-  <!--   Error Message   --> 
+	</div>
 
+	 <div class="clients_wrap_table datatable_scroll mt10">
+		 <div id="popUpDiv" class="edit-details col-md-4"> </div>
+		 <div id="expenseCategoryList"></div>
+	 </div>	  
 		
-      </section>
+    </div>  
+	</div>
+  
+</section>
       <!-- Content Area Ends--> 
 
-<script type="text/javascript">
-			var config = {
+
+<script>
+ window.onload = function() {
+	 expenseCategoryList();
+};
+</script>
+
+<script>
+function addExpenseCategory() {	
+	var result = "";
+	result = result  +'<!-- Popup Div -->';
+	result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result  +'   ';
+	result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
+	result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation=" required">';
+	
+						       <c:forEach var="expCat" items="${lookUpExpCatList}">
+    result = result  +'	            <option value="" disabled selected></option>';										 
+	result = result + ' 			<option value="${expCat.name}">${expCat.name}</option>';
+	                	       </c:forEach>  
+    result = result + '		</select>';
+    
+	result = result  +'</div>';
+	result = result  +'';
+	result = result  +'<div class="clearfix mb10">';
+	result = result  +'<div class="col-md-5">';
+	result = result  +'<div class="btn-group btn_Block pull-left">';
+	result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType("Percentage")">%</button>';
+	result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType("Flat")">Flat</button>';
+	result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>';
+	result = result  +' </div>';
+	/* result = result  +'  <input type="text" class="form-control input-sm ExpAmFild" id="allowedAmount" name="allowedAmount" value="" placeholder="Amount *">';
+	result = result  +' </div>'; */
+	result = result  +'</div>';
+	
+	result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
+	result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
+	result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">';
+	result = result  +' <i class="fa fa-percent"></i>'; 
+	result = result  +' </div>';
+	result = result  +' </div>';
+	
+	
+	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
+	result = result  +'<div class="row flat">';
+	result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
+	result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">';
+	result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i> </div>';
+	result = result  +' </div>';
+	result = result  +' </div>';
+	result = result  +' </div>';
+	result = result  +' </div>';
+	
+	result = result  +' <div class="clearfix"></div>';	
+	
+	result = result  +'<div class="clearfix mb10">';
+	result = result  +'<div class="col-md-12 mt">';
+	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5"></textarea>';
+	result = result  +' </div>';
+	result = result  +' </div>';
+	result = result  +'';
+	result = result  +'<div class="clearfix mr">';
+    result = result +'<input type="button" value="Add" name="btnAddExpCat" id="save_button" class="btn btn-sm btn-primary pull-right" onclick="storeExpensesCategory();"/>'; 
+	result = result  +' </div> ';
+	result = result  +' </div> ';
+	
+	result = result  +' </form>';
+	$("#popUpDiv").empty();
+	$("#popUpDiv").append(result);
+	
+	$(".edit-details").toggleClass("edit-details-active");
+	 $(".close-div").click(function(){ 
+		 $(this).parent("div.edit-details").removeClass("edit-details-active");
+		 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+		 e.stopPropagation();
+	 });
+	 
+	 <%-- Expense Category Autocomplete Scripts Starts Here --%>
+	 var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
+	 
+	 
+	//Adding Customized Expense Category to the list
+     var selectone, chosenone;
+     selectone = $("#expensesName");
+     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Category:' });
+     chosenone = selectone.data('chosen');
+     chosenone.search_field.on('keyup', function(e1)
+	    {
+	    	var newExpensesName = this.value.replace(",","");
+	        if ((e1.which == 13 || e1.which == 188) && (newExpensesName != null  && newExpensesName != '' && newExpensesName != 'undefined'))
+	        {
+	        	var par = this.parent;
+	            var option = $("<option>").val(newExpensesName).text(newExpensesName);
+	            selectone.append(option);
+	            selectone.find(option).prop('selected', true);
+	          //to doesn't allow duplicates
+             $("#expensesName option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+             //end
+     		$("#expensesName").trigger("chosen:updated");
+     		
+	        }
+	    }); 
+	    //Adding Expense Category to the list
+	 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
 			$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
+				})
+		<%-- Expense Category Autocomplete Scripts Ends Here --%>
+	}
+</script>
 
-           });
-</script>     
+<script>
+function closePopup(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
 
 
-	<script>
-		// Error pop 
-		$(document).ready(function() {
-		    $(".glyphicon-trash").click(function(){
-				$(".vendor_error").slideToggle(200);
-				$(".vendor_wrap_mask").fadeIn(200);
+<script>
+function expenseCategoryList(){  
+
+	  var sourceleadUrl ='${sourceleadUrl}';
+	  $("#expenseCategoryLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 
+	  $.ajax({
+           type : "GET",
+           url: sourceleadUrl+"/getExpensesCategoryList",    
+            success :function(data) {
+			    	     $("#expenseCategoryLoading").removeAttr("style");
+	                	 $("#expenseCategoryList").empty();
+	                	 var result = "";
+	                	 result = result +"<table id='expenseCategoryPagenation' class='display' cellspacing='0' width='99.9%' >"; 
+	                     result = result +"<thead>"; 
+	                     result = result +"  <tr>"; 
+	                     result = result +"    <th>Category Name</th>";
+	                     result = result +"    <th>Amount</th>";
+	                     result = result +"    <th>Type</th>";
+	                     result = result +"    <th>Descrption</th>"; 
+	                     result = result +"    <th>Actions</th>";
+	                     result = result +"  </tr>"; 
+	                     result = result +"</thead>";
+	                     result = result +"<tbody>"; 
+	                     
+	                     var json = JSON.parse(data);
+	                    	for (var i = 0; i < json.length; i++) { 
+	                    	 var opt = json[i]; 
+	                    	 result = result +"<tr>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>"+opt.expensesName+"</span></div></td>";
+	                    		
+	                    		 result = result +"<td><div><span title=''>"+opt.allowedAmount+"</span></div></td>";
+	                    		 
+	                    		 result = result +"<td><div><span>"+opt.categoryType+"</span></div></td>";
+	                    		 
+	                    		 result = result +"<td><div><span>"+opt.description+"</span></div></td>"; 
+	                    		 
+	                    		 
+			                    result = result +"<td><div class=''><a href='#'>View</a></div></td>"; 
+		                     
+		                     result = result +"</tr>";
+	                     }
+	                     result = result +" </tbody>";
+	                     result = result +"</table>"; 
+	                     $("#expenseCategoryLoading").removeAttr("style");
+	                     $("#expenseCategoryList").append(result); 
+	                     
+	                     expenseCategoryPagenation(); 
+                    
+          },
+            
+       });  
+  } 
+</script>   
+
+<script>
+function expenseCategoryPagenation(){ 
+	 $('#expenseCategoryPagenation').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"bLengthChange": false,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	            "sSearch": "",
+	            "sZeroRecords": "", "sEmptyTable": ""
+	       }
+	    } );
+}
+</script>
+
+<script>
+var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd'
+	};
+</script>
+<script>
+function storeExpensesCategory(){
+	  if ($('#expenseCategory_form').validate(false, validationSettings)) {
+		  
+			 var frm = $('#expenseCategory_form').serializeFormJSON();
+			 var con = JSON.stringify(frm);
+			 con = con.replace(/[{}]/g, "");
+		     var jsonData = encodeURIComponent(con);
+			 var sourceleadUrl = '${sourceleadUrl}';
+			 $("#expenseCategory_form").attr("disabled", "disabled");
+			 $("#save_button").attr("disabled", "disabled");
+
+			$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/storeExpensesCategory?${_csrf.parameterName}=${_csrf.token}&json="+con,
+					success :function(data) {  
+				                 if(data != null && data != 'undefined' && data != ""){
+				               		if( data.indexOf('Sign In') >= 0){
+							    		location.replace(sourceleadUrl);
+							    	}
+				               		else if (data.indexOf('exception') >= 0) {
+				               			 location.replace(sourceleadUrl+"/errorPage");
+				               		}
+				               		else{
+				               		    $("#popUpDiv").removeClass("edit-details-active");
+			            				$("#eduMsgDiv").html("Success!! New Expenses Category added");
+			            				expenseCategoryList();
+				               			eduMsgFadeinFunction();
+							    	}
+				                 }   
+				      }, 
+		    });
+			return true; 
+		} else {
+			return false;
+		}
+} 
+$('body').on('blur', '#expenseCategory_form', function() {
+	$("#expenseCategory_form").showHelpOnFocus();
+	$("#expenseCategory_form").validateOnBlur(false, validationSettings);
+});
+
+
+</script>            
+          
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
 			});
-			$(".vendor_error a").click(function(){
-				$(".vendor_error").slideUp(200);
-				$(".vendor_wrap_mask").fadeOut(200);
-			});
-		});	
-	</script>
- 
-	<script>
-		// Error pop ExpShow
-		$(document).ready(function() {
-		    $(".ExpShow").click(function(){
-				/*$(".ExpDe").slideToggle(100); fa-plus-square-o*/
-				$(this).parent().parent().next().slideToggle(100);
-				$(this).find("i").toggleClass("closExp");
-			});
-		});	
-	</script>  
-                
-	<script>
-		$(document).ready(function() {
-		    $("#hover").mouseenter(function(){
-				$(".app_error_mes").addClass("app_error_mes_active");
-			});
-		    $("#hover").mouseleave(function(){
-				$(".app_error_mes").removeClass("app_error_mes_active");
-			});	
-		});
-	</script>    
-    	
-   
+			return o;
+		};
+	})(jQuery);
+</script>           
+
+<script type="text/javascript">
+function getTaxRewardType(rewardType){
+	 $("#taxRewardType").val(rewardType);
+	 
+	 $("#taxPercentageRewardValue").val('');
+	 $("#taxFlatRewardValue").val('');
+	 
+	 $('#taxPercentageReward').find('p.jquery_form_error_message').remove();
+	 $('#taxFlatReward').find('p.jquery_form_error_message').remove();
+	 
+	 if(rewardType == 'Percentage'){
+		document.getElementById("taxPercentageReward").style.display="";
+		document.getElementById("taxFlatReward").style.display="none";
+		document.getElementById("taxFlatRateType").style.display="none";
+		
+		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
+	    document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
+    	$('#taxPercentageRewardValue').attr("data-validation","required validate_float");  
+		$('#taxPercentageRewardValue').removeAttr('data-validation-optional');
+	    $('#taxFlatRewardValue').removeAttr('data-validation');
+	    $('#taxFlatRewardValue').attr("data-validation-optional","true"); 
+	    	
+	    
+	} 
 	
-	<script>
-		$(".addcon-pop").click(function(){
-			 $(".collapse-div-adduser").toggleClass("show-div");
-		 });
-		 $(".close-div").click(function(){
-			 $(this).parent().removeClass("show-div");
-			 });
-		 $(".addcon-pop, .collapse-div-adduser").click(function(e){
-			 e.stopPropagation();
-		 });
-		 $('html').click(function(){
-		    $(".collapse-div-adduser").removeClass("show-div");
-		   });		
-	</script>
+	 if(rewardType == 'Flat'){
+		document.getElementById("taxFlatReward").style.display="";
+		document.getElementById("taxFlatRateType").style.display="";
+		document.getElementById("taxPercentageReward").style.display="none";
+		
+		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
+		document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
+		$('#taxFlatRewardValue').attr("data-validation","required validate_float");
+		$('#taxFlatRewardValue').removeAttr('data-validation-optional');
+		$('#taxPercentageRewardValue').removeAttr('data-validation');
+		$('#taxPercentageRewardValue').attr("data-validation-optional","true"); 
+		
+	} 
+}
+</script>
 
-
+<script>
+function getTaxPercentageValue(){
+	
+	var percentageValue = document.getElementById("taxPercentageRewardValue").value;
+	if(percentageValue > 100 || percentageValue < 0){
+	    $('#taxPercentageReward').find('p.jquery_form_error_message').remove(); 
+	   
+	    if(percentageValue < 0){
+	    	$("input#taxPercentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value should not in negitive</span>");
+	    }else{
+	    	$("input#taxPpercentageRewardValue").after("<p class='jquery_form_error_message'>Percentage value not more than 100</span>");
+	    }
+	    
+		$('input#taxPercentageRewardValue').attr('record-exist','yes');
+		 if(percentageValue < 0){
+			 $('input#taxPercentageRewardValue').attr('record-exist-errorMsg','Percentage value should not in negitive'); 
+		 }else{
+			 $('input#taxPercentageRewardValue').attr('record-exist-errorMsg','Percentage value not more than 100'); 
+		 }
+		
+	}else{
+		 $('input#taxPercentageRewardValue').removeAttr( "record-exist record-exist-errormsg");
+		 $('#taxPercentageReward').find('p.jquery_form_error_message').remove(); 
+		
+	} 
+	
+}
+</script>
  
 <jsp:include page="../masterFooter.jsp" />
