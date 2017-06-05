@@ -1563,7 +1563,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		public RequirementSubmission getRequirementSubmissionByRequirementIdAndCandidateId(Long requirementId,
 				Long candidateId) throws Exception {
 			 Session session = this.sessionFactory.getCurrentSession();
-		     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate "
+		     String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate "
 		     		+ "where rs.requirement.id = :requirementId and rs.candidate.id =:candidateId ";
 		     List<RequirementSubmission> submissionList = session.createQuery(query).setLong( "requirementId", requirementId).setLong( "candidateId", candidateId).setCacheable(true).list();
 		   
@@ -1766,14 +1766,14 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			List<RequirementSubmission>  submissionsCountList = null ;
 			String query;
 			if(null != submissionStatus && !"".equalsIgnoreCase(submissionStatus) && submissionStatus != "undefined"){
-				 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where "
+				 query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate where "
 				 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 				 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 				 		+ "rs.submissionStatus = :submissionStatus";
 				   submissionsCountList = session.createQuery(query).setLong("userId", userId).setString("submissionStatus", submissionStatus)
 			    		                                            .setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
 			}else{
-				 query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate where "
+				 query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate where "
 				 		+ "rs.candidate.consultantUser.id IN (select refer.referToUser from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate)) and "
 				 		+ "rs.requirement.id IN (select refer.requirementId from RequirementRefer refer where refer.referFromUser = :userId and refer.referStatus = 'Applied' and (refer.createdDate BETWEEN :startDate and :endDate))";
 			     
@@ -2009,7 +2009,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				throws Exception {
 			 
 			Session session = this.sessionFactory.getCurrentSession();
-		     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.candidate.consultantUser user "
+		     String query = "from RequirementSubmission rs left join fetch rs.candidateResumes left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.candidate.consultantUser user "
 		     		+ "where rs.requirement.id = :requirementId and user.id =:userId ";
 		     List<RequirementSubmission> submissionList = session.createQuery(query).setLong( "requirementId", requirementId).setLong( "userId", userId).setCacheable(true).list();
 		   
@@ -2403,6 +2403,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:orgRelationId and rs.sourceSubmission <> NULL and (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC)";
 			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setCacheable(true).list();
 		    return subList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId, Long requirementId) throws Exception
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+			
+		     String query = "from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId ";
+		     List<RequirementSubmission> requirementSubmissionList = session.createQuery(query).setLong( "candidateId", candidateId).setLong( "requirementId", requirementId).setCacheable(true).list();
+		   
+		     if(requirementSubmissionList != null && requirementSubmissionList.size() >0){
+					return requirementSubmissionList.get(0);
+				}else{
+					return null;
+				}
 		}
 		
   }

@@ -152,6 +152,18 @@ public class RequirementController {
 					requirement.setReqSkillsListString(requirement.getSkills());
 			}
 			
+			if(null != requirement.getIndustryName()){
+				String selectedIndustryName = requirement.getIndustryName();
+				requirement.setIndustrySavedName(selectedIndustryName);
+				
+			}
+			
+			
+			if(null !=requirement.getClosedDate()){
+				
+				requirement.setClosedDateStringFormat(Constants.DMY.format(requirement.getClosedDate()));
+			}
+			
 			if(requirement != null && requirement.getId() != null){
 				String storedNoticeperiodList = requirementService.getNoticePeriodByRequirementId(requirement.getId());
 						model.addObject("noticePeriod", storedNoticeperiodList);
@@ -308,6 +320,27 @@ public class RequirementController {
 		  model.addObject("educationsList", educationsList);
 		}
 		
+		
+		if(requirement != null && requirement.getId() != null){
+			List<String> newlyAddedindustryList = requirementService.getAllRequirementIndustryByRequirementId(requirement.getId());
+		       List<String> industryList = lookUpDataService.getAllSkillsByIndustryCategory();
+		       String industry = newlyAddedindustryList.get(0);
+				if(!"null".equalsIgnoreCase(industry) && null != industry){
+				String arr = industry;
+				if(null != arr && !"".equalsIgnoreCase(arr)){
+			      model.addObject("industryList", industryList);
+				}else{
+				  model.addObject("industryList", industryList);
+				} 
+			}
+			}else{
+	         // List<LookUpData> educationsListData = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+	          List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
+			  model.addObject("industryList", industryListWithoutId);
+			}
+		
+		/*List<LookUpData> industryList = lookUpDataService.getLookUpDataByCategory(Constants.INDUSTRIES);
+		model.addObject("industryList", industryList);*/
 		
 		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("usersList", usersList);

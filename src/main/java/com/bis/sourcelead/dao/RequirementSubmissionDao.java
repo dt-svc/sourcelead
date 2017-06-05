@@ -189,4 +189,6 @@ public interface RequirementSubmissionDao {
 
 	List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId,
 			Long orgRelationId, Date startUTCDate, Date endUTCDate);
+	
+	RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
 }

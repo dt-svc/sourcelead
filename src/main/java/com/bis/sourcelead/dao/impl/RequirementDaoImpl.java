@@ -858,6 +858,15 @@ public class RequirementDaoImpl implements RequirementDao {
 	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
         return skillNames;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select req.industryName from Requirement req where req.id =:requirementId";
+	    List<String> industryNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+        return industryNames;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
