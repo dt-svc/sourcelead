@@ -167,6 +167,20 @@ public class RequirementListController {
 			model.setViewName("requirement/releaseRequirement");
 			
 			
+			StringBuilder  description = new StringBuilder("'");
+			description.append("Job Title : ").append(requirement.getJobTitle()).append("; ").append("Posted By : ").append(requirement.getPostedOrgName()).append("; ")
+			            .append("Skills : ").append("").append("; ").append("Job Type : ").append(requirement.getJobType()).append("; ")
+			            .append("Experience : ").append("").append("; ").append("Job Location : ").append("").append("; ")
+			            .append("Notice Period : ").append("").append("; ").append("Posted Date : ").append("").append("; ").append("'");
+			
+			
+			
+			model.addObject("socialpost_title", "");
+			model.addObject("socialpost_link", new StringBuilder("").append(sourceleadUrl).append("/openJobsPublicPage?requirementUUID=").append(requirementUUID));
+			model.addObject("socialpost_description", description);
+			model.addObject("socialpost_picture", "");
+			model.addObject("socialpost_comment", "");
+			
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{

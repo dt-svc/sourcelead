@@ -86,7 +86,7 @@
 			</div>
   
 <div class="expensHead">
-	<a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask"><i class="fa fa-plus"></i>&nbsp; Row</a>
+	<a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
 	<div class="clearfix"></div>
 </div>
 
