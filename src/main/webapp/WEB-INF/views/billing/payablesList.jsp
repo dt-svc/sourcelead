@@ -126,6 +126,16 @@ font-size: 13px; width: 75px;
                 <div class="clearfix">
                   <div class="timesheet_head">
                     <ul>
+                    
+                    <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+					        	<div id="exportPop" class="ExpPop">
+					              <ul>
+					                <li onclick="exportToPayablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+					                <li onclick="exportToPayableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+					             </ul>
+					           </div>
+					</li>   
+                    
                       <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
                         <div class="approved_pop" id="invoiceTabOne">
                           <ul>
@@ -177,6 +187,7 @@ font-size: 13px; width: 75px;
                       </li>
                       <li>
                       <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
+                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       </li>  
                       <div class="clearfix"></div>
                     </ul>
@@ -362,7 +373,7 @@ function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
 	 $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && ((event.which) < 48 || (event.which) > 57)) {
 	                event.preventDefault();
 	            }
 	        });
@@ -572,7 +583,11 @@ function getPayableInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
 				result = result +'         </td> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';
+				if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
+					result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
+				}else{
+					result = result +'<div class="tbldata-dotdot-vsm" title="">--</div>  ';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
@@ -879,7 +894,7 @@ function cancelbtn(){
 $(document).ready(function() {
     $("#invoiceID1").click(function(){
 		$("#invoiceTabOne").slideToggle(0);
-		$("#paymentTabOne").slideUp(200);
+		$("#paymentTabOne, #exportPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#invoiceTabOne").slideUp(0);
@@ -887,17 +902,15 @@ $(document).ready(function() {
     $("#invoiceTabOne, #invoiceID1, .tab-pane, .billing_dashboard, .nav-tabs").click(function(e) {
         e.stopPropagation();
     });
-    
     $('.tab-pane, .billing_dashboard, .nav-tabs').click(function(){
     	$("#invoiceTabOne").slideUp(200);
     });
 });
 
-
 $(document).ready(function() {
     $("#paymentID1").click(function(){
 		$("#paymentTabOne").slideToggle(0);
-		$("#invoiceTabOne").slideUp(200);
+		$("#invoiceTabOne, #exportPop").slideUp(200);
 	});
     $("html").click(function() {
         $("#paymentTabOne").slideUp(0);
@@ -1020,6 +1033,98 @@ function searchResults(){
 	} 
 }
 
+</script>
+
+<script>
+
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+		$("#filter2ApprovedPop, #filter1ApprovedPop, .action-pop, .approved_pop").slideUp();
+ });
+ $("html").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ $(".billing_dashboard, .nav-tabs").click(function(){
+		$("#exportPop, .ExpPop").hide(200);
+	 });
+ $("#exportPop, #mypop, .nav-tabs, .billing_dashboard").click(function(e) {  
+     e.stopPropagation();
+ });
+</script>
+
+<script>
+function exportToPayablePdf(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var invoiceStatus = [];
+	 var paymentStatus = [];
+	 
+		$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+	    {
+			invoiceStatus.push($(this).val());
+	    });
+		
+		$('input:checkbox[name=paymentStatus]:checked').each(function() 
+		 {
+			paymentStatus.push($(this).val());
+		});
+		
+		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&exportType=pdf&invoiceType=payables";
+			/*  var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200); */
+}
+</script>
+
+<script>
+function exportToPayableExcel(){
+	
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var invoiceStatus = [];
+	 var paymentStatus = [];
+	 
+		$('input:checkbox[name=invoiceStatus]:checked').each(function() 
+	    {
+			invoiceStatus.push($(this).val());
+	    });
+		
+		$('input:checkbox[name=paymentStatus]:checked').each(function() 
+		 {
+			paymentStatus.push($(this).val());
+		});
+		
+		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&exportType=xls&invoiceType=payables";
+			/*  var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#empty_requirement_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200); */
+}
+</script>
+
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&contractType=vendorSow", 
+             success: function(data) {
+        },
+    });  
+}
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	
