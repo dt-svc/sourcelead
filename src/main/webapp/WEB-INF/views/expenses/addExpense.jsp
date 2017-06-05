@@ -8,6 +8,12 @@
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
  
+ <script type="text/javascript">
+		window.onload = function () {
+			getClientBasedOnSelectedProject();
+		 };
+</script> 
+ 
 <div class="wraper"> 
   <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
@@ -25,9 +31,9 @@
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
                 <div class="form-group">
-                  <label class="col-md-3">Expenses Id<span class="text-danger">&nbsp;*</span></label>
+                  <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="First Name" value="">
+                    <input type="text" class="form-control" name="First Name" value="${ExpensesId}" readonly="readonly">
                   </div>
                 </div>  
                 
@@ -39,13 +45,17 @@
                 </div>                                          
 
 			<div class="form-group">
-				<label class="col-md-3">Select Project<span class="text-danger">&nbsp;*</span></label>
+				<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<select class="chosen-select form-control">
-					  <option>Select Project</option>
+					<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectIdByMemberId">
+					<c:forEach var="projMembers" items="${projectMembersList}">
+					       <option  selected value="${projMembers.projects.id}">${projMembers.projects.projectName}</option>
+					</c:forEach>
+					
+					  <!-- <option>Select Project</option>
 					  <option>Project-1</option>
 					  <option>Project-2</option>
-					  <option>Project-3</option>
+					  <option>Project-3</option> -->
 					</select>
 				</div>
 			  </div>
@@ -53,7 +63,7 @@
 			<div class="form-group">
 				<label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="First Name" value="">
+                    <input type="text" class="form-control" name="First Name" value="" id="clientNameId" readonly="readonly">
                   </div>
 			  </div>               
                 
@@ -62,10 +72,10 @@
               <div class="col-md-9">
 					<div class="row">
 					  <div class="col-lg-6 evDaPa">
-						  <input type="text" class="form-control calendar" value="" name="Date" id="" placeholder="Start date">
+						  <input type="text" class="form-control calendar" value="" name="Date" id="projectStartDateExpensesId" placeholder="Start date" readonly="readonly">
 					  </div>
 					  <div class="col-lg-6">
-						  <input type="text" class="form-control calendar" value="" name="Date" id="" placeholder="End date">
+						  <input type="text" class="form-control calendar" value="" name="Date" id="projectEndDateExpensesId" placeholder="End date" readonly="readonly">
 					  </div>					  
 					</div>
               </div>
@@ -76,7 +86,7 @@
 			</div>
   
 <div class="expensHead">
-	<a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask"><i class="fa fa-plus"></i>&nbsp; Row</a>
+	<a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
 	<div class="clearfix"></div>
 </div>
 
@@ -154,6 +164,70 @@ $(document).ready(function() {
  		</script>
 
 
+<script>
+function getClientBasedOnSelectedProject(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var projectId = document.getElementById("projectIdByMemberId").value;
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId,       
+	       success :function(data) {
+	    	   if(data != null && data !='undefined' && data !=''){
+	    	   var json = JSON.parse(data);
+		    	  if(json.expensesClientName != null && json.expensesClientName !='undefined' && json.expensesClientName !=''){
+		    	   		$('#clientNameId').val(json.expensesClientName);
+		    	   }else{
+		    	   		$('#clientNameId').val('');   
+		    	   }
+		    	  if(json.startDateStr != null && json.startDateStr !='undefined' && json.startDateStr !='' && json.endDateStr != null && json.endDateStr !='undefined' && json.endDateStr !=''){
+		    		  $('#projectStartDateExpensesId').val(json.startDateStr);
+		    		  $('#projectEndDateExpensesId').val(json.endDateStr);
+		    		  	var projectStartDate = json.startDateStr;
+		    			var projectEndDate = json.endDateStr;
+		    			expensesDatePickerStartDate(projectStartDate,projectEndDate);
+		    	  }else{
+					  $('#projectStartDateExpensesId').val(json.startDateStr);
+					  $('#projectEndDateExpensesId').val(json.endDateStr);
+					  var projectStartDate = json.startDateStr;
+					  var projectEndDate = json.endDateStr;
+					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
+		    	  }		
+	    	   }
+	       },
+	});
+}
+</script>
+
+<script>
+	function expensesDatePickerStartDate(projectStartDate,projectEndDate){
+		$("#projectStartDateExpensesId").datepicker("destroy");
+		$("#projectEndDateExpensesId").datepicker("destroy");
+		$('#projectStartDateExpensesId').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true, 
+			minDate:projectStartDate,
+			maxDate:projectEndDate,
+			onSelect : function(selected) {
+				var dt = toDate('#projectStartDateExpensesId');
+				dt.setDate(minDate.getDate() + 1);
+				$("#projectEndDateExpensesId").datepicker("option", "minDate", dt);
+			}
+		});
+		$('#projectEndDateExpensesId').datepicker({
+			dateFormat : 'dd-mm-yy',
+			changeMonth: true,
+			changeYear: true,
+			minDate:projectStartDate,
+			maxDate:projectEndDate,
+			onSelect : function(selected) {
+				var dt = toDate('#projectEndDateExpensesId');
+				dt.setDate(dt.getDate() - 1);
+				$("#projectStartDateExpensesId").datepicker("option", "minDate", dt);
+			}
+		});
+	}
+</script>
 
 
 

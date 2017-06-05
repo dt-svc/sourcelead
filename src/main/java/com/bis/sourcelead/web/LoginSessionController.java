@@ -161,7 +161,8 @@ public class LoginSessionController {
 	
 	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
-			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletResponse response) throws Exception {
+			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response) throws Exception {
 		
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
@@ -312,9 +313,13 @@ public class LoginSessionController {
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 				StringBuilder redirectUrl = new StringBuilder();
 				
-				if(!isNullOrEmpty(requirementUUID)){
+				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
 					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
-				}else{
+				}
+				else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+				}
+				else{
 					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
 						response.sendRedirect(redirectUrl.append("/sourcelead/professionalPraseCandidate").toString());
 					}else{
