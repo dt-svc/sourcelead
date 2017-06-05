@@ -563,7 +563,11 @@ function getInvoiceList(){
 				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
 				result = result +'         </td> ';
 				result = result +'         <td>';
-				result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';
+				if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
+					result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
+				}else{
+					result = result +'<div class="tbldata-dotdot-vsm">--</div>  ';
+				}
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tblminwidth-100">'+invoiceDateStr+'</div>';
@@ -1256,9 +1260,8 @@ function generateAutomaticInvoice(){
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable", 
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&contractType=clientSow", 
              success: function(data) {
-            	 alert("success");
         },
     });  
 }

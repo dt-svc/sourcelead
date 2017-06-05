@@ -158,6 +158,9 @@ var validationSettings = {
 			    
          		var sourceleadUrl ='${sourceleadUrl}';
          	 	$("#submit_button").attr("disabled", "disabled");
+         	 	
+         	 	var requirementUUID = '${requirementUUID}';
+         	 	var referUUID = '${referUUID}';
          		
             	 $.ajax({
           	      type: "POST",
@@ -167,7 +170,13 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){
-			        		location.replace(sourceleadUrl+"/login");  
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' && 
+			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/login?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/login");  
+			        		}
+			        		
 			        	}
 			        	
 			        },  

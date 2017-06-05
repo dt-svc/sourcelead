@@ -668,9 +668,41 @@ function toDate(selector) {
      2.parameter : candidateId ,csrf.token,candidateemployerId
      3.ajax url implementation in CandidateCertificationRestController.
 --%>    
+ 
+ <script>
+function removeCertification(candidateCertificationId, candidateId){
+	
+	alertMessageforCer(candidateCertificationId, candidateId);
+}
+</script>
+
+<script type="text/javascript">
+function cancelPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteEmp3PopUp"></div> 
+
+<script type="text/javascript">
+function alertMessageforCer(candidateCertificationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Certification</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCer("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEmp3PopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+ 
       
 <script>
-function removeCertification(candidateCertificationId,candidateId){
+function deleteSelectedCer(candidateCertificationId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
@@ -691,6 +723,7 @@ function removeCertification(candidateCertificationId,candidateId){
             			 $("#selector5").removeAttr("style");
              			 $("#selector5").css({ display: "block" });
              			 $("#cerMsgDiv").html("Certification deleted");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
              			cerMsgFadein();
 			    	}
