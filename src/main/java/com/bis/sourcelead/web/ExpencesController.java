@@ -12,13 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -75,6 +76,22 @@ public class ExpencesController {
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
+		return model;
+	}
+	
+	@RequestMapping(value = "/expenses")
+	public ModelAndView expenses(HttpServletRequest request) throws Exception
+	{
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (null == sessionData) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.MY_EXPENSES);
+		request.getSession().setAttribute("sessionData", sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("expenses/expenses");
 		return model;
 	}
 	

@@ -99,7 +99,7 @@ function addExpenseCategory() {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12 mt">';
-	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5"></textarea>';
+	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_Description validate_length length2-5000" data-validation-optional="true"></textarea>';
 	result = result  +' </div>';
 	result = result  +' </div>';
 	result = result  +'';
@@ -206,7 +206,7 @@ function expenseCategoryList(){
 	                    		
 	                    		 result = result +"<td><div><span title=''>"+opt.allowedAmount+"</span></div></td>";
 	                    		 
-	                    		 result = result +"<td><div><span>"+opt.categoryType+"</span></div></td>";
+	                    		 result = result +"<td><div><span>"+opt.amountType+"</span></div></td>";
 	                    		 
 	                    		 result = result +"<td><div><span>"+opt.description+"</span></div></td>"; 
 	                    		 
