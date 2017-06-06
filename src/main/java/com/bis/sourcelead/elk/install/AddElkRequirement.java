@@ -86,6 +86,7 @@ public class AddElkRequirement {
 				requirementIndex.setProjectDurationMonths(rs.getString("PROJECT_DURATION_MONTHS"));
 				requirementIndex.setProjectDurationYears(rs.getString("PROJECT_DURATION_YEARS"));
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
+				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
 				if(null != rs.getString("MAX_RATE") && !"".equalsIgnoreCase(rs.getString("MAX_RATE"))){
 					requirementIndex.setMaxRate(Float.parseFloat(rs.getString("MAX_RATE")));
 				}
