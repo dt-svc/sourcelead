@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,6 +43,9 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "RECEIPT_ISSUED_BY")
 	private String receiptIssuedBy;
+	
+	@Column(name = "CURRENCY_TYPE")
+	private String currencyType;
 	
 	@Column(name = "AMOUNT")
 	private float amount;
@@ -110,6 +114,16 @@ private static final long serialVersionUID = 1L;
 
 	public void setReceiptIssuedBy(String receiptIssuedBy) {
 		this.receiptIssuedBy = receiptIssuedBy;
+	}
+
+	public String getCurrencyType()
+	{
+		return currencyType;
+	}
+
+	public void setCurrencyType(String currencyType)
+	{
+		this.currencyType = currencyType;
 	}
 
 	public float getAmount() {

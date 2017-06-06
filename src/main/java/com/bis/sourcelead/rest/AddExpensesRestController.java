@@ -1,6 +1,6 @@
 package com.bis.sourcelead.rest;
 
-import org.h2.schema.Constant;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,13 +8,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 public class AddExpensesRestController {
@@ -29,6 +34,9 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private AddExpensesService addExpensesService;
 	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)
 	public @ResponseBody String storeAssociate(@RequestParam(value = "projectId", required = false) String projectId) throws Exception {
@@ -46,4 +54,14 @@ public class AddExpensesRestController {
 	}
 		return projectId;
 }
+	
+	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
+	public @ResponseBody String storeAddExpensesData(MultipartHttpServletRequest request) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc);
+		return "DataSaved";
+}
+	
 }
