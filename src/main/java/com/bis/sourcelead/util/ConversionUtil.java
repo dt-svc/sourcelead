@@ -151,11 +151,18 @@ public class ConversionUtil {
       return countryCurrencyCode;
 	}
 	
+	/**
+	 * converts string date java.util Date
+	 * @param dateStr
+	 * @return Date
+	 * @throws ParseException
+	 */
 	public Date getDateFromString(String dateStr) throws ParseException{
 		String pattern = "dd-MM-yyyy";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         return format.parse(dateStr);
 	}
+
 	/** 
 	 * Get Date as UTC Format
 	 * @param orgLocation
@@ -213,5 +220,17 @@ public class ConversionUtil {
 		dates[0] = localDate.minusMonths(startDate).dayOfMonth().withMinimumValue();
 		dates[1] = localDate.plusMonths(endDate).dayOfMonth().withMaximumValue();
 		return dates;
+	}
+	
+	/**
+	 * converts java.util Date string date 
+	 * @param date
+	 * @return String
+	 * @throws ParseException
+	 */
+	public String getDateAsString(Date date){
+		 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+		 return dateFormat.format(date);
+
 	}
 }
