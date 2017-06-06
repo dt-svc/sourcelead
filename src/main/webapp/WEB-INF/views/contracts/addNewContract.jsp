@@ -487,12 +487,12 @@
       
       
       
-<div class="row reqAddWrap">
+	<div class="row reqAddWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
   			<table width="100%" cellpadding="0" cellspacing="0" class="table table-striped table-responsive">
-           <thead id="addTaxTbl">
+           <thead >
            <tr>
-           <th>Request Documents</th>
+           <th style="vertical-align: middle;">Request Documents</th>
            <th colspan="2">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
@@ -500,7 +500,11 @@
            </th>
           </tr>
           </thead>
-          <tbody>
+          <tbody id="addTaxTbl">
+           <tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Action</strong></td></tr>
+            <c:forEach var="doc" items="${docList}">
+	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
+                </c:forEach>
           <tr id="divTaxTsRow0">
           </tr>
           </tbody>
@@ -587,6 +591,19 @@
               }
         });
 });
+	
+function removeDocument(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	alert("fff");
+	 $.ajax({
+     type : "POST",
+      url: sourceleadUrl+"/terminateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+      success :function(data) {
+      	    $("#tr"+id).empty();
+     },
+ });  
+	}
+	
 </script>
 
 <div id="divTaxTd1" style="display: none; float: left;">
@@ -605,7 +622,7 @@
 	</div>
 </div>
 <div id="divTaxTd3" style="display: none; float: right;">
-	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
+	<a class="btn btn-sm btn-danger text-center mt10" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
 <script>

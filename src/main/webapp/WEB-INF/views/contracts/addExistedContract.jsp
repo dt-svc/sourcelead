@@ -371,6 +371,27 @@
                     </div>
             </div>
         </div>
+        <div class="row reqAddWrap">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+  			<table width="100%" cellpadding="0" cellspacing="0" class="table table-striped table-responsive">
+           <thead id="addTaxTbl">
+           <tr>
+           <th>Request Documents</th>
+           <th colspan="4">
+           <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
+           <i class="fa fa-plus"></i></button>
+            <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
+           </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr id="divTaxTsRow0">
+          </tr>
+          </tbody>
+          </table>
+        </div>
+        
+      </div>    
         <!-- billing end -->
       </div>      
       
@@ -387,7 +408,106 @@
     </div>
     </form:form>
   </section>
+<div id="divTaxTd1" style="display: none; float: left;">
+	<div class="select-field tblminwidth-75">
+		<div class="tblminwidth-50">
+			<input type="text" class="form-control" value=""
+				placeholder="Document Name" name='REPLACEROWIDdocumentName'
+				id='REPLACEROWIDdocumentName' field-name="Document Name" data-validation="required"> 
+		</div>
+	</div>
+</div>
 
+<div id="divTaxTd2" style="display: none; float: left;">
+<!-- 	<div class="tblminwidth-75">
+	<input type='file' name='REPLACEROWIDattachment' id='REPLACEROWIDattachment' field-name='Attachment' 
+	class='timesheetAttachmentValidation'></div> -->
+	
+							 <div class="col-md-8">                                                                                                            
+					  			<div class="input-group positionRelative ratetype" id="uploadFileGroupREPLACEROWID" title="Document Type: .pdf format only">     
+					  				<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse        
+					               <input name="uploadBtnREPLACEROWID" id="uploadBtnREPLACEROWID" style="display: none;" multiple="" class="upload" type="file" onclick="check(REPLACEROWID);"  >                      
+					               </span> </label>                                                                                                                
+					  				<input class="form-control padSm"  id="uploadFileREPLACEROWID" name="docFileREPLACEROWID"  field-name="Attachment" data-validation="required" placeholder="Upload File" readonly type="text" >  
+					  			</div>                                                                                                                       
+					         </div>			                                                                                                                 
+				
+	</div>
+
+<div id="divTaxTd3" style="display: none; float: left;">
+	<div class="tblminwidth-75">
+			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
+			 name="REPLACEROWIDdescription"></textarea>
+	</div>
+</div>
+
+<div id="divTaxTd4" style="display: none; float: right;">
+	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
+		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
+</div>
+<script>
+
+function check(id){
+document.getElementById("uploadBtn"+id).onchange = function () {
+    document.getElementById("uploadFile"+id).value = this.value.split( '\\' ).pop();;
+    };
+    
+    /* upload file script for size validation 2MB*/
+    var selectedFile = document.getElementById("uploadBtn"+id);
+    selectedFile.addEventListener("change", function() {
+      var docSize = this.files[0].size;
+      $("#uploadFileGroup"+id).find('p.jquery_form_error_message').remove();
+      if(docSize > 2097152){
+    	  document.getElementById("uploadFile"+id).value = '';
+    	  $("#uploadFileGroup"+id).append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+      }
+    });
+}
+</script>
+<script>
+	function addDoc(){  
+				var checkMaxTsRowNum = $("#maxTaxRowNum").val();
+				var tbl = document.getElementById("addTaxTbl");
+				var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+				$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
+				
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "divTaxRow" + maxRowNum);
+				
+				var cell0 = row.insertCell(0);
+				var divTaxTdStr = document.getElementById("divTaxTd1").innerHTML;
+				divTaxTdStr = divTaxTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+				cell0.innerHTML = divTaxTdStr;
+				
+				var cell1 = row.insertCell(1);
+				var divTaxTdStr1 = document.getElementById("divTaxTd2").innerHTML;
+				divTaxTdStr1 = divTaxTdStr1.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTaxTdStr1;
+				
+				var cell2 = row.insertCell(2);
+				var divTaxTdStr2 = document.getElementById("divTaxTd3").innerHTML;
+				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
+				cell2.innerHTML = divTaxTdStr2;
+				
+				var cell2 = row.insertCell(3);
+				var divTaxTdStr2 = document.getElementById("divTaxTd4").innerHTML;
+				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
+				cell2.innerHTML = divTaxTdStr2;
+	}			
+</script>
+<script type="text/javascript">
+	function removeTaxRow(rowId) {
+		
+		     
+		document.getElementById('divTaxRow' + rowId).style.display = 'none';
+		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var count = 2 * (r.cells.length);
+		for (i = 0; i <= count; i++) {
+			r.deleteCell(0);
+		}
+		
+	}
+</script>
 
 <script type="text/javascript">
 			var config = {
@@ -959,6 +1079,8 @@ function hideCommonSOWFields(){
       		var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#newcontract_form").attr("disabled", "disabled");
+			alert(jsonData);
+			
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 		$.ajax({
 		 			type : "POST",

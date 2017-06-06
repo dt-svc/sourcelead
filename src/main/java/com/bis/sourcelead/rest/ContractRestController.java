@@ -609,13 +609,38 @@ public class ContractRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
-			MultipartFile multiFile = null;
+			MultipartFile multiFile1 = null;
 			Iterator<String> itrator = request.getFileNames();
 			if(itrator.hasNext()){
-		        multiFile = request.getFile(itrator.next());
+		        multiFile1 = request.getFile(itrator.next());
 			}
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Contracts contracts = contractsTemplateService.saveExistigContract(jsonObj,multiFile,orgLocation,user,org);
+			Contracts contracts = contractsTemplateService.saveExistigContract(jsonObj,multiFile1,orgLocation,user,org);
+			final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+			final Map files = multiRequest.getFileMap();
+			int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
+			
+			for (long c = 1; c < maxCount; c++) {
+					ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+c);
+					
+						contractRequestDocuments.setContractId(contracts);
+						if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
+							contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
+						if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
+							contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
+						}
+						}
+						if(multiFile != null){
+							contractRequestDocuments.setDocFile(multiFile.getBytes());
+							contractRequestDocuments.setFileType(multiFile.getContentType());
+						}
+						contractRequestDocuments.setCreatedDate(new Date());
+						contractRequestDocuments.setUpdatedDate(new Date());
+						contractRequestDocuments.setCreatedBy(user.getUserCode());
+						contractRequestDocuments.setUpdatedBy(user.getUserCode());
+						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+			}
 		   if(null != contracts){
 			   isContractSaved = true;
 		   }
@@ -764,7 +789,6 @@ public class ContractRestController {
 		public @ResponseBody String getDocsByContractUUID(@RequestParam(value = "contractUUID", required = false) String contractUUID, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		 	Contracts contract =	contractsTemplateService.getContractByContractUUID(contractUUID);
 		 	
-		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
     		if(null != contract.getParentContractId()){
     			Contracts parentcontracts  = contractsTemplateDao.getContractById(contract.getParentContractId().getId());
@@ -792,6 +816,7 @@ public class ContractRestController {
 						contractRequestDocuments.setFileType(multiFile.getContentType());
 						contractRequestDocuments.setCreatedDate(new Date());
 						contractRequestDocuments.setUpdatedDate(new Date());
+						contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
 						contractRequestDocuments.setCreatedBy(user.getUserCode());
 						contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
@@ -801,4 +826,15 @@ public class ContractRestController {
 			
 			return "success";
 		}
+	 
+	 @RequestMapping(value = "/terminateDocument", method = RequestMethod.POST)
+	 public @ResponseBody String terminateDocument(@RequestParam(value = "docuId", required = false) String docuId, HttpServletRequest request) throws Exception {
+		 	
+			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docuId));
+			contractRequestDocuments.setStatus(Constants.MEMBER_IN_ACTIVE);
+			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+			
+			return "success";
+		}
+	 
 }
