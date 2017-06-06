@@ -407,12 +407,12 @@
             <div class="clearfix"></div>
         </div>
         <!-- billing end -->
-        <div class="row reqAddWrap">
+	<div class="row reqAddWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
   			<table width="100%" cellpadding="0" cellspacing="0" class="table table-striped table-responsive">
-           <thead id="addTaxTbl">
+           <thead >
            <tr>
-           <th>Request Documents</th>
+           <th style="vertical-align: middle;">Request Documents</th>
            <th colspan="2">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
@@ -420,14 +420,18 @@
            </th>
           </tr>
           </thead>
-          <tbody>
+          <tbody id="addTaxTbl">
+           <tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Action</strong></td></tr>
+            <c:forEach var="doc" items="${docList}">
+	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
+                </c:forEach>
           <tr id="divTaxTsRow0">
           </tr>
           </tbody>
           </table>
         </div>
         
-      </div>   
+      </div>        
         
       </div>      
       </div>
