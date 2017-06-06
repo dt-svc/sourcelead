@@ -841,6 +841,26 @@ public class UserRestController {
 						else{
 							commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, terminationDate);
 						}
+					}else{
+						ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMembers.getId());
+						if(pmh == null){
+							pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMembers.getId());
+						}
+						Date endDate1=null;
+						if(pmh.getProjectTerminationDate()== null){
+							/*projectMembersService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);*/
+							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+						}
+
+						if (pmh.getProjectTerminationDate() != null) {
+							projectMembersHistoryService.updateEndDateOfProjectMemberId(endDate1, projectMemberId);
+							
+						}
+						// mail forward to members inline end date edit
+						projectEnddatechangetoEmployee(projectMembers,user, orgLocations, endDate );
+						
+						Date terminationDate = null;
+							commonUtil.inactivateTimesheetSubmissionsBasedOnMemberIdAndMemberTerminationDate(projectMemberId, terminationDate);
 					}
 					return "updated";
 		       }

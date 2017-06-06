@@ -9,6 +9,15 @@
 
 
 <style type="text/css">
+.share a .fa-linkedin-square {
+    color: #1686b0;
+}
+.share a .fa-twitter-square {
+    color: #1cb7eb;
+}
+.share a .fa-facebook-square {
+    color: #4e71a8;
+}
 .text-center {
     text-align: center !important;
 }
@@ -27,6 +36,9 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
         <h2>Release Requirement</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Requirement</div>
+      <div class="success_pop" id="selector" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+     </div>
     </section>
     <div class="content-area clearfix">
       <div id="accordion-sl" class="release-jobs">
@@ -197,8 +209,12 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
             <div class="select-field col-md-6 paddingLeft row">
             <input type="text" class="form-control input-sm" field-name="RefeeralLink" id="referralLink" name="referralLink" placeholder="Referral Link" readonly="readonly"> 
             <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
+            <div class="share mt10">
+		   	<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('linkedin');"><i class="fa-2x fa fa-linkedin-square"></i></a>
+			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('twitter');"><i class="fa-2x fa fa-twitter-square paddingLeft paddingRight"></i></a>				  
+			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('facebook');"><i class="fa-2x fa fa-facebook-square"></i></a>
+			</div>
             </div>
-            
           </div>
         </div> 
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
@@ -293,6 +309,8 @@ $(document).ready(function(){
 	}
 	
 	$("#jobTitle").html("Release to Vendors (${jobTitle})");
+	
+	socialInviterScripts();
 	//getVendorContactLists();
 });
 </script>
@@ -1037,4 +1055,48 @@ function openVendors(){
 	document.getElementById("releaseToVendors").style.display="";
 }
 </script>
+<script>
+ function socialPostSucess(service,status){
+	 msgFadein();
+     $("#msgDiv").html(" Job is Successfully Posted on Your "+service+" Wall.");
+ }
+</script>
+
+<script type="text/javascript">
+var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
+function setPostValues(title,link,picture,description,comment){
+	 if (title) {
+         postdatavalues.title = title;
+     }
+     if (link) {
+         postdatavalues.link = link;
+     }
+     if (picture) {
+         postdatavalues.picture = picture;
+     }
+     if (description) {
+         postdatavalues.description = description;
+     }
+     if (description) {
+         postdatavalues.comment = description;
+     }
+};
+
+function getPostValueDetails(){
+	 return postdatavalues;
+  }
+
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script> 
+<style>
+.footer-area {
+display: none;}
+</style>
+<jsp:include page="../socialinviterscripts.jsp" />
 <jsp:include page="../masterFooter.jsp" />
