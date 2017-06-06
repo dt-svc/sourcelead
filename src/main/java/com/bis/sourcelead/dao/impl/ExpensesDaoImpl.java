@@ -1,0 +1,50 @@
+package com.bis.sourcelead.dao.impl;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.entity.Expenses;
+
+@SuppressWarnings("rawtypes")
+@Repository
+public class ExpensesDaoImpl implements ExpensesDao {
+
+	@Autowired
+	private SessionFactory sessionFactory;
+
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ExpensesDaoImpl.class);
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId){
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Expenses expenses  where expenses.orgLocationId.id =:orgLocId ";
+		System.out.println("query"+query);
+		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setCacheable(true).list();
+		return expensesList;
+	}
+
+}
