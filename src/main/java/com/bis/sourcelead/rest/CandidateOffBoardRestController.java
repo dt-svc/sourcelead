@@ -141,8 +141,20 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = userService.getUserById(offboardUserId);
 		Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), loginOrgLocation.getId());
-		if(null != employees && null != employees.getHireDate()){
-			user.setDateOfJoin(Constants.DMY.format(employees.getHireDate()));
+		if(null != employees){
+			if(null != employees.getHireDate()){
+				user.setDateOfJoin(Constants.DMY.format(employees.getHireDate()));
+			}
+			
+			if(!isNullOrEmpty(employees.getUserEmploymentType())){
+				if(!isNullOrEmpty(employees.getDesignationOtherType())){
+					user.setEmploymentType(employees.getDesignationOtherType());
+				}else{
+					user.setEmploymentType(employees.getUserEmploymentType());
+				}
+				
+			}
+			
 		}
 		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
 		user.setRole(userRole.getRoles().getDisplayName());

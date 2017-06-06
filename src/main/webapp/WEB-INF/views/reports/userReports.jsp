@@ -8,14 +8,26 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
+<!-- Amchart style sheet and script: For billing Report for demo only -->
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<!-- Amchart style sheet and script: For billing Report for demo only -->
 
+
+<style>
+#billing_chartdiv {
+  	width:100%; height:300px;
+}																		
+</style>
 <script type="text/javascript">
 	window.onload = function () {
 		usersList();
@@ -146,6 +158,70 @@
   </div>
   </div>
   </c:if>
+  
+  <%-- <c:if test="${billingTabAccess == true }"> --%>
+ <div class="timesheet_out mt40">
+    <div class="vendor_wrap clearfix">
+      <div class="timesheet_head">
+<div class="pull-left reportBtns mt10">
+<h4 class="pull-left mr">Billing Report</h4>
+	  <div class="reportBtn select-field pull-left">
+		<select class="form-control" id="billingReportType" onChange="getBillingReports();">
+		  <option value="THIS_MONTH">This Month</option>
+		  <option value="THIS_QUARTER">This quarter</option>
+		  <option value="THIS_YEAR">This Year</option>
+		  <option value="LAST_30DAYS">Last 30 days</option>
+		  <option value="LAST_MONTH">Last Month</option>
+		  <option value="LAST_QUARTER">Last quarter</option>
+		  <option value="LAST_YEAR">Last Year</option>
+		   <option value="CUSTOM">Custom</option> 
+		</select>
+	 </div>	
+        <div class="clearfix"></div>
+      </div>
+ </div>
+
+<!--  Report Div starts here: Rajashekar -->
+
+<!-- Report Chart desing -->
+<div class="clearfix"></div>
+          <div class="clearfix mt10">
+              <div class="col-md-3">
+                  
+                  <div class="clearfix billing_count">
+                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome">USD</span>
+                      <span class="text-info">Net Income</span>
+                  </div>
+                  
+                  <div class="clearfix billingCount borderGreen">
+                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="receivedAmount"></span>
+                      <span class="text-info">Received</span>
+                  </div>
+                  <div class="clearfix billingCount borderBlue">
+                      <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="payableAmount">USD</span>
+                      <span class="text-info">Paid</span>
+                  </div>
+                  
+              </div>
+              <div class="col-md-9">
+                  <div id="billing_chartdiv">
+                    
+                  </div>
+              </div>
+          </div>
+          <!-- Report Chart desing -->
+
+<!--  Report Div starts here Ends: Rajashekar -->  
+  
+  
+  
+  
+  </div>
+  </div>
+ <%--  </c:if> --%>
+  
+  
+  
   </section>
    
 <div class="mask_time"></div>
@@ -167,6 +243,7 @@
 <script> 
 $(document).ready(function(){
 	usersList();
+	getBillingReports();
 });
 </script>
 
@@ -181,6 +258,8 @@ width: 65%;
 width: 20%;
 }
 </style>
+
+
 
 <script>
 function usersList(){ 
@@ -548,6 +627,269 @@ function getCustomReports(){
 		 if(EndDate){
 			 $('#reportsEndDate').empty(); 
 		 }
+}
+</script>
+
+<script>
+function getBillingRportType(){
+}
+</script>
+
+<script>
+function getBillingReports(){
+		var sourceleadUrl = '${sourceleadUrl}';
+		var billingReportType = $("#billingReportType").val();
+		alert(billingReportType);
+		$.ajax({
+	    	type: "GET",
+	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType, 
+	         success: function(data) {
+	        	 var json = JSON.parse(data);
+	        	 $("#netIncome").html(json.netIncome);
+	        	 $("#receivedAmount").html(json.receivedAmount);
+	        	 $("#payableAmount").html(json.payableAmount);
+	         }
+		});
+}
+
+</script>
+
+<script>
+// Billing Chart script: Amcharts
+var chart = AmCharts.makeChart("billing_chartdiv", {
+    "type": "serial",
+    "theme": "light",
+    "marginTop":0,
+    "marginRight": 80,
+    "dataProvider": [{
+        "year": "1940",
+        "value": -0.307
+    }, {
+        "year": "1951",
+        "value": -0.168
+    }, {
+        "year": "1952",
+        "value": -0.073
+    }, {
+        "year": "1953",
+        "value": -0.027
+    }, {
+        "year": "1954",
+        "value": -0.251
+    }, {
+        "year": "1955",
+        "value": -0.281
+    }, {
+        "year": "1956",
+        "value": -0.348
+    }, {
+        "year": "1957",
+        "value": -0.074
+    }, {
+        "year": "1958",
+        "value": -0.011
+    }, {
+        "year": "1959",
+        "value": -0.074
+    }, {
+        "year": "1960",
+        "value": -0.124
+    }, {
+        "year": "1961",
+        "value": -0.024
+    }, {
+        "year": "1962",
+        "value": -0.022
+    }, {
+        "year": "1963",
+        "value": 0
+    }, {
+        "year": "1964",
+        "value": -0.296
+    }, {
+        "year": "1965",
+        "value": -0.217
+    }, {
+        "year": "1966",
+        "value": -0.147
+    }, {
+        "year": "1967",
+        "value": -0.15
+    }, {
+        "year": "1968",
+        "value": -0.16
+    }, {
+        "year": "1969",
+        "value": -0.011
+    }, {
+        "year": "1970",
+        "value": -0.068
+    }, {
+        "year": "1971",
+        "value": -0.19
+    }, {
+        "year": "1972",
+        "value": -0.056
+    }, {
+        "year": "1973",
+        "value": 0.077
+    }, {
+        "year": "1974",
+        "value": -0.213
+    }, {
+        "year": "1975",
+        "value": -0.17
+    }, {
+        "year": "1976",
+        "value": -0.254
+    }, {
+        "year": "1977",
+        "value": 0.019
+    }, {
+        "year": "1978",
+        "value": -0.063
+    }, {
+        "year": "1979",
+        "value": 0.05
+    }, {
+        "year": "1980",
+        "value": 0.077
+    }, {
+        "year": "1981",
+        "value": 0.12
+    }, {
+        "year": "1982",
+        "value": 0.011
+    }, {
+        "year": "1983",
+        "value": 0.177
+    }, {
+        "year": "1984",
+        "value": -0.021
+    }, {
+        "year": "1985",
+        "value": -0.037
+    }, {
+        "year": "1986",
+        "value": 0.03
+    }, {
+        "year": "1987",
+        "value": 0.179
+    }, {
+        "year": "1988",
+        "value": 0.18
+    }, {
+        "year": "1989",
+        "value": 0.104
+    }, {
+        "year": "1990",
+        "value": 0.255
+    }, {
+        "year": "1991",
+        "value": 0.21
+    }, {
+        "year": "1992",
+        "value": 0.065
+    }, {
+        "year": "1993",
+        "value": 0.11
+    }, {
+        "year": "1994",
+        "value": 0.172
+    }, {
+        "year": "1995",
+        "value": 0.269
+    }, {
+        "year": "1996",
+        "value": 0.141
+    }, {
+        "year": "1997",
+        "value": 0.353
+    }, {
+        "year": "1998",
+        "value": 0.548
+    }, {
+        "year": "1999",
+        "value": 0.298
+    }, {
+        "year": "2000",
+        "value": 0.267
+    }, {
+        "year": "2001",
+        "value": 0.411
+    }, {
+        "year": "2002",
+        "value": 0.462
+    }, {
+        "year": "2003",
+        "value": 0.47
+    }, {
+        "year": "2004",
+        "value": 0.445
+    }, {
+        "year": "2005",
+        "value": 0.47
+    }],
+    "valueAxes": [{
+        "axisAlpha": 0,
+        "position": "left"
+    }],
+    "graphs": [{
+        "id":"g1",
+        "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+        "bullet": "round",
+        "bulletSize": 8,
+        "lineColor": "#d1655d",
+        "lineThickness": 2,
+        "negativeLineColor": "#637bb6",
+        "type": "smoothedLine",
+        "valueField": "value"
+    }],
+    "chartScrollbar": {
+        "graph":"g1",
+        "gridAlpha":0,
+        "color":"#888888",
+        "scrollbarHeight":55,
+        "backgroundAlpha":0,
+        "selectedBackgroundAlpha":0.1,
+        "selectedBackgroundColor":"#888888",
+        "graphFillAlpha":0,
+        "autoGridCount":true,
+        "selectedGraphFillAlpha":0,
+        "graphLineAlpha":0.2,
+        "graphLineColor":"#c2c2c2",
+        "selectedGraphLineColor":"#888888",
+        "selectedGraphLineAlpha":1
+
+    },
+    "chartCursor": {
+        "categoryBalloonDateFormat": "YYYY",
+        "cursorAlpha": 0,
+        "valueLineEnabled":true,
+        "valueLineBalloonEnabled":true,
+        "valueLineAlpha":0.5,
+        "fullWidth":true
+    },
+    "dataDateFormat": "YYYY",
+    "categoryField": "year",
+    "categoryAxis": {
+        "minPeriod": "YYYY",
+        "parseDates": true,
+        "minorGridAlpha": 0.1,
+        "minorGridEnabled": true
+    },
+    "export": {
+        "enabled": true
+    }
+});
+
+chart.addListener("rendered", zoomChart);
+if(chart.zoomChart){
+	chart.zoomChart();
+}
+
+function zoomChart(){
+    chart.zoomToIndexes(Math.round(chart.dataProvider.length * 0.4), Math.round(chart.dataProvider.length * 0.55));
 }
 </script>
 

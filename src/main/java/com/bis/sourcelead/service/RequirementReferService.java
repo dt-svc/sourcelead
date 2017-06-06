@@ -48,4 +48,6 @@ public interface RequirementReferService {
 	List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception;
 	
 	public void submitUserContactsToRequirement(User user, OrgLocations orgLocations,JSONObject jsonObj) throws Exception;
+	
+	RequirementRefer getRequirementReferByReferUUID(String referUUID) throws Exception;
 }

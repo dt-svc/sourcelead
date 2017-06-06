@@ -40,5 +40,7 @@ public interface RequirementReferDao {
 	List<RequirementRefer> getLoginUserReferredListByUserId(Long userId,Long requirementId) throws Exception;
 	
 	List<RequirementRefer> getLoginUserReferToMeListByUserId(Long userId) throws Exception;
+	
+	RequirementRefer getRequirementReferByReferUUID(String referUUID) throws Exception;
 
 }

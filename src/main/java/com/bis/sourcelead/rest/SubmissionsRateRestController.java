@@ -650,6 +650,8 @@ public class SubmissionsRateRestController {
 			 }
 			
 			requirementSubmission.setRejectedReason(rejectreason);
+			
+			requirementSubmission.setRejectedCategoryType(Constants.APPLICANT_REJECTED);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);

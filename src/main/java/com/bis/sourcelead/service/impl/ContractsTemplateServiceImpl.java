@@ -1489,6 +1489,20 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		
+		if(jsonObj.has("billingRateType") && null != jsonObj.getString("billingRateType") && !"".equals(jsonObj.getString("billingRateType")) ){
+			contracts.setBillingRateType(jsonObj.getString("billingRateType"));
+			if(null != vendorContracts){
+				vendorContracts.setBillingRateType(jsonObj.getString("billingRateType"));
+			}
+		}
+		
+		if(jsonObj.has("billingRatePer") && null != jsonObj.getString("billingRatePer") && !"".equals(jsonObj.getString("billingRatePer")) ){
+			contracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
+			if(null != vendorContracts){
+				vendorContracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
+			}
+		}
+		
 		if(multiFile != null){
 			contracts.setDocFile(multiFile.getBytes());
 			contracts.setFileName(multiFile.getOriginalFilename());

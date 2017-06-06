@@ -47,6 +47,7 @@ import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -170,6 +172,9 @@ public class UsersListRestController {
 	
 	@Autowired
 	SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+	
+	@Autowired
+	private CountriesService countriesService;
 	
 	@Autowired
 	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
@@ -575,6 +580,10 @@ public class UsersListRestController {
 				}
 		  }
 		 userRole.setAllReportingManagers(userList);
+		 
+		 //	old records currency changed code 
+		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
 
 		resultJson = toJSON(userRole);
 		return resultJson;
