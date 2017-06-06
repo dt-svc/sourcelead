@@ -574,7 +574,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			  if(null != vendorContactsUser && null == approverUser && !"DRAFT".equalsIgnoreCase(saveType)){
 				  Contracts con = null;
-				  /*if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
+				 if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
 					  con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(vendorContactsUser,contracts,orgLocation,user,savedContracts,org);
 				  }else{
 					  con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
@@ -592,7 +592,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedContracts);
 		        	if(null != vendorContracts){
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
-		        	}*/
+		        	}
 			  }
 		}
 		return savedContracts;
