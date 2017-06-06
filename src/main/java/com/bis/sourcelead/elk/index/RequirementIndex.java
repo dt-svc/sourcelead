@@ -25,6 +25,8 @@ public class RequirementIndex {
 	
 	private Float maxRate;
 	
+	private String isreceivingApplicants;
+	
 	private String rateType;
 	
 	private String minExperience;
@@ -706,6 +708,16 @@ public class RequirementIndex {
 	public void setClosedDate(String closedDate)
 	{
 		this.closedDate = closedDate;
+	}
+
+	public String getIsreceivingApplicants()
+	{
+		return isreceivingApplicants;
+	}
+
+	public void setIsreceivingApplicants(String isreceivingApplicants)
+	{
+		this.isreceivingApplicants = isreceivingApplicants;
 	}
 	
 }
