@@ -62,6 +62,10 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			
+			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
+				requirementIndex.setDescription(requirement.getDescription());
+			}
+			
 			if (null != requirement.getMaxRate() && !"".equals(requirement.getMaxRate())) {
 				requirementIndex.setMaxRate(Float.parseFloat(requirement.getMaxRate()));
 			}

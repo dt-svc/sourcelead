@@ -158,4 +158,6 @@ public interface RequirementService {
 
 	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
 			Long relationId) throws Exception; 
+	
+	public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
 }

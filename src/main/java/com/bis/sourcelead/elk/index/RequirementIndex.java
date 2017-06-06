@@ -145,6 +145,10 @@ public class RequirementIndex {
 	
 	private String closedDate;
 	
+	private String description;
+	
+	private String jobAlertTitle;
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -718,6 +722,26 @@ public class RequirementIndex {
 	public void setIsreceivingApplicants(String isreceivingApplicants)
 	{
 		this.isreceivingApplicants = isreceivingApplicants;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public String getJobAlertTitle()
+	{
+		return jobAlertTitle;
+	}
+
+	public void setJobAlertTitle(String jobAlertTitle)
+	{
+		this.jobAlertTitle = jobAlertTitle;
 	}
 	
 }

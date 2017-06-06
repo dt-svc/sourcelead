@@ -21,9 +21,7 @@
 			<div class="project_wrap">
 			<div class="timesheet_head">
 			<ul>
-			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
 			<li><a href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert();"><i class="fa fa-bell-o paddingRight"></i>Create Alert</a></li>
-			</sec:authorize>
 			</ul>
 			     
             </div>
@@ -169,9 +167,9 @@ function createAlert(){
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
 	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
+	 result = result +'         	<label class="col-md-3">Keywords/Skills <span class="text-danger paddingLeft">*</span></label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="skills" name="skills">';
+	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Skills">';
 	 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
 	 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
 	 result = result +'         			</c:forEach>';
