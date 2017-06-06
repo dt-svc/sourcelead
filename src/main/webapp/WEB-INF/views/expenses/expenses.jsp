@@ -347,13 +347,13 @@ function getExpensesList(){
         		  var report = json[i]; 
         		  
 					 result = result +"        <tr>                                                                                                    ";
-					 result = result +"        	<td><div class='proj_show'><span>Exp0001</span><i class='fa fa-binoculars'></i></div></td>             ";
-					 result = result +"            <td><div>Project 1</div></td>                                                                       ";
-					 result = result +"            <td><div>Client 1</div></td>                                                                        ";
-					 result = result +"            <td><div>20/09/2017</div></td>                                                                      ";
-					 result = result +"            <td><div>20/09/2017</div></td>                                                                      ";
-					 result = result +"            <td><div>50</div></td>                                                                              ";
-					 result = result +"            <td><div>1000</div></td>                                                                            ";
+					 result = result +"        	<td><div class='proj_show'><span>"+report.expenseId+"</span><i class='fa fa-binoculars'></i></div></td>             ";
+					 result = result +"            <td><div>"+report.projectMembers+"</div></td>                                                                       ";
+					 result = result +"            <td><div>"+report.clientName+"</div></td>                                                                        ";
+					 result = result +"            <td><div>"+report.startDate+"</div></td>                                                                      ";
+					 result = result +"            <td><div>"+report.endDate+"</div></td>                                                                      ";
+					 result = result +"            <td><div>"+report.noOfExpenses+"</div></td>                                                                              ";
+					 result = result +"            <td><div>"+report.totalAmount+"</div></td>                                                                            ";
 					 result = result +"            <td>                                                                                                ";
 					 result = result +"            	<div class='tbldata-dotdot_50'>                                                                    ";
 					 result = result +"           		 	<i class='fa fa-pencil-square-o'></i>                                                      ";

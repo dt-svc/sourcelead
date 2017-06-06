@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -42,9 +41,9 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId){
 		Session session = this.sessionFactory.getCurrentSession();
-		List<Expenses> expensesList = null;
-		Query expensesListQuery= session.createQuery("from Expenses expenses where expenses.orgLocationId.Id =: orgLocId");
-		expensesList=expensesListQuery.list();;
+		String query = "from Expenses expenses  where expenses.orgLocationId.id =:orgLocId ";
+		System.out.println("query"+query);
+		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setCacheable(true).list();
 		return expensesList;
 	}
 

@@ -53,6 +53,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
+	@Column(name = "NO_OF_EXPENSES")
+	private String noOfExpenses;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -138,6 +141,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getNoOfExpenses() {
+		return noOfExpenses;
+	}
+
+	public void setNoOfExpenses(String noOfExpenses) {
+		this.noOfExpenses = noOfExpenses;
 	}
 
 	public String getStatus() {
