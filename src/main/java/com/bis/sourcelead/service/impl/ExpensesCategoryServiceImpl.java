@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 /**
  * 
  * @author BIS_Prasad
@@ -40,8 +43,16 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	@Override
 	public ExpensesCategory storeExpenseCategory(JSONObject jsonObject, Long orgLocationId,User user) throws Exception {
 		
-		ExpensesCategory expensesCategory =null;
-	       		expensesCategory = new ExpensesCategory();
+	       		
+	       	ExpensesCategory expensesCategory =null;
+	 		if(jsonObject.has("candidateId") && jsonObject.getString("candidateId") != null && !"".equals(jsonObject.getString("candidateId"))){
+	 			expensesCategory = expensesCategoryDao.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long.parseLong(jsonObject.getString("candidateId")));
+	 		}else{	
+	 			expensesCategory = new ExpensesCategory();
+	 			expensesCategory.setCreatedDate(commonUtil.currentDate());
+	 			expensesCategory.setCreatedBy(user.getUserCode());
+	 			
+	 		}
 		
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(orgLocationId);
@@ -79,9 +90,24 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	}
 
 	@Override
-	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId,
-			Long orgLocationId) throws Exception {
-		return expensesCategoryDao.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(expCategoryId, orgLocationId);
+	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId) throws Exception {
+		return expensesCategoryDao.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(expCategoryId);
 	}
+
+	@Override
+	public ExpensesCategory removeExpensesCategoryByCategoryId(Long expCategoryId) throws Exception {
+		
+		ExpensesCategory expenCat = expensesCategoryDao.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(expCategoryId);
+		expenCat.setStatus(Constants.MEMBER_IN_ACTIVE);
+		expenCat = expensesCategoryDao.storeExpenseCategory(expenCat);
+		
+		return expenCat;
+	}
+
+	@Override
+	public Boolean validateExpensesCategoryType(Long categoryId, String categoryType) throws Exception {
+		return expensesCategoryDao.validateExpensesCategoryType(categoryId, categoryType);
+	}
+	
 	
 }

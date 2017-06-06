@@ -1,10 +1,12 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesCategoryService;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.HomeController;
 import com.thoughtworks.xstream.XStream;
@@ -38,6 +45,13 @@ public class ExpensesCategoryRestController {
 
 	@Autowired
 	private ExpensesCategoryService expensesCategoryService;
+	
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
     
 	
 	
@@ -72,6 +86,53 @@ public class ExpensesCategoryRestController {
 		resultJson = toJSON(expensesCategoryList);
 		return resultJson;
 	}
+	
+		
+	
+	@RequestMapping(value = "/getExpensesCategoryByCategoryId")
+	public String getExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+		String resultJson;
+		ExpensesCategory  expensesCategoryList = expensesCategoryService.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(categoryId);
+		
+				
+				 List<LookUpData> expCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY); 
+					
+				 expensesCategoryList.setExpenseCategoryList(expCatList);
+				
+				     resultJson = commonUtil.toJSON(expensesCategoryList);
+				     return resultJson;
+	}
+	
+	@RequestMapping(value = "/upDateExpensesCategoryByCategoryId")
+	public String upDateExpensesCategoryByCategoryId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    ExpensesCategory  expensesCategory;
+			String jsonc = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(jsonc);
+			
+			expensesCategory = expensesCategoryService.storeExpenseCategory(jsonObj,loginOrgLocation.getId(),user);
+			return "success";
+	}
+	
+	
+		@RequestMapping(value = "/removeExpensesCategoryByCategoryId")
+		public String removeExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+			String resultJson;
+			ExpensesCategory  expensesCategory = expensesCategoryService.removeExpensesCategoryByCategoryId(categoryId);
+			 resultJson = commonUtil.toJSON(expensesCategory);
+
+			 return resultJson;
+		}
+		
+		
+		@RequestMapping(value = "/validateExpenseCategoryType")
+		public Boolean validateExpenseCategoryType(@RequestParam(value="name", required=false) String  name,@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+			String categoryType = name;
+				Boolean expCategory = expensesCategoryService.validateExpensesCategoryType(categoryId, categoryType );
+				return expCategory;
+		}
 	
 	
 	 private String toJSON(Object obj){

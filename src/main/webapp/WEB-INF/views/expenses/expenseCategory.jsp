@@ -49,15 +49,16 @@
 </script>
 
 <script>
-function addExpenseCategory() {	
+function addExpenseCategory(categoryId) {	
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
 	result = result  +'   ';
 	result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation=" required">';
+	result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType('+categoryId+');" onkeyup ="validateExpenseCategoryType('+categoryId+');">';
 	
 						       <c:forEach var="expCat" items="${lookUpExpCatList}">
     result = result  +'	            <option value="" disabled selected></option>';										 
@@ -99,7 +100,7 @@ function addExpenseCategory() {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12 mt">';
-	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_Description validate_length length2-5000" data-validation-optional="true"></textarea>';
+	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_Description validate_length length1-500" data-validation-optional="true"></textarea>';
 	result = result  +' </div>';
 	result = result  +' </div>';
 	result = result  +'';
@@ -193,6 +194,7 @@ function expenseCategoryList(){
 	                     result = result +"    <th>Amount</th>";
 	                     result = result +"    <th>Type</th>";
 	                     result = result +"    <th>Descrption</th>"; 
+	                     result = result +"    <th>Status</th>"; 
 	                     result = result +"    <th>Actions</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -202,17 +204,40 @@ function expenseCategoryList(){
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
+	                    	 
+	                    	    if(opt.expensesName != null && opt.expensesName !='' && opt.expensesName !='undefined'){
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>"+opt.expensesName+"</span></div></td>";
-	                    		
+	                    	     }else{
+	                    	     result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>---</span></div></td>"; 
+	                    	     }
+	                    	    
+	                    	    if(opt.allowedAmount != null && opt.allowedAmount !='' && opt.allowedAmount !='undefined'){
 	                    		 result = result +"<td><div><span title=''>"+opt.allowedAmount+"</span></div></td>";
-	                    		 
+	                    	    }else{
+	                    	     result = result +"<td><div><span title=''>---</span></div></td>";	
+	                    	    }
+	                    	    
+	                    	    if(opt.amountType != null && opt.amountType !='' && opt.amountType !='undefined'){
 	                    		 result = result +"<td><div><span>"+opt.amountType+"</span></div></td>";
-	                    		 
+	                    	    }else{
+	                    	     result = result +"<td><div><span>---</span></div></td>";
+	                    	    }
+	                    	    
+	                    	    if(opt.description != null && opt.description !='' && opt.description !='undefined'){
 	                    		 result = result +"<td><div><span>"+opt.description+"</span></div></td>"; 
-	                    		 
-	                    		 
-			                    result = result +"<td><div class=''><a href='#'>View</a></div></td>"; 
-		                     
+	                    	    }else{
+	                    	     result = result +"<td><div><span>---</span></div></td>"; 
+	                    	    }
+	                    	    
+	                    		 if(opt.status == 0){
+	                    		 result = result +"<td><div><span>In Active</span></div></td>"; 
+	                    		 }else{
+	                    			 result = result +"<td><div><span>Active</span></div></td>"; 
+	                    		 }
+			                    result = result+' <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"></a>';
+			                    result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>'; 
+			                    
+			                    
 		                     result = result +"</tr>";
 	                     }
 	                     result = result +" </tbody>";
@@ -385,6 +410,236 @@ function getTaxPercentageValue(){
 	} 
 	
 }
+</script>
+
+
+<script>
+function deleteExpenseCategory(categoryId){
+ var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/removeExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
+          success :function(data) {
+
+				if(data != null && data != 'undefined' && data != ""){
+             		if( data.indexOf('Sign In') >= 0){
+			    		location.replace(sourceleadUrl);
+			    	}else if (data.indexOf('exception') >= 0) {
+             			 location.replace(sourceleadUrl+"/errorPage");
+             		}else{
+             			expenseCategoryList()
+			    	}
+               } 
+        },
+          
+     }); 
+	  
+}
+</script> 
+
+<script type="text/javascript">
+ function validateExpenseCategoryType(categoryId) {
+	
+	  var name = document.getElementById("expensesName").value; 
+	  
+ 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+	 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateExpenseCategoryType?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId+"&name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		  
+						   $("#expensesName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#save_button").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+ }
+ </script> 
+ 
+ <script type="text/javascript">
+ function editExpenseCategory(categoryId) {
+	 var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({	type : "POST",
+					url : sourceleadUrl+ "/getExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,
+					success : function(data) {
+						var json = JSON.parse(data);
+						var expensesName = "";
+						var allowedAmount = "";
+						var description = "";
+						
+						if(json.expensesName !=null && json.expensesName !='undefined' && json.expensesName !=''){
+							expensesName = json.expensesName;
+						}
+						
+						if(json.allowedAmount !=null && json.allowedAmount !='undefined' && json.allowedAmount !=''){
+							allowedAmount = json.allowedAmount;
+						}
+						
+						if(json.description !=null && json.description !='undefined' && json.description !=''){
+							description = json.description;
+						}
+						
+						
+						
+						if (data != null && data != 'undefined' && data != "") {
+							if (data.indexOf('Sign In') >= 0) {
+								location.replace(sourceleadUrl);
+							} else if (data.indexOf('exception') >= 0) {
+								location.replace(sourceleadUrl + "/errorPage");
+							} else {	
+		
+								var result = "";
+								result = result  +'<!-- Popup Div -->';
+								result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
+								result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+								result = result  +'                <div class="form-horizontal clearfix"> ';
+								result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
+								result = result  +'   ';
+								result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
+								result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType('+categoryId+');" onkeyup ="validateExpenseCategoryType('+categoryId+');">';
+							 	/* 					       <c:forEach var="expCat" items="${lookUpExpCatList}">
+							    result = result  +'	            <option value="" disabled selected></option>';										 
+								result = result + ' 			<option value="${expCat.name}">${expCat.name}</option>';
+								                	       </c:forEach> */   
+								                	       for (var j = 0; j < json.expenseCategoryList.length; j++) {
+																var epxCat = json.expenseCategoryList[j];
+																   if(epxCat.name == expensesName){
+																	   result = result+'<option value=\"'+epxCat.name+'\" selected >'+epxCat.name+'</option>';
+																  }else{
+																	   result = result+'<option value=\"'+epxCat.name+'\" >'+epxCat.name+'</option>';
+												   		 	      } 
+															}
+								                	       
+								                	       
+							    result = result + '		</select>';
+							    
+								result = result  +'</div>';
+								result = result  +'';
+								result = result  +'<div class="clearfix mb10" id="errTax">';
+								result = result  +'<div class="col-md-5" >';
+								result = result  +'<div class="btn-group btn_Block pull-left">';
+								result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+								result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+								result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>';
+								result = result  +' </div>';
+								result = result  +'</div>';
+								
+								result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
+								result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
+								result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" value="'+allowedAmount+'"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
+								result = result  +' <i class="fa fa-percent"></i>'; 
+								result = result  +' </div>';
+								result = result  +' </div>';
+								
+								
+								result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
+								result = result  +'<div class="row flat">';
+								result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
+								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">';
+								result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
+								result = result  +' </div>';
+								result = result  +' </div>';
+								result = result  +' </div>';
+								result = result  +' </div>';
+								result = result  +' </div>';
+								
+								result = result  +' <div class="clearfix"></div>';	
+								
+								result = result  +'<div class="clearfix mb10">';
+								result = result  +'<div class="col-md-12 mt">';
+								result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_Description validate_length length1-500" data-validation-optional="true">'+description+'</textarea>';
+								result = result  +' </div>';
+								result = result  +' </div>';
+								result = result  +'';
+								result = result  +'<div class="clearfix mr">';
+								result = result	+ '<input type="hidden"  value="'+categoryId+'" id="categoryId" >';
+							    result  = result + '<button type="button"  id="save_button"  onClick ="updateExpenseCategory('+categoryId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
+								result = result  +' </div> ';
+								result = result  +' </div> ';
+								
+								result = result  +' </form>';
+								
+		$("#popUpDiv").empty();
+		$("#popUpDiv").append(result);
+		
+		$(".edit-details").toggleClass("edit-details-active");
+		 $(".close-div").click(function(){ 
+			 $(this).parent("div.edit-details").removeClass("edit-details-active");
+			 });
+		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+			 e.stopPropagation();
+		 });
+		
+		 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
+		 var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+				for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+					})
+			<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
+			
+	}
+						}
+				},
+
+			});
+
+	}
+	 
+</script>	 
+ 
+ <script type="text/javascript">
+	function updateExpenseCategory(categoryId) {
+		
+		if ($('#expenseCategory_form').validate(false,
+				validationSettings)) {
+
+			var frm = $('#expenseCategory_form').serializeFormJSON();
+
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			//It will escape all the special characters
+			var jsonData = encodeURIComponent(con);
+			
+			var sourceleadUrl = '${sourceleadUrl}';
+
+			$.ajax({
+						type : "POST",
+						url : sourceleadUrl
+								+ "/upDateExpensesCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&categoryId="+categoryId,
+						success : function(result) {
+							closePopup();
+							expenseCategoryList();
+						},
+					});
+			return true;
+		} else {
+			return false;
+		}
+		$('body').on('blur','#expenseCategory_form',
+				function() {
+					$("#expenseCategory_form").showHelpOnFocus();
+					$("#expenseCategory_form").validateOnBlur(false,
+							validationSettings);
+				});
+	}
 </script>
  
 <jsp:include page="../masterFooter.jsp" />
