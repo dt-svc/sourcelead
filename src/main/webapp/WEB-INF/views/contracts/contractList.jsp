@@ -2391,7 +2391,16 @@ function CountClick(contractUUID,parentId){
 
 function removeResumeNameDiv(id){
 	$("#removeDiv"+id).hide();
-	$("#uploadDocumentDiv"+id).show();
+	
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	     type : "POST",
+	      url: sourceleadUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+	      success :function(data) {
+	      	  //  $("#tr"+id).empty();
+	    	  $("#uploadDocumentDiv"+id).show();
+	     },
+	 });   
 //	$("#uploadFile"+id).attr("data-validation", "required validate_Space validatedoc");
 }
 function contPopClose(){
