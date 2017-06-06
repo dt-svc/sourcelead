@@ -1602,11 +1602,12 @@ function cancelContract(){
 function validateContractTitle(){
 	var contractTitle = $('#contractTitle').val();
 	var contractType = $('#contractType').val();
+	var contractId = $('#contrId').val();
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 if(contractTitle != null && contractTitle != "" && contractType != null && contractType != ""){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
+		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType+"&contractId="+contractId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");

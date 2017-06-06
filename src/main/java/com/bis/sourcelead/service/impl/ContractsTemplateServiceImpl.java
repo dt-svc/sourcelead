@@ -1376,8 +1376,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 
 	@Override
 	public Contracts findContractTitleByOrgLocationAndContractType(String contractTitle, String contractType,
-			Long orgLocationId) {
-		return contractsTemplateDao.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocationId);
+			Long orgLocationId,Long contractId) {
+		return contractsTemplateDao.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocationId,contractId);
 			}
 			
 	@Override
