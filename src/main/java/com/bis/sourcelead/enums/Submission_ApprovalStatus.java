@@ -6,7 +6,8 @@ public enum Submission_ApprovalStatus {
 	APPROVED("approved"),
 	REJECTED("rejected"),
 	REOPENED("reopened"),
-	ACTIONREQUIRED("Action Required");
+	ACTIONREQUIRED("Action Required"),
+	NOTAPPLICABLE("Not Applicable");
 	
     private String value;
 	private Submission_ApprovalStatus(String value){
