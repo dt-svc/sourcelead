@@ -22,6 +22,7 @@ import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.log.SysoCounter;
 
 @Service
 public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
@@ -48,14 +49,12 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					
 					
 					if(jsonObj.has("categoryDate"+c)){
-						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-						DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
-						String currentTimeStr = Constants.TZ_DF.format(jsonObj.has("categoryDate"+c));  
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						Date date = Constants.DF_DMY.parse(jsonObj.getString("categoryDate"+c));
+						String currentTimeStr = Constants.TZ_DF.format(date);  
 						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
 						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-						currentDateInTimezone = standardFormat.format(converteDate);
-					
 						entries.setExpenseDate(converteDate);
 					}
 					
@@ -84,7 +83,6 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    }
 		   return expensesEntriesList;
 		    		  
-		
 	}
 	
 }

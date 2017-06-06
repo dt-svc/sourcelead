@@ -202,18 +202,17 @@ function addEntity(){
 				
 				var result = "";
 				result = result + '<tr id="'+recCount+'">';
-				result = result + '<td><div name="categoryType'+recCount+'" id="categoryType'+recCount+'" value="'+categoryType+'">'+categoryType+'</div></td>';
-				result = result + '<td><div name="categoryDate'+recCount+'" id="categoryDate'+recCount+'" value="'+categoryDate+'">'+categoryDate+'</div></td>';
-				result = result + '<td><div name="receiptIssuedBy'+recCount+'" id="receiptIssuedBy'+recCount+'" value="'+receiptIssuedBy+'">'+receiptIssuedBy+'</div></td>';
-				result = result + '<td><div name="expenseRateType'+recCount+'" id="expenseRateType'+recCount+'" value="'+expenseRateType+'">'+expenseRateType+'</div></td>';
-				result = result + '<td><div name="expenseAmount'+recCount+'" id="expenseAmount'+recCount+'" value="'+expenseAmount+'">'+expenseAmount+'</div></td>';
-				result = result + '<div style="display: none;" name="paymentMode'+recCount+'" id="paymentMode'+recCount+'" value="'+paymentMode+'"></div>';
-				result = result + '<td><div class="tbldata-dotdot-me" name="entryDes'+recCount+'" id="entryDes'+recCount+'" value="'+descriptions+'">'+descriptions+'</div></td>';
+				result = result + '<td><input type="hidden" name="categoryType'+recCount+'" id="categoryType'+recCount+'" value="2"><div>'+categoryType+'</div></td>';
+				result = result + '<td><input type="hidden" name="categoryDate'+recCount+'" id="categoryDate'+recCount+'" value="'+categoryDate+'"><div>'+categoryDate+'</div></td>';
+				result = result + '<td><input type="hidden" name="receiptIssuedBy'+recCount+'" id="receiptIssuedBy'+recCount+'" value="'+receiptIssuedBy+'"><div>'+receiptIssuedBy+'</div></td>';
+				result = result + '<td><input type="hidden" name="expenseRateType'+recCount+'" id="expenseRateType'+recCount+'" value="'+expenseRateType+'"><div>'+expenseRateType+'</div></td>';
+				result = result + '<td><input type="hidden" name="expenseAmount'+recCount+'" id="expenseAmount'+recCount+'" value="'+expenseAmount+'"><div>'+expenseAmount+'</div></td>';
+				result = result + '<input type="hidden" name="paymentMode'+recCount+'" id="paymentMode'+recCount+'" value="'+paymentMode+'">';
+				result = result + '<td><input type="hidden" class="tbldata-dotdot-me" name="entryDes'+recCount+'" id="entryDes'+recCount+'" value="'+descriptions+'"><div>'+descriptions+'</div></td>';
 				result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil-square-o"></i> <i class="glyphicon glyphicon-trash" onclick="deleteEntityRec('+recCount+');"></i></div></td>';
 				result = result + '</tr>';
 				
-				
-				$("#divBody").html(result);
+				$("#divBody").append(result);
 				$(".modal-backdrop").fadeOut(200);
 				$(".modal").slideUp(200);
 				$(".modal-dialog").slideUp(300);
