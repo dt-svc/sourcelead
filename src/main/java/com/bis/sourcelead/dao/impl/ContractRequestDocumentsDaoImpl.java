@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
@@ -67,7 +68,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	public Integer getCountOfDocByContractedId(Long contractId)
 	{
 			Session session = this.sessionFactory.getCurrentSession();
-			List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId").setLong("contractId", contractId).setCacheable(true).list();
+			List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("contractId", contractId).setCacheable(true).list();
 			return (Integer) contractRequestDocumentsList.size();
 	}
 
@@ -77,7 +78,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	public List<ContractRequestDocuments> getAllDocByContractId(Long contractId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId").setLong("contractId", contractId).setCacheable(true).list();
+		List<ContractRequestDocuments>  contractRequestDocumentsList = session.createQuery("from ContractRequestDocuments crq where crq.contractId.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("contractId", contractId).setCacheable(true).list();
 		return contractRequestDocumentsList;
 	}
 
@@ -88,7 +89,7 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		ContractRequestDocuments  contractRequestDocuments =  null;
-		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq where crq.id =:docId").setLong("docId", docId).setCacheable(true).list();
+		List<ContractRequestDocuments>  contractRequestDocumentseList = session.createQuery("from ContractRequestDocuments crq where crq.id =:docId and crq.status = '"+Constants.MEMBER_ACTIVE+"'").setLong("docId", docId).setCacheable(true).list();
 		if(null != contractRequestDocumentseList && contractRequestDocumentseList.size() >0){
 			contractRequestDocuments = contractRequestDocumentseList.get(0);
 		}

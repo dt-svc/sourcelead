@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
@@ -34,6 +36,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -54,6 +57,9 @@ public class ContractController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	ContractRequestDocumentsService contractRequestDocumentsService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -155,6 +161,14 @@ public class ContractController {
 		if(null != contractUUID && !contractUUID.isEmpty()){
 			contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 			
+			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
+    		if(null != contract.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateService.getContractById(contract.getParentContractId().getId());
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+    		}else{
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+    		} 
+			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
@@ -240,6 +254,7 @@ public class ContractController {
 						orgSpoc.setOwnerUserName(orgSpoc.getOwnerUser().getFirstName());
 					}
 				}
+				model.addObject("docList",contractRequestDocumentsList);
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
 				model.addObject("orgSpocList", orgSpocList);

@@ -463,25 +463,25 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
-		if(jsonObj.has("maxTaxRowNum")){
-			int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
-			for (long c = 1; c < maxCount; c++) {
-				ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
-				if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
-					contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
-				
-				if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
-					contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
-				}
-				contractRequestDocuments.setContractId(savedContracts);
-				contractRequestDocuments.setCreatedDate(new Date());
-				if(null != user){
-					contractRequestDocuments.setCreatedBy(user.getUserCode());
-					contractRequestDocuments.setUpdatedBy(user.getUserCode());
-				}
-				contractRequestDocuments.setUpdatedDate(new Date());
-				contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
-				}
+		if(jsonObj.has("maxTaxRowNum")){		
+		int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
+		for (long c = 1; c < maxCount; c++) {
+			ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+			if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
+				contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
+			
+			if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
+				contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
+			}
+			contractRequestDocuments.setContractId(savedContracts);
+			contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+			contractRequestDocuments.setCreatedDate(new Date());
+			if(null != user){
+				contractRequestDocuments.setCreatedBy(user.getUserCode());
+				contractRequestDocuments.setUpdatedBy(user.getUserCode());
+			}
+			contractRequestDocuments.setUpdatedDate(new Date());
+			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
 			}
 		}
 		
@@ -735,6 +735,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
+			
 			if(null != contracts && null != contracts.getStartDate()){
 				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
 				String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);

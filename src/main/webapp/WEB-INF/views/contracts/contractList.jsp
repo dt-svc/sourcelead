@@ -1552,8 +1552,8 @@ function preparedContractListFinalize(data){
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
 	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>';
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Doc Count</th>'; 
 // 	opt = opt + '    <th>Finalized On</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -1581,9 +1581,9 @@ function preparedContractListFinalize(data){
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
-	         opt = opt + '<td>';
+	        /*  opt = opt + '<td>';
 	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
-	         opt = opt + '</td>';
+	         opt = opt + '</td>'; */
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'|';
@@ -2331,13 +2331,19 @@ function CountClick(contractUUID,parentId){
 			  result = result +'	     <div class="form-group">                                                                                                             ';
 			  result = result +'	       <label class="col-md-4">'+opt.fileName+'</label>                                                 ';
 			  if(opt.docFile != null && opt.docFile !="" ){
+				 // result = result +'	       <div class="col-md-8">                                                                                                             ';
+				//	result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+				 // result = result +'	       <label class="col-md-4">uploaded</label>                                                 ';
+				//  result = result +'	       </div>			                                                                                                                  ';
 				  result = result +'	       <div class="col-md-8">                                                                                                             ';
 				  result = result +'	       <label class="col-md-4">uploaded</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';
+			  
 			  }
 			  else{
 				  if(parentId!="--"){
-					  result = result +'	       <div class="col-md-8">                                                                                                             ';
+					 
+					  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
 					  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
 					  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
 					  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
@@ -2361,6 +2367,11 @@ function CountClick(contractUUID,parentId){
 	  }); 
 	
 	
+}
+
+function removeResumeNameDiv(id){
+	$("#uploadDocumentDiv"+id).show();
+	$("#uploadFile"+id).attr("data-validation", "required validate_Space validatedoc");
 }
 function contPopClose(){
 	$("#viewPopupDiv").empty();
