@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +17,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.enums.Project_Status;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
@@ -39,7 +44,8 @@ private static final long serialVersionUID = 1L;
 	private Date expenseDate;
 	
 	@Column(name = "PAYMENT_MODE")
-	private String paymentMode;
+	@Enumerated(EnumType.STRING)
+	private PaymentModes paymentMode;
 	
 	@Column(name = "RECEIPT_ISSUED_BY")
 	private String receiptIssuedBy;
@@ -100,11 +106,13 @@ private static final long serialVersionUID = 1L;
 		this.expenseDate = expenseDate;
 	}
 
-	public String getPaymentMode() {
+	public PaymentModes getPaymentMode()
+	{
 		return paymentMode;
 	}
 
-	public void setPaymentMode(String paymentMode) {
+	public void setPaymentMode(PaymentModes paymentMode)
+	{
 		this.paymentMode = paymentMode;
 	}
 

@@ -8,6 +8,7 @@
 <script>
 function loadCategoryDiv(){
 	var result = "";
+	
 	result = result + '<div class="modal-dialog modal-lg">';
 	
 	result = result + '	<div class="modal-content">';
@@ -24,11 +25,10 @@ function loadCategoryDiv(){
 	result = result + '						<label class="col-md-4">Category Type<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '						<div class="col-md-8">';
 	result = result + '							<select class="chosen-select form-control" id="categoryType" name="categoryType" field-name="Category Type" data-validation="required">';
-	result = result + '								<option value="">Category Type</option>';
-	result = result + '								<option>Category-1</option>';
-	result = result + '								<option>Category-2</option>';
-	result = result + '								<option>Category-3</option>';
-	result = result + '								<option>Others</option>';
+	result = result + '								<option value="">Select Category Type</option>';				 							   
+												   <c:forEach var="expCat" items="${expensesCategoryList}">
+	result = result + ' 							   <option value="${expCat.id}">${expCat.expensesName}</option>';
+						                	       </c:forEach>
 	result = result + '							</select>';
 	result = result + '						</div>';
 	result = result + '					</div>';
@@ -52,10 +52,11 @@ function loadCategoryDiv(){
 	result = result + '						<div class="col-md-8 dropdown-select">';
 	result = result + '							<select class="form-control" name="paymentMode" id="paymentMode" field-name="Payment Mode" data-validation="required">';
 	result = result + '								<option value="">Select Mode</option>';
-	result = result + '								<option>Mode-1</option>';
-	result = result + '								<option>Mode-2</option>';
-	result = result + '								<option>Mode-3</option>';
-	result = result + '								<option>Mode</option>';
+	result = result + '								<option value="Credit Card">Credit Card</option>';
+	result = result + '								<option value="Debit Card">Debit Card</option>';
+	result = result + '								<option value="Cash">Cash</option>';
+	result = result + '								<option value="Cheque">Cheque</option>';
+	result = result + '								<option value="e-Wallet">e-Wallet</option>';
 	result = result + '							</select>';
 	result = result + '						</div>';
 	result = result + '					</div>';
@@ -164,7 +165,6 @@ $("#categoryType").trigger("chosen:updated");
 }
 
 </script>
-
 
 <script>
 window.recCount = 1;
