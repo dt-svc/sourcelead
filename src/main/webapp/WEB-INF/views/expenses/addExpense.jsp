@@ -145,7 +145,6 @@
 			var jsonData = JSON.stringify(frm);
 			var form = $('#add_expenses_form')[0];
       		var formData = new FormData(form); 
-      		alert(formData);
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
