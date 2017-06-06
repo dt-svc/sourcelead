@@ -60,7 +60,7 @@
                 </select>
             </div>   -->     
 	<div class="pull-right expBtn">
-		<a href="add-expense.html" class=""><i class="glyphicon glyphicon-plus"></i>&nbsp; Add Expense</a>
+		<a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a>
 	</div>   
 	<div class="remove_search">
 		<input placeholder="search" type="text">
