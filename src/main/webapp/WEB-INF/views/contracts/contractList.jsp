@@ -170,7 +170,8 @@ $(document).ready(function(){
 <section class="DocAccPopup">
 	<div class="DocAccPopupHead clearfix"><h4>Requested Documents</h4><span><i class="fa fa-times" onclick="contPopClose();"></i></span></div>
 	<form:form id="contractDoc_form" name="contractDoc_form" method="post">
-		<div id="DocAccPopupDiv"></div>
+	<div id ="loadingDoc"></div>
+		<div id="DocAccPopupDiv" class="clearfix rd_table"></div>
 	
 <!-- 	<div class="col-xs-12 col-sm-12 col-md-12 clearfix myForm DocAccWrap">
             <div class="form-group">
@@ -206,7 +207,9 @@ $(document).ready(function(){
 	        var form = $('#contractDoc_form')[0];
  	 	    var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$("#save_Doc").attr("disabled", "disabled");
+			$("#contractDoc_form").attr("disabled", "disabled");
+			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 		$.ajax({
 	 			 type: "POST",
 		    	 data: formData,
@@ -2322,33 +2325,52 @@ function CountClick(contractUUID,parentId){
     	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
     	    var json = JSON.parse(data);
     	    var result= "";
-    	    result = result + ' <input type="hidden" id="maxDocCount" name="maxDocCount" value="'+json.length+'" />';
+    	    
+    	    result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
+			result = result +'	     <div class="form-group">                                                                                                             ';
+			result = result +'	       <label class="col-md-4 text-center"><strong>Title</strong></label>                                                 ';
+			result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
+				  result = result +'	       <div><strong>Action</strong></div>                                                 ';
+				  result = result +'	       </div>';
+				  result = result +'	       </div>';
+				  result = result +'	       </div>';
+			result = result + ' <input type="hidden" id="maxDocCount" name="maxDocCount" value="'+json.length+'" />';
     	    for (var i = 0; i < json.length; i++) {
     	      var opt=json[i];
-			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix myForm DocAccWrap">                                                            ';
+			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
-			  result = result +'	       <label class="col-md-4">'+opt.fileName+'</label>                                                 ';
-			  if(opt.docFile != null && opt.docFile !="" ){
-				 // result = result +'	       <div class="col-md-8">                                                                                                             ';
-				//	result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
-				 // result = result +'	       <label class="col-md-4">uploaded</label>                                                 ';
-				//  result = result +'	       </div>			                                                                                                                  ';
-				  result = result +'	       <div class="col-md-8">                                                                                                             ';
-				  result = result +'	       <label class="col-md-4">uploaded</label>                                                 ';
+			  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
+			
+			  if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
+				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
+				  result = result +'	       <label class="col-md-8 text-center">--</label>                                                 ';
 				  result = result +'	       </div>			                                                                                                                  ';
-			  
+				  $("#saveAction").empty(); 
 			  }
 			  else{
-				  if(parentId!="--"){
-					 
-					  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
-					  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
-					  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
-					  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
-					  result = result +'	             </span> </label>                                                                                                                 ';
-					  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
-					  result = result +'				</div>                                                                                                                            ';
-					  result = result +'	       </div>			                                                                                                                  ';
+				  if(parentId != "--"){
+					  if(opt.docFile != null && opt.docFile !=""){
+						  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
+						  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+						  result = result +'	       </div>			                                                                                                                  ';
+						  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
+						  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+						  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+						  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+						  result = result +'	             </span> </label>                                                                                                                 ';
+						  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+						  result = result +'				</div>                                                                                                                            ';
+						  result = result +'	       </div>			                                                                                                                  ';
+					  }else{
+						  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
+						  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+						  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+						  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+						  result = result +'	             </span> </label>                                                                                                                 ';
+						  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+						  result = result +'				</div>                                                                                                                            ';
+						  result = result +'	       </div>			                                                                                                                  ';
+				  }
 				  }
 				  else{
 					  $("#saveAction").empty(); 
@@ -2368,8 +2390,9 @@ function CountClick(contractUUID,parentId){
 }
 
 function removeResumeNameDiv(id){
+	$("#removeDiv"+id).hide();
 	$("#uploadDocumentDiv"+id).show();
-	$("#uploadFile"+id).attr("data-validation", "required validate_Space validatedoc");
+//	$("#uploadFile"+id).attr("data-validation", "required validate_Space validatedoc");
 }
 function contPopClose(){
 	$("#viewPopupDiv").empty();

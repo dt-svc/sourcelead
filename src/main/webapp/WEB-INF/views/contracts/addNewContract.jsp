@@ -594,7 +594,6 @@
 	
 function removeDocument(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	alert("fff");
 	 $.ajax({
      type : "POST",
       url: sourceleadUrl+"/terminateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
