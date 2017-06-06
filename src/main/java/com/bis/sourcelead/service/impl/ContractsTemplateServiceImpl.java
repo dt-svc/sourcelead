@@ -188,9 +188,19 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else if("PENDING".equalsIgnoreCase(saveType)){
 				vendorContracts = new Contracts();
 			}
+			if(null != user){
+				contracts.setUpdatedBy(user.getUserCode());
+			}
+			contracts.setUpdatedDate(new Date());
 		}else{
 			contracts = new Contracts();
 			vendorContracts = new Contracts();
+			contracts.setCreatedDate(new Date());
+			if(null != user){
+				contracts.setCreatedBy(user.getUserCode());
+				contracts.setUpdatedBy(user.getUserCode());
+			}
+			contracts.setUpdatedDate(new Date());
 		}
 		
 		String pattern = "dd-MM-yyyy";
@@ -450,12 +460,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		else{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
-		contracts.setCreatedDate(new Date());
-		if(null != user){
+		
+		//contracts.setCreatedDate(new Date());
+		/*if(null != user){
 			contracts.setCreatedBy(user.getUserCode());
 			contracts.setUpdatedBy(user.getUserCode());
-		}
-		contracts.setUpdatedDate(new Date());
+		}*/
+		//contracts.setUpdatedDate(new Date());
 		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		if(null != vendorContracts)
 		{

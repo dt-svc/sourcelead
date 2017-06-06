@@ -1609,18 +1609,18 @@ function validateContractTitle(){
 		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
 		        success: function(data) {
 		        	if(data == 'true'){
-		        		  $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		  $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
-						  $("#save_template").attr("disabled", "disabled");
-						  $("#draft_template").attr("disabled", "disabled");
+						 // $("#save_template").attr("disabled", "disabled");
+						 // $("#draft_template").attr("disabled", "disabled");
 		        	}
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#save_template" ).addClass('button').val('Send');
-                        $("#save_template").removeAttr("disabled");
-                        $("#draft_template").removeAttr("disabled");
+                         $("#save_template").removeAttr("disabled");
+                        //$("#draft_template").removeAttr("disabled");
 		        	}
 		        	}
 		        });
