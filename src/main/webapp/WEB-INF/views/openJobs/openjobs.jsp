@@ -1695,13 +1695,7 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Country</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="country" name="country">';
-	 result = result +'         		 <option >INR</option>';
-	 result = result +'                <option >AUD</option>';
-	 result = result +'                <option >USD</option>';
-	 result = result +'                <option >GBP</option>';
-	 result = result +'                <option >SGD</option>';
-	 result = result +'                <option >EUR</option>';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="countryjobalert" name="countryjobalert" onchange="getStatesjobalert();">';
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1709,9 +1703,7 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">State</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="State" name="State">';
-	 result = result +'         			<option>01</option>';
-	 result = result +'         			<option>02</option>';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="statejobalert" id="statejobalert" onchange="getCitiesjobalert();">';
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1720,9 +1712,7 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">City</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="city" name="city">';
-	 result = result +'         			<option>01</option>';
-	 result = result +'         			<option>02</option>';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="cityjobalert" id="cityjobalert">';
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1730,9 +1720,11 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Experience</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control" id="experience" name="experience">';
-	 result = result +'         			<option selected>---Select Experience---</option>';
-	 result = result +'         			<option>01</option>';
+	 result = result +'         		<select class="form-control chosen-select" id="experience" name="experience">';
+	 result = result +'         			<option  value="">Select Experience</option>';
+	 result = result +'								 <c:forEach begin="0" end="30" varStatus="loop">';
+	 result = result +'   					<option value="${loop.index}">${loop.index}</option>';
+	 result = result +'										</c:forEach>';
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1771,9 +1763,11 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Industry</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Industry" id="industry" name="industry">';
-	 result = result +'         			<option>01</option>';
-	 result = result +'         			<option>02</option>';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="industryName" id="industry" name="industryName">';
+	 result = result +'         		<option value="">--Select Industry--</option>';
+	 result = result +'                   <c:forEach var="industry" items="${industryList}">';
+	 result = result +'  					<option  value="${industry}">${industry}</option>';
+	 result = result +'						</c:forEach>;'
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1792,9 +1786,10 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple>';
-	 result = result +'         			<option>01</option>';
-	 result = result +'         			<option>02</option>';
+	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" name="candidateSkills">';
+	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
+	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+	 result = result +'						</c:forEach>;'
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1808,6 +1803,7 @@ function createAlert(){
 	 result = result +'</form>';
  $("#createAlertPopUpDiv").empty();
  $("#createAlertPopUpDiv").append(result);
+ getAllCountriesJObalert();
  var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -1823,6 +1819,18 @@ function createAlert(){
 	    $this.next().css({'width': '100%'});
 	    })
 }
+$("#countryjobalert").chosen();
+$("#statejobalert").chosen();
+$("#cityjobalert").chosen();
+
+$("#countryjobalert").on('change', function (e) {
+	   getStatesjobalert();
+});
+
+$("#statejobalert").on('change', function (e) {
+	   getCitiesjobalert();
+});
+
 </script>
 
 <script>
@@ -1854,6 +1862,97 @@ var validationSettings = {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+</script>
+<script type="text/javascript">
+function getAllCountriesJObalert(){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#countryjobalert').empty();
+        	$('#countryjobalert').append('<option value="">---select country---</option>');
+            for(var i=0;i<json.length;i++){
+            	
+            		$('#countryjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            
+            $('#countryjobalert').trigger("chosen:updated");
+            getStatesjobalert();
+        },
+        error: function(e){
+        }
+    });
+} 
+</script>
+
+
+<script>
+function getStatesjobalert(){
+	var countryName = $("#countryjobalert").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#statejobalert').empty();
+	        	$('#statejobalert').append('<option value="">---Select State---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#statejobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#statejobalert').trigger("chosen:updated");
+	            
+	            $('#cityjobalert').empty();
+	            $('#cityjobalert').append('<option value="">---Select City---</option>');
+	            $('#cityjobalert').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#statejobalert').empty();
+    	$('#statejobalert').append('<option value="">---Select State---</option>');
+    	$('#statejobalert').trigger("chosen:updated");
+    	$('#cityjobalert').empty();
+    	$('#cityjobalert').append('<option value="">---Select City---</option>');
+        $('#cityjobalert').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCitiesjobalert(){
+	var countryName = $("#countryjobalert").val();
+	var stateName = $("#statejobalert").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#cityjobalert').empty();
+	        	$('#cityjobalert').append('<option value="">---Select City---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#cityjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#cityjobalert').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#cityjobalert').empty();
+    	$('#cityjobalert').append('<option value="">---Select City---</option>');
+    	$('#cityjobalert').trigger("chosen:updated");
+	}
+}
 </script>
 
 

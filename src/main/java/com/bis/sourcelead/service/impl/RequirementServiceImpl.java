@@ -407,6 +407,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}else {
 				requirement.setIsClientJob("N");
 			}
+			
+			
+			
+			if(jsonObj.has("isreceivingApplicants") && jsonObj.getString("isreceivingApplicants").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isreceivingApplicants"))){
+				requirement.setIsreceivingApplicants(jsonObj.getString("isreceivingApplicants"));
+		}else {
+			requirement.setIsreceivingApplicants("N");
+		}
+			
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
 		requirementClient = (jsonObj.getString("isClient"));
 		OrgRelations orgRelations = new OrgRelations();
