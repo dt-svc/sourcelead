@@ -33,8 +33,8 @@ public class ExpensesCategory implements Serializable {
 	@Column(name = "NAME")
 	private String expensesName;
 	
-	@Column(name = "CATEGORY_TYPE")
-	private String categoryType;
+	@Column(name = "AMOUNT_TYPE")
+	private String amountType;
 	
 	@Column(name = "ALLOWED_AMOUNT")
 	private float allowedAmount;
@@ -81,13 +81,15 @@ public class ExpensesCategory implements Serializable {
 		this.expensesName = expensesName;
 	}
 
-	public String getCategoryType() {
-		return categoryType;
+	
+	public String getAmountType() {
+		return amountType;
 	}
 
-	public void setCategoryType(String categoryType) {
-		this.categoryType = categoryType;
+	public void setAmountType(String amountType) {
+		this.amountType = amountType;
 	}
+
 	public float getAllowedAmount() {
 		return allowedAmount;
 	}
