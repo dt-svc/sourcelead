@@ -626,16 +626,27 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		for(Contracts contracts :vendorcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
-			if(null != contracts.getOwnerUserId().getLastName() && null != contracts.getOwnerUserId().getLastName()){
-				ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+			if(null != contracts.getOwnerUserId()){
+				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
+					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+				}else if(null != contracts.getOwnerUserId().getLastName()){
+					ownerName.append(contracts.getOwnerUserId().getFirstName());	
+				}else{
+					ownerName.append("---");
+				}
 			}else{
-				ownerName.append(contracts.getOwnerUserId().getFirstName());	
+				ownerName.append("---");
 			}
+			
 			contracts.setOwnerName(ownerName.toString());
-			if(null != contracts.getContactUser().getLastName() && null != contracts.getContactUser().getLastName()){
-				vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+			if(null != contracts.getContactUser()){
+				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
+					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+				}else{
+					vendorName.append(contracts.getContactUser().getFirstName());	
+				}
 			}else{
-				vendorName.append(contracts.getContactUser().getFirstName());	
+				vendorName.append("---");
 			}
 			contracts.setVendorContactName(vendorName.toString());
 			
@@ -693,16 +704,28 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		for(Contracts contracts :clientcontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
-			if(null != contracts.getOwnerUserId().getLastName() && null != contracts.getOwnerUserId().getLastName()){
-				ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+			if(null != contracts.getOwnerUserId()){
+				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
+					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+				}else if(null != contracts.getOwnerUserId().getLastName()){
+					ownerName.append(contracts.getOwnerUserId().getFirstName());	
+				}else{
+					ownerName.append("---");
+				}
 			}else{
-				ownerName.append(contracts.getOwnerUserId().getFirstName());	
+				ownerName.append("---");
 			}
 			contracts.setOwnerName(ownerName.toString());
-			if(null != contracts.getContactUser().getLastName() && null != contracts.getContactUser().getLastName()){
-				vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+			if(null != contracts.getContactUser()){
+				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
+					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+				}else if(null != contracts.getContactUser().getLastName()){
+					vendorName.append(contracts.getContactUser().getFirstName());	
+				}else{
+					vendorName.append("---");
+				}
 			}else{
-				vendorName.append(contracts.getContactUser().getFirstName());	
+				vendorName.append("---");
 			}
 			contracts.setVendorContactName(vendorName.toString());
 			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
@@ -1567,6 +1590,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Override
 	public ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID) {
 		return contractsTemplateDao.getContractTemplateByTemplateUUID(tempUUID);
+	}
+
+	@Override
+	public List<Contracts> getAllContractsBasedOnTimeFrequency(Date startDateUTC, Date endDateUTC) throws Exception
+	{
+		return contractsTemplateDao.getAllContractsBasedOnTimeFrequency(startDateUTC,endDateUTC);
 	}
 	
 }

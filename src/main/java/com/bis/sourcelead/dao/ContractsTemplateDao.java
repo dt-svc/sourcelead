@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Contracts;
@@ -41,4 +42,6 @@ public interface ContractsTemplateDao {
 	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
 	
 	ContractsHistory saveContractsHistory(ContractsHistory contractsHistory) throws Exception ;
+
+	List<Contracts> getAllContractsBasedOnTimeFrequency(Date startDateUTC, Date endDateUTC);
 }

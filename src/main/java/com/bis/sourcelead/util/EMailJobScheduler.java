@@ -21,6 +21,10 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +83,7 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -214,6 +219,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
@@ -1865,5 +1873,161 @@ public class EMailJobScheduler {
 		        {
 		            System.out.println("Exception: " + ex);
 		        }
+	}
+	
+	/**
+	 * @author : Pavan Jampana   0 0 12 1/1 * ? *
+	 * this cron will used to send the remainder emails to respective owners about expiring of the contract. 
+	 * 
+	 * this cron will be fired once a day at 3'O clock
+	 * 
+	 * Morning 8 Am for us/canada
+	 */
+
+	@Scheduled(cron = "0 0 15 1/1 * ? *")
+	@Async
+	public void notifyToUsersAboutContractExpiry() throws Exception
+	{
+		DateTime zoned = new DateTime();
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		// to fire remainder one week before
+		DateTime week = zoned.plusDays(7);
+		String startDate = outputFormatter1.print(week);
+		String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
+		Date startDateUTC = ts.parse(startDateString);
+		String endDate = outputFormatter.print(week);
+		String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
+		Date endDateUTC = ts.parse(endDateString);
+		
+		List<Contracts> oneWeekContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(startDateUTC,endDateUTC);
+		for(Contracts contracts : oneWeekContractsList){
+			contractExpiryRemainderMail(contracts);
+		}
+		
+		//to fire two days before
+		DateTime twodays = zoned.plusDays(2);
+		String twoDaysStartDate = outputFormatter1.print(twodays);
+		String twoDaysStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, twoDaysStartDate);
+		Date twoDaysStartDateUTC = ts.parse(twoDaysStartDateString);
+		String twoDaysEndDate = outputFormatter.print(twodays);
+		String twoDaysEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, twoDaysEndDate);
+		Date twoDaysEndDateUTC = ts.parse(twoDaysEndDateString);
+		
+		List<Contracts> twoDaysContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(twoDaysStartDateUTC,twoDaysEndDateUTC);
+		for(Contracts contracts : twoDaysContractsList){
+			contractExpiryRemainderMail(contracts);
+		}
+		
+		//to fire two days before
+		DateTime oneDay = zoned;
+		String oneDayStartDate = outputFormatter1.print(oneDay);
+		String oneDayStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayStartDate);
+		Date oneDayStartDateUTC = ts.parse(oneDayStartDateString);
+		String oneDayEndDate = outputFormatter.print(oneDay);
+		String oneDayEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayEndDate);
+		Date oneDayEndDateUTC = ts.parse(oneDayEndDateString);
+		
+		List<Contracts> oneDayContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(oneDayStartDateUTC,oneDayEndDateUTC);
+		for(Contracts contracts : oneDayContractsList){
+			contractExpiryRemainderMail(contracts);
+		}
+	}
+
+	private void contractExpiryRemainderMail(Contracts contracts) throws Exception
+	{
+			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(owner.getFirstName());
+			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				 emailMessage.setLastName(owner.getLastName());
+			 }else{
+				 emailMessage.setLastName("");
+			 }
+			 emailMessage.setToEmail(owner.getEmail());
+			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setCreatedBy("sladmin");
+			 emailMessage.setFromName("SourceLead Admin"); 
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+				 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+				 }else{
+					 globalVarsMap.put("contractTitle","--");
+				 }
+			 
+			 if(contracts.getContractType()!= null && !"".equalsIgnoreCase(contracts.getContractType())){
+				 globalVarsMap.put("contractType", contracts.getContractType());
+				 }else{
+					 globalVarsMap.put("contractType","--");
+				 }
+			
+			 if(contracts.getEndDate()!= null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
+				 globalVarsMap.put("contractEndDate", contracts.getEndDate().toString());
+				 }else{
+					 globalVarsMap.put("contractEndDate","--");
+				 }
+			 
+			 if(contracts.getStartDate()!= null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
+				 globalVarsMap.put("contractStartDate", contracts.getStartDate().toString());
+				 }else{
+					 globalVarsMap.put("contractStartDate","--");
+				 }
+			 
+			 if(contracts.getTemplateSubmissionStatus() != null && !"".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+				 globalVarsMap.put("status", contracts.getTemplateSubmissionStatus());
+				 }else{
+					 globalVarsMap.put("status","--");
+				 }
+			 
+			 
+			if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				StringBuilder creatorSb = new StringBuilder();
+				globalVarsMap.put("contractOwner", creatorSb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+			}else if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName())){
+				globalVarsMap.put("contractOwner",owner.getFirstName());
+			}else{
+				globalVarsMap.put("contractOwner","--");
+			}
+			
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			
+			 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("receiverParty",userBuild.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("receiverParty",contracts.getContactUser().getFirstName());
+				}
+			 
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			 notificationScenario.setBody(notificationbody);
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 String actionLink="";
+			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+//			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
+		
 	}
 }
