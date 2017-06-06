@@ -3981,7 +3981,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 				 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
 		  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
 		 }
-		 if(rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
+		 if(rejectedCategoryOther.match(/^[^\s-](.*)*$/) != null && rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
 			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
 		 }
 		 else{

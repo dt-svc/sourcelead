@@ -928,7 +928,8 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'  </div>'
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
-				result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
+				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert();"><i class="fa fa-bell"></i></a>';
+				result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
 				if(requirements.isCrowdSourcingJob == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 				}
@@ -1163,16 +1164,6 @@ function backtoList(){
 	$("#loadMoreReq").css("display", "block");
 }
 
-</script>
-
-
-<script>
-var validationSettings = {
-        errorMessagePosition : 'element',
-        borderColorOnError : '',
-		scrollToTopOnError : true,
-		dateFormat : 'yyyy/mm/dd' 
-     }; 
 </script>
 
 
@@ -1659,7 +1650,205 @@ $(".LettSelec a").click(function(){
 	$(this).toggleClass("actL");
 });	  
 </script>
+<!-- Create Alert modal Popup --> 
+<div class="pop_mask"></div>
+ <!-- Modal -->
+  <div class="modal modal_createalert" id="myModal" role="dialog">
+    <div id="createAlertPopUpDiv"></div>
+  </div>
+  <!-- Create Alert modal Popup Ends -->
+<script>
+//Create Alert Poppup
+function alertFunction() {
+	$(".pop_mask").fadeIn();
+	$(".modal.modal_createalert").fadeIn();
+}
+function alertClose(){
+	$(".pop_mask").fadeOut();
+	$(".modal.modal_createalert").fadeOut();
+}
+</script>
+<script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
+<script>
+function createAlert(){
+	 result = "";
+	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+	 result = result +'	 <div class="modal-dialog modal-lg">';
+	 result = result +'     <div class="modal-content">';
+	 result = result +'       <div class="modal-header">';
+	 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
+	 result = result +'         <h4 class="modal-title">Job Alert</h4>';
+	 result = result +'       </div>';
+	 result = result +'       <div class="modal-body myForm clearfix">';
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Alert Title" name="alertTitle" data-validation="required validate_length length2-100">';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Email<span class="text-danger paddingLeft">*</span></label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Email" name="email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Country</label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="countryjobalert" name="countryjobalert" onchange="getStatesjobalert();">';
+	 result = result +'         		</select>';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">State</label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="statejobalert" id="statejobalert" onchange="getCitiesjobalert();">';
+	 result = result +'         		</select>';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 
+	 
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">City</label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="cityjobalert" id="cityjobalert">';
+	 result = result +'         		</select>';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Experience</label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<select class="form-control chosen-select" id="experience" name="experience">';
+	 result = result +'         			<option  value="">Select Experience</option>';
+	 result = result +'								 <c:forEach begin="0" end="30" varStatus="loop">';
+	 result = result +'   					<option value="${loop.index}">${loop.index}</option>';
+	 result = result +'										</c:forEach>';
+	 result = result +'         		</select>';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
+	 result = result +'	<div class="col-md-9">';
+	 result = result +'            <div class="input-group er ratetype">';
+	 result = result +'               <div class="input-group-btn tblminwidth-75">';
+	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
+	 result = result +'                <option >INR</option>';
+	 result = result +'                <option >AUD</option>';
+	 result = result +'                <option >USD</option>';
+	 result = result +'                <option >GBP</option>';
+	 result = result +'                <option >SGD</option>';
+	 result = result +'                <option >EUR</option>';
+	 result = result +'               </select>';
+	 result = result +'               </div>';
+	 
+	 result = result +'              <input type="text" id="currentRate" name="rate" value="" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
+	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
+	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type">';
+	 result = result +'                   <option value="">Rate Per</option>';
+	 result = result +'                   <option >Hourly</option>';
+	 result = result +'                   <option >Weekly</option>';
+	 result = result +'                   <option >Bi-weekly</option>';
+	 result = result +'                   <option >Semi-Monthly</option>';
+	 result = result +'                   <option >Monthly</option>';
+	 result = result +'                   <option >Bi-Monthly</option>';
+	 result = result +'                   <option >Yearly</option>';
+	 result = result +'                 </select>';
+	 result = result +'               </div>';
+	 result = result +'                <div class="clearfix"></div> <div class="clearfix"></div>';
+	 result = result +'             </div>';
+	 result = result +'           </div>';
+	 result = result +'         </div>';
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Industry</label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="industryName" id="industry" name="industryName">';
+	 result = result +'         		<option value="">--Select Industry--</option>';
+	 result = result +'                   <c:forEach var="industry" items="${industryList}">';
+	 result = result +'  					<option  value="${industry}">${industry}</option>';
+	 result = result +'						</c:forEach>;'
+	 result = result +'         		</select>';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'         		<select class="form-control" id="duration" name="duration">';
+	 result = result +'         			<option selected>---Select Duration---</option>';
+	 result = result +'         			<option>Daily</option>';
+	 result = result +'         			<option>Weekly</option>';
+	 result = result +'         			<option>Monthly</option>';
+	 result = result +'         		</select>';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 result = result +'         <div class="form-group clearfix">';
+	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
+	 result = result +'         	<div class="col-md-9">';
+	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" name="candidateSkills">';
+	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
+	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+	 result = result +'						</c:forEach>;'
+	 result = result +'         		</select>';
+	 result = result +'         	</div>';
+	 result = result +'         </div>';
+	 result = result +'       </div>';
+	 result = result +'       <div class="modal-footer">';
+	 result = result +'         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveAlert();">Save</button>';
+	 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
+	 result = result +'       </div>';
+	 result = result +'     </div>';
+	 result = result +'   </div>';	
+	 result = result +'</form>';
+ $("#createAlertPopUpDiv").empty();
+ $("#createAlertPopUpDiv").append(result);
+ getAllCountriesJObalert();
+ var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+ }
+ for (var selector in config) {
+	    $(selector).chosen(config[selector]);
+	    }
+	    $('.chosen-select').each(function() {
+	    var $this = $(this);
+	    $this.next().css({'width': '100%'});
+	    })
+}
+$("#countryjobalert").chosen();
+$("#statejobalert").chosen();
+$("#cityjobalert").chosen();
 
+$("#countryjobalert").on('change', function (e) {
+	   getStatesjobalert();
+});
+
+$("#statejobalert").on('change', function (e) {
+	   getCitiesjobalert();
+});
+
+</script>
+
+<script>
+function saveAlert(){
+}	 
+$('body').on('blur', '#create_alert_form', function() {
+	$("#create_alert_form").showHelpOnFocus();
+	$("#create_alert_form").validateOnBlur(false, validationSettings);  
+});
+</script>
+<script>
+var validationSettings = {
+        errorMessagePosition : 'element',
+        borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+     }; 
+</script>
 <script>
 ///////////////////// Back To Top 
     $(window).scroll(function() {
@@ -1673,6 +1862,97 @@ $(".LettSelec a").click(function(){
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });
+</script>
+<script type="text/javascript">
+function getAllCountriesJObalert(){
+	$.ajax({
+    	type: "POST",
+    	dataType: "json",
+    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
+        success: function(data) {
+        	var json = JSON.parse(data);
+        	$('#countryjobalert').empty();
+        	$('#countryjobalert').append('<option value="">---select country---</option>');
+            for(var i=0;i<json.length;i++){
+            	
+            		$('#countryjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+            	}
+            	
+            
+            $('#countryjobalert').trigger("chosen:updated");
+            getStatesjobalert();
+        },
+        error: function(e){
+        }
+    });
+} 
+</script>
+
+
+<script>
+function getStatesjobalert(){
+	var countryName = $("#countryjobalert").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#statejobalert').empty();
+	        	$('#statejobalert').append('<option value="">---Select State---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#statejobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#statejobalert').trigger("chosen:updated");
+	            
+	            $('#cityjobalert').empty();
+	            $('#cityjobalert').append('<option value="">---Select City---</option>');
+	            $('#cityjobalert').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#statejobalert').empty();
+    	$('#statejobalert').append('<option value="">---Select State---</option>');
+    	$('#statejobalert').trigger("chosen:updated");
+    	$('#cityjobalert').empty();
+    	$('#cityjobalert').append('<option value="">---Select City---</option>');
+        $('#cityjobalert').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCitiesjobalert(){
+	var countryName = $("#countryjobalert").val();
+	var stateName = $("#statejobalert").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#cityjobalert').empty();
+	        	$('#cityjobalert').append('<option value="">---Select City---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#cityjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#cityjobalert').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#cityjobalert').empty();
+    	$('#cityjobalert').append('<option value="">---Select City---</option>');
+    	$('#cityjobalert').trigger("chosen:updated");
+	}
+}
 </script>
 
 
