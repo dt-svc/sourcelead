@@ -812,7 +812,7 @@ public class ContractRestController {
 				if(jsonObj.has("docId"+c) && !jsonObj.getString("docId"+c).isEmpty()){
 					ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(jsonObj.getString("docId"+c)));
 					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+jsonObj.getString("docId"+c));
-					if(multiFile != null){
+					if(multiFile != null && multiFile.getSize()>0){
 						contractRequestDocuments.setDocFile(multiFile.getBytes());
 						contractRequestDocuments.setFileType(multiFile.getContentType());
 						contractRequestDocuments.setCreatedDate(new Date());
@@ -838,5 +838,18 @@ public class ContractRestController {
 			
 			return "success";
 		}
-	 
+	 @RequestMapping(value = "/updateDocument", method = RequestMethod.POST)
+	 public @ResponseBody String updateDocument(@RequestParam(value = "docuId", required = false) String docuId, HttpServletRequest request) throws Exception {
+			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docuId));
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			contractRequestDocuments.setDocFile(new byte[0]);
+			contractRequestDocuments.setFileType("");
+			contractRequestDocuments.setCreatedDate(new Date());
+			contractRequestDocuments.setUpdatedDate(new Date());
+			contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+			contractRequestDocuments.setCreatedBy(user.getUserCode());
+			contractRequestDocuments.setUpdatedBy(user.getUserCode());
+			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+			return "success";
+		}
 }
