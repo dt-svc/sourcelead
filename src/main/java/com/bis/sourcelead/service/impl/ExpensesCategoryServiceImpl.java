@@ -52,16 +52,17 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 			expensesCategory.setExpensesName(jsonObject.getString("expensesName"));
 			}
 		
-		/*if(jsonObject.has("allowedAmount") && jsonObject.getString("allowedAmount") !=null){
-			expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("allowedAmount")));
-			}*/
-		
 		
 		if(jsonObject.has("taxPercentageReward") && null != jsonObject.getString("taxPercentageReward") && !"".equals(jsonObject.getString("taxPercentageReward")) ){
 			expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("taxPercentageReward")));
 			expensesCategory.setAmountType("Percentage");
 		}
 			
+		if(jsonObject.has("taxFlatReward") && null != jsonObject.getString("taxFlatReward") && !"".equals(jsonObject.getString("taxFlatReward")) ){
+			expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("taxFlatReward")));
+			expensesCategory.setAmountType("Flat");
+		}
+		
 		
 		if(jsonObject.has("description")){
 			expensesCategory.setDescription(jsonObject.getString("description"));
