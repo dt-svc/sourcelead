@@ -23,7 +23,6 @@
 <script src="resources/js/jquery-1.11.1.min.js"></script>
 <script src="resources/js/masterHeaderAction.js"></script>
 <script src="resources/js/bootstrap.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
 <script src="resources/js/jquery-ui.js"></script>
 <script src="resources/js/jquery-fun.js"></script>
 <script src="resources/js/jquery.dataTables.min.js"></script>
@@ -928,7 +927,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'  </div>'
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
-				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert();"><i class="fa fa-bell"></i></a>';
+				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert();"><i class="fa fa-bell-o"></i></a>';
 				result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
 				if(requirements.isCrowdSourcingJob == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
@@ -1683,19 +1682,19 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Alert Title" name="alertTitle" data-validation="required validate_length length2-100">';
+	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Email<span class="text-danger paddingLeft">*</span></label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Email" name="email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Email" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Country</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="countryjobalert" name="countryjobalert" onchange="getStatesjobalert();">';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="countryjobalert" name="country" onchange="getStatesjobalert();">';
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1703,7 +1702,7 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">State</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="statejobalert" id="statejobalert" onchange="getCitiesjobalert();">';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="state" id="statejobalert" onchange="getCitiesjobalert();">';
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1712,7 +1711,7 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">City</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="cityjobalert" id="cityjobalert">';
+	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="city" id="cityjobalert">';
 	 result = result +'         		</select>';
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
@@ -1775,8 +1774,8 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control" id="duration" name="duration">';
-	 result = result +'         			<option selected>---Select Duration---</option>';
+	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
+	 result = result +'         			<option selected value="">---Select Duration---</option>';
 	 result = result +'         			<option>Daily</option>';
 	 result = result +'         			<option>Weekly</option>';
 	 result = result +'         			<option>Monthly</option>';
@@ -1786,7 +1785,7 @@ function createAlert(){
 	 result = result +'         <div class="form-group clearfix">';
 	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
 	 result = result +'         	<div class="col-md-9">';
-	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" name="candidateSkills">';
+	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" name="skills">';
 	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
 	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
 	 result = result +'						</c:forEach>;'
@@ -1818,23 +1817,90 @@ function createAlert(){
 	    var $this = $(this);
 	    $this.next().css({'width': '100%'});
 	    })
+	    
+	    var select, chosen;
+	    select = $("#candidateSkills");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+	    chosen = select.data('chosen');
+	    
+	    $("#candidateSkills").chosen().change(function(event) {
+	    	 var sourceleadUrl ='${sourceleadUrl}';
+	    	var allSkills = $(event.target).val();
+	    	$.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        success: function(data) {
+		        	var primarySkill = data;
+		        	      $("#primarySkill").val(primarySkill);
+		        	
+		        },
+		    });
+	    	
+	    });
+    
+       chosen.search_field.on('keyup', function(e)
+		    {
+		    	   var skillsArray = this.value.split(",");
+			    	 if(skillsArray.length > 1){
+		        		 for (var i=0; i < skillsArray.length; i++) {
+		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+		        			 select.append(option);
+		 		             select.find(option).prop('selected', true);
+		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+		 	        		 $("#candidateSkills").trigger("chosen:updated");
+		                 }
+			    	 }else{
+		    			var newSkill = this.value.replace(","," ");
+		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		                {
+		    				 var option = $("<option>").val(newSkill).text(newSkill);
+		                     select.append(option);
+		                     select.find(option).prop('selected', true);
+		                     $("#candidateSkills option").each(function(){
+		                         $(this).siblings("[value='"+ this.value+"']").remove();
+		                   });
+		                   $("#candidateSkills").trigger("chosen:updated");
+		                }
+				       
+	    	         }
+		    });
+       $("#countryjobalert").chosen();
+       $("#statejobalert").chosen();
+       $("#cityjobalert").chosen();
+
+       $("#countryjobalert").on('change', function (e) {
+       	   getStatesjobalert();
+       });
+
+       $("#statejobalert").on('change', function (e) {
+       	   getCitiesjobalert();
+       });
 }
-$("#countryjobalert").chosen();
-$("#statejobalert").chosen();
-$("#cityjobalert").chosen();
 
-$("#countryjobalert").on('change', function (e) {
-	   getStatesjobalert();
-});
-
-$("#statejobalert").on('change', function (e) {
-	   getCitiesjobalert();
-});
 
 </script>
 
 <script>
 function saveAlert(){
+	if ($('#create_alert_form').validate(false, validationSettings)){ 
+		var sourceleadUrl = '${sourceleadUrl}';
+		var frm = $('#create_alert_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+		//It will escape all the special characters
+	    var jsonData = encodeURIComponent(con);
+
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(result) {
+							location.replace(sourceleadUrl+"/openRequirementsRedirect");
+					},
+				});
+		return true;
+	 }else{ 
+			return false;
+	 } 
 }	 
 $('body').on('blur', '#create_alert_form', function() {
 	$("#create_alert_form").showHelpOnFocus();
@@ -1872,7 +1938,7 @@ function getAllCountriesJObalert(){
         success: function(data) {
         	var json = JSON.parse(data);
         	$('#countryjobalert').empty();
-        	$('#countryjobalert').append('<option value="">---select country---</option>');
+        	$('#countryjobalert').append('<option value="">---Select country---</option>');
             for(var i=0;i<json.length;i++){
             	
             		$('#countryjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
@@ -1954,6 +2020,6 @@ function getCitiesjobalert(){
 	}
 }
 </script>
-
+<script src="resources/js/formvalidator.js"></script>
 
 <jsp:include page="../socialinviterscripts.jsp" />

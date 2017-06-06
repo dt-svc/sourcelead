@@ -60,7 +60,7 @@ public class RequirementHelper {
 			requirementIndex.setReqCoolingOffPeriod(requirement.getReqCoolingOffPeriod());
 			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
-			
+			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			
 			if (null != requirement.getMaxRate() && !"".equals(requirement.getMaxRate())) {
 				requirementIndex.setMaxRate(Float.parseFloat(requirement.getMaxRate()));
