@@ -56,5 +56,7 @@ public interface ContractsTemplateService {
 
 	List<Contracts> getAllContractsBasedOnTimeFrequency(Date startDateUTC, Date endDateUTC) throws Exception;
 
+	void documentsReceivedMailToOwner(Contracts contractId, User user, Org org) throws Exception;
+
 	
 }
