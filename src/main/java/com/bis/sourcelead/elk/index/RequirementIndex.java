@@ -23,6 +23,8 @@ public class RequirementIndex {
 	
 	private Float rate;
 	
+	private Float maxRate;
+	
 	private String rateType;
 	
 	private String minExperience;
@@ -95,6 +97,8 @@ public class RequirementIndex {
 	
 	private String calDays;
 	
+	private String travelAllownace;
+	
 	private String postedOrg;
 	
 	private List<String> skillsList;
@@ -111,6 +115,8 @@ public class RequirementIndex {
 	
 	private String referedUser;
 	
+	private String industryName;
+	
 	private Integer noOfSearchHits;
 	
 	private String isReferedRequiremetnApplied;
@@ -123,6 +129,10 @@ public class RequirementIndex {
 	
 	private String rewardGuaranteePeriod;
 	
+	private String projectDurationYears;
+	
+	private String projectDurationMonths;
+	
 	private String rewardType;
 	
 	private Integer recruiterSubmissionsCount;
@@ -130,6 +140,8 @@ public class RequirementIndex {
 	private Long submissionId;
 	
 	private String reqCoolingOffPeriod;
+	
+	private String closedDate;
 	
 	
 	public String getManagerUserId() {
@@ -632,6 +644,68 @@ public class RequirementIndex {
 	public void setNoticePeriod(String[] noticePeriod) {
 		this.noticePeriod = noticePeriod;
 
+	}
+
+	
+
+	public String getIndustryName()
+	{
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName)
+	{
+		this.industryName = industryName;
+	}
+
+	public Float getMaxRate()
+	{
+		return maxRate;
+	}
+
+	public void setMaxRate(Float maxRate)
+	{
+		this.maxRate = maxRate;
+	}
+
+	public String getTravelAllownace()
+	{
+		return travelAllownace;
+	}
+
+	public void setTravelAllownace(String travelAllownace)
+	{
+		this.travelAllownace = travelAllownace;
+	}
+
+	public String getProjectDurationYears()
+	{
+		return projectDurationYears;
+	}
+
+	public void setProjectDurationYears(String projectDurationYears)
+	{
+		this.projectDurationYears = projectDurationYears;
+	}
+
+	public String getProjectDurationMonths()
+	{
+		return projectDurationMonths;
+	}
+
+	public void setProjectDurationMonths(String projectDurationMonths)
+	{
+		this.projectDurationMonths = projectDurationMonths;
+	}
+
+	public String getClosedDate()
+	{
+		return closedDate;
+	}
+
+	public void setClosedDate(String closedDate)
+	{
+		this.closedDate = closedDate;
 	}
 	
 }

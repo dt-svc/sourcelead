@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetReportService;
@@ -69,6 +71,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	ProjectMembersService projectMembersService;
 	
 	@Autowired
+	ProjectMembersHistoryService projectMembersHistoryService;
+	
+	@Autowired
 	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
 	
 	@Autowired
@@ -82,6 +87,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
+	
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetReportServiceImpl.class);
 	
@@ -280,11 +286,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				}
 			}
 			timesheetApprovalDiv.append("	                    <th>Total</th>             ");
+			timesheetApprovalDiv.append("	                    <th>Stage</th>             ");
 			timesheetApprovalDiv.append("	                    <th>Project to Date</th>   ");
 			timesheetApprovalDiv.append("	                    <th>Last month</th>        ");
-			timesheetApprovalDiv.append("	                    <th>Stage</th>             ");
-			
-			 	 	 	
 			timesheetApprovalDiv.append("	                </tr>");
 			timesheetApprovalDiv.append("				</thead>");
 			timesheetApprovalDiv.append("	        	<tbody>");
@@ -331,10 +335,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 					 float monthNonBillableTotalHours = 0f;
 				     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 				    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
-				    	    	
+				    	    	HashSet<Date> pmhDateList = projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMember.getId(), entry.getKey(), entry.getValue());
 				    	    	Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
 				    	    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
 				    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
+				    	    	}
+				    	    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
+				    	    		approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
 				    	    	}
 				    	    	Float  weekBillableHours = 0f;
 				    	    	if(sah.getWeekBillableHoursMap().get(entry.getKey()) != null){
@@ -434,6 +441,27 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
                      .append(" </div>")
                   .append("</td>");
 				     
+				     String combinedApprovalClass = "class='action'";
+				     String combinedApprStatus = "Action Required";
+	    	         if(combinedApprovalStatus.equals(Submission_ApprovalStatus.APPROVED)){
+	    	    		 combinedApprovalClass = "class='proj_active'";
+	    	    		  combinedApprStatus = "Approved";
+	    	    	 }
+	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.REJECTED)){
+	    	    		 combinedApprovalClass = "class='proj_closed'";
+	    	    		  combinedApprStatus = "Rejected";
+	    	    	 }
+	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
+	    	    		 combinedApprovalClass = "class='proj_process'";
+	    	    		  combinedApprStatus = "Submit For Approval";
+	    	    	 }
+	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
+	    	    		 combinedApprovalClass = "class='bgGReen'";
+	    	    		  combinedApprStatus = "NEW";
+	    	    	 }
+				     
+				     timesheetApprovalDiv.append("<td><div class='sm'><b "+combinedApprovalClass+">"+combinedApprStatus+"</b></div></td>");
+				     
 				     timesheetApprovalDiv.append("<td>")
                      .append(" <div class='week'>")
                        .append(" <span class='draft'>").append("<d title='").append("ProjectToDate-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours())).append("'>").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours())).append("</d></span>")
@@ -465,26 +493,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
                   .append("</td>");
 				     
 				     
-				     String combinedApprovalClass = "class='action'";
-				     String combinedApprStatus = "Action Required";
-	    	         if(combinedApprovalStatus.equals(Submission_ApprovalStatus.APPROVED)){
-	    	    		 combinedApprovalClass = "class='proj_active'";
-	    	    		  combinedApprStatus = "Approved";
-	    	    	 }
-	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.REJECTED)){
-	    	    		 combinedApprovalClass = "class='proj_closed'";
-	    	    		  combinedApprStatus = "Rejected";
-	    	    	 }
-	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
-	    	    		 combinedApprovalClass = "class='proj_process'";
-	    	    		  combinedApprStatus = "Submit For Approval";
-	    	    	 }
-	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
-	    	    		 combinedApprovalClass = "class='bgGReen'";
-	    	    		  combinedApprStatus = "NEW";
-	    	    	 }
 				     
-				    timesheetApprovalDiv.append("<td><div class='sm'><b "+combinedApprovalClass+">"+combinedApprStatus+"</b></div></td>");
 			        timesheetApprovalDiv.append("</tr>");
 		  }
 		
@@ -709,11 +718,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	    	 float weekTotalHours = 0f;
 	    	    	 float  weekBillableHours = 0f;
 	    	    	 float weekNonBillableHours = 0f;
-	    	    	 
+	    	    	 HashSet<Date> pmhDateList = projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMember.getId(), entry.getKey(), entry.getValue());
 		    	     Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
-		    	    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
-		    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
-		    	    	}
+	    	    	 if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
+	    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
+	    	    	}
+	    	    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
+		    	    	approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
+		    	    }
 		    	    if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
 		    	    	 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
 		    	    }
@@ -770,7 +782,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	         timeSheetReportsArray[count+2] = listSb.append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours)).toString();
 	    	         count++;
 	    	     }
-	     }
+	            }
 				timeSheetReportsArray[count] =  CommonUtil.getHoursDisplayFormat(monthTotalHours);
 				timeSheetReportsArray[count+1] = CommonUtil.getHoursDisplayFormat(monthBillableTotalHours);
 				timeSheetReportsArray[count+2] = CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours);
@@ -965,11 +977,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     	     float weekTotalHours = 0f;
    	    	 float  weekBillableHours = 0f;
    	    	 float weekNonBillableHours = 0f;
-    	    	
-	    	     Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
-	    	    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
-	    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
-	    	    	}
+   	    	    HashSet<Date> pmhDateList = projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMember.getId(), entry.getKey(), entry.getValue());
+		        Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
+		    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
+		    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
+		    	}
+		    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
+    	    		approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
+    	    	}
 	    	    if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
 	    	    	 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
 	    	    }

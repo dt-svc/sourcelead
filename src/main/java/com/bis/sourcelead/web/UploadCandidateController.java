@@ -59,7 +59,7 @@ public class UploadCandidateController {
 			
 			File file = null;
 			String fn;	
-			fn = "/templates/Candidate_import_template.xlsx";
+			fn = "/templates/Candidate_import_Template.xlsx";
 			URL url = getClass().getResource(fn);
 		     file = new File(url.toURI());
 

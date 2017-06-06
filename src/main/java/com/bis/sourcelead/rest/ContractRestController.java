@@ -807,6 +807,7 @@ public class ContractRestController {
 			String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			final Map files = multiRequest.getFileMap();
 			int maxCount = Integer.parseInt(jsonObj.getString("maxDocCount"));
@@ -823,6 +824,7 @@ public class ContractRestController {
 						contractRequestDocuments.setCreatedBy(user.getUserCode());
 						contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+						contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(),user,org);
 					}
 				}
 			}
@@ -832,9 +834,11 @@ public class ContractRestController {
 	 
 	 @RequestMapping(value = "/terminateDocument", method = RequestMethod.POST)
 	 public @ResponseBody String terminateDocument(@RequestParam(value = "docuId", required = false) String docuId, HttpServletRequest request) throws Exception {
-		 	
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docuId));
 			contractRequestDocuments.setStatus(Constants.MEMBER_IN_ACTIVE);
+			contractRequestDocuments.setUpdatedDate(new Date());
+			contractRequestDocuments.setUpdatedBy(user.getUserCode());
 			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
 			
 			return "success";
@@ -845,15 +849,16 @@ public class ContractRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			contractRequestDocuments.setDocFile(new byte[0]);
 			contractRequestDocuments.setFileType("");
-			contractRequestDocuments.setCreatedDate(new Date());
+			//contractRequestDocuments.setCreatedDate(new Date());
 			contractRequestDocuments.setUpdatedDate(new Date());
 			contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
-			contractRequestDocuments.setCreatedBy(user.getUserCode());
+			//contractRequestDocuments.setCreatedBy(user.getUserCode());
 			contractRequestDocuments.setUpdatedBy(user.getUserCode());
 			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
 			return "success";
 		}
 	 
+
 	 @RequestMapping(value = "/downloadContractDocument",method = RequestMethod.GET)
 	 public void downloadContractDocument(@RequestParam(value="contractUUID", required=false) String contractUUID, HttpServletResponse response) throws Exception {
 			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsByContractUUID(contractUUID);
@@ -880,5 +885,41 @@ public class ContractRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 			}
+
+	 }
+	 
+	 @RequestMapping(value = "/updateContractEndDate", method = RequestMethod.POST)
+	 public @ResponseBody String updateContractEndDate(@RequestParam(value = "contractId", required = false) String contractId,@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) throws Exception {
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
+		 	Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+			Date endTimeStr = commonUtil.getDateFormat(endDate);  
+			String endDateStr = Constants.TZ_DF.format(endTimeStr);  
+			String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+		 	// updating parent contract end date if get the contract i is child contract
+		 	if(null != contracts.getParentContractId().getId()){
+		 		Contracts parentContracts = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+		 		parentContracts.setEndDate(convertedEndDate);
+		 		parentContracts.setUpdatedDate(new Date());
+		 		parentContracts.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveNewContract(parentContracts);
+		 	}
+		 // updating child contract end date if get the parent contract
+		 	if(null == contracts.getParentContractId().getId()){
+		 		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+		 		childContarct.setEndDate(convertedEndDate);
+		 		childContarct.setUpdatedDate(new Date());
+		 		childContarct.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveNewContract(childContarct);
+		 	}
+		 // updating contract end date 
+		 	contracts.setEndDate(convertedEndDate);
+		 	contracts.setUpdatedDate(new Date());
+		 	contracts.setUpdatedBy(user.getUserCode());
+			contractsTemplateDao.saveNewContract(contracts);
+			return "success";
 		}
 }

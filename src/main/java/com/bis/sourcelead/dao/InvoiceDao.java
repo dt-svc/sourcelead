@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.OrgRelations;
 
 public interface InvoiceDao{
 
@@ -25,4 +26,9 @@ public interface InvoiceDao{
 	List<Invoice> getViewInvoiceListByInvoiceIdAndOrglocationId(Long invoiceId, Long orgLocationId) throws Exception;
 
 	Invoice getInvoicetBySelfJoinInvoiceId(Long parentInvoiceId) throws Exception;
+
+	List<Invoice> getInvoiceByOrgLocationId(Long orgLocationID)throws Exception;
+
+	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId,Long orgLocationId, String invoiceType);
+
 }
