@@ -67,8 +67,8 @@ public class JobAlertController {
  	public ModelAndView jobAlertList(HttpServletRequest request) throws Exception {
 		    ModelAndView model = new ModelAndView();
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
-			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Countries countries = countriesService.getCountriesByCountryName(user.getCountry());
 			if(null != countries){
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
