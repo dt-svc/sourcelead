@@ -1,0 +1,1 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','IS_ReceivingApplicants','VARCHAR(2) NULL  AFTER `REQ_COOLINGOFF_PERIOD`');
