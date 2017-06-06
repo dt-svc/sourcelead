@@ -67,15 +67,13 @@ function addExpenseCategory() {
     
 	result = result  +'</div>';
 	result = result  +'';
-	result = result  +'<div class="clearfix mb10">';
-	result = result  +'<div class="col-md-5">';
+	result = result  +'<div class="clearfix mb10" id="errTax">';
+	result = result  +'<div class="col-md-5" >';
 	result = result  +'<div class="btn-group btn_Block pull-left">';
-	result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType("Percentage")">%</button>';
-	result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType("Flat")">Flat</button>';
+	result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+	result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
 	result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>';
 	result = result  +' </div>';
-	/* result = result  +'  <input type="text" class="form-control input-sm ExpAmFild" id="allowedAmount" name="allowedAmount" value="" placeholder="Amount *">';
-	result = result  +' </div>'; */
 	result = result  +'</div>';
 	
 	result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
@@ -90,7 +88,8 @@ function addExpenseCategory() {
 	result = result  +'<div class="row flat">';
 	result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
 	result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">';
-	result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i> </div>';
+	result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
+	result = result  +' </div>';
 	result = result  +' </div>';
 	result = result  +' </div>';
 	result = result  +' </div>';
@@ -321,7 +320,8 @@ $('body').on('blur', '#expenseCategory_form', function() {
 </script>           
 
 <script type="text/javascript">
-function getTaxRewardType(rewardType){
+function getTaxRewardType(e){
+	var rewardType = e.value;
 	 $("#taxRewardType").val(rewardType);
 	 
 	 $("#taxPercentageRewardValue").val('');
@@ -329,11 +329,9 @@ function getTaxRewardType(rewardType){
 	 
 	 $('#taxPercentageReward').find('p.jquery_form_error_message').remove();
 	 $('#taxFlatReward').find('p.jquery_form_error_message').remove();
-	 
-	 if(rewardType == 'Percentage'){
+	 if(rewardType == 'percentage'){
 		document.getElementById("taxPercentageReward").style.display="";
 		document.getElementById("taxFlatReward").style.display="none";
-		document.getElementById("taxFlatRateType").style.display="none";
 		
 		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
 	    document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
@@ -345,9 +343,8 @@ function getTaxRewardType(rewardType){
 	    
 	} 
 	
-	 if(rewardType == 'Flat'){
+	 if(rewardType == 'flat'){
 		document.getElementById("taxFlatReward").style.display="";
-		document.getElementById("taxFlatRateType").style.display="";
 		document.getElementById("taxPercentageReward").style.display="none";
 		
 		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
