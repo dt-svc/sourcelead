@@ -573,7 +573,7 @@ public class Constants {
 	public static final String EXPENSES_APPROVAL =  "Expenses Approval";
 	
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
-	
+	public static final String EXPENSES_STATUS = "1";
 	
 	
 	
