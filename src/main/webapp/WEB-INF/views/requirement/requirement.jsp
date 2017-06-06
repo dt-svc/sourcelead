@@ -633,16 +633,26 @@ $(document).ready(function () {
                   </div>
                   
                   
-                   <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
+              <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
-                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.receivingApplicantsId}"
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
                  
-						 ${requirement.receivingApplicantsId  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
 				</label>
               </div>
             </div>
-		        
+		     <c:if test="${! empty requirement.closedDateStringFormat}">
+		     <div class="form-group"  style="display:block">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+		     </c:if>
           
           <div class="form-group">
 				<label class="col-md-3">Country</label>
