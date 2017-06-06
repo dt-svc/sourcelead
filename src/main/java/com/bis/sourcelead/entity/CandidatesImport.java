@@ -34,9 +34,9 @@ private String designation;
 
 private String designationType;
 
-private String experienceYears;
+private String experience;
 
-private String experienceMonths;
+/*private String experienceMonths;*/
 
 /*private String currentRate;
 
@@ -140,7 +140,7 @@ public void setDesignationType(String designationType) {
 	this.designationType = designationType;
 }
 
-public String getExperienceYears() {
+/*public String getExperienceYears() {
 	return experienceYears;
 }
 
@@ -154,7 +154,7 @@ public String getExperienceMonths() {
 
 public void setExperienceMonths(String experienceMonths) {
 	this.experienceMonths = experienceMonths;
-}
+}*/
 
 //public String getCurrentRate() {
 //	return currentRate;
@@ -179,6 +179,14 @@ public void setExperienceMonths(String experienceMonths) {
 //public void setCurrentRateCurrency(String currentRateCurrency) {
 //	this.currentRateCurrency = currentRateCurrency;
 //}
+
+public String getExperience() {
+	return experience;
+}
+
+public void setExperience(String experience) {
+	this.experience = experience;
+}
 
 public String getExpectedRate() {
 	return expectedRate;
