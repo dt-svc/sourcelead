@@ -16,7 +16,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "EXPENSES_CATEGORY", catalog = "sourcelead")
+@Table(name = "EXPENSE_CATEGORY", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesCategory")
 public class ExpensesCategory implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,10 +12,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "EXPENSES", catalog = "sourcelead")
@@ -32,7 +37,7 @@ private static final long serialVersionUID = 1L;
     private OrgLocations orgLocationId;
 	
 	@ManyToOne
-	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
+	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	private ProjectMembers projectMembers;
 	
 	@Column(name = "EXPENSE_ID")
@@ -53,6 +58,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
+	@Column(name = "NO_OF_EXPENSES")
+	private String noOfExpenses;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -67,6 +75,10 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<ExpensesEntries> expensesEntries;
 
 	public Long getId() {
 		return id;
@@ -140,6 +152,14 @@ private static final long serialVersionUID = 1L;
 		this.endDate = endDate;
 	}
 
+	public String getNoOfExpenses() {
+		return noOfExpenses;
+	}
+
+	public void setNoOfExpenses(String noOfExpenses) {
+		this.noOfExpenses = noOfExpenses;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -178,5 +198,15 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Set<ExpensesEntries> getExpensesEntries()
+	{
+		return expensesEntries;
+	}
+
+	public void setExpensesEntries(Set<ExpensesEntries> expensesEntries)
+	{
+		this.expensesEntries = expensesEntries;
 	}
 }
