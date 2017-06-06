@@ -804,6 +804,7 @@ public class ContractRestController {
 			String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			 final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			final Map files = multiRequest.getFileMap();
 			int maxCount = Integer.parseInt(jsonObj.getString("maxDocCount"));
@@ -820,6 +821,7 @@ public class ContractRestController {
 						contractRequestDocuments.setCreatedBy(user.getUserCode());
 						contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+						contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(),user,org);
 					}
 				}
 			}

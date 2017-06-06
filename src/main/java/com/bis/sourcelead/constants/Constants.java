@@ -171,6 +171,8 @@ public class Constants {
 	public static final String APPROVE_CONTRACT = "Approve Contract";
 	public static final String REJECT_CONTRACT = "Reject Contract";
 	public static final String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
+	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
+	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";

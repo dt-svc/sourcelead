@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -431,6 +432,15 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			throw exception;
 		}
 		return contractsHistory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getAllContractsBasedOnTimeFrequency(Date startDateUTC, Date endDateUTC)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ct.templateSubmissionStatus <> 'DRAFT' and ( ct.endDate >= :startDateUTC and ct.endDate <= :endDateUTC )").setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		return contractsList;
 	}
 
 }
