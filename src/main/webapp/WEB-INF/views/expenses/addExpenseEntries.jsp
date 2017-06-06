@@ -52,10 +52,11 @@ function loadCategoryDiv(){
 	result = result + '						<div class="col-md-8 dropdown-select">';
 	result = result + '							<select class="form-control" name="paymentMode" id="paymentMode" field-name="Payment Mode" data-validation="required">';
 	result = result + '								<option value="">Select Mode</option>';
-	result = result + '								<option>Mode-1</option>';
-	result = result + '								<option>Mode-2</option>';
-	result = result + '								<option>Mode-3</option>';
-	result = result + '								<option>Mode</option>';
+	result = result + '								<option value="Credit Card">Credit Card</option>';
+	result = result + '								<option value="Debit Card">Debit Card</option>';
+	result = result + '								<option value="Cash">Cash</option>';
+	result = result + '								<option value="Cheque">Cheque</option>';
+	result = result + '								<option value="e-Wallet">e-Wallet</option>';
 	result = result + '							</select>';
 	result = result + '						</div>';
 	result = result + '					</div>';

@@ -18,6 +18,8 @@ import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -73,7 +75,11 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					if(jsonObj.has("entryDes"+c)){
 						entries.setReceiptIssuedBy(jsonObj.getString("entryDes"+c));
 					}
-						
+					
+					if(jsonObj.has("paymentMode"+c)){
+						entries.setPaymentMode(PaymentModes.getNameByValue(jsonObj.getString("paymentMode"+c)));
+					}
+					
 						entries.setCreatedDate(new Date());
 						entries.setUpdatedDate(new Date());
 						entries.setExpensesId(expenses);
