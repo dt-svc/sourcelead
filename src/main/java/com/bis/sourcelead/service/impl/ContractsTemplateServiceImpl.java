@@ -483,6 +483,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contractRequestDocuments.setUpdatedDate(new Date());
 			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
 			}
+			}
 		}
 		
 		
