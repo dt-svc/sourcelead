@@ -1,0 +1,3 @@
+CALL sourcelead.AlterTableAddColumn ('sourcelead','EXPENSES','NO_OF_EXPENSES','VARCHAR(20) NULL AFTER `END_DATE`');
+
+ALTER TABLE `sourcelead`.`expenses_category` CHANGE COLUMN `CATEGORY_TYPE` `AMOUNT_TYPE` VARCHAR(50) NULL DEFAULT NULL;
