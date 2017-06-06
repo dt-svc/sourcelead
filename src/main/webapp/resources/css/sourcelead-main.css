@@ -5336,6 +5336,9 @@ float: none !important; padding: 0; color: #333;
 .input_minmax input.form-control:first-child{
     border-right:none;
 }
+	.timesheet_head.timeHd_minHeight {
+	min-height: 40px;
+	}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
