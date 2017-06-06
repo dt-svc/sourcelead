@@ -129,6 +129,10 @@ public class RequirementIndex {
 	
 	private String rewardGuaranteePeriod;
 	
+	private String projectDurationYears;
+	
+	private String projectDurationMonths;
+	
 	private String rewardType;
 	
 	private Integer recruiterSubmissionsCount;
@@ -136,6 +140,8 @@ public class RequirementIndex {
 	private Long submissionId;
 	
 	private String reqCoolingOffPeriod;
+	
+	private String closedDate;
 	
 	
 	public String getManagerUserId() {
@@ -670,6 +676,36 @@ public class RequirementIndex {
 	public void setTravelAllownace(String travelAllownace)
 	{
 		this.travelAllownace = travelAllownace;
+	}
+
+	public String getProjectDurationYears()
+	{
+		return projectDurationYears;
+	}
+
+	public void setProjectDurationYears(String projectDurationYears)
+	{
+		this.projectDurationYears = projectDurationYears;
+	}
+
+	public String getProjectDurationMonths()
+	{
+		return projectDurationMonths;
+	}
+
+	public void setProjectDurationMonths(String projectDurationMonths)
+	{
+		this.projectDurationMonths = projectDurationMonths;
+	}
+
+	public String getClosedDate()
+	{
+		return closedDate;
+	}
+
+	public void setClosedDate(String closedDate)
+	{
+		this.closedDate = closedDate;
 	}
 	
 }

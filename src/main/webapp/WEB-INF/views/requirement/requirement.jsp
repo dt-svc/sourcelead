@@ -130,6 +130,20 @@ $(document).ready(function() {
 				  $("#jobOtherType").val('');
 			}
 			
+			  if(jobType == 'C2C' || jobType == 'C2H' || jobType == 'Contract'){
+					 
+					
+					 document.getElementById("projectDurationYearsDiv").style.display="block";
+					 document.getElementById("projectDurationMonthsDiv").style.display="block";
+					 
+					 
+				  
+				}else{
+					document.getElementById("projectDurationYearsDiv").style.display="none";
+					document.getElementById("projectDurationMonthsDiv").style.display="none";
+					
+				}
+			
 			getAllCountries();
 			removeEditButton();
 			disableMonths();
@@ -345,34 +359,62 @@ $(document).ready(function () {
             </div>
           </div>
           
-          <div class="form-group" >
+          <div class="form-group" id="projectDurationYearsDiv" style="display:none">
             <label class="col-md-3">Project Duration</label>
             <div class="col-md-9">
               <div class="row">
 	                <div class="col-md-6 dropdown-select">
-						<select class="form-control">
-							<option>--Select Years--</option>
-							<option>01</option>
-							<option>02</option>
+						<select class="form-control" id="projectDurationYears" name="projectDurationYears">
+							<option value="">--Select Years--</option>
+	                 <option  ${requirement.projectDurationYears  == '0' ? 'selected' : ''}>0</option>
+	                 <option  ${requirement.projectDurationYears  == '1' ? 'selected' : ''}>1</option>
+	                 <option  ${requirement.projectDurationYears  == '2' ? 'selected' : ''}>2</option>
+	                 <option  ${requirement.projectDurationYears  == '3' ? 'selected' : ''}>3</option>
+	                 <option  ${requirement.projectDurationYears  == '4' ? 'selected' : ''}>4</option>
+	                 <option  ${requirement.projectDurationYears  == '5' ? 'selected' : ''}>5</option>
+	                 <option  ${requirement.projectDurationYears  == '6' ? 'selected' : ''}>6</option>
+	                 <option  ${requirement.projectDurationYears  == '7' ? 'selected' : ''}>7</option>
+	                 <option  ${requirement.projectDurationYears  == '8' ? 'selected' : ''}>8</option>
+	                  <option  ${requirement.projectDurationYears  == '9' ? 'selected' : ''}>9</option>
+	                   <option  ${requirement.projectDurationYears  == '10' ? 'selected' : ''}>10</option>
+	                   
 						</select>	                 
 	                </div>
-	                <div class="col-md-6 dropdown-select" >
-	                <select class="form-control">
-							<option>--Select Months--</option>
-							<option>01</option>
-							<option>02</option>
+	                <div class="col-md-6 dropdown-select" id="projectDurationMonthsDiv" style="display:none">
+	                <select class="form-control" id="projectDurationMonths" name="projectDurationMonths">
+							<option value="">--Select Months--</option>
+							 <option  ${requirement.projectDurationMonths  == '0' ? 'selected' : ''}>0</option>
+							 <option  ${requirement.projectDurationMonths  == '1' ? 'selected' : ''}>1</option>
+							 <option  ${requirement.projectDurationMonths  == '2' ? 'selected' : ''}>2</option>
+							 <option  ${requirement.projectDurationMonths  == '3' ? 'selected' : ''}>3</option>
+							 <option  ${requirement.projectDurationMonths  == '4' ? 'selected' : ''}>4</option>
+							 <option  ${requirement.projectDurationMonths  == '5' ? 'selected' : ''}>5</option>
+							 <option  ${requirement.projectDurationMonths  == '6' ? 'selected' : ''}>6</option>
+							 <option  ${requirement.projectDurationMonths  == '7' ? 'selected' : ''}>7</option>
+							 <option  ${requirement.projectDurationMonths  == '8' ? 'selected' : ''}>8</option>
+							 <option  ${requirement.projectDurationMonths  == '9' ? 'selected' : ''}>9</option>
+							 <option  ${requirement.projectDurationMonths  == '10' ? 'selected' : ''}>10</option>
+							 <option  ${requirement.projectDurationMonths  == '11' ? 'selected' : ''}>11</option>
+							 
 						</select>
 	                </div>
               </div>
-              <div class="row" id="projectduration">
+              <!-- <div class="row" id="projectduration">
                   <input type="hidden" name="expValidation" id="projectDuration">
-              </div> 
+              </div>  -->
             </div>
           </div>
           
 		          
           
-           
+            <!--  <div class="form-group">
+            <label class="col-md-3">Closed Date</label>
+            <div class="col-md-9">
+             <div class="col-lg-6 positionRelative" id="closedDateDiv">
+			<input type="text" class="form-control" value="" id="closedDate" name="closedDate" field-name="Closed Date"  readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+			</div>
+            </div>
+          </div> -->
             
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -555,15 +597,15 @@ $(document).ready(function () {
 				</div>
 		 </div>
 		 
-		 <!-- <div class="form-group">
+		 <div class="form-group">
                       <label class="col-md-3">Requirement Closed Date</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="closedDate" class="form-control" id=closedDate readonly="readonly">
+                              <input type="text"  name="closedDate" class="form-control" id=closedDate readonly="readonly" value="${requirement.closedDateStringFormat}">
                               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                            </div>
                         </div>
-                  </div> -->
+                  </div>
 		        
           
           <div class="form-group">
@@ -2926,9 +2968,33 @@ function getJobType(jobType){
 		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
 			  $("#jobOtherType").val('');
 		  }
+		  
+		  
+		  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
+			 
+	
+				 document.getElementById("projectDurationYearsDiv").style.display="block";
+				 document.getElementById("projectDurationMonthsDiv").style.display="block";
+				 
+				 
+			  
+			}else{
+				document.getElementById("projectDurationYearsDiv").style.display="none";
+				document.getElementById("projectDurationMonthsDiv").style.display="none";
+				
+			}
+		  
+		  
+		  
+		  
+		  
+		  
 	}
 }
 </script>
+
+
+
 
 <!-- <script type="text/javascript">
 function checkcheckbox(){

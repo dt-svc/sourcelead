@@ -236,11 +236,25 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@Column(name = "PROJECT_DURATION_YEARS")
+	private String projectDurationYears;
+	
+	@Column(name = "PROJECT_DURATION_MONTHS")
+	private String projectDurationMonths;
+	
+	
+	@Column(name = "REQUIRMENT_CLOSED_DATE")
+	private Date closedDate;
+	
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
+	
+	@Transient
+	private String closedDateStringFormat;
 	
 	@Transient
 	private String clientSubmissionTemplate;
@@ -1327,5 +1341,44 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.travelAllowance = travelAllowance;
 	}
 
-	
+	public String getProjectDurationYears()
+	{
+		return projectDurationYears;
+	}
+
+	public void setProjectDurationYears(String projectDurationYears)
+	{
+		this.projectDurationYears = projectDurationYears;
+	}
+
+	public String getProjectDurationMonths()
+	{
+		return projectDurationMonths;
+	}
+
+	public void setProjectDurationMonths(String projectDurationMonths)
+	{
+		this.projectDurationMonths = projectDurationMonths;
+	}
+
+	public Date getClosedDate()
+	{
+		return closedDate;
+	}
+
+	public void setClosedDate(Date closedDate)
+	{
+		this.closedDate = closedDate;
+	}
+
+	public String getClosedDateStringFormat()
+	{
+		return closedDateStringFormat;
+	}
+
+	public void setClosedDateStringFormat(String closedDateStringFormat)
+	{
+		this.closedDateStringFormat = closedDateStringFormat;
+	}
+
 }
