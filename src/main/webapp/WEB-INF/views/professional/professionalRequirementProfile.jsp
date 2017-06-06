@@ -152,7 +152,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 result = result +'                  <div class="orgImage"> <img onerror="predefineProfileImage(this);" src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
 				 result = result +'                 </div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -351,13 +351,19 @@ function getReferalDetails(requirementUUID){
 			        	   }else{
 			        		   phoneNumber= "--";
 			        	   }
-			        	  
+			        	   
 			        	   
 			        	   result = result +'         <tr>';
 			        	   result = result +'         <td><div class="tbldata-dotdot-big">'+userName+'</div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot-me">'+report.referToEmail+'</div></td>';
 			        	   result = result +'         <td><div class="tbldata-dotdot">'+phoneNumber+'</div></td>';
-			        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+requirementSubmissionStatus+'</div></td>';
+			        	   
+			        	   result = result + '<td><div class="tblwidth-150"><span>'+requirementSubmissionStatus+'</span>';
+			        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+			        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+			        	   }	
+			        	   result = result + '</div></td>';
+			        	   
 			        	   result = result +'         </tr>';
 			        	   
 		  				}
@@ -751,7 +757,7 @@ function cancelReferPopUp(){
 }
 </script>
 <script>
-	function predefineProfileImage(imageId){   
+	function predefineOrgProfileImage(imageId){   
 		$(imageId).attr('src','resources/images/office-image.jpg');
 	}
 </script>

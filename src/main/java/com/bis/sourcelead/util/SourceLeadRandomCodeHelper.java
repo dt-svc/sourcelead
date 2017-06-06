@@ -42,4 +42,9 @@ public class SourceLeadRandomCodeHelper {
 		String orgCode = RandomStringUtils.randomAlphanumeric(6);
 		return orgCode;
 	}
+	
+	public static String generateRandomExpensesIdCode() {
+		String expensesIdCode = RandomStringUtils.randomAlphanumeric(6);
+		return expensesIdCode;
+	}
 }

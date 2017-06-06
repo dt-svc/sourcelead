@@ -157,49 +157,49 @@ function getViewInvoice(){
 					result = result +'          <div class="form-horizontal row">                                        ';
 					result = result +'            <div class="col-md-6">                                                 ';
 					if(report.invoiceType == "Receivable"){
-						result = result +'              <label class="col-md-4 control-label">Client</label>                ';
+						result = result +'              <label class="col-md-4 control-label">Client :</label>                ';
 					}
 					if(report.invoiceType == "Payables"){
-						result = result +'              <label class="col-md-4 control-label">Vendor</label>                ';
+						result = result +'              <label class="col-md-4 control-label">Vendor :</label>                ';
 					}
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                  <label><strong>'+report.clientName+'</strong></label>  ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Contact Name</label>         ';
+					result = result +'              <label class="col-md-4 control-label">Contact Name :</label>         ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+report.clientContactName+'</label>';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Contact Email</label>           ';
+					result = result +'              <label class="col-md-4 control-label">Contact Email :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					if(invoiceType == "Payables"){
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Bill Id</label>             ';
+						result = result +'              <label class="col-md-4 control-label">Bill Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Bill Date</label>           ';
+						result = result +'              <label class="col-md-4 control-label">Bill Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 					}else{
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Id</label>             ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Date</label>           ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
 						result = result +'              </div>                                                               ';
@@ -207,27 +207,27 @@ function getViewInvoice(){
 					}
 					
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Payment Term</label>           ';
+					result = result +'              <label class="col-md-4 control-label">Payment Term :</label>           ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+paymentFrequency+'</label>                                             ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					result = result +'            <div class="col-md-6">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Due Date</label>               ';
+					result = result +'              <label class="col-md-4 control-label">Due Date :</label>               ';
 					result = result +'              <div class="col-md-8">                                               ';
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
 					if(invoiceType == "Payables"){
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Billing Address</label>        ';
+						result = result +'              <label class="col-md-4 control-label">Billing Address :</label>        ';
 						result = result +'              <div class="col-md-8 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}else{
 						result = result +'            <div class="col-md-6">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Address</label>        ';
+						result = result +'              <label class="col-md-4 control-label">Invoice Address :</label>        ';
 						result = result +'              <div class="col-md-8 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';

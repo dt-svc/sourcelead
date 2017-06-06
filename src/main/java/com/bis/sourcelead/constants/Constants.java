@@ -329,6 +329,8 @@ public class Constants {
 	/** For LookUpData (Eductions,Skills) **/
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
+	public static final String EXPENSESCATEGORY = "Expense Category";
+	
 	public static final String DOCUMENT_TYPE = "Document Type";
 	public static final String ADMIN = "Admin";
 	public static final String MAIL_SENT = "Sent";
@@ -401,6 +403,9 @@ public class Constants {
 			"Phone Number", "Owner", "Role", "Status" };
 	public static final String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER = { "CandidateName",
 			"PhoneNumber", "Work Experience", "status" };
+	public static final String[] BILLING_HEADERS = { "Invoice_Id", "Client_Name",
+			"Client_Contact_Name"," Client_Contact_Email", "Client_Phone ", "Invoice_Date", "Due_Date", "Total_Amount", "Due_Amount",
+			"Paid_Amount", "Invoice_Status", "Payment_Status", "Linked_Invoice_Id"};
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -559,11 +564,16 @@ public class Constants {
 	public static final String CURRENCYCODE_GBP = "GBP";
 	public static final String CURRENCYCODE_EUR = "EUR";
 	
+	public static final String PAYABLES = "payables";
+	public static final String RECEIVABLE ="Receivable";
+	public static final String DRAFT = "DRAFT";
+	public static final String CLIENT_SOW = "clientSow";
+	public static final String VENDOR_SOW ="vendorSow";
 	public static final String MY_EXPENSES = "My Expenses";
 	public static final String EXPENSES_APPROVAL =  "Expenses Approval";
 	
-	
-	
+	public static final String APPLICANT_REJECTED = "Applicant Rejected";
+	public static final String EXPENSES_STATUS = "1";
 	
 	
 	

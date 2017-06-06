@@ -126,6 +126,13 @@
                     <input type="text" class="form-control input-sm" id="role" name="role" readonly="readonly">
                   </div>
                 </div>
+                
+                <div class="form-group">
+                  <label class="col-md-3 control-label">Employment Type</label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm" id="employmentType" name="employmentType" readonly="readonly">
+                  </div>
+                </div>
                   
                 <div class="clearfix"></div>
                 <p><strong>Offboard Details</strong></p>
@@ -703,6 +710,10 @@ function validate_fileupload(fileName)
 			    	 $("#dateOfJoin").val(json['dateOfJoin']);
 			    	 $("#role").val(json['role']);
 			    	 
+			    	 if(json['employmentType'] != null && json['employmentType'] != '' && json['employmentType'] != 'undefined'){
+			    		 $("#employmentType").val(json['employmentType']);
+			    	 }
+			    	 
 			    	 if(json['noticePeriod'] != null && json['noticePeriod'] != '' && json['noticePeriod'] != 'undefined'){
 			    		 $("#noticePeriod").val(json['noticePeriod']);
 				    	 $('#noticePeriod').trigger("chosen:updated");
@@ -1042,6 +1053,11 @@ function loadOffBoardingTemplates(offboardTemplateId){
 	        	$("#mobileNumber").val(json['mobileNumber']);
 		    	$("#email").val(json['email']);
 		    	$("#role").val(json['role']);
+		    	
+		    	if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] !="undefined"){
+		    		$("#employmentType").val(json['employmentType']);
+		    	}
+		    	
 		    	
 		    	
 		    	$("#dateOfJoin").val(json['dateOfJoinStr']);

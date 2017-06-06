@@ -655,22 +655,22 @@ function sideBar(requirementId){
 			        result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
 			    	   }
 			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' -'+json.maxRate+'- '+json.currencyCode+' / '+json.rateType+'</span></li>';
 			       }
 			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else{
@@ -690,6 +690,7 @@ function sideBar(requirementId){
 			        else{
 				     result = result+' <li><i class="fa fa-map-marker" title="Location"></i><span title="'+json.country+'">'+json.country+'</span></li>';
 			        }
+			        result = result+' <li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 			        result = result+'</ul>';
 			        result = result+'</div>';
 			        result = result+'<div class="col-md-7">';
@@ -704,6 +705,36 @@ function sideBar(requirementId){
 			        var str = mydate.split("-");
 			        var strFormatedDate = (str[2]+"-"+str[1]+"-"+str[0]);
 			        result = result+'<li><i class="fa fa-clock-o" title="Requirement Posted Date"></i><span>'+strFormatedDate+'</span></li>';
+			        
+			        if(json.closedDateStringFormat != null && json.closedDateStringFormat != '' && json.closedDateStringFormat != 'undefined'){
+				        result = result+'<li><i class="fa fa-clock-o" title="Requirment Closed Date"></i><span>'+json.closedDateStringFormat+'</span>';
+				        }
+				        else{
+					    result = result+'<li><i class="fa fa-clock-o" title="Requirment Closed Date"></i><span> --- </span>';
+				        }
+			        
+			        
+			        if((json.projectDurationMonths != null && json.projectDurationMonths != '' && json.projectDurationMonths != 'undefined') && (json.projectDurationYears != null && json.projectDurationYears != '' && json.projectDurationYears != 'undefined')){
+				        result = result+'<li><i class="fa fa-clock-o" title="ProjectDuration"></i><span>'+json.projectDurationYears+' Years '+json.projectDurationMonths+' Months</span>';
+				        }
+			        
+			        
+			        else  if(json.projectDurationYears != null && json.projectDurationYears != '' && json.projectDurationYears != 'undefined'){
+				        result = result+'<li><i class="fa fa-clock-o" title="ProjectDuration"></i><span>'+json.projectDurationYears+' Years</span>';
+				        }
+			        else  if(json.projectDurationMonths != null && json.projectDurationMonths != '' && json.projectDurationMonths != 'undefined'){
+				        result = result+'<li><i class="fa fa-clock-o" title="ProjectDuration"></i><span>'+json.projectDurationMonths+' Months</span>';
+				        }
+				        else{
+					    result = result+'<li><i class="fa fa-clock-o" title="ProjectDuration"></i><span> --- </span>';
+				        }
+			        
+			        
+			       
+				        
+
+			        
+			        
 				        if(json.priority != null && json.priority != '' && json.priority != 'undefined'){
 				        result = result+'<li><i class="fa fa-flag" title="Priority"></i><span>'+json.priority+'</span>';
 				        }
@@ -1087,7 +1118,14 @@ function requirementDetails(requirementId){
 				            }
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
-				            
+				            if(json.industryName != null && json.industryName != '' && json.industryName != 'undefined'){
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Industry:</b>'+json.industryName+'';
+					            }
+					            else{
+					            result = result +'<div class="require_wrap_details_cta"> <b>Industry:</b> <span> -- </span>';	
+					            }
+					            result = result +'       <div class="clearfix"></div>';
+					            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
 					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
@@ -1716,8 +1754,11 @@ function requirementPipeline(requirementId,submissionType){
 						           
 							          if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
-							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType != 'Other'){
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	   }
+							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType == 'Other'){
+							        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+"Other: "+report.rejectedCategoryOther+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
 							        	   result = result + '<td><div class="tblwidth-150">';
@@ -3477,8 +3518,11 @@ function requirementPipelineRejected(requirementId,submissionType){
 						           }
 					        	  /*  result = result + '<td><div class="tblwidth-150"><span>'+report.previousSubmissionStatus+'</span>'; */
 					        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
-					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
+					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType != 'Other'){
+					        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
+					        	   }
+					        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType == 'Other'){
+					        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+"Other: "+report.rejectedCategoryOther+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
 					        	   }		  
 						           result = result + '       </tr>';
 			   				}
@@ -3808,33 +3852,78 @@ function documentpaginationBackout(){
     $("#requirementsPaginationBackout").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 }
 </script>
+<div class='project_inn_mask'></div>
 <div id="popUp"></div>
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-	$("#reasonForApplicantDiv").empty();
-	$("#reasonForReject").val("");
-	var subId = submissionId;
-	var reqId = requirementId;
-	var subType = submissionType;
-	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
-	if(selectBox == "backout"){
-		backOutApplicant(submissionId,requirementId,submissionType);
-	}else if(selectBox == "Reject"){
-    	var result = "";
-		result = result +"	<div class='project_inn_mask'></div>";
-		result = result +"	   <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
-// 		result = result +"<form id='myForm'>";
-		result = result +"		<p>Applicant reject message here</p>";
-		result = result +"		<textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
-		result = result + ' <div id="reasonForApplicantDiv"/>';
-		result = result +"		<input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
-// 		result = result +"</form>";
-		result = result +"	</div>";
-		$("#popUp").append(result);
-		$("#rejectApplicant"+submissionId).slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
+    $("#reasonForApplicantDiv").empty();
+    $("#reasonForReject").val("");
+    $("#designationType").val('');
+    //$("#rejectedCategory").val("");
+    $("#rejectedCategory").selectpicker('refresh');
+    var subId = submissionId;
+    var reqId = requirementId;
+    var subType = submissionType;
+    var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
+    if(selectBox == "backout"){
+        backOutApplicant(submissionId,requirementId,submissionType);
+    }else if(selectBox == "Reject"){
+        var result = "";
+        //result = result +"    <div class='project_inn_mask'></div>";
+        result = result +"       <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+//         result = result +"<form id='myForm'>";
+        
+        result = result +"    <div class='col-md-12 inputOther mt10 inputOther'>";
+        result = result +"    <div class='dropdown-select' id='rejectedCategorytDiv'>";
+        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='true'>";
+        result = result +"<option selected value=''>--Select Category--</option>";
+        result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
+        result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
+        result = result +"<option value='Bad Fit'>Bad Fit</option>";
+        result = result +"<option value='Salary'>Salary</option>";
+        result = result +"<option value='Interview Rejection'>Interview Rejection</option>";
+        result = result +"<option value='Other'>Other</option>";
+        result = result +"</select>";
+        result = result +"    </div>";
+       
+        
+        result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
+        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' >";
+        result = result +" </div>";
+        
+        result = result +" </div>";
+        
+        //result = result +"        <p>Applicant reject message here</p>";
+        result = result +"        <textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
+        result = result + ' <div id="reasonForApplicantDiv"/>';
+        result = result +"        <input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+//         result = result +"</form>";
+        result = result +"    </div>";
+        $("#popUp").append(result);
+        $("#rejectApplicant"+submissionId).slideDown(200);
+        $(".project_inn_mask").fadeIn(200);
     }
+}
+</script>
+
+
+<script>
+function getRejectedCategory(){
+	var rejectedCategory = document.getElementById("rejectedCategory").value;
+	if(rejectedCategory == 'Other'){
+		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
+	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
+		$('#rejectedCategoryOther').attr("data-validation","required"); 
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#rejectedCategoryOther").attr("data-validation-optional","true");
+		$("#rejectedCategoryOther").removeAttr("data-validation");
+		$("#rejectedCategoryOther").val('');
+		document.getElementById("rejectOtherCategoryDiv").style.display="none";
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+	
 }
 </script>
 
@@ -3842,7 +3931,9 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 function cancelRejectApplicant(submissionId,requirementId,submissionType){ 
 	$("#rejectApplicant"+submissionId).fadeOut(200);
 	$(".project_inn_mask").fadeOut(200);
-	/* $("#remove_user_pop, .project_inn_mask").fadeOut(200); */
+	 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+	 document.getElementById("rejectOtherCategoryDiv").style.display="none";
+	 $("#rejectedCategory").val("");
 	if(submissionType == 'all'){
 		requirementPipeline(requirementId,submissionType);
 	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
@@ -3869,39 +3960,51 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	var sourceleadUrl = '${sourceleadUrl}';
-	var reason ;
-	var rejectedReason;
-	
-	 if ($('#reasonForReject').length){
-		 rejectedReason = document.getElementById("reasonForReject").value; 
-		 
-		 //It will escape all the special characters
-	      reason = encodeURIComponent(rejectedReason);
-	 }
-	 else{
-		 reason = '';
-	 }
-	if(reason.match(/^[^\s-](.*)*$/) != null){
-		$("#reasonForApplicantDiv").empty();
+	 var reason= document.getElementById("reasonForReject").value;
+	 var rejectedCategoryType= document.getElementById("rejectedCategory").value; 
+	 var rejectedCategoryOther= document.getElementById("rejectedCategoryOther").value;
+	 if((reason == null || reason == '' || reason == 'undefined') 
+			 || (rejectedCategoryType == null || rejectedCategoryType == '' || rejectedCategoryType == 'undefined') 
+			 || ( (rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined' && rejectedCategoryType == 'Other') 
+					  &&  (rejectedCategoryOther == null || rejectedCategoryOther == '' || rejectedCategoryOther == 'undefined')
+				 )
+	     ){
+		 if(reason != null && reason != '' && reason != 'undefined'){
+			 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+		 }else{
+				 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+		  	    $("#reasonForApplicantDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+		 }
+		 if(rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined'){
+			 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+		 }else{
+				 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+		  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
+		 }
+		 if(rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
+			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
+		 }
+		 else{
+			 
+			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
+			 $("#rejectOtherCategoryDiv").append("<p class='jquery_form_error_message'>Other Type Is Required</p>");
+	  	 
+	      }
+		}else{
+			$("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+		  $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/rejectApplicant?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionId="+submissionId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/rejectApplicant?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionId="+submissionId+"&reason="+reason+"&rejectedCategoryType="+rejectedCategoryType+"&rejectedCateoryOther="+rejectedCategoryOther,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
    			    requirementPipeline(requirementId,submissionType);
 		    }
 	   });
-	}else{
-		if(rejectedReason){
-			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#reasonForApplicantDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
-	}
 }
 </script>
-
 <script>
 function backOutApplicant(submissionId,requirementId,submissionType){
 	var sourceleadUrl = '${sourceleadUrl}';

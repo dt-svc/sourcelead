@@ -21,6 +21,12 @@ color:#fff;
 background:#375d81;
 color:#fff;
 }
+.icAcc {
+font-size: 18px; color: #2ca12c;
+}
+.icRej {
+font-size: 18px; color: #ff3e3e;
+}
 </style>
 
 <script type="text/javascript">
@@ -157,11 +163,11 @@ function getNotificationtLists(){
 				    }
 				  
 				   if(report.userNotificationStatus == 'Accepted'){
-				    	result = result +'   <span class="mailbox-trash"><font color="green">Accepted</font></span>';
+				    	result = result +'   <span class="mailbox-trash"><i class="fa fa-check icAcc" title="Accepted"></i></span>';
 				    }
 				  
 				   if(report.userNotificationStatus == 'Rejected'){
-				    	result = result +'   &nbsp;<span class="mailbox-trash"><font color="red">Rejected</font></span>';
+				    	result = result +'   &nbsp;<span class="mailbox-trash"><i class="fa fa-times icRej" title="Rejected"></i></span>';
 				   }
 				    result = result +'<span class="mailbox-trash"><a href="javascript:void(0);"  onclick="deleteNotification('+report.id+');"><i class="text-danger fa fa-trash-o"></i></a></span>';
 				    result = result +'   </div></td>';

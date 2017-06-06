@@ -197,8 +197,11 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
             <div class="select-field col-md-6 paddingLeft row">
             <input type="text" class="form-control input-sm" field-name="RefeeralLink" id="referralLink" name="referralLink" placeholder="Referral Link" readonly="readonly"> 
             <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
-            </div>
-            
+            <div class="share">
+		   	<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>
+			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>				  
+			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>
+			</div>
           </div>
         </div> 
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
@@ -1055,4 +1058,50 @@ function openVendors(){
 	document.getElementById("releaseToVendors").style.display="";
 }
 </script>
+
+<script>
+ function socialPostSucess(service,status){
+	 msgFadein();
+     $("#msgDiv").html(" Job is Successfully Posted on Your "+service+" Wall.");
+ }
+</script>
+
+<script type="text/javascript">
+var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
+function setPostValues(title,link,picture,description,comment){
+	alert("description>>>>>>>>>>>>>>"+description);
+	 if (title) {
+         postdatavalues.title = title;
+     }
+     if (link) {
+         postdatavalues.link = link;
+     }
+     if (picture) {
+         postdatavalues.picture = picture;
+     }
+     if (description) {
+         postdatavalues.description = description;
+     }
+     if (description) {
+         postdatavalues.comment = description;
+     }
+};
+
+function getPostValueDetails(){
+	 return postdatavalues;
+  }
+
+</script>
+
+<script>
+	function msgFadein() {
+		$("#selector").fadeIn(200);
+        $('#selector').delay(2000).fadeOut('slow');
+	}
+</script> 
+<style>
+.footer-area {
+display: none;}
+</style>
+<jsp:include page="../socialinviterscripts.jsp" /> 
 <jsp:include page="../masterFooter.jsp" />
