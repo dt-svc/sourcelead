@@ -70,8 +70,14 @@ public class Invoice {
     @JoinColumn(name="PARENT_INVOICE_ID")        
 	private Invoice parentInvoiceId;
 	
+	@Column(name = "LINK_INVOICE_REF_INVOICE_ID")
+	private String linkInvoiceRefInvoiceId;
+	
 	@Column(name = "INVOICE_UUID")
 	private String invoiceUUID;
+	
+	@Column(name = "LINK_INVOICE_REFERENCE_ID")
+	private Long linkInvoiceReferenceId;
 	
 	@Column(name = "INVOICE_DATE")
 	private Date invoiceDate;
@@ -235,6 +241,7 @@ public class Invoice {
 	
 	@Transient
 	private List<String> submissionApproverHierarchyIds;
+	
 	
 	public Long getId()
 	{
@@ -810,6 +817,26 @@ public class Invoice {
 	public void setRejectReason(String rejectReason)
 	{
 		this.rejectReason = rejectReason;
+	}
+
+	public String getLinkInvoiceRefInvoiceId()
+	{
+		return linkInvoiceRefInvoiceId;
+	}
+
+	public void setLinkInvoiceRefInvoiceId(String linkInvoiceRefInvoiceId)
+	{
+		this.linkInvoiceRefInvoiceId = linkInvoiceRefInvoiceId;
+	}
+
+	public Long getLinkInvoiceReferenceId()
+	{
+		return linkInvoiceReferenceId;
+	}
+
+	public void setLinkInvoiceReferenceId(Long linkInvoiceReferenceId)
+	{
+		this.linkInvoiceReferenceId = linkInvoiceReferenceId;
 	}
 	
 	
