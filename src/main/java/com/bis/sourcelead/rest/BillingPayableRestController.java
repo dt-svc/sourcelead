@@ -107,8 +107,9 @@ public class BillingPayableRestController {
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
 				}
-				
-		    	invoice.setVendorContactId(invoice.getContactUser().getId());
+				if(invoice.getContactUser() != null){
+					invoice.setVendorContactId(invoice.getContactUser().getId());
+				}
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));
 		    	invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));
@@ -248,7 +249,7 @@ public class BillingPayableRestController {
 		{
 			List<Contracts> contractsList = null;
 	     	if(null != orgRelationId){
-	     		if(contractType.equalsIgnoreCase("vendorSow")){
+	     		if(Constants.VENDOR_SOW.equalsIgnoreCase(contractType)){
 	     			 contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Vendor_SOW);
 	     		}else{
 	     			contractsList = invoiceService.getSowcontractListByAssociateId(candidateId,orgLocation.getId(),orgRelationId,Constants.Client_SOW);	
