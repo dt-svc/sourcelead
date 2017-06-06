@@ -7,6 +7,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <jsp:include page="addExpenseEntries.jsp"></jsp:include>
  
  <script type="text/javascript">
 		window.onload = function () {
@@ -23,7 +24,7 @@
       </div>
       <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; Add Expense</div>
     </section>
-    
+    <form:form id="add_expenses_form" name="add_expenses_form"  enctype='multipart/form-data'>
 	<div class="content-area content-new clearfix">
          
           <div class="clearfix form-horizontal inner-content">
@@ -33,21 +34,21 @@
                 <div class="form-group">
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="First Name" value="${ExpensesId}" readonly="readonly">
+                    <input type="text" class="form-control" name="ExpenseAutoId" value="${ExpensesId}" readonly="readonly">
                   </div>
                 </div>  
                 
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="First Name" value="">
+                    <input type="text" class="form-control" name="expensePurpose" value="">
                   </div>
                 </div>                                          
 
 			<div class="form-group">
 				<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-					<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectIdByMemberId">
+					<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectIdByMemberId" name="expenseProject">
 					<c:forEach var="projMembers" items="${projectMembersList}">
 					       <option  selected value="${projMembers.projects.id}">${projMembers.projects.projectName}</option>
 					</c:forEach>
@@ -63,7 +64,7 @@
 			<div class="form-group">
 				<label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="First Name" value="" id="clientNameId" readonly="readonly">
+                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
                   </div>
 			  </div>               
                 
@@ -72,10 +73,10 @@
               <div class="col-md-9">
 					<div class="row">
 					  <div class="col-lg-6 evDaPa">
-						  <input type="text" class="form-control calendar" value="" name="Date" id="projectStartDateExpensesId" placeholder="Start date" readonly="readonly">
+						  <input type="text" class="form-control calendar" value="" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start date" readonly="readonly">
 					  </div>
 					  <div class="col-lg-6">
-						  <input type="text" class="form-control calendar" value="" name="Date" id="projectEndDateExpensesId" placeholder="End date" readonly="readonly">
+						  <input type="text" class="form-control calendar" value="" name="endDateExpense" id="projectEndDateExpensesId" placeholder="End date" readonly="readonly">
 					  </div>					  
 					</div>
               </div>
@@ -86,19 +87,37 @@
 			</div>
   
 <div class="expensHead">
-	<a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
+	<a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addExpenseEntity" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
 	<div class="clearfix"></div>
 </div>
 
-<jsp:include page="addExpenseEntries.jsp"></jsp:include>
 
+<div class="modal fade" id="addExpenseEntity" role="dialog"></div>
 
+<div class="project_wrap_table expensTable">
+	<table id="entriesTable">
+		<thead>
+			<tr>
+				<th>Exp Category</th>
+				<th>Date</th>
+				<th>Issued By</th>
+				<th>Currency</th>
+				<th>Amount</th>
+				<th>Description</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody id="divBody"> </tbody>
+	</table>
+</div>
+
+<input type="text" style="display: none;" name="maxRecCount" id="maxRecCount" value="">
                 
 <div class="form-footer clearfix mt">
 		  <div class="col-lg-12">
 			<div class="pull-right">
 			  <input type="button" value="Save" class="btn btn-sm btn-primary">
-			  <input type="button" value="Sub for Approval" class="btn btn-sm btn-success ml10">
+			  <input type="button" id ="submitForApprovalExpensesId"value="Sub for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData();">
 			  <input type="button" value="Cancel" class="btn btn-sm btn-default ml10">
 			</div>
 		  </div>
@@ -106,62 +125,107 @@
           
       <!-- Content Area Ends--> 
 	  </div>
+</form:form>
   </section>
   <!-- Content Area Ends--> 
-  
   <!--   Error Message   -->
   <div class="vendor_wrap_mask"></div>
   <div class="vendor_error">
     <textarea placeholder="Enter message"></textarea>
     <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-  
   <!--   Error Message   --> 
-  
-  
-  
-  
-	
 </div>
 
-   
-    <script>
-// Error pop
-$(document).ready(function() {
-    $(".glyphicon-trash").click(function(){
-		$(".vendor_error").slideToggle(200);
-		$(".vendor_wrap_mask").fadeIn(200);
-	});
-	$(".vendor_error a").click(function(){
-		$(".vendor_error").slideUp(200);
-		$(".vendor_wrap_mask").fadeOut(200);
-	});
-});	
-</script>    
+<script>
+	function saveAddExpensesData() {
+		$("#maxRecCount").val(recCount);
+		/* $("#addExpenseEntity").empty(); */
+		if ($('#add_expenses_form').validate(false, validationSettings)){
+			var frm = $('#add_expenses_form').serializeFormJSON();
+			var jsonData = JSON.stringify(frm);
+			
+			var form = $('#add_expenses_form')[0];
+      		var formData = new FormData(form); 
+      		formData.append("json",jsonData);
+			var sourceleadUrl = '${sourceleadUrl}';
+			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+     		$.ajax({
+     			type : "POST",
+        	    data: formData,
+        	    contentType : 'application/json; charset=utf-8',
+        	    enctype: 'multipart/form-data',
+    	        processData: false,
+    	        contentType:false,
+        	    dataType : 'json',
+				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}",
+				success : function(data) {
+					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
+				},
+			});
+			return true;
+		}else{
+			return false;
+		}
+	}
+</script>
 
-     <script>
-  $( function() {
-    $( "#datepicker,#datepicker2" ).datepicker();
-	$("#datepicker5" ).datepicker();
-  } );
-  </script>
-  
+<script>
+	var validationSettings = {
+		errorMessagePosition : 'element',
+		borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd'
+	};
+</script>
 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				});
- 		</script>
+<script>
+	// Error pop
+	$(document).ready(function() {
+		$(".glyphicon-trash").click(function() {
+			$(".vendor_error").slideToggle(200);
+			$(".vendor_wrap_mask").fadeIn(200);
+		});
+		$(".vendor_error a").click(function() {
+			$(".vendor_error").slideUp(200);
+			$(".vendor_wrap_mask").fadeOut(200);
+		});
+	});
+</script>
+
+<script>
+	$(function() {
+		$("#datepicker,#datepicker2").datepicker();
+		$("#datepicker5").datepicker();
+	});
+</script>
+
+
+<script type="text/javascript">
+	var config = {
+		'.chosen-select' : {},
+		'.chosen-select-deselect' : {
+			allow_single_deselect : true
+		},
+		'.chosen-select-no-single' : {
+			disable_search_threshold : 10
+		},
+		'.chosen-select-no-results' : {
+			no_results_text : 'Oops, nothing found!'
+		},
+		'.chosen-select-width' : {
+			width : "95%"
+		}
+	}
+	for ( var selector in config) {
+		$(selector).chosen(config[selector]);
+	}
+	$('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({
+			'width' : '100%'
+		});
+	});
+</script>
 
 
 <script>
@@ -199,38 +263,33 @@ function getClientBasedOnSelectedProject(){
 </script>
 
 <script>
-	function expensesDatePickerStartDate(projectStartDate,projectEndDate){
+	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
 		$("#projectStartDateExpensesId").datepicker("destroy");
 		$("#projectEndDateExpensesId").datepicker("destroy");
 		$('#projectStartDateExpensesId').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			minDate:projectStartDate,
-			maxDate:projectEndDate,
-			onSelect : function(selected) {
-				var dt = toDate('#projectStartDateExpensesId');
-				dt.setDate(minDate.getDate() + 1);
-				$("#projectEndDateExpensesId").datepicker("option", "minDate", dt);
-			}
-		});
+					dateFormat : 'dd-mm-yy',
+					changeMonth : true,
+					changeYear : true,
+					minDate : projectStartDate,
+					maxDate : projectEndDate,
+					onSelect : function(selected) {
+						var dt = toDate('#projectStartDateExpensesId');
+						dt.setDate(minDate.getDate() + 1);
+						$("#projectEndDateExpensesId").datepicker("option","minDate", dt);
+					}
+				});
 		$('#projectEndDateExpensesId').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true,
-			minDate:projectStartDate,
-			maxDate:projectEndDate,
-			onSelect : function(selected) {
-				var dt = toDate('#projectEndDateExpensesId');
-				dt.setDate(dt.getDate() - 1);
-				$("#projectStartDateExpensesId").datepicker("option", "minDate", dt);
-			}
-		});
+					dateFormat : 'dd-mm-yy',
+					changeMonth : true,
+					changeYear : true,
+					minDate : projectStartDate,
+					maxDate : projectEndDate,
+					onSelect : function(selected) {
+						var dt = toDate('#projectEndDateExpensesId');
+						dt.setDate(dt.getDate() - 1);
+						$("#projectStartDateExpensesId").datepicker("option","minDate", dt);
+					}
+				});
 	}
 </script>
-
-
-
-
- 
 <jsp:include page="../masterFooter.jsp" />
