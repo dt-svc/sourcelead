@@ -569,10 +569,8 @@ public class Constants {
 	public static final String VENDOR_SOW ="vendorSow";
 	public static final String MY_EXPENSES = "My Expenses";
 	public static final String EXPENSES_APPROVAL =  "Expenses Approval";
-	
+	public static final String BILLING =  "Billing";
+	public static final String LINKED_STATUS =  "Linked";
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
-	
-	
-	
-	
+
 }
