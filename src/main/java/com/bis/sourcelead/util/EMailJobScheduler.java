@@ -1876,7 +1876,7 @@ public class EMailJobScheduler {
 	}
 	
 	/**
-	 * @author : Pavan Jampana   0 0 12 1/1 * ? *
+	 * @author : Pavan Jampana
 	 * this cron will used to send the remainder emails to respective owners about expiring of the contract. 
 	 * 
 	 * this cron will be fired once a day at 3'O clock
@@ -1884,7 +1884,7 @@ public class EMailJobScheduler {
 	 * Morning 8 Am for us/canada
 	 */
 
-	@Scheduled(cron = "0 0 15 1/1 * ? *")
+	@Scheduled(cron = "0 0 15 1/1 * ?")
 	@Async
 	public void notifyToUsersAboutContractExpiry() throws Exception
 	{
