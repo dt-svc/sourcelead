@@ -8,6 +8,14 @@
 
 <script src="resources/js/formvalidator.js"></script>
 
+<style>
+.ratetype p {
+    left: -45px !important;
+    position: absolute;
+    bottom: -14px;
+}
+</style>
+
 
 <section class="content-wraper">
     <div id="offboardingLoading"></div>
@@ -121,9 +129,9 @@ function createAlert(){
 	 result = result +'               </select>';
 	 result = result +'               </div>';
 	 
-	 result = result +'              <input type="text" id="currentRate" name="rate" value="" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
+	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" onblur="getRate();" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
 	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
-	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type">';
+	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" data-validation-optional="true" field-name="Rate Type">';
 	 result = result +'                   <option value="">Rate Per</option>';
 	 result = result +'                   <option >Hourly</option>';
 	 result = result +'                   <option >Weekly</option>';
@@ -162,7 +170,7 @@ function createAlert(){
 	 result = result +'         	</div>';
 	 result = result +'         </div>';
 	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Keywords/Skills <span class="text-danger paddingLeft">*</span></label>';
+	 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
 	 result = result +'         	<div class="col-md-9">';
 	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Skills">';
 	 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
@@ -485,7 +493,7 @@ function jobAlertList(){
 	                    		 skillsName =  "--";
 	                    	 }
 	                    	 
-	                    	 result = result +"<tr>";
+	                    	 result = result +"<tr id='jobAlert"+report.jobAlertUUID+"'>";
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm' title="+report.alertTitle+"><span >"+report.alertTitle+"</span></div></td>";
 	                    		 result = result +"<td><div><span>"+experience+"</span></div></td>";
 	                    		 result = result +"<td><div  title="+rate+"><span>"+rate+"</span></div></td>";
@@ -493,12 +501,13 @@ function jobAlertList(){
 	                    		 result = result +"<td><div  title='"+skillsName+"'><span>"+skillsName+"</span></div></td>";
 			                     result = result +"<td><div class=''>";
 			                     result = result +'<a class="glyphicon glyphicon-edit" title="Edit" onclick="alertFunction();editAlert(\''+report.jobAlertUUID+'\');"></a>';	
-			                     result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProject();"></a>';	
+			                     result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteJobAlert(\''+report.jobAlertUUID+'\',\''+report.alertTitle+'\');"></a>';	
 			                     result = result +"</div></td>"; 
 		                     result = result +"</tr>";
 	                    }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
+	                     result = result + '<div id="choicepopUp"></div>';
 	                     $("#jobAlertList").append(result); 
 	                     
 	                     offboardingPagenation(); 
@@ -636,10 +645,10 @@ function editAlert(jobAlertUUID){
         		 result = result +'               </select>';
         		 result = result +'               </div>';
         		 
-        		 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="'+rate+'" class="form-control" placeholder="Rate">';
-        		 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
-        		 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type">';
-        		 result = result +'                   <option value="">Rate Per</option>';
+        		 result = result +'<input type="text" id="currentRate" name="rate" onblur="getRate();" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="'+rate+'" class="form-control" placeholder="Rate">';
+        		 result = result +'<div class="input-group-btn tblminwidth-75 ratetype">';
+        		 result = result +'<select class="btn-primary select_picker form-control" id="rateType" data-validation-optional="true" name="rateType" field-name="Rate Type">';
+        		 result = result +'<option value="">Rate Per</option>';
         		 
         		 if(rateType == "Hourly"){
         			 result = result +'<option selected>Hourly</option>'; 
@@ -735,7 +744,7 @@ function editAlert(jobAlertUUID){
         		 result = result +'         	</div>';
         		 result = result +'         </div>';
         		 result = result +'         <div class="form-group clearfix">';
-        		 result = result +'         	<label class="col-md-3">Keywords/Skills <span class="text-danger paddingLeft">*</span></label>';
+        		 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
         		 result = result +'         	<div class="col-md-9">';
         		 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Skills">';
         		 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
@@ -824,6 +833,12 @@ function editAlert(jobAlertUUID){
 		 		             select.find(option).siblings("[value='"+ alertSkillsList[i].replace(",","")+"']").remove();
 		 	        		 $("#skills").trigger("chosen:updated");
 		                 }
+                 	  }else{
+                 		 var option = $("<option>").val(alertSkillsList).text(alertSkillsList);
+	        			 select.append(option);
+	 		             select.find(option).prop('selected', true);
+	 		             select.find(option).siblings("[value='"+ alertSkillsList+"']").remove();
+	 	        		 $("#skills").trigger("chosen:updated");
                  	  }
         	    
         	       chosen.search_field.on('keyup', function(e)
@@ -857,6 +872,53 @@ function editAlert(jobAlertUUID){
 }
 </script>  
 
+
+<script>
+function deleteJobAlert(jobAlertUUID,alertTitle){
+	alertMessage(jobAlertUUID,alertTitle);
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(jobAlertUUID,alertTitle){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure to delete alert <strong>"+alertTitle+"</strong> ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteAlert(\""+jobAlertUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script>
+function deleteAlert(jobAlertUUID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	  $.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/deleteJobAlert?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
+         success :function(data) {
+        	 	$("#jobAlert"+jobAlertUUID).remove();
+        	 	$("#choicepopUp").empty();
+        		$(".project_inn_mask").fadeOut(200);
+      	     }
+	   });
+}
+
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
 <script>
 function offboardingPagenation(){ 
 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
@@ -871,6 +933,19 @@ function offboardingPagenation(){
 	            "sZeroRecords": "", "sEmptyTable": ""
 	       }
 	    } );
+}
+</script>
+
+<script>
+function getRate(){
+	var rate = document.getElementById("currentRate").value;
+	if(rate != 'undefined' && rate !=  null && rate != ''){
+		$("#rateType").removeAttr("data-validation-optional");
+		$("#rateType").attr("data-validation", "required");
+	}else{
+		$("#rateType").removeAttr("data-validation");
+		$("#rateType").attr("data-validation-optional", "true");
+	}
 }
 </script>
 
