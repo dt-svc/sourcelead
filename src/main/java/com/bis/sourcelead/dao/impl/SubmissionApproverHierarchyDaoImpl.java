@@ -1018,9 +1018,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			     Boolean isNEW = false;
 			     Submission_ApprovalStatus submissionStatus = null;
 	    		 for(SubmissionApproverHierarchy sah :semiMonthlyMidWeekList){
-	    			 if(CalendarUtil.getDayOfTheDate(sah.getSubmissionId().getStartDate()) == 2){
+	    			 /*if(CalendarUtil.getDayOfTheDate(sah.getSubmissionId().getStartDate()) == 2){*/
 	    				 weekStartDate = sah.getSubmissionId().getStartDate();
-	    			 }
+	    			 /*}*/
 	    			 if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 	 					isRejected   = true;  
 	 					submissionStatus = Submission_ApprovalStatus.REJECTED;

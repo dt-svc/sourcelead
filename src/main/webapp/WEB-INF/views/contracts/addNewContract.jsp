@@ -32,6 +32,7 @@
       <div class="clearfix form-horizontal">
        
         <div class="row newContrWrap">
+        
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
            
            <h2>Contract Details</h2>
@@ -63,7 +64,7 @@
               <div class="col-md-8" id="titleDiv">
 	              <c:choose>
 				    <c:when test="${!empty contract.contractTitle}">
-				        <input type="text" readonly class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_length length1-250" field-name="Contract Title">
+				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="${contract.contractTitle}" data-validation="required validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
 				    </c:when>
 				    <c:otherwise>
 				        <input type="text" class="form-control" id="contractTitle" name="contractTitle" value="" data-validation="required validate_length length1-250" field-name="Contract Title" onblur="validateContractTitle();">
@@ -483,6 +484,37 @@
         </div>
         <!-- billing end -->
       </div> 
+      
+      
+      
+	<div class="row reqAddWrap">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+  			<table width="100%" cellpadding="0" cellspacing="0" class="table table-striped table-responsive">
+           <thead >
+           <tr>
+           <th style="vertical-align: middle;">Request Documents</th>
+           <th colspan="2">
+           <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
+           <i class="fa fa-plus"></i></button>
+            <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
+           </th>
+          </tr>
+          </thead>
+          <tbody id="addTaxTbl">
+           <tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Action</strong></td></tr>
+            <c:forEach var="doc" items="${docList}">
+	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
+                </c:forEach>
+          <tr id="divTaxTsRow0">
+          </tr>
+          </tbody>
+          </table>
+        </div>
+        
+      </div>      
+      
+      
+      
       </div>      
       
       
@@ -491,10 +523,10 @@
         <div class="col-lg-12">
           <div class="pull-right mt">
           <input type="hidden" name="contrId" id="contrId" value="${contract.id}"/>
-            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary ml10 pull-left">
-            <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
+            <input type="button" value="Draft" id="draft_template" onmouseover="validateContractTitle();" onclick="saveNewContract('DRAFT'); " class="btn btn-primary ml10 pull-left">
+            <input type="button" value="Send" id="save_template" onclick="validateContractTitle();saveNewContract('PENDING'); " class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
 
-            <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
+            <input type="button" value="Send For Approve" id="save_approver_template" onclick=" validateContractTitle(); saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
             <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
@@ -559,8 +591,79 @@
               }
         });
 });
+	
+function removeDocument(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+     type : "POST",
+      url: sourceleadUrl+"/terminateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+      success :function(data) {
+      	    $("#tr"+id).empty();
+     },
+ });  
+	}
+	
 </script>
 
+<div id="divTaxTd1" style="display: none; float: left;">
+	<div class="select-field tblminwidth-75">
+		<div class="tblminwidth-50">
+			<input type="text" class="form-control input-sm" value=""
+				placeholder="Document Name" name='REPLACEROWIDdocumentName'
+				id='REPLACEROWIDdocumentName' field-name="Document Name" data-validation="required"> 
+		</div>
+	</div>
+</div>
+<div id="divTaxTd2" style="display: none; float: left;">
+	<div class="tblminwidth-75">
+			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
+			 name="REPLACEROWIDdescription"></textarea>
+	</div>
+</div>
+<div id="divTaxTd3" style="display: none; float: right;">
+	<a class="btn btn-sm btn-danger text-center mt10" title="Remove row"
+		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
+</div>
+<script>
+	function addDoc(){  
+				var checkMaxTsRowNum = $("#maxTaxRowNum").val();
+				var tbl = document.getElementById("addTaxTbl");
+				var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
+				$("input[name = 'maxTaxRowNum']").val(maxRowNum + 1);
+				
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "divTaxRow" + maxRowNum);
+				
+				var cell0 = row.insertCell(0);
+				var divTaxTdStr = document.getElementById("divTaxTd1").innerHTML;
+				divTaxTdStr = divTaxTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+				cell0.innerHTML = divTaxTdStr;
+				
+				var cell1 = row.insertCell(1);
+				var divTaxTdStr1 = document.getElementById("divTaxTd2").innerHTML;
+				divTaxTdStr1 = divTaxTdStr1.replace(/REPLACEROWID/g, (maxRowNum));
+				cell1.innerHTML = divTaxTdStr1;
+				
+				var cell2 = row.insertCell(2);
+				var divTaxTdStr2 = document.getElementById("divTaxTd3").innerHTML;
+				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
+				cell2.innerHTML = divTaxTdStr2;
+				
+	}			
+</script>
+<script type="text/javascript">
+	function removeTaxRow(rowId) {
+		
+		     
+		document.getElementById('divTaxRow' + rowId).style.display = 'none';
+		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var count = 2 * (r.cells.length);
+		for (i = 0; i <= count; i++) {
+			r.deleteCell(0);
+		}
+		
+	}
+</script>
 <script>
 function toDate(selector) {
     var from = $(selector).val().split("-");
@@ -1106,10 +1209,18 @@ function hideCommonSOWFields(){
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, "");
 	        var jsonData = encodeURIComponent(con);
+	        var form = $('#newcontract_form')[0];
+ 	 	    var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 		$.ajax({
-						type : "POST",
+	 			 type: "POST",
+		    	 data: formData,
+			     contentType : 'application/json; charset=utf-8',
+			     enctype: 'multipart/form-data',
+		         processData: false,
+		         contentType:false,
+			     dataType : 'json',
 						url : sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType,
 						success : function(result) {
 							location.replace(sourceleadUrl+"/contractListbyStatus");
@@ -1498,14 +1609,18 @@ function validateContractTitle(){
 		        url: sourceleadUrl+"/validateContractTitle?${_csrf.parameterName}=${_csrf.token}&contractTitle="+contractTitle+"&contractType="+contractType, 
 		        success: function(data) {
 		        	if(data == 'true'){
+		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		  $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
-						  $("#save_template").attr("disabled", "disabled");
+						 // $("#save_template").attr("disabled", "disabled");
+						 // $("#draft_template").attr("disabled", "disabled");
 		        	}
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#save_template" ).addClass('button').val('Send');
-                        $("#save_template").removeAttr("disabled");
+                         $("#save_template").removeAttr("disabled");
+                        //$("#draft_template").removeAttr("disabled");
 		        	}
 		        	}
 		        });

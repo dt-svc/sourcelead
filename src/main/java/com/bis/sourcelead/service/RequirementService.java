@@ -111,6 +111,8 @@ public interface RequirementService {
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception;
+	
+	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
 
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
 
