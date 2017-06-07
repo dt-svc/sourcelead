@@ -79,7 +79,7 @@ public class ExpencesController {
 	}
 	
 	
-	@RequestMapping(value = "/expensesApprovalList")
+	/*@RequestMapping(value = "/expensesApprovalList")
 	public ModelAndView expensesApprovalList(HttpServletRequest request) throws Exception
 	{
 		
@@ -93,5 +93,5 @@ public class ExpencesController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/expensesApprovalList");
 		return model;
-	}
+	}*/
 }

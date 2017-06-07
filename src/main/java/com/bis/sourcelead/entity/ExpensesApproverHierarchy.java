@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -76,6 +77,30 @@ private Date updatedDate;
 
 @Column(name = "UPDATED_BY")
 private String updatedBy;
+
+@Transient
+private String expenseStartDateString;
+
+@Transient
+private String expenseEndDateString;
+
+@Transient
+private String expenseEmpUserFirstNameLastName;
+
+@Transient
+private String expenseEmpUserEmail;
+
+@Transient
+private String expensesEmployeeUserId;
+
+@Transient
+private String expenseEmpUserType;
+
+@Transient
+private String expensesProjectName; 
+
+@Transient
+private String userTypeVendorName; 
 
 public Long getId()
 {
@@ -195,6 +220,70 @@ public String getUpdatedBy()
 public void setUpdatedBy(String updatedBy)
 {
 	this.updatedBy = updatedBy;
+}
+
+public String getExpenseStartDateString() {
+	return expenseStartDateString;
+}
+
+public void setExpenseStartDateString(String expenseStartDateString) {
+	this.expenseStartDateString = expenseStartDateString;
+}
+
+public String getExpenseEndDateString() {
+	return expenseEndDateString;
+}
+
+public void setExpenseEndDateString(String expenseEndDateString) {
+	this.expenseEndDateString = expenseEndDateString;
+}
+
+public String getExpenseEmpUserFirstNameLastName() {
+	return expenseEmpUserFirstNameLastName;
+}
+
+public void setExpenseEmpUserFirstNameLastName(String expenseEmpUserFirstNameLastName) {
+	this.expenseEmpUserFirstNameLastName = expenseEmpUserFirstNameLastName;
+}
+
+public String getExpenseEmpUserEmail() {
+	return expenseEmpUserEmail;
+}
+
+public void setExpenseEmpUserEmail(String expenseEmpUserEmail) {
+	this.expenseEmpUserEmail = expenseEmpUserEmail;
+}
+
+public String getExpensesEmployeeUserId() {
+	return expensesEmployeeUserId;
+}
+
+public void setExpensesEmployeeUserId(String expensesEmployeeUserId) {
+	this.expensesEmployeeUserId = expensesEmployeeUserId;
+}
+
+public String getExpenseEmpUserType() {
+	return expenseEmpUserType;
+}
+
+public void setExpenseEmpUserType(String expenseEmpUserType) {
+	this.expenseEmpUserType = expenseEmpUserType;
+}
+
+public String getExpensesProjectName() {
+	return expensesProjectName;
+}
+
+public void setExpensesProjectName(String expensesProjectName) {
+	this.expensesProjectName = expensesProjectName;
+}
+
+public String getUserTypeVendorName() {
+	return userTypeVendorName;
+}
+
+public void setUserTypeVendorName(String userTypeVendorName) {
+	this.userTypeVendorName = userTypeVendorName;
 }
 
 
