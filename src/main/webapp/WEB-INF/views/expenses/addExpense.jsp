@@ -84,15 +84,15 @@ function validate_fileupload(fileName)
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="">
+                    <input type="text" class="form-control" name="expensePurpose">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectIdByMemberId" name="expenseProject">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectMemberId" name="projectMemberId">
 							<c:forEach var="projMembers" items="${projectMembersList}">
-							       <option  selected value="${projMembers.projects.id}">${projMembers.projects.projectName}</option>
+							       <option  selected value="${projMembers.id}">${projMembers.projects.projectName}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -270,10 +270,10 @@ function validate_fileupload(fileName)
 <script>
 function getClientBasedOnSelectedProject(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var projectId = document.getElementById("projectIdByMemberId").value;
+	var projectMemberId = document.getElementById("projectMemberId").value;
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId,       
+	       url: sourceleadUrl+"/getClientByProjectId?projectMemberId="+projectMemberId,       
 	       success :function(data) {
 	    	   if(data != null && data !='undefined' && data !=''){
 	    	   var json = JSON.parse(data);
