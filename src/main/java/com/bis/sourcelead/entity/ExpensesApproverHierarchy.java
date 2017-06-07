@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -86,6 +88,22 @@ private Date updatedDate;
 
 @Column(name = "UPDATED_BY")
 private String updatedBy;
+
+@Column(name = "ACTIONPERFORMEDBY")
+@Type(type="text")
+private String actionPerformedBy;
+
+@ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
+private User reopenedUser;
+
+@Column(name = "REOPEN_REASON")
+@Type(type="text")
+private String reopenReason;
+
+@Column(name = "REOPEN_REJECTED_REASON")
+@Type(type="text")
+private String reopenRejectedReason;
 
 @Transient
 private String expenseStartDateString;
@@ -288,6 +306,38 @@ public String getUserTypeVendorName() {
 
 public void setUserTypeVendorName(String userTypeVendorName) {
 	this.userTypeVendorName = userTypeVendorName;
+}
+
+public String getActionPerformedBy() {
+	return actionPerformedBy;
+}
+
+public void setActionPerformedBy(String actionPerformedBy) {
+	this.actionPerformedBy = actionPerformedBy;
+}
+
+public User getReopenedUser() {
+	return reopenedUser;
+}
+
+public void setReopenedUser(User reopenedUser) {
+	this.reopenedUser = reopenedUser;
+}
+
+public String getReopenReason() {
+	return reopenReason;
+}
+
+public void setReopenReason(String reopenReason) {
+	this.reopenReason = reopenReason;
+}
+
+public String getReopenRejectedReason() {
+	return reopenRejectedReason;
+}
+
+public void setReopenRejectedReason(String reopenRejectedReason) {
+	this.reopenRejectedReason = reopenRejectedReason;
 }
 
 
