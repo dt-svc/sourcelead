@@ -188,9 +188,19 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else if("PENDING".equalsIgnoreCase(saveType)){
 				vendorContracts = new Contracts();
 			}
+			if(null != user){
+				contracts.setUpdatedBy(user.getUserCode());
+			}
+			contracts.setUpdatedDate(new Date());
 		}else{
 			contracts = new Contracts();
 			vendorContracts = new Contracts();
+			contracts.setCreatedDate(new Date());
+			if(null != user){
+				contracts.setCreatedBy(user.getUserCode());
+				contracts.setUpdatedBy(user.getUserCode());
+			}
+			contracts.setUpdatedDate(new Date());
 		}
 		
 		String pattern = "dd-MM-yyyy";
@@ -450,12 +460,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		else{
 			contracts.setTemplateSubmissionStatus(saveType);
 		}
-		contracts.setCreatedDate(new Date());
-		if(null != user){
+		
+		//contracts.setCreatedDate(new Date());
+		/*if(null != user){
 			contracts.setCreatedBy(user.getUserCode());
 			contracts.setUpdatedBy(user.getUserCode());
-		}
-		contracts.setUpdatedDate(new Date());
+		}*/
+		//contracts.setUpdatedDate(new Date());
 		contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		if(null != vendorContracts)
 		{
@@ -590,7 +601,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			  if(null != vendorContactsUser && null == approverUser && !"DRAFT".equalsIgnoreCase(saveType)){
 				  Contracts con = null;
-				  /*if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
+				 if(null != contractType && !"".equalsIgnoreCase(contractType) && "custom".equalsIgnoreCase(contractType)){
 					  con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(vendorContactsUser,contracts,orgLocation,user,savedContracts,org);
 				  }else{
 					  con = signatureRequestUtil.sendDocumentForSignatureRequest(vendorContactsUser,contractsTemplate,orgLocation,user,savedContracts,org);
@@ -608,7 +619,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		        	Contracts updateEnvContracts = contractsTemplateDao.saveNewContract(savedContracts);
 		        	if(null != vendorContracts){
 		        		contractsTemplateDao.saveNewContract(vendorContracts);
-		        	}*/
+		        	}
 			  }
 		}
 		return savedContracts;
@@ -1486,6 +1497,20 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(jsonObj.has("flatRateType") && null != jsonObj.getString("flatRateType") && !"".equals(jsonObj.getString("flatRateType")) ){
 				contracts.setBillingPer(jsonObj.getString("flatRateType"));
 				vendorContracts.setBillingPer(jsonObj.getString("flatRateType"));
+			}
+		}
+		
+		if(jsonObj.has("billingRateType") && null != jsonObj.getString("billingRateType") && !"".equals(jsonObj.getString("billingRateType")) ){
+			contracts.setBillingRateType(jsonObj.getString("billingRateType"));
+			if(null != vendorContracts){
+				vendorContracts.setBillingRateType(jsonObj.getString("billingRateType"));
+			}
+		}
+		
+		if(jsonObj.has("billingRatePer") && null != jsonObj.getString("billingRatePer") && !"".equals(jsonObj.getString("billingRatePer")) ){
+			contracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
+			if(null != vendorContracts){
+				vendorContracts.setBillingRatePer(jsonObj.getString("billingRatePer"));
 			}
 		}
 		

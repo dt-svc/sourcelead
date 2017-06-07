@@ -293,10 +293,21 @@ function PopUp(contractUUID){
 			
 			if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">End Date</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.endDateStr+'</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
+				result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
+				result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+				result = result +	'	</div>';
 				result = result +	'	</div>';
 			}
+			else{
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
+				result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
+				result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+				result = result +	'	</div>';
+				result = result +	'	</div>';
+			}
+	
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
@@ -371,7 +382,7 @@ function PopUp(contractUUID){
 			if(null != json.description && "" != json.description && 'undefined' != json.description){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.description+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
 				result = result +	'	</div>';
 			}
 			
@@ -440,7 +451,14 @@ function PopUp(contractUUID){
 			if(null != json.tax && "" != json.tax && 'undefined' != json.tax){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Tax</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
+				var abc = json.taxType;
+				if(abc == "Percentage"){
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' %</div>';
+				}else{
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
+				}
+				
+				//result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -2464,6 +2482,43 @@ document.getElementById("uploadBtn"+id).onchange = function () {
     	  $("#uploadFileGroup"+id).append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
       }
     });
+}
+</script>
+
+<script>
+function editOne(startDate,endDate){
+	$('.editNewDat').show();
+	$('#endDate').datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+          changeYear: true,
+          minDate: startDate,
+          onSelect: function (selected) {
+              var dt = toDate("#endDate");
+              dt.setDate(dt.getDate() - 1);
+          }
+    });
+}
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+
+function editClo(contractId){
+	$('.editNewDat').hide();
+	var startDate = $("#ExportStartDate").val();
+	var endDate = $("#endDate").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    type : "POST",
+     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
+     success :function(data) {
+    	 $("#endVal").empty();
+		  $("#endVal").append(endDate);
+     	 //   $("#tr"+id).empty();
+    },
+});  
+	
 }
 </script>
 

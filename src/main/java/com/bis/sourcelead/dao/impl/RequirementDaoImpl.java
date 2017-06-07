@@ -858,6 +858,15 @@ public class RequirementDaoImpl implements RequirementDao {
 	    List<String> skillNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
         return skillNames;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select req.industryName from Requirement req where req.id =:requirementId";
+	    List<String> industryNames = session.createQuery(query).setLong( "requirementId", requirementId).setCacheable(true).list();
+        return industryNames;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -875,7 +884,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception {
     Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement requirement left join fetch requirement.orgLocationId left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.requirementUUID =:requirementUUID";
+		String query = "from Requirement requirement left join fetch requirement.orgLocationId loc left join fetch loc.org left join fetch requirement.parentRequirement left join fetch requirement.clientId  orgrelation left join fetch orgrelation.responderLocationId orgLocation  where requirement.requirementUUID =:requirementUUID";
 		List requirementList = session.createQuery(query).setString("requirementUUID", requirementUUID).setCacheable(true).list();
 		
 		Requirement requirement = null;

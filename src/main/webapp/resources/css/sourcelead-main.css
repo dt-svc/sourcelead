@@ -1637,7 +1637,7 @@ ul.can-perdt li {
 }
 ul.can-perdt li span {
 display: inline-block; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-position: relative; top: 4px;
+position: relative; top: 5px;
 }
 ul.can-perdt li .fa {
 color: #808080; padding-right: 10px; text-align: center; width: 25px; position: relative;
@@ -1686,7 +1686,7 @@ overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 	color: #333;
 }
 .req-dtls h3 {
-	background: #ccc; padding: 5px 10px;
+	background: #ccc; padding: 6px 10px; font-size: 18px; border-radius: 5px;
 }
 .r-circle {
 	background: #fff none repeat scroll 0 0; border: 1px solid #888888; border-radius: 50%; color: #f60;
@@ -1999,6 +1999,7 @@ display: block;
 .selectpicker100 .bootstrap-select {
 	width:100% !important;
 }
+
 .modal-body-custom thead{
 	background-color:#375d81; color:#fff;
 }
@@ -4345,7 +4346,7 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
     border:1px solid #ededed; -moz-border-radius: 5px; -webkit-border-radius: 5px; -o-border-radius: 5px; -ms-border-radius: 5px;
 }
 .resume-header .media-heading {
-    margin-bottom: 2px; font-size: 30px; text-transform: uppercase;
+    margin-bottom: 2px; font-size: 20px; text-transform: uppercase;
 }
 .resume-header .media-body p {
     font-size: 13px; line-height: 18px; margin-bottom: 2px;
@@ -4501,7 +4502,7 @@ margin-bottom: 0;
     background-image:url("../images/calendar.png"); background-repeat:no-repeat; background-position:96% center; background-size:18px;
  }
 .timeicon {
-    background-image:url("../images/icon-time.png"); background-repeat:no-repeat; background-position:95% center;
+    background-image:url("../images/time.png"); background-repeat:no-repeat; background-position:94% center; background-size:18px;
  }
  #accordion-sl h2 span{
  display: inline-block; width: 300px; white-space: nowrap; text-overflow:ellipsis; overflow: hidden;
@@ -4990,7 +4991,7 @@ div.inputCustom {
 }
 .menuWidget ul.menupop.menupop_2
 {
-	width:320px;
+	width:450px;
 }
 .menuWidget ul li{
     cursor: pointer; color: #263238;
@@ -5317,6 +5318,42 @@ float: none !important; padding: 0; color: #333;
 .ReadTextFli.ReadTextFli90 {
 	width: 0px;
 }
+.cand-advsrch-popup label {
+    font-size: 13px; margin-bottom: 2px;
+}
+.modal.modal_invoice {
+    display: none;
+}
+.inputOther input.form-control {
+    width: 100% !important; background: #fff !important; border: 1px solid #ddd; font-weight: normal; color: #333;
+}
+.selp-customMin > .bootstrap-select {
+    width: 65px !important;
+}
+.input_minmax input.form-control {
+    width:50%; float: left; border-radius:0;
+}
+.input_minmax input.form-control:first-child{
+    border-right:none;
+}
+.dropdown.dropdown_ul {
+   color: #333 !important;
+}
+.dropdown.dropdown_ul ul {
+    padding-right: 0; 
+}
+.dropdown.dropdown_ul ul li{
+    float: none !important; color: #333 !important;
+}
+.rd_table {
+    border: 1px solid #ddd; margin: 10px;
+}
+.rd_table .DocAccWrap {
+    border-bottom: 1px solid #ddd; padding:10px 10px 5px;
+}
+.timesheet_head.timeHd_minHeight {
+min-height: 40px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
@@ -5521,17 +5558,6 @@ margin-top:0px; width: 79%;
 .side-bar .user-panel.user-panel-active .image img {
         width: auto;
 } 
-    /* .tree-view.tree-view-active {
-     display: block !important;
-    }
-    .tree-view-new {
-        display: none !important;
-    }
-    .tree-view-new.tree-view-new-active {
-        display: none !important;
-    }
-    */
-    
 /* open class */
 .side-bar.side-bar-active .subMenu{
     display: block;

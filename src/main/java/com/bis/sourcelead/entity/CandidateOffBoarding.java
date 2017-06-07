@@ -146,6 +146,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "EMPLOYMENT_TYPE")
+	private String employmentType;
+	
 	
 	@Transient
 	private String dateOfJoinStr;
@@ -511,6 +514,16 @@ private static final long serialVersionUID = 1L;
 
 	public void setTemplateNames(String templateNames) {
 		this.templateNames = templateNames;
+	}
+
+	public String getEmploymentType()
+	{
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType)
+	{
+		this.employmentType = employmentType;
 	}
 	
 

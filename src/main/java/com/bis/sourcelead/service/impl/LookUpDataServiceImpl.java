@@ -52,4 +52,9 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 		return lookUpDataDao.getAllEducationsByEducationCategory();
 	}
 	
+	@Override
+	public List<String> getAllSkillsByIndustryCategory() throws Exception{
+		return lookUpDataDao.getAllSkillsByIndustryCategory();
+	}
+	
 }
