@@ -69,8 +69,8 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	if (jsonObj.has("expensePurpose") && !(jsonObj.getString("expensePurpose").isEmpty())){
 		expenses.setPurpose(jsonObj.getString("expensePurpose"));
 	 }
-	if (jsonObj.has("expenseProject") && !(jsonObj.getString("expenseProject").isEmpty())){
-	    projMembers = projectMembersService.getProjectMemberByUserIdAndProjectId(loginUser.getId(), Long.parseLong(jsonObj.getString("expenseProject")));
+	if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
+	    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
 		expenses.setProjectMembers(projMembers);
 	}
 	if (jsonObj.has("clientNameExpense") && !(jsonObj.getString("clientNameExpense").isEmpty())){
