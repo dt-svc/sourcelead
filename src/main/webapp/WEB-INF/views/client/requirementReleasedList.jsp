@@ -1,0 +1,193 @@
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+
+<link rel="stylesheet" href="resources/css/style.css" />
+
+<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+
+
+<style type="text/css">
+.collapse-div-adduser select{
+width: 100% !important;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+    border:1px solid #ccc !important
+}
+</style>
+
+<script type="text/javascript">
+//On document ready
+$(function(){
+    //generateForm();
+});
+</script>
+
+
+
+<script>
+function clientRequirementList(orgRelationId){
+	
+	var result = "";
+	result = result  +'<div class="timesheet_head top_filters">';
+	result = result  +'<input type="hidden" id="orgRelationId" value="'+orgRelationId+'">';
+	result = result  +'    <div class="addUser-org"> ';  
+	    result = result + '<ul>';
+	    
+	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>|';
+	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
+		result = result + '       	<ul>';
+		result = result + '           	<li><input type="checkbox" value="OPEN"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Open</label></li>';
+		result = result + '           	<li><input type="checkbox" value="NEW"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>New</label></li>';
+		//result = result + '           	<li><input type="checkbox" name="rl"><label>Checkbox3</label></li>';
+		result = result + '           </ul>';
+		result = result + '       </div>'; 
+		result = result + '   </li>';
+		result = result  +'  <div class="clearfix"></div> ';
+		result = result + '</ul>';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="clientSubmissionRequirementList" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	result = result+'	    </div>';
+
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-5").empty(); 
+    $("#tab-5").append(result);  
+    clientReqList();
+    
+}
+</script>
+				
+
+<!-- client details View starts-->
+<script type="text/javascript">
+	function clientReqList(orgRelationId) {
+		
+		var orgRelationId =$("#orgRelationId").val();
+		var sourceleadUrl = '${sourceleadUrl}';
+		var status = [];
+		$('input:checkbox[name=requirementStatusFilter]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+		
+		$.ajax({
+	    	type: "POST",
+	    	url : sourceleadUrl+"/getClientReleasedRequirementList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&status="+status, 
+	        success: function(data) {
+	        	
+	        var json = JSON.parse(data);
+	        
+    	
+			var result = "";
+	      
+    		 if(json.length != null && json.length != ''){
+    	   		
+    			$("#clientSubmissionRequirementList").empty();
+				var result = "";
+				
+				result = result +"<table id='listReqPagination' class='display' cellspacing='0' width='100%' >"; 
+	        	result = result +'<thead>';
+	        	result = result +'<tr>';
+	        	result = result + '<th>Title</th>';
+	            result = result + '<th>Location</th>';
+	            result = result + '<th>Type</th>';
+	            result = result + '<th>Posted Date</th>';
+	            result = result + '<th>Owner</th>';
+	            result = result + '<th>Submissions</th>';
+	            result = result + '<th>Offer</th>';
+	            result = result + '<th>Back-out</th>';
+	            result = result + '<th>Interview</th>';
+	            result = result + '<th>Status</th>';
+	        	result = result +'</tr>';
+	        	result = result +'</thead>';
+	        	result = result +'<tbody>';
+
+	        	for (var i=0; i<json.length; i++)
+				  {	        		
+	        		var opt = json[i];
+	        		
+	        		
+	        		result = result + '<tr>';
+               		result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+	                
+	                if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
+	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
+	                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
+	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+
+	                }else{
+	                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+	                }
+	                if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
+	           	 {
+	          	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
+	                 result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
+	           	 }else{
+	           		result = result +"  <td><div class='tblminwidth-75'>"+opt.jobType+"</div></td>"; 
+	           	 }
+	           	 }else{
+	           		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
+	           	 }
+	                result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
+	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
+	               	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+	                result = result + '<td><div>'+opt.noOfOfferedApplicants+'</div></td>';
+	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
+	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
+	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
+	                
+	                result = result + '<td><div>';
+	                result = result +'</div></td>';
+	                result = result + '	 </tr>';
+				} 
+	        		
+	        	
+	        	result = result +'</tbody>';
+	        	result = result +"</table>";
+	        	
+    		}else{
+      			 result = result + '<div class="table_nodata">';
+       			 result = result + '<div class="table_nodata_inn">';
+       			 result = result + '<img src="resources/images/no-data.png" />';
+       			 result = result + '<span>Nothing is here to show </b>';
+       			 result = result + '</span>';
+       			 result = result + '<div class="clearfix"></div>';
+       			 result = result + '</div>';
+       			 result = result + '</div>';
+       		 } 
+       		
+    	    $("#clientSubmissionRequirementList").append(result); 
+    	    clientRequirementListpagination(); 
+    	  
+	        },
+	    });
+	}
+</script>
+
+
+<!-- <script>
+function clientRequirementListpagination(){  
+	$('#listReqPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script> -->
