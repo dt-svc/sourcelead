@@ -13,5 +13,7 @@ public interface ExpensesCategoryDao {
 	public List<ExpensesCategory> getAllExpensesCategoryByLocationId(Long orgLocationId);
 	public ExpensesCategory storeExpenseCategory(ExpensesCategory expensesCategory) throws Exception;
 	
-	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId,Long orgLocationId) throws Exception;
+	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId) throws Exception;
+	
+	public Boolean validateExpensesCategoryType(Long categoryId, String categoryType) throws Exception;
 }
