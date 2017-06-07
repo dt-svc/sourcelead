@@ -8,6 +8,7 @@
 <script>
 function loadCategoryDiv(){
 	var result = "";
+	
 	result = result + '<div class="modal-dialog modal-lg">';
 	
 	result = result + '	<div class="modal-content">';
@@ -24,11 +25,10 @@ function loadCategoryDiv(){
 	result = result + '						<label class="col-md-4">Category Type<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '						<div class="col-md-8">';
 	result = result + '							<select class="chosen-select form-control" id="categoryType" name="categoryType" field-name="Category Type" data-validation="required">';
-	result = result + '								<option value="">Category Type</option>';
-	result = result + '								<option>Category-1</option>';
-	result = result + '								<option>Category-2</option>';
-	result = result + '								<option>Category-3</option>';
-	result = result + '								<option>Others</option>';
+	result = result + '								<option value="">Select Category Type</option>';				 							   
+												   <c:forEach var="expCat" items="${expensesCategoryList}">
+	result = result + ' 							   <option value="${expCat.id}">${expCat.expensesName}</option>';
+						                	       </c:forEach>
 	result = result + '							</select>';
 	result = result + '						</div>';
 	result = result + '					</div>';
@@ -52,10 +52,11 @@ function loadCategoryDiv(){
 	result = result + '						<div class="col-md-8 dropdown-select">';
 	result = result + '							<select class="form-control" name="paymentMode" id="paymentMode" field-name="Payment Mode" data-validation="required">';
 	result = result + '								<option value="">Select Mode</option>';
-	result = result + '								<option>Mode-1</option>';
-	result = result + '								<option>Mode-2</option>';
-	result = result + '								<option>Mode-3</option>';
-	result = result + '								<option>Mode</option>';
+	result = result + '								<option value="Credit Card">Credit Card</option>';
+	result = result + '								<option value="Debit Card">Debit Card</option>';
+	result = result + '								<option value="Cash">Cash</option>';
+	result = result + '								<option value="Cheque">Cheque</option>';
+	result = result + '								<option value="e-Wallet">e-Wallet</option>';
 	result = result + '							</select>';
 	result = result + '						</div>';
 	result = result + '					</div>';
@@ -78,27 +79,26 @@ function loadCategoryDiv(){
 	result = result + '						</div>';
 	result = result + '						</div>';
 	result = result + '					</div>';
-    
-	result = result + '					<div class="form-group" id="divAttachment1" style="display: block;">';
-	result = result + '						<label class="col-md-4">Attachment</label>';
-	result = result + '						<div class="col-md-8 clearfix">';
-	result = result + '							<div class="input-group col-md-10 pull-left" id="uploadFileGroup1">';
-	result = result + '								<label class="input-group-btn"> <span class="btn btn-primary" title="Browse File"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" multiple id="uploadBtn1" class="upload"> </span></label>';
-	result = result + '								<input type="text" class="form-control" readonly id="uploadFile1" type="file" field-name="Attachment" data-validation="validatedoc " data-validation-optional="true" placeholder="Attachment">';
-	result = result + '							</div>';
-	result = result + '							<div class="input-group col-md-2 pull-right text-right">';
-	result = result + '								<button class="btn btn-primary">';
-	result = result + '									<i class="fa fa-plus"></i>';
-	result = result + '								</button>';
-	result = result + '							</div>';
-	result = result + '						</div>';
-	result = result + '					</div>';
 	result = result + '					<div class="form-group">';
 	result = result + '						<label class="col-md-4">Description</label>';
 	result = result + '						<div class="col-md-8">';
 	result = result + '							<textarea rows="2" class="form-control" name="entryDes" id="entryDes" placeholder="Description"></textarea>';
 	result = result + '						</div>';
 	result = result + '					</div>';
+	result = result + "                 <div id='attachmentSection' class='commentFile timesheet_week_comm ml'>"; 
+	result = result + "                 <input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />";
+	result = result + "                    <span>"; 
+	result = result + "                        <table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>";
+	result = result + "                          <tr id='divAttachmentTsRow0'>";
+	result = result + "                              <td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ";
+	result = result + "                          </tr>";
+	result = result + "                      </table>";
+	result = result + "                    </span>";
+	result = result + "                  <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>"; 
+	result = result + "                </div>";
+	
+	
+	
 	result = result + '</form:form>';
 	result = result + '				</div>';
 	result = result + '			</div>';
@@ -165,6 +165,41 @@ $("#categoryType").trigger("chosen:updated");
 
 </script>
 
+<script>
+function addAttachment(){  
+			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
+			var tbl = document.getElementById("attachmentTable");
+			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
+			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			/* timesheetAttachmentValidationFun(); */
+			
+}			
+</script>
+
+<script type="text/javascript">
+	function removeAttachmentRow(rowId) {
+		 document.getElementById("divAttachmentTsRow"+rowId).style.display = 'none';
+		 document.getElementById("divAttachmentTsRow"+rowId).value= '';
+		 var  rId = "divAttachmentTsRow"+rowId;
+		  var r = document.getElementById("attachmentTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
 
 <script>
 window.recCount = 1;
@@ -186,12 +221,6 @@ function addEntity(){
 	}else{
 		
 		if ($('#entity_form').validate(false, validationSettings)) {
-			var frm = $('#entity_form').serializeFormJSON();
-			var jsonData = JSON.stringify(frm);
-		    var form = $('#entity_form')[0];
-		    var formData = new FormData(form);
-		  	formData.append("json",jsonData)
-		
 				var categoryType = $("#categoryType").val();
 				var categoryDate = $("#categoryDate").val();
 				var receiptIssuedBy = $("#receiptIssuedBy").val();
@@ -199,26 +228,39 @@ function addEntity(){
 				var expenseRateType = $("#expenseRateType").val();
 				var expenseAmount = $("#expenseAmount").val();
 				var descriptions = $("#entryDes").val();
-				
+				var attcahmentMaxRowNumber=$("#attcahmentMaxRowNumber").val();
 				var result = "";
 				result = result + '<tr id="'+recCount+'">';
 				result = result + '<td><input type="hidden" name="categoryType'+recCount+'" id="categoryType'+recCount+'" value="2"><div>'+categoryType+'</div></td>';
 				result = result + '<td><input type="hidden" name="categoryDate'+recCount+'" id="categoryDate'+recCount+'" value="'+categoryDate+'"><div>'+categoryDate+'</div></td>';
 				result = result + '<td><input type="hidden" name="receiptIssuedBy'+recCount+'" id="receiptIssuedBy'+recCount+'" value="'+receiptIssuedBy+'"><div>'+receiptIssuedBy+'</div></td>';
 				result = result + '<td><input type="hidden" name="expenseRateType'+recCount+'" id="expenseRateType'+recCount+'" value="'+expenseRateType+'"><div>'+expenseRateType+'</div></td>';
-				result = result + '<td><input type="hidden" name="expenseAmount'+recCount+'" id="expenseAmount'+recCount+'" value="'+expenseAmount+'"><div>'+expenseAmount+'</div></td>';
+				result = result + '<td><input type="hidden" name="expenseAmount'+recCount+'" id="expenseAmount'+recCount+'" value="'+expenseAmount+'"><div>'+expenseAmount+'</div>';
 				result = result + '<input type="hidden" name="paymentMode'+recCount+'" id="paymentMode'+recCount+'" value="'+paymentMode+'">';
+				result = result + '<input type="hidden" name="attcahmentMaxRowNumber'+recCount+'" id="attcahmentMaxRowNumber'+recCount+'" value="'+attcahmentMaxRowNumber+'">';
+				result = result + '<div  id="attachmentDiv'+recCount+'" >'; 
+				result = result + '</div></td>'; 
 				result = result + '<td><input type="hidden" class="tbldata-dotdot-me" name="entryDes'+recCount+'" id="entryDes'+recCount+'" value="'+descriptions+'"><div>'+descriptions+'</div></td>';
 				result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil-square-o"></i> <i class="glyphicon glyphicon-trash" onclick="deleteEntityRec('+recCount+');"></i></div></td>';
 				result = result + '</tr>';
-				
 				$("#divBody").append(result);
+				for(var i=0 ;i<attcahmentMaxRowNumber;i++){
+					 var $fileInput = $("#"+i+"docFile");
+					 var $fakeInput = $fileInput.clone();
+					 $fileInput.removeAttr('id');
+					 $fileInput.attr('id',i+"docFile"+recCount);
+					 $fileInput.removeAttr('name');
+					 $fileInput.attr('name',i+"docFile"+recCount);
+					 $fileInput.removeAttr('data-validation');
+					 $fileInput.removeAttr('onchange');
+					 $("#attachmentDiv"+recCount).append($fileInput);
+					 $("#attachmentDiv"+recCount).removeAttr('style');
+					 $("#attachmentDiv"+recCount).attr('style','display:none;'); 
+				}
 				$(".modal-backdrop").fadeOut(200);
 				$(".modal").slideUp(200);
 				$(".modal-dialog").slideUp(300);
-				
 				recCount = recCount + 1;
-				
 				$("#addExpenseEntity").empty();
 				$("#addExpenseEntity").append("");
 			}

@@ -2,19 +2,29 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.enums.Project_Status;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
@@ -39,7 +49,12 @@ private static final long serialVersionUID = 1L;
 	private Date expenseDate;
 	
 	@Column(name = "PAYMENT_MODE")
-	private String paymentMode;
+	@Enumerated(EnumType.STRING)
+	private PaymentModes paymentMode;
+	
+	@OneToMany(mappedBy="expensesEntriesId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<ExpensesEntryDocuments> expensesEntryDocuments;
 	
 	@Column(name = "RECEIPT_ISSUED_BY")
 	private String receiptIssuedBy;
@@ -100,11 +115,13 @@ private static final long serialVersionUID = 1L;
 		this.expenseDate = expenseDate;
 	}
 
-	public String getPaymentMode() {
+	public PaymentModes getPaymentMode()
+	{
 		return paymentMode;
 	}
 
-	public void setPaymentMode(String paymentMode) {
+	public void setPaymentMode(PaymentModes paymentMode)
+	{
 		this.paymentMode = paymentMode;
 	}
 
@@ -148,6 +165,13 @@ private static final long serialVersionUID = 1L;
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public Set<ExpensesEntryDocuments> getExpensesEntryDocuments() {
+		return expensesEntryDocuments;
+	}
+
+	public void setExpensesEntryDocuments(Set<ExpensesEntryDocuments> expensesEntryDocuments) {
+		this.expensesEntryDocuments = expensesEntryDocuments;
 	}
 
 	public Date getCreatedDate() {

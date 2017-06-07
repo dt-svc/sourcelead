@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -7,6 +8,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,12 +23,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.enums.Submission_Status;
+
 @Entity
 @Table(name = "EXPENSES", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "Expenses")
 public class Expenses implements Serializable {
 private static final long serialVersionUID = 1L;
-	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,10 +80,28 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "EXPENSE_STATUS")
+	@Enumerated(EnumType.STRING)
+	private Submission_Status expenseStatus;
+	
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
+	
+	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<ExpensesApproverHierarchy> approverHierarchyList;
 
+	@javax.persistence.Transient
+	private String projectMemberId;
+	
+	@javax.persistence.Transient
+	private String startDateStr;
+	
+	@javax.persistence.Transient
+	private String endDateStr;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -209,4 +231,45 @@ private static final long serialVersionUID = 1L;
 	{
 		this.expensesEntries = expensesEntries;
 	}
+	public Set<ExpensesApproverHierarchy> getApproverHierarchyList() {
+		return approverHierarchyList;
+	}
+
+	public void setApproverHierarchyList(Set<ExpensesApproverHierarchy> approverHierarchyList) {
+		this.approverHierarchyList = approverHierarchyList;
+	}
+
+	public Submission_Status getExpenseStatus() {
+		return expenseStatus;
+	}
+
+	public void setExpenseStatus(Submission_Status expenseStatus) {
+		this.expenseStatus = expenseStatus;
+	}
+	public String getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(String projectMemberId) {
+		this.projectMemberId = projectMemberId;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	
+	
 }

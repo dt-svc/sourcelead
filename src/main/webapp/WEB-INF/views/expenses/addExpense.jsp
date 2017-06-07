@@ -13,8 +13,52 @@
 		window.onload = function () {
 			getClientBasedOnSelectedProject();
 		 };
-</script> 
- 
+</script>
+
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+
+    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
+    var file_extension = fileName.split('.').pop(); 
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+ <script type="text/javascript">
+ function validateUploadFile(id)
+	{
+		 var selectedFile = $('#'+id+'docFile').val();
+		  if(validate_fileupload(selectedFile)){
+			   var docSize = $('#'+id+'docFile')[0].files[0].size;
+		       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+		      if(docSize > 2097152){
+		    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+		    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+				  $('#'+id+'docFile').attr('record-exist','yes');
+				  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+		      }else{
+		    	  $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
+	   		       $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
+		      }
+		  }
+		  else{
+			      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
+			      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+				  $('#'+id+'docFile').attr('record-exist','yes');
+				  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
+		  }
+		
+	 }
+</script>
 <div class="wraper"> 
   <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
@@ -37,55 +81,45 @@
                     <input type="text" class="form-control" name="ExpenseAutoId" value="${ExpensesId}" readonly="readonly">
                   </div>
                 </div>  
-                
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" name="expensePurpose" value="">
                   </div>
                 </div>                                          
-
-			<div class="form-group">
-				<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-					<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectIdByMemberId" name="expenseProject">
-					<c:forEach var="projMembers" items="${projectMembersList}">
-					       <option  selected value="${projMembers.projects.id}">${projMembers.projects.projectName}</option>
-					</c:forEach>
-					
-					  <!-- <option>Select Project</option>
-					  <option>Project-1</option>
-					  <option>Project-2</option>
-					  <option>Project-3</option> -->
-					</select>
-				</div>
-			  </div>
-               
-			<div class="form-group">
-				<label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
-                  </div>
-			  </div>               
-                
-            <div class="form-group">
-              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
-					<div class="row">
-					  <div class="col-lg-6 evDaPa">
-						  <input type="text" class="form-control calendar" value="" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start date" readonly="readonly">
-					  </div>
-					  <div class="col-lg-6">
-						  <input type="text" class="form-control calendar" value="" name="endDateExpense" id="projectEndDateExpensesId" placeholder="End date" readonly="readonly">
-					  </div>					  
+				<div class="form-group">
+					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
+					<div class="col-md-9">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectIdByMemberId" name="expenseProject">
+							<c:forEach var="projMembers" items="${projectMembersList}">
+							       <option  selected value="${projMembers.projects.id}">${projMembers.projects.projectName}</option>
+							</c:forEach>
+						</select>
 					</div>
-              </div>
-            </div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
+	                  <div class="col-md-9">
+	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
+	                  </div>
+				</div>               
+	            <div class="form-group">
+	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
+	              <div class="col-md-9">
+						<div class="row">
+						  <div class="col-lg-6 evDaPa">
+							  <input type="text" class="form-control calendar" data-validation="required" value="" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+						  </div>
+						  <div class="col-lg-6">
+							  <input type="text" class="form-control calendar" value="" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+						  </div>					  
+						</div>
+	              </div>
+	            </div>
                
 		</div>
 	</div>
-			</div>
-  
+</div>
 <div class="expensHead">
 	<a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addExpenseEntity" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
 	<div class="clearfix"></div>
@@ -116,8 +150,8 @@
 <div class="form-footer clearfix mt">
 		  <div class="col-lg-12">
 			<div class="pull-right">
-			  <input type="button" value="Save" class="btn btn-sm btn-primary">
-			  <input type="button" id ="submitForApprovalExpensesId"value="Sub for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData();">
+			  <input type="button" value="Save" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			  <input type="button" id ="submitForApprovalExpensesId"value="Sub for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
 			  <input type="button" value="Cancel" class="btn btn-sm btn-default ml10">
 			</div>
 		  </div>
@@ -126,6 +160,12 @@
       <!-- Content Area Ends--> 
 	  </div>
 </form:form>
+<div id="divAttachmentTd1" style="display: none; float: left;">
+	   <div id='REPLACEROWIDdocFileuploadFileGroup'>
+ 			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' data-validation="required"  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
+ 			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
+ 		</div>
+ </div>
   </section>
   <!-- Content Area Ends--> 
   <!--   Error Message   -->
@@ -137,7 +177,7 @@
 </div>
 
 <script>
-	function saveAddExpensesData() {
+	function saveAddExpensesData(status) {
 		$("#maxRecCount").val(recCount);
 		/* $("#addExpenseEntity").empty(); */
 		if ($('#add_expenses_form').validate(false, validationSettings)){
@@ -145,19 +185,18 @@
 			var jsonData = JSON.stringify(frm);
 			var form = $('#add_expenses_form')[0];
       		var formData = new FormData(form); 
-      		alert(formData);
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
      		$.ajax({
-     			type : "POST",
+       	        type : "POST",
         	    data: formData,
         	    contentType : 'application/json; charset=utf-8',
         	    enctype: 'multipart/form-data',
     	        processData: false,
     	        contentType:false,
         	    dataType : 'json',
-				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}",
+				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
 				},
@@ -244,14 +283,10 @@ function getClientBasedOnSelectedProject(){
 		    	   		$('#clientNameId').val('');   
 		    	   }
 		    	  if(json.startDateStr != null && json.startDateStr !='undefined' && json.startDateStr !='' && json.endDateStr != null && json.endDateStr !='undefined' && json.endDateStr !=''){
-		    		  $('#projectStartDateExpensesId').val(json.startDateStr);
-		    		  $('#projectEndDateExpensesId').val(json.endDateStr);
 		    		  	var projectStartDate = json.startDateStr;
 		    			var projectEndDate = json.endDateStr;
 		    			expensesDatePickerStartDate(projectStartDate,projectEndDate);
 		    	  }else{
-					  $('#projectStartDateExpensesId').val(json.startDateStr);
-					  $('#projectEndDateExpensesId').val(json.endDateStr);
 					  var projectStartDate = json.startDateStr;
 					  var projectEndDate = json.endDateStr;
 					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
