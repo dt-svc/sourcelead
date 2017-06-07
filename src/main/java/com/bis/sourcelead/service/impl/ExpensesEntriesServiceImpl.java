@@ -18,6 +18,8 @@ import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.enums.PaymentModes;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -47,7 +49,6 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						ec.setId(Long.parseLong(jsonObj.getString("categoryType"+c)));
 						entries.setExpensesCategoryId(ec);
 					
-					
 					if(jsonObj.has("categoryDate"+c)){
 						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -71,9 +72,13 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					}
 					
 					if(jsonObj.has("entryDes"+c)){
-						entries.setReceiptIssuedBy(jsonObj.getString("entryDes"+c));
+						entries.setDescription(jsonObj.getString("entryDes"+c));
 					}
-						
+					
+					if(jsonObj.has("paymentMode"+c)){
+						entries.setPaymentMode(PaymentModes.getNameByValue(jsonObj.getString("paymentMode"+c)));
+					}
+						entries.setStatus(Constants.RECORD_ACTIVE.toString());
 						entries.setCreatedDate(new Date());
 						entries.setUpdatedDate(new Date());
 						entries.setExpensesId(expenses);
