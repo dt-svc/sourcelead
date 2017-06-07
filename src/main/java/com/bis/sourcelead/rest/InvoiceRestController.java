@@ -46,7 +46,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.bis.sourcelead.beans.BillingReports;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
@@ -1239,7 +1238,7 @@ public class InvoiceRestController {
 			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
-			 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+			    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 				DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 				DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
@@ -1401,15 +1400,17 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getBillingReportByFrequency", method = RequestMethod.GET)
 	@ResponseBody
 	public String getBillingReportByFrequency(@RequestParam(value = "billingReportType", required = false) String billingReportType,
-			HttpServletRequest request, HttpServletResponse response) throws Exception
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		long startTime = System.currentTimeMillis();
 		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 		
+		DateTimeFormatter startDateOutputFormatter  = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateTimeFormatter  endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		
+		LocalDate today = LocalDate.now();
 		LocalDate monthStartDate = new LocalDate().withDayOfMonth(1);
 		LocalDate monthEndDate = new LocalDate().plusMonths(1).withDayOfMonth(1).minusDays(1);
 		
@@ -1426,14 +1427,43 @@ public class InvoiceRestController {
 				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
 				break;
 			case Constants.THIS_YEAR:
+				LocalDate[] currentYearDates  = conversionUtil.getThisYearStartDateEndDate();
+				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
+				System.out.println("start date year "+startDateUTC);
+				System.out.println("end date year "+endDateUTC);
 				break;
 			case Constants.LAST_30DAYS:
+				Date[] last30Days = conversionUtil.getPreviousDates(30,orgLocation,startDateOutputFormatter,endDateOutputFormatter);
+				startDateUTC = last30Days[0];
+				endDateUTC = last30Days[1];
 				break;
 			case Constants.LAST_MONTH:
+		    	LocalDate firstOfThisMonth = today.withDayOfMonth( 1 );
+		    	LocalDate loastMonthStartDate = firstOfThisMonth.minusMonths( 1 );
+		    	LocalDate lastMonthEndDate = firstOfThisMonth.minusDays( 1 );
+		    	startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, loastMonthStartDate, startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, lastMonthEndDate, endDateOutputFormatter);
 				break;
 			case Constants.LAST_QUARTER:
+				LocalDate lastQuarterDate = today.minusMonths(3); // 2015-10-24
+		    	LocalDate[] quarterDates = conversionUtil.getThisMonthQuarterDates(lastQuarterDate);
+		    	startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[0], startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, quarterDates[1], endDateOutputFormatter);
 				break;
 			case Constants.LAST_YEAR:
+				if(Constants.COUNTRY_INDIA.equalsIgnoreCase(orgLocation.getCountry())){
+					LocalDate finStartDate = conversionUtil.getFinMonthFromDate();
+					if(null != finStartDate){
+						LocalDate finEndDate = conversionUtil.getFinMonthEndDate();
+						startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finStartDate, startDateOutputFormatter);
+						endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, finEndDate, endDateOutputFormatter);
+					}	
+				}else{
+					LocalDate[] financialDates = conversionUtil.getOtherCountryFinYeraDates();
+					startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[0], startDateOutputFormatter);
+					endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, financialDates[1], endDateOutputFormatter);
+				}
 				break;
 			case Constants.CUSTOM:
 				break;
@@ -1441,11 +1471,11 @@ public class InvoiceRestController {
 				logger.info("No Frequency");;
 		}
 		// End Time conversion
-		BillingReports billingReports = new BillingReports();
+		
 		float recievableAmount = 0;
 		float payableAmount = 0;
 		float netAmount = 0;
-		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId());
+		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId(),startDateUTC,endDateUTC,invoiceType);
 		if (null != invoiceList && invoiceList.size() > 0) {
 			for (Invoice invoice : invoiceList) {
 				if (Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())) {
@@ -1459,14 +1489,21 @@ public class InvoiceRestController {
 		}
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
-		logger.info("Final Recievable Amount = " + recievableAmount);
-		logger.info("Final Payable Amount = " + payableAmount);
-		logger.info("Final Net Amount = " + netAmount);
-		billingReports.setNetIncome(netAmount);
-		billingReports.setReceivedAmount(recievableAmount);
-		billingReports.setPayableAmount(payableAmount);
 		logger.info("Final Response time = " + elapsedTime + " Millis");
-		resultJson = commonUtil.toJSON(billingReports);
+		for(Invoice invoice : invoiceList){
+			if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+			}
+			if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+				invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+			}	
+			invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
+			invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
+			invoice.setNetIncome(netAmount);
+			invoice.setRecievableAmount(recievableAmount);
+			invoice.setPayableAmount(payableAmount);
+		}
+		resultJson = commonUtil.toJSON(invoiceList);
 		return resultJson;
 	}
 

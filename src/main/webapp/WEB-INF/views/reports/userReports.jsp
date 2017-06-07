@@ -166,7 +166,7 @@
 <div class="pull-left reportBtns mt10">
 <h4 class="pull-left mr">Billing Report</h4>
 	  <div class="reportBtn select-field pull-left">
-		<select class="form-control" id="billingReportType" onChange="getBillingReports();">
+		<select class="form-control" id="billingReportType" onChange="getBillingReports('Receivable');">
 		  <option value="THIS_MONTH">This Month</option>
 		  <option value="THIS_QUARTER">This quarter</option>
 		  <option value="THIS_YEAR">This Year</option>
@@ -186,7 +186,7 @@
 <!-- Report Chart desing -->
 <div class="clearfix"></div>
           <div class="clearfix mt10">
-              <div class="col-md-3">
+              <div class="col-md-4">
                   
                   <div class="clearfix billing_count">
                       <h5>${SourceLeadWeb_currencyCode}</h5><span class="rupee_usd" id="netIncome">USD</span>
@@ -203,11 +203,156 @@
                   </div>
                   
               </div>
-              <div class="col-md-9">
+<!--               <div class="col-md-9">
                   <div id="billing_chartdiv">
                     
                   </div>
+              </div> -->
+              
+              <div class="col-md-8 RepoPad">
+<div class="project_side_wrap_inn_tabs">
+          <ul class="project-tabs-menu">
+            <li class="current"><a href="#tab-1">Tab 1</a></li>
+            <li onclick="payableTab();"><a href="#tab-2">Tab 2</a></li>
+            <div class="clearfix"></div>
+          </ul>
+          <div class="project_tabs">
+            
+            <div id="tab-1" class="project_tabs_inn">
+			<!-- <div class="project_tabs_inn_head">
+              <input class="vendorfild" type="text"><i class="fa fa-search"></i></div>
+              <div class="require_wrap_table">
+    	<table>
+        	<thead>
+            	<tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Client</th>                    
+                    <th>Client</th>
+                    <th>Client</th>                    
+                    <th>Client</th>
+
+                </tr>
+			</thead>	
+                <tbody>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+
+            </tbody>
+        </table>
+	
+		</div> -->
+            </div>
+
+			<div id="tab-2" class="project_tabs_inn">
+			<div class="project_tabs_inn_head">
+ 				<a href="#">
+            <!--   <i class="glyphicon glyphicon-plus"></i>Add Two</a>  -->| 
+            <!--   <input class="vendorfild" type="text"><i class="fa fa-search"></i></div> -->
+              <div class="require_wrap_table">
+    	<table>
+        	<thead>
+            	<tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Client</th>                    
+                    <th>Client</th>
+                    <th>Client</th>                    
+                    <th>Client</th>
+
+                </tr>
+			</thead>	
+                <tbody>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+                <tr>
+                	<td><div>Bis63165</div></td>
+                    <td><div>07/06/2016</div></td>
+                    <td><div>Client 1</div></td>
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                    <td><div>Client 1</div></td> 
+                </tr>
+
+            </tbody>
+        </table>
+	
+		</div>
+            </div>  
+                                       
+            
+          </div>
+        </div> 
               </div>
+              
           </div>
           <!-- Report Chart desing -->
 
@@ -243,7 +388,8 @@
 <script> 
 $(document).ready(function(){
 	usersList();
-	getBillingReports();
+	var invoiceTYpe = "Receivable";
+	getBillingReports(invoiceTYpe);
 });
 </script>
 
@@ -631,266 +777,179 @@ function getCustomReports(){
 </script>
 
 <script>
-function getBillingRportType(){
+function payableTab(){
+	alert("Hi");
 }
 </script>
 
 <script>
-function getBillingReports(){
+function getBillingReports(invoiceType){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var billingReportType = $("#billingReportType").val();
-		alert(billingReportType);
 		$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType, 
+	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType, 
 	         success: function(data) {
 	        	 var json = JSON.parse(data);
-	        	 $("#netIncome").html(json.netIncome);
-	        	 $("#receivedAmount").html(json.receivedAmount);
-	        	 $("#payableAmount").html(json.payableAmount);
+	        	 
+	        	 var result = "";
+	        	 
+	        	 result = result +'<div class="project_tabs_inn_head">';
+	        	 result = result +'<input class="vendorfild" type="text"><i class="fa fa-search"></i></div>';
+	        	 result = result +'<div class="require_wrap_table">';
+	        	 result = result +"<table id='billingReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
+	        	 result = result +'<thead>';
+	        	 result = result +'<tr>';
+	        	 result = result +'<th>Invoice Id</th>';
+	        	 result = result +'<th>Client</th>';
+	        	 result = result +'<th>Invoice Date</th>';
+	        	 result = result +'<th>Toatl</th>';
+	        	 result = result +'<th>Due Date</th>';                    
+	        	 result = result +'<th>Due Amount</th>';
+	        	 result = result +'</tr>';
+	        	 result = result +'</thead>';	
+	        	 result = result +'<tbody>';
+	        	 for (var i = 0; i < json.length; i++) { 
+	        		 var opt = json[i]; 
+	        		 $("#netIncome").html(opt.netIncome);
+		        	 $("#receivedAmount").html(opt.recievableAmount);
+		        	 $("#payableAmount").html(opt.payableAmount); 
+	        		 result = result +'<tr>';
+		        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
+		        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
+		        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
+		        	 result = result +'<td><div>'+opt.total+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
+		        	 result = result +'</tr>'; 
+	        	 }
+	        	 
+	                result = result +'</tbody>';
+	                result = result +'</table>';
+	                result = result +'</div>';
+	                $("#tab-1").empty();
+	        	   $("#tab-1").append(result);
+	        	   billingReportPagination();
 	         }
 		});
 }
 
 </script>
 
+
 <script>
-// Billing Chart script: Amcharts
-var chart = AmCharts.makeChart("billing_chartdiv", {
-    "type": "serial",
-    "theme": "light",
-    "marginTop":0,
-    "marginRight": 80,
-    "dataProvider": [{
-        "year": "1940",
-        "value": -0.307
-    }, {
-        "year": "1951",
-        "value": -0.168
-    }, {
-        "year": "1952",
-        "value": -0.073
-    }, {
-        "year": "1953",
-        "value": -0.027
-    }, {
-        "year": "1954",
-        "value": -0.251
-    }, {
-        "year": "1955",
-        "value": -0.281
-    }, {
-        "year": "1956",
-        "value": -0.348
-    }, {
-        "year": "1957",
-        "value": -0.074
-    }, {
-        "year": "1958",
-        "value": -0.011
-    }, {
-        "year": "1959",
-        "value": -0.074
-    }, {
-        "year": "1960",
-        "value": -0.124
-    }, {
-        "year": "1961",
-        "value": -0.024
-    }, {
-        "year": "1962",
-        "value": -0.022
-    }, {
-        "year": "1963",
-        "value": 0
-    }, {
-        "year": "1964",
-        "value": -0.296
-    }, {
-        "year": "1965",
-        "value": -0.217
-    }, {
-        "year": "1966",
-        "value": -0.147
-    }, {
-        "year": "1967",
-        "value": -0.15
-    }, {
-        "year": "1968",
-        "value": -0.16
-    }, {
-        "year": "1969",
-        "value": -0.011
-    }, {
-        "year": "1970",
-        "value": -0.068
-    }, {
-        "year": "1971",
-        "value": -0.19
-    }, {
-        "year": "1972",
-        "value": -0.056
-    }, {
-        "year": "1973",
-        "value": 0.077
-    }, {
-        "year": "1974",
-        "value": -0.213
-    }, {
-        "year": "1975",
-        "value": -0.17
-    }, {
-        "year": "1976",
-        "value": -0.254
-    }, {
-        "year": "1977",
-        "value": 0.019
-    }, {
-        "year": "1978",
-        "value": -0.063
-    }, {
-        "year": "1979",
-        "value": 0.05
-    }, {
-        "year": "1980",
-        "value": 0.077
-    }, {
-        "year": "1981",
-        "value": 0.12
-    }, {
-        "year": "1982",
-        "value": 0.011
-    }, {
-        "year": "1983",
-        "value": 0.177
-    }, {
-        "year": "1984",
-        "value": -0.021
-    }, {
-        "year": "1985",
-        "value": -0.037
-    }, {
-        "year": "1986",
-        "value": 0.03
-    }, {
-        "year": "1987",
-        "value": 0.179
-    }, {
-        "year": "1988",
-        "value": 0.18
-    }, {
-        "year": "1989",
-        "value": 0.104
-    }, {
-        "year": "1990",
-        "value": 0.255
-    }, {
-        "year": "1991",
-        "value": 0.21
-    }, {
-        "year": "1992",
-        "value": 0.065
-    }, {
-        "year": "1993",
-        "value": 0.11
-    }, {
-        "year": "1994",
-        "value": 0.172
-    }, {
-        "year": "1995",
-        "value": 0.269
-    }, {
-        "year": "1996",
-        "value": 0.141
-    }, {
-        "year": "1997",
-        "value": 0.353
-    }, {
-        "year": "1998",
-        "value": 0.548
-    }, {
-        "year": "1999",
-        "value": 0.298
-    }, {
-        "year": "2000",
-        "value": 0.267
-    }, {
-        "year": "2001",
-        "value": 0.411
-    }, {
-        "year": "2002",
-        "value": 0.462
-    }, {
-        "year": "2003",
-        "value": 0.47
-    }, {
-        "year": "2004",
-        "value": 0.445
-    }, {
-        "year": "2005",
-        "value": 0.47
-    }],
-    "valueAxes": [{
-        "axisAlpha": 0,
-        "position": "left"
-    }],
-    "graphs": [{
-        "id":"g1",
-        "balloonText": "[[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-        "bullet": "round",
-        "bulletSize": 8,
-        "lineColor": "#d1655d",
-        "lineThickness": 2,
-        "negativeLineColor": "#637bb6",
-        "type": "smoothedLine",
-        "valueField": "value"
-    }],
-    "chartScrollbar": {
-        "graph":"g1",
-        "gridAlpha":0,
-        "color":"#888888",
-        "scrollbarHeight":55,
-        "backgroundAlpha":0,
-        "selectedBackgroundAlpha":0.1,
-        "selectedBackgroundColor":"#888888",
-        "graphFillAlpha":0,
-        "autoGridCount":true,
-        "selectedGraphFillAlpha":0,
-        "graphLineAlpha":0.2,
-        "graphLineColor":"#c2c2c2",
-        "selectedGraphLineColor":"#888888",
-        "selectedGraphLineAlpha":1
-
-    },
-    "chartCursor": {
-        "categoryBalloonDateFormat": "YYYY",
-        "cursorAlpha": 0,
-        "valueLineEnabled":true,
-        "valueLineBalloonEnabled":true,
-        "valueLineAlpha":0.5,
-        "fullWidth":true
-    },
-    "dataDateFormat": "YYYY",
-    "categoryField": "year",
-    "categoryAxis": {
-        "minPeriod": "YYYY",
-        "parseDates": true,
-        "minorGridAlpha": 0.1,
-        "minorGridEnabled": true
-    },
-    "export": {
-        "enabled": true
-    }
-});
-
-chart.addListener("rendered", zoomChart);
-if(chart.zoomChart){
-	chart.zoomChart();
+function billingReportPagination(){ 
+    $('#billingReportPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
 }
+</script> 
 
-function zoomChart(){
-    chart.zoomToIndexes(Math.round(chart.dataProvider.length * 0.4), Math.round(chart.dataProvider.length * 0.55));
-}
+<!-- Month Graph -->
+<!-- Chart code -->
+<script>
+var chart = AmCharts.makeChart( "billing_chartdiv", {
+  "type": "serial",
+  "theme": "light",
+  "marginRight": 40,
+  "marginLeft": 40,
+  "autoMarginOffset": 20,
+  "dataDateFormat": "YYYY-MM-DD",
+  "valueAxes": [ {
+    "id": "v1",
+    "axisAlpha": 0,
+    "position": "left",
+    "ignoreAxisWidth": true
+  } ],
+  "balloon": {
+    "borderThickness": 1,
+    "shadowAlpha": 0
+  },
+  "graphs": [ {
+    "id": "g1",
+    "balloon": {
+      "drop": true,
+      "adjustBorderColor": false,
+      "color": "#ffffff",
+      "type": "smoothedLine"
+    },
+    "fillAlphas": 0.2,
+    "bullet": "round",
+    "bulletBorderAlpha": 1,
+    "bulletColor": "#FFFFFF",
+    "bulletSize": 5,
+    "hideBulletsCount": 50,
+    "lineThickness": 2,
+    "title": "red line",
+    "useLineColorForBulletBorder": true,
+    "valueField": "value",
+    "balloonText": "<span style='font-size:18px;'>[[value]]</span>"
+  } ],
+  "chartCursor": {
+    "valueLineEnabled": true,
+    "valueLineBalloonEnabled": true,
+    "cursorAlpha": 0,
+    "zoomable": false,
+    "valueZoomable": true,
+    "valueLineAlpha": 0.5
+  },
+  "valueScrollbar": {
+    "autoGridCount": true,
+    "color": "#000000",
+    "scrollbarHeight": 50
+  },
+  "categoryField": "date",
+  "categoryAxis": {
+    "parseDates": true,
+    "dashLength": 1,
+    "minorGridEnabled": true
+  },
+  "export": {
+    "enabled": true
+  },
+  "dataProvider": [ {
+    "date": "2012-01-27",
+    "value": 13
+  }, {
+    "date": "2012-08-01",
+    "value": 13
+  },  {
+    "date": "2012-09-04",
+    "value": 47
+  }, {
+    "date": "2012-10-07",
+    "value": 21
+  }, {
+    "date": "2012-11-03",
+    "value": 68
+  }, {
+    "date": "2012-11-04",
+    "value": 65
+  }, {
+    "date": "2012-11-05",
+    "value": 71
+  }, {
+    "date": "2012-11-06",
+    "value": 75
+  }, {
+    "date": "2012-11-07",
+    "value": 74
+  },{
+    "date": "2012-12-03",
+    "value": 65
+  }, {
+    "date": "2013-01-02",
+    "value": 67
+  }, ]
+} );
 </script>
 
 <jsp:include page="vendorsReport.jsp" />
