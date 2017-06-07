@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -80,6 +81,16 @@ private static final long serialVersionUID = 1L;
     @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 
+	@javax.persistence.Transient
+	private String projectMemberId;
+	
+	@javax.persistence.Transient
+	private String startDateStr;
+	
+	@javax.persistence.Transient
+	private String endDateStr;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -209,4 +220,30 @@ private static final long serialVersionUID = 1L;
 	{
 		this.expensesEntries = expensesEntries;
 	}
+
+	public String getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(String projectMemberId) {
+		this.projectMemberId = projectMemberId;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+	
+	
 }
