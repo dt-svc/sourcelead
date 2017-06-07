@@ -2,6 +2,8 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -56,6 +59,10 @@ public class ExpensesCategory implements Serializable {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	
+	@Transient
+	private List<LookUpData> expenseCategoryList;
 
 	public Long getId() {
 		return id;
@@ -145,6 +152,16 @@ public class ExpensesCategory implements Serializable {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public List<LookUpData> getExpenseCategoryList() {
+		return expenseCategoryList;
+	}
+
+	public void setExpenseCategoryList(List<LookUpData> expenseCategoryList) {
+		this.expenseCategoryList = expenseCategoryList;
+	}
+
 	
+
 	
 }
