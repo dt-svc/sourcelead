@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProposeTime;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -79,6 +81,9 @@ public class RequirementInterviewRestController {
 	 
 	 @Autowired
 	 private RequirementInterviewerService requirementInterviewerService;
+	 
+	 @Autowired
+	 ProposeTimeService  proposeTimeService;
 	
 	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
@@ -257,6 +262,45 @@ public class RequirementInterviewRestController {
 		 return resultJson;
 	   }
 	 
+	/**
+	 * @author Laxman
+	 * @param json
+	 * @param request
+	 * @return success
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/saveProposeTime" , method = RequestMethod.POST)
+	   public String saveProposeTime(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
+			
+ 	        String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			String pattern = "dd-MM-yyyy";
+	        SimpleDateFormat format = new SimpleDateFormat(pattern);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 RequirementInterview interview = requirementInterviewService.getRequirementInterviewById(jsonObj.getString("requirementInterviewId"));
+			int maxTaxRowCount = Integer.parseInt(jsonObj.getString("proposeNewTimeRowsNum"));
+			 for(int i=0;i<maxTaxRowCount;i++){
+				 ProposeTime proposeTime = new ProposeTime();
+					 if(null != jsonObj.getString("interviewDate"+i) && !"".equalsIgnoreCase(jsonObj.getString("interviewDate"+i))){
+						 Date proposeDate = format.parse(jsonObj.getString("interviewDate"+i));
+						 proposeTime.setProposeDate(proposeDate);
+					 }
+					 if(null != jsonObj.getString("time"+i) && !"".equalsIgnoreCase(jsonObj.getString("time"+i))){
+						 proposeTime.setProposeTime(jsonObj.getString("time"+i));
+					 }
+					 
+					 proposeTime.setInterviewId(interview);
+					 proposeTime.setStatus(Constants.RECORD_ACTIVE);
+					 proposeTime.setCreatedDate(commonUtil.currentDate());
+					 proposeTime.setCreatedBy(user.getUserCode());
+					 proposeTimeService.saveProposeTime(proposeTime);
+			 }
+			 
+			return "success";
+
+  }
+	
 	 /*@RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
