@@ -591,5 +591,6 @@ public class Constants {
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
 	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
 	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
+	public static final String JOB_ALERTS = "JobAlerts";
 
 }

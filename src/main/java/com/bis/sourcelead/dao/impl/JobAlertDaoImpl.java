@@ -92,7 +92,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 	public List<JobAlert> getJobAlertByEmail(String email) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from JobAlert jobAlert  where jobAlert.email =:email and jobAlert.status ='1' "; 
+		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.email =:email and jobAlert.status ='1' "; 
 		List<JobAlert> jobAlertList = session.createQuery(query).setString("email", email).setCacheable(true).list();
 		return jobAlertList;
 	}
@@ -103,7 +103,7 @@ public class JobAlertDaoImpl implements JobAlertDao{
 	public List<JobAlert> getConfiruredJobsAlertsList(String duration) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from JobAlert jobAlert  where jobAlert.duration = :duration and jobAlert.status ='1' "; 
+		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.duration = :duration and jobAlert.status ='1' "; 
 		List<JobAlert> jobAlertList = session.createQuery(query).setString("duration", duration).setCacheable(true).list();
 		return jobAlertList;
 	}

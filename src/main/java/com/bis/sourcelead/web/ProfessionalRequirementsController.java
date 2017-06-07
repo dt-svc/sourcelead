@@ -483,4 +483,17 @@ public class ProfessionalRequirementsController {
 			return model;
 
 		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/jobAlertRequirementSummary")
+		public ModelAndView jobAlertRequirementSummary(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) {
+			
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("jobAlert/jobAlertRequirementSummary");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("requirementUUID", requirementUUID);
+		 return model;
+			
+		}
 }
