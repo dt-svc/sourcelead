@@ -1,9 +1,11 @@
 package com.bis.sourcelead.rest;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,15 +13,18 @@ import java.io.StringReader;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +41,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -49,6 +56,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -80,6 +88,9 @@ public class ContractRestController {
 	ContractsTemplateService contractsTemplateService;
 	
 	@Autowired
+	ContractRequestDocumentsDao contractRequestDocumentsDao;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Autowired
@@ -108,6 +119,9 @@ public class ContractRestController {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	ContractRequestDocumentsService contractRequestDocumentsService;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveClient(
@@ -575,11 +589,11 @@ public class ContractRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateContractTitle" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateContractTitle(@RequestParam(value="contractTitle", required=false) String contractTitle,@RequestParam(value="contractType", required=false) String contractType,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String validateContractTitle(@RequestParam(value="contractTitle", required=false) String contractTitle,@RequestParam(value="contractType", required=false) String contractType,@RequestParam(value="contractId", required=false) Long contractId, HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	Contracts  contracts = contractsTemplateService.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocation.getId());
+		 	Contracts  contracts = contractsTemplateService.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocation.getId(),contractId);
 		 	
 		 	if (null != contracts) {
 				result = "true";
@@ -598,13 +612,38 @@ public class ContractRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			
-			MultipartFile multiFile = null;
+			MultipartFile multiFile1 = null;
 			Iterator<String> itrator = request.getFileNames();
 			if(itrator.hasNext()){
-		        multiFile = request.getFile(itrator.next());
+		        multiFile1 = request.getFile(itrator.next());
 			}
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Contracts contracts = contractsTemplateService.saveExistigContract(jsonObj,multiFile,orgLocation,user,org);
+			Contracts contracts = contractsTemplateService.saveExistigContract(jsonObj,multiFile1,orgLocation,user,org);
+			final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+			final Map files = multiRequest.getFileMap();
+			int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
+			
+			for (long c = 1; c < maxCount; c++) {
+					ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
+					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+c);
+					
+						contractRequestDocuments.setContractId(contracts);
+						if(jsonObj.has(c+"documentName") && !jsonObj.getString(c+"documentName").isEmpty()){
+							contractRequestDocuments.setFileName(jsonObj.getString(c+"documentName"));
+						if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
+							contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
+						}
+						}
+						if(multiFile != null){
+							contractRequestDocuments.setDocFile(multiFile.getBytes());
+							contractRequestDocuments.setFileType(multiFile.getContentType());
+						}
+						contractRequestDocuments.setCreatedDate(new Date());
+						contractRequestDocuments.setUpdatedDate(new Date());
+						contractRequestDocuments.setCreatedBy(user.getUserCode());
+						contractRequestDocuments.setUpdatedBy(user.getUserCode());
+						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+			}
 		   if(null != contracts){
 			   isContractSaved = true;
 		   }
@@ -748,5 +787,139 @@ public class ContractRestController {
 			return commonUtil.toJSON(contractsCount);
 		 
 	 }
+	 
+	 @RequestMapping(value = "/getDocsByContractUUID", method = RequestMethod.GET)
+		public @ResponseBody String getDocsByContractUUID(@RequestParam(value = "contractUUID", required = false) String contractUUID, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 	Contracts contract =	contractsTemplateService.getContractByContractUUID(contractUUID);
+		 	
+			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
+    		if(null != contract.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateDao.getContractById(contract.getParentContractId().getId());
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+    		}else{
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+    		} 
+			return commonUtil.toJSON(contractRequestDocumentsList);
+		}
+	 @RequestMapping(value = "/saveDocContracts", method = RequestMethod.POST)
+		public @ResponseBody String saveDocContracts(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request) throws Exception {
 
+			String json1 = "{" + json + "}";
+			JSONObject jsonObj = new JSONObject(json1);
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			 final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+			final Map files = multiRequest.getFileMap();
+			int maxCount = Integer.parseInt(jsonObj.getString("maxDocCount"));
+			for (long c = 1; c <= maxCount; c++) {
+				if(jsonObj.has("docId"+c) && !jsonObj.getString("docId"+c).isEmpty()){
+					ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(jsonObj.getString("docId"+c)));
+					MultipartFile  multiFile = (MultipartFile)files.get("uploadBtn"+jsonObj.getString("docId"+c));
+					if(multiFile != null && multiFile.getSize()>0){
+						contractRequestDocuments.setDocFile(multiFile.getBytes());
+						contractRequestDocuments.setFileType(multiFile.getContentType());
+						contractRequestDocuments.setCreatedDate(new Date());
+						contractRequestDocuments.setUpdatedDate(new Date());
+						contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+						contractRequestDocuments.setCreatedBy(user.getUserCode());
+						contractRequestDocuments.setUpdatedBy(user.getUserCode());
+						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+						contractsTemplateService.documentsReceivedMailToOwner(contractRequestDocuments.getContractId(),user,org);
+					}
+				}
+			}
+			
+			return "success";
+		}
+	 
+	 @RequestMapping(value = "/terminateDocument", method = RequestMethod.POST)
+	 public @ResponseBody String terminateDocument(@RequestParam(value = "docuId", required = false) String docuId, HttpServletRequest request) throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docuId));
+			contractRequestDocuments.setStatus(Constants.MEMBER_IN_ACTIVE);
+			contractRequestDocuments.setUpdatedDate(new Date());
+			contractRequestDocuments.setUpdatedBy(user.getUserCode());
+			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+			
+			return "success";
+		}
+	 @RequestMapping(value = "/updateDocument", method = RequestMethod.POST)
+	 public @ResponseBody String updateDocument(@RequestParam(value = "docuId", required = false) String docuId, HttpServletRequest request) throws Exception {
+			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsById(Long.parseLong(docuId));
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			contractRequestDocuments.setDocFile(new byte[0]);
+			contractRequestDocuments.setFileType("");
+			//contractRequestDocuments.setCreatedDate(new Date());
+			contractRequestDocuments.setUpdatedDate(new Date());
+			contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
+			//contractRequestDocuments.setCreatedBy(user.getUserCode());
+			contractRequestDocuments.setUpdatedBy(user.getUserCode());
+			contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
+			return "success";
+		}
+	 
+
+	 @RequestMapping(value = "/downloadContractDocument",method = RequestMethod.GET)
+	 public void downloadContractDocument(@RequestParam(value="contractUUID", required=false) String contractUUID, HttpServletResponse response) throws Exception {
+			ContractRequestDocuments contractRequestDocuments = contractRequestDocumentsService.getContractRequestDocumentsByContractUUID(contractUUID);
+			if(null != contractRequestDocuments){
+				response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(contractRequestDocuments.getFileName()).append("\"").toString());
+		        
+		        InputStream inputStream = new ByteArrayInputStream(contractRequestDocuments.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+			}
+
+	 }
+	 
+	 @RequestMapping(value = "/updateContractEndDate", method = RequestMethod.POST)
+	 public @ResponseBody String updateContractEndDate(@RequestParam(value = "contractId", required = false) String contractId,@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) throws Exception {
+		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 	Contracts contracts = contractsTemplateService.getContractById(Long.parseLong(contractId));
+		 	Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+			Date endTimeStr = commonUtil.getDateFormat(endDate);  
+			String endDateStr = Constants.TZ_DF.format(endTimeStr);  
+			String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+		 	// updating parent contract end date if get the contract i is child contract
+		 	if(null != contracts.getParentContractId().getId()){
+		 		Contracts parentContracts = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+		 		parentContracts.setEndDate(convertedEndDate);
+		 		parentContracts.setUpdatedDate(new Date());
+		 		parentContracts.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveNewContract(parentContracts);
+		 	}
+		 // updating child contract end date if get the parent contract
+		 	if(null == contracts.getParentContractId().getId()){
+		 		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
+		 		childContarct.setEndDate(convertedEndDate);
+		 		childContarct.setUpdatedDate(new Date());
+		 		childContarct.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveNewContract(childContarct);
+		 	}
+		 // updating contract end date 
+		 	contracts.setEndDate(convertedEndDate);
+		 	contracts.setUpdatedDate(new Date());
+		 	contracts.setUpdatedBy(user.getUserCode());
+			contractsTemplateDao.saveNewContract(contracts);
+			return "success";
+		}
 }

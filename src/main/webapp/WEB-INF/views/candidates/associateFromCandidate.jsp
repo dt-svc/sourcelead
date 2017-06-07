@@ -390,13 +390,6 @@
         </div>
 
 </div>            
-       
-         
-        
-        
-        
-        
-       
         
          <div class="clearfix" id="newResumeDiv"  style="display: none;">
          <div class="form-group">
@@ -412,14 +405,20 @@
         </div>
         </div> 
         
+        <div class="clearfix"></div>
         <div class="form-group">
-          <label class="col-md-3"></label>
-         <!--  <div class="col-md-9 checkbox checkBox">
-            <label>
-              <input type="checkbox" value="">
-              Send Invitation </label>
-          </div> -->
-        </div> 
+            <label class="col-md-3"></label>
+             <div class="col-md-9">
+               <div class="checkbox checkBox">
+                 <label>
+                   <input type="checkbox" value="Y" name="email">
+                   Invite to SourceLead</label>
+               </div>
+                </div>
+         </div>
+        
+        
+        
         <div class="clearfix"></div>
       </div> 
     </div>

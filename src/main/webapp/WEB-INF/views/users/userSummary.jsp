@@ -1378,20 +1378,27 @@ $("#editRoleDetailsList").empty();
 						result = result + '</div>';
 						 
 						result = result + '</span>';
-						
-					
-					
 					
 					// moving date bottom to top
 					result = result + ' <div class="user_summary_edit_cta select-field">';
 					result = result + ' <label>Rate</label>';
 		            result = result+'  <select class="rate_sele" id="currentCurrency" name="currentCurrency"> ';
-					result = result + ' <option '+(json.currentCurrency == "INR" ? "selected" : '') +'>INR</option>';
-					result = result + ' <option '+(json.currentCurrency == "AUD" ? "selected" : '') +'>AUD</option>';
-					result = result + ' <option '+(json.currentCurrency == "USD" ? "selected" : '') +'>USD</option>';
-					result = result + ' <option '+(json.currentCurrency == "GBP" ? "selected" : '') +'>GBP</option>';
-					result = result + ' <option '+(json.currentCurrency == "SGD" ? "selected" : '') +'>SGD</option>';
-					result = result + '<option   '+(json.currentCurrency == "EUR" ? "selected" : '') +'>EUR</option>'; 
+					if(json.currentCurrency != "undefined" && json.currentCurrency != null && json.currentCurrency != ''){
+						result = result + ' <option '+(json.currentCurrency == "INR" ? "selected" : '') +'>INR</option>';
+						result = result + ' <option '+(json.currentCurrency == "AUD" ? "selected" : '') +'>AUD</option>';
+						result = result + ' <option '+(json.currentCurrency == "USD" ? "selected" : '') +'>USD</option>';
+						result = result + ' <option '+(json.currentCurrency == "GBP" ? "selected" : '') +'>GBP</option>';
+						result = result + ' <option '+(json.currentCurrency == "SGD" ? "selected" : '') +'>SGD</option>';
+						result = result + '<option   '+(json.currentCurrency == "EUR" ? "selected" : '') +'>EUR</option>'; 
+					}else{
+						result = result + ' <option '+(json.currencyConversionWithCountry == "INR" ? "selected" : '') +'>INR</option>';
+						result = result + ' <option '+(json.currencyConversionWithCountry == "AUD" ? "selected" : '') +'>AUD</option>';
+						result = result + ' <option '+(json.currencyConversionWithCountry == "USD" ? "selected" : '') +'>USD</option>';
+						result = result + ' <option '+(json.currencyConversionWithCountry == "GBP" ? "selected" : '') +'>GBP</option>';
+						result = result + ' <option '+(json.currencyConversionWithCountry == "SGD" ? "selected" : '') +'>SGD</option>';
+						result = result + '<option   '+(json.currencyConversionWithCountry == "EUR" ? "selected" : '') +'>EUR</option>'; 
+					
+					}
 					result = result+'</select>';
 					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">';
 					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
