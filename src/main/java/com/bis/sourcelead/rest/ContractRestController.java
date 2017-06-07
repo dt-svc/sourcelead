@@ -589,11 +589,11 @@ public class ContractRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/validateContractTitle" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateContractTitle(@RequestParam(value="contractTitle", required=false) String contractTitle,@RequestParam(value="contractType", required=false) String contractType,HttpServletRequest request) throws Exception {
+	 public @ResponseBody  String validateContractTitle(@RequestParam(value="contractTitle", required=false) String contractTitle,@RequestParam(value="contractType", required=false) String contractType,@RequestParam(value="contractId", required=false) Long contractId, HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	Contracts  contracts = contractsTemplateService.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocation.getId());
+		 	Contracts  contracts = contractsTemplateService.findContractTitleByOrgLocationAndContractType(contractTitle, contractType, orgLocation.getId(),contractId);
 		 	
 		 	if (null != contracts) {
 				result = "true";
