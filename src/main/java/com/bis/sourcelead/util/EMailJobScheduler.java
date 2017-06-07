@@ -3,19 +3,17 @@ package com.bis.sourcelead.util;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
@@ -23,12 +21,8 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -42,17 +36,16 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
-import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatesHotListDummy;
+import com.bis.sourcelead.entity.ConsolidatedReport;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -63,16 +56,17 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -89,14 +83,18 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
+import com.docusign.esign.api.AuthenticationApi.LoginOptions;
+import com.docusign.esign.api.EnvelopesApi.ListStatusChangesOptions;
 import com.docusign.esign.client.ApiClient;
 import com.docusign.esign.client.Configuration;
 import com.docusign.esign.model.Envelope;
+import com.docusign.esign.model.EnvelopesInformation;
 import com.docusign.esign.model.LoginAccount;
 import com.docusign.esign.model.LoginInformation;
 
@@ -218,16 +216,12 @@ public class EMailJobScheduler {
 	@Autowired
 	TimeZoneDao timeZoneDao;
 	
-	@Autowired
-	JobAlertService jobAlertService;
-	
 	
 	@Autowired
 	ContractsTemplateService contractsTemplateService;
 	
-	protected static boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
-	}
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
@@ -1881,158 +1875,159 @@ public class EMailJobScheduler {
 		        }
 	}
 	
-	
-	
-	
-	@Scheduled(cron = "0 45 23 1/1 * ?")
-	public void runJobSchedulerByForClosedRequirementsDaily() {
-		logger.info("******************  Close Jobs  Every Day ! **********");
+	/**
+	 * @author : Pavan Jampana
+	 * this cron will used to send the remainder emails to respective owners about expiring of the contract. 
+	 * 
+	 * this cron will be fired once a day at 3'O clock
+	 * 
+	 * Morning 8 Am for us/canada
+	 */
+
+	@Scheduled(cron = "0 0 15 1/1 * ?")
+	@Async
+	public void notifyToUsersAboutContractExpiry() throws Exception
+	{
+		DateTime zoned = new DateTime();
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
-		try {
-			DateTime zoned = new DateTime();
-	        DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-	        DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-	        DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	        
-	        // to fire remainder one week before
-	        String startDate = outputFormatter1.print(zoned);
-	        String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
-	        Date startDateUTC = ts.parse(startDateString);
-	        String endDate = outputFormatter.print(zoned);
-	        String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
-	        Date endDateUTC = ts.parse(endDateString);
-	        
-	        List<Requirement> requirementsList = requirementService.getAllClosedRequirementsByStartDateAndEndDate(startDateUTC, endDateUTC);
-			
-			 if(null != requirementsList && requirementsList.size() > 0){
-		        	for(Requirement requirement : requirementsList){
-		        		requirement.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionStatus());
-		        		requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.CLOSED);
-		        		requirementService.addRequirement(requirement);
-		            }
-		        }
-		} catch (Exception e) {
-			e.printStackTrace();
+		// to fire remainder one week before
+		DateTime week = zoned.plusDays(7);
+		String startDate = outputFormatter1.print(week);
+		String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
+		Date startDateUTC = ts.parse(startDateString);
+		String endDate = outputFormatter.print(week);
+		String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
+		Date endDateUTC = ts.parse(endDateString);
+		
+		List<Contracts> oneWeekContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(startDateUTC,endDateUTC);
+		for(Contracts contracts : oneWeekContractsList){
+			contractExpiryRemainderMail(contracts);
 		}
 		
-    }
-	
-	
-	@Scheduled(cron = "0 0/1 * 1/1 * ?")
-	public void runDialyjobAlerts() {
-		logger.info("******************  Close Jobs  Every Day ! **********");
+		//to fire two days before
+		DateTime twodays = zoned.plusDays(2);
+		String twoDaysStartDate = outputFormatter1.print(twodays);
+		String twoDaysStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, twoDaysStartDate);
+		Date twoDaysStartDateUTC = ts.parse(twoDaysStartDateString);
+		String twoDaysEndDate = outputFormatter.print(twodays);
+		String twoDaysEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, twoDaysEndDate);
+		Date twoDaysEndDateUTC = ts.parse(twoDaysEndDateString);
 		
-		try {
-			List<JobAlert> jobAlertsList = jobAlertService.getConfiruredJobsAlertsList(Constants.JOB_ALERT_DURATION_DIALY);
-			if(null != jobAlertsList && jobAlertsList.size() > 0){
-				for(JobAlert jobAlert : jobAlertsList){
-					List<RequirementIndex> requirementList = new ArrayList<RequirementIndex>();
-					 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-					 
-					 BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
-				     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
-				     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
-				     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
-					 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
-					 
-					 BoolQueryBuilder anyReleaseBoolQueryBuilder = QueryBuilders.boolQuery();
-					 anyReleaseBoolQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
-					 anyReleaseBoolQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
-					 boolQueryBuilder.must(anyReleaseBoolQueryBuilder);
-					 
-					 
-					 if(!isNullOrEmpty(jobAlert.getCity())){
-						 boolQueryBuilder.must(QueryBuilders.matchQuery("city", jobAlert.getCity()));
-					 }
-					 
-					 if(!isNullOrEmpty(jobAlert.getExperience())){
-						 boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(0).lte(new Integer(jobAlert.getExperience())));
-					 }
-					 
-					 if(!isNullOrEmpty(jobAlert.getRate())){
-						 boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jobAlert.getRateCurrency()));
-						 boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jobAlert.getRateType()));
-						 boolQueryBuilder.must(QueryBuilders.rangeQuery("maxRate").gte(0).lte(new Integer(jobAlert.getRate())));
-					 }
-					 
-					 if(!isNullOrEmpty(jobAlert.getIndustryName())){
-						 boolQueryBuilder.must(QueryBuilders.matchQuery("industryName", jobAlert.getIndustryName().trim()));
-					 }
-					 
-					 if(!isNullOrEmpty(jobAlert.getSkillsName())){
-						 
-						 ArrayList<String> skillsOrKeyWordList = null;
-						 skillsOrKeyWordList = new ArrayList<String>(Arrays.asList(jobAlert.getSkillsName().split(",")));
-						 if(skillsOrKeyWordList != null && !skillsOrKeyWordList.isEmpty()){
-							 BoolQueryBuilder anySkillOrKeyWordBoolQueryBuilder = QueryBuilders.boolQuery();
-							 
-							 for(String keywd : skillsOrKeyWordList){
-								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-								ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
-								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-										anyBoolSubQueryBuilder.should(matchQueryBuilder);
-									}
-									anySkillOrKeyWordBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-								}
-							}
-							 boolQueryBuilder.must(anySkillOrKeyWordBoolQueryBuilder);
-						 }
-						 
-					 }
-					 
-					 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0, Constants.MAX_RESULTS_TWENTY,boolQueryBuilder).getHits();
+		List<Contracts> twoDaysContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(twoDaysStartDateUTC,twoDaysEndDateUTC);
+		for(Contracts contracts : twoDaysContractsList){
+			contractExpiryRemainderMail(contracts);
+		}
+		
+		//to fire two days before
+		DateTime oneDay = zoned;
+		String oneDayStartDate = outputFormatter1.print(oneDay);
+		String oneDayStartDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayStartDate);
+		Date oneDayStartDateUTC = ts.parse(oneDayStartDateString);
+		String oneDayEndDate = outputFormatter.print(oneDay);
+		String oneDayEndDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, oneDayEndDate);
+		Date oneDayEndDateUTC = ts.parse(oneDayEndDateString);
+		
+		List<Contracts> oneDayContractsList = contractsTemplateService.getAllContractsBasedOnTimeFrequency(oneDayStartDateUTC,oneDayEndDateUTC);
+		for(Contracts contracts : oneDayContractsList){
+			contractExpiryRemainderMail(contracts);
+		}
+	}
 
-			 	     if(null != searchHits && searchHits.length >0){
-			 	    	ObjectMapper mapper = new ObjectMapper();
-			 	    	for (SearchHit hit : searchHits) {
-			 	    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
-			 	    	    RequirementIndex requirementIndex = mapper.readValue(json.toString(), RequirementIndex.class);
-			 	    	    requirementIndex.setJobAlertTitle(jobAlert.getAlertTitle());
-			 	    	    requirementList.add(requirementIndex);
-			 	    	}
-			 	     }
-					 
+	private void contractExpiryRemainderMail(Contracts contracts) throws Exception
+	{
+			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(owner.getFirstName());
+			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				 emailMessage.setLastName(owner.getLastName());
+			 }else{
+				 emailMessage.setLastName("");
+			 }
+			 emailMessage.setToEmail(owner.getEmail());
+			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setCreatedBy("sladmin");
+			 emailMessage.setFromName("SourceLead Admin"); 
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 
+			 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+				 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+				 }else{
+					 globalVarsMap.put("contractTitle","--");
+				 }
+			 
+			 if(contracts.getContractType()!= null && !"".equalsIgnoreCase(contracts.getContractType())){
+				 globalVarsMap.put("contractType", contracts.getContractType());
+				 }else{
+					 globalVarsMap.put("contractType","--");
+				 }
+			
+			 if(contracts.getEndDate()!= null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
+				 globalVarsMap.put("contractEndDate", contracts.getEndDate().toString());
+				 }else{
+					 globalVarsMap.put("contractEndDate","--");
+				 }
+			 
+			 if(contracts.getStartDate()!= null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
+				 globalVarsMap.put("contractStartDate", contracts.getStartDate().toString());
+				 }else{
+					 globalVarsMap.put("contractStartDate","--");
+				 }
+			 
+			 if(contracts.getTemplateSubmissionStatus() != null && !"".equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+				 globalVarsMap.put("status", contracts.getTemplateSubmissionStatus());
+				 }else{
+					 globalVarsMap.put("status","--");
+				 }
+			 
+			 
+			if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+				StringBuilder creatorSb = new StringBuilder();
+				globalVarsMap.put("contractOwner", creatorSb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+			}else if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName())){
+				globalVarsMap.put("contractOwner",owner.getFirstName());
+			}else{
+				globalVarsMap.put("contractOwner","--");
+			}
+			
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			
+			 if(contracts.getContactUser().getFirstName() != null && contracts.getContactUser().getLastName()!=null && !"".equalsIgnoreCase(contracts.getContactUser().getFirstName()) && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
+				 StringBuilder userBuild = new StringBuilder();
+				 globalVarsMap.put("receiverParty",userBuild.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+				 }else{
+					 globalVarsMap.put("receiverParty",contracts.getContactUser().getFirstName());
 				}
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-    }
-	
-	
-	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
-		   
-		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
-		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
-			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
-			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
-			
-			matchQueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
-			
-			
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			if(matcher.find()){
-				Float expYears = Float.valueOf(matcher.group());
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
-				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
-			}
+			 
+			 
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_EXPIRY_REMAINDER,Constants.ENTITY_TYPE_NOTIFICATION);
 
-				
-			return matchQueryBuilderList; 
-	 }
-	
-	
-	
+			
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
+			 
+			String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			 notificationScenario.setBody(notificationbody);
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg());
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 String actionLink="";
+			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+//			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
+		
+	}
 }

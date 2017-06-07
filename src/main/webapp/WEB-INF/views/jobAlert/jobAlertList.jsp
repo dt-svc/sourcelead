@@ -19,7 +19,7 @@
     
     <div class="timesheet_out">
 			<div class="project_wrap">
-			<div class="timesheet_head">
+			<div class="timesheet_head timeHd_minHeight">
 			<ul>
 			<li><a href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert();"><i class="fa fa-bell-o paddingRight"></i>Create Alert</a></li>
 			</ul>
@@ -117,12 +117,12 @@ function createAlert(){
 	 result = result +'            <div class="input-group er ratetype">';
 	 result = result +'               <div class="input-group-btn tblminwidth-75">';
 	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
-	 result = result +'                <option >INR</option>';
-	 result = result +'                <option >AUD</option>';
-	 result = result +'                <option >USD</option>';
-	 result = result +'                <option >GBP</option>';
-	 result = result +'                <option >SGD</option>';
-	 result = result +'                <option >EUR</option>';
+	 result = result +'                <option ${currencyCode  == "INR" ? "selected" : ''}>INR</option>';
+	 result = result +'                <option ${currencyCode  == "AUD" ? "selected" : ''}>AUD</option>';
+	 result = result +'                <option ${currencyCode  == "USD" ? "selected" : ''}>USD</option>';
+	 result = result +'                <option ${currencyCode  == "GBP" ? "selected" : ''}>GBP</option>';
+	 result = result +'                <option ${currencyCode  == "SGD" ? "selected" : ''}>SGD</option>';
+	 result = result +'                <option ${currencyCode  == "EUR" ? "selected" : ''}>EUR</option>';
 	 result = result +'               </select>';
 	 result = result +'               </div>';
 	 
@@ -289,13 +289,6 @@ function saveAlert(){
 	 }else{ 
 			return false;
 	 } 
-	
-	
-	
-	
-	
-	
-	
 }	 
 $('body').on('blur', '#create_alert_form', function() {
 	$("#create_alert_form").showHelpOnFocus();

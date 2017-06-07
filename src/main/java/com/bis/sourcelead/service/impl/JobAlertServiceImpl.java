@@ -51,14 +51,17 @@ public class JobAlertServiceImpl implements JobAlertService{
 
 	@Override
 	public String saveJobAlert(JSONObject jsonObj) throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	JobAlert jobAlert = new JobAlert();
 	 	
 	 	if(jsonObj.has("alertTitle") && !"".equalsIgnoreCase(jsonObj.getString("alertTitle"))){
 	 		jobAlert.setAlertTitle(jsonObj.getString("alertTitle"));
 		}
-	 	
+	 	if(jsonObj.has("email") && !"".equalsIgnoreCase(jsonObj.getString("email"))){
+	 		jobAlert.setEmail(jsonObj.getString("email"));
+		}else{
+			jobAlert.setEmail(user.getEmail());
+		}
 	 	if(jsonObj.has("country") && !"".equalsIgnoreCase(jsonObj.getString("country"))){
 	 		jobAlert.setCountry(jsonObj.getString("country"));
 		}
@@ -108,16 +111,15 @@ public class JobAlertServiceImpl implements JobAlertService{
 			jobAlert.setSkillsName(skillId);
 	  	 
 		}
-	 
-	 	
 	 	if(jsonObj.has("duration") && !"".equalsIgnoreCase(jsonObj.getString("duration"))){
 	 		jobAlert.setDuration(jsonObj.getString("duration"));
 		}
-	 	jobAlert.setEmail(user.getEmail());
-	 	jobAlert.setUserId(user);
+	 	if(null != user){
+	 		jobAlert.setUserId(user);
+	 		jobAlert.setCreatedBy(user.getUserCode());
+	 	}
 	 	jobAlert.setStatus(Constants.RECORD_ACTIVE);
 		jobAlert.setCreatedDate(commonUtil.currentDate());
-		jobAlert.setCreatedBy(user.getUserCode());
 		jobAlertDao.saveJobAlert(jobAlert);
 		return "success";
 	}
