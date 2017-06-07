@@ -60,7 +60,7 @@
                 </select>
             </div>   -->     
 	<div class="pull-right expBtn">
-		<a href="add-expense.html" class=""><i class="glyphicon glyphicon-plus"></i>&nbsp; Add Expense</a>
+		<a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a>
 	</div>   
 	<div class="remove_search">
 		<input placeholder="search" type="text">
@@ -69,12 +69,12 @@
 </div>	
 		
 <div class="timesheet_appr_table">
-    	<table>
+    	<table id='expensesApprovalPagination'>
         	<tbody>
 			<thead>
             	<tr>
                 	<th>Employee</th>
-                    <th>Email id</th>
+                    <th>EmploymentType</th>
                     <th>Project</th>
                     <th>Start Date</th>
                     <th>End Date</th>
@@ -83,130 +83,29 @@
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
-			</thead>	
+			</thead>
+				<c:forEach var="expApperoverHierarchy" items="${ExpApperoverHierarchy}">	
                 <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
+		            <td><div class="time_appr_user"><img  id='userImage' onerror='predefineProfileImage(this);' src="${sourceleadUrl}/displayUserImage/${expApperoverHierarchy.expenseId.projectMembers.employee.user.id}" alt='Profile Image' class='img-circle img-responsive'>
+					<span>
+					<b>${expApperoverHierarchy.expenseEmpUserFirstNameLastName}</b>
+					<b>${expApperoverHierarchy.expenseEmpUserEmail}</b>
+					<b>${expApperoverHierarchy.expensesEmployeeUserId}</b>
+					</span></div>
 					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
+                   	<td><div><span>${expApperoverHierarchy.expenseEmpUserType}</span><br><span>${expApperoverHierarchy.userTypeVendorName}</span></div></td>
+                   	<td><div><span>${expApperoverHierarchy.expensesProjectName}</span><br><span>${expApperoverHierarchy.expenseId.clientName}</span></div></td>
+                    <td><div class="sm">${expApperoverHierarchy.expenseStartDateString}</div></td>
+                    <td><div class="sm">${expApperoverHierarchy.expenseEndDateString}</div></td>
+                    <td><div class="sm">${expApperoverHierarchy.expenseId.totalAmount}</div></td>
+                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">${expApperoverHierarchy.expenseId.totalAmount}</a></div></td>
                		<td><div>Submit for Approval</div></td>
                     <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>               
                 </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                   	<td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
-               		<td><div>Approved</div></td>
-                    <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>               
-                </tr>                
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
-               		<td><div>New</div></td>
-                    <td><div class="sm"><h3>Approved</h3></div></td>               
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
-               		<td><div>Saved</div></td>
-                    <td><div class="sm"><h3 class="reje_color">Rejected</h3>
-						<i class="glyphicon glyphicon-comment ml10 edit-reason"><span class="edit-status">Wrong job selected for UI Developer</span></i></div>
-               </td>               
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
-               		<td><div>New</div></td>
-                    <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
-               		<td><div>Submit for Approval</div></td>
-                    <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>
-                </tr>  
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
-               		<td><div>New</div></td>
-               		<td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>
-                </tr>
-                <tr>
-                	<td><div class="time_appr_user"><img src="images/pratap-bis.jpg">
-						<span><b>Pratap Reddy</b><b>Admin</b></span></div>
-					</td>
-                   	<td><div>emailid@domain.com</div></td>
-                   	<td><div><span>Project 1</span><br><span>Client 1</span></div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">05/26/2017</div></td>
-                    <td><div class="sm">50</div></td>
-                    <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">5000</a></div></td>
-               		<td><div>New</div></td>
-               		<td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>
-                </tr>                                  			
+                </c:forEach>
             </tbody>
         </table> 	
 </div>
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-    <div class="clearfix"></div>
-	</ul>
-	<div class="clearfix"></div>
-</nav>
-	
 	</div>
 	
 </div>
@@ -215,5 +114,25 @@
 		
       </section>
     </section>
- 
+    
+ <!-- <script>
+ $('#expensesApprovalPagination').DataTable( { 
+}); 
+function pagination(){ 
+	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+    $('#expensesApprovalPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"aaSorting": [[7,'desc']],
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    } );
+}
+</script> -->
+
 <jsp:include page="../masterFooter.jsp" />
