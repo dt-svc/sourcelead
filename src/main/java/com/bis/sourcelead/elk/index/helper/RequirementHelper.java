@@ -87,9 +87,12 @@ public class RequirementHelper {
 			
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
-			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			 
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if(null != requirement.getClosedDate()){
 			 String reqclosedDate = dateFormat.format(requirement.getClosedDate());
 				requirementIndex.setClosedDate(reqclosedDate);
+			}
 			 String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
 			requirementIndex.setCreatedDate(reqcreatedDate);
 			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());
