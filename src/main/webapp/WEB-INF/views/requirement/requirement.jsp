@@ -1351,7 +1351,8 @@ $(document).ready(function () {
 	  $('#closedDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
-	  	  changeYear: true, 
+	  	  changeYear: true,
+	  	  minDate: 1,
 	  	onSelect : function(selected) {
 	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
 	  	}
