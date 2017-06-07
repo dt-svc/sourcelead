@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -42,6 +43,20 @@ public class ExpensesRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser);
+		for(Expenses ex:expensesList){
+			if(null != ex.getProjectMembers())
+			{
+				ex.setProjectMemberId(ex.getProjectMembers().getId().toString());	
+			}
+			if(null != ex.getStartDate())
+			{
+			ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+			}
+			if(null != ex.getEndDate())
+			{
+				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+			}
+		}
 		resultJson = commonUtil.toJSON(expensesList);
 		return resultJson;
 	 }

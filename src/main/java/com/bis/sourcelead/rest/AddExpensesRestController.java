@@ -1,5 +1,9 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -37,6 +44,9 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private AddExpensesService addExpensesService;
+	
+	@Autowired
+	private ProjectMembersService projectMembersService;
 	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)
 	public @ResponseBody String storeAssociate(@RequestParam(value = "projectId", required = false) String projectId) throws Exception {
@@ -63,5 +73,31 @@ public class AddExpensesRestController {
 		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc,request,status);
 		return "DataSaved";
 }
+	
+	 @RequestMapping(value = "/getMembersForSelectedProject",  method = RequestMethod.GET)
+	 public @ResponseBody  String getMembersForSelectedProject(
+			@RequestParam(value="projectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
+	 	
+		 	Collection<ProjectMembers> projectMembers = null;
+		 	if(projectId != null){
+				projectMembers = projectMembersService.getAllProjectMembersByProjectId(projectId);
+				
+				if(null != projectMembers && projectMembers.size() > 0){
+					for(ProjectMembers pm : projectMembers){
+						if(null != pm.getEmployee().getUser()){
+							StringBuilder eName = new StringBuilder();
+							
+							if(null != pm.getEmployee().getUser() && (pm.getEmployee().getUser().getFirstName() != null && pm.getEmployee().getUser().getFirstName() != "" && pm.getEmployee().getUser().getLastName() != null && pm.getEmployee().getUser().getLastName() != "" )){
+								pm.setEmpName(eName.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());
+							}else{
+								pm.setEmpName(eName.append(pm.getEmployee().getUser().getFirstName()).toString());
+							}
+							
+						}
+					}
+				}
+		 	}
+		 	return commonUtil.toJSON(projectMembers);
+	}
 	
 }

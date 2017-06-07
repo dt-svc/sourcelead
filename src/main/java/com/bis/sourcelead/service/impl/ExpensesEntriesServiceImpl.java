@@ -51,7 +51,6 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						ec.setId(Long.parseLong(jsonObj.getString("categoryType"+c)));
 						entries.setExpensesCategoryId(ec);
 					
-					
 					if(jsonObj.has("categoryDate"+c)){
 						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
@@ -75,7 +74,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					}
 					
 					if(jsonObj.has("entryDes"+c)){
-						entries.setReceiptIssuedBy(jsonObj.getString("entryDes"+c));
+						entries.setDescription(jsonObj.getString("entryDes"+c));
 					}
 					
 					if(jsonObj.has("paymentMode"+c)){
@@ -117,6 +116,12 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 				    	  entries.setExpensesEntryDocuments(eeDocList);
 						}
 						
+
+						entries.setStatus(Constants.RECORD_ACTIVE.toString());
+						entries.setCreatedDate(new Date());
+						entries.setUpdatedDate(new Date());
+						entries.setExpensesId(expenses);
+
 						expensesEntriesList.add(entries);
 					}
 			  }
