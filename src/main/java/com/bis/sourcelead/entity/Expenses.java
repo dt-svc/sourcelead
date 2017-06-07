@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -100,6 +101,9 @@ private static final long serialVersionUID = 1L;
 	
 	@javax.persistence.Transient
 	private String endDateStr;
+	
+	@javax.persistence.Transient
+	 private List<User> projectManagerUserList;
 	
 	
 	public Long getId() {
@@ -268,6 +272,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public List<User> getProjectManagerUserList() {
+		return projectManagerUserList;
+	}
+
+	public void setProjectManagerUserList(List<User> projectManagerUserList) {
+		this.projectManagerUserList = projectManagerUserList;
 	}
 
 	
