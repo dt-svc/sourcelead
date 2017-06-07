@@ -30,6 +30,7 @@ $(document).ready(function(){
 });
 </script>
 
+<input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -53,7 +54,7 @@ $(document).ready(function(){
               </select>
               
               <div class="custom_search">
-              <div id="customDateDivId"></id>
+              <div id="customDateDivId"></div>
             </div>
           </div>
             </div>
@@ -164,6 +165,10 @@ $(document).ready(function(){
                             <li>
                               <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getInvoiceList();">
                               <label for="onboard2">Rejected</label>
+                            </li>
+                            <li>
+                              <input type="checkbox" id="" value="LINKED" name="invoiceStatus" onclick="getInvoiceList();">
+                              <label for="onboard2">Linked</label>
                             </li>
                           </ul>
                         </div>
@@ -380,9 +385,14 @@ function removeErr(){
 <div id="recvPymntpop" class="modal" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
-
-
 <!-- modal pop --> 
+
+  <!-- modal pop -->
+<div class="side_mask" style="display: none"></div>
+<div class="modal modal_invoice" style="display: none;">
+   <div id="linkPopup" ></div>
+</div>
+<!-- modal pop -->
 <script>
 function saveReceivePayment(invoiceId){
 	 if ($('#receivePayment-form').validate(false, validationSettings)){  
@@ -545,7 +555,7 @@ function getInvoiceList(){
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
 
 				}
-				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
 				}
 				result = result +'         </td>  ';
@@ -583,7 +593,7 @@ function getInvoiceList(){
 				result = result +'     <div class="tblminwidth-75">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
-					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\');" ></i>  ';
+					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.id+'"></div>';
 				} 
 				result = result +'  </div> ';                                                                                                    
@@ -623,7 +633,9 @@ function getInvoiceList(){
 			result = result +'   </table>                                                                                                            ';
 			$("#invoiceList").empty();  
 		    $("#invoiceList").append(result);
-		    
+		   
+			$("#emptyInvoiceId").val(json.length);
+			
 		    $("#draftInvoiceCount").html(draftCount);
 		    $("#unbilledAmoumt").html(draftTotalAmount.toFixed(2));
 		    		    
@@ -683,7 +695,7 @@ function invoicePagination(){
 }
 </script>
 <script>
-function showPopUp(id,invoiceStatus,invoiceParentId){
+function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
@@ -698,7 +710,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId){
 		 }
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
-	     result = result +'      <li onclick="linkInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Link Invoice</li>';
+	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();
@@ -1066,17 +1078,27 @@ function exportToReceivablePdf(){
 			paymentStatus.push($(this).val());
 		});
 		
-		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&exportType=pdf&invoiceType=receivable";
-			/*  var result = "";
+		var emptyExport = $('#emptyInvoiceId').val();
+		var durationType = $('#dayWiseTypeId').val();
+		
+		var exportStartDate = $("#billingStartDate").val();
+		var exportEndDate = $("#billingEndDate").val();
+		
+		if(emptyExport > 0){
+			window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=pdf&invoiceType=receivable";
+		}else{
+			 var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Receivables List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200); */
+				$("#empty_receivable_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+		}
+	
 }
 </script>
 
@@ -1097,26 +1119,140 @@ function exportToReceivableExcel(){
 			paymentStatus.push($(this).val());
 		});
 		
-		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&exportType=xls&invoiceType=receivable";
-			/*  var result = "";
+		var emptyExport = $('#emptyInvoiceId').val();
+		var durationType = $('#dayWiseTypeId').val();
+		
+		var exportStartDate = $("#billingStartDate").val();
+		var exportEndDate = $("#billingEndDate").val();
+		
+		if(emptyExport > 0){
+		window.location.href = sourceleadUrl+"/getBillingExportList?${_csrf.parameterName}=${_csrf.token}&invoiceStatus="+invoiceStatus+"&paymentStatus="+paymentStatus+"&durationType="+durationType+"&exportStartDate="+exportStartDate+"&exportEndDate="+exportEndDate+"&exportType=xls&invoiceType=receivable";
+		}else{	
+				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
 				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<p>Receivables List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
 				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200); */
+				$(".project_inn_mask").fadeIn(200);
+}
 }
 </script>
 
 <script type="text/javascript">
-function linkInvoice(invoiceId){
-	alert(invoiceId);
+function linkInvoice(invoiceId,totalAmount){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	     url : sourceleadUrl+"/getClientBasedInvoiceList?${_csrf.parameterName}=${_csrf.token}&invoiceId="+invoiceId+"&invoiceType=receivable",
+			success: function(data) {
+			var result = "";
+			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
+			result = result +'    <div class="modal-content">                                                                                               ';
+			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
+			result = result +'      <div class="modal-header">                                                                                              ';
+			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
+			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
+			result = result +'      </div>                                                                                                                  ';
+			result = result +'      <div class="modal-body clearfix">                                                                                       ';
+			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
+			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
+			result = result +'      <table>                                                                                                                 ';
+			result = result +'        <thead>                                                                                                               ';
+			result = result +'          <tr>                                                                                                                ';
+			result = result +'            <th>&nbsp;                                                                                                        ';
+			result = result +'                                                                                                                              ';
+			result = result +'              </th>                                                                                                           ';
+			result = result +'            <th>ID</th>                                                                                                       ';
+			result = result +'            <th>Contact Person</th>                                                                                           ';
+			result = result +'            <th>Due date</th>                                                                                                 ';
+			result = result +'            <th>Bill date</th>                                                                                                ';
+			result = result +'            <th>Total</th>                                                                                                    ';
+			result = result +'            <th>Due Amount</th>                                                                                               ';
+			result = result +'            <th>Status</th>                                                                                                   ';
+			result = result +'          </tr>                                                                                                               ';
+			result = result +'        </thead>                                                                                                              ';
+			result = result +'        <tbody>                                                                                                               ';
+			if(data != null && data != 'undefined' && data != ""){ 
+			var json = JSON.parse(data);
+			for (var i = 0; i < json.length; i++) { 
+			var opt = json[i]; 
+			result = result +'          <tr>                                                                                                                ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'                <input type="radio" value='+opt.id+' name="linkedInvoice">                                                                     ';
+ 			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot-100">'+opt.invoiceId+'</div>                                                                   ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>                                                    ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tblminwidth-50">'+opt.dueDateStr+'</div>                                                                    ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tblminwidth-50">'+opt.invoiceDateStr+'</div>                                                                     ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot_80"  id="linkedReceivableTotalId'+opt.id+'" >'+opt.total+'</div>                                                                 ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot_80">'+opt.dueAmount+'</div>                                                                 ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'            <td>                                                                                                              ';
+			result = result +'              <div class="tbldata-dotdot_100">'+opt.invoiceStatus+'</div>                                                                    ';
+			result = result +'            </td>                                                                                                             ';
+			result = result +'          </tr>                                                                                                               ';
+			}
+			}else{
+	 			result = result +'          <tr>';
+				result = result +'                <td valign="top" colspan="10" class="dataTables_empty"></td>';
+				result = result +'          </tr>';
+			}
+			result = result +'        </tbody>                                                                                                              ';
+			result = result +'      </table>                                                                                                                ';
+			result = result +'    </div>                                                                                                                    ';
+			result = result +'     <div class="clearfix mt10">                                                                                              ';
+			result = result +'         <div class="pull-right">                                                                                             ';
+			result = result +'             <button type="button" class="btn btn-primary" onClick="mergeInvoice('+totalAmount+');"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
+			result = result +'         </div>                                                                                                               ';
+			result = result +'     </div>                                                                                                                   ';
+			result = result +'    </div>                                                                                                                    ';
+			result = result +'    <!-- Pop Link Invoice Pop -->                                                                                             ';
+			result = result +'  </div>                                                                                                                      ';
+			result = result +'</div>                                                                                                                        ';
+		
+			$("#linkPopup").empty();
+			$("#linkPopup").append(result);
+			$('.modal.modal_invoice').fadeIn(200);
+	        $('.side_mask').fadeIn(200);
+		},
+	 }); 
 }
 </script>
 
+
+ <!-- Script for Linked Invoice pop -->
+    <script>
+        $(".sendReminder").click(function(){
+        $('.modal.modal_invoice').fadeIn(200);
+        $('.side_mask').fadeIn(200);
+        });
+        
+        $(".close, .cancel").click(function(){
+        $('.modal.modal_invoice').fadeOut(200);
+        $('.side_mask').fadeOut(200);
+        });
+        function closeLinkInvoice(){
+            $('.modal.modal_invoice').fadeOut(200);
+            $('.side_mask').fadeOut(200);
+        }
+    </script>
+    <!-- Script for Linked Invoice pop -->
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
@@ -1128,6 +1264,59 @@ function generateAutomaticInvoice(){
              success: function(data) {
         },
     });  
+}
+</script>
+
+<script>
+function mergeInvoice(parentTotalAmount){
+	var masterInvoiceId = $('#masterInvoiceId').val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	var linkRadio = $('input[name=linkedInvoice]');
+	var checkVal = linkRadio.filter(':checked').val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	var total = $('#linkedReceivableTotalId'+checkVal+'').text();
+	var calculatedAmount = 	parentTotalAmount - total;
+	showDiffAmountPopup(calculatedAmount,currencyCode);
+	
+	 $.ajax({
+   	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
+            success: function(data) {
+           	
+       },
+   });  
+}
+</script>
+
+<script>
+function showDiffAmountPopup(calculatedAmount,currencyCode){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#invoice_pop").slideDown(200);
+}
+
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	var sourceleadUrl ='${sourceleadUrl}';
+	location.replace(sourceleadUrl+"/invoiceList");	
+}
+</script>
+
+<script type="text/javascript">
+function cancelExport(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 

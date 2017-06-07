@@ -20,6 +20,7 @@ import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.OrgRelations;
 
 @Repository
 public class InvoiceDaoImpl implements InvoiceDao {
@@ -69,6 +70,9 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
 			subQuery = subQuery + "invoice.invoiceStatus = 'Rejected' or ";
 		}
+		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
+		}
 		
 		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
 			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
@@ -100,14 +104,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		
 		String query =null;
-		List<Invoice> invoiceList = null;
-		if(null != startDateUTC && null != endDateUTC){
 		 query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC ORDER BY invoice.id DESC"; 
-		 invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
-		}else{
-		 query = "from Invoice invoice  where  invoice.orgLocation.id =:orgLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" ";
-		 invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
-		}
+		 List<Invoice> invoiceList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return invoiceList;
 	}
 	
@@ -205,6 +203,34 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		} else {
 			return null;
 		}
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Invoice> invoiceList = session.createQuery("from Invoice invoice  where invoice.orgLocation =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' " ).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+		return invoiceList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId,Long orgLocationId,String invoiceType)
+	{
+		String subQuery = "";
+		if(invoiceType.equalsIgnoreCase("payables")){
+			subQuery = " and invoice.invoiceType = 'Payables' ";
+		}else{
+			subQuery = " and invoice.invoiceType = 'Receivable' ";
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Invoice invoice  where invoice.orgRelationID.id = :orgRelationId and invoice.orgLocation.id = :orgLocationId and invoice.linkInvoiceReferenceId IS NULL "+subQuery+"";
+		List<Invoice> clientInvoiceList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		return clientInvoiceList;
+
 	}
 	 
 }

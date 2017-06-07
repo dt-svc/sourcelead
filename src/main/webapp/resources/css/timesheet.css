@@ -1415,7 +1415,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     background-color:#ff4b4b;
     }          
 .project_tabs_inn_table.vendor_wrap_inn_table div span {
-    max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;
+    max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; margin: 0px auto;
     }  
 .project_tabs_inn_table.vendor_wrap_inn_table div span.mid-span {
     max-width:300px;
@@ -2140,7 +2140,7 @@ width: 100%;
     position: absolute; left:0px;
 }
 .pad-sea {
-    display: inline-block; padding: 1px 280px 2px 0; min-height: 30px;
+    display: inline-block; padding: 1px 235px 2px 0; min-height: 30px;
 }           
     
 .pname .jquery_form_error_message{
@@ -3277,6 +3277,9 @@ border: 1px solid rgb(204, 204, 204);
 .RPadT {
 	padding: 5px 0px 6px;
 }
+.RDdetails ol, .RDdetails ul {
+	padding: 0px 16px;
+}
 
 .action-nav a{
 	position:relative;
@@ -4183,13 +4186,13 @@ position: relative; padding: 0px 0px 5px 0px;
 	/*background-color: #de3434;*/ color: #0cc26e;
 }
 .timesheetRepTab table div.week span.reje {
-	/*background-color: #de3434;*/ color: #de3434;
+	/*background-color: #de3434;*/ color: #e10404;
 }
 .timesheetRepTab table div.week span.draft {
 	/*background-color: #656565;*/ color: #656565;
 }
 .timesheetRepTab table div.week span.subm {
-	/*background-color: #f17c38;*/ color: #f17c38;
+	/*background-color: #f17c38;*/ color: #ff7143;
 }
 .timesheetRepTab .progress {
 	margin: 0px; height: 14px; cursor: pointer;
@@ -4643,3 +4646,93 @@ text-align: center;
 .expBtnApp input {
 	margin: 0px 0px 0px 5px;
 }
+
+
+
+
+.miDHei {
+	height:60px !important;
+}
+.reqAddWrap {
+	padding: 15px; border: none !important;
+}
+.reqAddWrap table {
+	border: 1px solid #ccc;
+}
+.reqAddWrap table tr th {
+	border: none !important; padding: 5px 10px; background-color: #dddddd; font-size: 15px; font-weight: 500;
+	color: #454545;
+}
+.reqAddWrap table tr td {
+	border: none !important; padding: 10px;
+}
+.reqAddWrap table tr:nth-child(even) {background: #fff;}
+.reqAddWrap table tr:nth-child(odd) {background: #f1f1f1;} 
+.padSm {
+	padding: 3px 10px !important; height: 28px;
+}
+.DocAccPopup {
+	width:800px; background-color: #fff; position: fixed; border-radius:5px; z-index: 100000; margin:0px auto;
+	left: 0px; right: 0px; top: 10%; max-height: 80%; overflow-y: auto; box-shadow:0px 0px 5px rgba(0,0,0,0.5);
+	display: none;
+}
+.DocAccPopupHead {
+	border-bottom: 1px solid #ccc; padding: 15px;
+}
+.DocAccPopupHead h4 {
+	display: inline-block; width: 88%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+	padding: 3px 0px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #454545;
+}
+.DocAccPopupHead span {
+	display: block; float: right;
+}
+.DocAccPopupHead i {
+	font-size: 19px; padding: 3px 5px; cursor: pointer; color: #368ee0; margin: 0px 0px 0px 5px;
+}
+.DocAccPopupHead i.fa-times {
+	color: #ff7474; font-size: 20px;
+}
+.DocAccWrap {
+	padding: 20px 10px 5px;
+}
+.DocAccWrapFoot {
+	padding: 15px 25px 25px; text-align: right;
+}
+.Cursor {
+	cursor: pointer;
+}
+
+.ui-datepicker-current {
+display:none;
+}
+
+.popEdCo {
+	display: inline-block; color: #454545; padding: 0px 0px 0px 6px; cursor: pointer;
+}
+.popRela {
+	position: relative;
+}
+.editNewDat {
+	position: absolute; top: -5px; left: 22px; width: 80%; display: none;
+}
+.editNewDat input {
+	width: 85%; display: inline-block; background-color: #fff; height: 27px; background-size: 15px;
+}
+.editNewDat .fa-floppy-o {
+	float: right; color: #368ee0; cursor: pointer; padding: 4px 5px 0px 0px; font-size: 18px;
+}
+
+
+/*   Back to top  */
+.backtotop {
+    width:50px; position:fixed; bottom:20px; right:15px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
+    animation:bounce 1s infinite; -webkit-animation:bounce 1s infinite; -moz-animation:bounce 1s infinite;
+}
+.backtotop img { width:90%; padding:5% 0px 0px 0px;}
+
+@-webkit-keyframes bounce {
+  0%       { bottom:5px; }
+  25%, 75% { bottom:15px; }
+  50%      { bottom:20px; }
+  100%     {bottom:0;}
+} 
