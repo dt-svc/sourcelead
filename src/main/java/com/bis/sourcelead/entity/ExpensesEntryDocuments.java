@@ -41,7 +41,7 @@ private Long id;
 
 @ManyToOne
 @JoinColumn(name="EXPENSES_ENTRIES_ID", nullable=false )        
-private Expenses expensesEntriesId;
+private ExpensesEntries expensesEntriesId;
 
 @Column(name = "DOC_FILE",columnDefinition="mediumblob")
 @Lob
@@ -76,11 +76,11 @@ public void setId(Long id) {
 	this.id = id;
 }
 
-public Expenses getExpensesEntriesId() {
+public ExpensesEntries getExpensesEntriesId() {
 	return expensesEntriesId;
 }
 
-public void setExpensesEntriesId(Expenses expensesEntriesId) {
+public void setExpensesEntriesId(ExpensesEntries expensesEntriesId) {
 	this.expensesEntriesId = expensesEntriesId;
 }
 

@@ -61,16 +61,16 @@ public class AddExpensesRestController {
 		 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));
 		 }
 		 return commonUtil.toJSON(project);
-	}
+	  }
 		return projectId;
-}
+    }
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(MultipartHttpServletRequest request) throws Exception {
+	public @ResponseBody String storeAddExpensesData(MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc);
+		addExpensesService.storeAddExpensesData(jsonObj,loginUser,orgLoc,request,status);
 		return "DataSaved";
 }
 	
