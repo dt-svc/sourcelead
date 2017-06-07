@@ -137,6 +137,7 @@
 						
 						$("#tab-4-addTemplate").empty();
 			    		$("#tab-4").empty();
+			    		$("#tab-5").empty();
 			    		$("#tab-3").empty();
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
