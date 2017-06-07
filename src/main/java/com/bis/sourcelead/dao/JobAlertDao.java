@@ -22,4 +22,6 @@ public interface JobAlertDao {
 	 
 	 List<JobAlert>  getConfiruredJobsAlertsList(String duration) throws Exception;
 	 
+	 JobAlert getJobAlertByUUID(String jobAlertUUID) throws Exception;
+	 
 }
