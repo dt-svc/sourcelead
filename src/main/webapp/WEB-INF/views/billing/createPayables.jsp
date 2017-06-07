@@ -1902,6 +1902,7 @@ function getDueDateByFrequency(){
 				
 				$("#dueDate").val(dueDateStr);
 				$("#invoiceLoading").removeAttr("style");
+				errDueDate();
 			}
 		});
 		
