@@ -12,7 +12,8 @@ public enum REQUIREMENT_SUBMISSION_STATUS {
 	ONHOLD("onhold"),
 	FILLEDCLOSED("filledClosed"),
 	UNFILLEDCLOSED("unFilledClosed"),
-	CANCEL("cancel");
+	CANCEL("cancel"),
+	CLOSED("closed");
 	
 	
     private String value;

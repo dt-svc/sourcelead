@@ -99,6 +99,16 @@ margin:10px 220px 0;
 			  </p>
 			  </span>
             </div>
+            
+            <div class="clearfix"></div>
+	        <div class="form-group">
+	             <div class="col-md-9">
+	               <div class="checkbox checkBox ml">
+	                  <!--  <input type="checkbox" value="Y" name="email"> -->
+	                     <label><input type="checkbox" value="Y" name="email"></label><span>Invite to SourceLead</span>
+	               </div>
+	                </div>
+	         </div>
           
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">

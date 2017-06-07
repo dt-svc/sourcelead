@@ -14,6 +14,12 @@ public interface JobAlertService {
 	
 	 List<JobAlert>  getJobAlertByuserId(Long userId) throws Exception;
 	
-	String  saveJobAlert(JSONObject jsonObj) throws Exception;
+	 String  saveJobAlert(JSONObject jsonObj) throws Exception;
+	 
+	 List<JobAlert>  getJobAlertByEmail(String email) throws Exception;
+	 
+	 List<JobAlert>  getConfiruredJobsAlertsList(String duration) throws Exception;
+	 
+	 JobAlert getJobAlertByUUID(String jobAlertUUID) throws Exception;
 	
 }
