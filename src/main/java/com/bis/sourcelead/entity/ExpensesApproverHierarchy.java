@@ -106,6 +106,9 @@ private String reopenReason;
 private String reopenRejectedReason;
 
 @Transient
+private long expensesUserid;
+
+@Transient
 private String expenseStartDateString;
 
 @Transient
@@ -308,6 +311,7 @@ public void setUserTypeVendorName(String userTypeVendorName) {
 	this.userTypeVendorName = userTypeVendorName;
 }
 
+
 public String getActionPerformedBy() {
 	return actionPerformedBy;
 }
@@ -338,6 +342,15 @@ public String getReopenRejectedReason() {
 
 public void setReopenRejectedReason(String reopenRejectedReason) {
 	this.reopenRejectedReason = reopenRejectedReason;
+}
+
+
+public long getExpensesUserid() {
+	return expensesUserid;
+}
+
+public void setExpensesUserid(long expensesUserid) {
+	this.expensesUserid = expensesUserid;
 }
 
 
