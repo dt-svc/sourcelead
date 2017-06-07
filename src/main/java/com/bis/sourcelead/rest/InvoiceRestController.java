@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.beans.BillingReports;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InvoiceDao;
@@ -481,13 +483,6 @@ public class InvoiceRestController {
 	
     
 
-    private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
-	{
-		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
-		String yesterDayDate = outputFormatter.print(yesterDayZoned);
-		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
-		return TZ_DF_TS.parse(startDateString);
-	}
 
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
@@ -1402,6 +1397,86 @@ public class InvoiceRestController {
 		return resultJson;
 	}
 
+
+	@RequestMapping(value = "/getBillingReportByFrequency", method = RequestMethod.GET)
+	@ResponseBody
+	public String getBillingReportByFrequency(@RequestParam(value = "billingReportType", required = false) String billingReportType,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		long startTime = System.currentTimeMillis();
+		String resultJson = "";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		DateTimeFormatter startDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateTimeFormatter endDateOutputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		
+		LocalDate monthStartDate = new LocalDate().withDayOfMonth(1);
+		LocalDate monthEndDate = new LocalDate().plusMonths(1).withDayOfMonth(1).minusDays(1);
+		
+		Date startDateUTC = null;
+		Date endDateUTC = null;
+		switch (billingReportType) {
+			case Constants.THIS_MONTH:
+				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthStartDate, startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, monthEndDate, endDateOutputFormatter);
+				break;
+			case Constants.THIS_QUARTER:
+				LocalDate[] dates = conversionUtil.getThisMonthQuarterDates(monthStartDate);
+				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[0], startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, dates[1], endDateOutputFormatter);
+				break;
+			case Constants.THIS_YEAR:
+				break;
+			case Constants.LAST_30DAYS:
+				break;
+			case Constants.LAST_MONTH:
+				break;
+			case Constants.LAST_QUARTER:
+				break;
+			case Constants.LAST_YEAR:
+				break;
+			case Constants.CUSTOM:
+				break;
+			default:
+				logger.info("No Frequency");;
+		}
+		// End Time conversion
+		BillingReports billingReports = new BillingReports();
+		float recievableAmount = 0;
+		float payableAmount = 0;
+		float netAmount = 0;
+		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId());
+		if (null != invoiceList && invoiceList.size() > 0) {
+			for (Invoice invoice : invoiceList) {
+				if (Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())) {
+					recievableAmount = recievableAmount + Float.parseFloat(invoice.getTotal());
+				}
+				else {
+					payableAmount = payableAmount + Float.parseFloat(invoice.getTotal());
+				}
+			}
+			netAmount = recievableAmount - payableAmount;
+		}
+		long stopTime = System.currentTimeMillis();
+		long elapsedTime = stopTime - startTime;
+		logger.info("Final Recievable Amount = " + recievableAmount);
+		logger.info("Final Payable Amount = " + payableAmount);
+		logger.info("Final Net Amount = " + netAmount);
+		billingReports.setNetIncome(netAmount);
+		billingReports.setReceivedAmount(recievableAmount);
+		billingReports.setPayableAmount(payableAmount);
+		logger.info("Final Response time = " + elapsedTime + " Millis");
+		resultJson = commonUtil.toJSON(billingReports);
+		return resultJson;
+	}
+
+	private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
+	{
+		DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
+		String yesterDayDate = outputFormatter.print(yesterDayZoned);
+		String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
+		return TZ_DF_TS.parse(startDateString);
+	}
 	@RequestMapping(value = "/getClientBasedInvoiceList", method = RequestMethod.POST)
 	@ResponseBody
 	public String getClientBasedInvoiceList(@RequestParam(value = "invoiceType", required = false) String invoiceType,@RequestParam(value = "invoiceId", required = false) String invoiceId, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -1450,6 +1525,7 @@ public class InvoiceRestController {
 		invoiceService.linkInvoice(invoice);
 		resultJson = commonUtil.toJSON(invoice);	
 		return resultJson;
+
 	}
 	
 }
