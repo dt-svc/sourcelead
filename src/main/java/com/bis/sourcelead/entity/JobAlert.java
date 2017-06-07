@@ -72,6 +72,9 @@ private static final long serialVersionUID = 1L;
 	
     @Column(name = "STATUS")
    	private Integer status;
+    
+	@Column(name = "JOB_ALERT_UUID")
+	private String jobAlertUUID;
    		
    	@Column(name = "CREATED_DATE")
    	private Date createdDate;
@@ -236,5 +239,17 @@ private static final long serialVersionUID = 1L;
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public String getJobAlertUUID()
+	{
+		return jobAlertUUID;
+	}
+
+	public void setJobAlertUUID(String jobAlertUUID)
+	{
+		this.jobAlertUUID = jobAlertUUID;
+	}
+
+	
    	
 }
