@@ -1219,5 +1219,15 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 	        return releasedJobsList;
 		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "from Requirement requirement where ( requirement.closedDate >= :startDateUTC and requirement.closedDate <= :endDateUTC ) ";
+			return session.createQuery(query).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		}
 		
 }

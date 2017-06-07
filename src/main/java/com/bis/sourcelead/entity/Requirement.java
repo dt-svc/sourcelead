@@ -116,6 +116,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
+	@Column(name = "IS_RECEIVING_APPLICANTS")
+	private String isreceivingApplicants;
+	
 	@Column(name = "IS_PUBLIC")
 	private String isPublic;
 	
@@ -1380,5 +1383,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	{
 		this.closedDateStringFormat = closedDateStringFormat;
 	}
+
+	public String getIsreceivingApplicants()
+	{
+		return isreceivingApplicants;
+	}
+
+	public void setIsreceivingApplicants(String isreceivingApplicants)
+	{
+		this.isreceivingApplicants = isreceivingApplicants;
+	}
+
 
 }
