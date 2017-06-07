@@ -7,6 +7,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <jsp:include page="addExpenseEntries.jsp"></jsp:include>
  
  <script type="text/javascript">
 		window.onload = function () {
@@ -86,13 +87,31 @@
 			</div>
   
 <div class="expensHead">
-	<a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
+	<a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addExpenseEntity" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
 	<div class="clearfix"></div>
 </div>
 
-<jsp:include page="addExpenseEntries.jsp"></jsp:include>
 
+<div class="modal fade" id="addExpenseEntity" role="dialog"></div>
 
+<div class="project_wrap_table expensTable">
+	<table id="entriesTable">
+		<thead>
+			<tr>
+				<th>Exp Category</th>
+				<th>Date</th>
+				<th>Issued By</th>
+				<th>Currency</th>
+				<th>Amount</th>
+				<th>Description</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody id="divBody"> </tbody>
+	</table>
+</div>
+
+<input type="text" style="display: none;" name="maxRecCount" id="maxRecCount" value="">
                 
 <div class="form-footer clearfix mt">
 		  <div class="col-lg-12">
@@ -119,6 +138,8 @@
 
 <script>
 	function saveAddExpensesData() {
+		$("#maxRecCount").val(recCount);
+		/* $("#addExpenseEntity").empty(); */
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);

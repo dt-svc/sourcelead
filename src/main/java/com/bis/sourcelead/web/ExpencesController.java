@@ -12,13 +12,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesCategoryService;
+import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -32,6 +37,12 @@ public class ExpencesController {
 	
 	@Autowired
 	CountriesService countriesService;
+	
+	@Autowired
+	ExpensesCategoryService expensesCategoryService;
+	
+	@Autowired
+	ProjectsService projectsService;
 	
 	@RequestMapping(value = "/myExpensesList")
 	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception
@@ -73,14 +84,16 @@ public class ExpencesController {
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
+		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
+	    model.addObject("expensesCategoryList", expensesCategoryList);
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
 		return model;
 	}
 	
-	
-	/*@RequestMapping(value = "/expensesApprovalList")
-	public ModelAndView expensesApprovalList(HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/expenses")
+	public ModelAndView expenses(HttpServletRequest request) throws Exception
 	{
 		
 		ModelAndView model = new ModelAndView();
@@ -88,10 +101,45 @@ public class ExpencesController {
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
 		}
-		sessionData.setNav(Constants.EXPENSES_APPROVAL);
+		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("expenses/expensesApprovalList");
+		model.setViewName("expenses/expenses");
 		return model;
-	}*/
+	}
+		
+	
+	@RequestMapping(value = "/addApprovalExpense")
+	public ModelAndView addApprovalExpense(HttpServletRequest request) throws Exception
+	{
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (null == sessionData) {
+			sessionData = new SessionMaintainanceData();
+		}
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		sessionData.setNav(Constants.MY_EXPENSES);
+		String expensesId = addExpensesService.getExpenseId();
+		model.addObject("ExpensesId", expensesId);
+		
+		List<Projects> projectsList = projectsService.getProjectsByOrgLocationsIdAndApproverUserId(orgLoc.getId(),loginUser.getId());
+		model.addObject("projectsList", projectsList);
+		
+		request.getSession().setAttribute("sessionData", sessionData);
+		
+		Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+		if(null != countries){
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
+	    model.addObject("expensesCategoryList", expensesCategoryList);
+		
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("expenses/addApprovalExpense");
+		return model;
+	}
+
 }

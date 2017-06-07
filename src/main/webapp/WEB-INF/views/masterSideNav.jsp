@@ -259,14 +259,14 @@
 						   
 						   <c:if test="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval'}">
                               <ul class="collapses" style="display: none">
-                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='/myExpensesList'/>" title="My Expenses">My Expenses</a></li>
+                                  <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='/expenses'/>" title="My Expenses">My Expenses</a></li>
                                   <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval">Expenses Approval</a></li>
                               </ul>
                            </c:if>
                               
                            <c:if test="${sessionData.nav != 'My Expenses' || sessionData.nav != 'Expenses Approval'}">
                            <ul class="collapses" style="display: none">
-                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='/myExpensesList'/>" title="My Expenses">My Expenses</a></li>
+                               <li class="${sessionData.nav == 'My Expenses' ? 'treview-active' : ''}"><a href="<c:url value='/expenses'/>" title="My Expenses">My Expenses</a></li>
                                <li class="${sessionData.nav == 'Expenses Approval' ? 'treview-active' : ''}"><a href="<c:url value='/expensesApprovalList'/>" title="Expenses Approval">Expenses Approval</a></li>
                            </ul>
                            </c:if>
