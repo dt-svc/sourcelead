@@ -20,5 +20,9 @@ public interface ExpensesCategoryService {
 	public ExpensesCategory storeExpenseCategory(JSONObject jsonObject,Long orgLocationId,User user) throws Exception;
 	
 	
-	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId,Long orgLocationId) throws Exception;
+	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId) throws Exception;
+	
+	public ExpensesCategory removeExpensesCategoryByCategoryId(Long expCategoryId) throws Exception;
+	
+	public Boolean validateExpensesCategoryType(Long orgLocationId, String categoryName) throws Exception;
 }
