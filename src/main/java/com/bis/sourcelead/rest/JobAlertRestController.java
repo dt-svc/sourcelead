@@ -45,7 +45,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 public String getJobAlertList(HttpServletRequest request) throws Exception {
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<JobAlert> jobAlertList = jobAlertService.getJobAlertByuserId(loginUser.getId());
+		List<JobAlert> jobAlertList = jobAlertService.getJobAlertByEmail(loginUser.getEmail());
 		resultJson = commonUtil.toJSON(jobAlertList);
 		return resultJson;
 	 }

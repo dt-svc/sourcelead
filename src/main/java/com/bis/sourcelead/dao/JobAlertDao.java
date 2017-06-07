@@ -18,4 +18,8 @@ public interface JobAlertDao {
 	
 	 List<JobAlert>  getJobAlertByuserId(Long userId) throws Exception;
 	 
+	 List<JobAlert>  getJobAlertByEmail(String email) throws Exception;
+	 
+	 List<JobAlert>  getConfiruredJobsAlertsList(String duration) throws Exception;
+	 
 }
