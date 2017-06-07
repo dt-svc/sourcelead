@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +16,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.enums.Submission_Status;
 
 /**
 * This class is used to keep track of the approver hierarchy for Expenses.
@@ -50,11 +55,15 @@ private ProjectApproverHierarchy hierarchyId;
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
 
+
 @Column(name = "EXPENSE_STATUS")
-private String expenseStatus;
+@Enumerated(EnumType.STRING)
+private Submission_Status expenseStatus;
 
 @Column(name = "EXPENSE_APPROVAL_STATUS")
-private String expenseApprovalStatus;
+@Enumerated(EnumType.STRING)
+private Submission_ApprovalStatus expenseApprovalStatus;
+
 
 @Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
 private String rejectedReason;
@@ -106,24 +115,19 @@ public void setExpenseId(Expenses expenseId)
 {
 	this.expenseId = expenseId;
 }
-
-public String getExpenseStatus()
-{
+public Submission_Status getExpenseStatus() {
 	return expenseStatus;
 }
 
-public void setExpenseStatus(String expenseStatus)
-{
+public void setExpenseStatus(Submission_Status expenseStatus) {
 	this.expenseStatus = expenseStatus;
 }
 
-public String getExpenseApprovalStatus()
-{
+public Submission_ApprovalStatus getExpenseApprovalStatus() {
 	return expenseApprovalStatus;
 }
 
-public void setExpenseApprovalStatus(String expenseApprovalStatus)
-{
+public void setExpenseApprovalStatus(Submission_ApprovalStatus expenseApprovalStatus) {
 	this.expenseApprovalStatus = expenseApprovalStatus;
 }
 
