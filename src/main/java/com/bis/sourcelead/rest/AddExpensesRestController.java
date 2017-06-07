@@ -49,20 +49,23 @@ public class AddExpensesRestController {
 	private ProjectMembersService projectMembersService;
 	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)
-	public @ResponseBody String storeAssociate(@RequestParam(value = "projectId", required = false) String projectId) throws Exception {
-		if(null != projectId && !"".equalsIgnoreCase(projectId)){
-		Projects project = projectsService.getProjectById(Long.parseLong(projectId));
-		if(null != project.getOrgRelationId()){
-		 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
-		 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
-		}
-		 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
-		 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
-		 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));
-		 }
-		 return commonUtil.toJSON(project);
-	  }
-		return projectId;
+	public @ResponseBody String storeAssociate(@RequestParam(value = "projectMemberId", required = false) String projectMemberId) throws Exception {
+		if(null != projectMemberId && !"".equalsIgnoreCase(projectMemberId)){
+			ProjectMembers projectMembers =	projectMembersService.getProjectMemberById(Long.parseLong(projectMemberId));
+			if(null != projectMembers.getProjects()){
+				Projects project = projectMembers.getProjects();
+				if(null != project.getOrgRelationId()){
+					 OrgRelations orgRelation = orgRelationsService.getOrgRelationById(project.getOrgRelationId().getId());
+					 project.setExpensesClientName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+					}
+					 project.setStartDateStr(Constants.DMY.format(project.getStartDate()));
+					 if(null != project.getEndDate() && !"".equalsIgnoreCase(project.getEndDate().toString())){
+					 project.setEndDateStr(Constants.DMY.format(project.getEndDate()));
+					 }
+				 return commonUtil.toJSON(project);
+			}
+	    }
+		return projectMemberId;
     }
 	
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)

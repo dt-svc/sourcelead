@@ -99,7 +99,7 @@
                     <td><div class="sm">${expApperoverHierarchy.expenseEndDateString}</div></td>
                     <td><div class="sm">${expApperoverHierarchy.expenseId.totalAmount}</div></td>
                     <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">${expApperoverHierarchy.expenseId.totalAmount}</a></div></td>
-               		<td><div>Submit for Approval</div></td>
+               		<td><div>${expApperoverHierarchy.expenseApprovalStatus}</div></td>
                     <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>               
                 </tr>
                 </c:forEach>
