@@ -6,11 +6,9 @@
 
 
 <script>
-function loadCategoryDiv(){
+function loadCategoryDiv(projectStartDate,projectEndDate){
 	var result = "";
-	
 	result = result + '<div class="modal-dialog modal-lg">';
-	
 	result = result + '	<div class="modal-content">';
 	result = result + '		<div class="modal-header">';
 	result = result + '			<button type="button" class="close" data-dismiss="modal">&times;</button>';
@@ -118,10 +116,21 @@ function loadCategoryDiv(){
 	$("#expenseRateType").selectpicker("refresh");
 	
 	$('#categoryDate').datepicker({
-	      dateFormat: 'dd-mm-yy',
-	      changeMonth: true,
-	  	  changeYear: true 
+		dateFormat : 'dd-mm-yy',
+		changeMonth : true,
+		changeYear : true,
+		minDate : projectStartDate,
+		maxDate : projectEndDate,
 	  });
+	
+		$("#categoryDate").datepicker("destroy");
+		$('#categoryDate').datepicker({
+					dateFormat : 'dd-mm-yy',
+					changeMonth : true,
+					changeYear : true,
+					minDate : projectStartDate,
+					maxDate : projectEndDate,
+		});
 	
 	var selectedFile1 = document.getElementById("uploadBtn1");
     selectedFile1.addEventListener("change", function() {
