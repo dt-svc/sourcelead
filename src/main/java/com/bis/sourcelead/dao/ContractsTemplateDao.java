@@ -37,7 +37,7 @@ public interface ContractsTemplateDao {
 
 	List<Contracts> getListOfContractsEnvId();
 
-	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
+	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId, Long contractId);
 
 	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
 	

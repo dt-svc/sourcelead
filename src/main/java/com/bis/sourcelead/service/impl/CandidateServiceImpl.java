@@ -349,7 +349,9 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for inviting candidate to sourcelead
 		 */
-		inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+		if(jsonObj.has("email") && null != jsonObj.getString("email") && Constants.YES.equalsIgnoreCase(jsonObj.getString("email"))){
+			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+		}
 		
 		/*
 		 * Saving Candidate DB data as ElasticSearch Documents

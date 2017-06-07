@@ -1140,7 +1140,7 @@ function preparedVendorContactListFromElk(data){
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
 			result = result +'  <th>Vendor</th>';
-		   	result = result +'	<th>Name</th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
@@ -1270,11 +1270,11 @@ function preparedVendorContactList(data){
 		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
-		   	result = result +'	<th>Name</th>';
+			result = result +'  <th>Vendor</th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Vendor</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1288,6 +1288,7 @@ function preparedVendorContactList(data){
 		   		var report = json[i];
 		   		result = result +'<tr id="row'+report.id+'">';
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 		   				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
@@ -1306,7 +1307,6 @@ function preparedVendorContactList(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 		   		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
 		   		result = result + ' <td><div>';
