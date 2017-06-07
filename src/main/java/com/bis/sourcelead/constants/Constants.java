@@ -171,6 +171,8 @@ public class Constants {
 	public static final String APPROVE_CONTRACT = "Approve Contract";
 	public static final String REJECT_CONTRACT = "Reject Contract";
 	public static final String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
+	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
+	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
@@ -507,6 +509,7 @@ public class Constants {
 	public static final String CANDIDATE_ADDRESS = "Address";
 	public static final String CANDIDATE_DESIGNATION = "Designation";
 	public static final String CANDIDATE_TYPE = "Type";
+	public static final String CANDIDATE_EXPERIENCE = "Experience";
 	public static final String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
 	public static final String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
 	public static final String CANDIDATE_CURRENT_RATE = "Current Rate";
@@ -519,6 +522,7 @@ public class Constants {
 	public static final String CANDIDATE_EDUCATION = "Education";
 	public static final String CANDIDATE_EMPLOERS = "Employer's";
 	public static final String CANDIDATE_PRIMARY_SKILL = "Primary Skill";
+	public static final String CANDIDATE_INVITATION = "CandidateInvitation";
 	public static final String EMPLOYEE = "Employee";
 	public static final String CUSTOM_REPORTS = "custom";
 	public static final String UTC_TIMEZONE = "UTC";
