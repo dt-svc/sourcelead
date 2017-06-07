@@ -1,12 +1,10 @@
 package com.bis.sourcelead.rest;
 
 import java.io.Writer;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -128,9 +125,9 @@ public class ExpensesCategoryRestController {
 		
 		
 		@RequestMapping(value = "/validateExpenseCategoryType")
-		public Boolean validateExpenseCategoryType(@RequestParam(value="name", required=false) String  name,@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
-			String categoryType = name;
-				Boolean expCategory = expensesCategoryService.validateExpensesCategoryType(categoryId, categoryType );
+		public Boolean validateExpenseCategoryType(@RequestParam(value="name", required=false) String  name ,HttpServletRequest request) throws Exception {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				Boolean expCategory = expensesCategoryService.validateExpensesCategoryType(loginOrgLocation.getId(), name );
 				return expCategory;
 		}
 	

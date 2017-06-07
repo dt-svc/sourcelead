@@ -105,8 +105,8 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	}
 
 	@Override
-	public Boolean validateExpensesCategoryType(Long categoryId, String categoryType) throws Exception {
-		return expensesCategoryDao.validateExpensesCategoryType(categoryId, categoryType);
+	public Boolean validateExpensesCategoryType(Long orgLocationId, String categoryName) throws Exception {
+		return expensesCategoryDao.validateExpensesCategoryType(orgLocationId, categoryName);
 	}
 	
 	

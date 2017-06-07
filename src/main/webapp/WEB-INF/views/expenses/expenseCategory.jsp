@@ -58,7 +58,7 @@ function addExpenseCategory(categoryId) {
 	result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
 	result = result  +'   ';
 	result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType('+categoryId+');" onkeyup ="validateExpenseCategoryType('+categoryId+');">';
+	result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 	
 						       <c:forEach var="expCat" items="${lookUpExpCatList}">
     result = result  +'	            <option value="" disabled selected></option>';										 
@@ -437,32 +437,7 @@ function deleteExpenseCategory(categoryId){
 }
 </script> 
 
-<script type="text/javascript">
- function validateExpenseCategoryType(categoryId) {
-	
-	  var name = document.getElementById("expensesName").value; 
-	  
- 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/validateExpenseCategoryType?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId+"&name="+name, 
-		        success: function(data) {
-		        	if(data == true){
-		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
-		        		  
-						   $("#expensesName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-						  $("#save_button").attr('disabled','disabled');
-		        	}
-		        	else{
-		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
-                         $("#save_button").removeAttr("disabled");
-		        	}
-		        },
-		    });
- }
- </script> 
+
  
  <script type="text/javascript">
  function editExpenseCategory(categoryId) {
@@ -488,7 +463,6 @@ function deleteExpenseCategory(categoryId){
 						}
 						
 						
-						
 						if (data != null && data != 'undefined' && data != "") {
 							if (data.indexOf('Sign In') >= 0) {
 								location.replace(sourceleadUrl);
@@ -504,7 +478,7 @@ function deleteExpenseCategory(categoryId){
 								result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
 								result = result  +'   ';
 								result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-								result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType('+categoryId+');" onkeyup ="validateExpenseCategoryType('+categoryId+');">';
+								result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 							 	/* 					       <c:forEach var="expCat" items="${lookUpExpCatList}">
 							    result = result  +'	            <option value="" disabled selected></option>';										 
 								result = result + ' 			<option value="${expCat.name}">${expCat.name}</option>';
@@ -641,5 +615,30 @@ function deleteExpenseCategory(categoryId){
 				});
 	}
 </script>
+
+<script type="text/javascript">
+ function validateExpenseCategoryType() {
+	  var name = document.getElementById("expensesName").value; 
+ 	  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+	  var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/validateExpenseCategoryType?name="+name, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+		        		  
+						   $("#expensesName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+						  $("#save_button").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#save_button").removeAttr("disabled");
+		        	}
+		        },
+		    });
+ }
+ </script> 
  
 <jsp:include page="../masterFooter.jsp" />

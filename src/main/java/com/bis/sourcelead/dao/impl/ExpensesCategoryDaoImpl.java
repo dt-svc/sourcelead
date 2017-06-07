@@ -86,11 +86,11 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 
 	@Override
 	@Transactional
-	public Boolean validateExpensesCategoryType(Long categoryId, String categoryType) throws Exception {
+	public Boolean validateExpensesCategoryType(Long orgLocationId, String categoryName) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query ="from ExpensesCategory ec where ec.expensesName = :categoryType and ec.id = :categoryId and ec.status ='1' ";
-		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("categoryId", categoryId).setString("categoryType", categoryType).setCacheable(true).list();
+		String query ="from ExpensesCategory ec where ec.expensesName = :categoryName and ec.orgLocationId.id = :orgLocationId  ";
+		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("categoryName", categoryName).setCacheable(true).list();
 		if(expensesCategoryList !=null && expensesCategoryList.size() >0){
 			flag = true;
 			return flag;
