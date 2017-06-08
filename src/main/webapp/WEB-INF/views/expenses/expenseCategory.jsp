@@ -235,7 +235,12 @@ function expenseCategoryList(){
 	                    			 result = result +"<td><div><span>Active</span></div></td>"; 
 	                    		 }
 			                    result = result+' <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"></a>';
-			                    result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>'; 
+			                    
+			                    if(opt.status == '0'){
+			                    	result = result+'<a onclick="reActiveExpenseCategory('+opt.id+');" title="Remove">Re-Active</a></div></td>'; 
+			                    }else{
+			                    	result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>';			                    	
+			                    }
 			                    
 			                    
 		                     result = result +"</tr>";
@@ -430,6 +435,21 @@ function deleteExpenseCategory(categoryId){
              			expenseCategoryList()
 			    	}
                } 
+        },
+          
+     }); 
+	  
+}
+</script> 
+
+<script>
+function reActiveExpenseCategory(categoryId){
+ var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({  
+          type : "POST",
+          url: sourceleadUrl+"/reActiveExpenseCategoryByCategoryId?${_csrf.parameterName}=${_csrf.token}&categoryId="+categoryId,        
+          success :function(data) {
+        	  expenseCategoryList()
         },
           
      }); 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -50,7 +51,8 @@ public class ExpensesCategoryRestController {
 	@Autowired
 	private CommonUtil commonUtil;
     
-	
+	@Autowired
+	private ExpensesCategoryDao expensesCategoryDao;
 	
 	/**
 	 * this method is used to save Expense Category into DB
@@ -121,6 +123,14 @@ public class ExpensesCategoryRestController {
 			 resultJson = commonUtil.toJSON(expensesCategory);
 
 			 return resultJson;
+		}
+		
+		@RequestMapping(value = "/reActiveExpenseCategoryByCategoryId")
+		public ExpensesCategory reActiveExpenseCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+			ExpensesCategory expenCat = expensesCategoryService.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(categoryId);
+			expenCat.setStatus(Constants.MEMBER_ACTIVE);
+			expenCat = expensesCategoryDao.storeExpenseCategory(expenCat);
+			 return expenCat;
 		}
 		
 		
