@@ -143,7 +143,7 @@ function clientRequirementList(orgRelationId){
 	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
 	               	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
 	                result = result + '<td><div>'+opt.noOfOfferedApplicants+'</div></td>';
-	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
+	                result = result + '<td><div>'+opt.noOfBackOutApplicants+'</div></td>';
 	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
 	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
 	                
