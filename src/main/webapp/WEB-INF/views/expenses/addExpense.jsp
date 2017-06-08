@@ -105,9 +105,9 @@ function validate_fileupload(fileName)
 				</div>               
 	            <div class="form-group">
 	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
-	              <div class="col-md-9">
+	              <div class="col-md-9" >
 						<div class="row">
-						  <div class="col-lg-6 evDaPa">
+						  <div class="col-lg-6 evDaPa" id="dateDiv">
 							  <input type="text" class="form-control calendar" data-validation="required" value="" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6">
@@ -333,9 +333,10 @@ function expensesDateCheck(){
 	var startDate = document.getElementById("projectStartDateExpensesId").value;
 	var endDate = document.getElementById("projectEndDateExpensesId").value;
 	if(startDate != null && startDate != "" && startDate != 'undefined'){
-		loadCategoryDiv(startDate,endDate);
+		loadCategoryDiv(startDate,endDate,null);
 	}else{
-		$("input#expenseAddRowId").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
+		$(".modal-backdrop").fadeOut(200);
+		$("#dateDiv").parent().after("<p class='jquery_form_error_message'> Project Start Date is mandatory </p>");
 	}
 }
 
