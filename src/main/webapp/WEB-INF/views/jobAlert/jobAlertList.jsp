@@ -824,22 +824,26 @@ function editAlert(jobAlertUUID){
         		    	
         		    });
         		    
-        		    var alertSkillsList = json['skillsName'].split(',');
-                 	  if(alertSkillsList.length > 1){
-                 		 for (var i=0; i < alertSkillsList.length; i++) {
-		        			 var option = $("<option>").val(alertSkillsList[i].replace(",","")).text(alertSkillsList[i].replace(",",""));
-		        			 select.append(option);
-		 		             select.find(option).prop('selected', true);
-		 		             select.find(option).siblings("[value='"+ alertSkillsList[i].replace(",","")+"']").remove();
-		 	        		 $("#skills").trigger("chosen:updated");
-		                 }
-                 	  }else{
-                 		 var option = $("<option>").val(alertSkillsList).text(alertSkillsList);
-	        			 select.append(option);
-	 		             select.find(option).prop('selected', true);
-	 		             select.find(option).siblings("[value='"+ alertSkillsList+"']").remove();
-	 	        		 $("#skills").trigger("chosen:updated");
-                 	  }
+        		    if(json['skillsName'] != 'undefined' && json['skillsName'] != null && json['skillsName'] != ''){
+        		    
+        		      var alertSkillsList = json['skillsName'].split(',');
+                   	  if(alertSkillsList.length > 1){
+                   		 for (var i=0; i < alertSkillsList.length; i++) {
+  		        			 var option = $("<option>").val(alertSkillsList[i].replace(",","")).text(alertSkillsList[i].replace(",",""));
+  		        			 select.append(option);
+  		 		             select.find(option).prop('selected', true);
+  		 		             select.find(option).siblings("[value='"+ alertSkillsList[i].replace(",","")+"']").remove();
+  		 	        		 $("#skills").trigger("chosen:updated");
+  		                 }
+                   	  }else{
+                   		 var option = $("<option>").val(alertSkillsList).text(alertSkillsList);
+  	        			 select.append(option);
+  	 		             select.find(option).prop('selected', true);
+  	 		             select.find(option).siblings("[value='"+ alertSkillsList+"']").remove();
+  	 	        		 $("#skills").trigger("chosen:updated");
+                   	  }
+        		    }
+        		    
         	    
         	       chosen.search_field.on('keyup', function(e)
         			    {
