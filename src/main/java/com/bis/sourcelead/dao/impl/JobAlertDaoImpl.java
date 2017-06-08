@@ -1,8 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,15 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.dao.AssetDao;
-import com.bis.sourcelead.dao.DepartmentDao;
 import com.bis.sourcelead.dao.JobAlertDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.Asset;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.JobAlert;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -84,5 +76,77 @@ public class JobAlertDaoImpl implements JobAlertDao{
 		String query = "from JobAlert jobAlert  where jobAlert.userId.id =:userId and jobAlert.status ='1' "; 
 		List<JobAlert> jobAlertList = session.createQuery(query).setLong("userId", userId).setCacheable(true).list();
 		return jobAlertList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<JobAlert> getJobAlertByEmail(String email) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.email =:email and jobAlert.status ='1' "; 
+		List<JobAlert> jobAlertList = session.createQuery(query).setString("email", email).setCacheable(true).list();
+		return jobAlertList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<JobAlert> getConfiruredJobsAlertsList(String duration) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from JobAlert jobAlert left join fetch jobAlert.userId where jobAlert.duration = :duration and jobAlert.status ='1' "; 
+		List<JobAlert> jobAlertList = session.createQuery(query).setString("duration", duration).setCacheable(true).list();
+		return jobAlertList;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public JobAlert getJobAlertByUUID(String jobAlertUUID) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<JobAlert> jobAlert = session.createQuery("from JobAlert jobAlert where jobAlert.jobAlertUUID =:jobAlertUUID" ).setString( "jobAlertUUID", jobAlertUUID ).setCacheable(true).list();
+		if (jobAlert.size() > 0) {
+			return jobAlert.get(0);
+		} else {
+			return null;
+		}
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteJobAlert(JobAlert jobAlert) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (null != jobAlert) {
+				session.delete(jobAlert);
+			}
+			logger.debug("Deleting JobAlert");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"JobAlert"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getJobAlertCountByEmail(String email) throws Exception
+	{
+		logger.debug("getJobAlertCountByEmail start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(jobAlert.id) from JobAlert jobAlert "
+					+ "where jobAlert.email = :email and jobAlert.status = '1' ";
+			
+			List<Long> jobAlertsCount = session.createQuery(query.toString()).setString("email", email).setCacheable(true).list();
+			Integer count = 0;
+			if(jobAlertsCount != null && !jobAlertsCount.isEmpty()){
+					count = jobAlertsCount.get(0).intValue();
+			}
+			return count;
 	}
 }

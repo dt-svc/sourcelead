@@ -8,6 +8,14 @@
 
 <script src="resources/js/formvalidator.js"></script>
 
+<style>
+.ratetype p {
+    left: -45px !important;
+    position: absolute;
+    bottom: -14px;
+}
+</style>
+
 
 <section class="content-wraper">
     <div id="offboardingLoading"></div>
@@ -54,217 +62,254 @@ function alertClose(){
 <script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
 <script>
 function createAlert(){
-	 result = "";
-	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
-	 result = result +'	 <div class="modal-dialog modal-lg">';
-	 result = result +'     <div class="modal-content">';
-	 result = result +'       <div class="modal-header">';
-	 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
-	 result = result +'         <h4 class="modal-title">Job Alert</h4>';
-	 result = result +'       </div>';
-	 result = result +'       <div class="modal-body myForm clearfix">';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-/* 	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Email<span class="text-danger paddingLeft">*</span></label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Email" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
-	 result = result +'         	</div>';
-	 result = result +'         </div>'; */
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Country</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="country" name="country">';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">State</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" id="state" name="state">';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 
-	 
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">City</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" id="city" name="city">';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Experience</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control" id="experience" name="experience">';
-	 result = result +'         			<option selected  value="">---Select Experience---</option>';
-	 result = result +'         			<c:forEach begin="0" end="30" varStatus="loop">';
-	 result = result +'         			<option>${loop.index}</option>';
-	 result = result +'         			</c:forEach>';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
-	 result = result +'	<div class="col-md-9">';
-	 result = result +'            <div class="input-group er ratetype">';
-	 result = result +'               <div class="input-group-btn tblminwidth-75">';
-	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
-	 result = result +'                <option ${currencyCode  == "INR" ? "selected" : ''}>INR</option>';
-	 result = result +'                <option ${currencyCode  == "AUD" ? "selected" : ''}>AUD</option>';
-	 result = result +'                <option ${currencyCode  == "USD" ? "selected" : ''}>USD</option>';
-	 result = result +'                <option ${currencyCode  == "GBP" ? "selected" : ''}>GBP</option>';
-	 result = result +'                <option ${currencyCode  == "SGD" ? "selected" : ''}>SGD</option>';
-	 result = result +'                <option ${currencyCode  == "EUR" ? "selected" : ''}>EUR</option>';
-	 result = result +'               </select>';
-	 result = result +'               </div>';
-	 
-	 result = result +'              <input type="text" id="currentRate" name="rate" value="" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
-	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
-	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type">';
-	 result = result +'                   <option value="">Rate Per</option>';
-	 result = result +'                   <option >Hourly</option>';
-	 result = result +'                   <option >Weekly</option>';
-	 result = result +'                   <option >Bi-weekly</option>';
-	 result = result +'                   <option >Semi-Monthly</option>';
-	 result = result +'                   <option >Monthly</option>';
-	 result = result +'                   <option >Bi-Monthly</option>';
-	 result = result +'                   <option >Yearly</option>';
-	 result = result +'                 </select>';
-	 result = result +'               </div>';
-	 result = result +'                <div class="clearfix"></div> <div class="clearfix"></div>';
-	 result = result +'             </div>';
-	 result = result +'           </div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Industry</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Industry" id="industry" name="industry">';
-	 result = result +'         			<option selected value="">---Select Industry---</option>';
-	 result = result +'         			<c:forEach var="industry" items="${industryList}">';
-	 result = result +'         			<option value="${industry}">${industry}</option>';
-	 result = result +'         			</c:forEach>';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
 	
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
-	 result = result +'         			<option selected  value="">---Select Duration---</option>';
-	 result = result +'         			<option>Daily</option>';
-	 result = result +'         			<option>Weekly</option>';
-	 result = result +'         			<option>Monthly</option>';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="skills" name="skills">';
-	 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
-	 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
-	 result = result +'         			</c:forEach>';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'       </div>';
-	 result = result +'       <div class="modal-footer">';
-	 result = result +'         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveAlert();">Save</button>';
-	 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
-	 result = result +'       </div>';
-	 result = result +'     </div>';
-	 result = result +'   </div>';	
-	 result = result +'</form>';
- $("#createAlertPopUpDiv").empty();
- $("#createAlertPopUpDiv").append(result);
- getAllCountries();
- var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
- }
- for (var selector in config) {
-	    $(selector).chosen(config[selector]);
-	    }
-	    $('.chosen-select').each(function() {
-	    var $this = $(this);
-	    $this.next().css({'width': '100%'});
-	    })
-	    
-	    $("#country").chosen();
-        $("#state").chosen();
-        $("#city").chosen();
-        
-        $("#country").on('change', function (e) {
-        	alert("hello");
-     	   getStates();
-        });
-       
-        $("#state").on('change', function (e) {
-     	   getCities();
-        });
-        
-        
-        
-        
-        
-        var select, chosen;
-	    select = $("#skills");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    
-	    $("#skills").chosen().change(function(event) {
-	    	 var sourceleadUrl ='${sourceleadUrl}';
-	    	var allSkills = $(event.target).val();
-	    	$.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-		        success: function(data) {
-		        	var primarySkill = data;
-		        	      $("#primarySkill").val(primarySkill);
-		        	
-		        },
-		    });
-	    	
-	    });
-    
-       chosen.search_field.on('keyup', function(e)
-		    {
-		    	   var skillsArray = this.value.split(",");
-			    	 if(skillsArray.length > 1){
-		        		 for (var i=0; i < skillsArray.length; i++) {
-		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		        			 select.append(option);
-		 		             select.find(option).prop('selected', true);
-		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		 	        		 $("#skills").trigger("chosen:updated");
-		                 }
-			    	 }else{
-		    			var newSkill = this.value.replace(","," ");
-		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		                {
-		    				 var option = $("<option>").val(newSkill).text(newSkill);
-		                     select.append(option);
-		                     select.find(option).prop('selected', true);
-		                     $("#skills option").each(function(){
-		                         $(this).siblings("[value='"+ this.value+"']").remove();
-		                   });
-		                   $("#skills").trigger("chosen:updated");
-		                }
+	var sourceleadUrl = '${sourceleadUrl}';
+	var email = '${SourceLeadWeb_user.email}';
+	var flag = '';
+	
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		success : function(data) {
+			if(data != null && data != ''){
+				
+				if(data == "valid"){
+					 
+					 result = "";
+					 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+					 result = result +'	 <div class="modal-dialog modal-lg">';
+					 result = result +'     <div class="modal-content">';
+					 result = result +'       <div class="modal-header">';
+					 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
+					 result = result +'         <h4 class="modal-title">Job Alert</h4>';
+					 result = result +'       </div>';
+					 result = result +'       <div class="modal-body myForm clearfix">';
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Country</label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="country" name="country">';
+					 result = result +'         		</select>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					 
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">State</label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" id="state" name="state">';
+					 result = result +'         		</select>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					 
+					 
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">City</label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" id="city" name="city">';
+					 result = result +'         		</select>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					 
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Experience</label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<select class="form-control" id="experience" name="experience">';
+					 result = result +'         			<option selected  value="">---Select Experience---</option>';
+					 result = result +'         			<c:forEach begin="0" end="30" varStatus="loop">';
+					 result = result +'         			<option>${loop.index}</option>';
+					 result = result +'         			</c:forEach>';
+					 result = result +'         		</select>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
+					 result = result +'	<div class="col-md-9">';
+					 result = result +'            <div class="input-group er ratetype">';
+					 result = result +'               <div class="input-group-btn tblminwidth-75">';
+					 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
+					 result = result +'                <option ${currencyCode  == "INR" ? "selected" : ''}>INR</option>';
+					 result = result +'                <option ${currencyCode  == "AUD" ? "selected" : ''}>AUD</option>';
+					 result = result +'                <option ${currencyCode  == "USD" ? "selected" : ''}>USD</option>';
+					 result = result +'                <option ${currencyCode  == "GBP" ? "selected" : ''}>GBP</option>';
+					 result = result +'                <option ${currencyCode  == "SGD" ? "selected" : ''}>SGD</option>';
+					 result = result +'                <option ${currencyCode  == "EUR" ? "selected" : ''}>EUR</option>';
+					 result = result +'               </select>';
+					 result = result +'               </div>';
+					 
+					 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" onblur="getRate();" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
+					 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
+					 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" data-validation-optional="true" field-name="Rate Type">';
+					 result = result +'                   <option value="">Rate Per</option>';
+					 result = result +'                   <option >Hourly</option>';
+					 result = result +'                   <option >Weekly</option>';
+					 result = result +'                   <option >Bi-weekly</option>';
+					 result = result +'                   <option >Semi-Monthly</option>';
+					 result = result +'                   <option >Monthly</option>';
+					 result = result +'                   <option >Bi-Monthly</option>';
+					 result = result +'                   <option >Yearly</option>';
+					 result = result +'                 </select>';
+					 result = result +'               </div>';
+					 result = result +'                <div class="clearfix"></div> <div class="clearfix"></div>';
+					 result = result +'             </div>';
+					 result = result +'           </div>';
+					 result = result +'         </div>';
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Industry</label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<select class="form-control chosen-select" data-placeholder="Industry" id="industry" name="industry">';
+					 result = result +'         			<option selected value="">---Select Industry---</option>';
+					 result = result +'         			<c:forEach var="industry" items="${industryList}">';
+					 result = result +'         			<option value="${industry}">${industry}</option>';
+					 result = result +'         			</c:forEach>';
+					 result = result +'         		</select>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
+					 result = result +'         			<option selected  value="">---Select Duration---</option>';
+					 result = result +'         			<option>Daily</option>';
+					 result = result +'         			<option>Weekly</option>';
+					 result = result +'         			<option>Monthly</option>';
+					 result = result +'         		</select>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					 result = result +'         <div class="form-group clearfix">';
+					 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
+					 result = result +'         	<div class="col-md-9">';
+					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Skills">';
+					 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
+					 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
+					 result = result +'         			</c:forEach>';
+					 result = result +'         		</select>';
+					 result = result +'         	</div>';
+					 result = result +'         </div>';
+					 result = result +'       </div>';
+					 result = result +'       <div class="modal-footer">';
+					 result = result +'         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveAlert();">Save</button>';
+					 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
+					 result = result +'       </div>';
+					 result = result +'     </div>';
+					 result = result +'   </div>';	
+					 result = result +'</form>';
+				 $("#createAlertPopUpDiv").empty();
+				 $("#createAlertPopUpDiv").append(result);
+				 getAllCountries();
+				 var config = {
+							  '.chosen-select'           : {},
+							  '.chosen-select-deselect'  : {allow_single_deselect:true},
+							  '.chosen-select-no-single' : {disable_search_threshold:10},
+							  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+							  '.chosen-select-width'     : {width:"95%"}
+				 }
+				 for (var selector in config) {
+					    $(selector).chosen(config[selector]);
+					    }
+					    $('.chosen-select').each(function() {
+					    var $this = $(this);
+					    $this.next().css({'width': '100%'});
+					    })
+					    
+					    $("#country").chosen();
+				        $("#state").chosen();
+				        $("#city").chosen();
+				        
+				        $("#country").on('change', function (e) {
+				     	   getStates();
+				        });
 				       
-	    	         }
-		    });
+				        $("#state").on('change', function (e) {
+				     	   getCities();
+				        });
+				        
+				        
+				        
+				        
+				        
+				        var select, chosen;
+					    select = $("#skills");
+					    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+					    chosen = select.data('chosen');
+					    
+					    $("#skills").chosen().change(function(event) {
+					    	 var sourceleadUrl ='${sourceleadUrl}';
+					    	var allSkills = $(event.target).val();
+					    	$.ajax({
+						    	type: "POST",
+						        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+						        success: function(data) {
+						        	var primarySkill = data;
+						        	      $("#primarySkill").val(primarySkill);
+						        	
+						        },
+						    });
+					    	
+					    });
+				    
+				       chosen.search_field.on('keyup', function(e)
+						    {
+						    	   var skillsArray = this.value.split(",");
+							    	 if(skillsArray.length > 1){
+						        		 for (var i=0; i < skillsArray.length; i++) {
+						        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+						        			 select.append(option);
+						 		             select.find(option).prop('selected', true);
+						 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+						 	        		 $("#skills").trigger("chosen:updated");
+						                 }
+							    	 }else{
+						    			var newSkill = this.value.replace(","," ");
+						    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+						                {
+						    				 var option = $("<option>").val(newSkill).text(newSkill);
+						                     select.append(option);
+						                     select.find(option).prop('selected', true);
+						                     $("#skills option").each(function(){
+						                         $(this).siblings("[value='"+ this.value+"']").remove();
+						                   });
+						                   $("#skills").trigger("chosen:updated");
+						                }
+								       
+					    	         }
+						    });
+				}else{
+					 
+					 result = "";
+					 result = result +'	 <div class="modal-dialog modal-lg">';
+					 result = result +'     <div class="modal-content">';
+					 result = result +'       <div class="modal-header">';
+					 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
+					 result = result +'         <h4 class="modal-title">Job Alert</h4>';
+					 result = result +'       </div>';
+					 
+					 result = result +'       <div class="modal-body myForm clearfix">';
+					 result = result +'       <p><i class="fa fa-smile-o text-success fa-4x;"></i> You can configure maximum 5 job alerts.</p>';
+					 result = result +'       </div>';
+					 
+					 result = result +'       <div class="modal-footer">';
+					 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
+					 result = result +'       </div>';
+					 result = result +'     </div>';
+					 result = result +'   </div>';
+					 $("#createAlertPopUpDiv").empty();
+					 $("#createAlertPopUpDiv").append(result);
+					
+				}
+				
+			}
+		},
+	});
+	
+	
+	 
 }
 </script>
 
@@ -310,7 +355,7 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-function getAllCountries(){
+function getAllCountries(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -320,7 +365,11 @@ function getAllCountries(){
         	$('#country').empty();
         	$('#country').append('<option value="">---select country---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${SourceLeadWeb_loginCountryName}'){
+            	
+            	if(country != 'undefined' && country != null && country != '' && json[i] == country){
+            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}
+            	else if(json[i] == '${SourceLeadWeb_loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{
@@ -329,7 +378,10 @@ function getAllCountries(){
             	
             }
             $('#country').trigger("chosen:updated");
-            getStates();
+            if(country == "undefined" || country == null){
+            	getStates();
+            }
+            
         },
         error: function(e){
         }
@@ -339,8 +391,15 @@ function getAllCountries(){
 
 
 <script>
-function getStates(){
-	var countryName = $("#country").val();
+function getStates(country,state){
+	
+	var countryName = '';
+	if(country != null && country != '' && country != 'undefined'){
+		countryName = country;
+	}else{
+	   countryName = $("#country").val();
+	}
+	
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -351,7 +410,12 @@ function getStates(){
 	        	$('#state').empty();
 	        	$('#state').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(state != null && state != '' && state != 'undefined' && json[i] == state){
+	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}else{
+	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
+	            	
 	            }
 	            $('#state').trigger("chosen:updated");
 	            
@@ -375,11 +439,23 @@ function getStates(){
 
 
 <script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
+function getCities(country,state,city){
+	var countryName = '';
+	var stateName = '';
 	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+	if(country != null && country != '' && country != 'undefined'){
+		countryName = country;
+	}else{
+	   countryName = $("#country").val();
+	}
+	
+	if(state != null && state != '' && state != 'undefined'){
+		stateName = state;
+	}else{
+		stateName = $("#state").val();
+	}
+	
+	if(countryName != null && countryName != "" && countryName != "undefined" && stateName != null && stateName != "" && stateName != "undefined" ){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
@@ -389,7 +465,12 @@ function getCities(){
 	        	$('#city').empty();
 	        	$('#city').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(city != null && city != '' && state != 'undefined' && json[i] == city){
+	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}else{
+	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
+	            	
 	            }
 	            $('#city').trigger("chosen:updated");
 	        },
@@ -455,20 +536,21 @@ function jobAlertList(){
 	                    		 skillsName =  "--";
 	                    	 }
 	                    	 
-	                    	 result = result +"<tr>";
+	                    	 result = result +"<tr id='jobAlert"+report.jobAlertUUID+"'>";
 	                    		 result = result +"<td><div class='tbldata-dotdot-sm' title="+report.alertTitle+"><span >"+report.alertTitle+"</span></div></td>";
 	                    		 result = result +"<td><div><span>"+experience+"</span></div></td>";
 	                    		 result = result +"<td><div  title="+rate+"><span>"+rate+"</span></div></td>";
 	                    		 result = result +"<td><div  title='"+industryName+"'><span>"+industryName+"</span></div></td>";
 	                    		 result = result +"<td><div  title='"+skillsName+"'><span>"+skillsName+"</span></div></td>";
 			                     result = result +"<td><div class=''>";
-			                     result = result +'<a class="glyphicon glyphicon-edit" title="Edit" onclick="editDepartment();"></a>';	
-			                     result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProject();"></a>';	
+			                     result = result +'<a class="glyphicon glyphicon-edit" title="Edit" onclick="alertFunction();editAlert(\''+report.jobAlertUUID+'\');"></a>';	
+			                     result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteJobAlert(\''+report.jobAlertUUID+'\',\''+report.alertTitle+'\');"></a>';	
 			                     result = result +"</div></td>"; 
 		                     result = result +"</tr>";
 	                    }
 	                     result = result +" </tbody>";
 	                     result = result +"</table>"; 
+	                     result = result + '<div id="choicepopUp"></div>';
 	                     $("#jobAlertList").append(result); 
 	                     
 	                     offboardingPagenation(); 
@@ -477,7 +559,412 @@ function jobAlertList(){
             
        }); 
   } 
-</script>   
+</script> 
+
+
+
+<script>
+function editAlert(jobAlertUUID){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+         type : "GET",
+         url: sourceleadUrl+"/getJobAlertDetails?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
+          success :function(data) {
+        	  var json = JSON.parse(data);
+        	  var experience = json['experience'];
+        	  var rateCurrency = json['rateCurrency'];
+        	  var rate = '';
+        	  if(json['rate'] != null && json['rate'] != 'undefined' && json['rate'] != ''){
+        		  rate = json['rate'];
+        	  }
+        	  
+        	  var rateType = json['rateType'];
+        	  
+        	     result = "";
+        		 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+        		 result = result +'	 <div class="modal-dialog modal-lg">';
+        		 result = result +'     <div class="modal-content">';
+        		 result = result +'       <div class="modal-header">';
+        		 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
+        		 result = result +'         <h4 class="modal-title">Job Alert</h4>';
+        		 result = result +'       </div>';
+        		 result = result +'       <div class="modal-body myForm clearfix">';
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'         		<input type="text" class="form-control input-sm" value="'+json['alertTitle']+'" placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		 
+        		 result = result +'<input type="hidden" name="savedJobAlertId" value="'+json['id']+'">';
+
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">Country</label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="country" name="country">';
+        		 result = result +'         		</select>';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		 
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">State</label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" id="state" name="state">';
+        		 result = result +'         		</select>';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		 
+        		 
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">City</label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" id="city" name="city">';
+        		 result = result +'         		</select>';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		 
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">Experience</label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'         		<select class="form-control" id="experience" name="experience">';
+        		 result = result +'         			<option selected  value="">---Select Experience---</option>';
+        		 result = result +'         			<c:forEach begin="0" end="30" varStatus="loop">';
+        		 
+        		 if(experience ==  "${loop.index}"){
+        			 result = result +' <option selected>${loop.index}</option>';
+        		 }else{
+        			 result = result +' <option>${loop.index}</option>';
+        		 }
+        		 
+        		 result = result +'         			</c:forEach>';
+        		 result = result +'         		</select>';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
+        		 result = result +'	<div class="col-md-9">';
+        		 result = result +'            <div class="input-group er ratetype">';
+        		 result = result +'               <div class="input-group-btn tblminwidth-75">';
+        		 result = result +'                <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
+        		 
+        		 if(rateCurrency == "INR"){
+        			 result = result +'<option selected>INR</option>';
+        		 }else{
+        			 result = result +'<option>INR</option>';
+        		 }
+        		 
+        		 if(rateCurrency == "AUD"){
+        			 result = result +'<option selected>AUD</option>';
+        		 }else{
+        			 result = result +'<option>AUD</option>';
+        		 }
+        		 
+        		 if(rateCurrency == "USD"){
+        			 result = result +'<option selected>USD</option>';
+        		 }else{
+        			 result = result +'<option>USD</option>';
+        		 }
+        		 
+        		 if(rateCurrency == "GBP"){
+        			 result = result +'<option selected>GBP</option>';
+        		 }else{
+        			 result = result +'<option>GBP</option>';
+        		 }
+        		 
+        		 if(rateCurrency == "SGD"){
+        			 result = result +'<option selected>SGD</option>';
+        		 }else{
+        			 result = result +'<option>SGD</option>';
+        		 }
+        		 
+        		 if(rateCurrency == "EUR"){
+        			 result = result +'<option selected>EUR</option>';
+        		 }else{
+        			 result = result +'<option>EUR</option>';
+        		 }
+        		 
+        		 result = result +'               </select>';
+        		 result = result +'               </div>';
+        		 
+        		 result = result +'<input type="text" id="currentRate" name="rate" onblur="getRate();" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="'+rate+'" class="form-control" placeholder="Rate">';
+        		 result = result +'<div class="input-group-btn tblminwidth-75 ratetype">';
+        		 result = result +'<select class="btn-primary select_picker form-control" id="rateType" data-validation-optional="true" name="rateType" field-name="Rate Type">';
+        		 result = result +'<option value="">Rate Per</option>';
+        		 
+        		 if(rateType == "Hourly"){
+        			 result = result +'<option selected>Hourly</option>'; 
+        		 }else{
+        			 result = result +'<option>Hourly</option>'; 
+        		 }
+        		 
+        		 if(rateType == "Weekly"){
+        			 result = result +'<option selected>Weekly</option>'; 
+        		 }else{
+        			 result = result +'<option>Weekly</option>'; 
+        		 }
+        		 
+        		 if(rateType == "Bi-weekly"){
+        			 result = result +'<option selected>Bi-weekly</option>'; 
+        		 }else{
+        			 result = result +'<option>Bi-weekly</option>'; 
+        		 }
+        		 
+        		 if(rateType == "Semi-Monthly"){
+        			 result = result +'<option selected>Semi-Monthly</option>'; 
+        		 }else{
+        			 result = result +'<option>Semi-Monthly</option>'; 
+        		 }
+        		 
+        		 if(rateType == "Monthly"){
+        			 result = result +'<option selected>Monthly</option>'; 
+        		 }else{
+        			 result = result +'<option>Monthly</option>'; 
+        		 }
+        		 
+        		 if(rateType == "Bi-Monthly"){
+        			 result = result +'<option selected>Bi-Monthly</option>'; 
+        		 }else{
+        			 result = result +'<option>Bi-Monthly</option>'; 
+        		 }
+        		 
+        		 if(rateType == "Yearly"){
+        			 result = result +'<option selected>Yearly</option>'; 
+        		 }else{
+        			 result = result +'<option>Yearly</option>'; 
+        		 }
+        		
+        		 result = result +'                 </select>';
+        		 result = result +'               </div>';
+        		 result = result +'                <div class="clearfix"></div> <div class="clearfix"></div>';
+        		 result = result +'             </div>';
+        		 result = result +'           </div>';
+        		 result = result +'         </div>';
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">Industry</label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'         		<select class="form-control chosen-select" data-placeholder="Industry" id="industry" name="industry">';
+        		 result = result +'         			<option selected value="">---Select Industry---</option>';
+        		 result = result +'         			<c:forEach var="industry" items="${industryList}">';
+        		 
+        		 if(json['industryName'] == "${industry}"){
+        			 result = result +'<option value="${industry}" selected>${industry}</option>';
+        		 }else{
+        			 result = result +'<option value="${industry}">${industry}</option>';
+        		 }
+        		 
+        		 result = result +'         			</c:forEach>';
+        		 result = result +'         		</select>';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
+        		 result = result +'         			<option selected  value="">---Select Duration---</option>';
+        		 
+        		 if(json['duration'] == "Daily"){
+        			 result = result +'<option selected>Daily</option>';
+        		 }else{
+        			 result = result +'<option>Daily</option>';
+        		 }
+        		 
+        		 if(json['duration'] == "Weekly"){
+        			 result = result +'<option selected>Weekly</option>';
+        		 }else{
+        			 result = result +'<option>Weekly</option>';
+        		 }
+        		 
+        		 if(json['duration'] == "Monthly"){
+        			 result = result +'<option selected>Monthly</option>';
+        		 }else{
+        			 result = result +'<option>Monthly</option>';
+        		 }
+        		
+        		 result = result +'         		</select>';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		 result = result +'         <div class="form-group clearfix">';
+        		 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
+        		 result = result +'         	<div class="col-md-9">';
+        		 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Skills">';
+        		 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
+        		 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
+        		 result = result +'         			</c:forEach>';
+        		 result = result +'         		</select>';
+        		 result = result +'         	</div>';
+        		 result = result +'         </div>';
+        		 result = result +'       </div>';
+        		 result = result +'       <div class="modal-footer">';
+        		 result = result +'         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveAlert();">Save</button>';
+        		 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
+        		 result = result +'       </div>';
+        		 result = result +'     </div>';
+        		 result = result +'   </div>';	
+        		 result = result +'</form>';
+        	 $("#createAlertPopUpDiv").empty();
+        	 $("#createAlertPopUpDiv").append(result);
+        	 getAllCountries(json['country']);
+        	
+        	 if(json['state'] != null && json['state'] != '' && json['state'] != 'undefined'){
+        		 getStates(json['country'],json['state']);
+        	 }else{
+        		 getStates(json['country']);
+        	 }
+        	 if(json['city'] != null && json['city'] != '' && json['city'] != 'undefined'){
+        		 getCities(json['country'],json['state'],json['city']);
+        	 }
+        	 
+        	 
+        	 var config = {
+        				  '.chosen-select'           : {},
+        				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        				  '.chosen-select-no-single' : {disable_search_threshold:10},
+        				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        				  '.chosen-select-width'     : {width:"95%"}
+        	 }
+        	 for (var selector in config) {
+        		    $(selector).chosen(config[selector]);
+        		    }
+        		    $('.chosen-select').each(function() {
+        		    var $this = $(this);
+        		    $this.next().css({'width': '100%'});
+        		    })
+        		    
+        		    $("#country").chosen();
+        	        $("#state").chosen();
+        	        $("#city").chosen();
+        	        
+        	        $("#country").on('change', function (e) {
+        	     	   getStates();
+        	        });
+        	       
+        	        $("#state").on('change', function (e) {
+        	     	   getCities();
+        	        });
+        	        
+        	        
+        	        
+        	        var select, chosen;
+        		    select = $("#skills");
+        		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+        		    chosen = select.data('chosen');
+        		    
+        		    $("#skills").chosen().change(function(event) {
+        		    	 var sourceleadUrl ='${sourceleadUrl}';
+        		    	var allSkills = $(event.target).val();
+        		    	$.ajax({
+        			    	type: "POST",
+        			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+        			        success: function(data) {
+        			        	var primarySkill = data;
+        			        	      $("#primarySkill").val(primarySkill);
+        			        	
+        			        },
+        			    });
+        		    	
+        		    });
+        		    
+        		    if(json['skillsName'] != 'undefined' && json['skillsName'] != null && json['skillsName'] != ''){
+        		    
+        		      var alertSkillsList = json['skillsName'].split(',');
+                   	  if(alertSkillsList.length > 1){
+                   		 for (var i=0; i < alertSkillsList.length; i++) {
+  		        			 var option = $("<option>").val(alertSkillsList[i].replace(",","")).text(alertSkillsList[i].replace(",",""));
+  		        			 select.append(option);
+  		 		             select.find(option).prop('selected', true);
+  		 		             select.find(option).siblings("[value='"+ alertSkillsList[i].replace(",","")+"']").remove();
+  		 	        		 $("#skills").trigger("chosen:updated");
+  		                 }
+                   	  }else{
+                   		 var option = $("<option>").val(alertSkillsList).text(alertSkillsList);
+  	        			 select.append(option);
+  	 		             select.find(option).prop('selected', true);
+  	 		             select.find(option).siblings("[value='"+ alertSkillsList+"']").remove();
+  	 	        		 $("#skills").trigger("chosen:updated");
+                   	  }
+        		    }
+        		    
+        	    
+        	       chosen.search_field.on('keyup', function(e)
+        			    {
+        			    	   var skillsArray = this.value.split(",");
+        				    	 if(skillsArray.length > 1){
+        			        		 for (var i=0; i < skillsArray.length; i++) {
+        			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+        			        			 select.append(option);
+        			 		             select.find(option).prop('selected', true);
+        			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+        			 	        		 $("#skills").trigger("chosen:updated");
+        			                 }
+        				    	 }else{
+        			    			var newSkill = this.value.replace(","," ");
+        			    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+        			                {
+        			    				 var option = $("<option>").val(newSkill).text(newSkill);
+        			                     select.append(option);
+        			                     select.find(option).prop('selected', true);
+        			                     $("#skills option").each(function(){
+        			                         $(this).siblings("[value='"+ this.value+"']").remove();
+        			                   });
+        			                   $("#skills").trigger("chosen:updated");
+        			                }
+        					       
+        		    	         }
+        			    });
+          }
+	 });
+}
+</script>  
+
+
+<script>
+function deleteJobAlert(jobAlertUUID,alertTitle){
+	alertMessage(jobAlertUUID,alertTitle);
+}
+</script>
+
+<script type="text/javascript">
+function alertMessage(jobAlertUUID,alertTitle){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure to delete alert <strong>"+alertTitle+"</strong> ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteAlert(\""+jobAlertUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script>
+function deleteAlert(jobAlertUUID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	  $.ajax({
+        type : "POST",
+        url: sourceleadUrl+"/deleteJobAlert?${_csrf.parameterName}=${_csrf.token}&jobAlertUUID="+jobAlertUUID,    
+         success :function(data) {
+        	 	$("#jobAlert"+jobAlertUUID).remove();
+        	 	$("#choicepopUp").empty();
+        		$(".project_inn_mask").fadeOut(200);
+      	     }
+	   });
+}
+
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <script>
 function offboardingPagenation(){ 
@@ -493,6 +980,19 @@ function offboardingPagenation(){
 	            "sZeroRecords": "", "sEmptyTable": ""
 	       }
 	    } );
+}
+</script>
+
+<script>
+function getRate(){
+	var rate = document.getElementById("currentRate").value;
+	if(rate != 'undefined' && rate !=  null && rate != ''){
+		$("#rateType").removeAttr("data-validation-optional");
+		$("#rateType").attr("data-validation", "required");
+	}else{
+		$("#rateType").removeAttr("data-validation");
+		$("#rateType").attr("data-validation-optional", "true");
+	}
 }
 </script>
 

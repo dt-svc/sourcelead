@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
@@ -52,7 +53,15 @@ public class JobAlertServiceImpl implements JobAlertService{
 	@Override
 	public String saveJobAlert(JSONObject jsonObj) throws Exception {
 	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	JobAlert jobAlert = new JobAlert();
+	 	JobAlert jobAlert = null;
+	 	if(jsonObj.has("savedJobAlertId") && !"".equalsIgnoreCase(jsonObj.getString("savedJobAlertId"))){
+	 		jobAlert = jobAlertDao.getJobAlertById(Long.valueOf(jsonObj.getString("savedJobAlertId")));
+	 		
+	 	}else{
+	 		jobAlert = new JobAlert();
+		 	jobAlert.setJobAlertUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	 	}
+	 	
 	 	
 	 	if(jsonObj.has("alertTitle") && !"".equalsIgnoreCase(jsonObj.getString("alertTitle"))){
 	 		jobAlert.setAlertTitle(jsonObj.getString("alertTitle"));
@@ -122,6 +131,36 @@ public class JobAlertServiceImpl implements JobAlertService{
 		jobAlert.setCreatedDate(commonUtil.currentDate());
 		jobAlertDao.saveJobAlert(jobAlert);
 		return "success";
+	}
+
+	@Override
+	public List<JobAlert> getJobAlertByEmail(String email) throws Exception
+	{
+		return jobAlertDao.getJobAlertByEmail(email);
+	}
+
+	@Override
+	public List<JobAlert> getConfiruredJobsAlertsList(String duration) throws Exception
+	{
+		return jobAlertDao.getConfiruredJobsAlertsList(duration);
+	}
+
+	@Override
+	public JobAlert getJobAlertByUUID(String jobAlertUUID) throws Exception
+	{
+		return jobAlertDao.getJobAlertByUUID(jobAlertUUID);
+	}
+
+	@Override
+	public void deleteJobAlert(JobAlert jobAlert) throws Exception
+	{
+		jobAlertDao.deleteJobAlert(jobAlert);
+	}
+
+	@Override
+	public Integer getJobAlertCountByEmail(String email) throws Exception
+	{
+		return jobAlertDao.getJobAlertCountByEmail(email);
 	}
 
 	

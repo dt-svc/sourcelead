@@ -44,7 +44,8 @@ window.onload = function () {
 	setTimeout(function() {
 		$(".pageLoad").fadeOut();
 	}, 1000);
-	if(${requirementUUID != null}){
+	
+	if('${requirementUUID}' != null && '${requirementUUID}' != '' && '${requirementUUID}' != 'undefined'){
 		getOpenJobsRequirementSummary('${requirementUUID}');
 		getDropDownCount();
 	}else{
@@ -96,6 +97,18 @@ function getPostValueDetails(){
 <style>
 .footer-area {
 display: none;}
+
+
+a.alertBtn {
+    padding: 8px 15px !important;
+}
+
+.ratetype p {
+    left: -45px !important;
+    position: absolute;
+    bottom: -14px;
+}
+
 </style>
 
 
@@ -927,7 +940,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'  </div>'
 				result = result +'	<div class="clear"></div>';
 				result = result +'	</div>';
-				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert();"><i class="fa fa-bell-o"></i></a>';
+				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
 				result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
 				if(requirements.isCrowdSourcingJob == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
@@ -1093,7 +1106,8 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</span>';
 				result = result +'    </div>';			
 				result = result +'    <div class="jobDetailsLogo">';
-				result = result +'	<a href="'+sourceleadUrl+'/login">Apply</a>';
+				result = result +'	<a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+json.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
+				result = result +'  <a href="'+sourceleadUrl+"/login?requirementUUID="+json.requirementUUID+'">Apply</a>';
 				if (json.isCrowdSourcing == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				}
@@ -1217,6 +1231,20 @@ function openJobSearchRequirement(){
 						 				}else{
 						 					location = requirements.country;
 						 				}
+						 				
+						 				if(requirements.skills != null && requirements.skills != '' && requirements.skills != 'undefined'){
+						 					skills = requirements.skills;
+						 				}else{
+						 					skills = "----"
+						 				}
+						 				
+						 				if(requirements.jobType != null && requirements.jobType != '' && requirements.jobType != 'undefined'){
+						 					jobType = requirements.jobType;
+						 				}else{
+						 					jobType = "----"
+						 				}
+						 				
+						 				
 						 				var result = "";
 						 				var title="";
 						 				var link="";
@@ -1229,10 +1257,10 @@ function openJobSearchRequirement(){
 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 										result = result +'	<div class="skills">';
 										result = result +'	<strong>Skills :</strong>';
-										result = result +'  <span>'+requirements.skills+'</span>';
+										result = result +'  <span>'+skills+'</span>';
 										result = result +'	</div>';					
 										result = result +'	<span>';
-										result = result +'	<b><i class="fa fa-clock-o"></i>'+requirements.jobType+'</b>';
+										result = result +'	<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
 										result = result +'	<b><i class="fa fa-briefcase"></i>'+experience+'</b>';
 										result = result +'	<b><i class="fa fa-map-marker"></i>'+location+'</b>';
 										result = result +'	</span>';
@@ -1252,14 +1280,13 @@ function openJobSearchRequirement(){
 										result = result +'  </div>';
 										result = result +'	<div class="clear"></div>';
 										result = result +'	</div>';
-										result = result +'	<div class="jobApply"><a href="'+sourceleadUrl+'/login">Apply</a>';
+										
+										result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
+										result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
 										if(requirements.isCrowdSourcingJob == 'Y'){
 										result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
 										}
-										/*result = result +'	<div class="filLoad">';
-										result = result +'	<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>';
-										result = result +'	<p class="gradi"></p>';
-										result = result +'	</div>'; */				
+													
 										result = result +'	</div>';
 										$("#openJobsRequirementsSummary").empty();
 										$("#openJobsRequirementsList").append(result); 
@@ -1669,244 +1696,417 @@ function alertClose(){
 </script>
 <script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
 <script>
-function createAlert(){
-	 result = "";
-	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
-	 result = result +'	 <div class="modal-dialog modal-lg">';
-	 result = result +'     <div class="modal-content">';
-	 result = result +'       <div class="modal-header">';
-	 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
-	 result = result +'         <h4 class="modal-title">Job Alert</h4>';
-	 result = result +'       </div>';
-	 result = result +'       <div class="modal-body myForm clearfix">';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Email<span class="text-danger paddingLeft">*</span></label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Email" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Country</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="countryjobalert" name="country" onchange="getStatesjobalert();">';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
+function createAlert(requirementUUID){
 	 
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">State</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="state" id="statejobalert" onchange="getCitiesjobalert();">';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 
-	 
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">City</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="city" id="cityjobalert">';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Experience</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" id="experience" name="experience">';
-	 result = result +'         			<option  value="">Select Experience</option>';
-	 result = result +'								 <c:forEach begin="0" end="30" varStatus="loop">';
-	 result = result +'   					<option value="${loop.index}">${loop.index}</option>';
-	 result = result +'										</c:forEach>';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
-	 result = result +'	<div class="col-md-9">';
-	 result = result +'            <div class="input-group er ratetype">';
-	 result = result +'               <div class="input-group-btn tblminwidth-75">';
-	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
-	 result = result +'                <option >INR</option>';
-	 result = result +'                <option >AUD</option>';
-	 result = result +'                <option >USD</option>';
-	 result = result +'                <option >GBP</option>';
-	 result = result +'                <option >SGD</option>';
-	 result = result +'                <option >EUR</option>';
-	 result = result +'               </select>';
-	 result = result +'               </div>';
-	 
-	 result = result +'              <input type="text" id="currentRate" name="rate" value="" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
-	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
-	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type">';
-	 result = result +'                   <option value="">Rate Per</option>';
-	 result = result +'                   <option >Hourly</option>';
-	 result = result +'                   <option >Weekly</option>';
-	 result = result +'                   <option >Bi-weekly</option>';
-	 result = result +'                   <option >Semi-Monthly</option>';
-	 result = result +'                   <option >Monthly</option>';
-	 result = result +'                   <option >Bi-Monthly</option>';
-	 result = result +'                   <option >Yearly</option>';
-	 result = result +'                 </select>';
-	 result = result +'               </div>';
-	 result = result +'                <div class="clearfix"></div> <div class="clearfix"></div>';
-	 result = result +'             </div>';
-	 result = result +'           </div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Industry</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control chosen-select" data-placeholder="industryName" id="industry" name="industryName">';
-	 result = result +'         		<option value="">--Select Industry--</option>';
-	 result = result +'                   <c:forEach var="industry" items="${industryList}">';
-	 result = result +'  					<option  value="${industry}">${industry}</option>';
-	 result = result +'						</c:forEach>;'
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
 	
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
-	 result = result +'         			<option selected value="">---Select Duration---</option>';
-	 result = result +'         			<option>Daily</option>';
-	 result = result +'         			<option>Weekly</option>';
-	 result = result +'         			<option>Monthly</option>';
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'         <div class="form-group clearfix">';
-	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
-	 result = result +'         	<div class="col-md-9">';
-	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" name="skills">';
-	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
-	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
-	 result = result +'						</c:forEach>;'
-	 result = result +'         		</select>';
-	 result = result +'         	</div>';
-	 result = result +'         </div>';
-	 result = result +'       </div>';
-	 result = result +'       <div class="modal-footer">';
-	 result = result +'         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveAlert();">Save</button>';
-	 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
-	 result = result +'       </div>';
-	 result = result +'     </div>';
-	 result = result +'   </div>';	
-	 result = result +'</form>';
- $("#createAlertPopUpDiv").empty();
- $("#createAlertPopUpDiv").append(result);
- getAllCountriesJObalert();
- var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
- }
- for (var selector in config) {
-	    $(selector).chosen(config[selector]);
-	    }
-	    $('.chosen-select').each(function() {
-	    var $this = $(this);
-	    $this.next().css({'width': '100%'});
-	    })
-	    
-	    var select, chosen;
-	    select = $("#candidateSkills");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    
-	    $("#candidateSkills").chosen().change(function(event) {
-	    	 var sourceleadUrl ='${sourceleadUrl}';
-	    	var allSkills = $(event.target).val();
-	    	$.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-		        success: function(data) {
-		        	var primarySkill = data;
-		        	      $("#primarySkill").val(primarySkill);
-		        	
-		        },
-		    });
-	    	
-	    });
-    
-       chosen.search_field.on('keyup', function(e)
-		    {
-		    	   var skillsArray = this.value.split(",");
-			    	 if(skillsArray.length > 1){
-		        		 for (var i=0; i < skillsArray.length; i++) {
-		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		        			 select.append(option);
-		 		             select.find(option).prop('selected', true);
-		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		 	        		 $("#candidateSkills").trigger("chosen:updated");
-		                 }
-			    	 }else{
-		    			var newSkill = this.value.replace(","," ");
-		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		                {
-		    				 var option = $("<option>").val(newSkill).text(newSkill);
-		                     select.append(option);
-		                     select.find(option).prop('selected', true);
-		                     $("#candidateSkills option").each(function(){
-		                         $(this).siblings("[value='"+ this.value+"']").remove();
-		                   });
-		                   $("#candidateSkills").trigger("chosen:updated");
-		                }
-				       
-	    	         }
-		    });
-       $("#countryjobalert").chosen();
-       $("#statejobalert").chosen();
-       $("#cityjobalert").chosen();
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+        type : "GET",
+        url: sourceleadUrl+"/getJobDetailsForJobAlert?${_csrf.parameterName}=${_csrf.token}&requirementUUID="+requirementUUID,    
+         success :function(data) {
+        	 
+        	 var json = JSON.parse(data);
+        	 var experience = json['maxExp'];
+        	 
+        	 result = "";
+        	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+        	 result = result +'	 <div class="modal-dialog modal-lg">';
+        	 result = result +'     <div class="modal-content">';
+        	 result = result +'       <div class="modal-header">';
+        	 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
+        	 result = result +'         <h4 class="modal-title">Job Alert</h4>';
+        	 result = result +'       </div>';
+        	 result = result +'       <div class="modal-body myForm clearfix">';
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<input type="text" class="form-control input-sm" value="'+json['jobTitle']+'"  placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 result = result +'         <div class="form-group clearfix" id="emailDiv">';
+        	 result = result +'         	<label class="col-md-3">Email<span class="text-danger paddingLeft">*</span></label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" field-name="Email" onblur="validateAlertUserEmail();" data-validation="required validate_Space validate_length length2-100 validate_email">';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">Country</label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<select class="form-control chosen-select" data-placeholder="Country" id="countryjobalert" name="country" onchange="getStatesjobalert();">';
+        	 result = result +'         		</select>';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">State</label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<select class="form-control chosen-select" data-placeholder="State" name="state" id="statejobalert" onchange="getCitiesjobalert();">';
+        	 result = result +'         		</select>';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 
+        	 
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">City</label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<select class="form-control chosen-select" data-placeholder="City" name="city" id="cityjobalert">';
+        	 result = result +'         		</select>';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">Experience</label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<select class="form-control chosen-select" id="experience" name="experience">';
+        	 result = result +'         			<option  value="">Select Experience</option>';
+        	 result = result +'								 <c:forEach begin="0" end="30" varStatus="loop">';
+        	
+        	 
+        	 if(experience ==  "${loop.index}"){
+    			 result = result +' <option value="${loop.index}" selected>${loop.index}</option>';
+    		 }else{
+    			 result = result +' <option value="${loop.index}">${loop.index}</option>';
+    		 }
+        	 
+        	 
+        	 result = result +'										</c:forEach>';
+        	 result = result +'         		</select>';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
+        	 result = result +'	<div class="col-md-9">';
+        	 result = result +'            <div class="input-group er ratetype">';
+        	 result = result +'               <div class="input-group-btn tblminwidth-75">';
+        	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
+        	 
+        	 
+        	 if(json['currencyCode'] == "INR"){
+    			 result = result +'<option selected>INR</option>';
+    		 }else{
+    			 result = result +'<option>INR</option>';
+    		 }
+    		 
+    		 if(json['currencyCode'] == "AUD"){
+    			 result = result +'<option selected>AUD</option>';
+    		 }else{
+    			 result = result +'<option>AUD</option>';
+    		 }
+    		 
+    		 if(json['currencyCode'] == "USD"){
+    			 result = result +'<option selected>USD</option>';
+    		 }else{
+    			 result = result +'<option>USD</option>';
+    		 }
+    		 
+    		 if(json['currencyCode'] == "GBP"){
+    			 result = result +'<option selected>GBP</option>';
+    		 }else{
+    			 result = result +'<option>GBP</option>';
+    		 }
+    		 
+    		 if(json['currencyCode'] == "SGD"){
+    			 result = result +'<option selected>SGD</option>';
+    		 }else{
+    			 result = result +'<option>SGD</option>';
+    		 }
+    		 
+    		 if(json['currencyCode'] == "EUR"){
+    			 result = result +'<option selected>EUR</option>';
+    		 }else{
+    			 result = result +'<option>EUR</option>';
+    		 }
+        	 
+        	 result = result +'               </select>';
+        	 result = result +'               </div>';
+        	 
+        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+json['rate']+'" class="form-control" placeholder="Rate">';
+        	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
+        	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type" data-validation-optional="true">';
+        	 result = result +'                   <option value="">Rate Per</option>';
+        	 
+        	 if(json['rateType'] == "Hourly"){
+    			 result = result +'<option selected>Hourly</option>'; 
+    		 }else{
+    			 result = result +'<option>Hourly</option>'; 
+    		 }
+    		 
+    		 if(json['rateType'] == "Weekly"){
+    			 result = result +'<option selected>Weekly</option>'; 
+    		 }else{
+    			 result = result +'<option>Weekly</option>'; 
+    		 }
+    		 
+    		 if(json['rateType'] == "Bi-weekly"){
+    			 result = result +'<option selected>Bi-weekly</option>'; 
+    		 }else{
+    			 result = result +'<option>Bi-weekly</option>'; 
+    		 }
+    		 
+    		 if(json['rateType'] == "Semi-Monthly"){
+    			 result = result +'<option selected>Semi-Monthly</option>'; 
+    		 }else{
+    			 result = result +'<option>Semi-Monthly</option>'; 
+    		 }
+    		 
+    		 if(json['rateType'] == "Monthly"){
+    			 result = result +'<option selected>Monthly</option>'; 
+    		 }else{
+    			 result = result +'<option>Monthly</option>'; 
+    		 }
+    		 
+    		 if(json['rateType'] == "Bi-Monthly"){
+    			 result = result +'<option selected>Bi-Monthly</option>'; 
+    		 }else{
+    			 result = result +'<option>Bi-Monthly</option>'; 
+    		 }
+    		 
+    		 if(json['rateType'] == "Yearly"){
+    			 result = result +'<option selected>Yearly</option>'; 
+    		 }else{
+    			 result = result +'<option>Yearly</option>'; 
+    		 }
+    		
+        	 
+        	 result = result +'                 </select>';
+        	 result = result +'               </div>';
+        	 result = result +'                <div class="clearfix"></div> <div class="clearfix"></div>';
+        	 result = result +'             </div>';
+        	 result = result +'           </div>';
+        	 result = result +'         </div>';
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">Industry</label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<select class="form-control chosen-select" data-placeholder="industryName" id="industry" name="industry">';
+        	 result = result +'         		<option value="">--Select Industry--</option>';
+        	 result = result +'                   <c:forEach var="industry" items="${industryList}">';
+        	 if(json['industryName'] == "${industry}"){
+    			 result = result +'<option value="${industry}" selected>${industry}</option>';
+    		 }else{
+    			 result = result +'<option value="${industry}">${industry}</option>';
+    		 }
+        	 result = result +'						</c:forEach>;'
+        	 result = result +'         		</select>';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
+        	 result = result +'         			<option selected value="">---Select Duration---</option>';
+        	 result = result +'         			<option>Daily</option>';
+        	 result = result +'         			<option>Weekly</option>';
+        	 result = result +'         			<option>Monthly</option>';
+        	 result = result +'         		</select>';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
+        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" name="skills">';
+        	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
+        	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
+        	 result = result +'						</c:forEach>;'
+        	 result = result +'         		</select>';
+        	 result = result +'         	</div>';
+        	 result = result +'         </div>';
+        	 result = result +'       </div>';
+        	 result = result +'       <div class="modal-footer">';
+        	 result = result +'         <button type="submit" id="alert_button"  class="btn btn-primary btn-sm">Save</button>';
+        	 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
+        	 result = result +'       </div>';
+        	 result = result +'     </div>';
+        	 result = result +'   </div>';	
+        	 result = result +'</form>';
+         $("#createAlertPopUpDiv").empty();
+         $("#createAlertPopUpDiv").append(result);
+         var config = {
+        			  '.chosen-select'           : {},
+        			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+        			  '.chosen-select-no-single' : {disable_search_threshold:10},
+        			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        			  '.chosen-select-width'     : {width:"95%"}
+         }
+         for (var selector in config) {
+        	    $(selector).chosen(config[selector]);
+        	    }
+        	    $('.chosen-select').each(function() {
+        	    var $this = $(this);
+        	    $this.next().css({'width': '100%'});
+        	    })
+        	    
+        	    var select, chosen;
+        	    select = $("#candidateSkills");
+        	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
+        	    chosen = select.data('chosen');
+        	    
+        	    $("#candidateSkills").chosen().change(function(event) {
+        	    	 var sourceleadUrl ='${sourceleadUrl}';
+        	    	var allSkills = $(event.target).val();
+        	    	$.ajax({
+        		    	type: "POST",
+        		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+        		        success: function(data) {
+        		        	var primarySkill = data;
+        		        	      $("#primarySkill").val(primarySkill);
+        		        	
+        		        },
+        		    });
+        	    	
+        	    });
+        	    
+        	    
+        	  if(json['skills'] != 'undefined' && json['skills'] != null && json['skills'] != ''){
+        		  
+        		  var alertSkillsList = json['skills'].split(',');
+               	  if(alertSkillsList.length > 1){
+               		 for (var i=0; i < alertSkillsList.length; i++) {
+    	        			 var option = $("<option>").val(alertSkillsList[i].replace(",","")).text(alertSkillsList[i].replace(",",""));
+    	        			 select.append(option);
+    	 		             select.find(option).prop('selected', true);
+    	 		             select.find(option).siblings("[value='"+ alertSkillsList[i].replace(",","")+"']").remove();
+    	 	        		 $("#candidateSkills").trigger("chosen:updated");
+    	                 }
+               	  }else{
+               		 var option = $("<option>").val(alertSkillsList).text(alertSkillsList);
+          			 select.append(option);
+    		             select.find(option).prop('selected', true);
+    		             select.find(option).siblings("[value='"+ alertSkillsList+"']").remove();
+    	        		 $("#candidateSkills").trigger("chosen:updated");
+               	  }
+        	  }
+        	 
+            
+               chosen.search_field.on('keyup', function(e)
+        		    {
+        		    	   var skillsArray = this.value.split(",");
+        			    	 if(skillsArray.length > 1){
+        		        		 for (var i=0; i < skillsArray.length; i++) {
+        		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
+        		        			 select.append(option);
+        		 		             select.find(option).prop('selected', true);
+        		 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
+        		 	        		 $("#candidateSkills").trigger("chosen:updated");
+        		                 }
+        			    	 }else{
+        		    			var newSkill = this.value.replace(","," ");
+        		    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+        		                {
+        		    				 var option = $("<option>").val(newSkill).text(newSkill);
+        		                     select.append(option);
+        		                     select.find(option).prop('selected', true);
+        		                     $("#candidateSkills option").each(function(){
+        		                         $(this).siblings("[value='"+ this.value+"']").remove();
+        		                   });
+        		                   $("#candidateSkills").trigger("chosen:updated");
+        		                }
+        				       
+        	    	         }
+        		    });
+               $("#countryjobalert").chosen();
+               $("#statejobalert").chosen();
+               $("#cityjobalert").chosen();
 
-       $("#countryjobalert").on('change', function (e) {
-       	   getStatesjobalert();
-       });
+                            
+          	 getAllCountriesJObalert(json['country']);
+           	
+          	 if(json['state'] != null && json['state'] != '' && json['state'] != 'undefined'){
+          		getStatesjobalert(json['country'],json['state']);
+          	 }else{
+          		getStatesjobalert(json['country']);
+          	 }
+          	 if(json['city'] != null && json['city'] != '' && json['city'] != 'undefined'){
+          		getCitiesjobalert(json['country'],json['state'],json['city']);
+          	 }
+               
+               
+               
+               $("#countryjobalert").on('change', function (e) {
+               	   getStatesjobalert();
+               });
 
-       $("#statejobalert").on('change', function (e) {
-       	   getCitiesjobalert();
-       });
+               $("#statejobalert").on('change', function (e) {
+               	   getCitiesjobalert();
+               });
+         }
+	 });
+	
+	 
 }
 
 
 </script>
 
-<script>
-function saveAlert(){
-	if ($('#create_alert_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
-		var frm = $('#create_alert_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-		//It will escape all the special characters
-	    var jsonData = encodeURIComponent(con);
 
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-					success : function(result) {
-							location.replace(sourceleadUrl+"/openRequirementsRedirect");
-					},
-				});
-		return true;
-	 }else{ 
-			return false;
-	 } 
-}	 
-$('body').on('blur', '#create_alert_form', function() {
-	$("#create_alert_form").showHelpOnFocus();
-	$("#create_alert_form").validateOnBlur(false, validationSettings);  
-});
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#create_alert_form', function(e){
+        	  
+        	 
+        	  if ($(this).validate(false, validationSettings)){
+        		
+        		e.preventDefault();
+        		var sourceleadUrl = '${sourceleadUrl}';
+        		var frm = $('#create_alert_form').serializeFormJSON();
+        		var con = JSON.stringify(frm);
+        		con = con.replace(/[{}]/g, ""); 
+        		//It will escape all the special characters
+        	    var jsonData = encodeURIComponent(con);
+
+        		$.ajax({
+        					type : "POST",
+        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        					success : function(result) {
+        							location.replace(sourceleadUrl+"/openRequirementsRedirect");
+        					},
+        				});
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+        
+         $('body').on('blur', '#create_alert_form', function() {
+        		$("#create_alert_form").showHelpOnFocus();
+        		$("#create_alert_form").validateOnBlur(false, validationSettings);  
+        	});
+         
+         
+     
+	</script>
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
 </script>
+
+
 <script>
 var validationSettings = {
         errorMessagePosition : 'element',
@@ -1915,6 +2115,7 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
      }; 
 </script>
+
 <script>
 ///////////////////// Back To Top 
     $(window).scroll(function() {
@@ -1929,8 +2130,9 @@ var validationSettings = {
         return false;
     });
 </script>
+
 <script type="text/javascript">
-function getAllCountriesJObalert(){
+function getAllCountriesJObalert(country){
 	$.ajax({
     	type: "POST",
     	dataType: "json",
@@ -1941,12 +2143,19 @@ function getAllCountriesJObalert(){
         	$('#countryjobalert').append('<option value="">---Select country---</option>');
             for(var i=0;i<json.length;i++){
             	
+            	if(country != 'undefined' && country != null && country != '' && json[i] == country){
+            		$('#countryjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+            	}else{
             		$('#countryjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
             	}
-            	
+            		
+           	}
             
             $('#countryjobalert').trigger("chosen:updated");
-            getStatesjobalert();
+            if(country == "undefined" || country == null){
+            	 getStatesjobalert();
+            }
+           
         },
         error: function(e){
         }
@@ -1956,8 +2165,16 @@ function getAllCountriesJObalert(){
 
 
 <script>
-function getStatesjobalert(){
-	var countryName = $("#countryjobalert").val();
+function getStatesjobalert(country,state){
+	
+	var countryName = '';
+	if(country != null && country != '' && country != 'undefined'){
+		countryName = country;
+	}else{
+	   countryName = $("#countryjobalert").val();
+	}
+	
+	
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
@@ -1968,7 +2185,13 @@ function getStatesjobalert(){
 	        	$('#statejobalert').empty();
 	        	$('#statejobalert').append('<option value="">---Select State---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#statejobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	if(state != null && state != '' && state != 'undefined' && json[i] == state){
+	            		$('#statejobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}else{
+	            		$('#statejobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
+	            	
+	            	
 	            }
 	            $('#statejobalert').trigger("chosen:updated");
 	            
@@ -1992,9 +2215,22 @@ function getStatesjobalert(){
 
 
 <script>
-function getCitiesjobalert(){
-	var countryName = $("#countryjobalert").val();
-	var stateName = $("#statejobalert").val();
+function getCitiesjobalert(country,state,city){
+	
+	var countryName = '';
+	var stateName = '';
+	
+	if(country != null && country != '' && country != 'undefined'){
+		countryName = country;
+	}else{
+	   countryName = $("#countryjobalert").val();
+	}
+	
+	if(state != null && state != '' && state != 'undefined'){
+		stateName = state;
+	}else{
+		stateName = $("#statejobalert").val();
+	}
 	
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
@@ -2006,7 +2242,14 @@ function getCitiesjobalert(){
 	        	$('#cityjobalert').empty();
 	        	$('#cityjobalert').append('<option value="">---Select City---</option>');
 	            for(var i=0;i<json.length;i++){
-	            	$('#cityjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	
+	            	if(city != null && city != '' && state != 'undefined' && json[i] == city){
+	            		$('#cityjobalert').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
+	            	}else{
+	            		$('#cityjobalert').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            	}
+	            	
+	            	
 	            }
 	            $('#cityjobalert').trigger("chosen:updated");
 	        },
@@ -2020,6 +2263,60 @@ function getCitiesjobalert(){
 	}
 }
 </script>
+
+<script>
+function getRate(){
+	var rate = document.getElementById("currentRate").value;
+	if(rate != 'undefined' && rate !=  null && rate != ''){
+		$("#rateType").removeAttr("data-validation-optional");
+		$("#rateType").attr("data-validation", "required");
+	}else{
+		$("#rateType").removeAttr("data-validation");
+		$("#rateType").attr("data-validation-optional", "true");
+	}
+}
+</script>
+
+<script>
+function validateAlertUserEmail(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(email != null && email != ''){
+		$("#alert_button").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'>You can configure maximum 5 job alerts</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg','You can configure maximum 5 job alerts'); 
+					     } 
+					     
+				       	else{
+				       		 $("#alert_button").removeAttr("disabled");
+							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#alert_button" ).removeAttr("style");
+							 $( "#alert_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		});
+	}
+}
+
+</script>
+
+
 <script src="resources/js/formvalidator.js"></script>
 
 <jsp:include page="../socialinviterscripts.jsp" />

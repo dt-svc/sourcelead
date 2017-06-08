@@ -144,6 +144,13 @@ public class SecurityConfig  {
     			.antMatchers("/countryAutoComplete").permitAll() 
     			.antMatchers("/getStatesByCountry").permitAll()
     			.antMatchers("/getCitiesByStateAndCountry").permitAll()
+    			.antMatchers("/saveProposeTime").permitAll()
+    			.antMatchers("/jobAlertRequirementSummary").permitAll()
+    			.antMatchers("/getJobDetailsForJobAlert").permitAll()
+    			.antMatchers("/storeJobAlert").permitAll()
+    			.antMatchers("/validateAlertUserEmail").permitAll()
+    			
+    			
     			
     			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 
     			.antMatchers("/**").fullyAuthenticated()

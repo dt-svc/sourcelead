@@ -626,6 +626,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 if(submissionStatus.equalsIgnoreCase("SHORTLISTED")){
 			 submissionStages = "and (rs.submissionStatus = 'SHORTLIST')";
 		 }
+		 if(submissionStatus.equalsIgnoreCase("BACKOUT")){
+			 submissionStages = "and (rs.submissionStatus = 'BACKOUT')";
+		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("SUBMITTED")){
 			 submissionStages = "and (rs.submissionStatus = 'SUBMIT_TO_CLIENT')";

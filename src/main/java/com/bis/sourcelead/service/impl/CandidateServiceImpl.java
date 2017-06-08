@@ -7,10 +7,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+
+import javax.mail.internet.InternetAddress;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +31,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +45,9 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -49,12 +57,14 @@ import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
@@ -118,6 +128,15 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+    
+    @Autowired
+    EmailScenarioService emailScenarioService;
+    
+    @Autowired
+    EmailScenerioUtil emailScenerioUtil;
 	
 	/**
 	 * @author prasad k
@@ -328,11 +347,77 @@ public class CandidateServiceImpl implements CandidateService {
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
 		/*
+		 * this method is for inviting candidate to sourcelead
+		 */
+		if(jsonObj.has("email") && null != jsonObj.getString("email") && Constants.YES.equalsIgnoreCase(jsonObj.getString("email"))){
+			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+		}
+		
+		/*
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
 		saveOrUpdateCandidateElkDocument(savedCandidate);
 		return null;
 	}
+
+	private void inviteCandidateToSourceLead(User loginUser, Candidate candidate, OrgLocations orgLocations) throws Exception
+    {
+         StringBuilder sb = new StringBuilder();
+         EmailMessage emailMessage = new EmailMessage();
+         emailMessage.setFirstName(candidate.getFirstName());
+         if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){
+             emailMessage.setLastName(candidate.getLastName());
+         }else{
+             emailMessage.setLastName("");
+         }
+         emailMessage.setToEmail(candidate.getEmail());
+         emailMessage.setFromEmail(loginUser.getEmail());
+         if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){
+             emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+         }else{
+             emailMessage.setFromName(loginUser.getFirstName());
+         }
+         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+         emailMessage.setCreatedBy(loginUser.getUserCode());
+         emailMessage.setOrgLocationId(orgLocations.getId().longValue());
+        
+        //setting the class filed values
+         Map<String, String> globalVarsMap = new HashMap<String, String>();
+         globalVarsMap.put("loginUser", emailMessage.getFromName());
+         if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){
+             StringBuilder candisb = new StringBuilder();
+             globalVarsMap.put("candidate", candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+         }else{
+             globalVarsMap.put("candidate", candidate.getFirstName());
+         }
+        
+         globalVarsMap.put("loginOrg",orgLocations.getOrg().getOrgName());
+         StringBuilder loginBuilder = new StringBuilder();
+         globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
+        
+         //setting the Recipient information
+         //setting the Recipient information
+         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+        
+         //getting the current EmailScenario by EmailScenario unique name and entity type
+         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CANDIDATE_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+
+        
+         //covert subject,body and signature
+         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+         String url = sourceleadUrl;
+        
+         //construct HTML template using required data
+         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+         emailMessage.setSubject(subject);
+         emailMessage.setMessageBody(emailTemplate);
+        
+        //calling the sendEmail method of emailScenerioUtil
+         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+        
+    }
 
 	@Override
 	public Candidate addCandidate(Candidate candidate) throws Exception {
