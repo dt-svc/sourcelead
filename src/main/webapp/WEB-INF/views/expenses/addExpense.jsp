@@ -120,8 +120,8 @@ function validate_fileupload(fileName)
 		</div>
 	</div>
 </div>
-<div class="expensHead">
-	<a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addExpenseEntity" onclick="loadCategoryDiv();"><i class="fa fa-plus"></i>&nbsp; Row</a>
+<div class="expensHead" id="expenseAddRowId">
+	<a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addExpenseEntity" onclick="expensesDateCheck();"><i class="fa fa-plus"></i>&nbsp; Row</a>
 	<div class="clearfix"></div>
 </div>
 
@@ -327,4 +327,19 @@ function getClientBasedOnSelectedProject(){
 				});
 	}
 </script>
+
+<script>
+function expensesDateCheck(){
+	var startDate = document.getElementById("projectStartDateExpensesId").value;
+	var endDate = document.getElementById("projectEndDateExpensesId").value;
+	if(startDate != null && startDate != "" && startDate != 'undefined'){
+		loadCategoryDiv(startDate,endDate);
+	}else{
+		$("input#expenseAddRowId").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
+	}
+}
+
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />
