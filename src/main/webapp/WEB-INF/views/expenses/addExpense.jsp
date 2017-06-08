@@ -105,9 +105,9 @@ function validate_fileupload(fileName)
 				</div>               
 	            <div class="form-group">
 	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
-	              <div class="col-md-9">
+	              <div class="col-md-9" >
 						<div class="row">
-						  <div class="col-lg-6 evDaPa">
+						  <div class="col-lg-6 evDaPa" id="dateDiv">
 							  <input type="text" class="form-control calendar" data-validation="required" value="" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6">
@@ -179,7 +179,6 @@ function validate_fileupload(fileName)
 <script>
 	function saveAddExpensesData(status) {
 		$("#maxRecCount").val(recCount);
-		/* $("#addExpenseEntity").empty(); */
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
@@ -188,6 +187,7 @@ function validate_fileupload(fileName)
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+			window.location.replace(sourceleadUrl+'/expenses');
      		$.ajax({
        	        type : "POST",
         	    data: formData,
@@ -330,12 +330,17 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 function expensesDateCheck(){
+	$('#dateError').remove();
 	var startDate = document.getElementById("projectStartDateExpensesId").value;
 	var endDate = document.getElementById("projectEndDateExpensesId").value;
 	if(startDate != null && startDate != "" && startDate != 'undefined'){
-		loadCategoryDiv(startDate,endDate);
+		loadCategoryDiv(startDate,endDate,null);
 	}else{
-		$("input#expenseAddRowId").parent().after("<p class='jquery_form_error_message'> Enter your Valid Grade </p>");
+		$("#dateDiv").parent().after("<p id='dateError' class='jquery_form_error_message'> Project Start Date is mandatory </p>");
+		$('#addExpenseEntity').modal({
+		   backdrop: 'static',
+		   keyboard: false
+		});
 	}
 }
 

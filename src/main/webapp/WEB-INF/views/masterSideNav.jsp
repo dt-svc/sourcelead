@@ -251,7 +251,7 @@
 	                 <c:if test="${SourceLeadWeb_expensesTabCount == 2 && userTabs.tabName == 'My Expenses'}">
 	                   <li class="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval' ? 'side-nav-active' : ''}">
 														  
-							  <a href="#" class="expencesLi" title="Expenses">
+							  <a href="javascript:void(0)" class="expencesLi" title="Expenses">
 								<span><i class="fa fa-money"></i></span>
 							  <i class="subMenu">Expenses</i> <i class="fa fa-fw fa-caret-down"></i>
 							  </a>
