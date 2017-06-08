@@ -49,7 +49,6 @@ import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.SubmissionTemplateDao;
 import com.bis.sourcelead.elk.index.RequirementIndex;
-import com.bis.sourcelead.elk.index.helper.RequirementHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -70,6 +69,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
@@ -89,6 +89,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -186,6 +187,9 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private TeamMembersService teamMembersService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	/**
 	 * @author prasad k
@@ -299,8 +303,16 @@ public class RequirementServiceImpl implements RequirementService {
 			
 			if(jsonObj.has("closedDate") && !isNullOrEmpty(jsonObj.getString("closedDate")) && !"".equalsIgnoreCase(jsonObj.getString("closedDate"))){
 				try {
-					   SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-					   requirement.setClosedDate(sdf.parse(jsonObj.getString("closedDate")));
+					
+					Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+					Date startTime =  commonUtil.getDateFormat(jsonObj.getString("closedDate"));
+					String currentTimeStr = Constants.TZ_DF.format(startTime);  
+
+					String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+					requirement.setClosedDate(convertedDate);
+					
 					} catch (Exception e) {
 					  e.printStackTrace();
 					}
@@ -407,6 +419,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}else {
 				requirement.setIsClientJob("N");
 			}
+			
+			
+			
+			if(jsonObj.has("isreceivingApplicants") && jsonObj.getString("isreceivingApplicants").equalsIgnoreCase("Y") && StringUtils.isNotEmpty(jsonObj.getString("isreceivingApplicants"))){
+				requirement.setIsreceivingApplicants(jsonObj.getString("isreceivingApplicants"));
+		}else {
+			requirement.setIsreceivingApplicants("N");
+		}
+			
 		if(jsonObj.has("selectClient") && StringUtils.isNotEmpty(jsonObj.getString("selectClient")) &&  jsonObj.has("isClient") && jsonObj.getString("isClient").equalsIgnoreCase("Y")){
 		requirementClient = (jsonObj.getString("isClient"));
 		OrgRelations orgRelations = new OrgRelations();
@@ -3412,6 +3433,19 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
 			Long relationId) throws Exception {
 		return requirementDao.getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(parentreqIds, relationId);
+	}
+	
+	@Override
+	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId, Long relationId,String userRoleName,User user,String status) throws Exception
+	{
+		
+		return requirementDao.getAllClientJobsBasedonRelationId(locationId, relationId,userRoleName,user,status);
+	}
+	
+	@Override
+	public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception
+	{
+		return requirementDao.getAllClosedRequirementsByStartDateAndEndDate(startDateUTC, endDateUTC);
 	}
 	
 }

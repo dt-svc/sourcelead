@@ -27,10 +27,12 @@ public interface InvoiceDao{
 
 	Invoice getInvoicetBySelfJoinInvoiceId(Long parentInvoiceId) throws Exception;
 
-	List<Invoice> getInvoiceByOrgLocationId(Long orgLocationID)throws Exception;
+	List<Invoice> getInvoiceByOrgLocationId(Long orgLocationId, Date startDateUTC, Date endDateUTC, String invoiceTYpe)throws Exception;
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId,Long orgLocationId, String invoiceType);
 	
 	List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId, Long clientLocationId,Date startDateUTC, Date endDateUTC,String invoiceStatus, String paymentStatus, String invoiceType);
+
+	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC)throws Exception;
 
 }

@@ -369,6 +369,9 @@ function prepareRequirementData(data){
 				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
+			}else if(opt.requirementSubmissionStatus == "CLOSED"){
+				result = result +"<option disabled selected hidden>CLOSED</option>";
+
 			}
 			else if(opt.requirementSubmissionStatus == "CANCEL"){
 				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
@@ -1531,6 +1534,8 @@ function requirementPipeline(requirementId){
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="FILLEDCLOSED"  onclick="requirementList();"><label for="c11">Filled Closed<span id="filledClosedRequirementCount"></span></label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="UNFILLEDCLOSED"  onclick="requirementList();"><label for="c11">UnFilled Closed<span id="unFilledClosedRequirementCount"></span></label></li>
                				<li><input id="c11" type="checkbox"  name="requirementStatus"  type="checkbox" value ="REJECTED"  onclick="requirementList();"><label for="c11">Rejected<span id="rejectedRequirementCount"></span></label></li>
+               				<li><input id="c12" type="checkbox"  name="requirementStatus"  type="checkbox" value ="CLOSED"  onclick="requirementList();"><label for="c12">Closed<span id="closedRequirementCount"></span></label></li>
+               				
 		              </ul>
 		            </div>
           </li>

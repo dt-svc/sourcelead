@@ -48,7 +48,7 @@ public interface ContractsTemplateService {
 
 	List<Contracts> getListOfContractsEnvId();
 	
-	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
+	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId, Long contractId);
 
 	Contracts saveExistigContract(JSONObject jsonObj, MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception;
 
