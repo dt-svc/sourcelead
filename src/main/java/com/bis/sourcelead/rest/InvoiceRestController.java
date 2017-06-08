@@ -1400,7 +1400,7 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getBillingReportByFrequency", method = RequestMethod.GET)
 	@ResponseBody
 	public String getBillingReportByFrequency(@RequestParam(value = "billingReportType", required = false) String billingReportType,
-			@RequestParam(value = "invoiceTYpe", required = false) String invoiceTYpe,HttpServletRequest request, HttpServletResponse response) throws Exception
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		long startTime = System.currentTimeMillis();
 		String resultJson = "";
@@ -1475,7 +1475,7 @@ public class InvoiceRestController {
 		float recievableAmount = 0;
 		float payableAmount = 0;
 		float netAmount = 0;
-		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId(),startDateUTC,endDateUTC,invoiceTYpe);
+		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId(),startDateUTC,endDateUTC,invoiceType);
 		if (null != invoiceList && invoiceList.size() > 0) {
 			for (Invoice invoice : invoiceList) {
 				if (Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())) {

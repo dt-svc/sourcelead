@@ -213,7 +213,7 @@
 <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu">
             <li class="current"><a href="#tab-1">Tab 1</a></li>
-            <li><a href="#tab-2">Tab 2</a></li>
+            <li onclick="payableTab();"><a href="#tab-2">Tab 2</a></li>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs">
@@ -777,17 +777,18 @@ function getCustomReports(){
 </script>
 
 <script>
-function getBillingRportType(){
+function payableTab(){
+	alert("Hi");
 }
 </script>
 
 <script>
-function getBillingReports(invoiceTYpe){
+function getBillingReports(invoiceType){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var billingReportType = $("#billingReportType").val();
 		$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceTYpe="+invoiceTYpe, 
+	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType, 
 	         success: function(data) {
 	        	 var json = JSON.parse(data);
 	        	 
