@@ -1,6 +1,9 @@
 package com.bis.sourcelead.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,14 +18,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ProposeTime;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * Handles requests for the Requirement Interview.
@@ -47,6 +56,12 @@ public class RequirementInterviewController {
 
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	ProposeTimeService proposeTimeService;
+	
+	@Autowired
+	private TimeZoneService timeZoneService;
 	
 	@RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  ModelAndView acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
@@ -89,11 +104,41 @@ public class RequirementInterviewController {
 					 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 				 }
 				 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
-					
+				
+				List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
+				for(ProposeTime pst:proposeTime){
+					if(null != pst.getProposeDate()){
+						pst.setProposeDateStr(Constants.DMY.format(pst.getProposeDate()));	
+					}
+				}
+				model.addObject("proposeTime",proposeTime);
+				Timezone timezone = timeZoneService.getTimezone(requirementInterview.getSubmissionId().getOrgLocations().getTimezone().getId());
+				if(requirementInterview.getStartTime() != null){
+			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+					String convertedDateStr = DF_DMY.format(convertedDate);
+					model.addObject("interviewStartTimeStr",convertedDateStr);
+					 
+				}
+				
+				if(requirementInterview.getEndTime() != null){
+					DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getEndTime());  
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+					String convertedDateStr = DF_DMY.format(convertedDate);
+					model.addObject("interviewEndTimeStr",convertedDateStr);
+				}
+				
 				model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
 				model.addObject("interviewStatus",interviewStatus);
 				model.addObject("requirementInterviewId",requirementInterviewId);
 				model.addObject("requirementInterview",requirementInterview);
+				model.addObject("requirementInterviewDate",Constants.DMY.format(requirementInterview.getDateOfInterview()));
 				model.addObject("interviewEndTime",requirementInterview.getEndTimeStr());
 				model.addObject("interviewStartTime",requirementInterview.getStartTimeStr());
 				model.addObject("sourceleadUrl", sourceleadUrl);

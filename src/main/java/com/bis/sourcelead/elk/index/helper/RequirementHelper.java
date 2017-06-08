@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.omg.CosNaming.NamingContextPackage.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,11 @@ public class RequirementHelper {
 			requirementIndex.setReqCoolingOffPeriod(requirement.getReqCoolingOffPeriod());
 			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
+			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			
+			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
+				requirementIndex.setDescription(requirement.getDescription());
+			}
 			
 			if (null != requirement.getMaxRate() && !"".equals(requirement.getMaxRate())) {
 				requirementIndex.setMaxRate(Float.parseFloat(requirement.getMaxRate()));
@@ -84,12 +89,14 @@ public class RequirementHelper {
 			requirementIndex.setState(requirement.getState());
 			requirementIndex.setCity(requirement.getCity());
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy());
-			
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
-			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			 String reqclosedDate = dateFormat.format(requirement.getClosedDate());
-				requirementIndex.setClosedDate(reqclosedDate);
+
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if(null != requirement.getClosedDate()){
+				 String reqclosedDate = dateFormat.format(requirement.getClosedDate());
+				 requirementIndex.setClosedDate(reqclosedDate);
+			}
 			 String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
 			requirementIndex.setCreatedDate(reqcreatedDate);
 			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());

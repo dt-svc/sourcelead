@@ -20,6 +20,7 @@
 <jsp:include page="clientDocuments.jsp" />	
 <jsp:include page="clientSpocDocuments.jsp" />	
 <jsp:include page="submissionTemplateList.jsp" /> 
+<jsp:include page="requirementReleasedList.jsp" /> 
 
 <style type="text/css">
 clients_wrap {
@@ -957,8 +958,15 @@ function pagination(){
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
 		'</sec:authorize>';	
 		
+		
+		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
 		result = result + '<li><a href="#tab-4" onclick="clientSubmissionTemplate('+clientLocationId+');">Submission Templates</a></li>';	
+		'</sec:authorize>';
+		
+		//for client requirement tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
+		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Requirement List</a></li>';	
 		'</sec:authorize>';
 		
 		result = result + '<div class="clearfix"></div>'
@@ -980,6 +988,10 @@ function pagination(){
     	//for client submission template tab
 	   result = result + '<div id="tab-4" class="project_tabs_inn">';
 		result = result + '</div>';
+		
+		//for client requirement list
+		   result = result + '<div id="tab-5" class="project_tabs_inn">';
+			result = result + '</div>';
 
 
 		result = result + '</div>';

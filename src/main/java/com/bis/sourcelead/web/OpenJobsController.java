@@ -58,6 +58,10 @@ public class OpenJobsController {
 	 model.addObject("countryList",countriesList);
 	 List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 	 model.addObject("skillsList",skillsList);
+	 
+	 List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
+	 model.addObject("industryList", industryListWithoutId);
+	 
 	 model.addObject("sourceleadUrl", sourceleadUrl);
 	 model.addObject("openJobsTitle", openJobsTitle);
 	 model.addObject("openJobsLocation", openJobsLocation);

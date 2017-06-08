@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -14,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
@@ -21,6 +24,11 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -36,6 +44,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -46,6 +55,7 @@ import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -63,10 +73,12 @@ import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobSchedulerTestService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -223,7 +235,17 @@ public class EMailJobScheduler {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	@Autowired
+	JobAlertService jobAlertService;
+	
+	
+	protected boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
+	
+	
 	
 	//=============================================== EMPLOYEE TIME SHEETS MAILS STARTED==========================================
 	
@@ -2030,4 +2052,349 @@ public class EMailJobScheduler {
 //			 emailScenerioUtil.sendNotification(actionLink, null,owner, contracts.getOrgLocationId(), notificationScenario);
 		
 	}
+	
+	
+	
+	@Scheduled(cron = "0 45 23 1/1 * ?")
+	public void runJobSchedulerByForClosedRequirementsDaily() {
+		logger.info("******************  Close Jobs  Every Day ! **********");
+		
+		try {
+			DateTime zoned = new DateTime();
+	        DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+	        DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+	        DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        
+	        // to fire remainder one week before
+	        String startDate = outputFormatter1.print(zoned);
+	        String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
+	        Date startDateUTC = ts.parse(startDateString);
+	        String endDate = outputFormatter.print(zoned);
+	        String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
+	        Date endDateUTC = ts.parse(endDateString);
+	        
+	        List<Requirement> requirementsList = requirementService.getAllClosedRequirementsByStartDateAndEndDate(startDateUTC, endDateUTC);
+			
+			 if(null != requirementsList && requirementsList.size() > 0){
+		        	for(Requirement requirement : requirementsList){
+		        		requirement.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionStatus());
+		        		requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.CLOSED);
+		        		requirementService.addRequirement(requirement);
+		            }
+		        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    }
+	
+	
+	@Scheduled(cron = "0 30 18 1/1 * ?")
+	public void runDialyjobAlerts() {
+		logger.info("******************  Jobs Alerts  Every Day ! **********");
+		try {
+			List<JobAlert> jobAlertsList = jobAlertService.getConfiruredJobsAlertsList(Constants.JOB_ALERT_DURATION_DIALY);
+			getJobsList(jobAlertsList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    }
+	
+	@Scheduled(cron = "0 30 18 ? * MON")
+	public void runWeeklyjobAlerts() {
+		logger.info("******************  Jobs Alerts  Weekly ! **********");
+		try {
+			List<JobAlert> jobAlertsList = jobAlertService.getConfiruredJobsAlertsList(Constants.JOB_ALERT_DURATION_WEEKLY);
+			getJobsList(jobAlertsList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    }
+	
+	@Scheduled(cron = "0 30 18 1 1/1 ?")
+	public void runMonthlyjobAlerts() {
+		logger.info("******************  Jobs Alerts  Monthly ! **********");
+		try {
+			List<JobAlert> jobAlertsList = jobAlertService.getConfiruredJobsAlertsList(Constants.JOB_ALERT_DURATION_MONTHLY);
+			getJobsList(jobAlertsList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    }
+	
+	
+	private void getJobsList(List<JobAlert> jobAlertsList){
+		
+		try{
+			if(null != jobAlertsList && jobAlertsList.size() > 0){
+				for(JobAlert jobAlert : jobAlertsList){
+					List<RequirementIndex> requirementList = new ArrayList<RequirementIndex>();
+					 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+					 
+					 BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();
+				     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "NEW"));
+				     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "OPEN"));
+				     anyStatusBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementStatus", "APPROVED"));
+					 boolQueryBuilder.must(anyStatusBoolQueryBuilder);
+					 
+					 BoolQueryBuilder anyReleaseBoolQueryBuilder = QueryBuilders.boolQuery();
+					 anyReleaseBoolQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
+					 anyReleaseBoolQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+					 boolQueryBuilder.must(anyReleaseBoolQueryBuilder);
+					 
+					 
+					 if(!isNullOrEmpty(jobAlert.getCity())){
+						 boolQueryBuilder.must(QueryBuilders.matchQuery("city", jobAlert.getCity()));
+					 }
+					 
+					 if(!isNullOrEmpty(jobAlert.getExperience())){
+						 boolQueryBuilder.must(QueryBuilders.rangeQuery("maxExperience").gte(0).lte(new Integer(jobAlert.getExperience())));
+					 }
+					 
+					 if(!isNullOrEmpty(jobAlert.getRate())){
+						 boolQueryBuilder.must(QueryBuilders.matchQuery("currentRateCurrency", jobAlert.getRateCurrency()));
+						 boolQueryBuilder.must(QueryBuilders.matchQuery("rateType", jobAlert.getRateType()));
+						 boolQueryBuilder.must(QueryBuilders.rangeQuery("maxRate").gte(0).lte(new Integer(jobAlert.getRate())));
+					 }
+					 
+					 if(!isNullOrEmpty(jobAlert.getIndustryName())){
+						 boolQueryBuilder.must(QueryBuilders.matchQuery("industryName", jobAlert.getIndustryName().trim()));
+					 }
+					 
+					 if(!isNullOrEmpty(jobAlert.getSkillsName())){
+						 
+						 ArrayList<String> skillsOrKeyWordList = null;
+						 skillsOrKeyWordList = new ArrayList<String>(Arrays.asList(jobAlert.getSkillsName().split(",")));
+						 if(skillsOrKeyWordList != null && !skillsOrKeyWordList.isEmpty()){
+							 BoolQueryBuilder anySkillOrKeyWordBoolQueryBuilder = QueryBuilders.boolQuery();
+							 
+							 for(String keywd : skillsOrKeyWordList){
+								 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+								ArrayList<MatchQueryBuilder> matchQueryBuilderList = getMatchQueryBuilderList(keywd);
+								if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
+									for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
+										anyBoolSubQueryBuilder.should(matchQueryBuilder);
+									}
+									anySkillOrKeyWordBoolQueryBuilder.should(anyBoolSubQueryBuilder);
+								}
+							}
+							 boolQueryBuilder.must(anySkillOrKeyWordBoolQueryBuilder);
+						 }
+						 
+					 }
+					 
+					 SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0, Constants.MAX_RESULTS_TWENTY,boolQueryBuilder).getHits();
+
+			 	     if(null != searchHits && searchHits.length >0){
+			 	    	ObjectMapper mapper = new ObjectMapper();
+			 	    	for (SearchHit hit : searchHits) {
+			 	    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
+			 	    	    RequirementIndex requirementIndex = mapper.readValue(json.toString(), RequirementIndex.class);
+			 	    	    requirementIndex.setJobAlertTitle(jobAlert.getAlertTitle());
+			 	    	    requirementList.add(requirementIndex);
+			 	    	}
+			 	    	
+			 	    	sendJobAlertEmail(jobAlert,requirementList);
+			 	     }
+					 
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	 private ArrayList<MatchQueryBuilder> getMatchQueryBuilderList(String keywd){
+		   
+		   ArrayList<MatchQueryBuilder> matchQueryBuilderList = new ArrayList<MatchQueryBuilder>();
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("jobTitle", keywd));
+		    matchQueryBuilderList.add(QueryBuilders.matchQuery("skills", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("country", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("city", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("state", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("education", keywd));
+			
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobType", keywd));
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("jobId", keywd));
+			
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("industryName", keywd));
+			
+			matchQueryBuilderList.add(QueryBuilders.matchQuery("description", keywd));
+			
+			
+			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(matcher.find()){
+				Float expYears = Float.valueOf(matcher.group());
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", expYears));
+				matchQueryBuilderList.add(QueryBuilders.matchPhraseQuery("rate", expYears));
+			}
+
+				
+			return matchQueryBuilderList; 
+	 }
+	 
+	 
+	 private void sendJobAlertEmail(JobAlert jobAlert,List<RequirementIndex> requirementList) throws Exception{
+		 
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String alertUserName = null;
+		 
+		 if(null != jobAlert.getUserId()){
+			 if(!isNullOrEmpty(jobAlert.getUserId().getLastName())){
+				 alertUserName = sb.append(jobAlert.getUserId().getFirstName()).append(" ").append(jobAlert.getUserId().getLastName()).toString();
+			 }else{
+				 alertUserName = sb.append(jobAlert.getUserId().getFirstName()).toString();
+			 } 
+		 }else{
+			 alertUserName = "Candidate";
+		 }
+		 
+		 
+		 emailMessage.setToEmail(jobAlert.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("alertJobsCount", String.valueOf(requirementList.size()));
+		 globalVarsMap.put("alertTitle", jobAlert.getAlertTitle());
+		 globalVarsMap.put("alertUserName", alertUserName);
+		 
+		 String jobAlertsTable = getJobAlertsTable(requirementList);
+		 
+		 globalVarsMap.put("alertJobs", jobAlertsTable);
+		 
+		
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.JOB_ALERTS,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		
+	 }
+	 
+	 
+	 
+	 private String getJobAlertsTable(List<RequirementIndex> requirementList) throws Exception{
+		 String tempHTML = null;
+		 
+			 
+			 tempHTML = "<table align='center' style='border-spacing:0;font-family:Arial, sans-serif;color:#333333;Margin:0 auto;width:100%; overflow-x:auto; max-width:800px;border-collapse:collapse; border:1px solid #ddd;' >";
+			 tempHTML = tempHTML+"<tbody>";
+			 tempHTML = tempHTML+"<tr style='border:0;border-collapse:collapse;'>";
+			 tempHTML = tempHTML+"<td style='padding-top:10px;padding-bottom:0px;padding-right:10px;padding-left:10px;background-color:#ffffff;'>";
+			 tempHTML = tempHTML+"<table width='100%' style='border-spacing:0;font-family:sans-serif;color:#333333'>";
+			 tempHTML = tempHTML+"<tbody>";
+			
+			 int i = 1;
+			 
+			 for(RequirementIndex requirementIndex : requirementList){
+				 
+					 if(i <= 10){
+						 
+						 StringBuilder jobTitle = new StringBuilder();
+						 if(!isNullOrEmpty(requirementIndex.getJobId())){
+							 jobTitle = jobTitle.append(requirementIndex.getJobId()).append("-").append(requirementIndex.getJobTitle());
+						 }else{
+							 jobTitle = jobTitle.append(requirementIndex.getJobTitle());
+						 }
+						 
+						 StringBuilder experience = new StringBuilder();
+						 
+						 if(!isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+							 experience = experience.append("(").append(requirementIndex.getMinExperience()).append("-").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
+						 }
+						 else if(!isNullOrEmpty(requirementIndex.getMinExperience()) && isNullOrEmpty(requirementIndex.getMaxExperience())){
+							 experience = experience.append("(").append(requirementIndex.getMinExperience()).append(" Years").append(")");
+						 }
+						 else if(isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+							 experience = experience.append("(").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
+						 }
+						 
+						 StringBuilder location = new StringBuilder();
+						 if(!isNullOrEmpty(requirementIndex.getCity())){
+							 location = location.append(requirementIndex.getCity());
+						 }
+						 
+						 StringBuilder jobSkills = new StringBuilder();
+						 String skills = null;
+						 if(null != requirementIndex.getSkills()){
+							 String[] skillsList = requirementIndex.getSkills();
+							 for(String skill : skillsList){
+								 jobSkills = jobSkills.append(skill).append(", ");
+							 }
+							 
+							 jobSkills.deleteCharAt(jobSkills.length()-2) ;
+							 skills = jobSkills.toString();
+						 }else{
+							 skills = "----";
+						 }
+						 
+						 
+						 tempHTML = tempHTML+"<tr>";
+						 tempHTML = tempHTML+"<td style='width:100%;padding:0px 0px 10px 0px;text-align:left;border-bottom:1px solid #ddd; line-height: 18px;'>";
+						 tempHTML = tempHTML+"<p style='Margin:0;font-size:14px;Margin-bottom:2px;color:#1976d2;padding:0;text-decoration:none;''>";
+						 tempHTML = tempHTML+"<a style='text-decoration:none;' href='"+sourceleadUrl+"/"+"jobAlertRequirementSummary?requirementUUID="+requirementIndex.getRequirementUUID()+"'> "+jobTitle.toString()+"  "+experience.toString()+" </a>";
+						 tempHTML = tempHTML+"</p>";
+						 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;padding:0;'>"+requirementIndex.getPostedOrg()+" </p>";
+						 tempHTML = tempHTML+"<p style='Margin:0;font-size:13px;Margin-bottom:1px;color:#757575;padding:0;'> "+location.toString()+" </p>";
+						 tempHTML = tempHTML+"<p style='Margin:0;Margin-bottom:0px;color:#757575;font-size:13px;padding:0;'>";
+						 tempHTML = tempHTML+"<b>Key skills:</b> "+skills+" </p>";
+						 tempHTML = tempHTML+"</td>";
+						 tempHTML = tempHTML+"</tr>";
+				 }
+					 i++;
+			 }
+				
+			 
+			 tempHTML = tempHTML+"</tbody>";
+			 tempHTML = tempHTML+"</table>";
+			 tempHTML = tempHTML+"</td>";
+			 tempHTML = tempHTML+"</tr>";;
+			 tempHTML = tempHTML+"<tr style='background-color:#ffffff;min-height:32px;'>";
+			 tempHTML = tempHTML+"<td style='padding-top:15px;padding-bottom:15px;padding-right:10px;padding-left:10px;'>";
+			 tempHTML = tempHTML+"<table width='100%' style='border-spacing:0;font-family:sans-serif;color:#ffffff;'>";
+			 tempHTML = tempHTML+"<tbody>";
+			 tempHTML = tempHTML+"<tr>";
+			 tempHTML = tempHTML+"<td style='cursor:pointer;padding-bottom:10px;padding-left:0;vertical-align:top;'>";
+			 
+			 if(requirementList.size() > 10){
+				 tempHTML = tempHTML+"<a style='color:#fff;text-decoration:none;font-size:15px!important;font-weight: 600; border: 1px solid #1565c0; padding: 5px 10px; background: #1e88e5;'>View all matching jobs</a> </td>";
+			 }
+			 
+			 tempHTML = tempHTML+"</tr>";
+			 tempHTML = tempHTML+"</tbody>";
+			 tempHTML = tempHTML+"</table>";
+			 tempHTML = tempHTML+"</td>";
+			 tempHTML = tempHTML+"</tr>";
+			 tempHTML = tempHTML+"</tbody>";
+			 tempHTML = tempHTML+"</table>";
+		 
+		 return tempHTML;
+	 }
+	
+	
 }
