@@ -179,7 +179,6 @@ function validate_fileupload(fileName)
 <script>
 	function saveAddExpensesData(status) {
 		$("#maxRecCount").val(recCount);
-		/* $("#addExpenseEntity").empty(); */
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
