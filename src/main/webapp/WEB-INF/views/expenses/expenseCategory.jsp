@@ -14,7 +14,7 @@
           <div class="pull-left">
             <h2>Expenses Category</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; Expenses Category</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Category</div>
         </section>
         
 		<!-- Timesheet -->
@@ -55,7 +55,6 @@ function addExpenseCategory(categoryId) {
 	result = result  +'          <form role="form"  id="expenseCategory_form" name="expenseCategory_form" method="post" > ';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
 	result = result  +'   ';
 	result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
 	result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
@@ -211,7 +210,7 @@ function expenseCategoryList(){
 	                    	 result = result +"<tr>";
 	                    	 
 	                    	    if(opt.expensesName != null && opt.expensesName !='' && opt.expensesName !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>"+opt.expensesName+"</span></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm'><span title='"+opt.expensesName+"'>"+opt.expensesName+"</span></div></td>";
 	                    	     }else{
 	                    	     result = result +"<td><div class='tbldata-dotdot-sm'><span title=''>---</span></div></td>"; 
 	                    	     }
@@ -229,7 +228,7 @@ function expenseCategoryList(){
 	                    	    }
 	                    	    
 	                    	    if(opt.description != null && opt.description !='' && opt.description !='undefined'){
-	                    		 result = result +"<td><div><span>"+opt.description+"</span></div></td>"; 
+	                    		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>"; 
 	                    	    }else{
 	                    	     result = result +"<td><div><span>---</span></div></td>"; 
 	                    	    }
@@ -368,6 +367,7 @@ function getTaxRewardType(e){
 	 $('#taxPercentageReward').find('p.jquery_form_error_message').remove();
 	 
 	 if(rewardType == 'flat'){
+		 
 			document.getElementById("taxFlatReward").style.display="";
 			document.getElementById("taxPercentageReward").style.display="none";
 			
@@ -381,6 +381,7 @@ function getTaxRewardType(e){
 		} 
 	 
 	 if(rewardType == 'percentage'){
+		 
 		document.getElementById("taxPercentageReward").style.display="";
 		document.getElementById("taxFlatReward").style.display="none";
 		
@@ -390,11 +391,9 @@ function getTaxRewardType(e){
 		$('#taxPercentageRewardValue').removeAttr('data-validation-optional');
 	    $('#taxFlatRewardValue').removeAttr('data-validation');
 	    $('#taxFlatRewardValue').attr("data-validation-optional","true"); 
-	    	
 	    
 	} 
 	
-	 
 }
 </script>
 
@@ -466,8 +465,6 @@ function reActiveExpenseCategory(categoryId){
 	  
 }
 </script> 
-
-
  
  <script type="text/javascript">
  function editExpenseCategory(categoryId) {
@@ -478,6 +475,7 @@ function reActiveExpenseCategory(categoryId){
 						var json = JSON.parse(data);
 						var expensesName = "";
 						var allowedAmount = "";
+						var amountType =""
 						var description = "";
 						
 						if(json.expensesName !=null && json.expensesName !='undefined' && json.expensesName !=''){
@@ -486,6 +484,10 @@ function reActiveExpenseCategory(categoryId){
 						
 						if(json.allowedAmount !=null && json.allowedAmount !='undefined' && json.allowedAmount !=''){
 							allowedAmount = json.allowedAmount;
+						}
+						
+						if(json.amountType !=null && json.amountType !='undefined' && json.amountType !=''){
+							amountType = json.amountType;
 						}
 						
 						if(json.description !=null && json.description !='undefined' && json.description !=''){
@@ -509,10 +511,6 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'   ';
 								result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
 								result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
-							 	/* 					       <c:forEach var="expCat" items="${lookUpExpCatList}">
-							    result = result  +'	            <option value="" disabled selected></option>';										 
-								result = result + ' 			<option value="${expCat.name}">${expCat.name}</option>';
-								                	       </c:forEach> */   
 								                	       for (var j = 0; j < json.expenseCategoryList.length; j++) {
 																var epxCat = json.expenseCategoryList[j];
 																   if(epxCat.name == expensesName){
@@ -522,7 +520,6 @@ function reActiveExpenseCategory(categoryId){
 												   		 	      } 
 															}
 								                	       
-								                	       
 							    result = result + '		</select>';
 							    
 								result = result  +'</div>';
@@ -530,28 +527,56 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'<div class="clearfix mb10" id="errTax">';
 								result = result  +'<div class="col-md-5" >';
 								result = result  +'<div class="btn-group btn_Block pull-left">';
-								result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
-								result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+								
+								if(json.amountType == 'Flat'){
+								result = result  +' <button type="button" class="btn btn-sm btn-primary active" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+								
+								result = result  +'<button type="button" class="btn btn-sm btn-primary " id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+								}
+								if(json.amountType == 'Percentage'){
+									result = result  +' <button type="button" class="btn btn-sm btn-primary " id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+									
+									result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+									}
 								result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>';
 								result = result  +' </div>';
 								result = result  +'</div>';
 								
+								if(json.amountType == 'Percentage' && json.allowedAmount != null){
 								result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
 								result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-								result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" value="'+allowedAmount+'"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
+								result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward"   onblur="getTaxPercentageValue()" placeholder="Percentage">';
 								result = result  +' <i class="fa fa-percent"></i>'; 
 								result = result  +' </div>';
 								result = result  +' </div>';
 								
-								
 								result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
 								result = result  +'<div class="row flat">';
 								result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
-								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">';
+								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" name="taxFlatReward" placeholder="Flat">';
 								result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 								result = result  +' </div>';
 								result = result  +' </div>';
 								result = result  +' </div>';
+								}
+								
+								if(json.amountType == 'Flat' && json.allowedAmount != null){
+									result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
+									result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
+									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward"   onblur="getTaxPercentageValue()" placeholder="Percentage">';
+									result = result  +' <i class="fa fa-percent"></i>'; 
+									result = result  +' </div>';
+									result = result  +' </div>';
+									
+									result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  ">';
+									result = result  +'<div class="row flat">';
+									result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
+									result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" name="taxFlatReward" placeholder="Flat">';
+									result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
+									result = result  +' </div>';
+									result = result  +' </div>';
+									result = result  +' </div>';
+									}
 								result = result  +' </div>';
 								result = result  +' </div>';
 								
@@ -582,7 +607,7 @@ function reActiveExpenseCategory(categoryId){
 			 e.stopPropagation();
 		 });
 		
-		 <%-- Eductions and Skills Autocomplete Scripts Starts Here --%>
+		 <%-- Expense Category Autocomplete Scripts Starts Here --%>
 		 var config = {
 				  '.chosen-select'           : {},
 				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -597,7 +622,7 @@ function reActiveExpenseCategory(categoryId){
 					var $this = $(this);
 					$this.next().css({'width': '100%'});
 					})
-			<%-- Eductions and Skills Autocomplete Scripts Ends Here --%>
+			<%--  Expense Category Autocomplete Scripts Ends Here --%>
 			
 	}
 						}

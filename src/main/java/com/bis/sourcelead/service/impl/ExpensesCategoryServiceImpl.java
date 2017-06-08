@@ -45,8 +45,8 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 		
 	       		
 	       	ExpensesCategory expensesCategory =null;
-	 		if(jsonObject.has("candidateId") && jsonObject.getString("candidateId") != null && !"".equals(jsonObject.getString("candidateId"))){
-	 			expensesCategory = expensesCategoryDao.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long.parseLong(jsonObject.getString("candidateId")));
+	 		if(jsonObject.has("categoryId") && jsonObject.getString("categoryId") != null && !"".equals(jsonObject.getString("categoryId"))){
+	 			expensesCategory = expensesCategoryDao.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long.parseLong(jsonObject.getString("categoryId")));
 	 		}else{	
 	 			expensesCategory = new ExpensesCategory();
 	 			expensesCategory.setCreatedDate(commonUtil.currentDate());
