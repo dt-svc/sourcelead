@@ -71,21 +71,17 @@ function addExpenseCategory(categoryId) {
 	result = result  +'<div class="clearfix mb10" id="errTax">';
 	result = result  +'<div class="col-md-5" >';
 	result = result  +'<div class="btn-group btn_Block pull-left">';
-	result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+	
 	result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+	result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
 	result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>';
 	result = result  +' </div>';
 	result = result  +'</div>';
 	
-	result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
-	result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-	result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" onblur="getTaxPercentageValue()" placeholder="Percentage">';
-	result = result  +' <i class="fa fa-percent"></i>'; 
-	result = result  +' </div>';
-	result = result  +' </div>';
 	
 	
-	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
+	
+	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  >';
 	result = result  +'<div class="row flat">';
 	result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
 	result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" placeholder="Flat">';
@@ -93,6 +89,15 @@ function addExpenseCategory(categoryId) {
 	result = result  +' </div>';
 	result = result  +' </div>';
 	result = result  +' </div>';
+	
+	
+	result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
+	result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
+	result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" onblur="getTaxPercentageValue()" placeholder="Percentage">';
+	result = result  +' <i class="fa fa-percent"></i>'; 
+	result = result  +' </div>';
+	result = result  +' </div>';
+	
 	result = result  +' </div>';
 	result = result  +' </div>';
 	
@@ -354,11 +359,27 @@ function getTaxRewardType(e){
 	var rewardType = e.value;
 	 $("#taxRewardType").val(rewardType);
 	 
-	 $("#taxPercentageRewardValue").val('');
-	 $("#taxFlatRewardValue").val('');
 	 
-	 $('#taxPercentageReward').find('p.jquery_form_error_message').remove();
+	 $("#taxFlatRewardValue").val('');
+	 $("#taxPercentageRewardValue").val('');
+	 
+	 
 	 $('#taxFlatReward').find('p.jquery_form_error_message').remove();
+	 $('#taxPercentageReward').find('p.jquery_form_error_message').remove();
+	 
+	 if(rewardType == 'flat'){
+			document.getElementById("taxFlatReward").style.display="";
+			document.getElementById("taxPercentageReward").style.display="none";
+			
+			document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
+			document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
+			$('#taxFlatRewardValue').attr("data-validation","required validate_float");
+			$('#taxFlatRewardValue').removeAttr('data-validation-optional');
+			$('#taxPercentageRewardValue').removeAttr('data-validation');
+			$('#taxPercentageRewardValue').attr("data-validation-optional","true"); 
+			
+		} 
+	 
 	 if(rewardType == 'percentage'){
 		document.getElementById("taxPercentageReward").style.display="";
 		document.getElementById("taxFlatReward").style.display="none";
@@ -373,18 +394,7 @@ function getTaxRewardType(e){
 	    
 	} 
 	
-	 if(rewardType == 'flat'){
-		document.getElementById("taxFlatReward").style.display="";
-		document.getElementById("taxPercentageReward").style.display="none";
-		
-		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
-		document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
-		$('#taxFlatRewardValue').attr("data-validation","required validate_float");
-		$('#taxFlatRewardValue').removeAttr('data-validation-optional');
-		$('#taxPercentageRewardValue').removeAttr('data-validation');
-		$('#taxPercentageRewardValue').attr("data-validation-optional","true"); 
-		
-	} 
+	 
 }
 </script>
 
