@@ -6,7 +6,25 @@
 
 
 <script>
-function loadCategoryDiv(projectStartDate,projectEndDate){
+function loadCategoryDiv(projectStartDate, projectEndDate, trId){
+	var categoryTypeVal = "";
+	var categoryDateVal = "";
+	var receiptIssuedByVal = "";
+	var paymentModeVal = "";
+	var expenseRateTypeVal = "";
+	var expenseAmountVal = "";
+	var entryDesVal = "";
+	
+	if(null != trId && 'undefined' != trId && '' != trId){
+		categoryTypeVal = $("#categoryType"+trId).val();
+		categoryDateVal = $("#categoryDate"+trId).val();
+		receiptIssuedByVal = $("#receiptIssuedBy"+trId).val();
+		paymentModeVal = $("#paymentMode"+trId).val();
+		expenseRateTypeVal = $("#expenseRateType"+trId).val();
+		expenseAmountVal = $("#expenseAmount"+trId).val();
+		entryDesVal = $("#entryDes"+trId).val();
+	}
+
 	var result = "";
 	result = result + '<div class="modal-dialog modal-lg">';
 	result = result + '	<div class="modal-content">';
@@ -25,7 +43,12 @@ function loadCategoryDiv(projectStartDate,projectEndDate){
 	result = result + '							<select class="chosen-select form-control" id="categoryType" name="categoryType" field-name="Category Type" data-validation="required">';
 	result = result + '								<option value="">Select Category Type</option>';				 							   
 												   <c:forEach var="expCat" items="${expensesCategoryList}">
+												   if("${expCat.id}" == categoryTypeVal){
+	result = result + ' 							   <option value="${expCat.id}" selected>${expCat.expensesName}</option>';
+												   }
+												   if("${expCat.id}" != categoryTypeVal){
 	result = result + ' 							   <option value="${expCat.id}">${expCat.expensesName}</option>';
+												   }
 						                	       </c:forEach>
 	result = result + '							</select>';
 	result = result + '						</div>';
@@ -34,14 +57,14 @@ function loadCategoryDiv(projectStartDate,projectEndDate){
 	result = result + '					<div class="form-group">';
 	result = result + '						<label class="col-md-4">Date<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '						<div class="col-md-8">';
-	result = result + '							<input type="text" class="form-control calendar" value="" name="categoryDate" id="categoryDate" placeholder="Date" field-name="Date" data-validation="required">';
+	result = result + '							<input type="text" class="form-control calendar" value="'+categoryDateVal+'" name="categoryDate" id="categoryDate" placeholder="Date" field-name="Date" data-validation="required">';
 	result = result + '						</div>';
 	result = result + '					</div>';
     
 	result = result + '					<div class="form-group">';
 	result = result + '						<label class="col-md-4">Receipt Issued by<span class="text-danger">&nbsp;*</span></label>';
 	result = result + '						<div class="col-md-8">';
-	result = result + '							<input type="text" class="form-control" name="receiptIssuedBy" id="receiptIssuedBy" value="" field-name="Receipt Issued By" data-validation="required">';
+	result = result + '							<input type="text" class="form-control" name="receiptIssuedBy" id="receiptIssuedBy" value="'+receiptIssuedByVal+'" field-name="Receipt Issued By" data-validation="required">';
 	result = result + '						</div>';
 	result = result + '					</div>';
     
@@ -50,11 +73,11 @@ function loadCategoryDiv(projectStartDate,projectEndDate){
 	result = result + '						<div class="col-md-8 dropdown-select">';
 	result = result + '							<select class="form-control" name="paymentMode" id="paymentMode" field-name="Payment Mode" data-validation="required">';
 	result = result + '								<option value="">Select Mode</option>';
-	result = result + '								<option value="Credit Card">Credit Card</option>';
-	result = result + '								<option value="Debit Card">Debit Card</option>';
-	result = result + '								<option value="Cash">Cash</option>';
-	result = result + '								<option value="Cheque">Cheque</option>';
-	result = result + '								<option value="e-Wallet">e-Wallet</option>';
+	result = result + '								<option '+ (paymentModeVal == "Credit Card" ? "selected" : '') +' value="Credit Card">Credit Card</option>';
+	result = result + '								<option '+ (paymentModeVal == "Debit Card" ? "selected" : '') +' value="Debit Card">Debit Card</option>';
+	result = result + '								<option '+ (paymentModeVal == "Cash" ? "selected" : '') +' value="Cash">Cash</option>';
+	result = result + '								<option '+ (paymentModeVal == "Cheque" ? "selected" : '') +' value="Cheque">Cheque</option>';
+	result = result + '								<option '+ (paymentModeVal == "e-Wallet" ? "selected" : '') +' value="e-Wallet">e-Wallet</option>';
 	result = result + '							</select>';
 	result = result + '						</div>';
 	result = result + '					</div>';
@@ -64,23 +87,35 @@ function loadCategoryDiv(projectStartDate,projectEndDate){
 	result = result + '						<div class="col-md-8">';
 	result = result + '						<div class="input-group er ratetype">';
 	result = result + '							<div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
-	result = result + '								<select class="selectpicker" id="expenseRateType" name="expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">';
-	result = result + '									<option ${currencyCode  == "INR" ? "selected" : ""}>INR</option>';
-	result = result + '									<option ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>';
-	result = result + '									<option ${currencyCode  == "USD" ? "selected" : ""}>USD</option>';
-	result = result + '									<option ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>';
-	result = result + '									<option ${currencyCode  == "AUD" ? "selected" : ""}>SGD</option>';
-	result = result + '									<option ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>';
-	result = result + '								</select>';
+	if(null != trId && 'undefined' != trId && '' != trId){
+		result = result + '								<select class="selectpicker" id="expenseRateType" name="expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">';
+		result = result + '									<option '+ (expenseRateTypeVal == "INR" ? "selected" : '')+' >INR</option>';
+		result = result + '									<option '+ (expenseRateTypeVal == "AUD" ? "selected" : '')+' >AUD</option>';
+		result = result + '									<option '+ (expenseRateTypeVal == "USD" ? "selected" : '')+' >USD</option>';
+		result = result + '									<option '+ (expenseRateTypeVal == "GBP" ? "selected" : '')+' >GBP</option>';
+		result = result + '									<option '+ (expenseRateTypeVal == "SGD" ? "selected" : '')+' >SGD</option>';
+		result = result + '									<option '+ (expenseRateTypeVal == "EUR" ? "selected" : '')+' >EUR</option>';
+		result = result + '								</select>';
+	}else{
+		result = result + '								<select class="selectpicker" id="expenseRateType" name="expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">';
+		result = result + '									<option ${currencyCode  == "INR" ? "selected" : ""}>INR</option>';
+		result = result + '									<option ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>';
+		result = result + '									<option ${currencyCode  == "USD" ? "selected" : ""}>USD</option>';
+		result = result + '									<option ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>';
+		result = result + '									<option ${currencyCode  == "AUD" ? "selected" : ""}>SGD</option>';
+		result = result + '									<option ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>';
+		result = result + '								</select>';
+	}
+	
 	result = result + '							</div>';
-	result = result + '							<input type="text" class="form-control"  name="expenseAmount" id="expenseAmount" value="" field-name="Amount" data-validation="required validate_int">';
+	result = result + '							<input type="text" class="form-control"  name="expenseAmount" id="expenseAmount" value="'+expenseAmountVal+'" field-name="Amount" data-validation="required validate_int">';
 	result = result + '						</div>';
 	result = result + '						</div>';
 	result = result + '					</div>';
 	result = result + '					<div class="form-group">';
 	result = result + '						<label class="col-md-4">Description</label>';
 	result = result + '						<div class="col-md-8">';
-	result = result + '							<textarea rows="2" class="form-control" name="entryDes" id="entryDes" placeholder="Description"></textarea>';
+	result = result + '							<textarea rows="2" class="form-control" name="entryDes" id="entryDes" placeholder="Description">'+entryDesVal+'</textarea>';
 	result = result + '						</div>';
 	result = result + '					</div>';
 	result = result + "                 <div id='attachmentSection' class='commentFile timesheet_week_comm ml'>"; 
@@ -104,7 +139,11 @@ function loadCategoryDiv(projectStartDate,projectEndDate){
     
 	result = result + '		<div class="modal-footer">';
 	result = result + '			<span class="col-md-4 jquery_form_error_message" id="exceedSpan"></span>';
-	result = result + '			<button type="button" class="btn btn-primary btn-sm" onclick="addEntity();">Add</button>';
+	if(null != trId && 'undefined' != trId && '' != trId){
+		result = result + '			<button type="button" class="btn btn-primary btn-sm" id="btnEntryUpdate" onclick="addEntity('+trId+');">Update</button>';
+	}else{
+		result = result + '			<button type="button" class="btn btn-primary btn-sm" id="btnEntryAdd" onclick="addEntity();">Add</button>';
+	}
 	result = result + '			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearValidations();">Close</button>';
 	result = result + '		</div>';
 	result = result + '	</div>';
@@ -212,7 +251,7 @@ function addAttachment(){
 
 <script>
 window.recCount = 1;
-function addEntity(){
+function addEntity(trId){
 	
 		var validationSettings = {
 			errorMessagePosition : 'element',
@@ -224,23 +263,32 @@ function addEntity(){
 	
 	
 	var entriesCount = $('#entriesTable >tbody >tr').length;
-	if(parseInt(entriesCount , 10) >= parseInt('5' , 10)){
+	if(parseInt(entriesCount , 10) >= parseInt('20' , 10)){
 		$("#exceedSpan").text("Your entries limit is exceed");
 		$(this).hide();
 	}else{
 		
 		if ($('#entity_form').validate(false, validationSettings)) {
+				if(null != trId && 'undefined' != trId && '' != trId){
+					$("#btnEntryUpdate").attr("disabled", true);
+					deleteEntityRec(trId);
+				}else{
+					$("#btnEntryAdd").attr("disabled", true);
+				}
 				var categoryType = $("#categoryType").val();
+		  		var categoryTypeName = $("#categoryType option[value='"+categoryType+"']").text();
 				var categoryDate = $("#categoryDate").val();
 				var receiptIssuedBy = $("#receiptIssuedBy").val();
 				var paymentMode = $("#paymentMode").val();
 				var expenseRateType = $("#expenseRateType").val();
 				var expenseAmount = $("#expenseAmount").val();
 				var descriptions = $("#entryDes").val();
+				var startDate = $("#projectStartDateExpensesId").val();
+				var endDate = $("#projectEndDateExpensesId").val();
 				var attcahmentMaxRowNumber=$("#attcahmentMaxRowNumber").val();
 				var result = "";
 				result = result + '<tr id="'+recCount+'">';
-				result = result + '<td><input type="hidden" name="categoryType'+recCount+'" id="categoryType'+recCount+'" value="2"><div>'+categoryType+'</div></td>';
+				result = result + '<td><input type="hidden" name="categoryType'+recCount+'" id="categoryType'+recCount+'" value="'+categoryType+'"><div>'+categoryTypeName+'</div></td>';
 				result = result + '<td><input type="hidden" name="categoryDate'+recCount+'" id="categoryDate'+recCount+'" value="'+categoryDate+'"><div>'+categoryDate+'</div></td>';
 				result = result + '<td><input type="hidden" name="receiptIssuedBy'+recCount+'" id="receiptIssuedBy'+recCount+'" value="'+receiptIssuedBy+'"><div>'+receiptIssuedBy+'</div></td>';
 				result = result + '<td><input type="hidden" name="expenseRateType'+recCount+'" id="expenseRateType'+recCount+'" value="'+expenseRateType+'"><div>'+expenseRateType+'</div></td>';
@@ -250,7 +298,7 @@ function addEntity(){
 				result = result + '<div  id="attachmentDiv'+recCount+'" >'; 
 				result = result + '</div></td>'; 
 				result = result + '<td><input type="hidden" class="tbldata-dotdot-me" name="entryDes'+recCount+'" id="entryDes'+recCount+'" value="'+descriptions+'"><div>'+descriptions+'</div></td>';
-				result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil-square-o"></i> <i class="glyphicon glyphicon-trash" onclick="deleteEntityRec('+recCount+');"></i></div></td>';
+				result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil-square-o" data-toggle="modal" data-target="#addExpenseEntity" onclick="loadCategoryDiv('+startDate+',\''+endDate+'\','+recCount+');"></i> <i class="glyphicon glyphicon-trash" onclick="deleteEntityRec('+recCount+');"></i></div></td>';
 				result = result + '</tr>';
 				$("#divBody").append(result);
 				for(var i=0 ;i<attcahmentMaxRowNumber;i++){
