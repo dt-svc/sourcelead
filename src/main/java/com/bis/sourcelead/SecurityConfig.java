@@ -144,6 +144,7 @@ public class SecurityConfig  {
     			.antMatchers("/countryAutoComplete").permitAll() 
     			.antMatchers("/getStatesByCountry").permitAll()
     			.antMatchers("/getCitiesByStateAndCountry").permitAll()
+    			.antMatchers("/saveProposeTime").permitAll()
     			.antMatchers("/jobAlertRequirementSummary").permitAll()
     			
     			

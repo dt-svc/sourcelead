@@ -70,6 +70,20 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 resultJson = commonUtil.toJSON(jobAlert);
 		 return resultJson;
 	 }
+	 
+	 
+	 @RequestMapping(value = "/deleteJobAlert", method = RequestMethod.POST)
+	 public String deleteJobAlert(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
+		 String resultJson;
+		 
+		 JobAlert jobAlert = jobAlertService.getJobAlertByUUID(jobAlertUUID);
+		 if(null != jobAlert){
+			 jobAlertService.deleteJobAlert(jobAlert);
+		 }
+	
+		 resultJson = commonUtil.toJSON(jobAlert);
+		 return resultJson;
+	 }
 		
 
 }

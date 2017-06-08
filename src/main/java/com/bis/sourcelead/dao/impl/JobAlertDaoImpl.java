@@ -113,4 +113,22 @@ public class JobAlertDaoImpl implements JobAlertDao{
 			return null;
 		}
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteJobAlert(JobAlert jobAlert) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (null != jobAlert) {
+				session.delete(jobAlert);
+			}
+			logger.debug("Deleting JobAlert");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"JobAlert"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
 }
