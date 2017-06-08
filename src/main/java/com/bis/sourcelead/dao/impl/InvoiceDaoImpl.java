@@ -262,5 +262,40 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		return clientInvoiceList;
 
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC) throws Exception
+	{
+		String subQuery = "";
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Map<String, Object> params = new HashMap<String,Object>();
+		if(null != orgLocationId){
+			params.put("orgLocationId", orgLocationId);
+		}
+		if(null != startDateUTC && null != endDateUTC){
+			params.put("startDateUTC", startDateUTC);
+			params.put("endDateUTC", endDateUTC);
+			subQuery = "and invoice.invoiceDate >= :startDateUTC and invoice.invoiceDate <= :endDateUTC";
+		}
+		String query = "from Invoice invoice  where invoice.orgLocation =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
+		
+		Query qry = session.createQuery(query);
+		for (String str : qry.getNamedParameters())
+        {
+			if("orgLocationId".equalsIgnoreCase(str)){
+				qry.setLong(str, (long) params.get("orgLocationId"));
+			}
+			if("startDateUTC".equalsIgnoreCase(str)){
+				qry.setParameter(str, (Date) params.get("startDateUTC"));
+			}
+			if("endDateUTC".equalsIgnoreCase(str)){
+				qry.setParameter(str, (Date) params.get("endDateUTC"));
+			}
+        }
+		return qry.setCacheable(true).list();
+	}
 	 
 }

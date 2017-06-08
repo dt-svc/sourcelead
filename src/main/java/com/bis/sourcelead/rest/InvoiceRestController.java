@@ -1475,9 +1475,10 @@ public class InvoiceRestController {
 		float recievableAmount = 0;
 		float payableAmount = 0;
 		float netAmount = 0;
+		List<Invoice> invoiceNetIncomeList = invoiceService.getInvoiceByOrgLocationIdNetIncome(orgLocation.getId(),startDateUTC,endDateUTC);
 		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgLocationId(orgLocation.getId(),startDateUTC,endDateUTC,invoiceType);
-		if (null != invoiceList && invoiceList.size() > 0) {
-			for (Invoice invoice : invoiceList) {
+		if (null != invoiceNetIncomeList && invoiceNetIncomeList.size() > 0) {
+			for (Invoice invoice : invoiceNetIncomeList) {
 				if (Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())) {
 					recievableAmount = recievableAmount + Float.parseFloat(invoice.getTotal());
 				}

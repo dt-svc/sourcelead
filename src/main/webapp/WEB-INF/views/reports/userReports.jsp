@@ -213,7 +213,7 @@
 <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu">
             <li class="current"><a href="#tab-1">Tab 1</a></li>
-            <li onclick="payableTab();"><a href="#tab-2">Tab 2</a></li>
+            <li onclick="payableTab('payables');"><a href="#tab-2">Tab 2</a></li>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs">
@@ -283,10 +283,10 @@
             </div>
 
 			<div id="tab-2" class="project_tabs_inn">
-			<div class="project_tabs_inn_head">
+			<!-- <div class="project_tabs_inn_head">
  				<a href="#">
-            <!--   <i class="glyphicon glyphicon-plus"></i>Add Two</a>  -->| 
-            <!--   <input class="vendorfild" type="text"><i class="fa fa-search"></i></div> -->
+              <i class="glyphicon glyphicon-plus"></i>Add Two</a> | 
+              <input class="vendorfild" type="text"><i class="fa fa-search"></i></div>
               <div class="require_wrap_table">
     	<table>
         	<thead>
@@ -346,7 +346,7 @@
         </table>
 	
 		</div>
-            </div>  
+            </div>  --> 
                                        
             
           </div>
@@ -777,8 +777,8 @@ function getCustomReports(){
 </script>
 
 <script>
-function payableTab(){
-	alert("Hi");
+function payableTab(invoiceType){
+	getPayableBillingReports(invoiceType);
 }
 </script>
 
@@ -836,10 +836,78 @@ function getBillingReports(invoiceType){
 
 </script>
 
+<script>
+function getPayableBillingReports(invoiceType){
+		var sourceleadUrl = '${sourceleadUrl}';
+		var billingReportType = $("#billingReportType").val();
+		$.ajax({
+	    	type: "GET",
+	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType, 
+	         success: function(data) {
+	        	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	 result = result +'<div class="project_tabs_inn_head">';
+	        	 result = result +'<input class="vendorfild" type="text"><i class="fa fa-search"></i></div>';
+	        	 result = result +'<div class="require_wrap_table">';
+	        	 result = result +"<table id='billingPayableReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
+	        	 result = result +'<thead>';
+	        	 result = result +'<tr>';
+	        	 result = result +'<th>Invoice Id</th>';
+	        	 result = result +'<th>Vendor</th>';
+	        	 result = result +'<th>Invoice Date</th>';
+	        	 result = result +'<th>Toatl</th>';
+	        	 result = result +'<th>Due Date</th>';                    
+	        	 result = result +'<th>Due Amount</th>';
+	        	 result = result +'</tr>';
+	        	 result = result +'</thead>';	
+	        	 result = result +'<tbody>';
+	        	 for (var i = 0; i < json.length; i++) { 
+	        		 var opt = json[i]; 
+	        		 $("#netIncome").html(opt.netIncome);
+		        	 $("#receivedAmount").html(opt.recievableAmount);
+		        	 $("#payableAmount").html(opt.payableAmount); 
+	        		 result = result +'<tr>';
+		        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
+		        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
+		        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
+		        	 result = result +'<td><div>'+opt.total+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
+		        	 result = result +'</tr>'; 
+	        	 }
+	        	 
+	                result = result +'</tbody>';
+	                result = result +'</table>';
+	                result = result +'</div>';
+	                $("#tab-2").empty();
+	        	   $("#tab-2").append(result);
+	        	   billingPayableReportPagination();
+	         }
+		});
+}
+
+</script>
+
 
 <script>
 function billingReportPagination(){ 
     $('#billingReportPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script> 
+
+<script>
+function billingPayableReportPagination(){ 
+    $('#billingPayableReportPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,

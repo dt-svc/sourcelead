@@ -57,4 +57,6 @@ public interface InvoiceService {
 
 	void linkInvoice(Invoice invoice)throws Exception;
 
+	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
+
 }

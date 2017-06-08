@@ -1778,5 +1778,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	{
       invoiceDao.saveInvoce(invoice);		
 	}
+	@Override
+	public List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC) throws Exception
+	{
+		return invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocationId,startDateUTC,endDateUTC);
+	}
 
 }
