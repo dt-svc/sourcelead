@@ -1762,9 +1762,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	}
 	
 	@Override
-	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationID) throws Exception
+	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationId,Date startDateUTC, Date endDateUTC,String invoiceTYpe) throws Exception
 	{
-		return invoiceDao.getInvoiceByOrgLocationId(orgLocationID);
+		return invoiceDao.getInvoiceByOrgLocationId(orgLocationId,startDateUTC, endDateUTC,invoiceTYpe);
 
 	}
 	
