@@ -71,8 +71,8 @@ private Submission_ApprovalStatus expenseApprovalStatus;
 @Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
 private String rejectedReason;
 
-@Column(name = "ACTION_PERFORMEDBY", columnDefinition = "TEXT default NULL")
-private String actionPerformed;
+@Column(name = "ACTIONPERFORMEDBY", columnDefinition = "TEXT default NULL")
+private String actionPerformedBy;
 
 @Column(name = "STATUS")
 private String status;
@@ -89,9 +89,6 @@ private Date updatedDate;
 @Column(name = "UPDATED_BY")
 private String updatedBy;
 
-@Column(name = "ACTIONPERFORMEDBY")
-@Type(type="text")
-private String actionPerformedBy;
 
 @ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
@@ -185,17 +182,7 @@ public String getRejectedReason()
 public void setRejectedReason(String rejectedReason)
 {
 	this.rejectedReason = rejectedReason;
-}
-
-public String getActionPerformed()
-{
-	return actionPerformed;
-}
-
-public void setActionPerformed(String actionPerformed)
-{
-	this.actionPerformed = actionPerformed;
-}
+}
 
 public String getStatus()
 {
