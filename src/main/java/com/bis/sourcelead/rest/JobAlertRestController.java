@@ -100,6 +100,18 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		 resultJson = commonUtil.toJSON(requirement);
 		 return resultJson;
 	 }
+	 
+	 
+	 @RequestMapping(value = "/validateAlertUserEmail", method = RequestMethod.GET)
+	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
+		 
+		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);
+		 if(jobAlertCount >= 5){
+			 return "Invalid";
+		 }else{
+			 return "valid";
+		 }
+	 }
 		
 
 }

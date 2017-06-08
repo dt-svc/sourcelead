@@ -147,6 +147,8 @@ public class SecurityConfig  {
     			.antMatchers("/saveProposeTime").permitAll()
     			.antMatchers("/jobAlertRequirementSummary").permitAll()
     			.antMatchers("/getJobDetailsForJobAlert").permitAll()
+    			.antMatchers("/storeJobAlert").permitAll()
+    			.antMatchers("/validateAlertUserEmail").permitAll()
     			
     			
     			

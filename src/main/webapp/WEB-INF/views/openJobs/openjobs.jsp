@@ -1721,13 +1721,13 @@ function createAlert(requirementUUID){
         	 result = result +'         <div class="form-group clearfix">';
         	 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
         	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
+        	 result = result +'         		<input type="text" class="form-control input-sm"  placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
         	 result = result +'         	</div>';
         	 result = result +'         </div>';
-        	 result = result +'         <div class="form-group clearfix">';
+        	 result = result +'         <div class="form-group clearfix" id="emailDiv">';
         	 result = result +'         	<label class="col-md-3">Email<span class="text-danger paddingLeft">*</span></label>';
         	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<input type="text" class="form-control input-sm" value="" placeholder="Email" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">';
+        	 result = result +'         		<input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" field-name="Email" onblur="validateAlertUserEmail();" data-validation="required validate_Space validate_length length2-100 validate_email">';
         	 result = result +'         	</div>';
         	 result = result +'         </div>';
         	 result = result +'         <div class="form-group clearfix">';
@@ -1914,7 +1914,7 @@ function createAlert(requirementUUID){
         	 result = result +'         </div>';
         	 result = result +'       </div>';
         	 result = result +'       <div class="modal-footer">';
-        	 result = result +'         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveAlert();">Save</button>';
+        	 result = result +'         <button type="submit" id="alert_button"  class="btn btn-primary btn-sm">Save</button>';
         	 result = result +'         <button type="button" class="btn btn-default btn-sm ml10" data-dismiss="modal" onClick="alertClose();">Cancel</button>';
         	 result = result +'       </div>';
         	 result = result +'     </div>';
@@ -2039,33 +2039,74 @@ function createAlert(requirementUUID){
 
 </script>
 
-<script>
-function saveAlert(){
-	if ($('#create_alert_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
-		var frm = $('#create_alert_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-		//It will escape all the special characters
-	    var jsonData = encodeURIComponent(con);
 
-		$.ajax({
-					type : "POST",
-					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-					success : function(result) {
-							location.replace(sourceleadUrl+"/openRequirementsRedirect");
-					},
-				});
-		return true;
-	 }else{ 
-			return false;
-	 } 
-}	 
-$('body').on('blur', '#create_alert_form', function() {
-	$("#create_alert_form").showHelpOnFocus();
-	$("#create_alert_form").validateOnBlur(false, validationSettings);  
-});
+<script type="text/javascript">
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#create_alert_form', function(e){
+        	  
+        	 
+        	  if ($(this).validate(false, validationSettings)){
+        		
+        		e.preventDefault();
+        		var sourceleadUrl = '${sourceleadUrl}';
+        		var frm = $('#create_alert_form').serializeFormJSON();
+        		var con = JSON.stringify(frm);
+        		con = con.replace(/[{}]/g, ""); 
+        		//It will escape all the special characters
+        	    var jsonData = encodeURIComponent(con);
+
+        		$.ajax({
+        					type : "POST",
+        					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        					success : function(result) {
+        							location.replace(sourceleadUrl+"/openRequirementsRedirect");
+        					},
+        				});
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+        
+         $('body').on('blur', '#create_alert_form', function() {
+        		$("#create_alert_form").showHelpOnFocus();
+        		$("#create_alert_form").validateOnBlur(false, validationSettings);  
+        	});
+         
+         
+     
+	</script>
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
 </script>
+
+
 <script>
 var validationSettings = {
         errorMessagePosition : 'element',
@@ -2234,6 +2275,45 @@ function getRate(){
 		$("#rateType").attr("data-validation-optional", "true");
 	}
 }
+</script>
+
+<script>
+function validateAlertUserEmail(){
+	var email = document.getElementById("email").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	if(email != null && email != ''){
+		$("#alert_button").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		       url: sourceleadUrl+"/validateAlertUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+					     if(data == 'Invalid'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'>You can configure maximum 5 job alerts</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg','You can configure maximum 5 job alerts'); 
+					     } 
+					     
+				       	else{
+				       		 $("#alert_button").removeAttr("disabled");
+							 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+							 $( "#alert_button" ).removeAttr("style");
+							 $( "#alert_button" ).click(function() {
+							 if ($(this).validate(false, validationSettings)){
+							 }
+							});
+				       	}
+			       	}
+		    	   
+		      },
+		       
+		});
+	}
+}
+
 </script>
 
 
