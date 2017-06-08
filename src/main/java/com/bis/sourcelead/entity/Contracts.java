@@ -198,16 +198,6 @@ public class Contracts {
 	@Transient
 	private Integer reqDocCount;
 	
-	public Integer getReqDocCount()
-	{
-		return reqDocCount;
-	}
-
-	public void setReqDocCount(Integer reqDocCount)
-	{
-		this.reqDocCount = reqDocCount;
-	}
-
 	@Transient
 	List<Contracts> vendorcontractsList;
 	
@@ -901,4 +891,13 @@ public class Contracts {
 		this.contractWith = contractWith;
 	}
 	
+	public Integer getReqDocCount()
+	{
+		return reqDocCount;
+	}
+
+	public void setReqDocCount(Integer reqDocCount)
+	{
+		this.reqDocCount = reqDocCount;
+	}
 }

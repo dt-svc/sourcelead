@@ -397,8 +397,14 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	public Contracts findContractTitleByOrgLocationAndContractType(String contractTitle, String contractType,Long orgLocationId,Long contractId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts> contracts = new ArrayList<Contracts>();
+		if(null != contractId){
 			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId and contracts.id <> :contractId " )
-					.setString( "contractTitle", contractTitle ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setLong("contractId", contractId ).setCacheable(true).list();
+			.setString( "contractTitle", contractTitle ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setLong("contractId", contractId ).setCacheable(true).list();
+		}else{
+			contracts = session.createQuery("from Contracts contracts where contracts.contractTitle=:contractTitle and contracts.contractType = :contractType and contracts.orgLocationId.id = :orgLocationId" )
+					.setString( "contractTitle", contractTitle ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+		}
+			
 		if (contracts.size() > 0) {
 			return contracts.get(0);
 		} else {
@@ -441,6 +447,72 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ct.templateSubmissionStatus <> 'DRAFT' and ( ct.endDate >= :startDateUTC and ct.endDate <= :endDateUTC )").setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
 		return contractsList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName,String contractStatus) throws Exception {
+		String userRoleCondition = "";
+		Long userId = user.getId();
+		String userCode = user.getUserCode();
+		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+			userRoleCondition = "";
+		}else{
+			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.ownerUserId.id =:userId OR contracts.createdBy =:userCode) ";
+		}
+		
+		String[] status = null;
+		if(null != contractStatus && !"".equals(contractStatus)){	
+			status = contractStatus.split(",");
+		}
+		List<String> statusList = new ArrayList<>();
+		if(status != null){
+			for(int i=0;i<status.length;i++){
+				statusList.add(status[i]);
+			}
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts>  ContractsList = null;
+		if(null != statusList && !statusList.isEmpty()){
+			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
+					+ "left join fetch contracts.requirementSubmission "
+					+"left join fetch contracts.requirementSubmission.candidate "
+					+ "left join fetch contracts.ownerUserId "
+					+ "left join fetch contracts.orgLocationId "
+					+ "left join fetch contracts.orgRelations "
+					+ "left join fetch contracts.parentContractId "
+					+ "left join fetch contracts.contractOrgLocationId "
+					+ "left join fetch contracts.contactUser "
+					+ "left join fetch contracts.approverUser "
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+responderType+"%' "+userRoleCondition+"and contracts.templateSubmissionStatus IN (:contractStatus)";
+			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("contractStatus", statusList).setCacheable(true).list();
+			}else{
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("contractStatus", statusList).setLong("userId", userId).setString("userCode", userCode).setCacheable(true).list();
+			}
+		}else{
+			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
+					+ "left join fetch contracts.requirementSubmission "
+					+"left join fetch contracts.requirementSubmission.candidate "
+					+ "left join fetch contracts.ownerUserId "
+					+ "left join fetch contracts.orgLocationId "
+					+ "left join fetch contracts.orgRelations "
+					+ "left join fetch contracts.parentContractId "
+					+ "left join fetch contracts.contractOrgLocationId "
+					+ "left join fetch contracts.contactUser "
+					+ "left join fetch contracts.approverUser "
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+responderType+"%' "+userRoleCondition;
+			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+			}else{
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("userId", userId).setString("userCode", userCode).setCacheable(true).list();
+			}
+		}
+			
+		
+		return ContractsList;
 	}
 
 }

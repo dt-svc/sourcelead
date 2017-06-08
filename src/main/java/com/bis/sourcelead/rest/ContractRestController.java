@@ -200,7 +200,7 @@ public class ContractRestController {
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 
-		if(("null").equalsIgnoreCase(contract.getEnvelopId())&& ("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
+		if(("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
 		//if("Custom".equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}

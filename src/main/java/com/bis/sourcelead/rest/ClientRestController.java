@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -117,6 +119,9 @@ public class ClientRestController {
 	
 	@Autowired
 	NotificationsService notificationsService;
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
 	
   
 	@Autowired
@@ -1035,5 +1040,19 @@ public class ClientRestController {
 		return str == null || "".equals(str.trim());
 	}
 
+	
+	/**
+	 * @author Pavan Jampana
+	 * to get the client or vendor contracts List
+	 */
+	@RequestMapping(value = " /getClientOrVendorContracts")
+	 @ResponseBody
+	 public String  getClientOrVendorContracts(@RequestParam(value="orgRelationId", required=false)Long orgRelationId,@RequestParam(value="responderType", required=false)String responderType,@RequestParam(value="contractStatus", required=false)String contractStatus,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<Contracts> clientcontractsList = contractsTemplateService.getAllClientOrVendorContractsBasedOnLocationId(orgLocations,responderType,user,userRoleName,contractStatus);
+		return commonUtil.toJSON(clientcontractsList);
+	 }
 
 }
