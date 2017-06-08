@@ -188,6 +188,7 @@ function validate_fileupload(fileName)
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+			window.location.replace(sourceleadUrl+'/expenses');
      		$.ajax({
        	        type : "POST",
         	    data: formData,
@@ -330,13 +331,17 @@ function getClientBasedOnSelectedProject(){
 
 <script>
 function expensesDateCheck(){
+	$('#dateError').remove();
 	var startDate = document.getElementById("projectStartDateExpensesId").value;
 	var endDate = document.getElementById("projectEndDateExpensesId").value;
 	if(startDate != null && startDate != "" && startDate != 'undefined'){
 		loadCategoryDiv(startDate,endDate,null);
 	}else{
-		$(".modal-backdrop").fadeOut(200);
-		$("#dateDiv").parent().after("<p class='jquery_form_error_message'> Project Start Date is mandatory </p>");
+		$("#dateDiv").parent().after("<p id='dateError' class='jquery_form_error_message'> Project Start Date is mandatory </p>");
+		$('#addExpenseEntity').modal({
+		   backdrop: 'static',
+		   keyboard: false
+		});
 	}
 }
 
