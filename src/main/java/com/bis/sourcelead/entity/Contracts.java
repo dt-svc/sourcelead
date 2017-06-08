@@ -211,6 +211,9 @@ public class Contracts {
 	List<Contracts> clientcontractsList;
 	
 	@Transient
+	List<Contracts> fullTimeoffercontractsList;
+
+	@Transient
 	private String tempEnvId;
 
 	@Transient
@@ -256,6 +259,9 @@ public class Contracts {
 	private String updatedDateStr;
 	
 	@Transient
+	private String joinedDateStr;
+	
+	@Transient
 	private String createdByName;
 	
 	@Transient
@@ -276,7 +282,40 @@ public class Contracts {
 	@Transient
 	private String contractWith;
 	
+	@Transient
+	private String empName;
 	
+	
+	public String getEmpName()
+	{
+		return empName;
+	}
+
+	public void setEmpName(String empName)
+	{
+		this.empName = empName;
+	}
+
+	public List<Contracts> getFullTimeoffercontractsList()
+	{
+		return fullTimeoffercontractsList;
+	}
+
+	public void setFullTimeoffercontractsList(List<Contracts> fullTimeoffercontractsList)
+	{
+		this.fullTimeoffercontractsList = fullTimeoffercontractsList;
+	}
+
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
+
 	public Date getJoinDate()
 	{
 		return joinDate;

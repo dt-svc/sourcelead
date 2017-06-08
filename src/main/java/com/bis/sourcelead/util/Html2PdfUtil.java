@@ -149,7 +149,36 @@ public class Html2PdfUtil {
 	                    matchPattern.appendReplacement(sb, location.toString());    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Name]")){
 	                    matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrg().getOrgName());
-		            }else if(matchPattern.group().equalsIgnoreCase("[Associate Name]")){
+		            }
+	                else if(matchPattern.group().equalsIgnoreCase("[Company Address]")){
+	                    if(null != contracts.getOrgLocationId().getOrg().getOrgAddress()){
+							matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getOrg().getOrgAddress());	
+						}else{
+							matchPattern.appendReplacement(sb, "");
+						}
+		            }
+	                else if(matchPattern.group().equalsIgnoreCase("[Company City]")){
+	                	if(null != contracts.getOrgLocationId().getCity()){
+							matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getCity());	
+						}else{
+							matchPattern.appendReplacement(sb, "");
+						}
+		            }
+	                else if(matchPattern.group().equalsIgnoreCase("[Company State]")){
+	                	if(null != contracts.getOrgLocationId().getState()){
+							matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getState());	
+						}else{
+							matchPattern.appendReplacement(sb, "");
+						}
+		            }
+	                else if(matchPattern.group().equalsIgnoreCase("[Company Country]")){
+	                    if(null != contracts.getOrgLocationId().getCountry()){
+							matchPattern.appendReplacement(sb, contracts.getOrgLocationId().getCountry());	
+						}else{
+							matchPattern.appendReplacement(sb, "");
+						}
+		            }
+	                else if(matchPattern.group().equalsIgnoreCase("[Associate Name]") || matchPattern.group().equalsIgnoreCase("[Employee Name]")){
 		            	if(null != contracts.getRequirementSubmission().getId()){
 			            	RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
 			            	if(null != reqSub.getCandidate().getLastName()){
@@ -181,10 +210,10 @@ public class Html2PdfUtil {
 		        	   }
 		           }
 		           else if(matchPattern.group().equalsIgnoreCase("[Rate Per]")){
-	                   // matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+	                    matchPattern.appendReplacement(sb, contracts.getBillingRatePer());
 	                }
 		           else if(matchPattern.group().equalsIgnoreCase("[Rate Type]")){
-	                  //  matchPattern.appendReplacement(sb, contracts.getBillingAmount());
+	                   matchPattern.appendReplacement(sb, contracts.getBillingRateType());
 	                }
 	                
 		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")){
@@ -202,7 +231,14 @@ public class Html2PdfUtil {
 		            		matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
 		            	}
 	                }
-	    			
+	              
+		    		 else if(matchPattern.group().equalsIgnoreCase("[Join Date]")){
+		            	String currentTimeStr = Constants.TZ_DF.format(contracts.getJoinDate());  
+		        		String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
+		        		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		        		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+		                matchPattern.appendReplacement(sb, Constants.DF_DMY.format(convertedDate));
+		            }
 		            else if(matchPattern.group().equalsIgnoreCase("[Start Date]")){
 		            	String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());  
 	            		String startTimeUTC= CommonUtil.convertTimeZones("UTC",timezone.getTimeZoneId(), currentTimeStr);
@@ -227,11 +263,30 @@ public class Html2PdfUtil {
 		            		matchPattern.appendReplacement(sb, contracts.getStateJurisdiction());
 		            	}
 		            } 
+		            else if(matchPattern.group().equalsIgnoreCase("[Work Location]")){
+		            	if(null != contracts.getWorkLocation()){
+		            		matchPattern.appendReplacement(sb, contracts.getWorkLocation());
+		            	}
+		            } 
 		            else if(matchPattern.group().equalsIgnoreCase("[Billing Cycle]")){
 		            	if(null != contracts.getBillingPer()){
 		            		matchPattern.appendReplacement(sb, contracts.getBillingPer());
 		            	}
 		            } 
+	        		else if(matchPattern.group().equalsIgnoreCase("[Employee Location]")){
+		            	if(null != contracts.getRequirementSubmission().getId()){
+			            	RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
+			            	if(null != reqSub.getCandidate().getAddress()){
+			            		matchPattern.appendReplacement(sb, reqSub.getCandidate().getAddress());
+			            	}
+			            	else{
+			            		matchPattern.appendReplacement(sb,"");
+			            	}
+		            	}
+		            	else{
+		            		matchPattern.appendReplacement(sb,"");
+		            	}
+	                }
 	            }
 	            matchPattern.appendTail(sb);
 	        return sb.toString();

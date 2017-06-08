@@ -829,15 +829,15 @@ function preparedContractListDraft(data){
 		         res = res + '</td>';
 		         
 		         res = res + '<td>';
-		         res = res + '<div><span title="'+appReport.vendorContactName+'">'+appReport.vendorContactName+'</span></div>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
 		         res = res + '</td>';
 		         
 		         res = res + '<td>';
-		         res = res + '<div class="tblminwidth-75">'+appReport.startDateStr+'</div>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
 		         res = res + '</td>';
 		         
 		         res = res + '<td>';
-		         res = res + '<div class="tblminwidth-75">'+appReport.startDateStr+'</div>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
 		         res = res + '</td>';
 		         /* res = res + '<td>';
 		        	 res = res + '<div class="tblminwidth-75">'+appReport.reqDocCount+'</div>';
@@ -881,11 +881,13 @@ function preparedContractListDraft(data){
 	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
 	
-	var draftCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var draftCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#draft").html('Draft ('+draftCount+')');
 	
     $("#vendorContractsList").empty();
