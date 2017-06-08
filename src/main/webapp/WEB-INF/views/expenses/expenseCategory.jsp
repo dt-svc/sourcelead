@@ -79,7 +79,7 @@ function addExpenseCategory(categoryId) {
 	
 	result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
 	result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-	result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">';
+	result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage" value="" id="taxPercentageRewardValue" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" onblur="getTaxPercentageValue()" placeholder="Percentage">';
 	result = result  +' <i class="fa fa-percent"></i>'; 
 	result = result  +' </div>';
 	result = result  +' </div>';
@@ -88,7 +88,7 @@ function addExpenseCategory(categoryId) {
 	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
 	result = result  +'<div class="row flat">';
 	result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
-	result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" placeholder="Flat">';
+	result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" placeholder="Flat">';
 	result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 	result = result  +' </div>';
 	result = result  +' </div>';
