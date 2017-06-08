@@ -11,8 +11,18 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
-<!-- Content Area -->
-<!-- Content Area -->
+<!-- these files for export -->
+<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
+<!-- <script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- ends files of export -->
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -24,7 +34,9 @@ $(document).ready(function(){
 
 <style>
 .CurDiv { position: static !important; float: left;}
-
+.timesheet_head ul {
+padding: 2px 300px 2px 0px;
+}
 </style>
 
 <section class="content-wraper">
@@ -138,22 +150,13 @@ $(document).ready(function(){
 					</ul>
 				</div>	                	
 			</li>
-			<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
-				<div class="statusFiler-2">
-					<ul class="list-unstyled">
-						<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-						<li>Excel<i class="fa fa-file-excel-o"></i></li>
-						<li>Word<i class="fa fa-file-word-o"></i></li>
-					</ul>
-				</div>
-			</li>	
 			<div class="clearfix"></div>
 		</ul>
 		<div class="clearfix"></div>
             
 	</div>
 	<div id="loading"></div>
-    <div class="clients_wrap_table">
+    <div class="clients_wrap_table repoPositiNoCount">
     <div id="vendorContractsList"  class=" overflow-data" ></div>
      <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
      <div id="applicantsContractsList"  class=" overflow-data" style="display: none"></div>
@@ -901,7 +904,18 @@ function preparedContractListDraft(data){
 <script>
 function listContractsPagination(){
 	$('#contractListTableDraft1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip',
+        buttons: [
+        	{
+                extend: 'excel',
+                title: 'Draft Contract',
+            },
+            {
+                extend: 'pdf',
+                title: 'Draft Contract',
+            }
+        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -910,10 +924,23 @@ function listContractsPagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+	$(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPagination(){ 
     $('#contractListTableDraft').DataTable( { 
+    	dom: 'Bfrtip',
+        buttons: [
+        	{
+                extend: 'excel',
+                title: 'Draft Contract',
+            },
+            {
+                extend: 'pdf',
+                title: 'Draft Contract',
+            }
+        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -923,7 +950,9 @@ function vendorListContractsPagination(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function appListContractsPagination(){ 
     $('#contractListTableDraft2').DataTable( { 
@@ -1179,7 +1208,18 @@ function preparedContractListWFA(data){
 <script>
 function listContractsPaginationWFA(){
 	$('#contractListTableWFA1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Approved Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Approved Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1188,10 +1228,24 @@ function listContractsPaginationWFA(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+
 }
 function vendorListContractsPaginationWFA(){ 
     $('#contractListTableWFA').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Approved Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Approved Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -1201,7 +1255,10 @@ function vendorListContractsPaginationWFA(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+
 }
 </script>
 
@@ -1384,7 +1441,18 @@ function preparedContractListWTS(data){
 <script>
 function listContractsPaginationWTS(){
 	$('#contractListTableWTS1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Signed Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Signed Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1393,10 +1461,23 @@ function listContractsPaginationWTS(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationWTS(){ 
     $('#contractListTableWTS').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Signed Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Signed Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -1406,7 +1487,9 @@ function vendorListContractsPaginationWTS(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -1596,7 +1679,18 @@ function preparedContractListWTV(data){
 <script>
 function listContractsPaginationWTV(){
 	$('#contractListTableWTV1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Verified Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Verified Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1605,10 +1699,23 @@ function listContractsPaginationWTV(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationWTV(){ 
     $('#contractListTableWTV').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Verified Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Verified Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -1618,7 +1725,9 @@ function vendorListContractsPaginationWTV(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -1793,7 +1902,18 @@ function preparedContractListFinalize(data){
 <script>
 function listContractsPaginationFinalize(){
 	$('#contractListTableFinalize1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Finalized Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Finalized Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1802,10 +1922,23 @@ function listContractsPaginationFinalize(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationFinalize(){ 
     $('#contractListTableFinalize').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Finalized Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Finalized Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -1815,7 +1948,9 @@ function vendorListContractsPaginationFinalize(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -1990,7 +2125,18 @@ function preparedContractListExpired(data){
 <script>
 function listContractsPaginationEXP(){
 	$('#contractListTableEXP1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Expired Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Expired Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1999,10 +2145,23 @@ function listContractsPaginationEXP(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationEXP(){ 
     $('#contractListTableEXP').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Expired Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Expired Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -2012,7 +2171,9 @@ function vendorListContractsPaginationEXP(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -2203,7 +2364,18 @@ function preparedContractListRejected(data){
 <script>
 function listContractsPaginationREJ(){
 	$('#contractListTableREJ1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Rejected Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Rejected Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -2212,10 +2384,23 @@ function listContractsPaginationREJ(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationREJ(){ 
     $('#contractListTableREJ').DataTable( { 
+    	dom: 'Bfrtip', 
+    	buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Rejected Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Rejected Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -2225,7 +2410,9 @@ function vendorListContractsPaginationREJ(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -2502,7 +2689,13 @@ function CountClick(contractUUID,parentId){
     	      var opt=json[i];
 			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
 			  result = result +'	     <div class="form-group">                                                                                                             ';
-			  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
+
+			  if(opt.docFile != null && opt.docFile !=""){
+				  result = result +'	       <label class="col-md-4 text-center"><a href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\">'+opt.fileName+'</a></label>                                                 ';
+			  }else{
+				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
+			  }
+
 			  if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
 				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
 				  result = result +'	       <label class="text-center">--</label>                                                 ';
