@@ -649,14 +649,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	 public EmailAttachment zipFiles(List<TimesheetSubmissionsDocuments> docusList) throws MessagingException{
-         EmailAttachment ema = new EmailAttachment();
+         EmailAttachment ema = null;
 	        FileOutputStream fos = null;
 	        ZipOutputStream zipOut = null;
 	        FileInputStream fis = null;
 	        try {
 	           ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 		    	 if(docusList != null && !docusList.isEmpty()){
-		    		    
+		    		    ema=new EmailAttachment();
 		    	         ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 		    	         
 				    	 int i= 0;
@@ -809,7 +809,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
-		 attachmentList.add(attachmentZip);
+		 if(attachmentZip == null){
+			 attachmentList.add(attachmentZip);
+		 }
 		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
 		 attachmentList.addAll(documentList);
 		 }
