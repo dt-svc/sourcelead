@@ -386,8 +386,8 @@ public class InvoiceRestController {
 		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String currentDate = sdf.format(new Date());
-		Date todayDate = sdf.parse(currentDate);
+//		String currentDate = sdf.format(new Date());
+		Date todayDate = new Date();
 		
 		
 		for(Invoice invoice :invoiceList){
@@ -1527,5 +1527,77 @@ public class InvoiceRestController {
 		return resultJson;
 
 	}
-	
+	/**
+	 * Dipalay billing summary in clients summary tabs
+	 * @param orgRelationId
+	 * @param clientLocationId
+	 * @param dayWisetype
+	 * @param customStartDate
+	 * @param customEndDate
+	 * @param invoiceStatus
+	 * @param paymentStatus
+	 * @param invoiceType
+	 * @param request
+	 * @param response
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getInvoiceListBasedOnOrgrelationId", method = RequestMethod.POST)
+	public @ResponseBody String getInvoiceListBasedOnOrgrelationId(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "clientLocationId", required = false) Long clientLocationId, @RequestParam(value = "dayWisetype", required = false) String dayWisetype, @RequestParam(value = "startDate", required = false) String customStartDate, @RequestParam(value = "endDate", required = false) String customEndDate, @RequestParam(value = "invoiceStatus", required = false) String invoiceStatus, @RequestParam(value = "paymentStatus", required = false) String paymentStatus, @RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date endDateUTC = null;
+		Date startDateUTC = null;
+		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(dayWisetype)) {
+			String endDate = outputFormatter1.print(zoned);
+			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, endDate);
+			endDateUTC = TZ_DF_TS.parse(endDateString);
+		}
+		if (null != dayWisetype && !"".equals(dayWisetype)) {
+			if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(dayWisetype)) {
+				String startDate = outputFormatter.print(zoned);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, startDate);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+				if (Constants.ONE_MONTH.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+				}
+				else if (Constants.TWO_MONTHS.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+				}
+				else if (Constants.THREE_MONTHS.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 90);
+				}
+				else if (Constants.SIX_MONTHS.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 180);
+				}
+				else if (Constants.ONE_YEAR.equals(dayWisetype)) {
+					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
+				}
+			}
+			else {
+				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)
+						&& !"undefined".equalsIgnoreCase(customStartDate)
+						&& !"undefined".equalsIgnoreCase(customEndDate)) {
+					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+					Date startTime = commonUtil.getDateFormat(customStartDate);
+					Date endTime = commonUtil.getDateFormat(customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);
+					String customEndTimeStr = TZ_DF_CED.format(endTime);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+					startDateUTC = TZ_DF_TS.parse(startDateString);
+					endDateUTC = TZ_DF_TS.parse(endDateString);
+				}
+			}
+		}
+		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgRelationId(orgRelationId, clientLocationId, startDateUTC, endDateUTC, invoiceStatus, paymentStatus, invoiceType,orgLocations);
+		
+		return commonUtil.toJSON(invoiceList);
+	}
 }

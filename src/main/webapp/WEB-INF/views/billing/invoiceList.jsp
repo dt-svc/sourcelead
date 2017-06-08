@@ -596,8 +596,7 @@ function getInvoiceList(){
 					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.id+'"></div>';
 				} 
-				result = result +'  </div> ';                                                                                                    
-		         
+				result = result +'  </div> ';                 
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
@@ -1154,7 +1153,7 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
 			result = result +'    <div class="modal-content">                                                                                               ';
 			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
-			result = result +'      <div class="modal-header">                                                                                              ';
+			result = result +'      <div class="modal-header" id="receivableLinkId">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
 			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
 			result = result +'      </div>                                                                                                                  ';
@@ -1252,7 +1251,7 @@ function linkInvoice(invoiceId,totalAmount){
             $('.side_mask').fadeOut(200);
         }
     </script>
-    <!-- Script for Linked Invoice pop -->
+    <!-- Script for Linked Invoice pop -->	
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
@@ -1269,23 +1268,26 @@ function generateAutomaticInvoice(){
 
 <script>
 function mergeInvoice(parentTotalAmount){
+	var sourceleadUrl ='${sourceleadUrl}';
 	var masterInvoiceId = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
 	var checkVal = linkRadio.filter(':checked').val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var total = $('#linkedReceivableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
+	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
 	showDiffAmountPopup(calculatedAmount,currencyCode);
-	
 	 $.ajax({
    	 type: "POST",
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
             success: function(data) {
-           	
+            	$('#testPurposeId').find('p.jquery_form_error_message').remove(); 
        },
    });  
+}else{
+	$("#receivableLinkId").after( "<p class='jquery_form_error_message'>Select atleast 1 Invoice</span>");
+}
 }
 </script>
 

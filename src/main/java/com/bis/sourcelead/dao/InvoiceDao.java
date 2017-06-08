@@ -30,5 +30,7 @@ public interface InvoiceDao{
 	List<Invoice> getInvoiceByOrgLocationId(Long orgLocationID)throws Exception;
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId,Long orgLocationId, String invoiceType);
+	
+	List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId, Long clientLocationId,Date startDateUTC, Date endDateUTC,String invoiceStatus, String paymentStatus, String invoiceType);
 
 }
