@@ -78,8 +78,8 @@ public class HomeController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	@Autowired
-	private ApplicationContext applicationContext;
+	/*@Autowired
+	private ApplicationContext applicationContext;*/
 	
 	@Autowired
 	private DataSource dataSource;
@@ -91,7 +91,7 @@ public class HomeController {
 	
 	@PostConstruct
 	public void init() {
-		logger.debug(" *** HomeController init with: " + applicationContext);
+		logger.debug(" *** HomeController init with: " );
 	}
 
 	@RequestMapping(value = { "/**"},  method = { RequestMethod.GET, RequestMethod.POST })

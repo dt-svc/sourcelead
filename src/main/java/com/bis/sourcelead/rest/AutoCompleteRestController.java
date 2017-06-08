@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONArray;
@@ -13,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +27,6 @@ import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.WebgeocitiesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.AutoCompleteController;
 
 /**
  * Prasad Salina
@@ -40,10 +37,7 @@ import com.bis.sourcelead.web.AutoCompleteController;
 @RestController
 public class AutoCompleteRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteController.class);
-	
-	@Autowired
-	private ApplicationContext applicationContext;
+	private static final Logger logger = LoggerFactory.getLogger(AutoCompleteRestController.class);
 	
 	@Autowired
 	private OrgRelationsService orgRelationsService;
@@ -63,11 +57,7 @@ public class AutoCompleteRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@PostConstruct
-	public void init() {
-		logger.debug(" *** AutoCompleteController init with: " + applicationContext);
-	}
-    @RequestMapping(value = "/clientAutoComplete")
+	@RequestMapping(value = "/clientAutoComplete")
     public String clientAutoComplete(HttpServletRequest request) throws Exception {
     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
