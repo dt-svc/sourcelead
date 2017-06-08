@@ -1,32 +1,42 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import javax.mail.internet.InternetAddress;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -43,6 +53,18 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
+	
+	@Autowired
+	private EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
 	
 	@Override
 	public String getExpenseId() {
@@ -69,8 +91,8 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	if (jsonObj.has("expensePurpose") && !(jsonObj.getString("expensePurpose").isEmpty())){
 		expenses.setPurpose(jsonObj.getString("expensePurpose"));
 	 }
-	if (jsonObj.has("expenseProject") && !(jsonObj.getString("expenseProject").isEmpty())){
-	    projMembers = projectMembersService.getProjectMemberByUserIdAndProjectId(loginUser.getId(), Long.parseLong(jsonObj.getString("expenseProject")));
+	if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
+	    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
 		expenses.setProjectMembers(projMembers);
 	}
 	if (jsonObj.has("clientNameExpense") && !(jsonObj.getString("clientNameExpense").isEmpty())){
@@ -102,6 +124,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
     	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
     	HashSet<ExpensesApproverHierarchy> saHierarchyList = new HashSet<ExpensesApproverHierarchy>();
         if(hierarchyList != null && !hierarchyList.isEmpty()){
+        	ArrayList<User> managers = new ArrayList<User>() ;
 				for(ProjectApproverHierarchy hierarchy : hierarchyList){
 					ExpensesApproverHierarchy saHierarchy = new ExpensesApproverHierarchy();
 					saHierarchy.setHierarchyId(hierarchy);
@@ -113,11 +136,99 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 					saHierarchy.setUpdatedDate(expenses.getUpdatedDate());
 					saHierarchy.setUpdatedBy(expenses.getUpdatedBy());
 					saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+					managers.add(hierarchy.getApproverUserId());
 					saHierarchyList.add(saHierarchy);
 				}
 				expenses.setApproverHierarchyList(saHierarchyList);
+				expenses.setProjectManagerUserList(managers);
 		}
 	}
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+	 
+	 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
   }
+
+private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
+	
+	 
+	
+	 EmailMessage emailMessage = new EmailMessage();
+	
+	 
+	for(User managerUser :expenses.getProjectManagerUserList()){
+		
+		 StringBuilder sb = new StringBuilder();
+		 emailMessage.setFirstName(managerUser.getFirstName());
+		 if(null != managerUser.getLastName()){
+			emailMessage.setLastName(managerUser.getLastName());
+		 }
+		 emailMessage.setToEmail(managerUser.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 }else{
+			 emailMessage.setFromName(loginUser.getFirstName());
+		 }
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(orgLoc.getId());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+			 StringBuilder employee =new StringBuilder();
+			 globalVarsMap.put("employeeUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("employeeUser",loginUser.getFirstName());
+		 }
+		 
+		 if(null != managerUser.getLastName() && !"".equalsIgnoreCase(managerUser.getLastName())){
+			 StringBuilder manager =new StringBuilder();
+			 globalVarsMap.put("managerUser", manager.append(managerUser.getFirstName()).append(" ").append(managerUser.getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("managerUser",managerUser.getFirstName());
+		 }
+		 
+		 if(null != expenses.getProjectMembers()){
+			 if(null != expenses.getProjectMembers().getProjects()){
+		 globalVarsMap.put("projectName", expenses.getProjectMembers().getProjects().getProjectName());
+			 }
+		 }
+		 
+		 if(null != expenses.getPurpose()){
+		 globalVarsMap.put("purposeOfVisit",expenses.getPurpose());
+		 }
+		 
+		 if(null != expenses.getNoOfExpenses()){
+		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
+		 }
+		 
+		 globalVarsMap.put("totalAmount",Float.toString(expenses.getTotalAmount()));
+		 
+		 
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLoc.getOrg());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	}
+	 
+	 
+	 
+}
 }
