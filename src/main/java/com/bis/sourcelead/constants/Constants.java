@@ -129,6 +129,7 @@ public class Constants {
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
 	public static final String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
+	public static final String BACKOUT_STATUS = "BACKOUT";
 	public static final String INTERVIEW = "INTERVIEW";
 	public static final String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
 	public static final String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";

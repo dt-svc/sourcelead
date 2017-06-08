@@ -343,6 +343,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String noOfOfferedApplicants;
 	
 	@Transient
+	private String noOfBackOutApplicants;
+	
+	@Transient
 	private String clientContactName;
 	
 	@Transient
@@ -1392,6 +1395,16 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setIsreceivingApplicants(String isreceivingApplicants)
 	{
 		this.isreceivingApplicants = isreceivingApplicants;
+	}
+
+	public String getNoOfBackOutApplicants()
+	{
+		return noOfBackOutApplicants;
+	}
+
+	public void setNoOfBackOutApplicants(String noOfBackOutApplicants)
+	{
+		this.noOfBackOutApplicants = noOfBackOutApplicants;
 	}
 
 
