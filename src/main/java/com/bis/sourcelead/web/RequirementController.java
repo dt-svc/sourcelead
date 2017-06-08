@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +41,14 @@ import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -56,6 +60,7 @@ import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -124,6 +129,12 @@ public class RequirementController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
 	
 	@SuppressWarnings("unchecked")
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_REQUIREMENT', 'ROLE_VIEW_REQUIREMENT', 'ROLE_VIEW_EDIT_REQUIREMENT')")
@@ -660,11 +671,57 @@ public class RequirementController {
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
 				     }
+				      
+				      if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
+					      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
+					      		
+					      		JSONObject jsonObj = populateJsonObject(requirementOffers,null);
+					      		contractsTemplateService.saveNewContract(jsonObj, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", null, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW", null);
+						      }
 			    }
 		    }
 		}
 		return model;
 	}
+	
+	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser) throws JSONException
+	{
+		JSONObject jsonObj = new JSONObject(); 
+		
+		RequirementSubmissionTemplateFields candidate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
+		if(null != candidate){
+		jsonObj.put("contractType", "Vendor SOW");
+		
+		if(null != candidate.getFirstName() && null != candidate.getLastName()){
+			StringBuilder candisb = new StringBuilder();
+			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
+		}else{
+			StringBuilder candisb = new StringBuilder();
+			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+		}
+		
+		jsonObj.put("submissionOffersList", requirementOffers.getSubmissionId().getId());
+		
+		/*
+		 * to allow default owner un-comment the below line --Pavan jampana
+		 */
+//		jsonObj.put("owner", loginUser.getId());
+		
+		jsonObj.put("orgRelationId", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
+		
+		jsonObj.put("vendorContact", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId());
+		
+		jsonObj.put("flatReward", requirementOffers.getAmount());
+		
+		jsonObj.put("billingRatePer", requirementOffers.getPaymentMode());
+		
+		jsonObj.put("billingRateType", requirementOffers.getPaymentType());
+		
+		jsonObj.put("startDate", requirementOffers.getDateOfJoining());
+		}
+		return jsonObj;
+	}
+
 	
 	@RequestMapping(value = "/downloadRequestDocumentBySubmissionId", method = RequestMethod.GET)
     public void downloadRequestDocumentBySubmissionId(@RequestParam(value="submissionId", required=false) String submissionId ,HttpServletResponse response) throws Exception {

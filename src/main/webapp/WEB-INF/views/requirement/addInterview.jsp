@@ -111,6 +111,9 @@ function addInterview(requirementId){
 	   result = result + '<label><input type="checkbox" name="notificationToSpoc" value="Y" checked="checked"><b>Notify to Vendors</b></label>';
 	}
 	result = result + '<label><input type="checkbox" name="notificationToOthers" id="notificationToOthers" onClick="getNotifyToOtersVal();showOthersDiv();"><b>Notify to Others</b></label>';
+
+	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
+	
 	result = result + '</div>';
 	
 	result = result + '<div class="mb10 mt clearfix" id="notifyOthersDiv" style="display: none;">';

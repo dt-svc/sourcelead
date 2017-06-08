@@ -13,6 +13,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
@@ -50,6 +52,8 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -98,6 +102,9 @@ public class ClientRestController {
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
 	private OrgSpocService orgSpocService;
 
 	@Autowired
@@ -117,6 +124,9 @@ public class ClientRestController {
 	
 	@Autowired
 	NotificationsService notificationsService;
+	
+	@Autowired
+	private RequirementService requirementService;
 	
   
 	@Autowired
@@ -716,6 +726,43 @@ public class ClientRestController {
 			return resultJson;
 		}
 	 
+	   
+	   
+	@RequestMapping(value = "/getClientReleasedRequirementList", method = RequestMethod.POST)
+	@ResponseBody
+	String getClientReleasedRequirementList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String resultJson;
+		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
+		for (Requirement req : reqList) {
+			req.setPostedDateStr(Constants.DF_DMY.format(req.getCreatedDate()));
+			if (req.getManagerUserId() != null) {
+				String managerFirstName = "";
+				if (StringUtils.isNotEmpty(req.getManagerUserId().getFirstName())) {
+					managerFirstName = req.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if (StringUtils.isNotEmpty(req.getManagerUserId().getLastName())) {
+					managerLastName = req.getManagerUserId().getLastName();
+				}
+				StringBuilder name = new StringBuilder();
+				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+				int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "INTERVIEWED");
+				int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "OFFERED");
+				int bacOutCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), Constants.BACKOUT_STATUS);
+
+				req.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
+				req.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+				req.setNoOfBackOutApplicants(String.valueOf(bacOutCount));
+			}
+		}
+		resultJson = commonUtil.toJSON(reqList);
+		return resultJson;
+	}
+	   
 	/**
 	 * @author Prasanna vadla
 	 * @param json

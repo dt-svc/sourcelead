@@ -877,12 +877,20 @@ function flushProjectTasks(){
 										changeYear: true, 
 										minDate:projectStartDate,
 										maxDate:projectEndDate,
-										onSelect : function(selected) {
+										showOn: 'focus',
+							            showButtonPanel: true,
+							            closeText: 'Clear',
+							            onClose : function(selected) {
 											var actualId = $(this).attr('id').split('startDate')[1];
 											var dt = toDate('#startDate'+actualId);
 											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() + 1);
 											$("#endDate"+actualId).datepicker("option", "minDate", dt);
+											 var event = arguments.callee.caller.caller.arguments[0];
+								                // If "Clear" gets clicked, then really clear it
+								             if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+								                 $(this).val('');
+								            }
 										}
 									});
 		
@@ -892,13 +900,21 @@ function flushProjectTasks(){
 										changeYear: true, 
 										maxDate:projectEndDate,
 										minDate: datepickerStartDate,
-										onSelect : function(selected) {
+										showOn: 'focus',
+							            showButtonPanel: true,
+							            closeText: 'Clear',
+							            onClose : function(selected) {
 											var actualId = $(this).attr('id').split('endDate')[1];
 											var dt = toDate('#endDate'+actualId);
 											//var id = $(this).attr('id');
 											dt.setDate(dt.getDate() - 1);
 											$("#startDate"+actualId).datepicker("option", "maxDate", dt);
-										}
+											 var event = arguments.callee.caller.caller.arguments[0];
+								                // If "Clear" gets clicked, then really clear it
+								             if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+								                 $(this).val('');
+								            }
+							            }
 									});
 								}
 					      }
@@ -1017,13 +1033,21 @@ function assignEmployeeCancel(){
 		$('#StartDate').datepicker({
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
+			changeYear: true,
+			showOn: 'focus',
+            showButtonPanel: true,
+            closeText: 'Clear',
+            onClose : function(selected) {
 				//var dt = new Date(selected);
 				var dt = toDate("#StartDate");
 				dt.setDate(dt.getDate() + 1);
 				$("#EndDate").datepicker("option", "minDate", dt);
 				addValidClass();
+				var event = arguments.callee.caller.caller.arguments[0];
+	            // If "Clear" gets clicked, then really clear it
+	            if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+	                $(this).val('');
+	            }
 			}
 		});
 
@@ -1031,7 +1055,9 @@ function assignEmployeeCancel(){
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
-			onSelect : function(selected) {
+			showButtonPanel: true,
+            closeText: 'Clear',
+            onClose : function(selected) {
 				//var dt = new Date(selected);
 				var dt = toDate("#EndDate");
 				dt.setDate(dt.getDate() - 1);
@@ -1067,6 +1093,11 @@ function assignEmployeeCancel(){
 					$('#Satatus').append('<option >Completed</option>');
 					$('#Satatus').append('<option >On-Hold</option>');
 				}
+				var event = arguments.callee.caller.caller.arguments[0];
+	            // If "Clear" gets clicked, then really clear it
+	            if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+	                $(this).val('');
+	            }
 			}
 		});
 
