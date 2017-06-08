@@ -157,5 +157,11 @@ public class JobAlertServiceImpl implements JobAlertService{
 		jobAlertDao.deleteJobAlert(jobAlert);
 	}
 
+	@Override
+	public Integer getJobAlertCountByEmail(String email) throws Exception
+	{
+		return jobAlertDao.getJobAlertCountByEmail(email);
+	}
+
 	
 }
