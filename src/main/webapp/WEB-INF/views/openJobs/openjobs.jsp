@@ -1721,7 +1721,7 @@ function createAlert(requirementUUID){
         	 result = result +'         <div class="form-group clearfix">';
         	 result = result +'         	<label class="col-md-3">Alert Title<span class="text-danger paddingLeft">*</span></label>';
         	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<input type="text" class="form-control input-sm"  placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
+        	 result = result +'         		<input type="text" class="form-control input-sm" value="'+json['jobTitle']+'"  placeholder="Alert Title" name="alertTitle" field-name="Alert Title" data-validation="required validate_length length2-100">';
         	 result = result +'         	</div>';
         	 result = result +'         </div>';
         	 result = result +'         <div class="form-group clearfix" id="emailDiv">';
