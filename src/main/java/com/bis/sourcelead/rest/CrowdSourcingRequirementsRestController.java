@@ -192,7 +192,6 @@ public class CrowdSourcingRequirementsRestController {
 	     }
 	     
 	     else if(requirementType.equalsIgnoreCase("ReferredByMe")){
-	    	     boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
     			 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
     			 if(referedRequirementList.size() > 0){
     				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();

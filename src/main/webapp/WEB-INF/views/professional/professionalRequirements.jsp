@@ -811,23 +811,21 @@ function requirementsList(offset){
 				 					
 				 				}
 				 				
-				 				if(requirementType != 'OpenJobs'){
-				 					if(requirementType != 'ReferredToMe'){
-					 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+');getUserContats('+requirements.requirementId+');" href="javascript:void(0)">Refer</a>';
-					 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
-						 				result = result +'<div class="referWrapInn">';
-						 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
-						 				result = result +'</div>';
-						 				result = result +'</div>';
-				 					}else if(requirementType == 'ReferredToMe'){
-				 						result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+');getUserContats('+requirements.requirementId+');" href="javascript:void(0)">Refer</a>';
-					 					result = result +'<div class="referWrap" id="refer'+requirements.referId+'">';
-						 				result = result +'<div class="referWrapInn">';
-						 				result = result +'<div id="refertoJobDiv'+requirements.referId+'"></div>';  
-						 				result = result +'</div>';
-						 				result = result +'</div>';
-				 					}
-				 				}
+			 					if(requirementType != 'ReferredToMe'){
+				 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+');getUserContats('+requirements.requirementId+');" href="javascript:void(0)">Refer</a>';
+				 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
+					 				result = result +'<div class="referWrapInn">';
+					 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
+					 				result = result +'</div>';
+					 				result = result +'</div>';
+			 					}else if(requirementType == 'ReferredToMe'){
+			 						result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+','+requirements.referId+');getUserContats('+requirements.requirementId+');" href="javascript:void(0)">Refer</a>';
+				 					result = result +'<div class="referWrap" id="refer'+requirements.referId+'">';
+					 				result = result +'<div class="referWrapInn">';
+					 				result = result +'<div id="refertoJobDiv'+requirements.referId+'"></div>';  
+					 				result = result +'</div>';
+					 				result = result +'</div>';
+			 					}
 				 				
 				 				result = result +'</div>';
 				 				result = result +'<div class="openPostDate">';
@@ -1113,14 +1111,12 @@ function searchRequirement(offset){
 										 				}
 										 				
 										 				
-										 				if(requirementType == "CrowdSourcingJobs"){
-										 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+');getUserContats('+requirements.requirementId+');" href="javascript:void(0)">Refer</a>';
-										 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
-											 				result = result +'<div class="referWrapInn">';
-											 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
-											 				result = result +'</div>';
-											 				result = result +'</div>';
-										 				}
+									 					result = result +'<a class="refer" onclick="referToJob('+requirements.requirementId+');getUserContats('+requirements.requirementId+');" href="javascript:void(0)">Refer</a>';
+									 					result = result +'<div class="referWrap" id="refer'+requirements.requirementId+'">';
+										 				result = result +'<div class="referWrapInn">';
+										 				result = result +'<div id="refertoJobDiv'+requirements.requirementId+'"></div>';  
+										 				result = result +'</div>';
+										 				result = result +'</div>';
 										 				
 										 				result = result +'</div>';
 										 				result = result +'<div class="openPostDate">';
