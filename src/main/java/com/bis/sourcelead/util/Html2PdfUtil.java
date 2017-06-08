@@ -108,7 +108,10 @@ public class Html2PdfUtil {
 	 private String replacePlaceHolders(String templateBody, Contracts contracts, OrgLocations orgLocation, Org org) throws Exception {
 	        
 		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-	        String orgName = contracts.getContractOrgLocationId().getOrg().getOrgName();
+		 String orgName = "";
+		 if (!"Full time offer".equalsIgnoreCase(contracts.getContractType())){
+			  orgName = contracts.getContractOrgLocationId().getOrg().getOrgName();
+		 }
 	        /*if(contracts.getOrgRelations().getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 	            orgName = contracts.getOrgRelations().getLocationId().getOrg().getOrgName();
 	        }

@@ -112,6 +112,7 @@ $(document).ready(function(){
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Clients</a> -->
 			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');">Vendors (${contractsCount.totalDraftVendorCount})</a>
 			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients (${contractsCount.totalDraftClientCount})</a>
+			<a href="#" id="Applicants1" class="tabActivation" onclick="tabEnable(this);Check('Applicants');">Applicants (${contractsCount.totalDraftClientCount})</a>
 		</div>
 		<ul>
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
@@ -155,6 +156,7 @@ $(document).ready(function(){
     <div class="clients_wrap_table">
     <div id="vendorContractsList"  class=" overflow-data" ></div>
      <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
+     <div id="applicantsContractsList"  class=" overflow-data" style="display: none"></div>
 	</div>
 	
 </div>
@@ -630,6 +632,7 @@ function getTemplateList(){
 function preparedContractListDraft(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableDraft" class="display" cellspacing="0" width="100%" >';
@@ -793,8 +796,89 @@ function preparedContractListDraft(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	var res = '';
+	 res = res +  '<table id="contractListTableDraft2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.vendorContactName+'">'+appReport.vendorContactName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.startDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.startDateStr+'</div>';
+		         res = res + '</td>';
+		         /* res = res + '<td>';
+		        	 res = res + '<div class="tblminwidth-75">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>'; */
+		         
+		         res = res + '<td>';
+		         if(appReport.reqDocCount!="0"){
+		        	 res = res + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         }	 
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tbldata-dotdot_80">';
+		     	if(appReport.templateSubmissionStatus == "DRAFT"){
+		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		if(appReport.typeOfContract == "New"){
+		     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		if(appReport.typeOfContract == "Custom"){
+		     			res = res + '| <a href="<c:url value="/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		'</sec:authorize>';
+		     		//res = res + '</div>';
+	     	  }
+	     	  else{
+	     		 res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
+	     	  }
+		         res = res + '</div></td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
+	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
+	
 	var draftCount = parseInt(vendorsCount) + parseInt(clientsCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
@@ -805,8 +889,11 @@ function preparedContractListDraft(data){
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res); 
     listContractsPagination();	
     vendorListContractsPagination();
+    appListContractsPagination()
 	
 }
 </script>
@@ -838,11 +925,25 @@ function vendorListContractsPagination(){
        }
     } );
 }
+function appListContractsPagination(){ 
+    $('#contractListTableDraft2').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    } );
+}
 </script>
 
 <script>
 function preparedContractListWFA(data){
 	$("#vendorContractsList").empty();
+    $("#clientContractsList").empty();
     $("#clientContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
@@ -2341,11 +2442,18 @@ function Check(val){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 if(val=="Vendors"){
 			 document.getElementById("clientContractsList").style.display="none";
+			 document.getElementById("applicantsContractsList").style.display="none"; 
 			 document.getElementById("vendorContractsList").style.display="block";
 		 }
 		 if(val=="Clients"){
 			 document.getElementById("vendorContractsList").style.display="none";
+			 document.getElementById("applicantsContractsList").style.display="none"; 
 			 document.getElementById("clientContractsList").style.display="block";
+		 }
+		 if(val=="Applicants"){
+			 document.getElementById("clientContractsList").style.display="none";
+			 document.getElementById("vendorContractsList").style.display="none";
+			 document.getElementById("applicantsContractsList").style.display="block"; 
 		 }
 	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 }

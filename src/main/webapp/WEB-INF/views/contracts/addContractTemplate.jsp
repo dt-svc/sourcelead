@@ -236,7 +236,7 @@
                  <li onclick="copyToClipboard('text_element116')"><i></i><p class="copyText" id="text_element116">[Company Address]</li>
                  <li onclick="copyToClipboard('text_element117')"><i></i><p class="copyText" id="text_element117">[Company City]</li>
                  <li onclick="copyToClipboard('text_element118')"><i></i><p class="copyText" id="text_element118">[Company State]</li>
-                 <li onclick="copyToClipboard('text_element119)"><i></i><p class="copyText" id="text_element119">[Company Country]</li>
+                 <li onclick="copyToClipboard('text_element119')"><i></i><p class="copyText" id="text_element119">[Company Country]</li>
                  <li onclick="copyToClipboard('text_element120')"><i></i><p class="copyText" id="text_element120">[Employee Name]</li>
                  <li onclick="copyToClipboard('text_element121')"><i></i><p class="copyText" id="text_element121">[Join Date]</li>
                  <li onclick="copyToClipboard('text_element122')"><i></i><p class="copyText" id="text_element122">[Rate]</li>

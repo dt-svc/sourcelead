@@ -60,6 +60,12 @@ public class Contracts {
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
+	@Column(name = "JOIN_DATE")
+	private Date joinDate;
+	
+	@Column(name = "WORK_LOCATION")
+	private String workLocation;
+	
 	@Column(name = "INITIATOR_TYPE")
 	private String initiatorType;
 	
@@ -198,16 +204,6 @@ public class Contracts {
 	@Transient
 	private Integer reqDocCount;
 	
-	public Integer getReqDocCount()
-	{
-		return reqDocCount;
-	}
-
-	public void setReqDocCount(Integer reqDocCount)
-	{
-		this.reqDocCount = reqDocCount;
-	}
-
 	@Transient
 	List<Contracts> vendorcontractsList;
 	
@@ -281,6 +277,36 @@ public class Contracts {
 	private String contractWith;
 	
 	
+	public Date getJoinDate()
+	{
+		return joinDate;
+	}
+
+	public void setJoinDate(Date joinDate)
+	{
+		this.joinDate = joinDate;
+	}
+
+	public String getWorkLocation()
+	{
+		return workLocation;
+	}
+
+	public void setWorkLocation(String workLocation)
+	{
+		this.workLocation = workLocation;
+	}
+
+	public Integer getReqDocCount()
+	{
+		return reqDocCount;
+	}
+
+	public void setReqDocCount(Integer reqDocCount)
+	{
+		this.reqDocCount = reqDocCount;
+	}
+
 	public String getContactUserName() {
 		return contactUserName;
 	}
