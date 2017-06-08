@@ -131,4 +131,22 @@ public class JobAlertDaoImpl implements JobAlertDao{
 		}
 		
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getJobAlertCountByEmail(String email) throws Exception
+	{
+		logger.debug("getJobAlertCountByEmail start");
+		Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(jobAlert.id) from JobAlert jobAlert "
+					+ "where jobAlert.email = :email and jobAlert.status = '1' ";
+			
+			List<Long> jobAlertsCount = session.createQuery(query.toString()).setString("email", email).setCacheable(true).list();
+			Integer count = 0;
+			if(jobAlertsCount != null && !jobAlertsCount.isEmpty()){
+					count = jobAlertsCount.get(0).intValue();
+			}
+			return count;
+	}
 }
