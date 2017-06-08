@@ -784,7 +784,7 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					   
-					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
+					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CLOSED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
                             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
@@ -792,6 +792,14 @@ function sideBar(requirementId){
 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
                              '</sec:authorize>';
+                        }else if(json.requirementSubmissionStatus == 'CLOSED' && json.isreceivingApplicants == "Y"){
+                        	 var all = 'all'; 
+                        	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
+ 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
+ 					    	'</sec:authorize>';
+ 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
+                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                              '</sec:authorize>';
                         }
 					   
 					    result = result+'      <div class="clearfix"></div>';
