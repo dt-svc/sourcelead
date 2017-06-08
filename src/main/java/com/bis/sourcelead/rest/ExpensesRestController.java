@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesService;
@@ -46,7 +47,7 @@ public class ExpensesRestController {
 		for(Expenses ex:expensesList){
 			if(null != ex.getProjectMembers())
 			{
-				ex.setProjectMemberId(ex.getProjectMembers().getId().toString());	
+				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
 			}
 			if(null != ex.getStartDate())
 			{
@@ -56,6 +57,42 @@ public class ExpensesRestController {
 			{
 				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
 			}
+		}
+		resultJson = commonUtil.toJSON(expensesList);
+		return resultJson;
+	 }
+	
+	@RequestMapping(value = "/getIndividualExpense")
+	 public String getIndividualExpense(HttpServletRequest request,String expenseId) throws Exception {
+
+		String resultJson;
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Expenses> expensesList = expensesService.getIndividualExpense(orgLoc,loginUser,expenseId);
+		for(Expenses ex:expensesList){
+			
+			if(null != ex.getExpensesEntries() && !ex.getExpensesEntries().isEmpty()){
+				for(ExpensesEntries entry :ex.getExpensesEntries()){
+					System.out.println(entry.getId());
+				}
+			}
+			if(null != ex.getProjectMembers())
+			{
+				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
+			}
+			if(null != ex.getStartDate())
+			{
+			ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+			}
+			if(null != ex.getEndDate())
+			{
+				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+			}
+			if(null != ex.getExpensesEntries())
+			{
+				List<ExpensesEntries> expensesEntriesList = expensesService.getExpensesEntries(expenseId);
+			}
+			
 		}
 		resultJson = commonUtil.toJSON(expensesList);
 		return resultJson;

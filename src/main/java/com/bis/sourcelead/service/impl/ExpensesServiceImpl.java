@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesService;
@@ -30,10 +31,26 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Override
 	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser) {
 		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId());
-		
-		return expensesList;
-		
-		}
 
+		return expensesList;
+
+	}
+	
+	@Override
+	public List<Expenses> getIndividualExpense(OrgLocations orgLoc,User loginUser,String expenseId) {
+		List<Expenses> expensesList =  expensesDao.getIndividualExpense(orgLoc.getId(),loginUser.getId(),expenseId);
+
+		return expensesList;
+
+	}
+	
+	@Override
+	public List<ExpensesEntries> getExpensesEntries(String expenseId) {
+		List<ExpensesEntries> expensesEntriesList =  expensesDao.getExpensesEntries(expenseId);
+
+		return expensesEntriesList;
+
+	}
+	
 		
 }

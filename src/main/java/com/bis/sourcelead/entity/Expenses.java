@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -84,8 +85,8 @@ private static final long serialVersionUID = 1L;
 	@Enumerated(EnumType.STRING)
 	private Submission_Status expenseStatus;
 	
-	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SELECT)
+	@OneToMany(fetch=FetchType.EAGER,mappedBy="expensesId",cascade = CascadeType.ALL)
+//    @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
 	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
@@ -100,6 +101,9 @@ private static final long serialVersionUID = 1L;
 	
 	@javax.persistence.Transient
 	private String endDateStr;
+	
+	@javax.persistence.Transient
+	private String expenseEntriesList;
 	
 	
 	public Long getId() {
@@ -268,6 +272,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public String getExpenseEntriesList() {
+		return expenseEntriesList;
+	}
+
+	public void setExpenseEntriesList(String expenseEntriesList) {
+		this.expenseEntriesList = expenseEntriesList;
 	}
 
 	
