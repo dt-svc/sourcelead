@@ -716,7 +716,7 @@ public class InvoiceRestController {
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId && !"".equalsIgnoreCase(projectId)) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -744,22 +744,27 @@ public class InvoiceRestController {
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				String billableHours = String.valueOf(sah.getBillableHours());;
-				String arr[] = billableHours.split("\\.");
 				StringBuilder sb = new StringBuilder();
-				if (arr[0].length() == 2) {
-					sb.append("0").append(arr[0]);
-				}else if(arr[0].length() == 3){
-					sb.append(arr[0]);
-				}
-				else if (arr[0].length() == 1) {
-					sb.append("00").append(arr[0]);
-				}
-				if (arr[1].length() == 1) {
-					sb.append(":").append("0").append(arr[1]);
-				}
-				else {
-					sb.append(":").append(arr[1]);
+				if(null != sah.getBillableHours()){
+					String billableHours = String.valueOf(sah.getBillableHours());;
+					String arr[] = billableHours.split("\\.");
+					if (arr[0].length() == 2) {
+						sb.append("0").append(arr[0]);
+					}else if(arr[0].length() == 3){
+						sb.append(arr[0]);
+					}
+					else if (arr[0].length() == 1) {
+						sb.append("00").append(arr[0]);
+					}
+					if (arr[1].length() == 1) {
+						sb.append(":").append("0").append(arr[1]);
+					}
+					else {
+						sb.append(":").append(arr[1]);
+					}
+					
+				}else{
+					sb.append("0");
 				}
 				projectMember.setTotalHours(sb.toString());
 				projectMembersList.add(projectMember);
@@ -811,7 +816,7 @@ public class InvoiceRestController {
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if(null != projectId && !"".equalsIgnoreCase(projectId)){
-		sahList =submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate);
+		sahList =submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate,contractType);
 		}
 		if(null !=sahList && sahList.size() >0){
 			for(SubmissionApproverHierarchy sah : sahList){
@@ -832,24 +837,27 @@ public class InvoiceRestController {
 					}
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
-					String billableHours = String.valueOf(sah.getBillableHours());;
-					String arr[] = billableHours.split("\\.");
+					String billableHours = String.valueOf(sah.getBillableHours());
 					StringBuilder sb = new StringBuilder();
-					if(arr[0].length()==2){
-						sb.append("0").append(arr[0]);
-					}else if(arr[0].length()==3){
-						sb.append(arr[0]);	
-					}
-					else if(arr[0].length()==1){
-						sb.append("00").append(arr[0]);	
-					}
-					if(arr[1].length()==1){
-						sb.append(":").append("0").append(arr[1]);
+					if(sah.getBillableHours() !=null){
+						String arr[] = billableHours.split("\\.");
+						if(arr[0].length()==2){
+							sb.append("0").append(arr[0]);
+						}else if(arr[0].length()==3){
+							sb.append(arr[0]);	
+						}
+						else if(arr[0].length()==1){
+							sb.append("00").append(arr[0]);	
+						}
+						if(arr[1].length()==1){
+							sb.append(":").append("0").append(arr[1]);
+						}else{
+							sb.append(":").append(arr[1]);
+						}
 					}else{
-						sb.append(":").append(arr[1]);
+						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-					
 					List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,orgRelationId,contractType);
 					if(null != contractList && contractList.size() >0){
 						projectMember.setContractsList(contractList);
