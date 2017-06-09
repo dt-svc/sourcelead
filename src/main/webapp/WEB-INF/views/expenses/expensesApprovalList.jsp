@@ -2,7 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
+ <script src="js/masterHeaderAction.js"></script>
 <script type="text/javascript">
 		window.onload = function () {
 			getExpensesApprovalDataList();
@@ -55,7 +55,7 @@ margin-top: 3px;
 			<div class="pull-left">
 				<h2>Expenses Approval</h2>
 			</div>
-			<div class="pull-right brud-crum">Home &raquo; ExpensesApproval</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; ExpensesApproval</div>
 		</section>
 		<!-- Project -->
 		<div class="timesheet_out">
@@ -80,7 +80,11 @@ margin-top: 3px;
 	</section>
 </section>
 
+<div class="side_mask"><div class="proj_close" onclick="activeTabExpenseApproval();"></div></div>
 
+<div class="time_appr_side_wrap noPad">
+<div id="expensesApprovalViewDiv"></div>
+</div>
 
 <script type="text/javascript">
 function getExpensesApprovalDataList(){
@@ -116,12 +120,28 @@ $.ajax({
 	result = result+' <b>'+data.expensesEmployeeUserId+'</b>';
 	result = result+' </span></div>';
 	result = result+' </td>';
-	result = result+' <td><div><span>'+data.expenseEmpUserType+'</span><br><span>'+data.userTypeVendorName+'</span></div></td>';
-	result = result+' <td><div><span>'+data.expensesProjectName+'</span><br><span>'+data.expenseId.clientName+'</span></div></td>';
+	if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
+		result = result+' <td><div><span>'+data.expenseEmpUserType+'</span><br><span>'+data.userTypeVendorName+'</span></div></td>';	
+	}else{
+		result = result+' <td><div><span>'+data.expenseEmpUserType+'</span></div></td>';	
+	}
+	
+	if(data.expenseId.clientName != null && data.expenseId.clientName != '' && data.expenseId.clientName !='undefined'){
+		result = result+' <td><div><span>'+data.expensesProjectName+'</span><br><span>'+data.expenseId.clientName+'</span></div></td>';	
+	}else{
+		result = result+' <td><div><span>'+data.expensesProjectName+'</span></div></td>';	
+	}
 	result = result+' <td><div class="sm">'+data.expenseStartDateString+'</div></td>';
-	result = result+' <td><div class="sm">'+data.expenseEndDateString+'</div></td>';
+	
+	if(data.expenseEndDateString != null && data.expenseEndDateString != '' && data.expenseEndDateString !='undefined'){
+		result = result+' <td><div class="sm">'+data.expenseEndDateString+'</div></td>';	
+	}else{
+		result = result+' <td><div class="sm">--</div></td>';
+	}
+	
+	
 	result = result+' <td><div class="sm">'+data.expenseId.totalAmount+'</div></td>';
-	result = result+' <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">'+data.expenseId.totalAmount+'</a></div></td>';
+	result = result+' <td><div class="sm"><a href="javascript:void(0)" onclick="expenseApprovalView(\''+data.expenseId.id+'\');" class="ExpAmount">'+data.expenseId.totalAmount+'</a></div></td>';
 	result = result+' <td><div id="status'+data.expenseId.id+'">'+data.expenseApprovalStatus+'</div></td>';
 	
 	result = result+' <td>';
@@ -297,6 +317,218 @@ function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
 	    });   
 }
 </script>
+
+<script>
+    function expenseApprovalView(expenseId){
+    var sourceleadUrl = '${sourceleadUrl}';
+    $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
+	$(".side_mask").fadeIn(200);
+	$("body").css('overflow-y', 'hidden');
+    $.ajax({
+         type : "POST",
+         url: sourceleadUrl+"/getExpensesApprovalDetailsByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId,       
+         success :function(data) {
+        		var json = JSON.parse(data);
+        		prepareCategoryDivForApprovalPopUp(json.id);
+        	    var result = '';
+        		result = result +'<div class="project_side_wrap_inn">';
+        		result = result +'<h1>Expense name here</h1>';
+        		result = result +'<div class="project_side_wrap_inn_tabs">';
+        		result = result +'<ul class="project-tabs-menu">';
+        		result = result +'<li class="current"><a href="#tab-1">Details</a></li>';
+        		result = result +'<div class="clearfix"></div>';
+        		result = result +'</ul>';
+        		result = result +'<div class="project_tabs">';
+        		result = result +'<div id="tab-1" class="project_tabs_inn">';
+        		result = result +'<div class="project_tabs_inn_table">';
+        		result = result +'<div class="project_details project_detailsExp">';
+        		result = result +'<div class="Expdit">';
+        		result = result +'<a href="#" class="btn btn-primary">Status</a>';
+        		result = result +'<a href="add-expense.html" class="btn btn-default ml10"><i class="fa fa-pencil-square-o"></i> &nbsp;Edit</a>';
+        		result = result +'</div>';              
+        	    result = result +'<div class="clearfix"></div>';
+        		result = result +'<div class="project_details_cta">';
+        		result = result +'<strong>Expenses Id:</strong><span>'+json.expenseId+'</span><div class="clearfix"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="project_details_cta">';
+        		result = result +'<strong>Project Name:</strong><span>'+json.projectMembers.projects.projectName+'</span><div class="clearfix"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="project_details_cta">';
+        		result = result +'<strong>Client:</strong><span>Client 1</span><div class="clearfix"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="project_details_cta">';
+        		result = result +'<strong>Start date:</strong><span>'+json.startDateStr+'</span><div class="clearfix"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="project_details_cta">';
+        		result = result +'<strong>End date:</strong><span>'+json.endDateStr+'</span><div class="clearfix"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="project_details_cta">';
+        		result = result +'<strong>No of Expenses:</strong><span>50</span><div class="clearfix"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="project_details_cta">';
+        		result = result +'<strong>Amount:</strong><span>'+json.totalAmount+'</span><div class="clearfix"></div>';
+        		result = result +'</div>';	
+        		result = result +'<div class="clearfix"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="project_wrap_table expensTableView">';
+        		result = result +'<div id="expensesApprovalCategoryDiv"></div>';
+        		result = result +'</div>';
+        		result = result +'<div class="expBtnApp">';
+        		result = result +'<input type="button" class="btn btn-success" value="Approve">';
+        		result = result +'<input type="button" class="btn btn-danger" value="Reject">';
+        		result = result +'</div>';
+        		result = result +'</div>';
+        		result = result +'</div>';        
+        		result = result +'</div>';
+        		result = result +'</div>';       
+        		result = result +'<div class="project_inn_mask"></div>';
+        		result = result +'<div class="project_error">';
+        		result = result +'<p>Delete conformation message....</p>';
+        		result = result +'<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a>'; 
+        		result = result +'</div>';	
+        		result = result +'</div>';
+   		$("#expensesApprovalViewDiv").val('');
+   	    $("#expensesApprovalViewDiv").append(result);					    
+   		$("#tab-1").show();
+   	    $(".project-tabs-menu a").click(function(event) {
+   	        event.preventDefault();
+   	        $(this).parent().addClass("current");
+   	        $(this).parent().siblings().removeClass("current");
+   	        var tab = $(this).attr("href");
+   	        $(".project_tabs_inn").not(tab).css("display", "none");
+   	        $(tab).fadeIn();
+   	    });
+      }
+  });
+}
+</script>   
+    
+    
+<script>
+function prepareCategoryDivForApprovalPopUp(expenseId){
+	 var sourceleadUrl = '${sourceleadUrl}';
+	 $.ajax({
+         type : "POST",
+         url: sourceleadUrl+"/getExpensesApprovalCategoryByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId,       
+         success :function(data) {
+        		var jsonList = JSON.parse(data);
+        		var result = '';
+        		result = result +'<table>';
+        		result = result +'<thead>';
+        		result = result +'<tr>';
+        		result = result +'<th>Exp Category</th>';
+        		result = result +'<th>Date</th>';
+        		result = result +'<th>Payment Mode</th>';
+        		result = result +'<th>Currency</th>';
+        		result = result +'<th>Description</th>';
+        		result = result +'<th>Amount</th>';
+        		result = result +'</tr>';
+        		result = result +'</thead>';	
+        		result = result +'<tbody>';
+        		for(var i=0;i<jsonList.length;i++){
+            	var json = jsonList[i];
+        		result = result +'<tr>';
+        		result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Category 1</div></td>';
+        		if(json.expenseDateString != null && json.expenseDateString !='' && json.expenseDateString !='undefined'){
+        		result = result +'<td><div>'+json.expenseDateString+'</div></td>';
+        		}else{
+        		result = result +'<td><div>--</div></td>';
+        		}
+        		if(json.paymentMode != null && json.paymentMode !='' && json.paymentMode !='undefined'){
+        		result = result +'<td><div>'+json.paymentMode+'</div></td>';
+        		}else{
+        		result = result +'<td><div>--</div></td>';	
+        		}
+        		if(json.currencyType != null && json.currencyType !='' && json.currencyType !='undefined'){
+        		result = result +'<td><div>'+json.currencyType+'</div></td>';
+        		}else{
+        		result = result +'<td><div>--</div></td>';	
+        		}
+        		if(json.description != null && json.description !='' && json.description !='undefined'){
+        		result = result +'<td><div class="tbldata-dotdot-me">'+json.description+'</div></td>';
+        		}else{
+        		result = result +'<td><div>--</div></td>';	
+        		}
+        		if(json.amount != null && json.amount !='' && json.amount !='undefined'){
+        		result = result +'<td><div>'+json.amount+'</div></td>';
+        		}else{
+        		result = result +'<td><div>--</div></td>';	
+        		}
+        		result = result +'</tr>';
+        		}
+        		result = result +'<tr class="ExpDe">';
+        		result = result +'<td colspan="6">';
+        		result = result +'<div class="expDetails">';
+        		result = result +'<ul>';
+        		result = result +'<li><strong>Exp Category :</strong><span> Category 1</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Date :</strong><span> 20/09/2017</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Payment Mode :</strong><span> Cash</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Currency :</strong><span> USD</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Amount :</strong><span> 20,000</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Purpose :</strong><span> Purpose text</span><div class="clearfix"></div></li>';
+        		result = result +'<li><strong>Description :</strong><p> Description Description Description Description</p>';
+        		result = result +'<div class="clearfix"></div>';
+        		result = result +'</li>';
+        		result = result +'<div class="clearfix"></div>';
+        		result = result +'</ul>';
+        		result = result +'</div>';
+        		result = result +'</td>';			
+        		result = result +'</tr>';						
+        		result = result +'</tbody>';
+        		result = result +'</table>';
+        		$("#expensesApprovalCategoryDiv").val('');
+           	    $("#expensesApprovalCategoryDiv").append(result);
+       }
+	 });
+}    
+</script>
+    
+ <script>
+function activeTabExpenseApproval(){
+	$(".project_side_wrap").removeClass("project_side_wrap_active");
+    $(".side_mask").fadeOut(200);
+    $("body").css('overflow-y', 'scroll');
+    $("#expensesApprovalViewDiv").empty();
+    $("#expensesApprovalCategoryDiv").empty();
+}
+</script>   
+    
+<script>
+//  Timesheet approval side bar
+$(document).ready(function() {
+    $(".timesheet_appr_table a").click(function(){
+		$(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
+		$(".side_mask").fadeIn(200);
+		$("body").css('overflow-y', 'hidden');
+	});
+    $(".proj_close, .time_cancel").click(function(){
+		$(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+});
+	
+$(document).ready(function() {
+    $("#hover").mouseenter(function(){
+		$(".app_error_mes").addClass("app_error_mes_active");
+	});
+    $("#hover").mouseleave(function(){
+		$(".app_error_mes").removeClass("app_error_mes_active");
+	});	
+});
+</script>     
+    
+<script>
+// Error pop ExpShow
+$(document).ready(function() {
+    $(".ExpShow").click(function(){
+		/*$(".ExpDe").slideToggle(100); fa-plus-square-o*/
+		$(this).parent().parent().next().slideToggle(100);
+		$(this).find("i").toggleClass("closExp");
+	});
+});	
+</script>   
+
     
  <script>
 function pagination(){ 

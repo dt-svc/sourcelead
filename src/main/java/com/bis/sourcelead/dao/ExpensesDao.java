@@ -10,4 +10,6 @@ import java.util.List;
 public interface ExpensesDao<Expenses> {
 	
 	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId);
+
+	public Expenses getExpenseByExpenseId(long expenseId);
 }

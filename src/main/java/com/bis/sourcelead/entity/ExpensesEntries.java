@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,7 +24,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.PaymentModes;
-import com.bis.sourcelead.enums.Project_Status;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
@@ -83,6 +82,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
+	@Transient
+	private String expenseDateString;  
+	
 	public Long getId() {
 		return id;
 	}
@@ -204,6 +206,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getExpenseDateString() {
+		return expenseDateString;
+	}
+
+	public void setExpenseDateString(String expenseDateString) {
+		this.expenseDateString = expenseDateString;
 	}
 
 	}
