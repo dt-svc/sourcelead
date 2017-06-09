@@ -179,7 +179,6 @@ function validate_fileupload(fileName)
 <script>
 	function saveAddExpensesData(status) {
 		$("#maxRecCount").val(recCount);
-		/* $("#addExpenseEntity").empty(); */
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
@@ -274,7 +273,7 @@ function getClientBasedOnSelectedProject(){
 	var projectMemberId = document.getElementById("projectMemberId").value;
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectId?projectMemberId="+projectMemberId,       
+	       url: sourceleadUrl+"/getClientByProjectMemberId?projectMemberId="+projectMemberId,       
 	       success :function(data) {
 	    	   if(data != null && data !='undefined' && data !=''){
 	    	   var json = JSON.parse(data);

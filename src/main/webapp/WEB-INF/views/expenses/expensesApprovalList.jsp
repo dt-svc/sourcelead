@@ -8,8 +8,47 @@
 			getExpensesApprovalDataList();
 		 };
 </script>
+<style type="text/css">
 
 
+
+.glyphicon-none:before {
+    content: "\2122";
+    color: transparent !important;
+}
+.timesheet-content {
+background: #fff;
+min-height: 100px;
+clear:both;
+display: inline-block;
+width:100%;
+}
+.timesheet-content #example_filter {
+position: relative !important;
+top:0px !important;
+}
+.timesheet_appr_table.overflowVisible {
+overflow: visible !important;
+margin-top: 45px;
+}
+.timesheet_appr_table.overflow_Visible {
+overflow: visible !important;
+margin-top: 3px;
+}
+.time_pop {
+ z-index: 99999;
+}
+</style>
+<div id='rejectedPopup'></div>
+<div id='reOpenPopup'></div>
+<div id='reOpenRejectedPopup'></div>
+<div class="side_mask"><div class="proj_close"></div></div>	
+<div class="time_appr_side_wrap">
+	<div class="time_appr_side_wrap_inn">
+	 	<div id="timesheetPopUp"></div>
+	</div>
+</div>	
+<div class="mask_time"></div>	
 <section class="content-header clearfix">
 	<section class="content-wraper">
 		<section class="content-header clearfix">
@@ -51,7 +90,7 @@ $.ajax({
      url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}",       
      success :function(data) {
     var result = "";
-	result = result+' <table id="expensesApprovalPagination">';
+	result = result+' <table id="example">';
 	result = result+' <thead>';
 	result = result+' <tr>';
 	result = result+' <th>Employee</th>';
@@ -69,7 +108,7 @@ $.ajax({
 	var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
-	result = result+' <tr>';
+	result = result+' <tr id = "row'+data.expenseId.id+'">';
 	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+data.expensesUserid+'" alt="Profile Image" class="img-circle img-responsive">';
 	result = result+' <span>';
 	result = result+' <b>'+data.expenseEmpUserFirstNameLastName+'</b>';
@@ -83,9 +122,33 @@ $.ajax({
 	result = result+' <td><div class="sm">'+data.expenseEndDateString+'</div></td>';
 	result = result+' <td><div class="sm">'+data.expenseId.totalAmount+'</div></td>';
 	result = result+' <td><div class="sm"><a href="javascript:void(0)" class="ExpAmount">'+data.expenseId.totalAmount+'</a></div></td>';
-	result = result+' <td><div>'+data.expenseApprovalStatus+'</div></td>';
-	result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';              
-	result = result+' </tr>';
+	result = result+' <td><div id="status'+data.expenseId.id+'">'+data.expenseApprovalStatus+'</div></td>';
+	
+	result = result+' <td>';
+	var tdSpanLength = 9;
+	 if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus == 'NEW'){
+		 result = result+'<div class="sm text-center">--</div>';
+     }
+     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus == 'SUBMITTEDFORAPPROVAL'){
+        result = result+"<div class='sm text-center'id='action"+data.expenseId.id+"'>"
+        result = result+ " <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
+        result = result+ "|<i class='fa fa-times' title='Reject'  alt='Rejected' onclick='rejectExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
+ 	    result = result+"</div>"; 
+ 	                    
+    }
+    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REJECTED'){
+    	  result = result+" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>";
+    	 result = result+"  <i class='glyphicon glyphicon-comment' id='"+data.expenseId.id+"' onclick='rejectedMessage(\"rejectedMessage"+data.expenseId.id+"\");'>";
+	 	 result = result+" <div class='app_error_mes' id='rejectedMessage"+data.expenseId.id+"'>"+data.rejectedReason+"</div>";
+	 	 result = result+" </i><br>By : "+data.actionPerformedBy;
+	 	 result = result+" </div>";
+    }
+    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
+         result = result+" <div class='sm text-center'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
+    }  
+     result = result+' </td>'; 
+/* 	 result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';       */        
+	 result = result+' </tr>';
 	 }
 	result = result+' </tbody>';
 	result = result+' </table>';
@@ -95,12 +158,149 @@ $.ajax({
 });
 }
 </script>
+
+<script>
+function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
+		 var msg = $("#reject"+expenseId+"message").val(); 
+		 var encodeMsg = msg;
+		 if(encodeMsg.match(/^[^\s-](.*)*$/) != null){
+			 cancelRejectExpense(expenseId);
+			 var encodeMsg = encodeURIComponent(msg);
+			 $("#rejectReasonDiv").empty();
+			 var sourceleadUrl ='${sourceleadUrl}';
+		     var rowHtmlContent =  $("#row"+expenseId).html();
+		     
+		     var firstName =  '${SourceLeadWeb_user.firstName}';
+			 if(firstName == '' || firstName == 'undefined' || firstName == null ){
+				firstName = '';
+			 }
+			 var lastName = '${SourceLeadWeb_user.lastName}';
+			 if(lastName == '' || lastName == 'undefined' || lastName == null ){
+				  lastName = '';
+		     }
+			 $("#row"+expenseId).empty();
+			 $("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
+		     $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
+		    $.ajax({
+		    type: "POST",
+		    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&approvalStatus=REJECTED"+"&rejectedReason="+encodeMsg,       
+		    success: function(data) {    
+		   	   // approvalList();
+		       if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+		    	   var table = $('#example').DataTable();
+			   		 table.row('#row'+expenseId).remove().draw( false );
+			   }
+		   	   else{
+		   		  	  $("#row"+expenseId).empty();
+		 	    	  $("#row"+expenseId).html(rowHtmlContent);
+		 	    	  $("#status"+expenseId).html("REJECTED");
+		 	    	  $("#action"+expenseId).empty();
+		 	    	  $("#action"+expenseId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+expenseId+"' onclick='rejectedMessage(\"rejectedMessage"+expenseId+"\");'><div class='app_error_mes' id='rejectedMessage"+expenseId+"'>"+msg+"</div></i><b class='Rname'>By :"+firstName+" "+lastName+"</b>");
+		   	   }
+		      }
+		    }); 
+		 }
+		 else{
+			 if(msg){
+					$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+				}else{
+					$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+				}
+			}
+	    
+	   
+	}
+    $(document).on("mouseover", ".glyphicon-comment", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+		});	
+		$(document).on("mouseleave", ".glyphicon-comment", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+    });	
+	function rejectedMessage(local){ 
+	   $("#"+local).slideToggle(200);
+	   $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
+	       e.stopPropagation();
+	   });	
+	   
+	}
+	
+	function cancelRejectExpense(expenseId){
+			 $(".mask_time").fadeOut(200);
+			 $("#reject"+expenseId+"panel").slideUp(200);
+	}
+	function rejectExpenseByExpenseId(expenseId,tdSpanSize,from){ 
+	    $("#rejectReasonDiv").empty();
+	    $("#reject"+expenseId+"message").val(''); 
+	    var result = "";
+	    result = result +'<div class="time_appr_rejct_pop" id="reject'+expenseId+'panel" style="top:25%">';
+		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" ></textarea>';
+		result = result + ' <div id="rejectReasonDiv"/>';
+		result = result +'<a href="#" onClick="saveRejectExpenseByExpenseId(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
+		result = result +'</div>';
+		result = result +'</div>';
+		$("#rejectedPopup").append(result);
+	    $(".mask_time").fadeIn(200); 
+		$("#reject"+expenseId+"panel").slideToggle(200);
+		
+	}
+</script>
+<script>	
+	// close popup
+	$(document).ready(function() {
+	    $(".timesheet_appr_table .fa-times").click(function(){
+			$(".mask_time").fadeIn(200);
+			$(".time_appr_rejct_pop").slideToggle(200);
+		});
+	    $(".time_appr_rejct_pop a").click(function(){
+			$(".mask_time").fadeOut(200);
+			$(".time_appr_rejct_pop").slideUp(200);
+		});	
+	});
+</script>
    
-   
+  
+  <script>
+  function approveExpenseByExpenseId(expenseId,tdSpanSize,from){
+		//$("#timesheetApprList").empty();
+		var rowHtmlContent =  $("#row"+expenseId).html();
+		 var firstName =  '${SourceLeadWeb_user.firstName}';
+		 if(firstName == '' || firstName == 'undefined' || firstName == null ){
+			firstName = '';
+		 }
+		 var lastName = '${SourceLeadWeb_user.lastName}';
+		 if(lastName == '' || lastName == 'undefined' || lastName == null ){
+			  lastName = '';
+	     }
+		$("#row"+expenseId).empty();
+		$("#row"+expenseId).html("<td colspan='"+tdSpanSize+"'  id='loading"+expenseId+"'></td>");
+	    $("#loading"+expenseId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
+	    var rejectedReason = '' ;
+        var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+	    type: "POST",
+	    url: sourceleadUrl+"/saveExpenseApprovalStatusByExpenseId?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+		    success: function(data) {
+	        	 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+			    	 var table = $('#example').DataTable();
+			    	 table.row('#row'+expenseId).remove().draw( false );
+	        	 }
+	        	 else{
+	        		 $("#row"+expenseId).empty();
+			    	 $("#row"+expenseId).html(rowHtmlContent);
+			    	 $("#status"+expenseId).html("APPROVED");
+			    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+firstName+" "+lastName+"</b>"); 
+	        	   }
+		    	 
+		    }
+	    });   
+}
+</script>
     
  <script>
 function pagination(){ 
-    $('#expensesApprovalPagination').DataTable({ 
+    $('#example').DataTable({ 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,

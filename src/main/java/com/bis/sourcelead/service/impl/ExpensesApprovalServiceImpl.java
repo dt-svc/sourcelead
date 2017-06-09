@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,23 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 		 }
 		return expApperoverHierarchy;
+	}
+
+
+
+
+	@Override
+	public ExpensesApproverHierarchy updateSubmissionApproverHierarchy(
+			ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception {
+		return expensesApprovalDao.updateSubmissionApproverHierarchy(expensesApproverHierarchy);
+	}
+
+
+
+
+	@Override
+	public void updateApprovalStatusByApproverForExpense(Long expenseId, Long approverUserId, String status,
+			String rejectedReason) throws Exception {
+		 expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason);
 	}
 }

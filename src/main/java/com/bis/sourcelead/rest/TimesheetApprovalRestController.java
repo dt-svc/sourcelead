@@ -553,14 +553,14 @@ public class TimesheetApprovalRestController {
      	                      .append(format.format(actualStartDate))
      	                     .append("\",\"").append(format.format(actualEndDate))
      	                     .append("\",").append(tdSpanLength).append(",\"").append("approval").append("\");'></i></div>");
-      }
-	      if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
+        }
+	   if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
      	 timesheetApprovalDiv.append(" <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>");
      	 timesheetApprovalDiv.append(" <i class='glyphicon glyphicon-comment' id='").append(projectMember.getId()).append("' onclick='rejectedMessage(\"rejectedMessage").append(projectMember.getId()).append("\");'>");
      	 timesheetApprovalDiv.append(" <div class='app_error_mes' id='rejectedMessage").append(projectMember.getId()).append("'>").append(sah.getRejectedReason()).append("</div>");
      	 timesheetApprovalDiv.append(" </i><br>By : ").append(sah.getActionPerformedBy());
      	 timesheetApprovalDiv.append(" </div>");
-     }
+        }
 	     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED){
      	timesheetApprovalDiv.append(" <div class='sm text-center'> <h3>Approved</h3><br>By : ").append(sah.getActionPerformedBy()).append("</div>");
      }  
