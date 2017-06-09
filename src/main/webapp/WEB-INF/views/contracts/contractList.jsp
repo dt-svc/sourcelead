@@ -1728,6 +1728,7 @@ function appListContractsPaginationWTS(){
 function preparedContractListWTV(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTV" class="display" cellspacing="0" width="100%" >';
@@ -1963,7 +1964,7 @@ function preparedContractListWTV(data){
 	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var fullTimeCount = fullTimeoffercontractsList.length;
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
 	var verifyCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
@@ -2285,7 +2286,7 @@ function preparedContractListFinalize(data){
 
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var fullTimeCount = fullTimeoffercontractsList.length;
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
 	var finalisedCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);;
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
@@ -2391,6 +2392,7 @@ function applicantsContractsPaginationFinalize(){
 function preparedContractListExpired(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableEXP" class="display" cellspacing="0" width="100%" >';
@@ -2598,7 +2600,7 @@ function preparedContractListExpired(data){
 
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var fullTimeCount = fullTimeoffercontractsList.length;
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
 	var expiredCount = parseInt(vendorsCount) + parseInt(clientsCount) + parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
@@ -2704,6 +2706,7 @@ function applicantsContractsPaginationEXP(){
 function preparedContractListRejected(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableREJ" class="display" cellspacing="0" width="100%" >';
@@ -2942,7 +2945,7 @@ function preparedContractListRejected(data){
 	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var fullTimeCount = fullTimeoffercontractsList.length;
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
 	var rejectedCount = parseInt(vendorsCount) + parseInt(clientsCount)+ parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
