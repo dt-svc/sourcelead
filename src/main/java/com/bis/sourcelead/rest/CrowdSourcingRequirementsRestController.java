@@ -50,6 +50,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.SavedJobsDao;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
@@ -67,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.SavedJobs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -78,6 +80,7 @@ import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SavedJobsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -135,6 +138,9 @@ public class CrowdSourcingRequirementsRestController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	SavedJobsService savedJobsService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -173,7 +179,7 @@ public class CrowdSourcingRequirementsRestController {
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    df.setTimeZone(TimeZone.getTimeZone("GMT"));
 	    
-	    if(isNullOrEmpty(requirementType) || (!isNullOrEmpty(requirementType) && !requirementType.equalsIgnoreCase("ReferredToMe"))){
+	    if(isNullOrEmpty(requirementType) || (!isNullOrEmpty(requirementType) && !requirementType.equalsIgnoreCase("ReferredToMe") && !requirementType.equalsIgnoreCase("SavedJobs"))){
 	    
 	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 	     if(requirementType.equalsIgnoreCase("OpenJobs")){
@@ -310,6 +316,14 @@ public class CrowdSourcingRequirementsRestController {
 	 	    		   }
 	 	    		   
 	 	    	   }
+	 	    	    
+	 	    	    SavedJobs savedJobs = savedJobsService.getSavedJobsByrequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
+	 	    	    if(null != savedJobs){
+	 	    	    	requirementIndex.setIsJobSaved(Constants.YES);
+	 	    	    }else{
+	 	    	    	requirementIndex.setIsJobSaved(Constants.NO);
+	 	    	    }
+	 	    	    
 	 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
 	 	    	    requirementList.add(requirementIndex);
 	 	    	}
@@ -400,14 +414,118 @@ public class CrowdSourcingRequirementsRestController {
     					  requirementIndex.setRewardFlatRateType(refer.getRequirementId().getRewardFlatRateType());
     					  requirementIndex.setRewardGuaranteePeriod(refer.getRequirementId().getRewardGuaranteePeriod());
 						  requirementIndex.setRequirementUUID(refer.getRequirementId().getRequirementUUID());
-    					 
-    					 requirementList.add(requirementIndex);
+						  requirementIndex.setIsJobSaved(Constants.YES);
+						  
+						   SavedJobs savedJobs = savedJobsService.getSavedJobsByrequirementIdAndUserId(refer.getRequirementId().getId(), user.getId());
+			 	    	    if(null != savedJobs){
+			 	    	    	requirementIndex.setIsJobSaved(Constants.YES);
+			 	    	    }else{
+			 	    	    	requirementIndex.setIsJobSaved(Constants.NO);
+			 	    	    }
+						  
+    					  requirementList.add(requirementIndex);
 	    			 } 
     			 }else{
     				 isELKSearchEnable = false;
     			 }
     			 
     		 }
+	    	 
+	    	 
+	    	 if(requirementType.equalsIgnoreCase("SavedJobs")){
+	    		 
+	    		 List<SavedJobs> savedJobsList = savedJobsService.getSavedJobsListByUserId(user.getId());
+	    		 if(null != savedJobsList && savedJobsList.size() > 0){
+	    			 
+	    			 for(SavedJobs savedJobs : savedJobsList){
+	    				 
+	    				 
+	    				 RequirementIndex requirementIndex = new RequirementIndex();
+    					 requirementIndex.setRequirementId(savedJobs.getRequirementId().getId());
+    					 requirementIndex.setJobTitle(savedJobs.getRequirementId().getJobTitle());
+    					 requirementIndex.setJobId(savedJobs.getRequirementId().getJobId());
+    					 requirementIndex.setPostedOrg(savedJobs.getRequirementId().getPostedOrgName());
+    					 requirementIndex.setJobType(savedJobs.getRequirementId().getJobType());
+    					 requirementIndex.setJobId(savedJobs.getRequirementId().getJobId());
+    					 requirementIndex.setMinExperience(savedJobs.getRequirementId().getMinExp());
+    					 requirementIndex.setMaxExperience(savedJobs.getRequirementId().getMaxExp());
+    					 requirementIndex.setCountry(savedJobs.getRequirementId().getCountry());
+    					 requirementIndex.setState(savedJobs.getRequirementId().getState());
+    					 requirementIndex.setCity(savedJobs.getRequirementId().getCity());
+    					 requirementIndex.setIsCrowdSourcingJob(savedJobs.getRequirementId().getIsCrowdSourcing());
+    					 if(!isNullOrEmpty(savedJobs.getRequirementId().getRate())){
+    						 requirementIndex.setRate(Float.parseFloat(savedJobs.getRequirementId().getRate()));
+    					 }
+    					
+    					 requirementIndex.setRateType(savedJobs.getRequirementId().getRateType());
+    					 requirementIndex.setCurrentRateCurrency(savedJobs.getRequirementId().getCurrencyCode());
+    					 
+    					 if(!isNullOrEmpty(savedJobs.getRequirementId().getSkills())){
+    						 String[] skills = savedJobs.getRequirementId().getSkills().split(",");
+    						 List<String> skillsList = new ArrayList<String>();
+    						 for(int i = 0 ; i < skills.length; i++ ){
+    							 skillsList.add(skills[i]);
+    						 }
+        					 requirementIndex.setSkillsList(skillsList);
+    					 }
+    					 
+    					  if(!isNullOrEmpty(savedJobs.getRequirementId().getAppliedProfessionals())){
+    	 	    			  List<Long> userId = new ArrayList<Long>();
+    		 					for (String s : savedJobs.getRequirementId().getAppliedProfessionals().split(",")){
+    		 						userId.add(Long.parseLong(s));
+    		 					 }
+    		 					boolean flag = userId.contains(user.getId());
+    		 					if(flag == true){
+    		 						requirementIndex.setIsJobApplied(Constants.YES);
+    		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
+	  		 		 	    		   if(null != submission){
+	  		 		 	    			  requirementIndex.setSubmissionId(submission.getId());
+	  		 		 	    		   }
+    		 					}else{
+    		 						requirementIndex.setIsJobApplied(Constants.NO);
+    		 					} 
+    	 	    		     }else{
+    	 	    			    requirementIndex.setIsJobApplied(Constants.NO);
+    	 	    		      }
+    					  
+    					  
+    					  if(null != savedJobs.getReferId()){
+    						 
+    						  StringBuilder referedUser = new StringBuilder();
+        					  if(!isNullOrEmpty(savedJobs.getReferId().getReferFromUser().getLastName())){
+        						  referedUser = referedUser.append(savedJobs.getReferId().getReferFromUser().getFirstName()).append(" ").append(savedJobs.getReferId().getReferFromUser().getLastName());
+        					  }else{
+        						  referedUser = referedUser.append(savedJobs.getReferId().getReferFromUser().getFirstName());
+        					  }
+        					  requirementIndex.setReferedUser(referedUser.toString());
+        					  requirementIndex.setReferId(savedJobs.getReferId().getId());
+        					  
+        					  if(null != savedJobs.getReferId().getReferStatus() && savedJobs.getReferId().getReferStatus().equalsIgnoreCase(Constants.REFER_JOB_APPLIED)){
+        						  requirementIndex.setIsReferedRequiremetnApplied(Constants.YES);
+        					  }else{
+        						  requirementIndex.setIsReferedRequiremetnApplied(Constants.NO);
+        					  }
+    					  }
+    					 
+    					  requirementIndex.setNoOfSearchHits(savedJobsList.size());
+    					  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    					  requirementIndex.setCreatedDate(dateFormat.format(savedJobs.getRequirementId().getCreatedDate()));
+    					  
+    					  requirementIndex.setRewardType(savedJobs.getRequirementId().getRewardType());
+    					  requirementIndex.setRewardPercentage(savedJobs.getRequirementId().getRewardPercentage());
+    					  requirementIndex.setRewardFlat(savedJobs.getRequirementId().getRewardFlat());
+    					  requirementIndex.setRewardFlatRateType(savedJobs.getRequirementId().getRewardFlatRateType());
+    					  requirementIndex.setRewardGuaranteePeriod(savedJobs.getRequirementId().getRewardGuaranteePeriod());
+						  requirementIndex.setRequirementUUID(savedJobs.getRequirementId().getRequirementUUID());
+						  requirementIndex.setIsJobSaved(Constants.YES);
+						  requirementIndex.setSavedJobUUID(savedJobs.getSavedJobUUID());
+    					  requirementList.add(requirementIndex);
+	    			 }
+	    			 
+	    		 }else{
+	    			 isELKSearchEnable = false;
+	    		 }
+	    	 }
 	    }
 	    
 	    if(requirementList != null){
@@ -641,6 +759,14 @@ public class CrowdSourcingRequirementsRestController {
 			 	    			  requirementIndex.setRequirementAppliedDate(Constants.DF_YMD.format(submission.getCreatedDate()));
 			 	    		   }
 			 	    	   }
+			 	    	   
+			 	    	    SavedJobs savedJobs = savedJobsService.getSavedJobsByrequirementIdAndUserId(requirementIndex.getRequirementId(), user.getId());
+			 	    	    if(null != savedJobs){
+			 	    	    	requirementIndex.setIsJobSaved(Constants.YES);
+			 	    	    }else{
+			 	    	    	requirementIndex.setIsJobSaved(Constants.NO);
+			 	    	    }
+			 	    	   
 			 	    	    requirementIndex.setNoOfSearchHits(searchHits.length);
 			 	    	    requirementList.add(requirementIndex);
 			 	    	}
@@ -2136,6 +2262,55 @@ public class CrowdSourcingRequirementsRestController {
 				}
 
 			}
+		 
+		 
+		 
+		 @RequestMapping(value = "/saveSourceleadCrowdSourcingJob" , method = RequestMethod.POST)
+		 public @ResponseBody  String saveSourceleadCrowdSourcingJob(@RequestParam(value="requirementUUID", required=false) String requirementUUID,
+				 @RequestParam(value="referId", required=false) String referId,HttpServletRequest request) throws Exception {
+			 	
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+			 
+			 if(null != requirement){
+				 
+				 SavedJobs savedJobs = new SavedJobs();
+				 savedJobs.setRequirementId(requirement);
+				 savedJobs.setUserId(user);
+				 savedJobs.setOrgLocationId(orgLocation);
+				 savedJobs.setSavedJobUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				 if(!isNullOrEmpty(referId) && !referId.equalsIgnoreCase("undefined")){
+					 RequirementRefer refer = new RequirementRefer();
+					 refer.setId(Long.parseLong(referId));
+					 savedJobs.setReferId(refer);
+				 }
+				 savedJobs.setStatus(1);
+				 savedJobs.setCreatedBy(user.getUserCode());
+				 savedJobs.setCreatedDate(new Date());
+				 savedJobs.setUpdatedBy(user.getUserCode());
+				 savedJobs.setUpdatedDate(new Date());
+				 savedJobsService.addSavedJobs(savedJobs);
+			 }
+			 
+			 
+			 return "Success";
+		 }
+		 
+		 
+		 @RequestMapping(value = "/deleteSourceleadSavedJob" , method = RequestMethod.POST)
+		 public @ResponseBody  String deleteSourceleadSavedJob(@RequestParam(value="savedJobUUID", required=false) String savedJobUUID,
+				 HttpServletRequest request) throws Exception {
+			 	
+			 
+			 SavedJobs savedJobs = savedJobsService.getSavedJobsByUUID(savedJobUUID);
+			 if(null != savedJobs){
+				 savedJobsService.deleteSavedJobs(savedJobs);
+			 }
+			 
+			 return "Success";
+		 }
 		 
 		 
 		
