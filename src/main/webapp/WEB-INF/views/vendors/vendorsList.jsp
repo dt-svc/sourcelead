@@ -1715,7 +1715,7 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
 		'</sec:authorize>';
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		result = result + '<li><a href="#tab-6" onclick="vencheck('+ orgRelationId + ');">Requirment List</a></li>'; 
+		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Requirment List</a></li>'; 
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		

@@ -20,7 +20,7 @@ width: 100% !important;
 <div id="popUp"></div>	
 
 <script>
-function vencheck(orgRelationID,vendorLocationId){
+function vendorRequirementListInclude(orgRelationID,vendorLocationId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
 // 	result  = result + '<div id="vendorConactMsgDiv" ></div>';
@@ -74,13 +74,13 @@ function vencheck(orgRelationID,vendorLocationId){
     $("#tab-5").empty(); 
     $("#tab-6").append(result);  
 	
-    test(orgRelationID);
+    getVendorRequirementListTab(orgRelationID);
     
 }
 </script>
 
 <script type="text/javascript">
-	function test(orgRelationID) {
+	function getVendorRequirementListTab(orgRelationID) {
 		 var orgRelationId =$("#orgRelationId").val();
 	        var sourceleadUrl = '${sourceleadUrl}';
 	        var status = [];
