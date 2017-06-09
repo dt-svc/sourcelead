@@ -191,7 +191,9 @@ font-size: 13px; width: 75px;
                         </div>
                       </li>
                       <li>
-                      <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
+                       <sec:authorize access="hasAnyRole('ROLE_ADD_BILL')"> 
+			               <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
+			          </sec:authorize>
                        <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       </li>  
                       <div class="clearfix"></div>
@@ -728,10 +730,17 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){
-			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
+			 result = result +'<li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 '</sec:authorize>'
 		 }
+		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+	     '</sec:authorize>'
+	     
+	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
