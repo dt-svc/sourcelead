@@ -965,14 +965,4 @@ public class Contracts {
 	public void setContractWith(String contractWith) {
 		this.contractWith = contractWith;
 	}
-	
-	public Integer getReqDocCount()
-	{
-		return reqDocCount;
-	}
-
-	public void setReqDocCount(Integer reqDocCount)
-	{
-		this.reqDocCount = reqDocCount;
-	}
 }
