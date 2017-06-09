@@ -328,13 +328,14 @@ function getProjectFrequency(invoiceFrequency){
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
+		var convertOpt = opt.replace(/\//g, " To ");
 		/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
 		var selected = "";
 		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
 			selected = 'selected';
 			/* getProjectAssignedMem1();  */
 		}
-		output = output + "<option value='" +opt+ "' "+selected+">"+opt+"</option>";
+		output = output + "<option value='" +convertOpt+ "' "+selected+">"+convertOpt+"</option>";
 		}
 		$("#frequency").empty();
 		$("#frequency").append(output);
