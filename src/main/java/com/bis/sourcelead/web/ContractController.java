@@ -501,13 +501,14 @@ public class ContractController {
 			orgRelations.setOrgName(orgName);
 		}
 		List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
-		if(null != contract.getParentContractId()){
-			Contracts parentcontracts  = contractsTemplateService.getContractById(contract.getParentContractId().getId());
-			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
-		}else{
-			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
-		} 
-		
+		if(null != contract){
+			if(null != contract.getParentContractId()){
+				Contracts parentcontracts  = contractsTemplateService.getContractById(contract.getParentContractId().getId());
+				contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+			}else{
+				contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+			} 
+		}
 		
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		if(null != countries){
