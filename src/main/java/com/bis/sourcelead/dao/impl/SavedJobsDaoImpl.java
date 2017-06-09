@@ -1,7 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -13,8 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SavedJobsDao;
-import com.bis.sourcelead.entity.RequirementRefer;
 import com.bis.sourcelead.entity.SavedJobs;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -78,13 +81,41 @@ public class SavedJobsDaoImpl implements SavedJobsDao{
 
 	@Override
 	@Transactional
-	public List<SavedJobs> getSavedJobsListByUserId(Long userId) throws Exception
+	public List<SavedJobs> getSavedJobsListByUserId(Long userId,String jobTitleSearch,String jobLocationSearch,Integer offset,Integer maxResults,String postedOn) throws Exception
 	{
 		Session session =  this.sessionFactory.getCurrentSession();
+		String subQuery1 = "";
+		String subQuery2 = "";
+		String postedOnSubQuery = "";
+		
+		if(!isNullOrEmpty(jobTitleSearch)){
+			subQuery1 = " and (savedJobs.requirementId.jobTitle LIKE '" + jobTitleSearch + "%' OR savedJobs.requirementId.jobId LIKE '" +jobTitleSearch + "%')";
+		}
+		
+		if(!isNullOrEmpty(jobLocationSearch)){
+			subQuery2 = " and (savedJobs.requirementId.country LIKE '" + jobLocationSearch + "%' OR savedJobs.requirementId.state LIKE '" +jobLocationSearch + "%' OR savedJobs.requirementId.city LIKE '" +jobLocationSearch + "%')";
+		}
+		
+		
+		if(!isNullOrEmpty(postedOn)){
+			postedOn = UpdateOnToDate(postedOn);
+			postedOnSubQuery = " and savedJobs.requirementId.createdDate >= '" + postedOn + "'";
+		}
+		
 		String query = " from SavedJobs savedJobs left join fetch savedJobs.requirementId left join fetch savedJobs.userId user "
-				+ " left join fetch savedJobs.referId refer left join fetch refer.referFromUser where user.id = :userId ";
+				+ " left join fetch savedJobs.referId refer left join fetch refer.referFromUser where user.id = :userId "+subQuery1+" "+subQuery2+" "+postedOnSubQuery+" ";
 		List<SavedJobs> savedJobsList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
-        return savedJobsList;
+        
+		
+		if(savedJobsList.size() >= offset){
+			if(savedJobsList.size() > offset + maxResults){
+				return   savedJobsList.subList(offset, (offset+maxResults));
+			}else{
+				return   savedJobsList.subList(offset, (offset + (savedJobsList.size() - offset)));
+			}
+	}
+		
+		return savedJobsList;
 	}
 
 	@Override
@@ -121,4 +152,32 @@ public class SavedJobsDaoImpl implements SavedJobsDao{
 		
 	}
 	
+	
+	 public String UpdateOnToDate(String postedOn){
+			
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	     Calendar cal = Calendar.getInstance();
+	     if((Constants.ONE_DAY_AGO).equalsIgnoreCase(postedOn)){
+	        cal.add(Calendar.DATE, -1);    
+	        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_DAY_AGO).equalsIgnoreCase(postedOn)){
+			 cal.add(Calendar.DATE, -3);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_WEEK_AGO).equalsIgnoreCase(postedOn)){
+			 cal.add(Calendar.DATE, -7);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.TWO_WEEK_AGO).equalsIgnoreCase(postedOn)){
+			 cal.add(Calendar.DATE, -14);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.ONE_MONTH_AGO).equalsIgnoreCase(postedOn)){
+			 cal.add(Calendar.DATE, -30);    
+		        return  dateFormat.format(cal.getTime());
+		 }else if((Constants.THREE_MONTH_AGO).equalsIgnoreCase(postedOn)){
+			 cal.add(Calendar.DATE, -90);    
+		        return  dateFormat.format(cal.getTime());
+		 }else{
+			 return postedOn;
+		 }
+	 }
+
 }

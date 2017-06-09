@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -84,6 +86,9 @@ public class RequirementInterviewRestController {
 	 
 	 @Autowired
 	 ProposeTimeService  proposeTimeService;
+	 
+	 @Autowired
+	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@RequestMapping(value = "/getAllInterviewers")
 	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
@@ -271,15 +276,16 @@ public class RequirementInterviewRestController {
 	 */
 	
 	@RequestMapping(value = "/saveProposeTime" , method = RequestMethod.POST)
-	   public String saveProposeTime(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
-			
+	   public String saveProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  	        String json1 = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(json1);
 			String pattern = "dd-MM-yyyy";
 	        SimpleDateFormat format = new SimpleDateFormat(pattern);
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 RequirementInterview interview = requirementInterviewService.getRequirementInterviewById(jsonObj.getString("requirementInterviewId"));
-			int maxTaxRowCount = Integer.parseInt(jsonObj.getString("proposeNewTimeRowsNum"));
+			int maxTaxRowCount = Integer.parseInt(jsonObj.getString("proposeNewTimeRowsNum"+interview.getId()+""));
 			 for(int i=0;i<maxTaxRowCount;i++){
 				 ProposeTime proposeTime = new ProposeTime();
 					 if(null != jsonObj.getString("interviewDate"+i) && !"".equalsIgnoreCase(jsonObj.getString("interviewDate"+i))){
@@ -297,10 +303,69 @@ public class RequirementInterviewRestController {
 					 proposeTimeService.saveProposeTime(proposeTime);
 			 }
 			 
+			 RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(jsonObj.getString("requirementInterviewId"));
+			 requirementInterview.setInterviewStatus("Maybe");	 
+			 requirementInterviewService.saveRequirementInterview(requirementInterview);
+				 
+			 RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(interview.getSubmissionId().getId());
+		     RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
+			 
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
+			 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"));
+			 //Applicant to created by interviewer send Email
+			 if(!requirementInterview.getCreatedBy().equalsIgnoreCase(user.getCreatedBy())){
+				 requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
+			 }
+			
+			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			return "success";
 
   }
 	
+	/**
+	 * @author Laxman 
+	 * @param interviewId
+	 * @param request
+	 * @return resultJson
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getProposeTime" , method = RequestMethod.POST)
+	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, HttpServletRequest request) throws Exception {
+		 String resultJson = null;
+		 List<ProposeTime> proposeTimeList = proposeTimeService.getProposeTimeByInterViewId(interviewId);
+		 for(ProposeTime pst:proposeTimeList){
+			if(null != pst.getProposeDate()){
+				pst.setProposeDateStr(Constants.DMY.format(pst.getProposeDate()));	
+				pst.setProposeTime(pst.getProposeTime());
+			}
+		 }
+		 resultJson = commonUtil.toJSON(proposeTimeList);
+		 return resultJson;
+	   }
+	
+	/**
+	 * @author Laxman 
+	 * @param json
+	 * @param proposeTimeId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	 @RequestMapping(value = "/acceptProposeTime" , method = RequestMethod.POST)
+	    public String acceptProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="proposeTimeId", required=false) Long proposeTimeId,
+	    		@RequestParam(value="proposeDate", required=false) String proposeDate,@RequestParam(value="proposeTime", required=false) String proposeTime,HttpServletRequest request) throws Exception {
+				
+	 	    String json1 = "{" + json + "}";
+				JSONObject jsonObj = new JSONObject(json1);
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				requirementInterviewService.acceptProposeTimeBytProposeTimeId(proposeDate,proposeTime,user,orgLocations,loginOrg,proposeTimeId);
+				return "success";
+	   }
+	 
+	 
 	 /*@RequestMapping(value = "/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
