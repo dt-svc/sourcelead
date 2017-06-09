@@ -28,9 +28,9 @@ public class SavedJobsServiceImpl implements SavedJobsService{
 	}
 
 	@Override
-	public List<SavedJobs> getSavedJobsListByUserId(Long userId) throws Exception
+	public List<SavedJobs> getSavedJobsListByUserId(Long userId,String jobTitleSearch,String jobLocationSearch,Integer offset,Integer maxResults,String postedOn) throws Exception
 	{
-		return savedJobsDao.getSavedJobsListByUserId(userId);
+		return savedJobsDao.getSavedJobsListByUserId(userId,jobTitleSearch,jobLocationSearch,offset,maxResults,postedOn);
 	}
 
 	@Override

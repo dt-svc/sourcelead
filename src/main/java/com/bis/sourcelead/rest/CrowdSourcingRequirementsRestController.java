@@ -434,7 +434,7 @@ public class CrowdSourcingRequirementsRestController {
 	    	 
 	    	 if(requirementType.equalsIgnoreCase("SavedJobs")){
 	    		 
-	    		 List<SavedJobs> savedJobsList = savedJobsService.getSavedJobsListByUserId(user.getId());
+	    		 List<SavedJobs> savedJobsList = savedJobsService.getSavedJobsListByUserId(user.getId(),jobTitleSearch,jobLocationSearch,offset,Constants.MAX_RESULTS_TEN,postedOn);
 	    		 if(null != savedJobsList && savedJobsList.size() > 0){
 	    			 
 	    			 for(SavedJobs savedJobs : savedJobsList){

@@ -10,7 +10,7 @@ public interface SavedJobsDao {
 	
 	SavedJobs getSavedJobsByrequirementIdAndUserId(Long requirementId,Long userId) throws Exception;
 	
-	List<SavedJobs> getSavedJobsListByUserId(Long userId) throws Exception;
+	List<SavedJobs> getSavedJobsListByUserId(Long userId,String jobTitleSearch,String jobLocationSearch,Integer offset,Integer maxResults,String postedOn) throws Exception;
 	
 	SavedJobs getSavedJobsByUUID(String savedJobUUID) throws Exception;
 	
