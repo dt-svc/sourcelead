@@ -103,7 +103,7 @@ public class SavedJobsDaoImpl implements SavedJobsDao{
 		}
 		
 		String query = " from SavedJobs savedJobs left join fetch savedJobs.requirementId left join fetch savedJobs.userId user "
-				+ " left join fetch savedJobs.referId refer left join fetch refer.referFromUser where user.id = :userId "+subQuery1+" "+subQuery2+" ";
+				+ " left join fetch savedJobs.referId refer left join fetch refer.referFromUser where user.id = :userId "+subQuery1+" "+subQuery2+" "+postedOnSubQuery+" ";
 		List<SavedJobs> savedJobsList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
         
 		
