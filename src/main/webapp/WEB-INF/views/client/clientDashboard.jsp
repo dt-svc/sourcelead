@@ -20,6 +20,7 @@
 <jsp:include page="clientDocuments.jsp" />	
 <jsp:include page="clientSpocDocuments.jsp" />	
 <jsp:include page="submissionTemplateList.jsp" /> 
+<jsp:include page="clientContracts.jsp" />
 
 <style type="text/css">
 clients_wrap {
@@ -961,6 +962,8 @@ function pagination(){
 		result = result + '<li><a href="#tab-4" onclick="clientSubmissionTemplate('+clientLocationId+');">Submission Templates</a></li>';	
 		'</sec:authorize>';
 		
+		result = result + '<li><a href="#tab-5" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
+		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -978,7 +981,11 @@ function pagination(){
 		result = result + '</div>';
 		
     	//for client submission template tab
-	   result = result + '<div id="tab-4" class="project_tabs_inn">';
+	    result = result + '<div id="tab-4" class="project_tabs_inn">';
+		result = result + '</div>';
+
+		//for client contracts
+		result = result + '<div id="tab-5" class="project_tabs_inn">';
 		result = result + '</div>';
 
 
@@ -2415,6 +2422,4 @@ function flushCheckBoxVal(){
 	
 }
  </script>
-
-
 <jsp:include page="../masterFooter.jsp" />	

@@ -965,5 +965,4 @@ public class Contracts {
 	public void setContractWith(String contractWith) {
 		this.contractWith = contractWith;
 	}
-	
 }
