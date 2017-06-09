@@ -65,7 +65,6 @@ function createAlert(){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var email = '${SourceLeadWeb_user.email}';
-	var flag = '';
 	
 	$.ajax({
 		type : "GET",
@@ -172,10 +171,10 @@ function createAlert(){
 					 result = result +'         </div>';
 					
 					 result = result +'         <div class="form-group clearfix">';
-					 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
+					 result = result +'         	<label class="col-md-3">Alert Frequency<span class="text-danger paddingLeft">*</span></label>';
 					 result = result +'         	<div class="col-md-9">';
-					 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
-					 result = result +'         			<option selected  value="">---Select Duration---</option>';
+					 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Alert Frequency" data-validation="required">';
+					 result = result +'         			<option selected  value="">---Select Alert Frequency---</option>';
 					 result = result +'         			<option>Daily</option>';
 					 result = result +'         			<option>Weekly</option>';
 					 result = result +'         			<option>Monthly</option>';
@@ -760,10 +759,10 @@ function editAlert(jobAlertUUID){
         		 result = result +'         </div>';
         		
         		 result = result +'         <div class="form-group clearfix">';
-        		 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
+        		 result = result +'         	<label class="col-md-3">Alert Frequency<span class="text-danger paddingLeft">*</span></label>';
         		 result = result +'         	<div class="col-md-9">';
-        		 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
-        		 result = result +'         			<option selected  value="">---Select Duration---</option>';
+        		 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Alert Frequency" data-validation="required">';
+        		 result = result +'         			<option selected  value="">---Select Alert Frequency---</option>';
         		 
         		 if(json['duration'] == "Daily"){
         			 result = result +'<option selected>Daily</option>';
