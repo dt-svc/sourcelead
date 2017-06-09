@@ -212,14 +212,13 @@ function requirementProfile(requirementUUID){
 					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar('+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Applied</a>';
 				 }
 				 
-				 if(json.isCrowdSourcing == 'Y'){
-				    result = result +'<a class="refer" onclick="referToJob('+json.id+');getUserContats('+json.id+');" href="javascript:void(0)">Refer</a>';
-				    result = result +'<div class="referWrap" id="refer">';
-	 				result = result +'<div class="referWrapInn">';
-	 				result = result +'<div id="refertoJobDiv"></div>';  
-	 				result = result +'</div>';
-	 				result = result +'</div>';
-				 }
+			     result = result +'<a class="refer" onclick="referToJob('+json.id+');getUserContats('+json.id+');" href="javascript:void(0)">Refer</a>';
+			     result = result +'<div class="referWrap" id="refer">';
+ 				 result = result +'<div class="referWrapInn">';
+ 				 result = result +'<div id="refertoJobDiv"></div>';  
+ 				 result = result +'</div>';
+ 				 result = result +'</div>';
+	 				
 				 result = result +'          </div>';
 				 result = result +'          </div>';
 				 result = result +'          <div class="clearfix"></div>';

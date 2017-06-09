@@ -57,6 +57,8 @@ public interface InvoiceService {
 
 	void linkInvoice(Invoice invoice)throws Exception;
 
+	List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId, Long clientLocationId, Date startDateUTC, Date endDateUTC, String invoiceStatus, String paymentStatus, String invoiceType, OrgLocations orgLocations);
+
 	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
 
 }

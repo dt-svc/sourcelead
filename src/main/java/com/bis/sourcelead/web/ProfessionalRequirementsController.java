@@ -228,6 +228,9 @@ public class ProfessionalRequirementsController {
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
+				List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
+				model.addObject("industryList", industryListWithoutId);
+				
 			    if(!isNullOrEmpty(requirementUUID)){
 			    	Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 				    	if(null != requirement){
