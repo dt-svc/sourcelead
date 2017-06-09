@@ -542,7 +542,7 @@
            <thead >
            <tr>
            <th style="vertical-align: middle;">Request Documents</th>
-           <th colspan="2">
+           <th colspan="3">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
             <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
@@ -676,22 +676,21 @@ function removeDocument(id){
 		</div>
 	</div>
 </div>
-<div id="divTaxTd2" style="display: none; float: left;">
-	<div class="tblminwidth-75">
-			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
-			 name="REPLACEROWIDdescription"></textarea>
-	</div>
-</div>
 
-<div id="divTaxTd3" style="display: none; float: left;">
-   	 <select class="form-control input-sm"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+<div id="divTaxTd2" style="display: none; float: left;">
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
 		<option value="${doctype.name}">${doctype.name}</option>
 		</c:forEach>
 	</select>
 </div>
-
+<div id="divTaxTd3" style="display: none; float: left;">
+	<div class="tblminwidth-75">
+			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
+			 name="REPLACEROWIDdescription"></textarea>
+	</div>
+</div>
 
 <div id="divTaxTd4" style="display: none; float: right;">
 	<a class="btn btn-sm btn-danger text-center mt10" title="Remove row"

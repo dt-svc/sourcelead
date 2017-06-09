@@ -452,14 +452,24 @@
 				
 	</div>
 
+
 <div id="divTaxTd3" style="display: none; float: left;">
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+		<option value="">--Select Type--</option>
+		<c:forEach var="doctype" items="${documentsList}">
+		<option value="${doctype.name}">${doctype.name}</option>
+		</c:forEach>
+	</select>
+</div>
+
+<div id="divTaxTd4" style="display: none; float: left;">
 	<div class="tblminwidth-75">
 			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
 			 name="REPLACEROWIDdescription"></textarea>
 	</div>
 </div>
 
-<div id="divTaxTd4" style="display: none; float: left;">
+<div id="divTaxTd5" style="display: none; float: left;">
    	 <select class="form-control input-sm"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
@@ -468,7 +478,7 @@
 	</select>
 </div>
 
-<div id="divTaxTd5" style="display: none; float: right;">
+<div id="divTaxTd6" style="display: none; float: right;">
 	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
@@ -525,6 +535,11 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 				var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
 				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
 				cell4.innerHTML = divTaxTdStr4;
+				
+				var cell5 = row.insertCell(5);
+				var divTaxTdStr5 = document.getElementById("divTaxTd6").innerHTML;
+				divTaxTdStr5 = divTaxTdStr5.replace(/REPLACEROWID/g, (maxRowNum));
+				cell5.innerHTML = divTaxTdStr5;
 	}			
 </script>
 <script type="text/javascript">

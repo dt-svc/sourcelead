@@ -462,14 +462,24 @@
 		</div>
 	</div>
 </div>
+
 <div id="divTaxTd2" style="display: none; float: left;">
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+		<option value="">--Select Type--</option>
+		<c:forEach var="doctype" items="${documentsList}">
+		<option value="${doctype.name}">${doctype.name}</option>
+		</c:forEach>
+	</select>
+</div>
+<div id="divTaxTd3" style="display: none; float: left;">
 	<div class="tblminwidth-75">
 			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
 			 name="REPLACEROWIDdescription"></textarea>
 	</div>
 </div>
-<div id="divTaxTd3" style="display: none; float: right;">
-	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
+
+<div id="divTaxTd4" style="display: none; float: right;">
+	<a class="btn btn-sm btn-danger text-center mt10" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
 <script>
@@ -496,6 +506,11 @@
 				var divTaxTdStr2 = document.getElementById("divTaxTd3").innerHTML;
 				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
 				cell2.innerHTML = divTaxTdStr2;
+				
+				var cell3 = row.insertCell(3);
+				var divTaxTdStr3 = document.getElementById("divTaxTd4").innerHTML;
+				divTaxTdStr3 = divTaxTdStr3.replace(/REPLACEROWID/g, (maxRowNum));
+				cell3.innerHTML = divTaxTdStr3;
 				
 	}			
 </script>
