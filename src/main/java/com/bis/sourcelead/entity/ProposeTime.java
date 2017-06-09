@@ -43,6 +43,9 @@ private static final long serialVersionUID = 1L;
     
     @Column(name = "STATUS")
    	private Integer status;
+    
+    @Column(name = "INTERVIEW_TIME_STATUS")
+   	private String interviewTimeStatus;
    		
    	@Column(name = "CREATED_DATE")
    	private Date createdDate;
@@ -97,6 +100,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getInterviewTimeStatus() {
+		return interviewTimeStatus;
+	}
+
+	public void setInterviewTimeStatus(String interviewTimeStatus) {
+		this.interviewTimeStatus = interviewTimeStatus;
 	}
 
 	public Date getCreatedDate() {
