@@ -650,27 +650,30 @@ function sideBar(requirementId){
 				   			result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span> -- </span></li>';
 			        	}
 			        
-			        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
+			        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined')
 			    	   {
-			        result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+			        result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 			    	   }
-			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.rateType+'</span></li>';
+			        else if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+				    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+			        }
+			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
-			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' -'+json.maxRate+'- '+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 			       }
-			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
-			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
-			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
 			       else{
@@ -689,8 +692,11 @@ function sideBar(requirementId){
 			        	}
 			        else{
 				     result = result+' <li><i class="fa fa-map-marker" title="Location"></i><span title="'+json.country+'">'+json.country+'</span></li>';
-			        }
+			        }if(json.travelAllowance != null && json.travelAllowance !=" " && json.travelAllowance != 'undefined'){
 			        result = result+' <li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
+			        }else{
+				    result = result+' <li><i class="fa fa-cab" title="Travel allowance"></i><span> --- </span></li>';
+			        }
 			        result = result+'</ul>';
 			        result = result+'</div>';
 			        result = result+'<div class="col-md-7">';
