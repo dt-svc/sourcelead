@@ -240,6 +240,7 @@ public class Constants {
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
+	public static final String PROPOSE_NEW_TIME = "ProposeNewTime";
 	public static final String YES = "Y";
 	public static final String NO = "N";
 	public static final String WAIT = "W";
