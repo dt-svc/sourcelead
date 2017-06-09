@@ -84,42 +84,42 @@ function clientContracts(orgRelationId){
 	    result = result + '<ul>';
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="DRAFT" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft">Draft</label>';
+	    result = result + '<label class="paddingLeft">Draft <b class="badge" id="draftCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="WAITING_FOR_APPROVAL" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft" for="onboard1">Waiting For Approval</label>';
+	    result = result + '<label class="paddingLeft" for="onboard1">Waiting For Approval <b class="badge" id="WFACount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="WAITING_TO_BE_SIGNED" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft" for="onboard1">Waiting to be Signed</label>';
+	    result = result + '<label class="paddingLeft" for="onboard1">Waiting to be Signed <b class="badge" id="WTSCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="PENDING" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft" for="onboard1">Pending</label>';
+	    result = result + '<label class="paddingLeft" for="onboard1">Pending <b class="badge" id="pendingCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="SEND_FOR_VERIFICATION" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft" for="onboard1">Send for Verification</label>';
+	    result = result + '<label class="paddingLeft" for="onboard1">Send for Verification <b class="badge" id="STVCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="Finalized" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft" for="onboard1">Finalized</label>';
+	    result = result + '<label class="paddingLeft" for="onboard1">Finalized <b class="badge" id="finalizedCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="REJECTED" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft" for="onboard1">Rejected</label>';
+	    result = result + '<label class="paddingLeft" for="onboard1">Rejected <b class="badge" id="rejectedCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="EXPIRED" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
-	    result = result + '<label class="paddingLeft" for="onboard1">Expired</label>';
+	    result = result + '<label class="paddingLeft" for="onboard1">Expired <b class="badge" id="expiredCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '</ul>';
@@ -147,9 +147,9 @@ function clientContracts(orgRelationId){
     $("#tab-5").append(result);  
 	
     clientContractsList(orgRelationId);
-    /* $("div.dropdown-menu, div.bootstrap_dropdownMenu, div.bootstrap_dropdownMenu ul li").click(function(e){
+    $('.dropdown-menu').click(function(event){
     	event.stopPropagation();
-    }) */
+    	});
 }
 </script>
 
@@ -168,6 +168,16 @@ function clientContractsList(orgRelationId){
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#clientContractsList").empty();
+	                	 
+	                	 var draftCount = 0;
+	                	 var waitingForApprovalCount = 0;
+	                	 var waitingToBeSignedCount = 0;
+	                	 var pendingCount = 0;
+	                	 var sendForVerificationCount = 0;
+	                	 var finalizedCount = 0;
+	                	 var rejectedCount = 0;
+	                	 var expiredCount = 0;
+	                	 
 	                	 var opt="";
 	                		opt = opt +  '<table id="contractListTableDraft1" class="display" cellspacing="0" width="100%" >';
 	                		opt = opt + '	<thead>';
@@ -225,7 +235,24 @@ function clientContractsList(orgRelationId){
 	                		         
 	                		         opt = opt + '<td>';
 	                		         if(output.templateSubmissionStatus !=null && output.templateSubmissionStatus != '' && output.templateSubmissionStatus != 'undefined'){
-	                		         	opt = opt + '<div class="tblminwidth-75">'+output.templateSubmissionStatus+'</div>';
+	                		        	 if(output.templateSubmissionStatus == "DRAFT"){
+	                		        		 draftCount = draftCount+1;       
+	                		        	 }else if(output.templateSubmissionStatus == "WAITING_FOR_APPROVAL"){
+	                		        		 waitingForApprovalCount = waitingForApprovalCount +1;    
+	                		        	 }else if(output.templateSubmissionStatus == "WAITING_TO_BE_SIGNED"){
+	                		        		 waitingToBeSignedCount = waitingToBeSignedCount +1; 
+	                		        	 }else if(output.templateSubmissionStatus == "PENDING"){
+	                		        		 pendingCount = pendingCount +1;   
+	                		        	 }else if(output.templateSubmissionStatus == "SEND_FOR_VERIFICATION"){
+	                		        		 sendForVerificationCount = sendForVerificationCount +1;   
+	                		        	 }else if(output.templateSubmissionStatus == "Finalized"){
+	                		        		 finalizedCount = finalizedCount +1;   
+	                		        	 }else if(output.templateSubmissionStatus == "REJECTED"){
+	                		        		 rejectedCount = rejectedCount +1;   
+	                		        	 }else if(output.templateSubmissionStatus == "EXPIRED"){
+	                		        		 expiredCount = expiredCount +1;     
+	                		        	 }
+	                		        	 opt = opt + '<div class="tblminwidth-75">'+output.templateSubmissionStatus+'</div>';
 	                		         }
 	                		         else{
 	                		        	 opt = opt + '<div class="tblminwidth-75 ">---</div>';
@@ -264,12 +291,20 @@ function clientContractsList(orgRelationId){
 	                		     	
 	                		     	opt = opt + '</tr>';
 	                		    }
-	                			
 	                		
 	                		}
 	                		opt = opt + '	</tbody>';
 	                		opt = opt + '</table>';
 	                    
+	                		$("#draftCount").html(expiredCount);
+	                		$("#WFACount").html(waitingForApprovalCount);
+	                		$("#WTSCount").html(waitingToBeSignedCount);
+	                		$("#finalizedCount").html(finalizedCount);
+	                		$("#rejectedCount").html(rejectedCount);
+	                		$("#SFVCount").html(sendForVerificationCount);
+	                		$("#pendingCount").html(pendingCount);
+	                		$("#expiredCount").html(expiredCount);
+	                		
 	                     $("#clientContractsList").append(opt); 
 	                     contractpagination(); 
         },
@@ -775,3 +810,4 @@ function previewTemplatePDF(uuid, templateName){
 	}
 }
 </script>
+
