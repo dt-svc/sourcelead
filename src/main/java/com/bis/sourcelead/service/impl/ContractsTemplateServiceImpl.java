@@ -861,6 +861,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				currentDateInTimezone = standardFormat.format(converteDate);
 				contracts.setJoinedDateStr(currentDateInTimezone);
 			}
+			else{
+				contracts.setJoinedDateStr("--");
+			}
+			
 			if(null != contracts.getParentContractId()){
 			contracts.setParentId(contracts.getParentContractId().getId().toString());
 			}
