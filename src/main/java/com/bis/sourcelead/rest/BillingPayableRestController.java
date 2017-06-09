@@ -14,6 +14,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -174,7 +175,7 @@ public class BillingPayableRestController {
 			return resultJson;
 	 }
 	 
-	 
+	 @PreAuthorize("hasAnyRole('ROLE_DOWNLOAD_BILL')")
 	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
 			

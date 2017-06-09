@@ -55,7 +55,7 @@ public interface SubmissionApproverHierarchyService {
 
 	public Float getTotalDraftAndSubmittedHoursByuserIdAndProjectIdForEmployee(Long userId,Long projectId, String submissionStatus); 
 	
-	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId,Date frequencyStartDate,Date frequencyEndDate);
+	public List<SubmissionApproverHierarchy> getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long projectId,Date frequencyStartDate,Date frequencyEndDate, String contractType);
 	
 	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String submissionStatus); 
 
