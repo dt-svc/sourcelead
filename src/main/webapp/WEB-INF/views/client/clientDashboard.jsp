@@ -1020,11 +1020,11 @@ function preparedClientContacts(data){
 		   	/* if(json.length != null && json.length != ''){ */
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
+		   	result = result +'  <th>Client</th>';
 		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client Contact</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1036,7 +1036,11 @@ function preparedClientContacts(data){
 				{  
 		   		var report = json[i];
 		   		
+		   		
 		   		result = result +'<tr id="row'+report.id+'">';
+		   		
+		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
+		   		
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		   			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title='+report.spocName+'>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
@@ -1052,7 +1056,6 @@ function preparedClientContacts(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 		   		result = result +'<td><div><span title='+report.ownerName+'>'+report.ownerName+'</span></div></td>';
-		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
 		   		if(report.invitationStatus == 'Rejected'){
@@ -1134,11 +1137,11 @@ function preparedClientContactListFromElk(data){
 		   	var result = "";
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
+		   	result = result +'  <th>Client</th>';
 		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client Contact</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1153,6 +1156,7 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		result = result +'<tr id="row'+report.id+'">';
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
@@ -1179,8 +1183,6 @@ function preparedClientContactListFromElk(data){
 		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
 		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
 				}
-		   		
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
 		   		if(report.invitationStatus == 'Rejected'){

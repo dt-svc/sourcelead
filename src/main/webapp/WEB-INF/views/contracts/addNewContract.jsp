@@ -52,6 +52,7 @@
 		                    <option>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
+		                    <option>Full time offer</option>
 		                 </select>
 				    </c:otherwise>
 				 </c:choose>
@@ -181,7 +182,7 @@
               </div>
           </div>             
             
-             <div class="form-group">
+             <div class="form-group" id="dateDiv">
               <label class="col-md-4">Start & End date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
 					<div class="row">
@@ -287,19 +288,67 @@
               </div>
           </div>
           
-	        <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+	       <%--  <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
 	              <label class="col-md-4">Offer Rate</label>
 	              <div class="col-md-8">
 	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
 	              </div>
-            </div>  
+            </div>   --%>
+               <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};" >
+                <label class="col-md-4">Offer Rate<span class="text-danger">&nbsp;*</span></label>
+                  	<div class="col-lg-8" >
+			             <div class="input-group er ratetype">
+			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
+				                
+				                <select class="selectpicker" id="candiRateType" name="candiRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+					                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+					                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+					                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+					                 <option ${contract.billingRateType == 'GBP' ? 'selected' : currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+					                 <option ${contract.billingRateType == 'SGD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>SGD</option>
+					                 <option ${contract.billingRateType == 'EUR' ? 'selected' : currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+				                
+				                </select>
+			                </div>
+							  	
+							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
+			                
+			                <div class="input-group-btn tblminwidth-75 ratetype">
+			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+			                      <option>Rate per</option>
+			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+			                    <option ${contract.billingRatePer  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+			                  </select>
+			                </div>
+			            </div>
+		            </div>
+                  </div>
                        
-            <div class="form-group">
+            <div class="form-group" id="descriptionDiv">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
 					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
+            
+            <div class="form-group" id="workLocationDiv" style="display: none;">
+              <label class="col-md-4">Work Location</label>
+              <div class="col-md-8">
+					<textarea class="form-control" rows="3" id="workLocation" name="workLocation" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>
+              </div>
+            </div> 
+            
+            <div class="form-group" id="joinDateDiv" style="display: none;">
+              <label class="col-md-4">Join Date</label>
+                <div class="col-lg-6">
+					<input type="text" class="form-control calendar" value="${contract.startDateStr}" id="joinDate" name="joinDate" placeholder="Join date"  field-name="Join Date" readonly="readonly">
+				</div>
+            </div> 
             
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
@@ -501,7 +550,9 @@
           </tr>
           </thead>
           <tbody id="addTaxTbl">
-           <tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Action</strong></td></tr>
+          <c:if test="${fn:length(docList) gt 0}">
+   				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
+		  </c:if>
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
                 </c:forEach>
@@ -567,7 +618,6 @@
 
 <script>
 	$(function() {
-
 		$('#startDate').datepicker({
             dateFormat: 'dd-mm-yy',
             changeMonth: true,
@@ -590,6 +640,18 @@
                   $("#startDate").datepicker("option", "maxDate", dt);
               }
         });
+        $('#joinDate').datepicker({
+            dateFormat: 'dd-mm-yy',
+            changeMonth: true,
+              changeYear: true,
+            onSelect: function (selected) {
+                  var dt = toDate("#joinDate");
+                  dt.setDate(dt.getDate() + 1);
+                  removeValid();
+              }
+        });
+        
+        
 });
 	
 function removeDocument(id){
@@ -620,7 +682,18 @@ function removeDocument(id){
 			 name="REPLACEROWIDdescription"></textarea>
 	</div>
 </div>
-<div id="divTaxTd3" style="display: none; float: right;">
+
+<div id="divTaxTd3" style="display: none; float: left;">
+   	 <select class="form-control input-sm"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+		<option value="">--Select Type--</option>
+		<c:forEach var="doctype" items="${documentsList}">
+		<option value="${doctype.name}">${doctype.name}</option>
+		</c:forEach>
+	</select>
+</div>
+
+
+<div id="divTaxTd4" style="display: none; float: right;">
 	<a class="btn btn-sm btn-danger text-center mt10" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
@@ -648,6 +721,11 @@ function removeDocument(id){
 				var divTaxTdStr2 = document.getElementById("divTaxTd3").innerHTML;
 				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
 				cell2.innerHTML = divTaxTdStr2;
+				
+				var cell3 = row.insertCell(3);
+				var divTaxTdStr3 = document.getElementById("divTaxTd4").innerHTML;
+				divTaxTdStr3 = divTaxTdStr3.replace(/REPLACEROWID/g, (maxRowNum));
+				cell3.innerHTML = divTaxTdStr3;
 				
 	}			
 </script>
@@ -863,6 +941,9 @@ function getContractTemplates(){
 		$('#vendorContact').trigger("chosen:updated");
 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
 	}
  	if(contractType == "Client MSA"){
  		document.getElementById("billingDiv").style.display="block";
@@ -870,13 +951,23 @@ function getContractTemplates(){
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
 		document.getElementById("vendorContactDiv").style.display="none";
-	}
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
+		  document.getElementById("offerRateDiv").style.display="none";
+ 	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("clientDiv").style.display="none";
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
+		  document.getElementById("offerRateDiv").style.display="none";
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -884,6 +975,11 @@ function getContractTemplates(){
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
 		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
+		  document.getElementById("offerRateDiv").style.display="none";
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -891,6 +987,11 @@ function getContractTemplates(){
 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
+		  document.getElementById("offerRateDiv").style.display="none";
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -898,8 +999,24 @@ function getContractTemplates(){
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block"; 
 		document.getElementById("billingDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
+		  document.getElementById("offerRateDiv").style.display="none";
 	}
-		 
+	if(contractType == "Full time offer"){
+		document.getElementById("clientDiv").style.display="none";
+		document.getElementById("clientContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="none";
+		document.getElementById("vendorContactDiv").style.display="none"; 
+		document.getElementById("billingDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="none";
+		document.getElementById("descriptionDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="block";
+		document.getElementById("workLocationDiv").style.display="block";
+		  document.getElementById("offerRateDiv").style.display="none";
+	}
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
      type : "GET",
@@ -1121,6 +1238,59 @@ function contractTypeLabels(){
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 		
 	}
+	if(contractType == "Full time offer"){
+		$('#clientOrgRelationId').removeAttr('data-validation');
+		$('#clientOrgRelationId').attr('data-validation-optional',"true");
+		$('#clientContact').removeAttr('data-validation');
+		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#endDate').removeAttr('data-validation');
+		$('#endDate').attr('data-validation-optional',"true");
+		$('#startDate').removeAttr('data-validation');
+		$('#startDate').attr('data-validation-optional',"true");
+		
+		$('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true");
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#taxPercentageRewardValue').removeAttr('data-validation');
+		$('#taxFlatRewardValue').removeAttr('data-validation');
+		
+		
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
+		$('#taxFlatRewardValue').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation');
+		$('#flatReward').attr('data-validation-optional',"true");
+		
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
+		
+	
+		$('#hoursPerWeek').val("");
+		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("hoursPerWeekDiv").style.display="none";
+		
+		$('#overTimeHours').val("");
+		$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("overTimeHoursDiv").style.display="none";
+		
+		$('#totalHoursEstimated').val("");
+		$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("totalHoursEstimatedDiv").style.display="none";
+		
+		$('#overtimeRate').val("");
+		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		getRequirements("Vendor SOW");
+	}
 	getContractTemplates();
 	
     $("#flatReward").val("");
@@ -1128,28 +1298,14 @@ function contractTypeLabels(){
     $("#billingRatePer").val("").trigger('change');
 }
 </script>
-
 <script>
 function showCommonSOWFields(){
 	document.getElementById("hoursPerWeekDiv").style.display="block";
-    // $('#hoursPerWeek').removeAttr('data-validation-optional');
-	//$('#hoursPerWeek').attr("data-validation","required");
 	$('#hoursPerWeek').val("40");
 	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
-	
 	document.getElementById("overTimeHoursDiv").style.display="block";
-    //$('#overTimeHours').removeAttr('data-validation-optional');
-	//$('#overTimeHours').attr("data-validation","required");
-	
 	document.getElementById("totalHoursEstimatedDiv").style.display="block";
-    //$('#totalHoursEstimated').removeAttr('data-validation-optional');
-	//$('#totalHoursEstimated').attr("data-validation","required");
-	
 	document.getElementById("overtimeRateDiv").style.display="block";
-    //$('#overtimeRate').removeAttr('data-validation-optional');
-	//$('#overtimeRate').attr("data-validation","required");
-	//$('#overtimeRateType').removeAttr('data-validation-optional');
-	//$('#overtimeRateType').attr("data-validation","required");
 }
 </script>
 
@@ -1172,14 +1328,10 @@ function hideCommonSOWFields(){
 	$('#offerRate').val("");
 	document.getElementById("offerRateDiv").style.display="none";
 	
-	//$('#hoursPerWeek').removeAttr('data-validation');
-	//$('#hoursPerWeek').attr('data-validation-optional',"true");
 	$('#hoursPerWeek').val("");
 	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("hoursPerWeekDiv").style.display="none";
 	
-	//$('#overTimeHours').removeAttr('data-validation');
-	//$('#overTimeHours').attr('data-validation-optional',"true");
 	$('#overTimeHours').val("");
 	$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("overTimeHoursDiv").style.display="none";
@@ -1190,13 +1342,7 @@ function hideCommonSOWFields(){
 	$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("totalHoursEstimatedDiv").style.display="none";
 	
-	//$('#overtimeRate').removeAttr('data-validation');
-	//$('#overtimeRate').attr('data-validation-optional',"true");
 	$('#overtimeRate').val("");
-	//$("#overtimeRateType option:selected").removeAttr("selected");
-	//$('#overtimeRateType').trigger("chosen:updated");
-	//$('#overtimeRateType').removeAttr('data-validation');
-	//$('#overtimeRateType').attr('data-validation-optional',"true");
 	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("overtimeRateDiv").style.display="none";
 }
@@ -1319,29 +1465,65 @@ function hideCommonSOWFields(){
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
-		
-		$("#flatReward").val("");
-	    $("#billingRateType").val('${currencyCode}').trigger('change');
-	    $("#billingRatePer").val("").trigger('change');
+		var sowType = $("#contractType").val();
+		if(sowType!="Full time offer"){
+			$("#flatReward").val("");
+		    $("#billingRateType").val('${currencyCode}').trigger('change');
+		    $("#billingRatePer").val("").trigger('change');
+		}
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 	         success :function(data) {
-	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	            	  var json = JSON.parse(data);
-	            	  $("#offerRate").val("");
-	            	  document.getElementById("offerRateDiv").style.display="block";
-	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
-	            	  $("#flatReward").val("");
-	            	  $("#flatReward").val(json.amount);
-	            	  
-	            	  $("#billingRateType").val("");
-	            	  $("#billingRateType").val(json.paymentType).trigger('change');
-	            	  
-	            	  $("#billingRatePer").val("");
-	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
-	              }
-	       },
+	        	 
+		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		            	  var json = JSON.parse(data);
+		            	  document.getElementById("offerRateDiv").style.display="block";
+		            	  if(sowType!="Full time offer"){
+			            	  $("#flatReward").val("");
+			            	  $("#flatReward").val(json.amount);
+			            	  
+			            	  $("#billingRateType").val("");
+			            	  $("#billingRateType").val(json.paymentType).trigger('change');
+			            	  
+			            	  $("#billingRatePer").val("");
+			            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
+			            	  
+			            	  $('#candiFlatReward').attr("disabled","disabled");
+			            	  $('#candiRateType').attr("disabled","true");
+			            	  $('#candiRatePer').attr("disabled","true");
+			            	  
+			            	  $("#candiFlatReward").val("");
+			            	  $("#candiFlatReward").val(json.amount);
+			            	  
+			            	  $("#candiRateType").val("");
+			            	  $("#candiRateType").val(json.paymentType).trigger('change');
+			            	  
+			            	  $("#candiRatePer").val("");
+			            	  $("#candiRatePer").val(json.paymentMode).trigger('change');
+		            	  }
+		            	  else{
+		            		  $("#joinDate").val(json.dateOfJoiningStr); 
+		            		  
+		            		  $('#candiFlatReward').removeAttr("disabled");
+		            		  $('#candiRateType').removeAttr("disabled");
+		            		  $('#candiRatePer').removeAttr("disabled");
+		            		  
+			            	//  $('#candiRateType').attr("disabled","false");
+			            	 // $('#candiRatePer').attr("disabled","false");
+			            	  
+		            		  $("#candiFlatReward").val("");
+			            	  $("#candiFlatReward").val(json.amount);
+			            	  
+			            	  $("#candiRateType").val("");
+			            	  $("#candiRateType").val(json.paymentType).trigger('change');
+			            	  
+			            	  $("#candiRatePer").val("");
+			            	  $("#candiRatePer").val(json.paymentMode).trigger('change');
+		            	  }
+		            	  
+	        	 		}
+		       },
 	    });
 
 	}

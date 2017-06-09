@@ -60,6 +60,12 @@ public class Contracts {
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
+	@Column(name = "JOIN_DATE")
+	private Date joinDate;
+	
+	@Column(name = "WORK_LOCATION")
+	private String workLocation;
+	
 	@Column(name = "INITIATOR_TYPE")
 	private String initiatorType;
 	
@@ -205,6 +211,9 @@ public class Contracts {
 	List<Contracts> clientcontractsList;
 	
 	@Transient
+	List<Contracts> fullTimeoffercontractsList;
+
+	@Transient
 	private String tempEnvId;
 
 	@Transient
@@ -250,6 +259,9 @@ public class Contracts {
 	private String updatedDateStr;
 	
 	@Transient
+	private String joinedDateStr;
+	
+	@Transient
 	private String createdByName;
 	
 	@Transient
@@ -270,7 +282,70 @@ public class Contracts {
 	@Transient
 	private String contractWith;
 	
+	@Transient
+	private String empName;
 	
+	
+	public String getEmpName()
+	{
+		return empName;
+	}
+
+	public void setEmpName(String empName)
+	{
+		this.empName = empName;
+	}
+
+	public List<Contracts> getFullTimeoffercontractsList()
+	{
+		return fullTimeoffercontractsList;
+	}
+
+	public void setFullTimeoffercontractsList(List<Contracts> fullTimeoffercontractsList)
+	{
+		this.fullTimeoffercontractsList = fullTimeoffercontractsList;
+	}
+
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
+
+	public Date getJoinDate()
+	{
+		return joinDate;
+	}
+
+	public void setJoinDate(Date joinDate)
+	{
+		this.joinDate = joinDate;
+	}
+
+	public String getWorkLocation()
+	{
+		return workLocation;
+	}
+
+	public void setWorkLocation(String workLocation)
+	{
+		this.workLocation = workLocation;
+	}
+
+	public Integer getReqDocCount()
+	{
+		return reqDocCount;
+	}
+
+	public void setReqDocCount(Integer reqDocCount)
+	{
+		this.reqDocCount = reqDocCount;
+	}
+
 	public String getContactUserName() {
 		return contactUserName;
 	}
