@@ -266,6 +266,74 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
+	public List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId,Long clientLocationId,Date startDateUTC, Date endDateUTC,String invoiceStatus, String paymentStatus,String invoiceType)
+	{
+		String[] invoiceTokens = invoiceStatus.split(",");
+		String[] paymentTokens = paymentStatus.split(",");
+		
+		String subQuery = "";
+		String subQuery1 = "";
+		if (Arrays.asList(invoiceTokens).contains("DRAFT")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'DRAFT' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("SENT")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'SENT' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("RECEIVED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Received' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("ACCEPTED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Accepted' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("REJECTED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Rejected' or ";
+		}
+		if (Arrays.asList(invoiceTokens).contains("LINKED")) {
+			subQuery = subQuery + "invoice.invoiceStatus = 'Linked' or ";
+		}
+		
+		if ((invoiceTokens[0] != null && invoiceTokens[0].length() > 0)) {
+			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+		} 
+		
+		if (Arrays.asList(paymentTokens).contains("Unpaid")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Unpaid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("Partial Paid")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Partial Paid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("Paid")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'Paid' or ";
+		}
+		if (Arrays.asList(paymentTokens).contains("OverDue")) {
+			subQuery1 = subQuery1 + "invoice.paymentStatus = 'OverDue' or ";
+		}
+		
+		if ((paymentTokens[0] != null && paymentTokens[0].length() > 0)) {
+			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+		} 
+		
+		String subQuery2 = "";
+		String subQuery3 = "";
+		if(invoiceType.equalsIgnoreCase("payables")){
+			subQuery2 = " and invoice.invoiceType = 'Payables' ";
+		}else{
+			subQuery3 = " and invoice.invoiceType = 'Receivable' ";
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query =null;
+		if(invoiceType.equalsIgnoreCase("payables")){
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery2+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		}else{
+		 query = "from Invoice invoice  where invoice.orgRelationID =:orgRelationId and invoice.responderLocationId =:clientLocationId and invoice.status = '1' "+subQuery+" "+subQuery1+" "+subQuery3+" and invoice.createdDate >= :startDateUTC and invoice.createdDate <= :endDateUTC";
+		}
+		List<Invoice> invoiceList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();
+		return invoiceList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
 	public List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC) throws Exception
 	{
 		String subQuery = "";
