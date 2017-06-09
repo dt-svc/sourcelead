@@ -1714,6 +1714,9 @@ function getVendorDashboardName(vendorDashboardName){
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
 		'</sec:authorize>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+		result = result + '<li><a href="#tab-4" onclick="vencheck('+ orgRelationId + ');">Requirment List</a></li>'; 
+		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -1729,6 +1732,10 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		//for vendor documents tab
 		result = result + '<div id="tab-3" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor RequirmentList tab
+		result = result + '<div id="tab-4" class="project_tabs_inn">';
 		result = result + '</div>';
 
 		result = result + '</div>';
@@ -2108,6 +2115,7 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorContacts.jsp" />
 <jsp:include page="vendorDocuments.jsp" />
 <jsp:include page="vendorSpocDocuments.jsp" />
+<jsp:include page="vendorRequirmentList.jsp" />
 
 
 
