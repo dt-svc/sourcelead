@@ -134,9 +134,13 @@ function requirementList(){
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
 		                     }
-		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
-			                     result = result +"<td><div><span><span>"+opt.rate+"</span></span></div></td>";
-		                     }else{
+		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined' && opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined'){
+			                     result = result +"<td><div><span  title='"+opt.currencyCode+"&nbsp;"+opt.rate+"-"+opt.maxRate+"&nbsp;"+opt.rateType+"'>"+opt.currencyCode+"&nbsp;"+opt.rate+"-"+opt.maxRate+"&nbsp;"+opt.rateType+"</span></div></td>";
+		                     }else if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
+			                     result = result +"<td><div><span  title='"+opt.currencyCode+"&nbsp;"+opt.rate+"&nbsp;"+opt.rateType+"'>"+opt.currencyCode+"&nbsp;"+opt.rate+"&nbsp;"+opt.rateType+"</span></div></td>";
+	 
+		                     }
+		                     else{
 			                     result = result +"<td><div><span><span>---</span></span></div></td>";
 		                     }
 		                     if(opt.priority != null && opt.priority != '' && opt.priority != 'undefined'){
