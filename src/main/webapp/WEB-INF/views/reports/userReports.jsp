@@ -80,7 +80,7 @@
    <div class="pull-left reportBtns mt10">
 <h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn select-field  pull-left ml">
-			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custdates();">
+			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
 <!-- 			 <option value="">select</option> -->
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
@@ -166,7 +166,7 @@
 <div class="pull-left reportBtns mt10">
 <h4 class="pull-left mr">Billing Report</h4>
 	  <div class="reportBtn select-field pull-left">
-		<select class="form-control" id="billingReportType" onChange="getBillingReports('Receivable');">
+		<select class="form-control" id="billingReportType" onChange="flushBillingCustom(); getBillingReports('Receivable');custBillingDates();">
 		  <option value="THIS_MONTH">This Month</option>
 		  <option value="THIS_QUARTER">This quarter</option>
 		  <option value="THIS_YEAR">This Year</option>
@@ -177,6 +177,16 @@
 		   <option value="CUSTOM">Custom</option> 
 		</select>
 	 </div>	
+	 
+	  <span class="dashboard-datepkr cusShowBilling">
+	 <input type="text" class="form-control" value="" id="billingReportStartDate" name="billingReportStartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+	 <p id="billingErrorReportStartDate" class="ReError"></p>
+	 </span>
+	<span class="dashboard-datepkr cusShowBilling">
+	<input type="text"  class="form-control" value="" id="billingReportEndDate" name="billingReportEndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+	<p id="billingErrorReportEndDate" class="ReError"></p>
+	</span>
+	<span class="cusShowBilling"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomBillingReports('Receivable');" /></span>
         <div class="clearfix"></div>
       </div>
  </div>
@@ -213,142 +223,16 @@
 <div class="project_side_wrap_inn_tabs">
           <ul class="project-tabs-menu">
             <li class="current"><a href="#tab-1">Tab 1</a></li>
-            <li onclick="payableTab('payables');"><a href="#tab-2">Tab 2</a></li>
+           <!--  onclick="payableTab('payables');" -->
+            <li ><a href="#tab-2">Tab 2</a></li>
             <div class="clearfix"></div>
           </ul>
           <div class="project_tabs">
             
             <div id="tab-1" class="project_tabs_inn">
-			<!-- <div class="project_tabs_inn_head">
-              <input class="vendorfild" type="text"><i class="fa fa-search"></i></div>
-              <div class="require_wrap_table">
-    	<table>
-        	<thead>
-            	<tr>
-                    <th>Id</th>
-                    <th>Date</th>
-                    <th>Client</th>                    
-                    <th>Client</th>
-                    <th>Client</th>                    
-                    <th>Client</th>
-
-                </tr>
-			</thead>	
-                <tbody>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-
-            </tbody>
-        </table>
-	
-		</div> -->
             </div>
 
 			<div id="tab-2" class="project_tabs_inn">
-			<!-- <div class="project_tabs_inn_head">
- 				<a href="#">
-              <i class="glyphicon glyphicon-plus"></i>Add Two</a> | 
-              <input class="vendorfild" type="text"><i class="fa fa-search"></i></div>
-              <div class="require_wrap_table">
-    	<table>
-        	<thead>
-            	<tr>
-                    <th>Id</th>
-                    <th>Date</th>
-                    <th>Client</th>                    
-                    <th>Client</th>
-                    <th>Client</th>                    
-                    <th>Client</th>
-
-                </tr>
-			</thead>	
-                <tbody>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-                <tr>
-                	<td><div>Bis63165</div></td>
-                    <td><div>07/06/2016</div></td>
-                    <td><div>Client 1</div></td>
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                    <td><div>Client 1</div></td> 
-                </tr>
-
-            </tbody>
-        </table>
-	
-		</div>
-            </div>  --> 
-                                       
-            
           </div>
         </div> 
               </div>
@@ -557,6 +441,55 @@ function reportpagination(){
 </script> 
 
 <!-- Filter scripts start here -->
+<script>
+	$(function() {
+		$('#billingReportStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				var dt = toDate("#billingReportStartDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#billingReportEndDate").datepicker("option", "minDate", dt);
+				addBillingValidClass();
+			}
+		
+		});
+		
+		$('#billingReportEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			beforeShow: function(){
+		           this.value='';
+		     },
+			onSelect : function(selected) {
+				var dt = new Date(selected);
+				var dt = toDate("#billingReportEndDate");
+				dt.setDate(dt.getDate() - 1);
+				$("#billingReportStartDate").datepicker("option", "maxDate", dt);
+				 $( "#billingReportStartDate" ).datepicker({  maxDate: new Date() });
+				addBillingValidClass();
+			}
+		});
+		
+	});
+</script>	
+
+<script type="text/javascript"> 
+	function addBillingValidClass(){
+		 var StartDate = document.getElementById("billingReportStartDate").value;
+		 if(StartDate){
+			 $('#billingErrorReportStartDate').empty() 
+		 }  
+		 
+		 var EndDate = document.getElementById("billingReportEndDate").value;
+		 if(EndDate){
+			 $('#billingErrorReportEndDate').empty(); 
+		 }
+}
+</script>
 
 <script>
 	$(function() {
@@ -610,6 +543,17 @@ function toDate(selector) {
 		$.datepicker._clearDate('#ReportEndDate'); 
 	}
 </script>
+
+
+<script type="text/javascript">
+	function flushBillingCustom() { 
+		$('#billingReportStartDate').val('');
+		$('#billingReportEndDate').val('');
+		$.datepicker._clearDate('#billingReportStartDate');
+		$.datepicker._clearDate('#billingReportEndDate'); 
+		addBillingValidClass();
+	}
+</script>
  <script>
 function getDayWiseReports(){
 	var timePeriod = $('#reportTypeId').val(); 
@@ -620,13 +564,13 @@ function getDayWiseReports(){
 
 </script>
 <script>
-function custdates(){
-	var reportType = $("#reportTypeId").val();
-	if(reportType=="custom"){
-	    $(".cusShow").show();
+function custBillingDates(){
+	var billingReportType = $("#billingReportType").val();
+	if(billingReportType=="CUSTOM"){
+	    $(".cusShowBilling").show();
 	}
-	if(reportType!="custom"){
-	    $(".cusShow").hide();
+	if(billingReportType!="CUSTOM"){
+	    $(".cusShowBilling").hide();
 	}
 }
 </script>
@@ -776,62 +720,67 @@ function getCustomReports(){
 }
 </script>
 
-<script>
-function payableTab(invoiceType){
-	getPayableBillingReports(invoiceType);
-}
-</script>
+
 
 <script>
 function getBillingReports(invoiceType){
+	$('#billingErrorReportStartDate').empty();
+	$('#billingErrorReportEndDate').empty(); 
 		var sourceleadUrl = '${sourceleadUrl}';
 		var billingReportType = $("#billingReportType").val();
-		$.ajax({
-	    	type: "GET",
-	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType, 
-	         success: function(data) {
-	        	 var json = JSON.parse(data);
-	        	 
-	        	 var result = "";
-	        	 
-	        	 result = result +'<div class="project_tabs_inn_head">';
-	        	 result = result +'<input class="vendorfild" type="text"><i class="fa fa-search"></i></div>';
-	        	 result = result +'<div class="require_wrap_table">';
-	        	 result = result +"<table id='billingReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
-	        	 result = result +'<thead>';
-	        	 result = result +'<tr>';
-	        	 result = result +'<th>Invoice Id</th>';
-	        	 result = result +'<th>Client</th>';
-	        	 result = result +'<th>Invoice Date</th>';
-	        	 result = result +'<th>Toatl</th>';
-	        	 result = result +'<th>Due Date</th>';                    
-	        	 result = result +'<th>Due Amount</th>';
-	        	 result = result +'</tr>';
-	        	 result = result +'</thead>';	
-	        	 result = result +'<tbody>';
-	        	 for (var i = 0; i < json.length; i++) { 
-	        		 var opt = json[i]; 
-	        		 $("#netIncome").html(opt.netIncome);
-		        	 $("#receivedAmount").html(opt.recievableAmount);
-		        	 $("#payableAmount").html(opt.payableAmount); 
-	        		 result = result +'<tr>';
-		        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
-		        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
-		        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
-		        	 result = result +'<td><div>'+opt.total+'</div></td> ';
-		        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
-		        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
-		        	 result = result +'</tr>'; 
-	        	 }
-	        	 
-	                result = result +'</tbody>';
-	                result = result +'</table>';
-	                result = result +'</div>';
-	                $("#tab-1").empty();
-	        	   $("#tab-1").append(result);
-	        	   billingReportPagination();
-	         }
-		});
+		var startDate = null;
+		var endDate = null;
+		if(billingReportType!="CUSTOM"){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
+		         success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 
+		        	 var result = "";
+		        	 
+		        	 result = result +'<div class="project_tabs_inn_head">';
+		        	 result = result +'</div>';
+		        	 result = result +'<div class="require_wrap_table dataFilterNew">';
+		        	 result = result +"<table id='billingReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
+		        	 result = result +'<thead>';
+		        	 result = result +'<tr>';
+		        	 result = result +'<th>Invoice Id</th>';
+		        	 result = result +'<th>Client</th>';
+		        	 result = result +'<th>Invoice Date</th>';
+		        	 result = result +'<th>Toatl</th>';
+		        	 result = result +'<th>Due Date</th>';                    
+		        	 result = result +'<th>Due Amount</th>';
+		        	 result = result +'</tr>';
+		        	 result = result +'</thead>';	
+		        	 result = result +'<tbody>';
+		        	 for (var i = 0; i < json.length; i++) { 
+		        		 var opt = json[i]; 
+		        		 $("#netIncome").html(opt.netIncome);
+			        	 $("#receivedAmount").html(opt.recievableAmount);
+			        	 $("#payableAmount").html(opt.payableAmount); 
+		        		 result = result +'<tr>';
+			        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
+			        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
+			        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
+			        	 result = result +'<td><div>'+opt.total+'</div></td> ';
+			        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
+			        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
+			        	 result = result +'</tr>'; 
+		        	 }
+		        	 
+		                result = result +'</tbody>';
+		                result = result +'</table>';
+		                result = result +'</div>';
+		                $("#tab-1").empty();
+		        	   $("#tab-1").append(result);
+		        	   billingReportPagination();
+		        	    
+		        	   getPayableBillingReports('payables');
+		         }
+			});	
+		}
+		
 }
 
 </script>
@@ -840,15 +789,17 @@ function getBillingReports(invoiceType){
 function getPayableBillingReports(invoiceType){
 		var sourceleadUrl = '${sourceleadUrl}';
 		var billingReportType = $("#billingReportType").val();
+		var startDate = null;
+		var endDate = null;
 		$.ajax({
 	    	type: "GET",
-	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType, 
+	    	 url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 	         success: function(data) {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 result = result +'<div class="project_tabs_inn_head">';
-	        	 result = result +'<input class="vendorfild" type="text"><i class="fa fa-search"></i></div>';
-	        	 result = result +'<div class="require_wrap_table">';
+	        	 result = result +'</div>';
+	        	 result = result +'<div class="require_wrap_table dataFilterNew">';
 	        	 result = result +"<table id='billingPayableReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
 	        	 result = result +'<thead>';
 	        	 result = result +'<tr>';
@@ -901,7 +852,7 @@ function billingReportPagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
 }
 </script> 
 
@@ -917,9 +868,176 @@ function billingPayableReportPagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
 }
 </script> 
+
+<script>
+function getCustomBillingReports(invoiceType){
+	var billingReportType = $("#billingReportType").val();  
+	var startDate = $("#billingReportStartDate").val();
+	var endDate = $("#billingReportEndDate").val();
+	var sourceleadUrl ='${sourceleadUrl}'; 
+	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#billingErrorReportStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#billingErrorReportEndDate").empty().append("End Date is Required") ; 
+	}else{
+		$.ajax({
+	         type : "GET",
+	         url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
+	         success :function(data) {
+	        	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	 result = result +'<div class="project_tabs_inn_head">';
+	        	 result = result +'</div>';
+	        	 result = result +'<div class="require_wrap_table dataFilterNew">';
+	        	 result = result +"<table id='customBillingReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
+	        	 result = result +'<thead>';
+	        	 result = result +'<tr>';
+	        	 result = result +'<th>Invoice Id</th>';
+	        	 result = result +'<th>Client</th>';
+	        	 result = result +'<th>Invoice Date</th>';
+	        	 result = result +'<th>Toatl</th>';
+	        	 result = result +'<th>Due Date</th>';                    
+	        	 result = result +'<th>Due Amount</th>';
+	        	 result = result +'</tr>';
+	        	 result = result +'</thead>';	
+	        	 result = result +'<tbody>';
+	        	 for (var i = 0; i < json.length; i++) { 
+	        		 var opt = json[i]; 
+	        		 $("#netIncome").html(opt.netIncome);
+		        	 $("#receivedAmount").html(opt.recievableAmount);
+		        	 $("#payableAmount").html(opt.payableAmount); 
+	        		 result = result +'<tr>';
+		        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
+		        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
+		        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
+		        	 result = result +'<td><div>'+opt.total+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
+		        	 result = result +'</tr>'; 
+	        	 }
+	        	 
+	                result = result +'</tbody>';
+	                result = result +'</table>';
+	                result = result +'</div>';
+	                $("#tab-1").empty();
+	        	   $("#tab-1").append(result);
+	        	   customBillingReportPagination();
+	        	   getCustomPayableBillingReports('payables');
+	        },
+	          
+	     });  
+	}
+}
+</script>
+
+<script>
+function getCustomPayableBillingReports(invoiceType){
+	var billingReportType = $("#billingReportType").val();  
+	var startDate = $("#billingReportStartDate").val();
+	var endDate = $("#billingReportEndDate").val();
+	var sourceleadUrl ='${sourceleadUrl}'; 
+	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#billingErrorReportStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#billingErrorReportEndDate").empty().append("End Date is Required") ; 
+	}else{
+		$.ajax({
+	         type : "GET",
+	         url: sourceleadUrl+"/getBillingReportByFrequency?${_csrf.parameterName}=${_csrf.token}&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
+	         success :function(data) {
+	        	 var json = JSON.parse(data);
+	        	 var result = "";
+	        	 result = result +'<div class="project_tabs_inn_head">';
+	        	 result = result +'</div>';
+	        	 result = result +'<div class="require_wrap_table dataFilterNew">';
+	        	 result = result +"<table id='customPayableReportPagination' class='display' cellspacing='0' width='99.9%' >"; 
+	        	 result = result +'<thead>';
+	        	 result = result +'<tr>';
+	        	 result = result +'<th>Invoice Id</th>';
+	        	 result = result +'<th>Client</th>';
+	        	 result = result +'<th>Invoice Date</th>';
+	        	 result = result +'<th>Toatl</th>';
+	        	 result = result +'<th>Due Date</th>';                    
+	        	 result = result +'<th>Due Amount</th>';
+	        	 result = result +'</tr>';
+	        	 result = result +'</thead>';	
+	        	 result = result +'<tbody>';
+	        	 for (var i = 0; i < json.length; i++) { 
+	        		 var opt = json[i]; 
+	        		 $("#netIncome").html(opt.netIncome);
+		        	 $("#receivedAmount").html(opt.recievableAmount);
+		        	 $("#payableAmount").html(opt.payableAmount); 
+	        		 result = result +'<tr>';
+		        	 result = result +'<td><div>'+opt.invoiceId+'</div></td>';
+		        	 result = result +'<td><div>'+opt.orgName+'</div></td>';
+		        	 result = result +'<td><div>'+opt.invoiceDateStr+'</div></td>';
+		        	 result = result +'<td><div>'+opt.total+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueDateStr+'</div></td> ';
+		        	 result = result +'<td><div>'+opt.dueAmount+'</div></td> ';
+		        	 result = result +'</tr>'; 
+	        	 }
+	        	 
+	                result = result +'</tbody>';
+	                result = result +'</table>';
+	                result = result +'</div>';
+	                $("#tab-1").empty();
+	        	   $("#tab-1").append(result);
+	        	   customPayableReportPagination();
+	        },
+	          
+	     });  
+	}
+}
+</script>
+<script>
+function customBillingReportPagination(){ 
+    $('#customBillingReportPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+}
+</script> 
+
+<script>
+function customPayableReportPagination(){ 
+    $('#customPayableReportPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+}
+</script> 
+
+<script>
+function custDates(){
+	var reportType = $("#reportTypeId").val();
+	if(reportType=="custom"){
+	    $(".cusShow").show();
+	}
+	if(reportType!="custom"){
+	    $(".cusShow").hide();
+	}
+}
+</script>
+
 
 <!-- Month Graph -->
 <!-- Chart code -->

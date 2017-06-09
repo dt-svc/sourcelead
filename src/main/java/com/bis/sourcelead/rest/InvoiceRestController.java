@@ -1400,7 +1400,9 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getBillingReportByFrequency", method = RequestMethod.GET)
 	@ResponseBody
 	public String getBillingReportByFrequency(@RequestParam(value = "billingReportType", required = false) String billingReportType,
-			@RequestParam(value = "invoiceType", required = false) String invoiceType,HttpServletRequest request, HttpServletResponse response) throws Exception
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		long startTime = System.currentTimeMillis();
 		String resultJson = "";
@@ -1466,6 +1468,10 @@ public class InvoiceRestController {
 				}
 				break;
 			case Constants.CUSTOM:
+				LocalDate localStartDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(startDate));
+				LocalDate localEndDate = LocalDate.fromDateFields(conversionUtil.getDateFromString(endDate));
+				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localStartDate, startDateOutputFormatter);
+				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, localEndDate, endDateOutputFormatter);
 				break;
 			default:
 				logger.info("No Frequency");;
