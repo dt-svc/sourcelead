@@ -120,7 +120,10 @@ function vencheck(orgRelationID,vendorLocationId){
 			          for (var i=0; i<json.length; i++)
 					  { 
 			        	  var opt = json[i];
-			            	 result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>";
+			        	  result = result + "<tr>";
+			            	// result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>";
+			               	result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.parentRequirement.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+
 			            	  if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
 			             	 {
 			            	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
