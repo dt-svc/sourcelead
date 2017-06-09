@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -30,58 +32,64 @@ import com.bis.sourcelead.enums.Project_Status;
 @Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntries")
 public class ExpensesEntries implements Serializable {
-private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+	@Column(name = "ID", nullable = false)
 	private Long id;
-	
+
 	@ManyToOne
-    @JoinColumn(name="EXPENSESID", nullable=false )        
-    private Expenses expensesId;
-	
+	@JoinColumn(name = "EXPENSESID", nullable = false)
+	private Expenses expensesId;
+
 	@ManyToOne
-    @JoinColumn(name="EXPENSE_CATEGORY_ID", nullable=false )        
-    private ExpensesCategory expensesCategoryId;
-	
+	@JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable = false)
+	private ExpensesCategory expensesCategoryId;
+
 	@Column(name = "EXPENSE_DATE")
 	private Date expenseDate;
-	
+
 	@Column(name = "PAYMENT_MODE")
 	@Enumerated(EnumType.STRING)
 	private PaymentModes paymentMode;
-	
-	@OneToMany(mappedBy="expensesEntriesId",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SELECT)
-    private Set<ExpensesEntryDocuments> expensesEntryDocuments;
-	
+
+	@OneToMany(mappedBy = "expensesEntriesId", cascade = CascadeType.ALL)
+	@Fetch(FetchMode.SELECT)
+	private Set<ExpensesEntryDocuments> expensesEntryDocuments;
+
 	@Column(name = "RECEIPT_ISSUED_BY")
 	private String receiptIssuedBy;
-	
+
 	@Column(name = "CURRENCY_TYPE")
 	private String currencyType;
-	
+
 	@Column(name = "AMOUNT")
 	private float amount;
-	
+
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
-	
+
 	@Column(name = "STATUS")
 	private String status;
-	
+
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
-	
+
 	@Column(name = "CREATED_BY")
 	private String createdBy;
-	
+
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
-	
+
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+
+	@Transient
+	private String expenseDateStr;
+
+	@Transient
+	private List<Expenses> expenseIndList;
 
 	public Long getId() {
 		return id;
@@ -115,13 +123,11 @@ private static final long serialVersionUID = 1L;
 		this.expenseDate = expenseDate;
 	}
 
-	public PaymentModes getPaymentMode()
-	{
+	public PaymentModes getPaymentMode() {
 		return paymentMode;
 	}
 
-	public void setPaymentMode(PaymentModes paymentMode)
-	{
+	public void setPaymentMode(PaymentModes paymentMode) {
 		this.paymentMode = paymentMode;
 	}
 
@@ -133,13 +139,11 @@ private static final long serialVersionUID = 1L;
 		this.receiptIssuedBy = receiptIssuedBy;
 	}
 
-	public String getCurrencyType()
-	{
+	public String getCurrencyType() {
 		return currencyType;
 	}
 
-	public void setCurrencyType(String currencyType)
-	{
+	public void setCurrencyType(String currencyType) {
 		this.currencyType = currencyType;
 	}
 
@@ -166,6 +170,7 @@ private static final long serialVersionUID = 1L;
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
 	public Set<ExpensesEntryDocuments> getExpensesEntryDocuments() {
 		return expensesEntryDocuments;
 	}
@@ -206,4 +211,20 @@ private static final long serialVersionUID = 1L;
 		this.updatedBy = updatedBy;
 	}
 
+	public String getExpenseDateStr() {
+		return expenseDateStr;
 	}
+
+	public void setExpenseDateStr(String expenseDateStr) {
+		this.expenseDateStr = expenseDateStr;
+	}
+
+	public List<Expenses> getExpenseIndList() {
+		return expenseIndList;
+	}
+
+	public void setExpenseIndList(List<Expenses> expenseIndList) {
+		this.expenseIndList = expenseIndList;
+	}
+
+}

@@ -90,7 +90,7 @@ private Date updatedDate;
 private String updatedBy;
 
 
-@ManyToOne(fetch = FetchType.EAGER)
+@ManyToOne
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
 

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -68,33 +69,37 @@ public class ExpensesRestController {
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Expenses> expensesList = expensesService.getIndividualExpense(orgLoc,loginUser,expenseId);
-		for(Expenses ex:expensesList){
-			
-			if(null != ex.getExpensesEntries() && !ex.getExpensesEntries().isEmpty()){
-				for(ExpensesEntries entry :ex.getExpensesEntries()){
-					System.out.println(entry.getId());
+		List<ExpensesEntries> expensesEntriesList = expensesService.getExpensesEntries(expenseId);
+		
+		
+		for(ExpensesEntries exEnt:expensesEntriesList){
+
+			if(null != exEnt.getExpenseDate())
+			{
+				exEnt.setExpenseDateStr(Constants.DF_DMY.format(exEnt.getExpenseDate()));
+			}
+
+			if(null == exEnt.getExpenseIndList())
+			{
+				List<Expenses> expensesList = expensesService.getIndividualExpense(orgLoc,loginUser,expenseId);
+				for(Expenses ex:expensesList){
+					if(null != ex.getProjectMembers())
+					{
+						ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
+					}
+					if(null != ex.getStartDate())
+					{
+						ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+					}
+					if(null != ex.getEndDate())
+					{
+						ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+					}
 				}
+				exEnt.setExpenseIndList(expensesList);
 			}
-			if(null != ex.getProjectMembers())
-			{
-				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
-			}
-			if(null != ex.getStartDate())
-			{
-			ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
-			}
-			if(null != ex.getEndDate())
-			{
-				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
-			}
-			if(null != ex.getExpensesEntries())
-			{
-				List<ExpensesEntries> expensesEntriesList = expensesService.getExpensesEntries(expenseId);
-			}
-			
 		}
-		resultJson = commonUtil.toJSON(expensesList);
+		resultJson = commonUtil.toJSON(expensesEntriesList);
 		return resultJson;
 	 }
 	

@@ -212,168 +212,167 @@ var sourceleadUrl = '${sourceleadUrl}';
 	             url: sourceleadUrl+"/getIndividualExpense?expenseId="+expenseId,       
 	             success :function(data) {
 	           	  var result = "";
-	          	result = result +'					<div class="project_side_wrap_inn">                                                                                               ';                 
-	        	result = result +'				    	<h1>Expense name here</h1>                                                                                                    ';
-	        	result = result +'				                                                                                                                                      ';
-	        	result = result +'				<div class="project_side_wrap_inn_tabs">                                                                                              ';
-	        	result = result +'				    <ul class="project-tabs-menu">                                                                                                    ';
-	        	result = result +'				        <li class="current"><a href="#tab-1">Details</a></li>                                                                         ';
+	           	  
+	          	result = result +'<div class="project_side_wrap_inn">';                 
+	        	result = result +'<h1>Expense name here</h1>';
+	        	result = result +'<div class="project_side_wrap_inn_tabs">';
+	        	result = result +'<ul class="project-tabs-menu">';
+	        	result = result +'<li class="current"><a href="#tab-1">Details</a></li>';
 	        	//result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
-	        	result = result +'				        <div class="clearfix"></div>                                                                                                  ';
-	        	result = result +'				    </ul>                                                                                                                             ';
+	        	result = result +'<div class="clearfix"></div>';
+	        	result = result +'</ul>';
 
-	        	result = result +'				    <div class="project_tabs">                                                                                                        ';
-	        	result = result +'				        <div id="tab-1" class="project_tabs_inn">                                                                                     ';
-	        	result = result +'				            <div class="project_tabs_inn_table">                                                                                      ';
-	        	result = result +'								<div class="project_details project_detailsExp">                                                                      ';
+	        	result = result +'<div class="project_tabs">';
+	        	result = result +'<div id="tab-1" class="project_tabs_inn">';
+	        	result = result +'<div class="project_tabs_inn_table">';
+	        	result = result +'<div class="project_details project_detailsExp">';
 
-	        	result = result +'									<div class="Expdit">                                                                                              ';
-	        	result = result +'										<a href="#" class="btn btn-primary">Status</a>                                                                ';
-	        	result = result +'										<a href="add-expense.html" class="btn btn-default ml10"><i class="fa fa-pencil-square-o"></i> &nbsp;Edit</a>  ';
-	        	result = result +'										<!--<a href="add-expense.html"><i class="glyphicon glyphicon-pencil"></i>Edit</a>-->                          ';
-	        	result = result +'									</div>                                                                                                            ';
+	        	result = result +'<div class="Expdit">';
+	        	result = result +'<a href="#" class="btn btn-primary">Status</a>';
+	        	result = result +'<a href="add-expense.html" class="btn btn-default ml10"><i class="fa fa-pencil-square-o"></i> &nbsp;Edit</a>';
+	        	result = result +'<!--<a href="add-expense.html"><i class="glyphicon glyphicon-pencil"></i>Edit</a>-->';
+	        	result = result +'</div>';
 
 	        	 var json = JSON.parse(data);
-	        	 
-	        		  var report = json[0];
+	        		  var reportExpense = json[0];
+	        		  var reportExpenseEntries = json;
 	        		  var expenseId="";
-	        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
-	        			  expenseId = report.expenseId;
+	        		  if(reportExpense.expenseIndList[0].expenseId != null && reportExpense.expenseIndList[0].expenseId != '' && reportExpense.expenseIndList[0].expenseId != 'undefined'){
+	        			  expenseId = reportExpense.expenseIndList[0].expenseId;
 	        		  }else{
 	        			  expenseId = "--";
 	        		  }
 	        		  var projectMemberId="";
-	        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-	        			  projectMemberId = report.projectMemberId;
+	        		  if(reportExpense.expenseIndList[0].projectMemberId != null && reportExpense.expenseIndList[0].projectMemberId != '' && reportExpense.expenseIndList[0].projectMemberId != 'undefined'){
+	        			  projectMemberId = reportExpense.expenseIndList[0].projectMemberId;
 	        		  }else{
 	        			  projectMemberId = "--";
 	        		  }
 	        		  var clientName="";
-	        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
-	        			  clientName = report.clientName;
+	        		  if(reportExpense.expenseIndList[0].clientName != null && reportExpense.expenseIndList[0].clientName != '' && reportExpense.expenseIndList[0].clientName != 'undefined'){
+	        			  clientName = reportExpense.expenseIndList[0].clientName;
 	        		  }else{
 	        			  clientName = "--";
 	        		  }
 	        		  var startDateStr="";
-	        		  if(report.startDateStr != null && report.startDateStr != '' && report.startDateStr != 'undefined'){
-	        			  startDateStr = report.startDateStr;
+	        		  if(reportExpense.expenseIndList[0].startDateStr != null && reportExpense.expenseIndList[0].startDateStr != '' && reportExpense.expenseIndList[0].startDateStr != 'undefined'){
+	        			  startDateStr = reportExpense.expenseIndList[0].startDateStr;
 	        		  }else{
 	        			  startDateStr = "--";
 	        		  }
 	        		  var endDateStr="";
-	        		  if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-	        			  endDateStr = report.endDateStr;
+	        		  if(reportExpense.expenseIndList[0].endDateStr != null && reportExpense.expenseIndList[0].endDateStr != '' && reportExpense.expenseIndList[0].endDateStr != 'undefined'){
+	        			  endDateStr = reportExpense.expenseIndList[0].endDateStr;
 	        		  }else{
 	        			  endDateStr = "--";
 	        		  }
 	        		  var noOfExpenses="";
-	        		  if(report.noOfExpenses != null && report.noOfExpenses != '' && report.noOfExpenses != 'undefined'){
-	        			  noOfExpenses = report.noOfExpenses;
+	        		  if(reportExpense.expenseIndList[0].noOfExpenses != null && reportExpense.expenseIndList[0].noOfExpenses != '' && reportExpense.expenseIndList[0].noOfExpenses != 'undefined'){
+	        			  noOfExpenses = reportExpense.expenseIndList[0].noOfExpenses;
 	        		  }else{
 	        			  noOfExpenses = "--";
 	        		  }
 	        		  var totalAmount="";
-	        		  if(report.totalAmount != null && report.totalAmount != '' && report.totalAmount != 'undefined'){
-	        			  totalAmount = report.totalAmount;
+	        		  if(reportExpense.expenseIndList[0].totalAmount != null && reportExpense.expenseIndList[0].totalAmount != '' && reportExpense.expenseIndList[0].totalAmount != 'undefined'){
+	        			  totalAmount = reportExpense.expenseIndList[0].totalAmount;
 	        		  }else{
 	        			  totalAmount = "--";
 	        		  }
-	        	result = result +'				                    <div class="clearfix"></div>                                                                                      ';
-	        	result = result +'									<div class="project_details_cta">                                                                                 ';
-	        	result = result +'										<strong>Expenses Id:</strong><span>'+expenseId+'</span><div class="clearfix"></div>                                 ';
-	        	result = result +'									</div>                                                                                                            ';
-	        	result = result +'									<div class="project_details_cta">                                                                                 ';
-	        	result = result +'										<strong>Project Name:</strong><span>'+projectMemberId+'</span><div class="clearfix"></div>                              ';
-	        	result = result +'									</div>                                                                                                            ';
-	        	result = result +'									<div class="project_details_cta">                                                                                 ';
-	        	result = result +'										<strong>Client:</strong><span>'+clientName+'</span><div class="clearfix"></div>                                     ';
-	        	result = result +'									</div>                                                                                                            ';
-	        	result = result +'									<div class="project_details_cta">                                                                                 ';
-	        	result = result +'										<strong>Start date:</strong><span>'+startDateStr+'</span><div class="clearfix"></div>                               ';
-	        	result = result +'									</div>                                                                                                            ';
-	        	result = result +'									<div class="project_details_cta">                                                                                 ';
-	        	result = result +'										<strong>End date:</strong><span>'+endDateStr+'</span><div class="clearfix"></div>                                 ';
-	        	result = result +'									</div>                                                                                                            ';
-	        	result = result +'									<div class="project_details_cta">                                                                                 ';
-	        	result = result +'										<strong>No of Expenses:</strong><span>'+noOfExpenses+'</span><div class="clearfix"></div>                                   ';
-	        	result = result +'									</div>                                                                                                            ';
-	        	result = result +'									<div class="project_details_cta">                                                                                 ';
-	        	result = result +'										<strong>Amount:</strong><span>'+totalAmount+'</span><div class="clearfix"></div>                                       ';
-	        	result = result +'									</div>	                    			                                                                          ';
-	        	result = result +'									<div class="clearfix"></div>                                                                                      ';
-	        	result = result +'								</div>                                                                                                                ';
-	        	
-	        	result = result +'				<div class="project_wrap_table expensTableView">                                                                                      ';
-	        	result = result +'					<table>                                                                                                                           ';
-	        	result = result +'					<thead>                                                                                                                           ';
-	        	result = result +'							<tr>                                                                                                                      ';
-	        	result = result +'								<th>Exp Category</th>                                                                                                 ';
-	        	result = result +'								<th>Date</th>                                                                                                         ';
-	        	result = result +'								<th>Payment Mode</th>                                                                                                 ';
-	        	result = result +'								<th>Currency</th>                                                                                                     ';
-	        	result = result +'								<th>Description</th>                                                                                                  ';
-	        	result = result +'								<th>Amount</th>                                                                                                       ';
-	        	result = result +'							</tr>                                                                                                                     ';
-	        	result = result +'						</thead>	                                                                                                                  ';
-	        	result = result +'							<tbody>                                                                                                                   ';
+	        	result = result +'<div class="clearfix"></div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Expenses Id:</strong><span>'+expenseId+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Project Name:</strong><span>'+projectMemberId+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Client:</strong><span>'+clientName+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Start date:</strong><span>'+startDateStr+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>End date:</strong><span>'+endDateStr+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>No of Expenses:</strong><span>'+noOfExpenses+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Amount:</strong><span>'+totalAmount+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        		  
+	        	result = result +'<div class="project_wrap_table expensTableView">';
+	        	result = result +'<table>';
+	        	result = result +'<thead>';
+	        	result = result +'<tr>';
+	        	result = result +'<th>Exp Category</th>';
+	        	result = result +'<th>Date</th>';
+	        	result = result +'<th>Payment Mode</th>';
+	        	result = result +'<th>Currency</th>';
+	        	result = result +'<th>Description</th>';
+	        	result = result +'<th>Amount</th>';
+	        	result = result +'</tr>';
+	        	result = result +'</thead>';
+	        	result = result +'<tbody>';
 
-	        	alert("report.expenseEntriesList.length"+report.expenseEntriesList.length); 
+	        	
 	        	var expensesCategoryId= "";
 	        	var paymentMode= "";
 	        	var expenseDateStr= "";
 	        	var currencyType= "";
 	        	var description= "";
 	        	var amount= "";
-	       for (var i = 0; i < report.expenseEntriesList.length; i++) {	
-	    	   alert("report.expenseEntriesList.length"+report.expenseEntriesList.length);
-	    	   alert("report.expenseEntriesList[i]"+report.expenseEntriesList[i].expenseDateStr);
-	    	   alert("report.expenseEntriesList[i]"+report.expenseEntriesList[i++].expenseDateStr);
-	        	if(report.expenseEntriesList[i].expensesCategoryId != null && report.expenseEntriesList[i].expensesCategoryId != '' && report.expenseEntriesList[i].expensesCategoryId != 'undefined'){
-	        		expensesCategoryId = report.expenseEntriesList[i].expensesCategoryId;
+	        	
+	       for (var i = 0; i < reportExpenseEntries.length; i++) {	
+	    	   var raja = json[i];
+	    	   
+	        	/* if(reportExpenseEntries[i].expensesCategoryId != null && reportExpenseEntries[i].expensesCategoryId != '' && reportExpenseEntries[i].expensesCategoryId != 'undefined'){
+	        		expensesCategoryId = reportExpenseEntries[i].expensesCategoryId;
       		  }else{
       			expensesCategoryId = "--";
-      		  }
-	        	if(report.expenseEntriesList[i].paymentMode != null && report.expenseEntriesList[i].paymentMode != '' && report.expenseEntriesList[i].paymentMode != 'undefined'){
-	        		paymentMode = report.expenseEntriesList[i].paymentMode;
+      		  } */
+	        	if(reportExpenseEntries[i].paymentMode != null && reportExpenseEntries[i].paymentMode != '' && reportExpenseEntries[i].paymentMode != 'undefined'){
+	        		paymentMode = reportExpenseEntries[i].paymentMode;
       		  }else{
       			paymentMode = "--";
       		  }
-	        	if(report.expenseEntriesList[i].expenseDateStr != null && report.expenseEntriesList[i].expenseDateStr != '' && report.expenseEntriesList[i].expenseDateStr != 'undefined'){
-	        		expenseDateStr = report.expenseEntriesList[i].expenseDateStr;
+	        	if(reportExpenseEntries[i].expenseDateStr != null && reportExpenseEntries[i].expenseDateStr != '' && reportExpenseEntries[i].expenseDateStr != 'undefined'){
+	        		expenseDateStr = reportExpenseEntries[i].expenseDateStr;
       		  }else{
       			expenseDateStr = "--";
       		  }
-	        	if(report.expenseEntriesList[i].currencyType != null && report.expenseEntriesList[i].currencyType != '' && report.expenseEntriesList[i].currencyType != 'undefined'){
-	        		currencyType = report.expenseEntriesList[i].currencyType;
+	        	if(reportExpenseEntries[i].currencyType != null && reportExpenseEntries[i].currencyType != '' && reportExpenseEntries[i].currencyType != 'undefined'){
+	        		currencyType = reportExpenseEntries[i].currencyType;
       		  }else{
       			currencyType = "--";
       		  }
-	        	if(report.expenseEntriesList[i].description != null && report.expenseEntriesList[i].description != '' && report.expenseEntriesList[i].description != 'undefined'){
-	        		description = report.expenseEntriesList[i].description;
+	        	if(reportExpenseEntries[i].description != null && reportExpenseEntries[i].description != '' && reportExpenseEntries[i].description != 'undefined'){
+	        		description = reportExpenseEntries[i].description;
       		  }else{
       			description = "--";
       		  }
-	        	if(report.expenseEntriesList[i].amount != null && report.expenseEntriesList[i].amount != '' && report.expenseEntriesList[i].amount != 'undefined'){
-	        		amount = report.expenseEntriesList[i].amount;
+	        	if(reportExpenseEntries[i].amount != null && reportExpenseEntries[i].amount != '' && reportExpenseEntries[i].amount != 'undefined'){
+	        		amount = reportExpenseEntries[i].amount;
       		  }else{
       			amount = "--";
       		  }
 	        	
-	        	result = result +'							<tr>                                                                                                                      ';
-	        	result = result +'								<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'+expensesCategoryId+'</div></td>                  ';
-	        	result = result +'								<td><div>'+expenseDateStr+'</div></td>                                                                                        ';
-	        	result = result +'								<td><div>'+paymentMode+'</div></td>                                                                                              ';
-	        	result = result +'								<td><div>'+currencyType+'</div></td>                                                                                               ';
-	        	result = result +'								<td><div class="tbldata-dotdot-me">'+description+'</div></td>                                                 ';
-	        	result = result +'								<td><div>'+amount+'</div></td>				                                                                              ';
-	        	result = result +'							</tr>                                                                                                                     ';
+	        	result = result +'<tr>';
+	        	result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'+expensesCategoryId+'</div></td>';
+	        	result = result +'<td><div>'+expenseDateStr+'</div></td>';
+	        	result = result +'<td><div>'+paymentMode+'</div></td>';
+	        	result = result +'<td><div>'+currencyType+'</div></td>';
+	        	result = result +'<td><div class="tbldata-dotdot-me">'+description+'</div></td>';
+	        	result = result +'<td><div>'+amount+'</div></td>';
+	        	result = result +'</tr>';
 	       }
-	        	result = result +'						</tbody>                                                                                                                      ';
-	        	result = result +'					</table>                                                                                                                          ';
-	        	result = result +'				</div>                                                                                                                                ';
-	        	result = result +'				            </div>                                                                                                                                                                                              ';
-	        	result = result +'				        </div>                                                                                                                                                                                                     ';
-	        	
+	        	result = result +'</tbody>';
+	        	result = result +'</table>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
 	        	
 // 	        	result = result +'				        <div id="tab-2" class="project_tabs_inn">		                                                                                                                                                           ';
 // 	        	result = result +'							<div class="hisWrap">                                                                                                                                                                                  ';
@@ -385,15 +384,15 @@ var sourceleadUrl = '${sourceleadUrl}';
 // 	        	result = result +'							</div>                                                                                                                                                                                                 ';
 // 	        	result = result +'				        </div>                                                                                                                                                                                                     ';
 	        	
-	        	result = result +'				    </div>                                                                                                                                                                                                         ';
-	        	result = result +'				</div>                                                                                                                                                                                                             ';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
 
-	        	result = result +'					<div class="project_inn_mask"></div>                                                                                                                                                                           ';
-	        	result = result +'					<div class="project_error">                                                                                                                                                                                    ';
-	        	result = result +'						<p>Delete conformation message....</p>                                                                                                                                                                     ';
-	        	result = result +'						<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a>                                                                                                                ';
-	        	result = result +'					</div>	                                                                                                                                                                                                       ';
-	        	result = result +'				    </div>                                                                                                                                                                                                         ';
+	        	result = result +'<div class="project_inn_mask"></div>';
+	        	result = result +'<div class="project_error">';
+	        	result = result +'<p>Delete conformation message....</p>';
+	        	result = result +'<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
  
 	$("#expensesViewDiv").val('');
     $("#expensesViewDiv").append(result);
@@ -417,5 +416,6 @@ function activeTab(){
 	$(".project_side_wrap").removeClass("project_side_wrap_active");
     $(".side_mask").fadeOut(200);
     $("body").css('overflow-y', 'scroll');
+    $("#expensesViewDiv").empty();
 }
 </script>
