@@ -1940,6 +1940,7 @@ public class CrowdSourcingRequirementsRestController {
 					submission.setPhoneNumber(submission.getCandidate().getMobilePhone());
 					submission.setCandidateId(submission.getCandidate().getId().toString());
 					submission.setRequirementId(submission.getRequirement().getId());
+					submission.setRequirementName(submission.getRequirement().getJobTitle());
 					
 					reqSubmissionList.add(submission);
 				}
