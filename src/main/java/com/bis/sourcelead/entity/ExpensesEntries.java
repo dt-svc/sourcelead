@@ -10,7 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +25,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.enums.PaymentModes;
-import com.bis.sourcelead.enums.Project_Status;
 
 @Entity
 @Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
@@ -91,6 +89,9 @@ public class ExpensesEntries implements Serializable {
 	@Transient
 	private List<Expenses> expenseIndList;
 
+	@Transient
+	private String expenseDateString;  
+	
 	public Long getId() {
 		return id;
 	}
@@ -221,6 +222,14 @@ public class ExpensesEntries implements Serializable {
 
 	public List<Expenses> getExpenseIndList() {
 		return expenseIndList;
+	}
+	
+	public String getExpenseDateString() {
+		return expenseDateString;
+	}
+
+	public void setExpenseDateString(String expenseDateString) {
+		this.expenseDateString = expenseDateString;
 	}
 
 	public void setExpenseIndList(List<Expenses> expenseIndList) {

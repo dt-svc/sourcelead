@@ -52,5 +52,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 
 	}
 	
+	@Override
+	public Expenses getExpenseByExpenseId(long expenseId) {
+		return expensesDao.getExpenseByExpenseId(expenseId);
+	}
+
 		
 }

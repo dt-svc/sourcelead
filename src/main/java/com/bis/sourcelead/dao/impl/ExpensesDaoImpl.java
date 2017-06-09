@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -32,10 +30,6 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
-	
-	private static final Logger logger = LoggerFactory.getLogger(ExpensesDaoImpl.class);
-	
-	
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -69,4 +63,17 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		return expensesEntriesList;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Expenses getExpenseByExpenseId(long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Expenses expenses where expenses.id =:expenseId";
+		List<Expenses> expenses = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		Expenses expensesList = null;
+		if (expenses != null && expenses.size() > 0) {
+			expensesList = (Expenses) expenses.iterator().next();
+		}
+		return expensesList;
+	}
 }

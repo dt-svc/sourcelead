@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
 import java.util.Set;
 
 import org.json.JSONObject;
@@ -11,5 +12,7 @@ import com.bis.sourcelead.entity.ExpensesEntries;
 public interface ExpensesEntriesService {
 
 	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(JSONObject jsonObj, MultipartHttpServletRequest request,Expenses expenses) throws Exception;
+
+	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long parseLong);
 
 }

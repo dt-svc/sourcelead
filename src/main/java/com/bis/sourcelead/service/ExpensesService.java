@@ -13,4 +13,6 @@ public interface ExpensesService {
 	public List<Expenses> getIndividualExpense(OrgLocations orgLoc, User loginUser,String expenseId);
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 
+	public Expenses getExpenseByExpenseId(long expenseId);
+
 }
