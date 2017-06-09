@@ -71,8 +71,8 @@ function vencheck(orgRelationID,vendorLocationId){
     $("#tab-1").empty();
     $("#tab-2").empty(); 
     $("#tab-3").empty(); 
-    $("#tab-4").empty(); 
-    $("#tab-4").append(result);  
+    $("#tab-5").empty(); 
+    $("#tab-6").append(result);  
 	
     test(orgRelationID);
     
@@ -121,8 +121,8 @@ function vencheck(orgRelationID,vendorLocationId){
 					  { 
 			        	  var opt = json[i];
 			        	  result = result + "<tr>";
-			            	// result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>";
-			               	result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.parentRequirement.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+			            	result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>";
+			               //	result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.parentRequirement.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 
 			            	  if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
 			             	 {
