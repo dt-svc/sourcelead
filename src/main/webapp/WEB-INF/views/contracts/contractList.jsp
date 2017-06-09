@@ -1201,7 +1201,7 @@ function preparedContractListWFA(data){
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
-		opt = opt + '    <th>Approver</th>';
+		res = res + '    <th>Approver</th>';
 		res = res + '    <th>Action</th>';
 		res = res + '   </tr>';
 		res = res + '	</thead>';
@@ -1254,24 +1254,30 @@ function preparedContractListWFA(data){
 		         res = res + '<div><span title="'+appReport.approverUserName+'">'+appReport.approverUserName+'</span></div>';
 		         res = res + '</td>';
 		         
-		         res = res + '<td>';
-		         res = res + '<div class="tbldata-dotdot_80">';
-		     	if(appReport.templateSubmissionStatus == "DRAFT"){
-		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
-		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-		     		if(appReport.typeOfContract == "New"){
-		     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-		     		}
-		     		if(appReport.typeOfContract == "Custom"){
-		     			res = res + '| <a href="<c:url value="/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-		     		}
-		     		'</sec:authorize>';
-		     		//res = res + '</div>';
-	     	  }
-	     	  else{
-	     		 res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
-	     	  }
-		         res = res + '</div></td>';
+		         res = res + '<td>';//Waiting to be signed
+		         res = res + '<div class="tbldata-dotdot-vsm">';
+		         
+	        	  if(appReport.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+	        		   '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
+
+	            		res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+appReport.id+',\'REJECTED\');"></i></div></div>';
+	            		res = res + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+
+	            		'</sec:authorize>';
+	            		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+				     		if(appReport.typeOfContract == "New"){
+				     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				     		}
+				     		if(appReport.typeOfContract == "Custom"){
+				     			res = res + '| <a href="<c:url value="/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				     		}
+			     		'</sec:authorize>';
+	        	  }
+	        	  else{
+	        		  res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+	        	  }
+		     	 
+		     		res = res + '</div></td>';
 		     	 
 		        res = res + '</tr>';
 		    }
@@ -1556,7 +1562,7 @@ function preparedContractListWTS(data){
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
-		opt = opt + '    <th>Status</th>';
+		res = res + '    <th>Status</th>';
 		res = res + '    <th>Action</th>';
 		res = res + '   </tr>';
 		res = res + '	</thead>';
@@ -1623,7 +1629,7 @@ function preparedContractListWTS(data){
 	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var fullTimeCount = fullTimeoffercontractsList.length;
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
 	var signCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
@@ -1893,7 +1899,7 @@ function preparedContractListWTV(data){
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
-		opt = opt + '    <th>Status</th>';
+		res = res + '    <th>Status</th>';
 		res = res + '    <th>Action</th>';
 		res = res + '   </tr>';
 		res = res + '	</thead>';

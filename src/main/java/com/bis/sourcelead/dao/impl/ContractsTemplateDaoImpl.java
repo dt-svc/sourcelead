@@ -296,6 +296,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
 					+ "left join fetch contracts.requirementSubmission "
 					+"left join fetch contracts.requirementSubmission.candidate "
+					+"left join fetch contracts.requirementSubmission.requirement "
 					+ "left join fetch contracts.ownerUserId "
 					+ "left join fetch contracts.orgLocationId "
 					+ "left join fetch contracts.orgRelations "

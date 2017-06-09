@@ -986,7 +986,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			childContract.setBillingPer(contracts.getBillingPer());
 			childContract.setInvoiceFrequency(contracts.getInvoiceFrequency());
 			childContract.setPaymentTerm(contracts.getPaymentTerm());
-			
+			childContract.setParentContractId(upadatedContracts);
+			if("Full time offer".equalsIgnoreCase(upadatedContracts.getContractType())){
+				if(null != childContract){
+					childContract.setContractType(upadatedContracts.getContractType());	
+					childContract.setContractsTemplate(upadatedContracts.getContractsTemplate());	
+					childContract.setContractOrgLocationId(orgLocation);
+					childContract.setContactUser(upadatedContracts.getOwnerUserId());
+				}
+			}
 			childContract.setTax(contracts.getTax());
 			childContract.setTaxType(contracts.getTaxType());
 			childContract.setDescription(contracts.getDescription());
@@ -1325,10 +1333,11 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			 }else{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
-		 
+		 if(null != contracts.getContractOrgLocationId()){
 		 if(null != contracts.getContractOrgLocationId().getOrg().getOrgName() && !"".equalsIgnoreCase(contracts.getContractOrgLocationId().getOrg().getOrgName())){
 			 globalVarsMap.put("ClientVendorName",contracts.getContractOrgLocationId().getOrg().getOrgName());
-			 }else{
+			 }
+		 }else{
 				 globalVarsMap.put("ClientVendorName","--");
 			}
 			
