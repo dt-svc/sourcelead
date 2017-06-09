@@ -1,17 +1,9 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-<link rel="stylesheet" href="resources/css/style.css" />
-
-<script src="resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
-
 
 <style type="text/css">
 .collapse-div-adduser select{
@@ -37,14 +29,21 @@ function clientRequirementList(orgRelationId){
 	var result = "";
 	result = result  +'<div class="timesheet_head top_filters">';
 	result = result  +'<input type="hidden" id="orgRelationId" value="'+orgRelationId+'">';
-	result = result  +'    <div class="addUser-org"> ';  
+	result = result  +'    <div> ';  
 	    result = result + '<ul>';
 	    
-	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>|';
+	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
 		result = result + '       	<ul>';
 		result = result + '           	<li><input type="checkbox" value="OPEN"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Open</label></li>';
 		result = result + '           	<li><input type="checkbox" value="NEW"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>New</label></li>';
+		result = result + '           	<li><input type="checkbox" value="SUBMITTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Submitted</label></li>';
+		result = result + '           	<li><input type="checkbox" value="FILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Filled Closed</label></li>';
+		result = result + '           	<li><input type="checkbox" value="UNFILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Unfilled Closed</label></li>';
+		result = result + '           	<li><input type="checkbox" value="ONHOLD"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>On Hold</label></li>';
+		result = result + '           	<li><input type="checkbox" value="CLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Closed</label></li>';
+
+
 		//result = result + '           	<li><input type="checkbox" name="rl"><label>Checkbox3</label></li>';
 		result = result + '           </ul>';
 		result = result + '       </div>'; 
@@ -87,16 +86,9 @@ function clientRequirementList(orgRelationId){
 	        success: function(data) {
 	        	
 	        var json = JSON.parse(data);
-	        
-    	
-			var result = "";
-	      
-    		 if(json.length != null && json.length != ''){
-    	   		
     			$("#clientSubmissionRequirementList").empty();
 				var result = "";
-				
-				result = result +"<table id='listReqPagination' class='display' cellspacing='0' width='100%' >"; 
+				result = result +'<table id="listReqPagination" class="display" cellspacing="0" width="100%" >'; 
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result + '<th>Title</th>';
@@ -140,33 +132,19 @@ function clientRequirementList(orgRelationId){
 	           		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
 	           	 }
 	                result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
-	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
+	                result = result + '<td><div class="tbldata-dotdot-vsm"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
 	               	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
 	                result = result + '<td><div>'+opt.noOfOfferedApplicants+'</div></td>';
+	                result = result + '<td><div>'+opt.noOfBackOutApplicants+'</div></td>';
 	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
-	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
-	                result = result + '<td><div class="tbldata-dotdot"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
-	                
-	                result = result + '<td><div>';
+	                result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
+	               
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
-	        		
-	        	
 	        	result = result +'</tbody>';
 	        	result = result +"</table>";
 	        	
-    		}else{
-      			 result = result + '<div class="table_nodata">';
-       			 result = result + '<div class="table_nodata_inn">';
-       			 result = result + '<img src="resources/images/no-data.png" />';
-       			 result = result + '<span>Nothing is here to show </b>';
-       			 result = result + '</span>';
-       			 result = result + '<div class="clearfix"></div>';
-       			 result = result + '</div>';
-       			 result = result + '</div>';
-       		 } 
-       		
     	    $("#clientSubmissionRequirementList").append(result); 
     	    clientRequirementListpagination(); 
     	  
@@ -176,7 +154,7 @@ function clientRequirementList(orgRelationId){
 </script>
 
 
-<!-- <script>
+ <script>
 function clientRequirementListpagination(){  
 	$('#listReqPagination').DataTable( { 
     	"scrollCollapse": false,
@@ -188,6 +166,7 @@ function clientRequirementListpagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+	$('#listReqPagination').wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 }
-</script> -->
+</script>

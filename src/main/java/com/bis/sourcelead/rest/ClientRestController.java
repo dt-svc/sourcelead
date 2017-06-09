@@ -752,8 +752,11 @@ public class ClientRestController {
 				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 				int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "INTERVIEWED");
 				int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "OFFERED");
+				int bacOutCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), Constants.BACKOUT_STATUS);
+
 				req.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
 				req.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+				req.setNoOfBackOutApplicants(String.valueOf(bacOutCount));
 			}
 		}
 		resultJson = commonUtil.toJSON(reqList);

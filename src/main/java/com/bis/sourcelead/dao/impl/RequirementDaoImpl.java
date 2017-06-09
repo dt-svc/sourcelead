@@ -167,7 +167,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			params.put("userId",user.getId());
 			
 			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 != "" ){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
 				params.put("orgLocationId",orgLocationId);
 			}
 		}
@@ -1265,8 +1265,17 @@ public class RequirementDaoImpl implements RequirementDao {
 		if (Arrays.asList(requirementStatus).contains("SUBMITTED")) {
 			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'SUBMITTED' or ";
 		}
-		if (Arrays.asList(requirementStatus).contains("DRAFT")) {
-			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'DRAFT' or ";
+		if (Arrays.asList(requirementStatus).contains("FILLEDCLOSED")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'FILLEDCLOSED' or ";
+		}
+		if (Arrays.asList(requirementStatus).contains("UNFILLEDCLOSED")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'UNFILLEDCLOSED' or ";
+		}
+		if (Arrays.asList(requirementStatus).contains("ONHOLD")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'ONHOLD' or ";
+		}
+		if (Arrays.asList(requirementStatus).contains("CLOSED")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'CLOSED' or ";
 		}
 		if ((requirementStatus[0] != null && requirementStatus[0].length() > 0)) {
 			subQuery8 = "and (" + subQuery8.substring(0, subQuery8.length() - 4) + ")";
