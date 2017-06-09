@@ -227,24 +227,24 @@
                <li onclick="copyToClipboard('text_element86')"><i></i><p class="copyText" id="text_element86">[Expiration Date]</li>
                <li onclick="copyToClipboard('text_element87')"><i></i><p class="copyText" id="text_element87">[Join Date]</li>
                <li onclick="copyToClipboard('text_element104')"><i></i><p class="copyText" id="text_element104">[Billing Rate]</li>
-               <li onclick="copyToClipboard('text_element105')"><i></i><p class="copyText" id="text_element405">[Overtime]</li>
+               <li onclick="copyToClipboard('text_element105')"><i></i><p class="copyText" id="text_element105">[Overtime]</li>
                <li onclick="copyToClipboard('text_element106')"><i></i><p class="copyText" id="text_element106">[Payment Term]</li>
                <li onclick="copyToClipboard('text_element110')"><i></i><p class="copyText" id="text_element110">[State Of Jurisdiction]</p></li>
           </ul>
                <ul id="fullTimeOffer" style="display:none">
-                 <li onclick="copyToClipboard('text_element115')"><i></i><p class="copyText" id="text_element115">[Company Name]</li>
-                 <li onclick="copyToClipboard('text_element116')"><i></i><p class="copyText" id="text_element116">[Company Address]</li>
-                 <li onclick="copyToClipboard('text_element117')"><i></i><p class="copyText" id="text_element117">[Company City]</li>
-                 <li onclick="copyToClipboard('text_element118')"><i></i><p class="copyText" id="text_element118">[Company State]</li>
-                 <li onclick="copyToClipboard('text_element119')"><i></i><p class="copyText" id="text_element119">[Company Country]</li>
-                 <li onclick="copyToClipboard('text_element120')"><i></i><p class="copyText" id="text_element120">[Employee Name]</li>
-                 <li onclick="copyToClipboard('text_element121')"><i></i><p class="copyText" id="text_element121">[Join Date]</li>
-                 <li onclick="copyToClipboard('text_element122')"><i></i><p class="copyText" id="text_element122">[Rate]</li>
-                 <li onclick="copyToClipboard('text_element123')"><i></i><p class="copyText" id="text_element123">[Rate Per]</li>
-                 <li onclick="copyToClipboard('text_element124')"><i></i><p class="copyText" id="text_element124">[Rate Type]</li>
-                 <li onclick="copyToClipboard('text_element125')"><i></i><p class="copyText" id="text_element125">[Employee Location]</li>
-                 <li onclick="copyToClipboard('text_element126')"><i></i><p class="copyText" id="text_element126">[Work Location]</p></li>
-                 <li onclick="copyToClipboard('text_element127')"><i></i><p class="copyText" id="text_element127">[State of Jurisdiction]</p></li>
+                 <li onclick="copyToClipboard('text_element120')"><i></i><p class="copyText" id="text_element120">[Company Name]</li>
+                 <li onclick="copyToClipboard('text_element121')"><i></i><p class="copyText" id="text_element121">[Company Address]</li>
+                 <li onclick="copyToClipboard('text_element122')"><i></i><p class="copyText" id="text_element122">[Company City]</li>
+                 <li onclick="copyToClipboard('text_element123')"><i></i><p class="copyText" id="text_element123">[Company State]</li>
+                 <li onclick="copyToClipboard('text_element124')"><i></i><p class="copyText" id="text_element124">[Company Country]</li>
+                 <li onclick="copyToClipboard('text_element125')"><i></i><p class="copyText" id="text_element125">[Employee Name]</li>
+                 <li onclick="copyToClipboard('text_element126')"><i></i><p class="copyText" id="text_element126">[Join Date]</li>
+                 <li onclick="copyToClipboard('text_element127')"><i></i><p class="copyText" id="text_element127">[Rate]</li>
+                 <li onclick="copyToClipboard('text_element128')"><i></i><p class="copyText" id="text_element128">[Rate Per]</li>
+                 <li onclick="copyToClipboard('text_element129')"><i></i><p class="copyText" id="text_element129">[Rate Type]</li>
+                 <li onclick="copyToClipboard('text_element130')"><i></i><p class="copyText" id="text_element130">[Employee Location]</li>
+                 <li onclick="copyToClipboard('text_element131')"><i></i><p class="copyText" id="text_element131">[Work Location]</p></li>
+                 <li onclick="copyToClipboard('text_element132')"><i></i><p class="copyText" id="text_element132">[State of Jurisdiction]</p></li>
             </ul>
         </div>  		      
 	</div>
