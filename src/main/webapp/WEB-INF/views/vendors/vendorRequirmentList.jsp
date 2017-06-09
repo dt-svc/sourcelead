@@ -107,7 +107,7 @@ function vencheck(orgRelationID,vendorLocationId){
 			            result = result + '	     <th>Location</th>';
 			            result = result + '	     <th>Posted Date</th>';
 			            result = result + '	     <th>Owner</th>';
-			            result = result + '	     <th>No Of Contacts</th>';
+			            //result = result + '	     <th>No Of Contacts</th>';
 			            result = result + '	     <th>Applicants</th>';
 			            result = result + '	     <th>Interview</th>';
 			            result = result + '	     <th>Offer</th>';
@@ -157,7 +157,7 @@ function vencheck(orgRelationID,vendorLocationId){
 			                  	 result = result +"<td><div>----</div></td>";
 			                   }
 			                
-			            	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+			            	//result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
  
 			            	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorInterviewsCount+"</div></td>";
