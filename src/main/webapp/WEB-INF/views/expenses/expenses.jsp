@@ -218,7 +218,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'				<div class="project_side_wrap_inn_tabs">                                                                                              ';
 	        	result = result +'				    <ul class="project-tabs-menu">                                                                                                    ';
 	        	result = result +'				        <li class="current"><a href="#tab-1">Details</a></li>                                                                         ';
-	        	result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
+	        	//result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
 	        	result = result +'				        <div class="clearfix"></div>                                                                                                  ';
 	        	result = result +'				    </ul>                                                                                                                             ';
 
@@ -302,41 +302,6 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'									</div>	                    			                                                                          ';
 	        	result = result +'									<div class="clearfix"></div>                                                                                      ';
 	        	result = result +'								</div>                                                                                                                ';
-	        	alert("length>>>>>>>"+report.expensesEntries);
-	       for (var i = 0; i < report.expensesEntries.length; i++) {	
-	    	   
-	    	 /*   alert("expensesCategoryId"+report.expensesEntries[i].id); */
-	        	var expensesCategoryId= "";
-	        	if(report.expensesCategoryId != null && report.expensesCategoryId != '' && report.expensesCategoryId != 'undefined'){
-	        		expensesCategoryId = report.expensesCategoryId;
-      		  }else{
-      			expensesCategoryId = "--";
-      		  }
-	        	
-	        	var paymentMode= "";
-	        	if(report.paymentMode != null && report.paymentMode != '' && report.paymentMode != 'undefined'){
-	        		paymentMode = report.paymentMode;
-      		  }else{
-      			paymentMode = "--";
-      		  }
-	        	var currencyType= "";
-	        	if(report.currencyType != null && report.currencyType != '' && report.currencyType != 'undefined'){
-	        		currencyType = report.currencyType;
-      		  }else{
-      			currencyType = "--";
-      		  }
-	        	var description= "";
-	        	if(report.description != null && report.description != '' && report.description != 'undefined'){
-	        		description = report.description;
-      		  }else{
-      			description = "--";
-      		  }
-	        	var amount= "";
-	        	if(report.amount != null && report.amount != '' && report.amount != 'undefined'){
-	        		amount = report.amount;
-      		  }else{
-      			amount = "--";
-      		  }
 	        	
 	        	result = result +'				<div class="project_wrap_table expensTableView">                                                                                      ';
 	        	result = result +'					<table>                                                                                                                           ';
@@ -351,14 +316,58 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'							</tr>                                                                                                                     ';
 	        	result = result +'						</thead>	                                                                                                                  ';
 	        	result = result +'							<tbody>                                                                                                                   ';
+
+	        	alert("report.expenseEntriesList.length"+report.expenseEntriesList.length); 
+	        	var expensesCategoryId= "";
+	        	var paymentMode= "";
+	        	var expenseDateStr= "";
+	        	var currencyType= "";
+	        	var description= "";
+	        	var amount= "";
+	       for (var i = 0; i < report.expenseEntriesList.length; i++) {	
+	    	   alert("report.expenseEntriesList.length"+report.expenseEntriesList.length);
+	    	   alert("report.expenseEntriesList[i]"+report.expenseEntriesList[i].expenseDateStr);
+	    	   alert("report.expenseEntriesList[i]"+report.expenseEntriesList[i++].expenseDateStr);
+	        	if(report.expenseEntriesList[i].expensesCategoryId != null && report.expenseEntriesList[i].expensesCategoryId != '' && report.expenseEntriesList[i].expensesCategoryId != 'undefined'){
+	        		expensesCategoryId = report.expenseEntriesList[i].expensesCategoryId;
+      		  }else{
+      			expensesCategoryId = "--";
+      		  }
+	        	if(report.expenseEntriesList[i].paymentMode != null && report.expenseEntriesList[i].paymentMode != '' && report.expenseEntriesList[i].paymentMode != 'undefined'){
+	        		paymentMode = report.expenseEntriesList[i].paymentMode;
+      		  }else{
+      			paymentMode = "--";
+      		  }
+	        	if(report.expenseEntriesList[i].expenseDateStr != null && report.expenseEntriesList[i].expenseDateStr != '' && report.expenseEntriesList[i].expenseDateStr != 'undefined'){
+	        		expenseDateStr = report.expenseEntriesList[i].expenseDateStr;
+      		  }else{
+      			expenseDateStr = "--";
+      		  }
+	        	if(report.expenseEntriesList[i].currencyType != null && report.expenseEntriesList[i].currencyType != '' && report.expenseEntriesList[i].currencyType != 'undefined'){
+	        		currencyType = report.expenseEntriesList[i].currencyType;
+      		  }else{
+      			currencyType = "--";
+      		  }
+	        	if(report.expenseEntriesList[i].description != null && report.expenseEntriesList[i].description != '' && report.expenseEntriesList[i].description != 'undefined'){
+	        		description = report.expenseEntriesList[i].description;
+      		  }else{
+      			description = "--";
+      		  }
+	        	if(report.expenseEntriesList[i].amount != null && report.expenseEntriesList[i].amount != '' && report.expenseEntriesList[i].amount != 'undefined'){
+	        		amount = report.expenseEntriesList[i].amount;
+      		  }else{
+      			amount = "--";
+      		  }
+	        	
 	        	result = result +'							<tr>                                                                                                                      ';
 	        	result = result +'								<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'+expensesCategoryId+'</div></td>                  ';
-	        	result = result +'								<td><div>'+report.expenseDate+'</div></td>                                                                                        ';
+	        	result = result +'								<td><div>'+expenseDateStr+'</div></td>                                                                                        ';
 	        	result = result +'								<td><div>'+paymentMode+'</div></td>                                                                                              ';
 	        	result = result +'								<td><div>'+currencyType+'</div></td>                                                                                               ';
 	        	result = result +'								<td><div class="tbldata-dotdot-me">'+description+'</div></td>                                                 ';
 	        	result = result +'								<td><div>'+amount+'</div></td>				                                                                              ';
 	        	result = result +'							</tr>                                                                                                                     ';
+	       }
 	        	result = result +'						</tbody>                                                                                                                      ';
 	        	result = result +'					</table>                                                                                                                          ';
 	        	result = result +'				</div>                                                                                                                                ';
@@ -366,15 +375,16 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'				        </div>                                                                                                                                                                                                     ';
 	        	
 	        	
-	        	result = result +'				        <div id="tab-2" class="project_tabs_inn">		                                                                                                                                                           ';
-	        	result = result +'							<div class="hisWrap">                                                                                                                                                                                  ';
-	        	result = result +'							  <div class="hisWrapCta">                                                                                                                                                                             ';
-	        	result = result +'									<img src="images/23.jpg" alt="">                                                                                                                                                               ';
-	        	result = result +'									<p><a href="#">Muneendra</a> has uploaded a new attachment in <a href="#">#4134 Registration should proceed only when</a> professional accept/select terms and conditions.</p>                 ';                       
-	        	result = result +'									<span><i class="fa fa-clock-o"></i>2 min ago</span>                                                                                                                                            ';
-	        	result = result +'							  </div>                                                                                                                                                                                               ';
-	        	result = result +'							</div>                                                                                                                                                                                                 ';
-	        	result = result +'				        </div>                                                                                                                                                                                                     ';
+// 	        	result = result +'				        <div id="tab-2" class="project_tabs_inn">		                                                                                                                                                           ';
+// 	        	result = result +'							<div class="hisWrap">                                                                                                                                                                                  ';
+// 	        	result = result +'							  <div class="hisWrapCta">                                                                                                                                                                             ';
+// 	        	result = result +'									<img src="images/23.jpg" alt="">                                                                                                                                                               ';
+// 	        	result = result +'									<p><a href="#">Muneendra</a> has uploaded a new attachment in <a href="#">#4134 Registration should proceed only when</a> professional accept/select terms and conditions.</p>                 ';                       
+// 	        	result = result +'									<span><i class="fa fa-clock-o"></i>2 min ago</span>                                                                                                                                            ';
+// 	        	result = result +'							  </div>                                                                                                                                                                                               ';
+// 	        	result = result +'							</div>                                                                                                                                                                                                 ';
+// 	        	result = result +'				        </div>                                                                                                                                                                                                     ';
+	        	
 	        	result = result +'				    </div>                                                                                                                                                                                                         ';
 	        	result = result +'				</div>                                                                                                                                                                                                             ';
 
@@ -385,7 +395,6 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'					</div>	                                                                                                                                                                                                       ';
 	        	result = result +'				    </div>                                                                                                                                                                                                         ';
  
-	        	 }                                
 	$("#expensesViewDiv").val('');
     $("#expensesViewDiv").append(result);
     $("#tab-1").show();
