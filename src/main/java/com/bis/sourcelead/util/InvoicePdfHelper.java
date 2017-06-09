@@ -93,7 +93,7 @@ public class InvoicePdfHelper {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
-	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,String invoiceType) throws IOException, Exception
+	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,String invoiceType, String vendorCurrencyCode, String loginOrgCurrencyCode) throws IOException, Exception
 	{
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		String countryCurrency  = countries.getCurrency();
@@ -244,21 +244,23 @@ public class InvoicePdfHelper {
 	        document.add(p);
 			document.add(Chunk.NEWLINE);
 			
-			p= new Paragraph("Conversion From  "  + invoice.getCurrencyCode()  + "   "+ invoice.getTotal(), font12b);
-            p.setAlignment(Element.ALIGN_RIGHT );
-	        document.add(p);
+			if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
+				p= new Paragraph("Conversion From  "  + invoice.getCurrencyCode()  + "   "+ invoice.getTotal(), font12b);
+	            p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+				document.add(Chunk.NEWLINE);
+				
+				p= new Paragraph("Conversion To  "  + invoice.getConvertCurrencyCode()  + "   "+ invoice.getConvertAmount(), font12b);
+		        p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+		        
+				document.add(Chunk.NEWLINE);
+				
+				p= new Paragraph("Exchange Rate  "  + invoice.getCurrencyCode()  +" 1 = "+invoice.getConvertCurrencyCode()+"   "+  invoice.getExchangeRate(), font12b);
+		        p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+			}
 			document.add(Chunk.NEWLINE);
-			
-			p= new Paragraph("Conversion To  "  + invoice.getConvertCurrencyCode()  + "   "+ invoice.getConvertAmount(), font12b);
-	        p.setAlignment(Element.ALIGN_RIGHT );
-	        document.add(p);
-			document.add(Chunk.NEWLINE);
-			
-			p= new Paragraph("Exchange Rate  "  + invoice.getCurrencyCode()  +" 1 = "+invoice.getConvertCurrencyCode()+"   "+  invoice.getExchangeRate(), font12b);
-	        p.setAlignment(Element.ALIGN_RIGHT );
-	        document.add(p);
-			document.add(Chunk.NEWLINE);
-			
 			
 			LineSeparator ls = new LineSeparator();
 			ls.setAlignment(Element.ALIGN_BOTTOM);

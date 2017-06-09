@@ -3448,4 +3448,11 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		return requirementDao.getAllClosedRequirementsByStartDateAndEndDate(startDateUTC, endDateUTC);
 	}
 	
+	
+	
+	@Override
+	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status)  {
+		return requirementDao.getAllVendorJobsBasedonRelationId(locationId,relationId, userRoleName,user,status);
+	}
+	
 }
