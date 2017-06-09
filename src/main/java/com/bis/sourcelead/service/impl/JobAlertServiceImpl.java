@@ -151,5 +151,17 @@ public class JobAlertServiceImpl implements JobAlertService{
 		return jobAlertDao.getJobAlertByUUID(jobAlertUUID);
 	}
 
+	@Override
+	public void deleteJobAlert(JobAlert jobAlert) throws Exception
+	{
+		jobAlertDao.deleteJobAlert(jobAlert);
+	}
+
+	@Override
+	public Integer getJobAlertCountByEmail(String email) throws Exception
+	{
+		return jobAlertDao.getJobAlertCountByEmail(email);
+	}
+
 	
 }

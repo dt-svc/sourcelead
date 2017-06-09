@@ -21,5 +21,9 @@ public interface JobAlertService {
 	 List<JobAlert>  getConfiruredJobsAlertsList(String duration) throws Exception;
 	 
 	 JobAlert getJobAlertByUUID(String jobAlertUUID) throws Exception;
+	 
+	 public void deleteJobAlert(JobAlert jobAlert) throws Exception;
+	 
+	 Integer getJobAlertCountByEmail(String email) throws Exception;
 	
 }

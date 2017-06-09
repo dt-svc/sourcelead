@@ -1178,13 +1178,12 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
 	                        	 result = result + '</div>';
 	                    	 }
-	                    	 
 	                    	 if(report.offerId.amount !=null && report.offerId.amount !='' && report.offerId.amount !='undefined'){
 	                    		 result = result + '<div class="row clearfix">';
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Rate</strong>';
 	                        	 result = result + '</label>';
-	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.amount+'</p>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.paymentType+'  '+report.offerId.amount+'  '+report.offerId.paymentMode+'</p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';

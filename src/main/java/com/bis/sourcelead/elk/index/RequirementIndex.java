@@ -149,6 +149,10 @@ public class RequirementIndex {
 	
 	private String jobAlertTitle;
 	
+	private String isJobSaved;
+	
+	private String savedJobUUID;
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -743,5 +747,27 @@ public class RequirementIndex {
 	{
 		this.jobAlertTitle = jobAlertTitle;
 	}
+
+	public String getIsJobSaved()
+	{
+		return isJobSaved;
+	}
+
+	public void setIsJobSaved(String isJobSaved)
+	{
+		this.isJobSaved = isJobSaved;
+	}
+
+	public String getSavedJobUUID()
+	{
+		return savedJobUUID;
+	}
+
+	public void setSavedJobUUID(String savedJobUUID)
+	{
+		this.savedJobUUID = savedJobUUID;
+	}
+
+	
 	
 }

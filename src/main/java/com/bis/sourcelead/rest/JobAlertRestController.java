@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.JobAlertService;
+import com.bis.sourcelead.service.JobAlertsHistoryService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -37,6 +40,12 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
     
     @Autowired
     JobAlertService jobAlertService;
+    
+    @Autowired
+    RequirementService requirementService;
+    
+    @Autowired
+    JobAlertsHistoryService jobAlertsHistoryService;
     
     protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -69,6 +78,45 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	
 		 resultJson = commonUtil.toJSON(jobAlert);
 		 return resultJson;
+	 }
+	 
+	 
+	 @RequestMapping(value = "/deleteJobAlert", method = RequestMethod.POST)
+	 public String deleteJobAlert(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
+		 String resultJson;
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 
+		 JobAlert jobAlert = jobAlertService.getJobAlertByUUID(jobAlertUUID);
+		 if(null != jobAlert){
+			 jobAlertsHistoryService.addJobAlertsHistory(jobAlert, user);
+			 jobAlertService.deleteJobAlert(jobAlert);
+		 }
+	
+		 resultJson = commonUtil.toJSON(jobAlert);
+		 return resultJson;
+	 }
+	 
+	 
+	 @RequestMapping(value = "/getJobDetailsForJobAlert", method = RequestMethod.GET)
+	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
+		 String resultJson;
+		 
+		 Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+	
+		 resultJson = commonUtil.toJSON(requirement);
+		 return resultJson;
+	 }
+	 
+	 
+	 @RequestMapping(value = "/validateAlertUserEmail", method = RequestMethod.GET)
+	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
+		 
+		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);
+		 if(jobAlertCount >= 5){
+			 return "Invalid";
+		 }else{
+			 return "valid";
+		 }
 	 }
 		
 

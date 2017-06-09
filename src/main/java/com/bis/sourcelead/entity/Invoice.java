@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+
 @Entity
 @Table(name = "INVOICE", catalog = "sourcelead")
 @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoice")
@@ -241,6 +242,17 @@ public class Invoice {
 	
 	@Transient
 	private List<String> submissionApproverHierarchyIds;
+	
+//	  
+	
+	@Transient
+	private float netIncome;
+	
+	@Transient
+	private float recievableAmount;
+	
+	@Transient
+	private float payableAmount;
 	
 	
 	public Long getId()
@@ -837,6 +849,38 @@ public class Invoice {
 	public void setLinkInvoiceReferenceId(Long linkInvoiceReferenceId)
 	{
 		this.linkInvoiceReferenceId = linkInvoiceReferenceId;
+	}
+
+	
+
+	public float getNetIncome()
+	{
+		return netIncome;
+	}
+
+	public void setNetIncome(float netIncome)
+	{
+		this.netIncome = netIncome;
+	}
+
+	public float getRecievableAmount()
+	{
+		return recievableAmount;
+	}
+
+	public void setRecievableAmount(float recievableAmount)
+	{
+		this.recievableAmount = recievableAmount;
+	}
+
+	public float getPayableAmount()
+	{
+		return payableAmount;
+	}
+
+	public void setPayableAmount(float payableAmount)
+	{
+		this.payableAmount = payableAmount;
 	}
 	
 	

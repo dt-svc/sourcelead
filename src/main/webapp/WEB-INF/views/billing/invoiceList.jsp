@@ -42,7 +42,9 @@ $(document).ready(function(){
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
-          <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
+          <sec:authorize access="hasAnyRole('ROLE_ADD_BILL')"> 
+			  <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Createnbm Invoice</a>
+			</sec:authorize>
             <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
                 <option value="month">Last 30 days</option>
@@ -343,7 +345,9 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix"></div>                                            ';
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
+	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_PAYMENT\')">';
 	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
+	'</sec:authorize>';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
 	result = result +'          </div>                                                                                                ';
@@ -596,8 +600,7 @@ function getInvoiceList(){
 					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.id+'"></div>';
 				} 
-				result = result +'  </div> ';                                                                                                    
-		         
+				result = result +'  </div> ';                 
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
 						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
@@ -706,10 +709,17 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){
+			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			'</sec:authorize>'
 		 }
+		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+	 	'</sec:authorize>'
+	 	
+	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
@@ -1154,7 +1164,7 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
 			result = result +'    <div class="modal-content">                                                                                               ';
 			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
-			result = result +'      <div class="modal-header">                                                                                              ';
+			result = result +'      <div class="modal-header" id="receivableLinkId">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
 			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
 			result = result +'      </div>                                                                                                                  ';
@@ -1252,7 +1262,7 @@ function linkInvoice(invoiceId,totalAmount){
             $('.side_mask').fadeOut(200);
         }
     </script>
-    <!-- Script for Linked Invoice pop -->
+    <!-- Script for Linked Invoice pop -->	
 
 <script type="text/javascript">
 function generateAutomaticInvoice(){
@@ -1269,23 +1279,26 @@ function generateAutomaticInvoice(){
 
 <script>
 function mergeInvoice(parentTotalAmount){
+	var sourceleadUrl ='${sourceleadUrl}';
 	var masterInvoiceId = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
 	var checkVal = linkRadio.filter(':checked').val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	var total = $('#linkedReceivableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
+	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
 	showDiffAmountPopup(calculatedAmount,currencyCode);
-	
 	 $.ajax({
    	 type: "POST",
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/linkInvoice?${_csrf.parameterName}=${_csrf.token}&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
             success: function(data) {
-           	
+            	$('#testPurposeId').find('p.jquery_form_error_message').remove(); 
        },
    });  
+}else{
+	$("#receivableLinkId").after( "<p class='jquery_form_error_message'>Select atleast 1 Invoice</span>");
+}
 }
 </script>
 
