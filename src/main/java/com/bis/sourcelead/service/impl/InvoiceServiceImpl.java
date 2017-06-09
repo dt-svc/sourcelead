@@ -1762,9 +1762,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	}
 	
 	@Override
-	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationID) throws Exception
+	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationId,Date startDateUTC, Date endDateUTC,String invoiceTYpe) throws Exception
 	{
-		return invoiceDao.getInvoiceByOrgLocationId(orgLocationID);
+		return invoiceDao.getInvoiceByOrgLocationId(orgLocationId,startDateUTC, endDateUTC,invoiceTYpe);
 
 	}
 	
@@ -1777,6 +1777,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	public void linkInvoice(Invoice invoice) throws Exception
 	{
       invoiceDao.saveInvoce(invoice);		
+	}
+	@Override
+	public List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC) throws Exception
+	{
+		return invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocationId,startDateUTC,endDateUTC);
 	}
 
 }
