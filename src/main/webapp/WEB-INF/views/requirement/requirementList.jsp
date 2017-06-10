@@ -510,6 +510,7 @@ function prepareRequirementData(data){
     result = result +"</table>"; 
     $("#noReq").val('');
     $("#requirementList").append(result); 
+    $("#requirementEmptyListMessage").val(json.length);
     for (var i = 0; i < json.length; i++) { 
       	 var opt = json[i];
       	statusvalidating(opt.id);
@@ -1858,7 +1859,7 @@ function exportToPdf(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
 		}else{
 			 var result = "";
@@ -1890,7 +1891,7 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";	
 		}else{
 			 var result = "";
