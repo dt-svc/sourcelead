@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -85,25 +88,28 @@ private static final long serialVersionUID = 1L;
 	private Submission_Status expenseStatus;
 	
 	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SELECT)
+//    @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
 	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<ExpensesApproverHierarchy> approverHierarchyList;
 
-	@javax.persistence.Transient
+	@Transient
 	private String projectMemberId;
 	
-	@javax.persistence.Transient
+	@Transient
 	private String startDateStr;
 	
-	@javax.persistence.Transient
+	@Transient
 	private String endDateStr;
 	
-	@javax.persistence.Transient
-	 private List<User> projectManagerUserList;
-	
+//	@Transient
+//	private List<ExpensesEntries> expenseEntriesList;
+		
+	@Transient
+	private List<User> projectManagerUserList;
+  
 	
 	public Long getId() {
 		return id;
@@ -279,7 +285,17 @@ private static final long serialVersionUID = 1L;
 
 	public void setProjectManagerUserList(List<User> projectManagerUserList) {
 		this.projectManagerUserList = projectManagerUserList;
+
 	}
+
+//	public List<ExpensesEntries> getExpenseEntriesList() {
+//		return expenseEntriesList;
+//	}
+//
+//	public void setExpenseEntriesList(List<ExpensesEntries> expenseEntriesList) {
+//		this.expenseEntriesList = expenseEntriesList;
+//	}
+
 
 	
 	

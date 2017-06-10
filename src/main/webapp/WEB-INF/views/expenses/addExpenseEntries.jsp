@@ -28,6 +28,7 @@
  .expensTableView table tr td {
  padding: 0 !important;
  }
+
  </style>
 <script>
 function hideAndShowDetailsRow(rowId){
@@ -138,7 +139,7 @@ function addAttachment(entityRowId){
 						</div>
 						<div class="col-md-4 mb10">
 							<label>Date<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" onclick="displayCalendar('REPLACEROWID')" class="form-control calendar" value="" placeholder="Date" field-name="Date" data-validation="required"> 
+							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly" onclick="displayCalendar('REPLACEROWID')" class="form-control calendar" value="" placeholder="Date" field-name="Date" data-validation="required"> 
 						</div>
 						<div class="col-md-4 mb10">
 							<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
@@ -157,8 +158,6 @@ function addAttachment(entityRowId){
 						</div>	
 	                  <div class="col-md-4 mb10">
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-		                   <div class="row">
-		                   <div class="col-md-12">
 							  <div class="input-group er ratetype">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseRateTypeREPLACEROWID" field-name="Rate Type" field-name="Rate Type" data-validation="required">
@@ -172,8 +171,6 @@ function addAttachment(entityRowId){
 									 </div>
 							         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_int">
 								</div>
-	                       </div>
-	                       </div>
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description</label>
