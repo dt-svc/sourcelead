@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -82,7 +83,9 @@ public class ExpencesController {
 		if(null != expenseId && !expenseId.isEmpty()){
 			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
 			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
-			expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			if(null != expenses.getEndDate()){
+				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			}
 			model.addObject("expenses", expenses);
 		}else if(expenses == null){
 			expenseId = addExpensesService.getExpenseId();
