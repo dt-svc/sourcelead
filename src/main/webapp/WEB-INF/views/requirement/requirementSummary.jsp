@@ -1531,6 +1531,9 @@ function updateReuqirementStatusReject(status){
           			 }else{
           				$("#msgDiv").html("Requirement rejected Successfully");
           			   }
+          			$("#rejectRequirementAlert").empty();
+          			$(".project_inn_mask").fadeOut(200);
+          			$(".remove_user_pop").hide();
       				 requirementDetails(requirementId)
              			msgFadein();
                	 }
