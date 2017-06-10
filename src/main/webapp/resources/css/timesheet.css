@@ -4809,7 +4809,7 @@ display:none;
 
 
 .proDown {
-	width: 100% !important; float: none !important;
+	width: 100% !important; float: none !important; margin: 0px 0px 5px 0px;
 }
 
 /*   Back to top  */

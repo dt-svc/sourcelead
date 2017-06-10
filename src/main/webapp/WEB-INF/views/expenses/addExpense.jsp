@@ -98,7 +98,7 @@
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${entryCount.count}">
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDate}</div></td>
+			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
@@ -125,7 +125,7 @@
 							</div>
 							<div class="col-md-4 mb10">
 								<label>Date<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDate}" placeholder="Date" field-name="Date" data-validation="required"> 
+								<input type="text" id="categoryDate${entryCount.count}" name="categoryDate${entryCount.count}" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
 							<div class="col-md-4 mb10">
 								<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
