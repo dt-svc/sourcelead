@@ -11,5 +11,6 @@ public interface ExpensesService {
 	public List<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser);
 
 	public Expenses getExpenseByExpenseId(long expenseId);
-
+	
+	Expenses getExpenseByExpenseUniqueId(String expenseId) throws Exception;
 }

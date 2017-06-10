@@ -12,4 +12,6 @@ public interface ExpensesDao<Expenses> {
 	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId);
 
 	public Expenses getExpenseByExpenseId(long expenseId);
+	
+	Expenses getExpenseByExpenseUniqueId(String expenseId)throws Exception;
 }
