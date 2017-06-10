@@ -99,6 +99,7 @@ public class ExpensesRestController {
 				exEnt.setExpenseIndList(expensesList);
 			}
 		}
+		System.out.println("expensesEntriesList"+expensesEntriesList);
 		resultJson = commonUtil.toJSON(expensesEntriesList);
 		return resultJson;
 	 }

@@ -59,12 +59,27 @@ margin-top: 3px;
 		</section>
 		<!-- Project -->
 		<div class="timesheet_out">
-			<div class="timesheet_appr_wrap">
-				<div class="timesheetNewHead">
-					<div class="pull-right expBtn">
-						<a href="<c:url value='/addApprovalExpense'/>"><i
-							class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a>
-					</div>
+			<div class="vendor_wrap">
+			
+			
+				<div class="timesheet_head">
+							
+				<ul>
+		   <li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
+							
+			<li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+			    <div id="exportPop" class="user_exp">
+				   <ul class="ul_padding">
+				   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+				   <li onclick="exportToPdf('excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+				   </ul>
+				</div>
+		   </li>
+		   <div class="clearfix"></div>
+		   </ul>
+							
+					
+		
 					<!-- <div class="remove_search">
 						<input placeholder="search" type="text">
 					</div> -->
@@ -546,5 +561,26 @@ function pagination(){
     });
 }
 </script>
+<script>
+function exportToPdf(type){
+	
+	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type;
+	
+}
+</script>
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	   $("#export-pop").click(function(){
+	               $("#exportPop").toggle();
+	       });
+	   $("html").click(function() {
+	       $("#exportPop").hide();
+	   });
+	   $("#exportPop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   });        
+</script> 
+
 
 <jsp:include page="../masterFooter.jsp" />
