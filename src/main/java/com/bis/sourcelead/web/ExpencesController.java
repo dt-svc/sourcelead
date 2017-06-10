@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesCategory;
@@ -44,6 +46,9 @@ public class ExpencesController {
 	@Autowired
 	ProjectsService projectsService;
 	
+	@Autowired
+	ExpensesService expensesService;
+	
 	@RequestMapping(value = "/myExpensesList")
 	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception
 	{
@@ -62,9 +67,8 @@ public class ExpencesController {
 	
 	
 	@RequestMapping(value = "/addExpense")
-	public ModelAndView addExpense(HttpServletRequest request) throws Exception
+	public ModelAndView addExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId) throws Exception
 	{
-		
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
@@ -73,8 +77,21 @@ public class ExpencesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sessionData.setNav(Constants.MY_EXPENSES);
-		String expensesId = addExpensesService.getExpenseId();
-		model.addObject("ExpensesId", expensesId);
+		
+		Expenses expenses = null;
+		if(null != expenseId && !expenseId.isEmpty()){
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
+			expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			model.addObject("expenses", expenses);
+		}else if(expenses == null){
+			expenseId = addExpensesService.getExpenseId();
+			model.addObject("ExpensesId", expenseId);
+		}
+		
+		
+		
+		
 		List<ProjectMembers> projectMembersList = addExpensesService.getAllProjectsForExpenses(orgLoc,loginUser);
 		model.addObject("projectMembersList", projectMembersList);
 		request.getSession().setAttribute("sessionData", sessionData);

@@ -78,7 +78,7 @@ function validate_fileupload(fileName)
                 <div class="form-group">
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="ExpenseAutoId" value="${ExpensesId}" readonly="readonly">
+                    <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : ExpensesId}" readonly="readonly">
                   </div>
                 </div>  
                 <div class="form-group">
@@ -92,7 +92,7 @@ function validate_fileupload(fileName)
 					<div class="col-md-9">
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectMemberId" name="projectMemberId">
 							<c:forEach var="projMembers" items="${projectMembersList}">
-							       <option  selected value="${projMembers.id}">${projMembers.projects.projectName}</option>
+							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -108,10 +108,10 @@ function validate_fileupload(fileName)
 	              <div class="col-md-9" >
 						<div class="row">
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" class="form-control calendar" data-validation="required" value="" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6">
-							  <input type="text" class="form-control calendar" value="" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+							  <input type="text" class="form-control calendar" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>

@@ -157,7 +157,7 @@ function getExpensesList(){
 						 result = result +"            <td><div>"+totalAmount+"</div></td>                                                                            ";
 						 result = result +"            <td>                                                                                                ";
 						 result = result +"            	<div class='tbldata-dotdot_50'>                                                                    ";
-						 result = result +"           		 	<i class='fa fa-pencil-square-o'></i>                                                      ";
+						 result = result +"           		 <a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"'><i class='fa fa-pencil-square-o' title='Edit'></i></a>";
 						 result = result +"            		 <i class='glyphicon glyphicon-trash'></i>                                                     ";
 						 result = result +"				</div>                                                                                             ";
 						 result = result +"            </td>                                                                                               ";
@@ -417,5 +417,13 @@ function activeTab(){
     $(".side_mask").fadeOut(200);
     $("body").css('overflow-y', 'scroll');
     $("#expensesViewDiv").empty();
+}
+</script>
+
+<script>
+function getEditExpense(eId){
+	alert("fgdfg");
+	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
+	alert("fgdfg");
 }
 </script>

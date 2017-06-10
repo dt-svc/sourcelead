@@ -14,5 +14,6 @@ public interface ExpensesService {
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 
 	public Expenses getExpenseByExpenseId(long expenseId);
-
+	
+	Expenses getExpenseByExpenseUniqueId(String expenseId) throws Exception;
 }
