@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -32,10 +30,6 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ExpensesDaoImpl.class);
-	
-	
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -46,4 +40,30 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		return expensesList;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Expenses getExpenseByExpenseId(long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Expenses expenses where expenses.id =:expenseId";
+		List<Expenses> expenses = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		Expenses expensesList = null;
+		if (expenses != null && expenses.size() > 0) {
+			expensesList = (Expenses) expenses.iterator().next();
+		}
+		return expensesList;
+	}
+	
+	@Override
+	@Transactional
+	public Expenses getExpenseByExpenseUniqueId(String expenseId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Expenses  expense =  null;
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId").setString("expenseId", expenseId).setCacheable(true).list();
+		if(null != expensesList && expensesList.size() >0){
+			expense = expensesList.get(0);
+		}
+		return expense;
+	}
 }
