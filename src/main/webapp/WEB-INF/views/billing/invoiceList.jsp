@@ -1272,6 +1272,7 @@ function generateAutomaticInvoice(){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&contractType=clientSow", 
              success: function(data) {
+            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },
     });  
 }
