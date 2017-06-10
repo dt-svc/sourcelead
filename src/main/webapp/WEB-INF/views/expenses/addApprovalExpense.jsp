@@ -287,7 +287,7 @@ function getClientBasedOnSelectedProject(){
 	var projectId = document.getElementById("projectIdByMemberId").value;
 	$.ajax({
 	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectId?projectMemberId="+projectId,       
+	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId,       
 	       success :function(data) {
 	    	   if(data != null && data !='undefined' && data !=''){
 	    	   var json = JSON.parse(data);

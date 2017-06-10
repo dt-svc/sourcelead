@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -51,5 +52,14 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 		return entries;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ExpensesEntries expensesEntries left join fetch expensesEntries.expensesId expenses where expenses.id =:expenseId";
+		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		return expensesEntryList;
+	}
 	
 }
