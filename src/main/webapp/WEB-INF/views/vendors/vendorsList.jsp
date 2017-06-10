@@ -1721,6 +1721,10 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
 		
+		 // vendors associates list
+		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associate List</a></li>';
+
+		 
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -1740,6 +1744,11 @@ function getVendorDashboardName(vendorDashboardName){
 		//for vendor requirement list tab
 		result = result + '<div id="tab-6" class="project_tabs_inn">';
 		result = result + '</div>';
+		
+		//for vendor associate list tab
+		result = result + '<div id="tab-7" class="project_tabs_inn">';
+		result = result + '</div>';
+
 
 		//for vendor billing
 
@@ -2127,6 +2136,7 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorRequirmentList.jsp" />
 
 <jsp:include page="vendorBilling.jsp" /> 
+<jsp:include page="vendorAssociatesList.jsp" /> 
 
 
 
