@@ -15,7 +15,79 @@
 		 };
 </script>
 <div class="wraper"> 
+
+<!-- View Content Area Starts-->
+<c:if test = "${param.type == 'view'}">
+<section class="content-wraper" id="themeroller">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>View Expense</h2>
+      </div>
+      <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; View Expense</div>
+    </section>
+	<div class="content-area content-new clearfix">
+          <div class="clearfix form-horizontal inner-content">
+          <div class="Expdit"><a onClick="javascript:location.href = '<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=edit'/>'" ><i class="fa fa-pencil-square-o"></i> &nbsp;Edit</a></div>
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+                <div class="project_details_cta">
+        			<strong>Expenses Id:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
+        		</div>
+        		<div class="project_details_cta">
+        			<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
+        		</div>
+                <div class="project_details_cta">
+        			<strong>Project Name:</strong><span>${expenses.projectMembers.projects.projectName}</span><div class="clearfix"></div>
+        		</div>
+        		<div class="project_details_cta">
+        			<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
+        		</div>
+        		<div class="project_details_cta">
+        			<strong>Start Date:</strong><span>${expenses.startDateStr}</span><div class="clearfix"></div>
+        		</div>
+        		<div class="project_details_cta">
+        			<strong>End Date:</strong><span>${expenses.endDateStr}</span><div class="clearfix"></div>
+        		</div>
+        		<div class="project_details_cta">
+        			<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
+        		</div>
+        		<div class="project_details_cta">
+        			<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
+        		</div>
+			</div>
+		  </div>
+		</div>
+		<div class="project_wrap_table expensTableView">
+			<table id="categoryTable">
+			    <thead>
+					<tr id="divEntityTsRow0">
+						<th>Exp Category</th>
+						<th>Date</th>
+						<th>Payment Mode</th>
+						<th>Currency</th>
+						<th>Amount</th>
+						<th>Description</th>
+						<th>Action</th>
+					</tr>
+				</thead>	
+					<tbody>
+				   </tbody>
+			</table>
+		</div>
+		<div class="form-footer clearfix mt">
+		  <div class="col-lg-12">
+			<div class="pull-right">
+			  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expenses'/>'" class="btn btn-sm btn-default ml10">
+			</div>
+		  </div>
+		</div>
+	  </div>
+ </section>
+ </c:if>
+<!-- View Content Area Ends-->
+
   <!-- Content Area -->
+  <c:if test = "${param.type != 'view'}">
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -34,12 +106,13 @@
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : ExpensesId}" readonly="readonly">
+                    <input type="text" style="display: none;" class="form-control" name="expenseId" value="${expenses.id}">
                   </div>
                 </div>  
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose">
+                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}">
                   </div>
                 </div>                                          
 				<div class="form-group">
@@ -102,7 +175,7 @@
 			<div class="pull-right">
 			  <input type="button" value="Save" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
 			  <input type="button" id ="submitForApprovalExpensesId"value="Sub for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			  <input type="button" value="Cancel" class="btn btn-sm btn-default ml10">
+			  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expenses'/>'" class="btn btn-sm btn-default ml10">
 			</div>
 		  </div>
 		</div>
@@ -112,7 +185,7 @@
 	  </div>
 </form:form>
   </section>
-
+</c:if>
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){

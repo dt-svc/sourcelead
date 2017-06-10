@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -82,7 +83,9 @@ public class ExpencesController {
 		if(null != expenseId && !expenseId.isEmpty()){
 			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
 			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
-			expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			if(null != expenses.getEndDate()){
+				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			}
 			model.addObject("expenses", expenses);
 		}else if(expenses == null){
 			expenseId = addExpensesService.getExpenseId();
@@ -127,7 +130,7 @@ public class ExpencesController {
 		
 	
 	@RequestMapping(value = "/addApprovalExpense")
-	public ModelAndView addApprovalExpense(HttpServletRequest request) throws Exception
+	public ModelAndView addApprovalExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId) throws Exception
 	{
 		
 		ModelAndView model = new ModelAndView();
@@ -138,8 +141,21 @@ public class ExpencesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sessionData.setNav(Constants.MY_EXPENSES);
-		String expensesId = addExpensesService.getExpenseId();
-		model.addObject("ExpensesId", expensesId);
+		/*String expensesId = addExpensesService.getExpenseId();
+		model.addObject("ExpensesId", expensesId);*/
+		
+		Expenses expenses = null;
+		if(null != expenseId && !expenseId.isEmpty()){
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
+			if(null != expenses.getEndDate()){
+				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			}
+			model.addObject("expenses", expenses);
+		}else if(expenses == null){
+			expenseId = addExpensesService.getExpenseId();
+			model.addObject("ExpensesId", expenseId);
+		}
 		
 		List<Projects> projectsList = projectsService.getProjectsByOrgLocationsIdAndApproverUserId(orgLoc.getId(),loginUser.getId());
 		model.addObject("projectsList", projectsList);
