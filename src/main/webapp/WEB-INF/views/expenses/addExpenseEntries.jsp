@@ -283,7 +283,48 @@ function addExpenseRow(){
 			
   }			
 </script>
-
+<script>
+	function addExpenseCategory(entityId) {
+		if ($('#add_expenses_form').validate(false, validationSettings)){
+			
+			var categoryType = $("#categoryType"+entityId).val();
+			var categoryTypeName = $("#categoryType"+entityId+" option[value='"+categoryType+"']").text();
+			var categoryDate = $("#categoryDate"+entityId).val();
+			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
+			var paymentMode = $("#paymentMode"+entityId).val();
+			var expenseRateType = $("#expenseRateType"+entityId).val();
+			var expenseAmount = $("#expenseAmount"+entityId).val();
+			var descriptions = $("#entryDes"+entityId).val();
+			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
+			$("#categoryDateDiv"+entityId).html(categoryDate);
+			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
+			$("#paymentModeDiv"+entityId).html(paymentMode);
+			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
+			$("#expenseAmountDiv"+entityId).html(expenseAmount);
+			$("#entryDesDiv"+entityId).html(descriptions);
+			
+			
+			$("#hideAndShowDetailsButton"+entityId).removeAttr('style');
+			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
+			$("#hideAndShowDetailsButton"+entityId).remove();
+			$("#hideAndShowDetailsDiv"+entityId).prepend(hideAndShowDetailsHtml);
+			
+			$("#addExpenseCategoryButton"+entityId).removeAttr('value');
+			$("#addExpenseCategoryButton"+entityId).attr('value','Update');
+			
+			$("#cancelExpenseCategoryButton"+entityId).removeAttr('onclick');
+			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+')');
+			
+			
+			$("#divEntityTsRow"+parseInt(entityId+1)).removeAttr('style');
+			$("#divEntityTsRow"+parseInt(entityId+1)).attr('style','display:none;');
+			
+			return true;
+		}else{
+			return false;
+		}
+	}
+</script>
 <script>
 function displayCalendar(entityId){
 	$("#categoryDate"+entityId).datepicker("destroy");

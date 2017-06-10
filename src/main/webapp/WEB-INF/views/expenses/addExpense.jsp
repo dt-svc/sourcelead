@@ -14,51 +14,6 @@
 			getClientBasedOnSelectedProject();
 		 };
 </script>
-
-<script type="text/javascript">
-function validate_fileupload(fileName)
-{
-
-    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
-    var file_extension = fileName.split('.').pop(); 
-
-    for(var i = 0; i <= allowed_extensions.length; i++)
-    {
-        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
-        {
-            return true; // valid file extension
-        }
-    }
-
-    return false;
-}
-</script>
- <script type="text/javascript">
- function validateUploadFile(id)
-	{
-		 var selectedFile = $('#'+id+'docFile').val();
-		  if(validate_fileupload(selectedFile)){
-			   var docSize = $('#'+id+'docFile')[0].files[0].size;
-		       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
-		      if(docSize > 2097152){
-		    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-				  $('#'+id+'docFile').attr('record-exist','yes');
-				  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-		      }else{
-		    	  $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
-	   		       $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
-		      }
-		  }
-		  else{
-			      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-			      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
-				  $('#'+id+'docFile').attr('record-exist','yes');
-				  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
-		  }
-		
-	 }
-</script>
 <div class="wraper"> 
   <!-- Content Area -->
   <section class="content-wraper" id="themeroller">
@@ -120,33 +75,28 @@ function validate_fileupload(fileName)
 		</div>
 	</div>
 </div>
-<div class="expensHead" id="expenseAddRowId">
-	<a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addExpenseEntity" onclick="expensesDateCheck();"><i class="fa fa-plus"></i>&nbsp; Row</a>
+<div class="expensHead">
+    <input type="hidden"  name="maxRecCount" id="maxRecCount" value="1">
+	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
 </div>
-
-
-<div class="modal fade" id="addExpenseEntity" role="dialog"></div>
-
-<div class="project_wrap_table expensTable">
-	<table id="entriesTable">
-		<thead>
-			<tr>
+<div class="project_wrap_table expensTableView">
+	<table id="categoryTable">
+	    <thead>
+			<tr id="divEntityTsRow0">
 				<th>Exp Category</th>
 				<th>Date</th>
-				<th>Issued By</th>
+				<th>Payment Mode</th>
 				<th>Currency</th>
 				<th>Amount</th>
 				<th>Description</th>
 				<th>Action</th>
 			</tr>
-		</thead>
-		<tbody id="divBody"> </tbody>
+		</thead>	
+			<tbody>
+		   </tbody>
 	</table>
 </div>
-
-<input type="text" style="display: none;" name="maxRecCount" id="maxRecCount" value="">
-                
 <div class="form-footer clearfix mt">
 		  <div class="col-lg-12">
 			<div class="pull-right">
@@ -156,29 +106,15 @@ function validate_fileupload(fileName)
 			</div>
 		  </div>
 		</div>
+                
           
       <!-- Content Area Ends--> 
 	  </div>
 </form:form>
-<div id="divAttachmentTd1" style="display: none; float: left;">
-	   <div id='REPLACEROWIDdocFileuploadFileGroup'>
- 			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' data-validation="required"  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
- 			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
- 		</div>
- </div>
   </section>
-  <!-- Content Area Ends--> 
-  <!--   Error Message   -->
-  <div class="vendor_wrap_mask"></div>
-  <div class="vendor_error">
-    <textarea placeholder="Enter message"></textarea>
-    <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-  <!--   Error Message   --> 
-</div>
 
 <script>
 	function saveAddExpensesData(status) {
-		$("#maxRecCount").val(recCount);
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
@@ -216,29 +152,12 @@ function validate_fileupload(fileName)
 		dateFormat : 'yyyy/mm/dd'
 	};
 </script>
-
-<script>
-	// Error pop
-	$(document).ready(function() {
-		$(".glyphicon-trash").click(function() {
-			$(".vendor_error").slideToggle(200);
-			$(".vendor_wrap_mask").fadeIn(200);
-		});
-		$(".vendor_error a").click(function() {
-			$(".vendor_error").slideUp(200);
-			$(".vendor_wrap_mask").fadeOut(200);
-		});
-	});
-</script>
-
 <script>
 	$(function() {
 		$("#datepicker,#datepicker2").datepicker();
 		$("#datepicker5").datepicker();
 	});
 </script>
-
-
 <script type="text/javascript">
 	var config = {
 		'.chosen-select' : {},
@@ -345,6 +264,4 @@ function expensesDateCheck(){
 }
 
 </script>
-
-
 <jsp:include page="../masterFooter.jsp" />
