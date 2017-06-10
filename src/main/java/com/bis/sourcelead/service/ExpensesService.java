@@ -10,4 +10,6 @@ public interface ExpensesService {
 	
 	public List<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser);
 
+	public Expenses getExpenseByExpenseId(long expenseId);
+
 }

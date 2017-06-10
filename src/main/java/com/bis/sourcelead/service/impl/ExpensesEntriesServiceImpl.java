@@ -4,10 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -34,6 +34,9 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	@Autowired
 	TimeZoneService timeZoneService;
 
+	@Autowired
+	private ExpensesEntriesDao expensesEntriesDao;
+	
 	@Override
 	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(JSONObject jsonObj,  MultipartHttpServletRequest request,
 			Expenses expenses) throws Exception {
@@ -128,6 +131,11 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 		    }
 		   return expensesEntriesList;
 		    		  
+	}
+
+	@Override
+	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
+		return expensesEntriesDao.getExpensesEntriesByExpenseId(expenseId);
 	}
 	
 }
