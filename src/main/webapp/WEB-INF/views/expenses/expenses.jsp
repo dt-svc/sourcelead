@@ -147,7 +147,7 @@ function getExpensesList(){
 	        			  totalAmount = "--";
 	        		  }
 						 result = result +"        <tr>";
-						 result = result +"        	<td><div class='proj_show' onclick='expenseView("+report.id+");'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></td>             ";
+						 result = result +"        	<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>             ";
 						 result = result +"            <td><div>"+purpose+"</div></td>                                                                    ";
 						 result = result +"            <td><div>"+projectMemberId+"</div></td>                                                                       ";
 						 result = result +"            <td><div>"+clientName+"</div></td>                                                                        ";
@@ -157,7 +157,7 @@ function getExpensesList(){
 						 result = result +"            <td><div>"+totalAmount+"</div></td>                                                                            ";
 						 result = result +"            <td>                                                                                                ";
 						 result = result +"            	<div class='tbldata-dotdot_50'>                                                                    ";
-						 result = result +"           		 <a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"'><i class='fa fa-pencil-square-o' title='Edit'></i></a>";
+						 result = result +"           		 <a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=edit'><i class='fa fa-pencil-square-o' title='Edit'></i></a>";
 						 result = result +"            		 <i class='glyphicon glyphicon-trash'></i>                                                     ";
 						 result = result +"				</div>                                                                                             ";
 						 result = result +"            </td>                                                                                               ";
