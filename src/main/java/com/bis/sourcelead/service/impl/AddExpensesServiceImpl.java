@@ -135,7 +135,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	expenses.setStatus(Constants.EXPENSES_STATUS);
 	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(jsonObj, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
-	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) && projMembers != null){
+	if(projMembers != null){
     	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
     	HashSet<ExpensesApproverHierarchy> saHierarchyList = new HashSet<ExpensesApproverHierarchy>();
         if(hierarchyList != null && !hierarchyList.isEmpty()){
@@ -144,8 +144,15 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 					ExpensesApproverHierarchy saHierarchy = new ExpensesApproverHierarchy();
 					saHierarchy.setHierarchyId(hierarchy);
 					saHierarchy.setExpenseId(expenses);
-					saHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
-					saHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+					
+					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+						saHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
+						saHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
+					}
+					else if(status.equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
+						saHierarchy.setExpenseStatus(Submission_Status.DRAFT);
+						saHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.NEW);
+					}
 					saHierarchy.setCreatedDate(expenses.getCreatedDate());
 					saHierarchy.setCreatedBy(expenses.getCreatedBy());
 					saHierarchy.setUpdatedDate(expenses.getUpdatedDate());
@@ -159,8 +166,10 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		}
 	}
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
+	 }
 	 
-	 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
   }
 
 private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
