@@ -178,7 +178,7 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 	
 	 EmailMessage emailMessage = new EmailMessage();
 	
-	 
+	 if(null != expenses.getProjectManagerUserList()){
 	for(User managerUser :expenses.getProjectManagerUserList()){
 		
 		 StringBuilder sb = new StringBuilder();
@@ -251,6 +251,7 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
+}
 	 
 	 
 	 
