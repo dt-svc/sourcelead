@@ -141,7 +141,7 @@ $.ajax({
 	
 	
 	result = result+' <td><div class="sm">'+data.expenseId.totalAmount+'</div></td>';
-	result = result+' <td><div class="sm"><a href="javascript:void(0)" onclick="expenseApprovalView(\''+data.expenseId.id+'\');" class="ExpAmount">'+data.expenseId.totalAmount+'</a></div></td>';
+	result = result+' <td><div class="sm"><a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">'+data.expenseId.totalAmount+'</a></div></td>';
 	result = result+' <td><div id="status'+data.expenseId.id+'">'+data.expenseApprovalStatus+'</div></td>';
 	
 	result = result+' <td>';
@@ -318,7 +318,7 @@ function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
 }
 </script>
 
-<script>
+<!-- <script>
     function expenseApprovalView(expenseId){
     var sourceleadUrl = '${sourceleadUrl}';
     $(".time_appr_side_wrap").addClass("time_appr_side_wrap_active");
@@ -401,7 +401,7 @@ function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
       }
   });
 }
-</script>   
+</script>  -->  
     
     
 <script>
