@@ -32,6 +32,28 @@
  </style>
 <script>
 function hideAndShowDetailsRow(rowId){
+	var validation_required = "true";
+	var entityId = parseInt(rowId-1);
+	var dbAttcahmentMaxRowNumber = $("#dbAttcahmentMaxRowNumber"+entityId).val();
+	if(dbAttcahmentMaxRowNumber != null && dbAttcahmentMaxRowNumber != '' && dbAttcahmentMaxRowNumber != 'undefined'){
+		for(var i = 0; i < dbAttcahmentMaxRowNumber; i++){
+		   if($("#"+i+"DbdocFileIsDeleted"+entityId).val() == 'N')
+		   {
+			   $("#"+i+"document"+entityId).removeAttr('style');
+			   validation_required = "false";
+			   
+		   }
+		}
+	}
+	if(validation_required == "true"){
+		 $("#0docFile"+entityId).removeAttr('data-validation-optional');
+		 $("#0docFile"+entityId).attr('data-validation','required');
+	}
+	else{
+		$("#0docFile"+entityId).removeAttr('data-validation');
+		 $("#0docFile"+entityId).attr('data-validation-optional','true');
+	}
+	
 	if($("#divEntityTsRow"+rowId).is(':visible'))
    {
 		$("#divEntityTsRow"+rowId).removeAttr('style');
@@ -43,6 +65,27 @@ function hideAndShowDetailsRow(rowId){
 	
 }
 </script>	
+<script type="text/javascript">
+	function removeDbAttachment(documentId,entityId) {
+		var validation_required = "true";
+		$("#"+documentId+"document"+entityId).attr('style','display:none');
+		var dbAttcahmentMaxRowNumber = $("#dbAttcahmentMaxRowNumber"+entityId).val();
+		if(dbAttcahmentMaxRowNumber != null && dbAttcahmentMaxRowNumber != '' && dbAttcahmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttcahmentMaxRowNumber; i++){
+			   if($("#"+i+"document"+entityId).is(':visible'))
+			   {
+				   validation_required = "false";
+				   
+			   }
+			}
+		}
+		
+		if(validation_required == "true"){
+			 $("#0docFile"+entityId).removeAttr('data-validation-optional');
+			 $("#0docFile"+entityId).attr('data-validation','required');
+		}
+	}
+</script>
 <script type="text/javascript">
 	function removeAttachmentRow(rowId,entryRowId) {
 		 document.getElementById(entryRowId+"divAttachmentTsRow"+rowId).style.display = 'none';
@@ -57,12 +100,12 @@ function hideAndShowDetailsRow(rowId){
 	}
 </script>
 <script>
-function addAttachment(entityRowId){  
+function addAttachment(entityRowId,from){ 
+	      
 			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber"+entityRowId).val();
 			var tbl = document.getElementById("attachmentTable"+entityRowId);
 			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber"+entityRowId+"']").val());
 			$("input[name = 'attcahmentMaxRowNumber"+entityRowId+"']").val(maxRowNum + 1);
-			
 			
 			var row = tbl.insertRow(maxRowNum);
 			row.setAttribute("id", entityRowId+"divAttachmentTsRow" + maxRowNum);
@@ -72,6 +115,12 @@ function addAttachment(entityRowId){
 			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
 			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
 			divAttachmentTdStr = divAttachmentTdStr.replace(/ENTITYROWID/g, (entityRowId));
+			if(from != null && from != '' && from !='undefined' && from == 'EDIT'){
+				divAttachmentTdStr = divAttachmentTdStr.replace(/ENTITYROWID/g, "data-validation-optional='true'");
+			}
+			else{
+				divAttachmentTdStr = divAttachmentTdStr.replace(/ENTITYROWID/g, "data-validation='required'");
+			}
 			cell0.innerHTML = divAttachmentTdStr;
 			
 			/* timesheetAttachmentValidationFun(); */
@@ -100,6 +149,12 @@ function addAttachment(entityRowId){
 	     } 
 	}
 </script>
+<div id="divAttachmentTd1" style="display: none; float: left;">
+	   <div id='REPLACEROWIDdocFileuploadFileGroupENTITYROWID'>
+ 			<input type='file' name='REPLACEROWIDdocFileENTITYROWID' id='REPLACEROWIDdocFileENTITYROWID' VALIDATIONCONDITION  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID,ENTITYROWID)'> 
+ 			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID,ENTITYROWID);"></i>
+ 		</div>
+ </div>
 <div id="divAddRowTr1Td1" style="display: none; float: left;">
     <div id="categoryTypeDivREPLACEROWID">--</div>
 </div>
@@ -117,7 +172,7 @@ function addAttachment(entityRowId){
     
 </div>
 <div id="divAddRowTr1Td6" style="display: none; float: left;">
-   <div id="entryDesDivREPLACEROWID">--</div>
+   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
 </div>
 <div id="divAddRowTr1Td7" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
@@ -183,7 +238,7 @@ function addAttachment(entityRowId){
 		                 <span> 
 		                     <table class='timesheetAttachment' id='attachmentTableREPLACEROWID' cellpadding='0' cellspacing='0' width="100%">
 		                       <tr id='REPLACEROWIDdivAttachmentTsRow0'>
-		                           <td><div id='0docFileuploadFileGroupREPLACEROWID'><input type='file' name='0docFileREPLACEROWID' id='0docFileREPLACEROWID' field-name='Attachment' onchange='validateUploadFile(0,REPLACEROWID)' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(REPLACEROWID)'></i></div></td> 
+		                           <td><div id='0docFileuploadFileGroupREPLACEROWID'><input type='file' name='0docFileREPLACEROWID' id='0docFileREPLACEROWID' field-name='Attachment' onchange='validateUploadFile(0,REPLACEROWID)' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(REPLACEROWID,'NEW')'></i></div></td> 
 		                       </tr>
 		                   </table>
 		                 </span>
@@ -282,6 +337,18 @@ function addExpenseRow(){
 </script>
 <script>
 	function addExpenseCategory(entityId) {
+		var dbAttcahmentMaxRowNumber = $("#dbAttcahmentMaxRowNumber"+entityId).val();
+		if(dbAttcahmentMaxRowNumber != null && dbAttcahmentMaxRowNumber != '' && dbAttcahmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttcahmentMaxRowNumber; i++){
+			   if($("#"+i+"document"+entityId).is(':hidden'))
+			   {
+				   $("#"+i+"DbdocFileIsDeleted"+entityId).val('Y');
+				   
+			   }
+			}
+		}
+		
+		/* $("#"+documentId+"DbdocFileIsDeleted"+entityId).val('Y'); */
 		if ($('#add_expenses_form').validate(false, validationSettings)){
 			
 			var categoryType = $("#categoryType"+entityId).val();

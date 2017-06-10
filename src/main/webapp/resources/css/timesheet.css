@@ -4808,6 +4808,10 @@ display:none;
 }
 
 
+.proDown {
+	width: 100% !important; float: none !important;
+}
+
 /*   Back to top  */
 .backtotop {
     width:50px; position:fixed; bottom:20px; right:15px; cursor:pointer; display: none; outline:none !important; z-index:30; text-align:center;
