@@ -34,12 +34,13 @@
                   <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : ExpensesId}" readonly="readonly">
+                    <input type="text" style="display: none;" class="form-control" name="expenseId" value="${expenses.id}">
                   </div>
                 </div>  
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose">
+                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}">
                   </div>
                 </div>                                          
 				<div class="form-group">
