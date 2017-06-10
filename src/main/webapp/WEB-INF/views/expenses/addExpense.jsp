@@ -227,9 +227,7 @@ function getClientBasedOnSelectedProject(){
 					minDate : projectStartDate,
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
-						var dt = toDate('#projectStartDateExpensesId');
-						dt.setDate(minDate.getDate() + 1);
-						$("#projectEndDateExpensesId").datepicker("option","minDate", dt);
+						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
 					}
 				});
 		$('#projectEndDateExpensesId').datepicker({
@@ -239,9 +237,7 @@ function getClientBasedOnSelectedProject(){
 					minDate : projectStartDate,
 					maxDate : projectEndDate,
 					onSelect : function(selected) {
-						var dt = toDate('#projectEndDateExpensesId');
-						dt.setDate(dt.getDate() - 1);
-						$("#projectStartDateExpensesId").datepicker("option","minDate", dt);
+						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
 					}
 				});
 	}
