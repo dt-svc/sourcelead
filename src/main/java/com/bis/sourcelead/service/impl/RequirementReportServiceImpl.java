@@ -312,7 +312,14 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 							}
 						}
 						applicantReport.setRequirementTitle(reqSub.getRequirement().getJobTitle());
-						applicantReport.setApplicantName(reqSub.getCandidate().getFirstName());
+						StringBuilder st = new StringBuilder();		
+						if(reqSub.getCandidate().getLastName() != null){
+							applicantReport.setApplicantName(st.append(reqSub.getCandidate().getFirstName()).append(" ").append(reqSub.getCandidate().getLastName()).toString());
+						}
+						else{
+							applicantReport.setApplicantName(st.append(reqSub.getCandidate().getFirstName()).toString());
+						}
+						
 						applicantReport.setSubmissionDate(submissionDate);
 						applicantReport.setShortlistDate(shortlistDate);
 						applicantReport.setInterviewDate(interviewDate);
