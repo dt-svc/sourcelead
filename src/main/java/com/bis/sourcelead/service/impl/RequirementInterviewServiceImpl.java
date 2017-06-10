@@ -1635,16 +1635,37 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		  Candidate candidate = candidateService.getCandidateByCandidateId(requirementinterview.getSubmissionId().getCandidate().getId());
 	      RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementinterview.getSubmissionId().getId());
 		  User interviewrUser=userService.getUserByUserCode(requirementinterview.getCreatedBy()) ;
+		  EmailMessage emailMessage = new EmailMessage();
+		 OrgSpoc spoc= null;
+			if(null != requirementSubmission.getVendorLocationId()){
+				emailMessage.setFirstName(interviewrUser.getFirstName());
+				 emailMessage.setLastName(interviewrUser.getLastName());
+				 emailMessage.setToEmail(interviewrUser.getEmail());
+				
+				 if(null != requirementinterview.getSubmissionId().getSourceSubmission()){
+					 RequirementSubmission reqSub =  requirementSubmissionService.getSubmissionsBySourceSubmissionId(requirementSubmission.getId(), requirementSubmission.getVendorLocationId().getId());
+					Requirement req =  requirementService.getRequirementByRequirementId(reqSub.getSourceSubmission().getRequirement().getId());
+					spoc = orgSpocService.getSpocBySpocUUID(req.getSpocId().getUUID());
+				 }
+				 emailMessage.setFromEmail(spoc.getVendorUser().getEmail());
+				 emailMessage.setCreatedBy(interviewrUser.getUserCode());
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				 StringBuilder timeStringBuilder=new StringBuilder();
+				 if(null != user.getLastName()){
+					 emailMessage.setFromName(timeStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
+				 }else{
+					 emailMessage.setFromName(timeStringBuilder.append(user.getFirstName()).toString());
+				 }
+			}else{
+				emailMessage.setFirstName(candidate.getFirstName());
+				 emailMessage.setLastName(candidate.getLastName());
+				 emailMessage.setToEmail(interviewrUser.getEmail());
+				 emailMessage.setFromEmail(candidate.getEmail());
+				 emailMessage.setCreatedBy(user.getUserCode());
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			}
 		
-		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(candidate.getFirstName());
-		 emailMessage.setLastName(candidate.getLastName());
-		 emailMessage.setToEmail(interviewrUser.getEmail());
-		 emailMessage.setFromEmail(candidate.getEmail());
-		 emailMessage.setCreatedBy(user.getUserCode());
-		 StringBuilder timeStringBuilder=new StringBuilder();
-		 emailMessage.setFromName(timeStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
 		 
 		 String time = "";
 		 String startTime = "";
@@ -1710,8 +1731,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
-			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_EMAIL);
-		
+		 EmailScenario noificationEmailScenario =null;
+		 if(null != requirementSubmission.getVendorLocationId()){
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_EMAIL);
+				noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }else{
+			emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_EMAIL);
+			noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -1726,32 +1753,37 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		
-		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.PROPOSE_NEW_TIME,Constants.ENTITY_TYPE_NOTIFICATION); 
+		  
 		 String actionLink = "";
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
-		 emailScenerioUtil.sendNotification(actionLink, user, interviewrUser, orgLocations, noificationEmailScenario);
+		 if(null != requirementSubmission.getVendorLocationId()){
+			 emailScenerioUtil.sendNotification(actionLink,spoc.getVendorUser(), interviewrUser, spoc.getClientLocationId(), noificationEmailScenario);	 
+			 }else{
+			 User fromuser = userService.getUserById(Constants.USERID);
+			 emailScenerioUtil.sendNotification(actionLink,fromuser,interviewrUser, requirementSubmission.getOrgLocations(), noificationEmailScenario);
+			 }
 	}
 
 
 	private StringBuilder buildProposeNewTimeListTable(String requirementInterviewId) throws Exception {
 		List<ProposeTime> proposeTimeList =  proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
 		StringBuilder tempHTML = new StringBuilder();
-		tempHTML.append("<table width='100%' class='table table-responsive table-bordered table-hover'>");
+		tempHTML.append("<table width='250px'>");
 		tempHTML.append("<tbody>");
 			for(ProposeTime pt:proposeTimeList){
 				tempHTML.append("<tr>");
 				tempHTML.append("<td>");
 						tempHTML.append("<div>");
-							tempHTML.append("<input type='text' class='form-control calendar input-sm'  value='"+Constants.DMY.format(pt.getProposeDate())+"' readonly>");
+							tempHTML.append("<input type='text' style='width:125px; padding:3px 10px;'  value='"+Constants.DMY.format(pt.getProposeDate())+"' readonly>");
 						tempHTML.append("</div>");
 			  tempHTML.append("</td>");
 			
 			  tempHTML.append("<td>");
 					tempHTML.append("<div>");
-						tempHTML.append("<input type='text' class='form-control timeicon timepicker input-sm'  value='"+pt.getProposeTime()+"' readonly>");
+						tempHTML.append("<input type='text' style='width:100px; padding:3px 10px;'  value='"+pt.getProposeTime()+"' readonly>");
 					tempHTML.append("</div>");
 			tempHTML.append("</td>");
 			tempHTML.append("</tr>");
