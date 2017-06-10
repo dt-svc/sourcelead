@@ -695,7 +695,9 @@ function preparedContractListDraft(data){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 		     	if(report.templateSubmissionStatus == "DRAFT"){
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize">';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
 		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -704,10 +706,6 @@ function preparedContractListDraft(data){
 		     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		'</sec:authorize>';
-		     		//result = result + '</div>';
-	     	  }
-	     	  else{
-	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 	     	  }
 		         result = result + '</div></td>';
 		     	 
@@ -856,7 +854,9 @@ function preparedContractListDraft(data){
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "DRAFT"){
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
 		     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -866,9 +866,6 @@ function preparedContractListDraft(data){
 		     		}
 		     		'</sec:authorize>';
 		     		//res = res + '</div>';
-	     	  }
-	     	  else{
-	     		 res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
 	     	  }
 		         res = res + '</div></td>';
 		     	 
@@ -1051,23 +1048,22 @@ function preparedContractListWFA(data){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot-vsm">';
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-	        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
-	            		//result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
-	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
-	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-	            	  '</sec:authorize>';
-	            	  '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-			     		if(report.typeOfContract == "New"){
-			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     		if(report.typeOfContract == "Custom"){
-			     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     	  '</sec:authorize>';
-
-	        	  }
-	        	  else{
-	        		  result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	        		  
+	        		  if('${SourceLeadWeb_user.id}' == report.approverUser.id){
+	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
+	      	         }
+	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+	      	     		if(report.typeOfContract == "New"){
+	      	     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+	      	     		}
+	      	     		if(report.typeOfContract == "Custom"){
+	      	     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+	      	     		}
+	        			'</sec:authorize>';
+	        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	        			result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	        			'</sec:authorize>';
+	        			
 	        	  }
 	        	  
 		     		 //result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
@@ -1154,30 +1150,24 @@ function preparedContractListWFA(data){
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot-vsm">';
 	         
+	         
+	         alert("1"); 
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-        		   '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
-            		//opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
-
-            		opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
-            		opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
-
-            		'</sec:authorize>';
-            		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-			     		if(output.typeOfContract == "New"){
-			     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     		if(output.typeOfContract == "Custom"){
-			     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-		     		'</sec:authorize>';
+        		  if('${SourceLeadWeb_user.id}' == output.approverUser.id){
+     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
+     	         }
+     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+     	     		if(output.typeOfContract == "New"){
+     	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+     	     		}
+     	     		if(output.typeOfContract == "Custom"){
+     	     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+     	     		}
+       			'</sec:authorize>';
+       			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+       			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+       			'</sec:authorize>';
         	  }
-        	  else{
-         	 	//opt = opt + '<div><span>--</span></div>';
-        		  opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
-        	  }
-        	 // opt = opt + '<div class="tbldata-dotdot_80">';
-	     	 
-	     		 //opt = opt + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
 	     	 
 	     		opt = opt + '</div></td>';
 	     	
@@ -1201,7 +1191,7 @@ function preparedContractListWFA(data){
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
-		opt = opt + '    <th>Approver</th>';
+		res = res + '    <th>Approver</th>';
 		res = res + '    <th>Action</th>';
 		res = res + '   </tr>';
 		res = res + '	</thead>';
@@ -1257,7 +1247,9 @@ function preparedContractListWFA(data){
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "DRAFT"){
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
 		     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1267,9 +1259,6 @@ function preparedContractListWFA(data){
 		     		}
 		     		'</sec:authorize>';
 		     		//res = res + '</div>';
-	     	  }
-	     	  else{
-	     		 res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
 	     	  }
 		         res = res + '</div></td>';
 		     	 
@@ -1459,7 +1448,9 @@ function preparedContractListWTS(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';//Waiting to be signed
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize">';
 		         result = result + '</td>';
 		     	 
 		        result = result + '</tr>';
@@ -1533,7 +1524,9 @@ function preparedContractListWTS(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';//Waiting to be signed
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+     		'</sec:authorize">';
      		 opt = opt + '</td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1556,7 +1549,7 @@ function preparedContractListWTS(data){
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
-		opt = opt + '    <th>Status</th>';
+		res = res + '    <th>Status</th>';
 		res = res + '    <th>Action</th>';
 		res = res + '   </tr>';
 		res = res + '	</thead>';
@@ -1610,7 +1603,9 @@ function preparedContractListWTS(data){
 		         res = res + '</td>';
 		         
 		         res = res + '<td>';//Waiting to be signed
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize">';
 		         res = res + '</td>';
 		     	 
 		        res = res + '</tr>';
@@ -1796,11 +1791,14 @@ function preparedContractListWTV(data){
 		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
-	     		 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
-
-	     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	            	 }
+		         }
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	     		'</sec:authorize">';
 		         result = result + '</div></td>';
 		        result = result + '</tr>';
 		    }
@@ -1867,10 +1865,14 @@ function preparedContractListWTV(data){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	         if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
-	     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
-	     		}
+	         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
+		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		     		}
+	         }
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+     		'</sec:authorize>';
      		 opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1893,7 +1895,7 @@ function preparedContractListWTV(data){
 		res = res + '    <th>Join date</th>';
 		res = res + '    <th>Rate</th>'; 
 		res = res + '    <th>Req Docs</th>'; 
-		opt = opt + '    <th>Status</th>';
+		res = res + '    <th>Status</th>';
 		res = res + '    <th>Action</th>';
 		res = res + '   </tr>';
 		res = res + '	</thead>';
@@ -1948,10 +1950,14 @@ function preparedContractListWTV(data){
 		         
 		         res = res + '<td>';//Waiting to be signed
 		         res = res + '<div class="tbldata-dotdot_80">';
-		         if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
-		        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
-		     		}
+		         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+		        	 if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
+			        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+			     		}
+		         }
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		         '</sec:authorize>';
 		         res = res + '</div></td>';
 		     	 
 		        res = res + '</tr>';
@@ -2132,7 +2138,9 @@ function preparedContractListFinalize(data){
 		         result = result + '</td>'; */
 		         
 		         result = result + '<td>';
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize>';
 		         result = result + '</td>';
 		        result = result + '</tr>';
 		    }
@@ -2203,7 +2211,9 @@ function preparedContractListFinalize(data){
 	         opt = opt + '</td>'; */
 
 	         opt = opt + '<td>';
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+     		 '</sec:authorize>';
      		 opt = opt + '</td>';
      		 
 	     	 opt = opt + '</tr>';
@@ -2273,7 +2283,9 @@ function preparedContractListFinalize(data){
 		         res = res + '</td>';
 		         
 		         res = res + '<td>';
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize>';
 		         res = res + '</td>';
 		     	 
 		        res = res + '</tr>';
@@ -2443,18 +2455,9 @@ function preparedContractListExpired(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
-			     	/* if(report.templateSubmissionStatus == "EXPIRED"){
-			     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
-			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-				     		if(report.typeOfContract == "New"){
-				     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-				     		}
-			     		'</sec:authorize>';
-			     		result = result + '</div>';
-		     	  }
-		     	  else{ */
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
-// 		     	  }
+	     		 '</sec:authorize>';
 			         result = result + '</div></td>';
 		     	 
 		        result = result + '</tr>';
@@ -2513,19 +2516,10 @@ function preparedContractListExpired(data){
 	         opt = opt + '<td>';
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	     	  /* if(output.templateSubmissionStatus == "EXPIRED" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
-	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-		     		if(output.typeOfContract == "New"){
-		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-		     		}
-	     		'</sec:authorize>';
-	     		opt = opt + '</div>';
-	     	  }
-	     	  else{ */
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
-// 	     	  }
-	     		opt = opt + '</div></td>';
+     		 '</sec:authorize>';
+	     		 opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
 	    }
@@ -2586,8 +2580,11 @@ function preparedContractListExpired(data){
 		       	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
 		         res = res + '</td>';
 		         
+		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
-		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+		         '</sec:authorize>';
 		         res = res + '</div></td>';
 		     	 
 		        res = res + '</tr>';
@@ -2763,21 +2760,17 @@ function preparedContractListRejected(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
-		     	if(report.templateSubmissionStatus == "REJECTED"){
-		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-			     		if(report.typeOfContract == "New"){
-			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     		if(report.typeOfContract == "Custom"){
-			     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-	     			'</sec:authorize>';
-		     		result = result + '</div>';
-	     	  }
-	     	  else{
-	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
-	     	  } 
+		         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	     		 '</sec:authorize>';
+	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		if(report.typeOfContract == "New"){
+		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		if(report.typeOfContract == "Custom"){
+		     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+     			'</sec:authorize>';
 		         result = result + '</div></td>';
 		     	 
 		        result = result + '</tr>';
@@ -2840,8 +2833,9 @@ function preparedContractListRejected(data){
 	         opt = opt + '</td>'; */
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	     	  if(output.templateSubmissionStatus == "REJECTED" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+     		 '</sec:authorize>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -2850,11 +2844,6 @@ function preparedContractListRejected(data){
 		     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
  				'</sec:authorize>';
-	     		opt = opt + '</div>';
-	     	  }
-	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
-	     	  }
 	     		opt = opt + '</div>';
 	     		 opt = opt + '</td>';
 	     	opt = opt + '</tr>';
@@ -2918,8 +2907,9 @@ function preparedContractListRejected(data){
 		         
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
-		     	  if(appReport.templateSubmissionStatus == "REJECTED" ){
-		     		 res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		     		 res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			     		if(appReport.typeOfContract == "New"){
 			     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -2928,11 +2918,6 @@ function preparedContractListRejected(data){
 			     			res = res + '| <a href="<c:url value="/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			     		}
 	 				'</sec:authorize>';
-	 				res = res + '</div>';
-		     	  }
-		     	  else{
-		     		 res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
-		     	  }
 		     	 res = res + '</div>';
 		     	res = res + '</td>';
 		     	 
