@@ -32,6 +32,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
@@ -47,6 +48,9 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	ExpensesEntriesService expensesEntriesService;
+	
+	@Autowired
+	ExpensesService expensesService;
 	
 	@Autowired
 	private AddExpensesDao addExpensesDao;
@@ -83,8 +87,15 @@ public List<ProjectMembers> getAllProjectsForExpenses(OrgLocations orgLoc,User l
 
 @Override
 public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status) throws NumberFormatException, Exception {
-	Expenses expenses = new Expenses();
+	Expenses expenses = null;
 	ProjectMembers projMembers = null;
+	
+	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
+		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+	 }else{
+		 expenses = new Expenses();
+	 }
+	
 	if (jsonObj.has("ExpenseAutoId") && !(jsonObj.getString("ExpenseAutoId").isEmpty())){
 		expenses.setExpenseId(jsonObj.getString("ExpenseAutoId"));	
 	 }
@@ -116,9 +127,13 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);
 	}
-	expenses.setCreatedBy(loginUser.getUserCode());
+	if(null == expenses.getId()){
+		expenses.setCreatedBy(loginUser.getUserCode());
+	}
 	expenses.setUpdatedBy(loginUser.getUserCode());
-	expenses.setCreatedDate(CommonUtil.currentDate());
+	if(null == expenses.getId()){
+		expenses.setCreatedDate(CommonUtil.currentDate());
+	}
 	expenses.setUpdatedDate(CommonUtil.currentDate());
 	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
@@ -135,6 +150,14 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	expenses.setStatus(Constants.EXPENSES_STATUS);
 	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(jsonObj, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
+	
+	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
+	float totalAmount = 0;
+	for(ExpensesEntries expensesEntry : expensesEntriesList){
+		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
+	}
+	expenses.setTotalAmount(totalAmount);
+	
 	if(projMembers != null){
     	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
     	HashSet<ExpensesApproverHierarchy> saHierarchyList = new HashSet<ExpensesApproverHierarchy>();
