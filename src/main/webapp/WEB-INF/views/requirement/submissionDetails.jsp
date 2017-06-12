@@ -691,19 +691,12 @@ function getInternalInterviewsList(submissionId){
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
-			                    	 
-			                    	 if(report.proposeTimeList.length > 0){
-			                    		 result = result + '<a href="javascript:void(0)"> <i  class="brder-int" onclick="viewProposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');">ProposedTime</i>';
-				                    	 result = result + '			<div class="proposeTimePop" id="viewProposeTimediv'+report.interviewId.id+'" >';
-											result = result + '			</div>';
-											result = result + ' </a>';
-			                    	 }else{
+			                    	 if(report.proposeTimeStatus=="Y"){
 			                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
 				                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
 											result = result + '			</div>';
 											result = result + ' </a>';
 			                    	 }
-			                    	 
 			                    	 
 // 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	/*  } */
