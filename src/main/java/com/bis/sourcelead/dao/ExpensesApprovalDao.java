@@ -22,4 +22,5 @@ public interface ExpensesApprovalDao {
     
     void updateExpenseStatusByExpenseId(Long expenseId,String status);
 
+    //ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,Long approverUserId);
 }
