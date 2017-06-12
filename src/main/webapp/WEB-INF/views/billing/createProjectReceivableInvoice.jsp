@@ -937,25 +937,8 @@ function calculateDisCount(){
 					 		$("#afterDiscountTotal").val(total.toFixed(2));
 					 	 }
 					 	 calculateTaxDiscount();
-					 	/*  var maxRowNum = parseInt($("input[name = 'maxTaxRowNum']").val());
-						  var afterDiscountTotal = $("#afterDiscountTotal").val();
-						  
-						   for(var i=0; i< maxRowNum; i++){
-						        var taxType = $("#"+i+"taxdiscountType").val();
-						        var taxValue = $("#"+i+"taxdiscountvalue").val();
-						        var taxTotal = $("#"+i+"taxTotal").val();
-						           
-						             if(taxValue == '' && taxTotal==''){
-						             $("#grandTotal").val(afterDiscountTotal.toFixed(2));
-						             }else{
-						           	 var tot = $("#grandTotal").val();
-						 	           var first=parseFloat(tot);
-						 	            var second=parseFloat(taxTotal); 
-						 	            var total  = (first+second);
-						 	          $("#grandTotal").val(total.toFixed(2));
-						             }
-						           
-						   }  */
+					 	conversion();
+					 	
 }
 }
 </script>
@@ -1047,7 +1030,7 @@ function calculateDisCount(){
         $("#grandTotal").val(total); 
         $("#conversionFrom").val(total);
        //=======================================
-        
+        conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addTaxTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
@@ -1121,7 +1104,7 @@ function calculateTaxDiscount(){
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
 	$("#conversionFrom").val(grandTotal.toFixed(2));
-  
+	conversion();
 }
 </script>
 
