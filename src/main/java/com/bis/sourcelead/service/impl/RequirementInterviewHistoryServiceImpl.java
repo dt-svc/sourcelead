@@ -492,7 +492,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				    }
 				}
 			    
-			    
+			    if(null !=requirementInterview.getProposeTime()){
+			    	interviewHistory.setProposeTimeStatus(requirementInterview.getProposeTime());	
+			    }
 			    
 			    String InterviewersList = "";
 				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();

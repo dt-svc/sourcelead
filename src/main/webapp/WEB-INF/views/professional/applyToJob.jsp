@@ -214,11 +214,13 @@ function getInternalInterviewsList(submissionId){
 		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending">&nbsp;&nbsp;<i class="fa fa-close text-danger"></i></a>';
 // 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int">&nbsp;&nbsp;<i class="fa fa-question-circle text-muted"></i></a>';
+			                    	 if(report.proposeTimeStatus="Y"){
+			                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
+				                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
+											result = result + '			</div>';
+											result = result + ' </a>';	 
+			                    	 }
 			                    	 
-			                    	 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
-			                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
-										result = result + '			</div>';
-										result = result + ' </a>';
 		                    	 }
 		                    }
 	                    	 result = result + '</span>';
