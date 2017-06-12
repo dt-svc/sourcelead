@@ -2783,7 +2783,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         for(RequirementSubmission reqsub :submittedApplicantsList){
         	RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqsub.getId());
         	StringBuilder sb = new  StringBuilder();
-        	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+        	if(requirementSubmissionTemplateFields.getLastName() != null && !" ".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 	        		
         		reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
         	}else{
