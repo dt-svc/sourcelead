@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
@@ -39,12 +40,13 @@ public class ExpensesRestController {
 	
 	
 	@RequestMapping(value = "/getExpensesList")
-	 public String getExpensesList(HttpServletRequest request) throws Exception {
+	 public String getExpensesList(@RequestParam(value="expenseStatus", required=false) Integer  expenseStatus,HttpServletRequest request) throws Exception {
 
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser);
+		Integer expStatus  =expenseStatus;
+		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser,expStatus);
 		for(Expenses ex:expensesList){
 			if(null != ex.getProjectMembers())
 			{
