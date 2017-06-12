@@ -101,7 +101,7 @@ public class ExpencesController {
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("expenseApproverHierarchy", eah);
 		 	 
-		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverChangesStatusForExpense(expenses.getId(), "APPROVED");
+		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 		    boolean isSahApproved = false;
 		    if(isSah != null){
 		        	isSahApproved = true;
@@ -176,7 +176,7 @@ public class ExpencesController {
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("expenseApproverHierarchy", eah);
 		 	 
-		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverChangesStatusForExpense(expenses.getId(), "APPROVED");
+		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 		    boolean isSahApproved = false;
 		    if(isSah != null){
 		        	isSahApproved = true;

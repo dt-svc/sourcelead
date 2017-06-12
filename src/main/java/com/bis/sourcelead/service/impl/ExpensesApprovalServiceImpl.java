@@ -144,8 +144,6 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	}
 
 
-
-
 	@Override
 	public File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc) throws IOException {
 		System.out.println("In Service Impl");
@@ -335,8 +333,8 @@ private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHier
 
 
 	@Override
-	public ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId, String approvalStatus) {
-		return expensesApprovalDao.isThereAnyApproverChangesStatusForExpense(expenseId, approvalStatus);
+	public ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId) {
+		return expensesApprovalDao.isThereAnyApproverApprovedTheExpense(expenseId);
 	}
 
 	private static void headerCellStyle(PdfPCell cell){
@@ -460,6 +458,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 }
 
 
+	@Override
+	public  Boolean isTheExpenseTotallyApproved(Long expenseId){
+		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
+	}
 
 
 	@Override
@@ -479,12 +481,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	@Override
 	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,
 			Long expenseId) throws Exception {
-		return  expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
+		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
 	}
 
+
 }
-
-
 	
-
+}
 

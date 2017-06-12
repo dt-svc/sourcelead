@@ -103,7 +103,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 					        /*
 							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 							 */
-					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = :expenseId and subsah.expenseApprovalStatus != 'APPROVED' and subsah.expenseId.id = :expenseId ) "
+					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where  subsah.expenseApprovalStatus != 'APPROVED' and subsah.expenseId.id = :expenseId ) "
 					        + " and "+ Constants.loginUserAsAdminWithMaxHeirarchyLevel + ")"
 				            + ") ";
 		@SuppressWarnings("unchecked")
@@ -243,18 +243,33 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId,String approvalStatus) {
+	public ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId) {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		Query expensesApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense where expense.id = :expenseId  and eah.expenseApprovalStatus = :approvalStatus");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", approvalStatus).setCacheable(true).list();
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").setCacheable(true).list();
 		ExpensesApproverHierarchy eah = null;
 		if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
 			eah = expenseApproverHierarchyList.iterator().next();
 		}
 		return eah;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isTheExpenseTotallyApproved(Long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query expensesApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense where expense.id = :expenseId  and eah.expenseApprovalStatus != :approvalStatus");
+		@SuppressWarnings("unchecked")
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").setCacheable(true).list();
+		Boolean flag = true;
+		if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
+			flag = false;
+		}
+		return flag;
 	}
 	
 	@Override
@@ -344,5 +359,6 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		}
 		return eah;
 	}
+
 
 }

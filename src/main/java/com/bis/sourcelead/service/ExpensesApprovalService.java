@@ -18,9 +18,13 @@ public interface ExpensesApprovalService {
 	
     ExpensesApproverHierarchy updateSubmissionApproverHierarchy(ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception;
 	  
+    //ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,Long approverUserId);
+    
 	void updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
 	
-	ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId,String approvalStatus);
+	ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId);
+	
+	Boolean isTheExpenseTotallyApproved(Long expenseId);
 	
 	ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId);
 	

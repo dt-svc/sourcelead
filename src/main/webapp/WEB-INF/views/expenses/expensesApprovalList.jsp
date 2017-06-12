@@ -478,6 +478,7 @@ function pagination(){
 <script>
 function exportToPdf(type){
 	alert("Hello"+type);
+	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type;
 	
 }
