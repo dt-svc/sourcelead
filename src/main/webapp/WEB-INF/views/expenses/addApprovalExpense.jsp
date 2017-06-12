@@ -229,6 +229,114 @@
   </section>
 </c:if>
 </div>
+
+<script>
+function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=accept",
+		success : function(data) {
+			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
+		},
+	});
+}
+</script>
+<script>
+function rejectReopenExpenseBySuperUser(expenseId,reOpenedUserId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"	</div>";
+	$("#reOpenRejectedPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+<script>
+function cancelReOpenRejected(){
+	$("#reOpenRejectedPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+function storeReopenRejectedReason(expenseId,reOpenedUserId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var superUserId = '${SourceLeadWeb_superUserId}';
+	var reason = document.getElementById("reOpenRejectedReason").value;
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reOpenRejectedReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason,	    	   
+		    success: function(data) {
+		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
+		    }
+	   });
+	}else{
+		if(reason){
+			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+	  
+}
+</script>
+
+<script type="text/javascript">
+function reOpenMyExpense(expenseId){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Re-open message here</p>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
+	result = result + ' <div id="reOpenReasonDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"	</div>";
+	$("#reOpenPopup").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+
+
+<script>
+function notifyReopenExpense(expenseId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var reason = document.getElementById("reOpenReason").value;
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reOpenReasonDiv").empty();
+		$.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/notifyReopenExpense?${_csrf.parameterName}=${_csrf.token}&expenseId="+expenseId+"&reason="+reason,	    	   
+		    success: function(data) {
+		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
+		    }
+	   });
+	}else{
+		if(reason){
+			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
+	}
+	  
+}
+</script>
+
+<script>
+function cancelReOpen(){
+$("#reOpenPopup").empty();
+$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
 <script>
 function getMembersForSelectedProject(){
 	var sourceleadUrl ='${sourceleadUrl}';

@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,13 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
@@ -42,6 +39,7 @@ import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -59,6 +57,9 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private AddExpensesService addExpensesService;
@@ -100,6 +101,54 @@ public class AddExpensesRestController {
 	}
 	
 	
+	@RequestMapping(value = "/acceptOrRejectReopenExpenseBySuperUser", method = RequestMethod.POST)
+	public @ResponseBody void acceptOrRejectReopenExpenseBySuperUser(@RequestParam(value="expenseId", required=false) Long expenseId,
+			@RequestParam(value="reOpenedUserId", required=false) Long reOpenedUserId,
+			@RequestParam(value="type", required=false) String type,
+			@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
+			
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    User reopenedUser = userService.getUserById(reOpenedUserId);
+			if(expenseId != null && null != type && "accept".equalsIgnoreCase(type)){
+				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
+			    //send mail & notification logic
+			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+			  	
+			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
+				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
+			    //send mail & notification logic
+			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
+			}
+		
+	}
+	
+	
+	@RequestMapping(value = "/notifyReopenExpense", method = RequestMethod.POST)
+	public @ResponseBody void notifyReopenExpense(@RequestParam(value="expenseId", required=false) Long expenseId,
+			@RequestParam(value="reason", required=false) String reason, HttpServletRequest request) throws Exception {
+			
+		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    
+		    String isSuperUser = Constants.NO;
+		    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
+		    	isSuperUser = Constants.YES;
+		    }
+		    
+			DateFormat format = Constants.DF_DMY;
+			if(expenseId != null){
+			 	
+				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
+			
+			    //send mail & notification logic
+			  	/*if(isSuperUser.equalsIgnoreCase(Constants.NO)){
+			  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
+			  	}*/
+			  	
+			}
+		
+	}
 	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)
 	public @ResponseBody String getClientByProjectId(@RequestParam(value = "projectId", required = false) String projectId) throws Exception {

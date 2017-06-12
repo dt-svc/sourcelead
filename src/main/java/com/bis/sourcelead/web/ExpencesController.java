@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -170,19 +171,27 @@ public class ExpencesController {
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
+			model.addObject("expenses", expenses);
 			
 			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenses.getId());
 		    Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
-		 	model.addObject("expenseApproverHierarchy", eah);
-		 	 
-		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
-		    boolean isSahApproved = false;
-		    if(isSah != null){
-		        	isSahApproved = true;
-		    }
-		    model.addObject("isSahApproved", isSahApproved);	
-			model.addObject("expenses", expenses);
+		 	model.addObject("eah", eah);
+		 	
+		 	
+		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expenses.getId());
+			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
+			 
+			 
+			 boolean isSahReopened = false;
+		     if(null != isExpenseTotallyApproved && StringUtils.isNotEmpty(eah.getReopenReason())){
+			   isSahReopened = true;
+		     }
+		     model.addObject("isSahReopened", isSahReopened);	
+		     
+			 Boolean isSuperUser = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isSuperUser");
+			 model.addObject("isSuperUser", isSuperUser);	
+			 
 			
 		   Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(expenses.getProjectMembers().getProjects().getId());
 		   model.addObject("projectMembers", projectMembers);

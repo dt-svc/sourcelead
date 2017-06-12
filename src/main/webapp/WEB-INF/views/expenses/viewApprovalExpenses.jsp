@@ -10,7 +10,9 @@
         <h2>View Expense</h2>
       </div>
       <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; View Expense</div>
-    </section>  
+    </section> 
+   <div id='reOpenPopup'></div>
+    <div id='reOpenRejectedPopup'></div>
     <div class="project_tabs"> 
             <div class="project_tabs_inn_table">
 				<div class="project_details project_detailsExp">
@@ -20,13 +22,36 @@
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
-					    <%--  <c:if test="${!isSahApproved && submissionStatus == 'SUBMITTED'}">
-						     <div class="timeNewSe pull-right" style="margin: 0px;">
-						      <b class='proj_withdraw pull-right' onClick='withdrawMyExpense(${expenses.id});'>Modify</b>
+					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
+						        <c:if test="${!empty eah.reopenRejectedReason}">
+						            <i class='glyphicon glyphicon-comment rejectedHover'>
+						               <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenRejectedReason}</div>
+						             </i>
+						        </c:if>
+					      
+						     <div class="timeNewSe pull-right" style="margin: 0px;margin-left: -57px">
+						      <b class='proj_withdraw pull-right' onClick='reOpenMyExpense(${expenses.id});'>Re-open</b>
 						     </div>
-					     </c:if> --%>
+					     </c:if> 
 					     
-					     <div class="timeNewSe pull-right" style=" ${submissionStatus == 'SUBMITTED' ? 'margin-left: -57px;' : ''} ">
+					     <c:if test="${isSahReopened && !isSuperUser && !empty eah.reopenReason}">
+					          <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
+						      </i>
+						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
+					     </c:if>
+					      <c:if test="${isSahReopened && isSuperUser && !empty eah.reopenedUser}">
+					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
+					            </i>
+					            <div class='pull-right  sm text-center Expreopen'>
+					                  <label class='clearfix reopen-label'>RE-OPEN</label>
+					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
+					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
+					           </div> 
+					      </c:if>
+					     
+					     <div class="timeNewSe pull-right">
 						  <c:if test="${submissionStatus == 'NEW'}">
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
