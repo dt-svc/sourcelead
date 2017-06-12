@@ -116,11 +116,15 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 
 	@Override
-	public ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId, String approvalStatus) {
-		return expensesApprovalDao.isThereAnyApproverChangesStatusForExpense(expenseId, approvalStatus);
+	public ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId) {
+		return expensesApprovalDao.isThereAnyApproverApprovedTheExpense(expenseId);
 	}
 
 
+	@Override
+	public  Boolean isTheExpenseTotallyApproved(Long expenseId){
+		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
+	}
 
 
 	@Override
