@@ -29,8 +29,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private String sourceleadUrl;	
 	
 	@Override
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser,Integer expStatus) {
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(),expStatus);
+	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser) {
+		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId());
 
 		return expensesList;
 

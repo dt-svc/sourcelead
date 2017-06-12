@@ -9,7 +9,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesService {
 	
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser,Integer expStatus);
+	public List<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser);
 	public List<Expenses> getIndividualExpense(OrgLocations orgLoc, User loginUser,String expenseId);
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 
