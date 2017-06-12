@@ -962,7 +962,9 @@ function pagination(){
 		result = result + '<li><a href="#tab-4" onclick="clientSubmissionTemplate('+clientLocationId+');">Submission Templates</a></li>';	
 		'</sec:authorize>';
 		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		result = result + '<li><a href="#tab-5" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
+		'</sec:authorize>';
 		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';

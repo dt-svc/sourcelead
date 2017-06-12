@@ -1716,8 +1716,9 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		result = result + '<li><a href="#tab-4" onclick="vendorContracts('+orgRelationId+');">Contracts</a></li>'; 
-		
+		'</sec:authorize>';
 		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';

@@ -258,12 +258,15 @@ function vendorContractsList(orgRelationId){
 	                		         
 	                		         result = result + '<td>';
 	                		         result = result + '<div class="tbldata-dotdot_80">';
-	                		     	if(report.templateSubmissionStatus == "DRAFT"){
-	                		     		if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
-
-	                		     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\','+orgRelationId+');"></a>  ';
-	                		            	 }
-	                		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	                		         
+	                		         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+	                		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+	                			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+	                	            	 }
+	                		         }
+	                		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	                	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	                	     		'</sec:authorize">';
 	                		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                		     		if(report.typeOfContract == "New"){
 	                		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -273,14 +276,10 @@ function vendorContractsList(orgRelationId){
 	                		     		}
 	                		     		'</sec:authorize>';
 	                		     		
-	                		     		'<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
-	            	            	  	result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\','+orgRelationId+');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\','+orgRelationId+');"></i></div>';
-	            	            	  	'</sec:authorize>';
+	                		     		 if('${SourceLeadWeb_user.id}' == report.approverUser.id){
+	                	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
+	                	      	         }
 	                		     		//result = result + '</div>';
-	                	     	  }
-	                	     	  else{
-	                	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-	                	     	  }
 	                		         result = result + '</div></td>';
 	                		     	 
 	                		        result = result + '</tr>';
