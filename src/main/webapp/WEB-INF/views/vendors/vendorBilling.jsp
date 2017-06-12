@@ -297,8 +297,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
 			result = result +'         <th>Bill ID</th>                    ';
-			result = result +'         <th>Vendor Name</th>           ';
-			result = result +'         <th>Contact</th>               ';
+			result = result +'         <th>Vendor Contact</th>               ';
 			result = result +'         <th>Invoice Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
@@ -374,9 +373,6 @@ result = result  +'    <div class="billingArea"> ';
 					}
 					
 					result = result +'         </td>  ';
-					result = result +'         <td>   ';
-					result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
-					result = result +'         </td> ';
 					result = result +'         <td>';
 					if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
 						result = result +'<div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
