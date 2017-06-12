@@ -545,13 +545,15 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +' <button type="button" class="btn btn-sm btn-primary active" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
 								
 								result = result  +'<button type="button" class="btn btn-sm btn-primary " id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+								result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Flat"/>';
 								}
 								if(json.amountType == 'Percentage'){
-									result = result  +' <button type="button" class="btn btn-sm btn-primary " id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
+									result = result  +' <button type="button" class="btn btn-sm btn-primary" id="taxflatBtn" value="flat" onClick="getTaxRewardType(this)">Flat</button>';
 									
 									result = result  +'<button type="button" class="btn btn-sm btn-primary active" id="taxPercentageBtn" value="percentage" onClick="getTaxRewardType(this)">%</button>';
+									result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value="Percentage"/>';
 									}
-								result = result  +'<input type="hidden" name="taxRewardType" id="taxRewardType" value=""/>';
+								
 								result = result  +' </div>';
 								result = result  +'</div>';
 								
@@ -566,7 +568,7 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
 								result = result  +'<div class="row flat">';
 								result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
-								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" name="taxFlatReward" placeholder="Flat">';
+								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="" name="taxFlatReward" placeholder="Flat">';
 								result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 								result = result  +' </div>';
 								result = result  +' </div>';
@@ -576,7 +578,7 @@ function reActiveExpenseCategory(categoryId){
 								if(json.amountType == 'Flat' && json.allowedAmount != null){
 									result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
 									result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward"   onblur="getTaxPercentageValue()" placeholder="Percentage">';
+									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="" name="taxPercentageReward"   onblur="getTaxPercentageValue()" placeholder="Percentage">';
 									result = result  +' <i class="fa fa-percent"></i>'; 
 									result = result  +' </div>';
 									result = result  +' </div>';
