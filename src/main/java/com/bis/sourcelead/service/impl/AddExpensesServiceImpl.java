@@ -107,18 +107,9 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	if (jsonObj.has("expensePurpose") && !(jsonObj.getString("expensePurpose").isEmpty())){
 		expenses.setPurpose(jsonObj.getString("expensePurpose"));
 	 }
-	if("approverSubmitted".equalsIgnoreCase(status) || "approverApproved".equalsIgnoreCase(status)){
-		if (jsonObj.has("memberIdForProject") && !(jsonObj.getString("memberIdForProject").isEmpty())){
-			expenses.setEndDate(Constants.DMY.parse(jsonObj.getString("memberIdForProject")));
-			projMembers = new ProjectMembers();
-			projMembers.setId(Long.parseLong(jsonObj.getString("memberIdForProject")));
-			expenses.setProjectMembers(projMembers);
-		 }
-	}else{
-		if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
-		    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
-			expenses.setProjectMembers(projMembers);
-		}
+	if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
+	    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
+		expenses.setProjectMembers(projMembers);
 	}
 	if (jsonObj.has("clientNameExpense") && !(jsonObj.getString("clientNameExpense").isEmpty())){
 		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
@@ -146,9 +137,12 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	else if(status.equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
 		expenses.setExpenseStatus(Submission_Status.DRAFT);
 	}
-	else if("approverSubmitted".equalsIgnoreCase(status) || "approverApproved".equalsIgnoreCase(status)){
+	/*else if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.APPROVED);
+	}*/
+	/*else if("approverSubmitted".equalsIgnoreCase(status) || "approverApproved".equalsIgnoreCase(status)){
 		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
-	}
+	}*/
 	/*else if("approverApproved".equalsIgnoreCase(status)){
 		
 	}*/
@@ -170,7 +164,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
 		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
 			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
-					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
 						eaHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
 						eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
 					}
@@ -194,7 +188,7 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 							eaHierarchy.setHierarchyId(hierarchy);
 							eaHierarchy.setExpenseId(expenses);
 							
-							if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+							if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
 								eaHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
 								eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
 							}
@@ -221,6 +215,9 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 		}
 	 }
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
+	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
 	 }
