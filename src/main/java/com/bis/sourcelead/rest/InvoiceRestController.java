@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -482,7 +483,7 @@ public class InvoiceRestController {
 	
     
 
-
+    @PreAuthorize("hasAnyRole('ROLE_ADD_PAYMENT')")
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
 
@@ -616,7 +617,7 @@ public class InvoiceRestController {
 	 	  resultJson = commonUtil.toJSON(viewinvoiceList);
 	 	  return resultJson;
 	 	}
-	  
+	  @PreAuthorize("hasAnyRole('ROLE_BILL_PAYMENT_HISTORY')")
 	  @RequestMapping(value = "/getViewPaymentHistory", method = RequestMethod.GET)
 	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
@@ -716,7 +717,7 @@ public class InvoiceRestController {
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId && !"".equalsIgnoreCase(projectId)) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -744,22 +745,27 @@ public class InvoiceRestController {
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				String billableHours = String.valueOf(sah.getBillableHours());;
-				String arr[] = billableHours.split("\\.");
 				StringBuilder sb = new StringBuilder();
-				if (arr[0].length() == 2) {
-					sb.append("0").append(arr[0]);
-				}else if(arr[0].length() == 3){
-					sb.append(arr[0]);
-				}
-				else if (arr[0].length() == 1) {
-					sb.append("00").append(arr[0]);
-				}
-				if (arr[1].length() == 1) {
-					sb.append(":").append("0").append(arr[1]);
-				}
-				else {
-					sb.append(":").append(arr[1]);
+				if(null != sah.getBillableHours()){
+					String billableHours = String.valueOf(sah.getBillableHours());;
+					String arr[] = billableHours.split("\\.");
+					if (arr[0].length() == 2) {
+						sb.append("0").append(arr[0]);
+					}else if(arr[0].length() == 3){
+						sb.append(arr[0]);
+					}
+					else if (arr[0].length() == 1) {
+						sb.append("00").append(arr[0]);
+					}
+					if (arr[1].length() == 1) {
+						sb.append(":").append("0").append(arr[1]);
+					}
+					else {
+						sb.append(":").append(arr[1]);
+					}
+					
+				}else{
+					sb.append("0");
 				}
 				projectMember.setTotalHours(sb.toString());
 				projectMembersList.add(projectMember);
@@ -811,7 +817,7 @@ public class InvoiceRestController {
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if(null != projectId && !"".equalsIgnoreCase(projectId)){
-		sahList =submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate);
+		sahList =submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(Long.parseLong(projectId), startDate, endDate,contractType);
 		}
 		if(null !=sahList && sahList.size() >0){
 			for(SubmissionApproverHierarchy sah : sahList){
@@ -832,24 +838,27 @@ public class InvoiceRestController {
 					}
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
-					String billableHours = String.valueOf(sah.getBillableHours());;
-					String arr[] = billableHours.split("\\.");
+					String billableHours = String.valueOf(sah.getBillableHours());
 					StringBuilder sb = new StringBuilder();
-					if(arr[0].length()==2){
-						sb.append("0").append(arr[0]);
-					}else if(arr[0].length()==3){
-						sb.append(arr[0]);	
-					}
-					else if(arr[0].length()==1){
-						sb.append("00").append(arr[0]);	
-					}
-					if(arr[1].length()==1){
-						sb.append(":").append("0").append(arr[1]);
+					if(sah.getBillableHours() !=null){
+						String arr[] = billableHours.split("\\.");
+						if(arr[0].length()==2){
+							sb.append("0").append(arr[0]);
+						}else if(arr[0].length()==3){
+							sb.append(arr[0]);	
+						}
+						else if(arr[0].length()==1){
+							sb.append("00").append(arr[0]);	
+						}
+						if(arr[1].length()==1){
+							sb.append(":").append("0").append(arr[1]);
+						}else{
+							sb.append(":").append(arr[1]);
+						}
 					}else{
-						sb.append(":").append(arr[1]);
+						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-					
 					List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,orgRelationId,contractType);
 					if(null != contractList && contractList.size() >0){
 						projectMember.setContractsList(contractList);
@@ -1098,6 +1107,7 @@ public class InvoiceRestController {
 	 * @return
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_SEND_BILL_REMINDER')")
 	@RequestMapping(value = "/sendReminder", method = RequestMethod.POST)
 	public @ResponseBody String sendReminder(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1114,6 +1124,7 @@ public class InvoiceRestController {
 	 * @param response
 	 * @throws Exception
 	 */
+	 @PreAuthorize("hasAnyRole('ROLE_PRINT_BILL')")
 	@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{

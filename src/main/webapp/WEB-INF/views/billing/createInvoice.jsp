@@ -1711,7 +1711,6 @@ function getClientContacts(clientContactId){
 	$('#clientContact').trigger("chosen:updated");
 	},
 	});
-
 	}
 </script>
 

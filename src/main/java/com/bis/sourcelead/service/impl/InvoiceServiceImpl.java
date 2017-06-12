@@ -330,7 +330,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		//store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType);
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType,vendorCurrencyCode,loginOrgCurrencyCode);
 		        invoice.setFileName(file.getName());
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
@@ -341,7 +341,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		        }
 		        
 		invoiceDao.saveInvoce(invoice);
-		if(saveType.equalsIgnoreCase("SENT")){
+		if(Constants.SENT.equalsIgnoreCase(saveType)){
 			//mail scenario for client accept or reject
 			/*int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
 			 for(int i=0;i<maxRowCount;i++){
@@ -649,14 +649,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	 public EmailAttachment zipFiles(List<TimesheetSubmissionsDocuments> docusList) throws MessagingException{
-         EmailAttachment ema = new EmailAttachment();
+         EmailAttachment ema = null;;
 	        FileOutputStream fos = null;
 	        ZipOutputStream zipOut = null;
 	        FileInputStream fis = null;
 	        try {
 	           ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 		    	 if(docusList != null && !docusList.isEmpty()){
-		    		    
+		    		 ema = new EmailAttachment();
 		    	         ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 		    	         
 				    	 int i= 0;
@@ -809,7 +809,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
-		 attachmentList.add(attachmentZip);
+		 if(null != attachmentZip){
+			 attachmentList.add(attachmentZip);
+		 }
 		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
 		 attachmentList.addAll(documentList);
 		 }
@@ -1550,7 +1552,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<SubmissionApproverHierarchy> sahList = null;
 		invoice.setInvoiceFrequency(frequency);
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -1626,7 +1628,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
