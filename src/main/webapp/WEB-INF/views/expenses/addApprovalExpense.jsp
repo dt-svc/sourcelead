@@ -44,6 +44,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9">
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();" id="projectId" name="projectId">
+							 <option value="">Select Project</option>
 							<c:forEach var="projects" items="${projectsList}">
 							       <option  ${expenses.projectMembers.projects.id == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
 							</c:forEach>
