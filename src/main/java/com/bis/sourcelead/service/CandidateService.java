@@ -161,4 +161,7 @@ public interface CandidateService {
 	public Long getCandidatesCountByCandidateTypeOrgLocationIDAndUserId(Long orgLocationId,Long userId,String candidateType) throws Exception;
 	
 	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId,Long userId) throws Exception;
+	
+	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
+
 }

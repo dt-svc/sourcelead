@@ -942,9 +942,7 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				result = result +'	</div>';
 				result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
 				result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
-				if(requirements.isCrowdSourcingJob == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
-				}
 				result = result +'	</div>';
 				result = result +'	</div>';
 			}
@@ -1105,12 +1103,10 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				result = result +'	</span>';
 				result = result +'    </div>';			
-				result = result +'    <div class="jobDetailsLogo">';
+				result = result +'  <div class="jobDetailsLogo">';
 				result = result +'	<a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+json.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
 				result = result +'  <a href="'+sourceleadUrl+"/login?requirementUUID="+json.requirementUUID+'">Apply</a>';
-				if (json.isCrowdSourcing == 'Y'){
 				result = result +'	<a href="'+sourceleadUrl+'/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
-				}
 				result = result +'	<div style="clear:both;"></div>';
 				result = result +'	<div class="share">';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
@@ -1283,9 +1279,7 @@ function openJobSearchRequirement(){
 										
 										result = result +'	<div class="jobApply"><a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+requirements.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
 										result = result +'   <a href="'+sourceleadUrl+"/login?requirementUUID="+requirements.requirementUUID+'">Apply</a>';
-										if(requirements.isCrowdSourcingJob == 'Y'){
 										result = result +'	<a href="'+sourceleadUrl+'/login" style="background-color:#eb821c;">Refer</a></div>';
-										}
 													
 										result = result +'	</div>';
 										$("#openJobsRequirementsSummary").empty();
@@ -1892,10 +1886,10 @@ function createAlert(requirementUUID){
         	 result = result +'         </div>';
         	
         	 result = result +'         <div class="form-group clearfix">';
-        	 result = result +'         	<label class="col-md-3">Duration<span class="text-danger paddingLeft">*</span></label>';
+        	 result = result +'         	<label class="col-md-3">Alert Frequency<span class="text-danger paddingLeft">*</span></label>';
         	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Duration" data-validation="required">';
-        	 result = result +'         			<option selected value="">---Select Duration---</option>';
+        	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Alert Frequency" data-validation="required">';
+        	 result = result +'         			<option selected value="">---Select Alert Frequency---</option>';
         	 result = result +'         			<option>Daily</option>';
         	 result = result +'         			<option>Weekly</option>';
         	 result = result +'         			<option>Monthly</option>';
@@ -1903,9 +1897,9 @@ function createAlert(requirementUUID){
         	 result = result +'         	</div>';
         	 result = result +'         </div>';
         	 result = result +'         <div class="form-group clearfix">';
-        	 result = result +'         	<label class="col-md-3">Keywords/Skills</label>';
+        	 result = result +'         	<label class="col-md-3">Keywords / Skills<span class="text-danger paddingLeft">*</span></label>';
         	 result = result +'         	<div class="col-md-9">';
-        	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" name="skills">';
+        	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" multiple id="candidateSkills" data-validation="required" name="skills">';
         	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
         	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
         	 result = result +'						</c:forEach>;'
