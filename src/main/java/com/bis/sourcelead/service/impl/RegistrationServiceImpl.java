@@ -848,7 +848,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 userService.addUser(user);
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","<font color='green'>Note : <b>Login with your existing Sourcelead password.</b></font>");
+			 globalVarsMap.put("password","<font color='green'><b>Login with your existing Sourcelead password.</b></font>");
 		 }
 		 
 		
