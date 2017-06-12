@@ -26,7 +26,16 @@
       <div class="pull-left">
         <h2>${param.type != 'edit' ? 'Add' : 'Edit'} Expense</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; Add Expense</div>
+    
+	 <c:choose>
+	    <c:when test="${expenses.id !='' && expenses.id != null}">
+	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses</a> &raquo; Add Expense</div> 
+	    </c:when>    
+	    <c:otherwise>
+	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
+	    </c:otherwise>
+	</c:choose>
+    
     </section>
     <form:form id="add_expenses_form" name="add_expenses_form"  enctype='multipart/form-data'>
 	<div class="content-area content-new clearfix">

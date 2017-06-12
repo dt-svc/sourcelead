@@ -19,7 +19,7 @@
           <div class="pull-left">
             <h2>My Expenses</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; Expenses</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses</div>
         </section>
         
 		<!-- Timesheet -->
