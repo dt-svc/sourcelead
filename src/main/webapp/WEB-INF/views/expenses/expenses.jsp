@@ -19,7 +19,7 @@
           <div class="pull-left">
             <h2>My Expenses</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; Expenses</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses</div>
         </section>
         
 		<!-- Timesheet -->
@@ -30,13 +30,15 @@
 	<div class="timesheet_head">
         	<ul>
 				<li>Pradeep</li>
-                <li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+<!--                 <li id="filterToApprovePop"><i class="fa fa-filter"></i><span id="expensesListFilterDiv">Status</span><i class="glyphicon glyphicon-play"></i>| -->
+<!--                 	<div id="filterToApprovedPop" class="approved_pop"> -->
+						<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
                 	<div class="approved_pop">
                     	<ul>
-                        	<li><input value="None" id="c5" type="checkbox"><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox"><label for="c6">Approved</label></li>
-							<li><input id="c7" type="checkbox"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"><label for="c8">Rejected</label></li>
+                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="3" checked onclick="getExpensesList();"><label for="c5">All</label></li>
+							<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="2" onclick="getExpensesList();"><label for="c6">Approved</label></li>
+							<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="1" onclick="getExpensesList();"><label for="c7">Draft</label></li>
+							<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="0" onclick="getExpensesList();"><label for="c8">Rejected</label></li>
                         </ul>
                     </div>                	
                 </li>
@@ -82,27 +84,43 @@
 
 function getExpensesList(){
 	var sourceleadUrl = '${sourceleadUrl}';
+	
+	//For filter
+	var expenseFilterCheckbox = $('input[name=expenseStatus]');
+	  var expenseStatus = expenseFilterCheckbox.filter(':checked').val();
+	  
+	  if(expenseStatus == 3){
+        $("#expenseListFilterDiv").text("All Expenses");
+    }else if(expenseStatus == 2){
+  	  $("#expenseListFilterDiv").text("Approved Expenses");
+    }else if(expenseStatus == 1){
+  	  $("#expenseListFilterDiv").text("Draft Expenses");
+    }else if(expenseStatus == 0){
+  	  $("#expenseListFilterDiv").text("Rejected Expenses");
+    }else{
+        $("#expenseListFilterDiv").removeAttr("onClick");
+    }
+	
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}",       
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus,       
           success :function(data) {
         	  var result = "";
-					result = result +" <table id='expensesPagination'>                            ";
-					result = result +"	<thead>                   ";
-					result = result +"   	<tr>                          ";
-					result = result +"       	<th>Exp Id</th>           ";
-					result = result +"           <th>Purpose</th>         ";
-					result = result +"           <th>Project</th>         ";
-					result = result +"           <th>Client</th>          ";
-					result = result +"           <th>Start Date</th>      ";
-					result = result +"           <th>End Date</th>        ";
-					result = result +"           <th>No of Exp</th>       ";
-					result = result +"           <th>Amount</th>          ";
-					result = result +"           <th>Status</th>          ";
-					result = result +"       </tr>                        ";
-					result = result +"	</thead>	                      ";
-					result = result +"       <tbody>                      ";
-        	  
+					result = result +" <table id='expensesPagination'>";
+					result = result +"<thead>";
+					result = result +"<tr>";
+					result = result +"<th>Exp Id</th>";
+					result = result +"<th>Purpose</th>";
+					result = result +"<th>Project</th>";
+					result = result +"<th>Client</th>";
+					result = result +"<th>Start Date</th>";
+					result = result +"<th>End Date</th>";
+					result = result +"<th>No of Exp</th>";
+					result = result +"<th>Amount</th>";
+					result = result +"<th>Status</th>";
+					result = result +"</tr>";
+					result = result +"</thead>";
+					result = result +"<tbody>";
 					
 	        	  var json = JSON.parse(data);
 	        	  for (var i = 0; i < json.length; i++) { 
@@ -147,18 +165,17 @@ function getExpensesList(){
 	        		  }else{
 	        			  totalAmount = "--";
 	        		  }
-						 result = result +"        <tr>";
-						 result = result +"        	<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>             ";
-						 result = result +"            <td><div>"+purpose+"</div></td>                                                                    ";
-						 result = result +"            <td><div>"+projectMemberId+"</div></td>                                                                       ";
-						 result = result +"            <td><div>"+clientName+"</div></td>                                                                        ";
-						 result = result +"            <td><div>"+startDateStr+"</div></td>                                                                      ";
-						 result = result +"            <td><div>"+endDateStr+"</div></td>                                                                      ";
-						 result = result +"            <td><div>"+noOfExpenses+"</div></td>                                                                              ";
-						 result = result +"            <td><div>"+totalAmount+"</div></td>                                                                            ";
-						 result = result +"            <td> <div>"+report.expenseStatus+"</div></td>                                                                                               ";
-						 result = result +"        </tr>               			                                     "; 
-	                 
+						 result = result +"<tr>";
+						 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+						 result = result +"<td><div>"+purpose+"</div></td>";
+						 result = result +"<td><div>"+projectMemberId+"</div></td>";
+						 result = result +"<td><div>"+clientName+"</div></td>";
+						 result = result +"<td><div>"+startDateStr+"</div></td>";
+						 result = result +"<td><div>"+endDateStr+"</div></td>";
+						 result = result +"<td><div>"+noOfExpenses+"</div></td>";
+						 result = result +"<td><div>"+totalAmount+"</div></td>";
+						 result = result +"<td> <div>"+report.expenseStatus+"</div></td>";
+						 result = result +"</tr>"; 
 	        	  }
    			
         	  result = result +" </tbody>";
@@ -214,7 +231,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'<div class="project_side_wrap_inn_tabs">';
 	        	result = result +'<ul class="project-tabs-menu">';
 	        	result = result +'<li class="current"><a href="#tab-1">Details</a></li>';
-	        	//result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
+	        	result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
 	        	result = result +'<div class="clearfix"></div>';
 	        	result = result +'</ul>';
 

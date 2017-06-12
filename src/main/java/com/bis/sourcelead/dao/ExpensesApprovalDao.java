@@ -2,7 +2,9 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalDao {
 
@@ -14,12 +16,17 @@ public interface ExpensesApprovalDao {
 	
     ExpensesApproverHierarchy updateSubmissionApproverHierarchy(ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception;
   
+    User updateExpenseStatusByExpenseIdAndReOpenReason(Long expenseId,String reason,User loginUser, String type, String isSuperUser);
+    
     void updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
     
-    ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId,String approvalStatus);
+    ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId);
+    
+    Boolean isTheExpenseTotallyApproved(Long expenseId);
     
     ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId);
     
     void updateExpenseStatusByExpenseId(Long expenseId,String status);
 
+    //ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,Long approverUserId);
 }

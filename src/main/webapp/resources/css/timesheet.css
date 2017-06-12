@@ -1331,7 +1331,12 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .modal-backdrop { z-index:10400;}
 .modal { z-index:10500;}
       
-      
+.rejectedHover {
+	cursor: pointer; position: relative; top:8px; 
+}      
+.rejectedHover:hover .app_error_mes {
+	display: block; opacity: 1;
+}      
       
     /*    Vendors Css    */
       
@@ -4810,6 +4815,17 @@ display:none;
 
 .proDown {
 	width: 100% !important; float: none !important; margin: 0px 0px 5px 0px;
+}
+
+.Expreopen {
+	padding: 0px 0px; border: 1px solid #d1d1d1; padding: 4px 12px 5px; margin-bottom: 0; color: #898989; border-radius: 2px; background: #f9f9f9;
+	margin: 0px 10px 0px 0px;
+}
+.Expreopen label {
+	padding: 0px; border: none; color:#454545; padding: 0px 2px 0px 0px;
+}
+.Expreopen i {
+	cursor: pointer; display: inline-block; font-size: 16px; padding: 2px 3px; margin: 0px 5px;
 }
 
 /*   Back to top  */
