@@ -672,7 +672,7 @@ public class ContractRestController {
 					contract.setOwnerName(owner.append(contract.getOwnerUserId().getFirstName()).toString());
 				}
 		 	}
-		 	
+		 	if(null != contract.getOrgRelations()){
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
 		 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
@@ -683,7 +683,7 @@ public class ContractRestController {
 				}
 		 	}
 		 	
-		 	
+		 	}
 		 	
 		 	if(null != contract.getApproverUser()){
 		 		StringBuilder approver = new StringBuilder();

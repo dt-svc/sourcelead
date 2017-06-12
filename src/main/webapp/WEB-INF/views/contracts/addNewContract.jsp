@@ -123,7 +123,7 @@
               
               
             
-            <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+            <div class="form-group" id="requirementDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'? 'block' : 'none'};">
               <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
               	<c:choose>
@@ -146,7 +146,7 @@
               </div>
             </div>
             
-            <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+            <div class="form-group" id="offeredSubmissionDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer' ? 'block' : 'none'};">
               <label class="col-md-4">Select Applicant<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
@@ -182,13 +182,13 @@
               </div>
           </div>             
             
-             <div class="form-group" id="dateDiv">
+             <div class="form-group" id="dateDiv" style="display: ${contract.contractType == 'Full time offer' ? 'none' : 'block'};">
               <label class="col-md-4">Start & End date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
-						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation="required" field-name="Start Date" readonly="readonly">
+						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'} field-name="Start Date" readonly="readonly">
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -230,7 +230,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact" onchange="removeVendorContactValidation();">
+					        <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'required' : ''}" field-name="Vendor Contact" onchange="removeVendorContactValidation();">
 					        <option value=''>Select Vendor Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
@@ -267,7 +267,7 @@
 							</select>
 					    </c:when>
 					    <c:otherwise>
-					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="removeValidationClientContact();">
+					        <select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation=" ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Contact" onchange="removeValidationClientContact();">
 					        <option value=''>Select Client Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
@@ -294,7 +294,7 @@
 	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
 	              </div>
             </div>   --%>
-               <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};" >
+               <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer' ? 'block' : 'none'};" >
                 <label class="col-md-4">Offer Rate<span class="text-danger">&nbsp;*</span></label>
                   	<div class="col-lg-8" >
 			             <div class="input-group er ratetype">
@@ -329,24 +329,24 @@
 		            </div>
                   </div>
                        
-            <div class="form-group" id="descriptionDiv">
+            <div class="form-group" id="descriptionDiv"  style="display: ${contract.contractType == 'Full time offer' ? 'none' : 'block'};">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
 					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
             
-            <div class="form-group" id="workLocationDiv" style="display: none;">
+            <div class="form-group" id="workLocationDiv" style="display: ${contract.contractType == 'Full time offer' ? 'block' : 'none'};">
               <label class="col-md-4">Work Location</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="workLocation" name="workLocation" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>
+					<textarea class="form-control" rows="3" id="workLocation" name="workLocation" data-validation-optional="true" data-validation="validate_length length1-500">${contract.workLocation}</textarea>
               </div>
             </div> 
             
-            <div class="form-group" id="joinDateDiv" style="display: none;">
+            <div class="form-group" id="joinDateDiv" style="display: ${contract.contractType == 'Full time offer' ? 'block' : 'none'};">
               <label class="col-md-4">Join Date</label>
                 <div class="col-lg-6">
-					<input type="text" class="form-control calendar" value="${contract.startDateStr}" id="joinDate" name="joinDate" placeholder="Join date"  field-name="Join Date" readonly="readonly">
+					<input type="text" class="form-control calendar" value="${contract.joinedDateStr}" id="joinDate" name="joinDate" placeholder="Join date"  field-name="Join Date" readonly="readonly">
 				</div>
             </div> 
             
@@ -362,7 +362,7 @@
       
       
 	<div class="newContrBill col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-          <div id="billingDiv" style="display: ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'none' : 'block'};">
+          <div id="billingDiv" style="display: ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ||  contract.contractType == 'Full time offer' ? 'none' : 'block'};">
            <h2>Billing Details</h2>
            
            <div class="form-group" id="hoursPerWeekDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
@@ -470,7 +470,7 @@
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 dropdown-select" id="errInvoice">
-                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Billing cycle" onchange="removeBillCycleValidation();">
+                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Full time offer' ||contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Billing cycle" onchange="removeBillCycleValidation();">
                     <option value="">Select Cycle</option>
                     <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
                     <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -483,7 +483,7 @@
               <div class="form-group">
               <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 dropdown-select" id="errPayment">
-                  <select class="form-control" id="paymentFrequency" name="paymentFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Payment Frequency" onchange="removePaymentvalidation();">
+                  <select class="form-control" id="paymentFrequency" name="paymentFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' || contract.contractType == 'Full time offer' ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Payment Frequency" onchange="removePaymentvalidation();">
                     <option value="">Select Frequency</option>
                     <option ${contract.paymentTerm == '10 days' ? 'selected' : ''} value="10 days">10 days</option>
                     <option ${contract.paymentTerm == '15 days' ? 'selected' : ''} value="15 days">15 days</option>
@@ -550,11 +550,24 @@
           </tr>
           </thead>
           <tbody id="addTaxTbl">
-          <c:if test="${fn:length(docList) gt 0}">
-   				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
-		  </c:if>
+        <%--   <c:if test="${fn:length(docList) gt 0}"> --%>
+   				<tr><td><strong>Name</strong></td>
+   				<td><strong>Doc Type</strong></td>
+   				<td><strong>Description</strong></td>
+   				<td><strong>Action</strong></td></tr>
+		 <%--  </c:if> --%>
             <c:forEach var="doc" items="${docList}">
-	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
+	                     <tr id="tr${doc.id}">
+    						<td><div class="tbldata-dotdot-me">${doc.fileName}</div></td>
+						<c:if test="${empty doc.docType}">
+    						<td><div class="tbldata-dotdot-me">--</div></td>
+						</c:if>
+						<c:if test="${not empty doc.docType}">
+    						<td><div class="tbldata-dotdot-me">${doc.docType}</div></td>
+						</c:if>
+	                     <td><div class="tbldata-dotdot-big">${doc.description}</div></td>
+	                     <td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td>
+	                     </tr>
                 </c:forEach>
           <tr id="divTaxTsRow0">
           </tr>
@@ -1254,6 +1267,7 @@ function contractTypeLabels(){
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
 		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
 		$('#taxFlatRewardValue').removeAttr('data-validation');
@@ -1273,6 +1287,17 @@ function contractTypeLabels(){
 		$('#billingRatePer').removeAttr('data-validation');
 		$('#billingRatePer').attr('data-validation-optional',"true");
 		
+		$('#startDate').removeAttr('data-validation');
+		$('#startDate').attr('data-validation-optional',"true");
+		
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		$('#clientContact').removeAttr('data-validation');
+		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
 	
 		$('#hoursPerWeek').val("");
 		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
