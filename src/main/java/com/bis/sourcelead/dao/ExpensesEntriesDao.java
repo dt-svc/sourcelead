@@ -6,8 +6,14 @@ import com.bis.sourcelead.entity.ExpensesEntries;
 
 public interface ExpensesEntriesDao {
 
+	public ExpensesEntries getExpensesEntriesById(Long id)throws Exception;
+	
 	public ExpensesEntries addExpensesEntries(ExpensesEntries entries)throws Exception;
 
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId);
+	
+	public List<Long> getExpensesEntryIdsByExpenseId(long expenseId);
+	
+	public void removeAllExpenseEntries(List<Long> entryIds) throws Exception;
 
 }

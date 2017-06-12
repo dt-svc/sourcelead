@@ -1,10 +1,10 @@
 package com.bis.sourcelead.web;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -13,18 +13,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -49,6 +52,12 @@ public class ExpencesController {
 	
 	@Autowired
 	ExpensesService expensesService;
+	
+	@Autowired
+	ExpensesApprovalService expensesApprovalService;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 	
 	@RequestMapping(value = "/myExpensesList")
 	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception
@@ -86,14 +95,23 @@ public class ExpencesController {
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
+			
+			ExpensesApproverHierarchy eah =expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
+			 Submission_Status submissionStatus = eah.getExpenseStatus();
+		 	model.addObject("submissionStatus", submissionStatus);
+		 	model.addObject("expenseApproverHierarchy", eah);
+		 	 
+		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverChangesStatusForExpense(expenses.getId(), "APPROVED");
+		    boolean isSahApproved = false;
+		    if(isSah != null){
+		        	isSahApproved = true;
+		    }
+		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);
 		}else if(expenses == null){
 			expenseId = addExpensesService.getExpenseId();
 			model.addObject("ExpensesId", expenseId);
 		}
-		
-		
-		
 		
 		List<ProjectMembers> projectMembersList = addExpensesService.getAllProjectsForExpenses(orgLoc,loginUser);
 		model.addObject("projectMembersList", projectMembersList);
@@ -107,6 +125,7 @@ public class ExpencesController {
 		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
 	    model.addObject("expensesCategoryList", expensesCategoryList);
 		
+	    
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
 		return model;
@@ -151,7 +170,22 @@ public class ExpencesController {
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
+			
+			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenses.getId());
+		    Submission_Status submissionStatus = eah.getExpenseStatus();
+		 	model.addObject("submissionStatus", submissionStatus);
+		 	model.addObject("expenseApproverHierarchy", eah);
+		 	 
+		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverChangesStatusForExpense(expenses.getId(), "APPROVED");
+		    boolean isSahApproved = false;
+		    if(isSah != null){
+		        	isSahApproved = true;
+		    }
+		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);
+			
+		   Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(expenses.getProjectMembers().getProjects().getId());
+		   model.addObject("projectMembers", projectMembers);
 		}else if(expenses == null){
 			expenseId = addExpensesService.getExpenseId();
 			model.addObject("ExpensesId", expenseId);

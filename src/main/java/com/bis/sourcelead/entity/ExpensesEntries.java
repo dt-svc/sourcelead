@@ -24,6 +24,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.PaymentModes;
 
 @Entity
@@ -40,7 +41,7 @@ public class ExpensesEntries implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "EXPENSESID", nullable = false)
 	private Expenses expensesId;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable = false)
 	private ExpensesCategory expensesCategoryId;
@@ -213,6 +214,9 @@ public class ExpensesEntries implements Serializable {
 	}
 
 	public String getExpenseDateStr() {
+		if(null != expenseDate){
+			expenseDateStr = Constants.DF_DMY.format(expenseDate);
+		}
 		return expenseDateStr;
 	}
 

@@ -31,6 +31,8 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -48,6 +50,9 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	ExpensesEntriesService expensesEntriesService;
+	
+	@Autowired
+	ExpensesApprovalService expensesApprovalService;
 	
 	@Autowired
 	ExpensesService expensesService;
@@ -102,18 +107,9 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	if (jsonObj.has("expensePurpose") && !(jsonObj.getString("expensePurpose").isEmpty())){
 		expenses.setPurpose(jsonObj.getString("expensePurpose"));
 	 }
-	if("approverSubmitted".equalsIgnoreCase(status) || "approverApproved".equalsIgnoreCase(status)){
-		if (jsonObj.has("memberIdForProject") && !(jsonObj.getString("memberIdForProject").isEmpty())){
-			expenses.setEndDate(Constants.DMY.parse(jsonObj.getString("memberIdForProject")));
-			projMembers = new ProjectMembers();
-			projMembers.setId(Long.parseLong(jsonObj.getString("memberIdForProject")));
-			expenses.setProjectMembers(projMembers);
-		 }
-	}else{
-		if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
-		    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
-			expenses.setProjectMembers(projMembers);
-		}
+	if (jsonObj.has("projectMemberId") && !(jsonObj.getString("projectMemberId").isEmpty())){
+	    projMembers = projectMembersService.getProjectMemberById(Long.parseLong(jsonObj.getString("projectMemberId")));
+		expenses.setProjectMembers(projMembers);
 	}
 	if (jsonObj.has("clientNameExpense") && !(jsonObj.getString("clientNameExpense").isEmpty())){
 		expenses.setClientName(jsonObj.getString("clientNameExpense")); 
@@ -141,9 +137,12 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	else if(status.equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
 		expenses.setExpenseStatus(Submission_Status.DRAFT);
 	}
-	else if("approverSubmitted".equalsIgnoreCase(status) || "approverApproved".equalsIgnoreCase(status)){
+	/*else if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.APPROVED);
+	}*/
+	/*else if("approverSubmitted".equalsIgnoreCase(status) || "approverApproved".equalsIgnoreCase(status)){
 		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
-	}
+	}*/
 	/*else if("approverApproved".equalsIgnoreCase(status)){
 		
 	}*/
@@ -159,36 +158,66 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	expenses.setTotalAmount(totalAmount);
 	
 	if(projMembers != null){
-    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
-    	HashSet<ExpensesApproverHierarchy> saHierarchyList = new HashSet<ExpensesApproverHierarchy>();
-        if(hierarchyList != null && !hierarchyList.isEmpty()){
-        	ArrayList<User> managers = new ArrayList<User>() ;
-				for(ProjectApproverHierarchy hierarchy : hierarchyList){
-					ExpensesApproverHierarchy saHierarchy = new ExpensesApproverHierarchy();
-					saHierarchy.setHierarchyId(hierarchy);
-					saHierarchy.setExpenseId(expenses);
-					
-					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-						saHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
-						saHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
+		ArrayList<User> managers = new ArrayList<User>() ;
+		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
+		if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
+		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
+			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
+					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+						eaHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
+						eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
 					}
 					else if(status.equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
-						saHierarchy.setExpenseStatus(Submission_Status.DRAFT);
-						saHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.NEW);
+						eaHierarchy.setExpenseStatus(Submission_Status.DRAFT);
+						eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.NEW);
 					}
-					saHierarchy.setCreatedDate(expenses.getCreatedDate());
-					saHierarchy.setCreatedBy(expenses.getCreatedBy());
-					saHierarchy.setUpdatedDate(expenses.getUpdatedDate());
-					saHierarchy.setUpdatedBy(expenses.getUpdatedBy());
-					saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-					managers.add(hierarchy.getApproverUserId());
-					saHierarchyList.add(saHierarchy);
-				}
-				expenses.setApproverHierarchyList(saHierarchyList);
-				expenses.setProjectManagerUserList(managers);
+					eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
+					eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
+					managers.add(eaHierarchy.getHierarchyId().getApproverUserId());
+					eaHierarchyList.add(eaHierarchy);
+			   }
+		   }
 		}
-	}
+		else{
+			List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
+			 if(hierarchyList != null && !hierarchyList.isEmpty()){
+		        	
+						for(ProjectApproverHierarchy hierarchy : hierarchyList){
+							ExpensesApproverHierarchy eaHierarchy = new ExpensesApproverHierarchy();
+							eaHierarchy.setHierarchyId(hierarchy);
+							eaHierarchy.setExpenseId(expenses);
+							
+							if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+								eaHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
+								eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
+							}
+							else if(status.equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
+								eaHierarchy.setExpenseStatus(Submission_Status.DRAFT);
+								eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.NEW);
+							}
+							eaHierarchy.setCreatedDate(expenses.getCreatedDate());
+							eaHierarchy.setCreatedBy(expenses.getCreatedBy());
+							eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
+							eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
+							eaHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+							managers.add(hierarchy.getApproverUserId());
+							eaHierarchyList.add(eaHierarchy);
+						}
+				}
+		}
+		
+		if(eaHierarchyList != null && !eaHierarchyList.isEmpty()){
+			expenses.setApproverHierarchyList(eaHierarchyList);
+		}
+		if(managers != null && !managers.isEmpty()){
+			expenses.setProjectManagerUserList(managers);
+		}
+	 }
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
+	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
 	 }

@@ -113,8 +113,7 @@ public class ExpensesApprovalRestController {
 
 	private void sendEmailToExpenseApprovalStatus(Long expenseId, User loginUser, String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 		
-		
-		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByExpenseIdAndApproverUserId(expenseId, loginUser.getId());
+		ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
 		 Submission_Status submissionStatus = sah.getExpenseStatus();
 	 	 String submissionStatusStr = submissionStatus.getValue();
 	 	  if(StringUtils.isNotEmpty(submissionStatusStr) && 

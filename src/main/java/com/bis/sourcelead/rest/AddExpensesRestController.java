@@ -1,12 +1,24 @@
 package com.bis.sourcelead.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,12 +28,17 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
+import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -30,6 +47,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 public class AddExpensesRestController {
+	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
@@ -47,6 +65,12 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private ProjectMembersService projectMembersService;
+	
+	@Autowired
+	private ExpensesApprovalService expensesApprovalService;
+	
+	@Autowired
+	ExpensesEntryDocumentsService expensesEntryDocumentsService;
 	
 	@RequestMapping(value = "/getClientByProjectMemberId", method = RequestMethod.GET)
 	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId) throws Exception {
@@ -67,6 +91,14 @@ public class AddExpensesRestController {
 	    }
 		return projectMemberId;
     }
+	
+	@RequestMapping(value = "/withDrawExpense", method = RequestMethod.POST)
+	public @ResponseBody void withDrawExpense(@RequestParam(value="expenseId", required=false) Long expenseId) throws Exception {
+			if(null != expenseId){
+				expensesApprovalService.updateExpenseStatusByExpenseId(expenseId,Submission_Status.DRAFT.getValue());
+			}
+	}
+	
 	
 	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)
@@ -123,5 +155,35 @@ public class AddExpensesRestController {
 		 	}
 		 	return commonUtil.toJSON(projectMembers);
 	}
+	 
+	 
+	 @RequestMapping(value = "/downloadExpensesEntryDocument", method = RequestMethod.GET)
+	    public void downloadExpensesEntryDocument(@RequestParam(value="entryDocumentId", required=false) Long entryDocumentId ,HttpServletResponse response) throws Exception {
+			
+			
+		 ExpensesEntryDocuments	expensesEntryDocument =	expensesEntryDocumentsService.getExpensesEntryDocumentById(entryDocumentId);	
+			    
+			    response.setContentType("application/octet-stream");
+			    StringBuilder fileName = new StringBuilder();
+		        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(expensesEntryDocument.getFileName()).append("\"").toString());
+				InputStream inputStream = new ByteArrayInputStream(expensesEntryDocument.getDocFile());
+				try {
+					OutputStream outStream = response.getOutputStream();
+
+					byte[] buffer = new byte[4096];
+					int bytesRead = -1;
+
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
+					}
+
+					inputStream.close();
+					outStream.close();
+
+				} catch (FileNotFoundException e) {
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+				} 
+
+		} 
 	
 }
