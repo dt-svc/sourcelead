@@ -150,6 +150,14 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	expenses.setStatus(Constants.EXPENSES_STATUS);
 	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(jsonObj, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
+	
+	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
+	float totalAmount = 0;
+	for(ExpensesEntries expensesEntry : expensesEntriesList){
+		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
+	}
+	expenses.setTotalAmount(totalAmount);
+	
 	if(projMembers != null){
     	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
     	HashSet<ExpensesApproverHierarchy> saHierarchyList = new HashSet<ExpensesApproverHierarchy>();
