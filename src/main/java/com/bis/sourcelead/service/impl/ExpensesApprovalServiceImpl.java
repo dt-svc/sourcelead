@@ -467,7 +467,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	return createExcelsheet;
 }
 
-
 	@Override
 	public  Boolean isTheExpenseTotallyApproved(Long expenseId){
 		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
@@ -478,9 +477,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
 		return expensesApprovalDao.getexpensesApproverHierarchyForEmployeeByExpenseId(expenseId);
 	}
-
-
-
 
 	@Override
 	public void updateExpenseStatusByExpenseId(Long expenseId, String status) {
@@ -493,9 +489,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			Long expenseId) throws Exception {
 		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
 	}
-
-
-}
 
 
 	@Override
