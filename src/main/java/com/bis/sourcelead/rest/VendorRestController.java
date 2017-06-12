@@ -42,6 +42,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -86,6 +88,9 @@ public class VendorRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Autowired
 	UserService userService;
@@ -1504,5 +1509,16 @@ public class VendorRestController {
 			}
 		}
 		return commonUtil.toJSON(reqList);
+	}
+	
+	
+	@RequestMapping(value = "/getVendorAssociatesListForVendors")
+	public String getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Candidate> candidateList = candidateService.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
+		resultJson = commonUtil.toJSON(candidateList);
+		return resultJson;
 	}
 }
