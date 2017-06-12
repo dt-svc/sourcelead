@@ -221,7 +221,7 @@ function getProfessionalInfo(){
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
 				 result = result +'	        <h5>Can be Reached at</h5>';
-				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
+				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt10">';
 				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+twitter+'" title="Twitter" class="btn-tw"><i class="fa fa-twitter-square fa-2x"></i></a></li>';
@@ -236,7 +236,7 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Primary Skill</h5>';
-				 result = result +'	        <div class="skills mt25">';
+				 result = result +'	        <div class="skills mt10 mb10">';
 				 result = result +'	            <p><strong>';
 				 result = result +'	        '+primarySkill+'</strong>';
 				 result = result +'	        </p>';
@@ -245,7 +245,7 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Skills</h5>';
-				 result = result +'	        <div class="skills mt25">';
+				 result = result +'	        <div class="skills mt10">';
 				 result = result +'	            <p><strong>';
 				 result = result +'	        '+skillsName+'</strong>';
 				 result = result +'	        </p>';
