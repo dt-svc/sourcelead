@@ -1403,6 +1403,24 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		$('#accpet-div').empty();
 		var result = "";
 		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
+	 	result = result +"    <div class='col-md-12 inputOther mt10 inputOther'>";
+        result = result +"    <div class='dropdown-select' id='rejectedCategorytDiv'>";
+        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getApplicantOtherizationRejectedCategory()' data-validation='required' field-name='Category'>";
+        result = result +"<option selected value=''>--Select Category--</option>";
+        result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
+        result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
+        result = result +"<option value='Bad Fit'>Bad Fit</option>";
+        result = result +"<option value='Salary'>Salary</option>";
+        result = result +"<option value='Interview Rejection'>Interview Rejection</option>";
+        result = result +"<option value='Other'>Other</option>";
+        result = result +"</select>";
+        result = result +"    </div>";
+        
+        result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
+        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type '>";
+        result = result +" </div>";
+        
+        result = result +" </div>";
 		result = result + '			<div class="row">';
 		result = result + '				<div class="col-md-12">';
 		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
@@ -1511,7 +1529,24 @@ function attachmentValidationFun(){
 }   
 </script>
 
-
+<script>
+function getApplicantOtherizationRejectedCategory(){
+	var rejectedCategory = document.getElementById("rejectedCategory").value;
+	if(rejectedCategory == 'Other'){
+		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
+	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
+		$('#rejectedCategoryOther').attr("data-validation","required"); 
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#rejectedCategoryOther").attr("data-validation-optional","true");
+		$("#rejectedCategoryOther").removeAttr("data-validation");
+		$("#rejectedCategoryOther").val('');
+		document.getElementById("rejectOtherCategoryDiv").style.display="none";
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+	
+}
+</script>
 <%-- 
      @author : Venkat Kesav
      this script is for accept Candidate
