@@ -56,10 +56,28 @@ function getCandidateProfile(candidateId){
 								result = result +'<div class="append_skill ">';  
 								result = result +'<ul class="list-inline list-unstyled">';
 								if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-									result = result + ' <li class="professinal-details"  value="${json.skillsName}">'+json.skillsName+'</li>'; 
-								}else{
-									result = result + ' <li class="professinal-details">NO DATA</li>';
-								}
+									 var skill = json.skillsName;
+			         			 		var qvSkills = "";
+			         			 		var res = [];
+			         			 		res = skill.split(',');
+						                qvSkills = "<ul>";
+						                for(i = 0; i<=res.length ; i++){
+						                		if(res[i] != null && res[i] != '' && res[i] != 'undefined'){
+							                		qvSkills += "<li>" + res[i] + "</li>";
+							                	}
+						                }
+						                qvSkills += "</ul>"; 
+						                result = result+'                  <div class="skillsView">                                                                                                                ';
+										result = result+'                  <div class="panel panel-default">                                                                                                                ';
+										result = result+'                  <div class="panel-body" id="skillsView"> '+qvSkills+'';
+										result = result+'                  </div>';
+										result = result+'                  </div>';
+										result = result+'                  </div>';
+			         			 	}else{
+			         			 		qvSkills = "";
+			         			 		result = result + ' <li class="professinal-details">NO DATA</li>';
+			         			 	}
+								
 				               	
 				               
 								result = result +'</ul>'; 
