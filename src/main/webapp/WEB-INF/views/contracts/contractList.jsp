@@ -697,7 +697,7 @@ function preparedContractListDraft(data){
 		     	if(report.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-		     		'</sec:authorize">';
+		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
 		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1453,7 +1453,7 @@ function preparedContractListWTS(data){
 		         result = result + '<td>';//Waiting to be signed
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
-		         '</sec:authorize">';
+		         '</sec:authorize>';
 		         result = result + '</td>';
 		     	 
 		        result = result + '</tr>';
@@ -1529,7 +1529,7 @@ function preparedContractListWTS(data){
 	         opt = opt + '<td>';//Waiting to be signed
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
-     		'</sec:authorize">';
+     		'</sec:authorize>';
      		 opt = opt + '</td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1608,7 +1608,7 @@ function preparedContractListWTS(data){
 		         res = res + '<td>';//Waiting to be signed
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
-		         '</sec:authorize">';
+		         '</sec:authorize>';
 		         res = res + '</td>';
 		     	 
 		        res = res + '</tr>';
@@ -1801,7 +1801,7 @@ function preparedContractListWTV(data){
 		         }
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-	     		'</sec:authorize">';
+	     		'</sec:authorize>';
 		         result = result + '</div></td>';
 		        result = result + '</tr>';
 		    }
