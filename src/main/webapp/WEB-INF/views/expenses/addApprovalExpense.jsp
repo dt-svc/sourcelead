@@ -11,6 +11,7 @@
 <div class="wraper"> 
 <!-- View Content Area Starts-->
 <c:if test = "${param.type == 'view'}">
+  <jsp:include page="viewApprovalExpenses.jsp"></jsp:include>
  </c:if>
  <c:if test = "${param.type != 'view'}">
   <section class="content-wraper" id="themeroller">
@@ -44,6 +45,7 @@
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9">
 						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();" id="projectId" name="projectId">
+							 <option value="">Select Project</option>
 							<c:forEach var="projects" items="${projectsList}">
 							       <option  ${expenses.projectMembers.projects.id == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
 							</c:forEach>
@@ -74,7 +76,7 @@
 				<div class="col-md-9">
 					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required">
 					    <c:forEach var="projectMember" items="${projectMembers}">
-							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.firstName+"  "+projectMember.employee.user.lastName}</option>
+							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.fullName}</option>
 					   </c:forEach>
 					   
 					</select>
@@ -179,7 +181,7 @@
 			                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.id}'/>
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
-			                             <a class='downicon' href=''>
+			                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
 			                                 <i class='glyphicon glyphicon-save'></i>
 								             <input type='button' value='${entryDoc.fileName}'/>
 								        </a>

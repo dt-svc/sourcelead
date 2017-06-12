@@ -475,5 +475,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		 expensesApprovalDao.updateExpenseStatusByExpenseId(expenseId, status);
 		
 	}
+	
+	@Override
+	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,
+			Long expenseId) throws Exception {
+		return  expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
+	}
+
 }
+
+
+	
+
 
