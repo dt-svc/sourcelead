@@ -56,15 +56,19 @@ function addExpenseCategory(categoryId) {
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
-	result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
+	result = result  +'                  <div class="clearfix mb10">'  ;
+	result = result  +'                    <div class="col-md-12 mt">' ;
+	/* result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 	
 						       <c:forEach var="expCat" items="${lookUpExpCatList}">
     result = result  +'	            <option value="" disabled selected></option>';										 
 	result = result + ' 			<option value="${expCat.name}">${expCat.name}</option>';
 	                	       </c:forEach>  
-    result = result + '		</select>';
+    result = result + '		</select>'; */
     
+    result = result  +'<input type="text" name="expensesName" field-name="expensesName" placeholder="Expense Category" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();" class="form-control">';
+    
+	result = result  +'</div>';
 	result = result  +'</div>';
 	result = result  +'';
 	result = result  +'<div class="clearfix mb10" id="errTax">';
@@ -82,7 +86,7 @@ function addExpenseCategory(categoryId) {
 	
 	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  >';
 	result = result  +'<div class="row flat">';
-	result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
+	result = result  +' <div class="form-group col-md-12 paddingRight positionRelative iconHolder" >';
 	result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue"  name="taxFlatReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" placeholder="Flat">';
 	result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 	result = result  +' </div>';
@@ -135,7 +139,7 @@ function addExpenseCategory(categoryId) {
 			}
 	 
 	 
-	//Adding Customized Expense Category to the list
+	/* //Adding Customized Expense Category to the list
      var selectone, chosenone;
      selectone = $("#expensesName");
      selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Category:' });
@@ -159,7 +163,7 @@ function addExpenseCategory(categoryId) {
 	        }
 	    }); 
 	    //Adding Expense Category to the list
-	 
+	  */
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
@@ -509,7 +513,7 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'                <div class="form-horizontal clearfix"> ';
 								result = result + '<input type="hidden" class="form-control input-sm" name="categoryId"  value="'+categoryId+'">';
 								result = result  +'   ';
-								result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
+								/* result = result  +'      <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
 								result = result  +'		 <select label=" " class="chosen-select form-control" field-name="Expense Category Name" data-placeholder = "Select Expense Category" name="expensesName" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();">';
 								                	       for (var j = 0; j < json.expenseCategoryList.length; j++) {
 																var epxCat = json.expenseCategoryList[j];
@@ -522,7 +526,16 @@ function reActiveExpenseCategory(categoryId){
 								                	       
 							    result = result + '		</select>';
 							    
+								result = result  +'</div>'; */
+								
+								result = result  +'<div class="clearfix mb10" id="nameIdDiv">'  ;
+								result = result  +'<div class="col-md-12 mt">' ;
+							    
+							    result = result  +'<input type="text" name="expensesName" field-name="expensesName" value="'+expensesName+'" data-validation="required validate_Space validate_length length1-100" id="expensesName" data-validation="required" onchange="validateExpenseCategoryType();" onkeyup ="validateExpenseCategoryType();" class="form-control">';
+							    
 								result = result  +'</div>';
+								result = result  +'</div>';
+								
 								result = result  +'';
 								result = result  +'<div class="clearfix mb10" id="errTax">';
 								result = result  +'<div class="col-md-5" >';

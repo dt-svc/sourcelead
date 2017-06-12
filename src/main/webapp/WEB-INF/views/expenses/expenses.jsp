@@ -30,13 +30,15 @@
 	<div class="timesheet_head">
         	<ul>
 				<li>Pradeep</li>
-                <li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+<!--                 <li id="filterToApprovePop"><i class="fa fa-filter"></i><span id="expensesListFilterDiv">Status</span><i class="glyphicon glyphicon-play"></i>| -->
+<!--                 	<div id="filterToApprovedPop" class="approved_pop"> -->
+						<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
                 	<div class="approved_pop">
                     	<ul>
-                        	<li><input value="None" id="c5" type="checkbox"><label for="c5">All</label></li>
-							<li><input id="c6" type="checkbox"><label for="c6">Approved</label></li>
-							<li><input id="c7" type="checkbox"><label for="c7">Draft</label></li>
-							<li><input id="c8" type="checkbox"><label for="c8">Rejected</label></li>
+                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="3" checked onclick="getExpensesList();"><label for="c5">All</label></li>
+							<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="2" onclick="getExpensesList();"><label for="c6">Approved</label></li>
+							<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="1" onclick="getExpensesList();"><label for="c7">Draft</label></li>
+							<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="0" onclick="getExpensesList();"><label for="c8">Rejected</label></li>
                         </ul>
                     </div>                	
                 </li>
@@ -82,9 +84,26 @@
 
 function getExpensesList(){
 	var sourceleadUrl = '${sourceleadUrl}';
+	
+	//For filter
+	var expenseFilterCheckbox = $('input[name=expenseStatus]');
+	  var expenseStatus = expenseFilterCheckbox.filter(':checked').val();
+	  
+	  if(expenseStatus == 3){
+        $("#expenseListFilterDiv").text("All Expenses");
+    }else if(expenseStatus == 2){
+  	  $("#expenseListFilterDiv").text("Approved Expenses");
+    }else if(expenseStatus == 1){
+  	  $("#expenseListFilterDiv").text("Draft Expenses");
+    }else if(expenseStatus == 0){
+  	  $("#expenseListFilterDiv").text("Rejected Expenses");
+    }else{
+        $("#expenseListFilterDiv").removeAttr("onClick");
+    }
+	
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}",       
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus,       
           success :function(data) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>                            ";
@@ -214,7 +233,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'<div class="project_side_wrap_inn_tabs">';
 	        	result = result +'<ul class="project-tabs-menu">';
 	        	result = result +'<li class="current"><a href="#tab-1">Details</a></li>';
-	        	//result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
+	        	result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
 	        	result = result +'<div class="clearfix"></div>';
 	        	result = result +'</ul>';
 
