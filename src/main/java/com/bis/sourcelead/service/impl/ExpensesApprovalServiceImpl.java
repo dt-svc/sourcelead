@@ -324,10 +324,20 @@ private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHier
 	return expenseArray;
 }
 
+	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId)
+			throws Exception {
+		return expensesApprovalDao.getExpensesApproverHierarchyListByExpenseId(expenseId);
+	}
 
 
 
-private static void headerCellStyle(PdfPCell cell){
+
+	@Override
+	public ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId, String approvalStatus) {
+		return expensesApprovalDao.isThereAnyApproverChangesStatusForExpense(expenseId, approvalStatus);
+	}
+
+	private static void headerCellStyle(PdfPCell cell){
     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
     cell.setPaddingTop(0f);
     cell.setPaddingBottom(7f);
@@ -449,3 +459,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 
 
 }
+
+	@Override
+	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
+		return expensesApprovalDao.getexpensesApproverHierarchyForEmployeeByExpenseId(expenseId);
+	}
+
+
+
+
+	@Override
+	public void updateExpenseStatusByExpenseId(Long expenseId, String status) {
+		 expensesApprovalDao.updateExpenseStatusByExpenseId(expenseId, status);
+		
+	}
+}
+

@@ -117,11 +117,12 @@ function getExpensesList(){
 					result = result +"           <th>End Date</th>        ";
 					result = result +"           <th>No of Exp</th>       ";
 					result = result +"           <th>Amount</th>          ";
-					result = result +"           <th>Action</th>          ";
+					result = result +"           <th>Status</th>          ";
 					result = result +"       </tr>                        ";
 					result = result +"	</thead>	                      ";
 					result = result +"       <tbody>                      ";
         	  
+					
 	        	  var json = JSON.parse(data);
 	        	  for (var i = 0; i < json.length; i++) { 
 	        		  var report = json[i]; 
@@ -174,12 +175,7 @@ function getExpensesList(){
 						 result = result +"            <td><div>"+endDateStr+"</div></td>                                                                      ";
 						 result = result +"            <td><div>"+noOfExpenses+"</div></td>                                                                              ";
 						 result = result +"            <td><div>"+totalAmount+"</div></td>                                                                            ";
-						 result = result +"            <td>                                                                                                ";
-						 result = result +"            	<div class='tbldata-dotdot_50'>                                                                    ";
-						 result = result +"           		 <a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=edit'><i class='fa fa-pencil-square-o' title='Edit'></i></a>";
-						 result = result +"            		 <i class='glyphicon glyphicon-trash'></i>                                                     ";
-						 result = result +"				</div>                                                                                             ";
-						 result = result +"            </td>                                                                                               ";
+						 result = result +"            <td> <div>"+report.expenseStatus+"</div></td>                                                                                               ";
 						 result = result +"        </tr>               			                                     "; 
 	                 
 	        	  }

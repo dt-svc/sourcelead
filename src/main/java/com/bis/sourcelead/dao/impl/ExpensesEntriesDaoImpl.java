@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
+import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -21,6 +23,9 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 
 	@Autowired
 	SessionFactory sessionFactory;
+	
+	@Autowired
+	ExpensesEntryDocumentsDao expensesEntryDocumentsDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -61,5 +66,49 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
 		return expensesEntryList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getExpensesEntryIdsByExpenseId(long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "Select expensesEntries.id from ExpensesEntries expensesEntries  where expensesEntries.expensesId.id =:expenseId";
+		List<Long> expensesEntryList = session.createQuery(query).setLong("expenseId", expenseId).setCacheable(true).list();
+		return expensesEntryList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ExpensesEntries getExpensesEntriesById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ExpensesEntries expensesEntries left join fetch expensesEntries.expensesId left join fetch expensesEntries.expensesCategoryId  where expensesEntries.id =:id";
+		List<ExpensesEntries> expensesEntryList = session.createQuery(query).setLong("id", id).setCacheable(true).list();
+		ExpensesEntries expensesEntries = null;
+		if(expensesEntryList != null && !expensesEntryList.isEmpty()){
+			expensesEntries = expensesEntryList.iterator().next();
+		}
+		return expensesEntries;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void removeAllExpenseEntries(List<Long> entryIds) throws Exception {
+		logger.debug("Deleting ExpenseEntries");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if(entryIds != null && !entryIds.isEmpty()){
+				for(Long entryId : entryIds){
+					expensesEntryDocumentsDao.removeAllExpensesEntryDocoumentsByEntryId(entryId);
+					ExpensesEntries expenseEntries = getExpensesEntriesById(entryId);
+					session.delete(expenseEntries);
+				}
+			}
+			logger.debug("Successfully deleted..!");
+		} catch (Exception exception) {
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ExpenseEntryDocuments"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
+
+	
 	
 }
