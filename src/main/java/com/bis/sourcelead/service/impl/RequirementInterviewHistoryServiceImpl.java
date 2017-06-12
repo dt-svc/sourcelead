@@ -97,7 +97,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			for (RequirementInterviewHistory interviewHistory : interviewslist) {
 				
 				RequirementInterview requirementInterview = requirementInterviewDao.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
-				
+				if(null != requirementInterview.getProposeTime()){
+					interviewHistory.setProposeTimeStatus(requirementInterview.getProposeTime());
+				}
 				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
 					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
 					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
@@ -396,7 +398,9 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 			for (RequirementInterviewHistory interviewHistory : interviewslist) {
 				
 				RequirementInterview requirementInterview = requirementInterviewDao.getRequirementInterviewById(interviewHistory.getInterviewId().getId().toString());
-				
+				if(null !=requirementInterview.getProposeTime()){
+			    	interviewHistory.setProposeTimeStatus(requirementInterview.getProposeTime());	
+			    }
 				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
 					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
 					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
@@ -492,9 +496,6 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				    }
 				}
 			    
-			    if(null !=requirementInterview.getProposeTime()){
-			    	interviewHistory.setProposeTimeStatus(requirementInterview.getProposeTime());	
-			    }
 			    
 			    String InterviewersList = "";
 				Set<RequirementInterviewer> Interviewers = requirementInterview.getRequirementInterviewers();
