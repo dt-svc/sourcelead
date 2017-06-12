@@ -175,7 +175,6 @@ public class BillingPayableRestController {
 			return resultJson;
 	 }
 	 
-	 @PreAuthorize("hasAnyRole('ROLE_DOWNLOAD_BILL')")
 	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
 			
