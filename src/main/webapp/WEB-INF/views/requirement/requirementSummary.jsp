@@ -634,7 +634,6 @@ function sideBar(requirementId){
 				        result = result+'</div>';
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="canDetails clearfix">';
-				        result = result+'<h4></h4>';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-5">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
@@ -1125,7 +1124,7 @@ function requirementDetails(requirementId){
 					           	 result = result +'   <div class="RDdetails">'+json.description+'</div>';
 					         }
 					         else{
-					           	 result = result +'   <div > NO DATA</div>';
+					           	 result = result +'   <div class="RDdetails"> NO DATA</div>';
 				    	        }
 				            
 				            result = result +'   <h1>Skills:</h1>';
@@ -1140,7 +1139,7 @@ function requirementDetails(requirementId){
 				            result = result +'   <h2 class="RPadT"> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
-				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b>'+json.positions+'';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b><span>'+json.positions+'</span>';
 				            }
 				            else{
 				            result = result +'<div class="require_wrap_details_cta"> <b>No. of positions:</b> <span> -- </span>';	
@@ -1148,7 +1147,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.industryName != null && json.industryName != '' && json.industryName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Industry:</b>'+json.industryName+'';
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Industry:</b><span>'+json.industryName+'</span>';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Industry:</b> <span> -- </span>';	
@@ -1156,7 +1155,7 @@ function requirementDetails(requirementId){
 					            result = result +'       <div class="clearfix"></div>';
 					            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile "><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -1165,7 +1164,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.education != null && json.education != '' && json.education != 'undefined'){
-					            result = result +'<div class="require_wrap_details_cta require_wrap_details_view  require_education"> <b>Education:</b><span>'+json.education+'</span>';
+					            result = result +'<div class="require_wrap_details_cta"> <b>Education:</b><span>'+json.education+'</span>';
 					            }else{
 					           	result = result +'<div class="require_wrap_details_cta "> <b>Education:</b> <span> -- </span>';
 					            }
@@ -1173,7 +1172,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.reqCoolingOffPeriod != null && json.reqCoolingOffPeriod != '' && json.reqCoolingOffPeriod != 'undefined'){
-					            result = result +'<div class="require_wrap_details_cta require_wrap_details_view  require_education"> <b>Cooling Off Period:</b><span>'+json.reqCoolingOffPeriod+'</span>';
+					            result = result +'<div class="require_wrap_details_cta"> <b>Cooling Off Period:</b><span>'+json.reqCoolingOffPeriod+'</span>';
 					            }else{
 					           	result = result +'<div class="require_wrap_details_cta "> <b>Cooling Off Period:</b> <span> -- </span>';
 					            }
@@ -1185,6 +1184,7 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'     </div>';
 
 				            if(json.isClientJob  == 'Y')
 				            	{
@@ -1194,7 +1194,7 @@ function requirementDetails(requirementId){
 				            
 				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
 				            	
-				            result = result +'     <div class="require_wrap_details_cta require_wrap_details_view"> <b>Client Contact:</b> <span class="pull-left"> <span>'+json.spocName+'</span>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Client Contact:</b> <span class="pull-left"> <span>'+json.spocName+'</span>';
 				            }
 				            else{
 					        result = result +'     <div class="require_wrap_details_cta "> <b>Client contact:</b> <span class="pull-left"> -- </span>';
@@ -1203,7 +1203,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.clientName != '' && json.clientName !=null && json.clientName != 'undefined'){
-					        result = result +'     <div class="require_wrap_details_cta require_wrap_details_view"> <b>Client Name:</b> <span class="pull-left"> '+json.clientName+' </span>';
+					        result = result +'     <div class="require_wrap_details_cta"> <b>Client Name:</b> <span class="pull-left"> '+json.clientName+' </span>';
 				            }
 				            else{
 						        result = result +'     <div class="require_wrap_details_cta "> <b>Client Name:</b> <span class="pull-left"> ---  </span>';
@@ -1302,7 +1302,10 @@ function requirementDetails(requirementId){
 				            
 				            
 				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'   </div>';
+				          
+				           
+				            
+				            
 				            
 				            result = result +'   <h2>Internal Details:</h2>';
 				            result = result +'   <div class="require_one">';
@@ -1325,7 +1328,7 @@ function requirementDetails(requirementId){
 				            if(json.approvalMechanismType != null && json.approvalMechanismType !='' && json.approvalMechanismType !='undefined'){
 				           
 					            if(json.approvalMechanismType == 'PARALLEL'){
-					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers:</b> <span>';
+					            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b> <span>';
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            	    if(json.approverNames[i] == json.approverNames[0]){
@@ -1336,13 +1339,14 @@ function requirementDetails(requirementId){
 					   				}
 					            	result = result +'</span>';
 					            	result = result +'</div>';
+					            	
 					            }else{
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		var level = 1;
 						            	for (var i=0; i<json.approverNames.length; i++)
 						   				{
-						            		result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers '+level+':</b> <span>'; 
+						            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 						            		result = result +json.approverNames[i];
 						            		result = result +'</span>';
 						            		result = result +'</div>';
@@ -1375,6 +1379,7 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            
 				            result = result +'     </div>';	
+				            result = result +'   </div>';
 				            
 				            result = result +'   </div>';
 				            result = result +' </div>';
