@@ -127,6 +127,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    		}
 	    		
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
+	    		    sah.getExpenseId().setExpenseStatus(Submission_Status.REJECTED);
             	 	sah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setExpenseStatus(Submission_Status.REJECTED);
             	 	sah.setActionPerformedBy(""+loginUser.getFullName());
@@ -136,6 +137,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
             	    sah.setReopenRejectedReason(null);
             	 	
 	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
+	            	 sah.getExpenseId().setExpenseStatus(Submission_Status.APPROVED);
 	            	 sah.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	 sah.setExpenseStatus(Submission_Status.APPROVED);
 	            	 sah.setReopenReason(null);
@@ -159,6 +161,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 	if(approversList != null && !approversList.isEmpty()){
                 		for(ExpensesApproverHierarchy approver  :  approversList){
                 			 if(status!=null && status.equalsIgnoreCase("REJECTED")){
+                				approver.getExpenseId().setExpenseStatus(Submission_Status.REJECTED);
                 				approver.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
                 				approver.setExpenseStatus(Submission_Status.REJECTED);
                 				approver.setActionPerformedBy(" "+loginUser.getFullName());
@@ -240,53 +243,33 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,
-			Long approverUserId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		/*
-		 *  get ExpensesApproverHierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
-		 */
-		String query = " from ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.expenseId expense left join fetch expense.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " where expense.id =:expenseId "
-				        + " and ("
-				           /*
-						   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
-						   */
-					        + "    hierarchy.approverUserId.id = :approverUserId  "
-					        /*
-							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
-							 */
-					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = :expenseId ) "
-					        + " and "+ Constants.loginUserAsAdminWithMaxHeirarchyLevel + ")"
-				            + ") ";
-		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> sahMainList = session.createQuery(query)
-																	  .setLong("expenseId", expenseId)	
-																	  .setLong("approverUserId",approverUserId)
-																	  .setLong("userId",approverUserId)
-				                                                      .list();
-		
-		ExpensesApproverHierarchy eah = null;
-		if(sahMainList != null && !sahMainList.isEmpty()){
-			eah = sahMainList.iterator().next();
-		}
-		return eah;
-	}
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId,String approvalStatus) {
+	public ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId) {
 		// TODO Auto-generated method stub
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		Query expensesApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense where expense.id = :expenseId  and eah.expenseApprovalStatus = :approvalStatus");
 		@SuppressWarnings("unchecked")
-		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", approvalStatus).setCacheable(true).list();
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").setCacheable(true).list();
 		ExpensesApproverHierarchy eah = null;
 		if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
 			eah = expenseApproverHierarchyList.iterator().next();
 		}
 		return eah;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isTheExpenseTotallyApproved(Long expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query expensesApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense where expense.id = :expenseId  and eah.expenseApprovalStatus != :approvalStatus");
+		@SuppressWarnings("unchecked")
+		List<ExpensesApproverHierarchy> expenseApproverHierarchyList=expensesApproverHierarchyListQuery.setLong("expenseId", expenseId).setString("approvalStatus", "APPROVED").setCacheable(true).list();
+		Boolean flag = true;
+		if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
+			flag = false;
+		}
+		return flag;
 	}
 	
 	@Override
@@ -339,5 +322,43 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		// TODO Auto-generated method stub
 		return expensesApproverHierarchy;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId) throws Exception {
+			
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		/*
+		 *  get ExpensesApproverHierarchy list by using empId and logged in user id as approver(either user may exist in project hierarchy  or user may be admin)
+		 */
+		String query = " from ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.expenseId expense left join fetch expense.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
+				+ " where expense.id =:expenseId "
+				        + " and ("
+				           /*
+						   *  logged in user as approver in project_approver_hierarchy (Either Admins/project_managers/team leads ...etc)
+						   */
+					        + "    hierarchy.approverUserId.id = :approverUserId  "
+					        /*
+							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
+							 */
+					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = :expenseId and subsah.expenseApprovalStatus != 'APPROVED' and subsah.expenseId.id = :expenseId ) "
+					        + " and "+ Constants.loginUserAsAdminWithMaxHeirarchyLevel + ")"
+				            + ") ";
+		@SuppressWarnings("unchecked")
+		List<ExpensesApproverHierarchy> sahMainList = session.createQuery(query)
+																	  .setLong("expenseId", expenseId)	
+																	  .setLong("approverUserId",approverUserId)
+																	  .setLong("userId",approverUserId)
+				                                                      .list();
+		
+		
+		ExpensesApproverHierarchy eah = null;
+		if(sahMainList != null && !sahMainList.isEmpty()){
+			eah = sahMainList.iterator().next();
+		}
+		return eah;
+	}
+
 
 }
