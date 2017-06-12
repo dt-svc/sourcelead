@@ -353,6 +353,7 @@ public class Constants {
 	public static final String BI_WEEKLY = "Bi-Weekly";
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
+	public static final String YEARLY = "Yearly";
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
 	public static final String[] STATUS_DROPDOWN = { "Active", "In-Active", "New", "Negotiation",
