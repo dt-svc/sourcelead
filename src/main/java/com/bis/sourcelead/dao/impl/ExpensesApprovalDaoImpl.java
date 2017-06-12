@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -17,7 +16,6 @@ import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -83,7 +81,50 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		return tslist;
 	}
 	
-			
+	@Override	
+	@Transactional(rollbackFor = { Exception.class })
+	public User updateExpenseStatusByExpenseIdAndReOpenReason(Long expenseId,String reason,User loginUser, String type, String isSuperUser) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query expenseApproverHierarchyListQuery= session.createQuery("from  ExpensesApproverHierarchy eah left join fetch eah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch eah.expenseId expense  where expense.id = :expenseId");
+		@SuppressWarnings("unchecked")
+		List<ExpensesApproverHierarchy>  expenseApproverHierarchyList=expenseApproverHierarchyListQuery.setLong("expenseId", expenseId).setCacheable(true).list();
+	    if(expenseApproverHierarchyList != null && !expenseApproverHierarchyList.isEmpty()){
+	    	for(ExpensesApproverHierarchy eah :expenseApproverHierarchyList){
+	    		if(null != type && "notify".equalsIgnoreCase(type) && null != isSuperUser && isSuperUser.equalsIgnoreCase(Constants.YES)){
+	    			eah.setReopenReason(reason);
+	    			eah.setReopenedUser(loginUser);
+	    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
+	    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+	    			eah.setReopenRejectedReason(null);
+	    		}else{
+	    			if(null != type && "notify".equalsIgnoreCase(type)){
+	    				eah.setReopenReason(reason);
+	    				eah.setReopenedUser(loginUser);
+	    				eah.setReopenRejectedReason(null);
+		    		}else if(null != type && "reject".equalsIgnoreCase(type)){
+		    			eah.setReopenRejectedReason(reason);
+		    			eah.setReopenReason(null);
+		    		}else{
+		    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
+		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+		    			eah.setReopenRejectedReason(null);
+		    			eah.setReopenReason(null);
+		    		}
+	    		}
+	    		try {
+	    			 session.saveOrUpdate(eah);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    	}
+	    	return expenseApproverHierarchyList.get(0).getReopenedUser();
+	    }else{
+	    	return null;
+	    }
+		
+	}
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception {
