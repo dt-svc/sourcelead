@@ -438,12 +438,15 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 <script>
 function getInvoiceList(){
-	$(".custom_search").hide();
+// 	$(".custom_search").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
 	
+	if(dayWisetype=="custom"){
+		dayWisetype = "";
+	}
 	var startDate = $("#billingStartDate").val();
 	var endDate = $("#billingEndDate").val();
 	
