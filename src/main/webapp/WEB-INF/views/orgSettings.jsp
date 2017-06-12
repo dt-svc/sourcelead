@@ -1173,9 +1173,9 @@ function restSignature(){
 
 <script>
 function cancelBtn(){
-// 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  location.replace(sourceleadUrl+"/dashboard");
+	  location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
 }
 
 </script>
