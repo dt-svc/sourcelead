@@ -54,6 +54,7 @@ public class ExpensesApprovalRestController {
 	
 	@RequestMapping(value = "/getExpensesApprovalListForExports")
 	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="type", required=false) String type) throws Exception {
+		System.out.println("In Rest Controller");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		File file=null;

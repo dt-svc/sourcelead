@@ -148,6 +148,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 	@Override
 	public File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc) throws IOException {
+		System.out.println("In Service Impl");
 		String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -177,7 +178,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(11);
+	        cell1.setColspan(14);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{7,7,5,3,5,5,5,7,3,3,3,3,3,5});
@@ -196,6 +197,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	       // for(ExpensesApproverHierarchy expApperover : expApperoverHierarchy){
 	        	expenseList.add(prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers));
 	       // }
+	        	System.out.println(">>>>>>>>>>>"+table);
 	        for (String[] expenseArray: expenseList) {
                 for (int i = 0; i < expenseArray.length; i++) {
                     String datum = expenseArray[i];
