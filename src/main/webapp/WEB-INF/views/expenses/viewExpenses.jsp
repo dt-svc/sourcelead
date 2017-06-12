@@ -156,7 +156,6 @@
     
 <script>
 function exportMyExpenses(type,Expid){
-	alert("hihi");
 	var sourceleadUrl = '${sourceleadUrl}';
 	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid;
 }
