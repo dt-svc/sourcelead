@@ -140,7 +140,10 @@ function vendorContracts(orgRelationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty();  
-    $("#tab-4").append(result);  
+    $("#tab-6").empty();  
+    $("#tab-7").empty();  
+    $("#tab-5").empty();  
+    $("#tab-5").append(result);  
 	
     vendorContractsList(orgRelationId);
     $('.dropdown-menu').click(function(event){
@@ -259,14 +262,16 @@ function vendorContractsList(orgRelationId){
 	                		         result = result + '<td>';
 	                		         result = result + '<div class="tbldata-dotdot_80">';
 	                		         
-	                		         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+	                		         if(report.ownerUserId != null && '${SourceLeadWeb_user.id}' == report.ownerUserId.id){
 	                		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 	                			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	                	            	 }
 	                		         }
+	                		         
 	                		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	                	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-	                	     		'</sec:authorize">';
+	                	     		'</sec:authorize>';
+	                	     		
 	                		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                		     		if(report.typeOfContract == "New"){
 	                		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -276,7 +281,7 @@ function vendorContractsList(orgRelationId){
 	                		     		}
 	                		     		'</sec:authorize>';
 	                		     		
-	                		     		 if('${SourceLeadWeb_user.id}' == report.approverUser.id){
+	                		     		 if(report.approverUser != null && '${SourceLeadWeb_user.id}' == report.approverUser.id){
 	                	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
 	                	      	         }
 	                		     		//result = result + '</div>';
