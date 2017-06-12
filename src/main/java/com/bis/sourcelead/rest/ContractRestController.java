@@ -203,7 +203,7 @@ public class ContractRestController {
 			pdfBytes = html2PdfUtil.getPdfBytes(contract.getContractsTemplate(),contract,orgLocation,org);
 		}
 
-		if(("null").equalsIgnoreCase(contract.getEnvelopId())&& ("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
+		if(("Custom").equalsIgnoreCase(contract.getTypeOfContract())){
 		//if("Custom".equalsIgnoreCase(contract.getTypeOfContract())){
 			  pdfBytes = contract.getDocFile();
 		}
@@ -539,6 +539,7 @@ public class ContractRestController {
 		RequirementOffers requirementOffers = null;
 		if("" != reqSubId && StringUtils.isNumeric(reqSubId)){
 			requirementOffers = requirementOffersService.getRequirementOfferSubmissionById(Long.parseLong(reqSubId));
+			requirementOffers.setDateOfJoiningStr(Constants.DF_DMY.format(requirementOffers.getDateOfJoining()));
 		}
 		return commonUtil.toJSON(requirementOffers);
 	}
@@ -633,6 +634,11 @@ public class ContractRestController {
 						if(jsonObj.has(c+"description") && !jsonObj.getString(c+"description").isEmpty()){
 							contractRequestDocuments.setDescription(jsonObj.getString(c+"description"));
 						}
+						if (jsonObj.has(c + "candiDoc")
+								&& !jsonObj.getString(c + "candiDoc").isEmpty()) {
+							contractRequestDocuments.setDocType(jsonObj.getString(c + "candiDoc"));
+							
+						}
 						}
 						if(multiFile != null){
 							contractRequestDocuments.setDocFile(multiFile.getBytes());
@@ -640,6 +646,7 @@ public class ContractRestController {
 						}
 						contractRequestDocuments.setCreatedDate(new Date());
 						contractRequestDocuments.setUpdatedDate(new Date());
+						contractRequestDocuments.setStatus(Constants.MEMBER_ACTIVE);
 						contractRequestDocuments.setCreatedBy(user.getUserCode());
 						contractRequestDocuments.setUpdatedBy(user.getUserCode());
 						contractRequestDocumentsService.saveContractRequestDocuments(contractRequestDocuments);
@@ -665,7 +672,7 @@ public class ContractRestController {
 					contract.setOwnerName(owner.append(contract.getOwnerUserId().getFirstName()).toString());
 				}
 		 	}
-		 	
+		 	if(null != contract.getOrgRelations()){
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
 		 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
@@ -676,7 +683,7 @@ public class ContractRestController {
 				}
 		 	}
 		 	
-		 	
+		 	}
 		 	
 		 	if(null != contract.getApproverUser()){
 		 		StringBuilder approver = new StringBuilder();

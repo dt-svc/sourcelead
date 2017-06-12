@@ -48,6 +48,7 @@ function vendorAssociatesList(orgRelationId){
     $("#tab-3").empty(); 
     $("#tab-5").empty(); 
     $("#tab-6").empty();
+    $("#tab-7").empty();
     $("#tab-7").append(result);
 	
     getVendorRequirementListTab(orgRelationId);
