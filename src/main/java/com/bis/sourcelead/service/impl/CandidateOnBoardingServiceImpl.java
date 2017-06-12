@@ -621,7 +621,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
 		 
 		

@@ -4,20 +4,31 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="resources/images/fav.png" />
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
+<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
+<link href="resources/css/jquery-ui.css" rel="stylesheet">
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">
 <link href="resources/css/sourcelead-main.css" rel="stylesheet">
 <link href="resources/css/timesheet.css" rel="stylesheet">
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script> 
 </head>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
- <script src="resources/js/formvalidator.js"></script>
  <script src="resources/js/jquery.dataTables.min.js"></script>
+ 
+<script src="resources/js/jquery-1.11.1.min.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>  
+<script src="resources/js/chosen.jquery.min.js"></script>
+<script src="resources/js/jquery-ui.js"></script>
+<script src="resources/js/jquery-fun.js"></script>
+<script src="resources/js/jquery.timepicker.js"></script>
+<script src="resources/js/bootstrap-select.min.js"></script>
+<script src="resources/js/themeswitcher.js"></script>
+<script src="resources/js/moment.min.js"></script>
+<script src="resources/js/datetime-moment.js"></script>
 <script>
 		$(document).ready(function() { 
 			var interviewStatus  = '${interviewStatus}';
@@ -35,10 +46,6 @@
 				}
 			}
 			
-			
-			/* if(offerStatus == 'Rejected'){
-				$("#reject").removeAttr("style");		
-			} */
 		});
 </script>
 
@@ -61,14 +68,17 @@ width: auto;
 	-moz-box-shadow: 0 8px 6px -8px #505050;
 	box-shadow: 0 8px 6px -8px #505050;
 }
+.ui-timepicker-wrapper {
+width: 8%;
+}
 </style>
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -78,7 +88,7 @@ width: auto;
 
   <!-- Content Area -->
   <section class="container">
-		<div class="row">
+		<div class="col-md-12">
 		  		<div id="accept" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget success-user">
 					          <i class="fa fa-check-circle fa-3x"></i>
@@ -86,13 +96,7 @@ width: auto;
 							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
 						  </div>
 		  		</div>
-		  		<div id="tentative" style="display:none">
-				          <div class="col-md-8 col-md-offset-2 inner-widget tentative-user">
-					          <i class="fa fa-question fa-3x"></i>
-							  <p class="reason-msg">Not sure for the Interview </p>
-							  <p class="reason-msg"><center><h3>Thank You !!!</h3></center></p>
-						  </div>
-		  		</div>
+		  		
 		  		<div id="expire" style="display:none">
 				          <div class="col-md-8 col-md-offset-2 inner-widget reject-user">
 					          <i class="fa fa-ban fa-3x"></i>
@@ -108,6 +112,9 @@ width: auto;
 		  		</div>
 		 </div>
   </section>
+  <div id="popUp"></div>
+
+<script src="resources/js/formvalidator.js"></script>
   <!-- Footer Area -->
   <footer class="footer-publicpages clearfix">
   <div class="container">

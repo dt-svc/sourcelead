@@ -22,33 +22,16 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 		//Session Initialization
     	servletContext.addListener(new SourceleadSessionListener());
 
-    	
-    	//gate initialization
-		/*File gateHome = new File(servletContext.getRealPath("/WEB-INF/classes"));
-    	Gate.setGateHome(gateHome);
-    	File siteConfig = new File(servletContext.getRealPath("/WEB-INF/classes/gate.xml"));
-    	Gate.setSiteConfigFile(siteConfig);
-    	try {
-    		Gate.setPluginsHome(gateHome);
-			Gate.init();
-			
-			Annie annie = new Annie();
-			annie.initAnnie();
-			servletContext.setAttribute("Annie", annie);
-		} catch (GateException e) {
-		} catch (IOException e) {
-		}*/
-
 	}
 	
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[] { SecurityConfig.class };
+		return new Class[] { SecurityConfig.class,  WebAppConfig.class};
 	}
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] { WebAppConfig.class };
+		return null;
 	}
 
 	@Override

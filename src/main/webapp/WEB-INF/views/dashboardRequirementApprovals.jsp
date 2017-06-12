@@ -80,10 +80,12 @@ function requirementApproverList(statusType){
 		                     }else{
 		                    	 result = result +"<td><div class='tbldata-dotdot-vsm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title = '"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
-	                    	 
-		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
-		                    	 result = result +"<td><div><span title = '"+opt.rate+"-"+opt.currencyCode+"'>"+opt.rate+"&nbsp;"+opt.currencyCode+"</span></div></td>";
-		                     }else{
+		                     if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined' && opt.maxRate != null && opt.maxRate != '' && opt.maxRate !='undefined'){
+		                    	 result = result +"<td><div><span title = '"+opt.currencyCode+"-"+opt.rate+"-"+opt.maxRate+"-"+opt.rateType+"'>"+opt.currencyCode+"&nbsp;"+opt.rate+"-"+opt.maxRate+"&nbsp;"+opt.rateType+"</span></div></td>";
+		                     }else if(opt.rate!=null && opt.rate !='' && opt.rate !='undefined'){
+		                    	 result = result +"<td><div><span title = '"+opt.currencyCode+"-"+opt.rate+"-"+opt.rateType+"'>"+opt.currencyCode+"&nbsp;"+opt.rate+"&nbsp;"+opt.rateType+"</span></div></td>";
+		                     }
+		                     else{
 		                    	 result = result +"<td><div>-----</div></td>";
 		                     }
 		                     

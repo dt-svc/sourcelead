@@ -349,7 +349,9 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * this method is for inviting candidate to sourcelead
 		 */
-		inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+		if(jsonObj.has("email") && null != jsonObj.getString("email") && Constants.YES.equalsIgnoreCase(jsonObj.getString("email"))){
+			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
+		}
 		
 		/*
 		 * Saving Candidate DB data as ElasticSearch Documents
@@ -1108,6 +1110,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception {
 		return candidateDao.getCandidatesListByOrgLocationIDAndUserId(orgLocationId, userId);
+	}
+
+	@Override
+	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		for (Candidate candidate : candidateList) {
+			StringBuilder sb = new StringBuilder();
+			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+			candidate.setEmail(candidate.getEmail());
+			candidate.setCandidateUpdateDateToString(Constants.DMY.format(candidate.getUpdatedDate()));
+			candidate.setPrimarySkill(candidate.getPrimarySkill());
+			StringBuilder stringBuilder = new StringBuilder();
+			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+		}
+		return candidateList;
 	}
 
 }

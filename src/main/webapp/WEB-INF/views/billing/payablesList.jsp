@@ -191,7 +191,9 @@ font-size: 13px; width: 75px;
                         </div>
                       </li>
                       <li>
-                      <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
+                       <sec:authorize access="hasAnyRole('ROLE_ADD_BILL')"> 
+			               <a href="javascript:void(0)"  class="anchorTag" title="Create Bill" onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|
+			          </sec:authorize>
                        <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       </li>  
                       <div class="clearfix"></div>
@@ -728,10 +730,17 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){
-			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
+			 result = result +'<li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 '</sec:authorize>'
 		 }
+		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+	     '</sec:authorize>'
+	     
+	     '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
@@ -1161,7 +1170,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
 			result = result +'    <div class="modal-content">                                                                                               ';
 			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
-			result = result +'      <div class="modal-header">                                                                                              ';
+			result = result +'      <div class="modal-header" id="payableLinkId">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
 			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
 			result = result +'      </div>                                                                                                                  ';
@@ -1264,12 +1273,14 @@ function linkPayableInvoice(invoiceId,totalAmount){
 <script>
 function mergeInvoice(parentTotalAmount){
 	var masterInvoiceId = $('#masterInvoiceId').val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
 	var checkVal = linkRadio.filter(':checked').val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var total = $('#linkedPayableTotalId'+checkVal+'').text();
 	var calculatedAmount = 	parentTotalAmount - total;
-	showDiffAmountPopup(calculatedAmount);
+	if(checkVal != '' && checkVal != 'undefined' && checkVal != null){
+	showDiffAmountPopup(calculatedAmount,currencyCode);
 	 $.ajax({
    	 type: "POST",
 	     dataType : 'json',
@@ -1278,16 +1289,19 @@ function mergeInvoice(parentTotalAmount){
            	
        },
    });  
+}else{
+	$("#payableLinkId").after( "<p class='jquery_form_error_message'>Select atleast 1 Bill</span>");
+	}
 }
 </script>
 
 
 <script>
-function showDiffAmountPopup(calculatedAmount){
+function showDiffAmountPopup(calculatedAmount,currencyCode){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='payable_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Variation Amount  = "+calculatedAmount+"</p>";
+	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";

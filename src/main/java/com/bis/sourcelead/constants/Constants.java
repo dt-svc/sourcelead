@@ -129,6 +129,7 @@ public class Constants {
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
 	public static final String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
+	public static final String BACKOUT_STATUS = "BACKOUT";
 	public static final String INTERVIEW = "INTERVIEW";
 	public static final String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
 	public static final String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
@@ -240,6 +241,7 @@ public class Constants {
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
+	public static final String PROPOSE_NEW_TIME = "ProposeNewTime";
 	public static final String YES = "Y";
 	public static final String NO = "N";
 	public static final String WAIT = "W";
@@ -587,5 +589,10 @@ public class Constants {
 	public static final String LINKED_STATUS =  "Linked";
 
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
+	
+	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
+	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
+	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
+	public static final String JOB_ALERTS = "JobAlerts";
 
 }
