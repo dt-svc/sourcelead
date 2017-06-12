@@ -42,7 +42,7 @@ $(document).ready(function(){
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
-          <sec:authorize access="hasAnyRole('ROLE_ADD_BILL')"> 
+          <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')"> 
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Createnbm Invoice</a>
 			</sec:authorize>
             <div class="pull-right select-field ml">
@@ -345,7 +345,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix"></div>                                            ';
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
-	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_PAYMENT\')">';
+	'<sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">';
 	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
 	'</sec:authorize>';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
@@ -556,11 +556,14 @@ function getInvoiceList(){
 				result = result +'         <td>';
 
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
-
+					'</sec:authorize>' ;
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+					'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+					'</sec:authorize>' ;
 				}
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
@@ -709,15 +712,15 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){
-			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
+			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			'</sec:authorize>'
 		 }
-		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
+		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 	 	'</sec:authorize>'
 	 	
-	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
+	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
@@ -1272,6 +1275,7 @@ function generateAutomaticInvoice(){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&contractType=clientSow", 
              success: function(data) {
+            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },
     });  
 }
