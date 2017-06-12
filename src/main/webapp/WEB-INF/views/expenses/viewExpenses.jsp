@@ -17,7 +17,7 @@
                 
 					<div class="Expdit pull-right">
 					     <c:if test="${submissionStatus == 'DRAFT'}">
-					        <a href="${sourceleadUrl}/addExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${sourceleadUrl}/addExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     
 					     <c:if test="${!isSahApproved && submissionStatus == 'SUBMITTED'}">
@@ -26,7 +26,7 @@
 						     </div>
 					     </c:if>
 					     
-					     <div class="timeNewSe pull-right" style=" ${submissionStatus == 'DRAFT' ? 'margin-left: -57px;' : ''} ">
+					     <div class="timeNewSe pull-right" >
 						  <c:if test="${submissionStatus == 'NEW'}">
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
@@ -34,7 +34,7 @@
 						       <b class='proj_draft pull-right' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'SUBMITTED'}">
-						       <b class='proj_process pull-right'  style="${!isSahApproved ? 'margin-right: -57px;' : ''}">${submissionStatus}</b>
+						       <b class='proj_process pull-right' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'APPROVED'}">
 						       <b class='proj_active pull-right'>${submissionStatus}</b>
@@ -43,7 +43,20 @@
 						       <b class='proj_closed pull-right'>${submissionStatus}</b>
 						  </c:if>
 						</div>
-					</div>                
+				</div>                
+
+
+					<ul class="UiPado">
+						<li title="Export"><i class="glyphicon glyphicon-export"
+							id="export-pop"></i>
+							<div class="export_pop" style="display: none;">
+								<ul>
+									<li onclick="exportMyExpenses('PDF',${expenses.id});"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+									<li onclick="exportMyExpenses('EXCEL',${expenses.id});"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+								</ul>
+							</div></li>
+						<div class="clearfix"></div>
+					</ul>
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
@@ -139,3 +152,12 @@
 </div>
 </div>
     </section>
+    
+    
+<script>
+function exportMyExpenses(type,Expid){
+	alert("hihi");
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid;
+}
+</script>
