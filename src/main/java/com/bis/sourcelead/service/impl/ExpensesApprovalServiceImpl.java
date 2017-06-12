@@ -106,7 +106,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 
 
-	@Override
+	
 	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId)
 			throws Exception {
 		return expensesApprovalDao.getExpensesApproverHierarchyListByExpenseId(expenseId);
@@ -143,6 +143,14 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	@Override
 	public ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,
 			Long expenseId) throws Exception {
-		return  expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
+		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
 	}
+
+
+
+
+
+
+
+	
 }
