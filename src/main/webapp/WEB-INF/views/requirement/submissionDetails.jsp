@@ -469,14 +469,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			          result = result + ' <div class="panel-body row">';
 			          result = result + ' <div class="clearfix"><label class="col-md-2 text-right paddingRight">Requested by:</label><span class="col-md-9">'+json.submittedBy+'</span></div>';
 				          if(json.submissionRateStatus == 'ACCEPTED'){
-					           
 				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 				        	  }else{
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
 				        	  }
 				        	 }
-				        	  
+				          if(json.submissionRateStatus == 'REJECTED'){
+				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
+				        	  }else{
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
+				        	  }
+				        	 }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
@@ -1444,7 +1449,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
 		result = result+'	                    <div class="col-md-12">';
 		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
 		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
 		result = result+'	                            </span> </label>';
 		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';

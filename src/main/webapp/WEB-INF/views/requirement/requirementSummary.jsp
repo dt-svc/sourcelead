@@ -661,21 +661,36 @@ function sideBar(requirementId){
 				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
+			       else if(json.currencyCode == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
 			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
 				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 			       }
+			       else if(json.currencyCode == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
 			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
 				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
+			       else if(json.currencyCode == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
 			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
 				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
+			       else if(json.currencyCode == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
 			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
 				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
+			       else if(json.currencyCode == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
 			       else{
 				   result = result+'<li><i class="fa fa-money" title="Requirement Rate"></i><span> --- </span></li>';
 
@@ -1516,6 +1531,9 @@ function updateReuqirementStatusReject(status){
           			 }else{
           				$("#msgDiv").html("Requirement rejected Successfully");
           			   }
+          			$("#rejectRequirementAlert").empty();
+          			$(".project_inn_mask").fadeOut(200);
+          			$(".remove_user_pop").hide();
       				 requirementDetails(requirementId)
              			msgFadein();
                	 }
