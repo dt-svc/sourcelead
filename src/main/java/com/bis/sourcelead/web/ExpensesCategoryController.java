@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -40,6 +42,11 @@ public class ExpensesCategoryController {
 	@Autowired
 	private LookUpDataService lookUpDataService;
 	
+	@Autowired
+	private ExpensesCategoryDao expensesCategoryDao;
+	
+	
+	
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -51,12 +58,34 @@ public class ExpensesCategoryController {
  	public ModelAndView expenseCategory(HttpServletRequest request) throws Exception {
 		
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
 		    ModelAndView model = new ModelAndView();
 		    commonUtil.highLightMenu(Constants.OrgSettings, request);
 		    
 		    List<LookUpData> lookUpExpCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+		    
+		    for(LookUpData lookUpData:lookUpExpCatList){
+		    	  boolean expCategory = expensesCategoryService.validateExpensesCategoryType(orgLocations.getId(), lookUpData.getName());
+		    	  if(!expCategory){
+		    		    ExpensesCategory expensesCategory = new ExpensesCategory();
+		    		    expensesCategory.setExpensesName(lookUpData.getName());
+		    		    expensesCategory.setAmountType("Flat");
+		    		    expensesCategory.setOrgLocationId(orgLocations);
+		    		    expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
+		    			expensesCategory.setCreatedBy(user.getUserCode());
+		    			expensesCategory.setCreatedDate(commonUtil.currentDate());
+		    			expensesCategory.setUpdatedBy(user.getUserCode());
+		    			expensesCategory.setUpdatedDate(commonUtil.currentDate());
+		    		   expensesCategoryDao.storeExpenseCategory(expensesCategory); 
+		    	  }
+		    }
+		  
+		  
+		    
 		    model.addObject("lookUpExpCatList", lookUpExpCatList);
+		    
+		    
 		    
 		    
 		    List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLocations.getId());

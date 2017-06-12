@@ -35,6 +35,8 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId){
+		//System.out.println("expes>>>>>>>>>>>>"+expStatus);
+		//System.out.println("temp");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId ";
 		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();

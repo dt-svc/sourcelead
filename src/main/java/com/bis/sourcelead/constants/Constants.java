@@ -578,6 +578,11 @@ public class Constants {
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
 	public static final String EXPENSES_STATUS = "1";
 	
-	
-	
+
+	public static final String[] MY_EXPENSES_HEADERS ={"Expense Type","Date","Receipt Issued by","Payment Mode","Currency","Amount","Conversion Rate","Description"};
+
+	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
+			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
+			"Amount" , "Status"  , "Approved by"};
+
 }
