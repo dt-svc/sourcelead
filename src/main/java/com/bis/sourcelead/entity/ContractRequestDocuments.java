@@ -62,10 +62,23 @@ public class ContractRequestDocuments {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 
+	@Column(name = "DOC_TYPE")
+	private String docType;
 
 	@Column(name = "STATUS")
 	private String status;
 	
+	
+	public String getDocType()
+	{
+		return docType;
+	}
+
+	public void setDocType(String docType)
+	{
+		this.docType = docType;
+	}
+
 	public String getStatus()
 	{
 		return status;

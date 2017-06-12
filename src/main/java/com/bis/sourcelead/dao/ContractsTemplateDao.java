@@ -44,4 +44,6 @@ public interface ContractsTemplateDao {
 	ContractsHistory saveContractsHistory(ContractsHistory contractsHistory) throws Exception ;
 
 	List<Contracts> getAllContractsBasedOnTimeFrequency(Date startDateUTC, Date endDateUTC);
+
+	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus) throws Exception;
 }
