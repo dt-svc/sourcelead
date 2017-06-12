@@ -370,11 +370,11 @@ function prepareRequirementData(data){
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
 			}else if(opt.requirementSubmissionStatus == "CLOSED"){
-				result = result +"<option disabled selected hidden>CLOSED</option>";
+				result = result +"<option disabled selected >CLOSED</option>";
 
 			}
 			else if(opt.requirementSubmissionStatus == "CANCEL"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 
 			}else if(opt.requirementSubmissionStatus == "OPEN"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -407,11 +407,11 @@ function prepareRequirementData(data){
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
 			}else if(opt.requirementSubmissionStatus == "APPROVED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			else if(opt.requirementSubmissionStatus == "REJECTED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			
@@ -474,7 +474,7 @@ function prepareRequirementData(data){
 				result = result +"<option value='OPEN'>OPEN</option>";
 				
 			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 
