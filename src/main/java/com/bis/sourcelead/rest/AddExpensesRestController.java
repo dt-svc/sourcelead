@@ -1,12 +1,16 @@
 package com.bis.sourcelead.rest;
 
+import java.text.DateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +25,9 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -48,6 +54,9 @@ public class AddExpensesRestController {
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
+	@Autowired
+	private ExpensesApprovalService expensesApprovalService;
+	
 	@RequestMapping(value = "/getClientByProjectMemberId", method = RequestMethod.GET)
 	public @ResponseBody String getClientByProjectMemberId(@RequestParam(value = "projectMemberId", required = false) String projectMemberId) throws Exception {
 		if(null != projectMemberId && !"".equalsIgnoreCase(projectMemberId)){
@@ -67,6 +76,14 @@ public class AddExpensesRestController {
 	    }
 		return projectMemberId;
     }
+	
+	@RequestMapping(value = "/withDrawExpense", method = RequestMethod.POST)
+	public @ResponseBody void withDrawExpense(@RequestParam(value="expenseId", required=false) Long expenseId) throws Exception {
+			if(null != expenseId){
+				expensesApprovalService.updateExpenseStatusByExpenseId(expenseId,Submission_Status.DRAFT.getValue());
+			}
+	}
+	
 	
 	
 	@RequestMapping(value = "/getClientByProjectId", method = RequestMethod.GET)

@@ -34,9 +34,9 @@
 function hideAndShowDetailsRow(rowId){
 	var validation_required = "true";
 	var entityId = parseInt(rowId-1);
-	var dbAttcahmentMaxRowNumber = $("#dbAttcahmentMaxRowNumber"+entityId).val();
-	if(dbAttcahmentMaxRowNumber != null && dbAttcahmentMaxRowNumber != '' && dbAttcahmentMaxRowNumber != 'undefined'){
-		for(var i = 0; i < dbAttcahmentMaxRowNumber; i++){
+	var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+	if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+		for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
 		   if($("#"+i+"DbdocFileIsDeleted"+entityId).val() == 'N')
 		   {
 			   $("#"+i+"document"+entityId).removeAttr('style');
@@ -69,9 +69,9 @@ function hideAndShowDetailsRow(rowId){
 	function removeDbAttachment(documentId,entityId) {
 		var validation_required = "true";
 		$("#"+documentId+"document"+entityId).attr('style','display:none');
-		var dbAttcahmentMaxRowNumber = $("#dbAttcahmentMaxRowNumber"+entityId).val();
-		if(dbAttcahmentMaxRowNumber != null && dbAttcahmentMaxRowNumber != '' && dbAttcahmentMaxRowNumber != 'undefined'){
-			for(var i = 0; i < dbAttcahmentMaxRowNumber; i++){
+		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+		if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
 			   if($("#"+i+"document"+entityId).is(':visible'))
 			   {
 				   validation_required = "false";
@@ -238,7 +238,7 @@ function addAttachment(entityRowId,from){
 		                 <span> 
 		                     <table class='timesheetAttachment' id='attachmentTableREPLACEROWID' cellpadding='0' cellspacing='0' width="100%">
 		                       <tr id='REPLACEROWIDdivAttachmentTsRow0'>
-		                           <td><div id='0docFileuploadFileGroupREPLACEROWID'><input type='file' name='0docFileREPLACEROWID' id='0docFileREPLACEROWID' field-name='Attachment' onchange='validateUploadFile(0,REPLACEROWID)' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(REPLACEROWID,'NEW')'></i></div></td> 
+		                           <td><div id='0docFileuploadFileGroupREPLACEROWID'><input type='file' name='0docFileREPLACEROWID' id='0docFileREPLACEROWID' field-name='Attachment' onchange='validateUploadFile(0,REPLACEROWID)' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(REPLACEROWID,"NEW")'></i></div></td> 
 		                       </tr>
 		                   </table>
 		                 </span>
@@ -337,9 +337,9 @@ function addExpenseRow(){
 </script>
 <script>
 	function addExpenseCategory(entityId) {
-		var dbAttcahmentMaxRowNumber = $("#dbAttcahmentMaxRowNumber"+entityId).val();
-		if(dbAttcahmentMaxRowNumber != null && dbAttcahmentMaxRowNumber != '' && dbAttcahmentMaxRowNumber != 'undefined'){
-			for(var i = 0; i < dbAttcahmentMaxRowNumber; i++){
+		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+		if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
 			   if($("#"+i+"document"+entityId).is(':hidden'))
 			   {
 				   $("#"+i+"DbdocFileIsDeleted"+entityId).val('Y');

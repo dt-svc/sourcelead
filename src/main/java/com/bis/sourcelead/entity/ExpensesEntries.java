@@ -41,7 +41,7 @@ public class ExpensesEntries implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "EXPENSESID", nullable = false)
 	private Expenses expensesId;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable = false)
 	private ExpensesCategory expensesCategoryId;

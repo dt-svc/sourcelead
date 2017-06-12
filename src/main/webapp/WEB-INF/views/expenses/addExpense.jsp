@@ -14,84 +14,17 @@
 			getClientBasedOnSelectedProject();
 		 };
 </script>
-<div class="wraper"> 
-
 <!-- View Content Area Starts-->
 <c:if test = "${param.type == 'view'}">
-<section class="content-wraper" id="themeroller">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>View Expense</h2>
-      </div>
-      <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; View Expense</div>
-    </section>
-	<div class="content-area content-new clearfix">
-          <div class="clearfix form-horizontal inner-content">
-          <div class="Expdit"><a onClick="javascript:location.href = '<c:url value='/addExpense?expenseId=${expenses.expenseId}&type=edit'/>'" ><i class="fa fa-pencil-square-o"></i> &nbsp;Edit</a></div>
-            <div class="row">
-              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-                <div class="project_details_cta">
-        			<strong>Expenses Id:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
-        		</div>
-        		<div class="project_details_cta">
-        			<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
-        		</div>
-                <div class="project_details_cta">
-        			<strong>Project Name:</strong><span>${expenses.projectMembers.projects.projectName}</span><div class="clearfix"></div>
-        		</div>
-        		<div class="project_details_cta">
-        			<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
-        		</div>
-        		<div class="project_details_cta">
-        			<strong>Start Date:</strong><span>${expenses.startDateStr}</span><div class="clearfix"></div>
-        		</div>
-        		<div class="project_details_cta">
-        			<strong>End Date:</strong><span>${expenses.endDateStr}</span><div class="clearfix"></div>
-        		</div>
-        		<div class="project_details_cta">
-        			<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
-        		</div>
-        		<div class="project_details_cta">
-        			<strong>Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
-        		</div>
-			</div>
-		  </div>
-		</div>
-		<div class="project_wrap_table expensTableView">
-			<table id="categoryTable">
-			    <thead>
-					<tr id="divEntityTsRow0">
-						<th>Exp Category</th>
-						<th>Date</th>
-						<th>Payment Mode</th>
-						<th>Currency</th>
-						<th>Amount</th>
-						<th>Description</th>
-						<th>Action</th>
-					</tr>
-				</thead>	
-					<tbody>
-				   </tbody>
-			</table>
-		</div>
-		<div class="form-footer clearfix mt">
-		  <div class="col-lg-12">
-			<div class="pull-right">
-			  <input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expenses'/>'" class="btn btn-sm btn-default ml10">
-			</div>
-		  </div>
-		</div>
-	  </div>
- </section>
+   <jsp:include page="viewExpenses.jsp"></jsp:include>
  </c:if>
 <!-- View Content Area Ends-->
-
   <!-- Content Area -->
   <c:if test = "${param.type != 'view'}">
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Add Expense</h2>
+        <h2>${param.type != 'edit' ? 'Add' : 'Edit'} Expense</h2>
       </div>
       <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; Add Expense</div>
     </section>
@@ -168,7 +101,7 @@
 		</thead>	
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
-			        <tr id="divEntityTsRow${entryCount.count}">
+			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
 			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
@@ -176,15 +109,15 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${entryCount.count+1});"></i>
-			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${entryCount.count},${entryCount.count+1})"></i>
+			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
+			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
 			        </tr>
-			        <tr id="divEntityTsRow${entryCount.count+1}" style="display:none;">
+			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
 			          <td colspan="7">
 				         <div class="expDetails">
-				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entryCount.count}'/>
+				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="expenseEntryId${entryCount.count}" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 							<div class="col-md-4 mb10">
 							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
@@ -236,7 +169,7 @@
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10'>
 		                   <div class="uploadFile timesheet_week_comm">
-		                     <input type='hidden' name='dbAttcahmentMaxRowNumber${entryCount.count}'  id='dbAttcahmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
+		                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
 			                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
 			                 <div id='timesheetDocumentsId' class=''>
 			                       <c:forEach var="entryDoc" items="${entry.expensesEntryDocuments}" varStatus="entryDocCount">
@@ -264,8 +197,8 @@
 						</div>
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
-							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${entryCount.count});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${entryCount.count+1});">
+							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
+							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});">
 							      </div>
 						      </div>
 							 <div class="clearfix"></div>
@@ -437,6 +370,20 @@ function expensesDateCheck(){
 		});
 	}
 }
-
 </script>
+
+<script>
+function withdrawMyExpense(id){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/load1.svg"); background-position:60% center; background-repeat:no-repeat; background-size:50px;');
+	$.ajax({
+	      type : "POST",
+   	       url: sourceleadUrl+"/withDrawExpense?${_csrf.parameterName}=${_csrf.token}&expenseId="+'${expenses.id}',		
+	      success :function(result) {
+	    	  location.replace(sourceleadUrl+"/addExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
+	      }
+ }); 
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />

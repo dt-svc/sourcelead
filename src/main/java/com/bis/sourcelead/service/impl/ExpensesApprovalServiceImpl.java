@@ -102,4 +102,38 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 			String rejectedReason) throws Exception {
 		 expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason);
 	}
+
+
+
+
+	@Override
+	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId)
+			throws Exception {
+		return expensesApprovalDao.getExpensesApproverHierarchyListByExpenseId(expenseId);
+	}
+
+
+
+
+	@Override
+	public ExpensesApproverHierarchy isThereAnyApproverChangesStatusForExpense(Long expenseId, String approvalStatus) {
+		return expensesApprovalDao.isThereAnyApproverChangesStatusForExpense(expenseId, approvalStatus);
+	}
+
+
+
+
+	@Override
+	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
+		return expensesApprovalDao.getexpensesApproverHierarchyForEmployeeByExpenseId(expenseId);
+	}
+
+
+
+
+	@Override
+	public void updateExpenseStatusByExpenseId(Long expenseId, String status) {
+		 expensesApprovalDao.updateExpenseStatusByExpenseId(expenseId, status);
+		
+	}
 }
