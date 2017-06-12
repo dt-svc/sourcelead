@@ -30,7 +30,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Override
 	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser) {
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(),expStatus);
+		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId());
 
 		return expensesList;
 
