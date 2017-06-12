@@ -1439,8 +1439,6 @@ public class InvoiceRestController {
 				LocalDate[] currentYearDates  = conversionUtil.getThisYearStartDateEndDate();
 				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
 				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
-				System.out.println("start date year "+startDateUTC);
-				System.out.println("end date year "+endDateUTC);
 				break;
 			case Constants.LAST_30DAYS:
 				Date[] last30Days = conversionUtil.getPreviousDates(30,orgLocation,startDateOutputFormatter,endDateOutputFormatter);
@@ -1553,7 +1551,7 @@ public class InvoiceRestController {
 				clientList.add(invce);
 			}
 		}
-		if (null != clientList && clientList.size() > 0){
+		if (clientList !=null && clientList.size() > 0){
 		resultJson = commonUtil.toJSON(clientList);	
 		}
 		return resultJson;
