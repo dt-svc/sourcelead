@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
@@ -89,6 +90,14 @@ public class ExpensesEntryDocumentsDaoImpl implements ExpensesEntryDocumentsDao 
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ExpensesEntryDocuments getExpensesEntryDocumentById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return (ExpensesEntryDocuments) session.get(ExpensesEntryDocuments.class, id);
 	}
 	
 
