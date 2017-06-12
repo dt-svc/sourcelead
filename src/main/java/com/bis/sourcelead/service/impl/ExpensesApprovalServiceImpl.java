@@ -438,11 +438,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				writeRow.createCell(7).setCellValue(expenseId.getPurpose());
 				createExcelsheet.autoSizeColumn(7);
 			}
-			if(null != expenseId.getStartDateStr()){
+			if(null != expenseId.getStartDate()){
+				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
 				createExcelsheet.autoSizeColumn(8);
 			}
-			if(null != expenseId.getEndDateStr()){
+			if(null != expenseId.getEndDate()){
+				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
 				createExcelsheet.autoSizeColumn(9);
 			}
