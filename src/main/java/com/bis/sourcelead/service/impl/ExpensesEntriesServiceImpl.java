@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
+import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -37,10 +39,18 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	@Autowired
 	private ExpensesEntriesDao expensesEntriesDao;
 	
+	@Autowired
+	private ExpensesEntryDocumentsDao expensesEntryDocumentsDao;
+	
 	@Override
 	public Set<ExpensesEntries> prepareExpensesEntriesListByJson(JSONObject jsonObj,  MultipartHttpServletRequest request,
 			Expenses expenses) throws Exception {
 		
+		    List<Long> expenseEntryDbIds = null;
+		    ArrayList<Long> expenseEntryIds = new ArrayList<>();
+		    if(null != expenses && null != expenses.getId()){
+		    	expenseEntryDbIds = expensesEntriesDao.getExpensesEntryIdsByExpenseId(expenses.getId());
+		    }
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		    HashSet<ExpensesEntries> expensesEntriesList = new HashSet<ExpensesEntries>(); 
@@ -48,7 +58,10 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 			int maxCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
 
 			for (int c = 1; c < maxCount; c++) {
-				ExpensesEntries  entries  = new ExpensesEntries();
+					ExpensesEntries  entries  = new ExpensesEntries();
+					if(jsonObj.has("expenseEntryId"+c)){
+						entries.setId(Long.parseLong(jsonObj.getString("expenseEntryId"+c)));
+					}
 					if(jsonObj.has("categoryType"+c)){
 						ExpensesCategory ec = new ExpensesCategory();
 						ec.setId(Long.parseLong(jsonObj.getString("categoryType"+c)));
@@ -94,8 +107,19 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 					if ((jsonObj.has("attcahmentMaxRowNumber"+c))){
 				    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber"+c);
 						int attcahmentMaxRowNumberCount = Integer.parseInt(attcahmentMaxRowNumber);
-						int attachmentRowNum = 0;
 						HashSet<ExpensesEntryDocuments> eeDocList = new HashSet<>();
+						
+						if(jsonObj.has("dbAttachmentMaxRowNumber"+c)){
+							String dbAttcahmentMaxRowNumber = jsonObj.getString("dbAttachmentMaxRowNumber"+c);
+							int dbAttcahmentMaxRowNumberCount = Integer.parseInt(dbAttcahmentMaxRowNumber);
+							for (int j = 0; j < dbAttcahmentMaxRowNumberCount; j++) {
+								if(jsonObj.has(j+"DbdocFileIsDeleted"+c) && jsonObj.getString(j+"DbdocFileIsDeleted"+c).equalsIgnoreCase("Y") && jsonObj.has(j+"DbdocFileId"+c)){
+									expensesEntryDocumentsDao.removeExpensesEntryDocouments(Long.parseLong(jsonObj.getString(j+"DbdocFileId"+c)));
+								}
+								
+							}
+						}
+						
 				    	for (int i = 0; i < attcahmentMaxRowNumberCount; i++) {
 				    		  ExpensesEntryDocuments eedoc = new ExpensesEntryDocuments();
 			       		      final Map files = request.getFileMap();
@@ -124,10 +148,19 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						entries.setCreatedDate(new Date());
 						entries.setUpdatedDate(new Date());
 						entries.setExpensesId(expenses);
-
+						
+						if(entries.getId() != null){
+							expenseEntryIds.add(entries.getId());
+						}
 						expensesEntriesList.add(entries);
 					}
 			  }
+		    }
+		    if(expenseEntryDbIds != null && !expenseEntryDbIds.isEmpty()){
+		    	expenseEntryDbIds.removeAll(expenseEntryIds);
+		    	if(expenseEntryDbIds != null && !expenseEntryDbIds.isEmpty()){
+		    		expensesEntriesDao.removeAllExpenseEntries(expenseEntryDbIds);
+		    	}
 		    }
 		   return expensesEntriesList;
 		    		  

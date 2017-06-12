@@ -31,7 +31,10 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserService;
@@ -47,6 +50,12 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	ExpensesEntriesService expensesEntriesService;
+	
+	@Autowired
+	ExpensesApprovalService expensesApprovalService;
+	
+	@Autowired
+	ExpensesService expensesService;
 	
 	@Autowired
 	private AddExpensesDao addExpensesDao;
@@ -83,8 +92,15 @@ public List<ProjectMembers> getAllProjectsForExpenses(OrgLocations orgLoc,User l
 
 @Override
 public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocations orgLoc,MultipartHttpServletRequest request,String status) throws NumberFormatException, Exception {
-	Expenses expenses = new Expenses();
+	Expenses expenses = null;
 	ProjectMembers projMembers = null;
+	
+	if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
+		expenses = expensesService.getExpenseByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+	 }else{
+		 expenses = new Expenses();
+	 }
+	
 	if (jsonObj.has("ExpenseAutoId") && !(jsonObj.getString("ExpenseAutoId").isEmpty())){
 		expenses.setExpenseId(jsonObj.getString("ExpenseAutoId"));	
 	 }
@@ -116,9 +132,13 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	if(null != orgLoc){
 		expenses.setOrgLocationId(orgLoc);
 	}
-	expenses.setCreatedBy(loginUser.getUserCode());
+	if(null == expenses.getId()){
+		expenses.setCreatedBy(loginUser.getUserCode());
+	}
 	expenses.setUpdatedBy(loginUser.getUserCode());
-	expenses.setCreatedDate(CommonUtil.currentDate());
+	if(null == expenses.getId()){
+		expenses.setCreatedDate(CommonUtil.currentDate());
+	}
 	expenses.setUpdatedDate(CommonUtil.currentDate());
 	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
@@ -135,32 +155,76 @@ public void storeAddExpensesData(JSONObject jsonObj, User loginUser, OrgLocation
 	expenses.setStatus(Constants.EXPENSES_STATUS);
 	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(jsonObj, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
-	if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) && projMembers != null){
-    	List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
-    	HashSet<ExpensesApproverHierarchy> saHierarchyList = new HashSet<ExpensesApproverHierarchy>();
-        if(hierarchyList != null && !hierarchyList.isEmpty()){
-        	ArrayList<User> managers = new ArrayList<User>() ;
-				for(ProjectApproverHierarchy hierarchy : hierarchyList){
-					ExpensesApproverHierarchy saHierarchy = new ExpensesApproverHierarchy();
-					saHierarchy.setHierarchyId(hierarchy);
-					saHierarchy.setExpenseId(expenses);
-					saHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
-					saHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
-					saHierarchy.setCreatedDate(expenses.getCreatedDate());
-					saHierarchy.setCreatedBy(expenses.getCreatedBy());
-					saHierarchy.setUpdatedDate(expenses.getUpdatedDate());
-					saHierarchy.setUpdatedBy(expenses.getUpdatedBy());
-					saHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-					managers.add(hierarchy.getApproverUserId());
-					saHierarchyList.add(saHierarchy);
-				}
-				expenses.setApproverHierarchyList(saHierarchyList);
-				expenses.setProjectManagerUserList(managers);
-		}
+	
+	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
+	float totalAmount = 0;
+	for(ExpensesEntries expensesEntry : expensesEntriesList){
+		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
 	}
+	expenses.setTotalAmount(totalAmount);
+	
+	if(projMembers != null){
+		ArrayList<User> managers = new ArrayList<User>() ;
+		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
+		if (jsonObj.has("expenseId") && !(jsonObj.getString("expenseId").isEmpty())){
+		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(jsonObj.getString("expenseId")));
+		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
+			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
+					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+						eaHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
+						eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
+					}
+					else if(status.equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
+						eaHierarchy.setExpenseStatus(Submission_Status.DRAFT);
+						eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.NEW);
+					}
+					eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
+					eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
+					managers.add(eaHierarchy.getHierarchyId().getApproverUserId());
+					eaHierarchyList.add(eaHierarchy);
+			   }
+		   }
+		}
+		else{
+			List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
+			 if(hierarchyList != null && !hierarchyList.isEmpty()){
+		        	
+						for(ProjectApproverHierarchy hierarchy : hierarchyList){
+							ExpensesApproverHierarchy eaHierarchy = new ExpensesApproverHierarchy();
+							eaHierarchy.setHierarchyId(hierarchy);
+							eaHierarchy.setExpenseId(expenses);
+							
+							if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+								eaHierarchy.setExpenseStatus(Submission_Status.SUBMITTED);
+								eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);	
+							}
+							else if(status.equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
+								eaHierarchy.setExpenseStatus(Submission_Status.DRAFT);
+								eaHierarchy.setExpenseApprovalStatus(Submission_ApprovalStatus.NEW);
+							}
+							eaHierarchy.setCreatedDate(expenses.getCreatedDate());
+							eaHierarchy.setCreatedBy(expenses.getCreatedBy());
+							eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
+							eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
+							eaHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
+							managers.add(hierarchy.getApproverUserId());
+							eaHierarchyList.add(eaHierarchy);
+						}
+				}
+		}
+		
+		if(eaHierarchyList != null && !eaHierarchyList.isEmpty()){
+			expenses.setApproverHierarchyList(eaHierarchyList);
+		}
+		if(managers != null && !managers.isEmpty()){
+			expenses.setProjectManagerUserList(managers);
+		}
+	 }
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
+	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
+	 }
 	 
-	 sendExpensesEmailToManager(loginUser,expenses,orgLoc);
   }
 
 private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc) throws Exception {
@@ -169,7 +233,7 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 	
 	 EmailMessage emailMessage = new EmailMessage();
 	
-	 
+	 if(null != expenses.getProjectManagerUserList()){
 	for(User managerUser :expenses.getProjectManagerUserList()){
 		
 		 StringBuilder sb = new StringBuilder();
@@ -242,6 +306,7 @@ private void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLo
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
+}
 	 
 	 
 	 

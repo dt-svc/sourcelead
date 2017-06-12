@@ -4,22 +4,31 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -44,6 +53,12 @@ public class ExpencesController {
 	@Autowired
 	ProjectsService projectsService;
 	
+	@Autowired
+	ExpensesService expensesService;
+	
+	@Autowired
+	ExpensesApprovalService expensesApprovalService;
+	
 	@RequestMapping(value = "/myExpensesList")
 	public ModelAndView myExpensesList(HttpServletRequest request) throws Exception
 	{
@@ -62,9 +77,8 @@ public class ExpencesController {
 	
 	
 	@RequestMapping(value = "/addExpense")
-	public ModelAndView addExpense(HttpServletRequest request) throws Exception
+	public ModelAndView addExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId) throws Exception
 	{
-		
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
@@ -73,8 +87,32 @@ public class ExpencesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sessionData.setNav(Constants.MY_EXPENSES);
-		String expensesId = addExpensesService.getExpenseId();
-		model.addObject("ExpensesId", expensesId);
+		
+		Expenses expenses = null;
+		if(null != expenseId && !expenseId.isEmpty()){
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
+			if(null != expenses.getEndDate()){
+				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			}
+			
+			ExpensesApproverHierarchy eah =expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
+			 Submission_Status submissionStatus = eah.getExpenseStatus();
+		 	model.addObject("submissionStatus", submissionStatus);
+		 	model.addObject("expenseApproverHierarchy", eah);
+		 	 
+		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverChangesStatusForExpense(expenses.getId(), "APPROVED");
+		    boolean isSahApproved = false;
+		    if(isSah != null){
+		        	isSahApproved = true;
+		    }
+		    model.addObject("isSahApproved", isSahApproved);	
+			model.addObject("expenses", expenses);
+		}else if(expenses == null){
+			expenseId = addExpensesService.getExpenseId();
+			model.addObject("ExpensesId", expenseId);
+		}
+		
 		List<ProjectMembers> projectMembersList = addExpensesService.getAllProjectsForExpenses(orgLoc,loginUser);
 		model.addObject("projectMembersList", projectMembersList);
 		request.getSession().setAttribute("sessionData", sessionData);
@@ -87,6 +125,7 @@ public class ExpencesController {
 		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
 	    model.addObject("expensesCategoryList", expensesCategoryList);
 		
+	    
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
 		return model;
@@ -110,7 +149,7 @@ public class ExpencesController {
 		
 	
 	@RequestMapping(value = "/addApprovalExpense")
-	public ModelAndView addApprovalExpense(HttpServletRequest request) throws Exception
+	public ModelAndView addApprovalExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId) throws Exception
 	{
 		
 		ModelAndView model = new ModelAndView();
@@ -121,8 +160,21 @@ public class ExpencesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		sessionData.setNav(Constants.MY_EXPENSES);
-		String expensesId = addExpensesService.getExpenseId();
-		model.addObject("ExpensesId", expensesId);
+		/*String expensesId = addExpensesService.getExpenseId();
+		model.addObject("ExpensesId", expensesId);*/
+		
+		Expenses expenses = null;
+		if(null != expenseId && !expenseId.isEmpty()){
+			expenses = expensesService.getExpenseByExpenseUniqueId(expenseId);
+			expenses.setStartDateStr(Constants.DF_DMY.format(expenses.getStartDate()));
+			if(null != expenses.getEndDate()){
+				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
+			}
+			model.addObject("expenses", expenses);
+		}else if(expenses == null){
+			expenseId = addExpensesService.getExpenseId();
+			model.addObject("ExpensesId", expenseId);
+		}
 		
 		List<Projects> projectsList = projectsService.getProjectsByOrgLocationsIdAndApproverUserId(orgLoc.getId(),loginUser.getId());
 		model.addObject("projectsList", projectsList);

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesEntries;
 
 @SuppressWarnings("rawtypes")
 @Repository
@@ -39,6 +40,28 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setCacheable(true).list();
 		return expensesList;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Expenses> getIndividualExpense(Long orgLocId, Long loginUserId, String expenseId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Long expenseIdLong= Long.parseLong(expenseId);
+		String query = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and expenses.id =:expenseIdLong"; 
+		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("expenseIdLong", expenseIdLong).setCacheable(true).list();
+		return expensesList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesEntries> getExpensesEntries(String expenseId) {
+		Session session = this.sessionFactory.getCurrentSession(); 
+		Long expenseIdLong= Long.parseLong(expenseId);
+		String query = "from ExpensesEntries expensesEntries  left join fetch expensesEntries.expensesCategoryId left join fetch expensesEntries.expensesId ex where ex.id =:expenseIdLong"; 
+		List<ExpensesEntries> expensesEntriesList =session.createQuery(query).setLong("expenseIdLong", expenseIdLong).setCacheable(true).list();
+		return expensesEntriesList;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -52,5 +75,18 @@ public class ExpensesDaoImpl implements ExpensesDao {
 			expensesList = (Expenses) expenses.iterator().next();
 		}
 		return expensesList;
+	}
+	
+	@Override
+	@Transactional
+	public Expenses getExpenseByExpenseUniqueId(String expenseId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Expenses  expense =  null;
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId").setString("expenseId", expenseId).setCacheable(true).list();
+		if(null != expensesList && expensesList.size() >0){
+			expense = expensesList.get(0);
+		}
+		return expense;
 	}
 }

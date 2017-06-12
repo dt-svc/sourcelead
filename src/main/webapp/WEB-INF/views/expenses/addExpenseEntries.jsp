@@ -3,244 +3,95 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<style type="text/css">
+  .dropdown_inr select {
+ height: 34px; color: #fff;
+ }
+ .uploadFile {
+ width: 100%;
+ }
+ .uploadFile span {
+ max-width: 100% !important; width: 100% !important;
+ }
+ .uploadFile span input {
+ width: 90% !important;
+ }
+ .uploadFile table i {
+ margin-left:10px;
+ }
+  .expAddRo, .expDetails {
+ background-color: #f5f5f5;
+ } 
+ .expDetails {
+ padding: 15px 0;
+ }
+ .expensTableView table tr td {
+ padding: 0 !important;
+ }
 
-
+ </style>
 <script>
-function loadCategoryDiv(projectStartDate, projectEndDate, trId){
-	var categoryTypeVal = "";
-	var categoryDateVal = "";
-	var receiptIssuedByVal = "";
-	var paymentModeVal = "";
-	var expenseRateTypeVal = "";
-	var expenseAmountVal = "";
-	var entryDesVal = "";
-	
-	if(null != trId && 'undefined' != trId && '' != trId){
-		categoryTypeVal = $("#categoryType"+trId).val();
-		categoryDateVal = $("#categoryDate"+trId).val();
-		receiptIssuedByVal = $("#receiptIssuedBy"+trId).val();
-		paymentModeVal = $("#paymentMode"+trId).val();
-		expenseRateTypeVal = $("#expenseRateType"+trId).val();
-		expenseAmountVal = $("#expenseAmount"+trId).val();
-		entryDesVal = $("#entryDes"+trId).val();
+function hideAndShowDetailsRow(rowId){
+	var validation_required = "true";
+	var entityId = parseInt(rowId-1);
+	var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+	if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+		for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
+		   if($("#"+i+"DbdocFileIsDeleted"+entityId).val() == 'N')
+		   {
+			   $("#"+i+"document"+entityId).removeAttr('style');
+			   validation_required = "false";
+			   
+		   }
+		}
 	}
-
-	var result = "";
-	result = result + '<div class="modal-dialog modal-lg">';
-	result = result + '	<div class="modal-content">';
-	result = result + '		<div class="modal-header">';
-	result = result + '			<button type="button" class="close" data-dismiss="modal">&times;</button>';
-	result = result + '			<h4 class="modal-title">Add Expense Category</h4>';
-	result = result + '		</div>';
-	result = result + ' <form:form id="entity_form" name="entity_form" method="post">';
-	result = result + '		<div class="modal-body clearfix expPopCon">';
-	result = result + '			<div class="row">';
-	result = result + '				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">';
-    
-	result = result + '					<div class="form-group">';
-	result = result + '						<label class="col-md-4">Category Type<span class="text-danger">&nbsp;*</span></label>';
-	result = result + '						<div class="col-md-8">';
-	result = result + '							<select class="chosen-select form-control" id="categoryType" name="categoryType" field-name="Category Type" data-validation="required">';
-	result = result + '								<option value="">Select Category Type</option>';				 							   
-												   <c:forEach var="expCat" items="${expensesCategoryList}">
-												   if("${expCat.id}" == categoryTypeVal){
-	result = result + ' 							   <option value="${expCat.id}" selected>${expCat.expensesName}</option>';
-												   }
-												   if("${expCat.id}" != categoryTypeVal){
-	result = result + ' 							   <option value="${expCat.id}">${expCat.expensesName}</option>';
-												   }
-						                	       </c:forEach>
-	result = result + '							</select>';
-	result = result + '						</div>';
-	result = result + '					</div>';
-    
-	result = result + '					<div class="form-group">';
-	result = result + '						<label class="col-md-4">Date<span class="text-danger">&nbsp;*</span></label>';
-	result = result + '						<div class="col-md-8">';
-	result = result + '							<input type="text" class="form-control calendar" value="'+categoryDateVal+'" name="categoryDate" id="categoryDate" placeholder="Date" field-name="Date" data-validation="required">';
-	result = result + '						</div>';
-	result = result + '					</div>';
-    
-	result = result + '					<div class="form-group">';
-	result = result + '						<label class="col-md-4">Receipt Issued by<span class="text-danger">&nbsp;*</span></label>';
-	result = result + '						<div class="col-md-8">';
-	result = result + '							<input type="text" class="form-control" name="receiptIssuedBy" id="receiptIssuedBy" value="'+receiptIssuedByVal+'" field-name="Receipt Issued By" data-validation="required">';
-	result = result + '						</div>';
-	result = result + '					</div>';
-    
-	result = result + '					<div class="form-group">';
-	result = result + '						<label class="col-md-4">Payment Mode<span class="text-danger">&nbsp;*</span></label>';
-	result = result + '						<div class="col-md-8 dropdown-select">';
-	result = result + '							<select class="form-control" name="paymentMode" id="paymentMode" field-name="Payment Mode" data-validation="required">';
-	result = result + '								<option value="">Select Mode</option>';
-	result = result + '								<option '+ (paymentModeVal == "Credit Card" ? "selected" : '') +' value="Credit Card">Credit Card</option>';
-	result = result + '								<option '+ (paymentModeVal == "Debit Card" ? "selected" : '') +' value="Debit Card">Debit Card</option>';
-	result = result + '								<option '+ (paymentModeVal == "Cash" ? "selected" : '') +' value="Cash">Cash</option>';
-	result = result + '								<option '+ (paymentModeVal == "Cheque" ? "selected" : '') +' value="Cheque">Cheque</option>';
-	result = result + '								<option '+ (paymentModeVal == "e-Wallet" ? "selected" : '') +' value="e-Wallet">e-Wallet</option>';
-	result = result + '							</select>';
-	result = result + '						</div>';
-	result = result + '					</div>';
-    
-	result = result + '					<div class="form-group">';
-	result = result + '						<label class="col-md-4">Amount<span class="text-danger">&nbsp;*</span></label>';
-	result = result + '						<div class="col-md-8">';
-	result = result + '						<div class="input-group er ratetype">';
-	result = result + '							<div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">';
-	if(null != trId && 'undefined' != trId && '' != trId){
-		result = result + '								<select class="selectpicker" id="expenseRateType" name="expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">';
-		result = result + '									<option '+ (expenseRateTypeVal == "INR" ? "selected" : '')+' >INR</option>';
-		result = result + '									<option '+ (expenseRateTypeVal == "AUD" ? "selected" : '')+' >AUD</option>';
-		result = result + '									<option '+ (expenseRateTypeVal == "USD" ? "selected" : '')+' >USD</option>';
-		result = result + '									<option '+ (expenseRateTypeVal == "GBP" ? "selected" : '')+' >GBP</option>';
-		result = result + '									<option '+ (expenseRateTypeVal == "SGD" ? "selected" : '')+' >SGD</option>';
-		result = result + '									<option '+ (expenseRateTypeVal == "EUR" ? "selected" : '')+' >EUR</option>';
-		result = result + '								</select>';
-	}else{
-		result = result + '								<select class="selectpicker" id="expenseRateType" name="expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">';
-		result = result + '									<option ${currencyCode  == "INR" ? "selected" : ""}>INR</option>';
-		result = result + '									<option ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>';
-		result = result + '									<option ${currencyCode  == "USD" ? "selected" : ""}>USD</option>';
-		result = result + '									<option ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>';
-		result = result + '									<option ${currencyCode  == "AUD" ? "selected" : ""}>SGD</option>';
-		result = result + '									<option ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>';
-		result = result + '								</select>';
+	if(validation_required == "true"){
+		 $("#0docFile"+entityId).removeAttr('data-validation-optional');
+		 $("#0docFile"+entityId).attr('data-validation','required');
+	}
+	else{
+		$("#0docFile"+entityId).removeAttr('data-validation');
+		 $("#0docFile"+entityId).attr('data-validation-optional','true');
 	}
 	
-	result = result + '							</div>';
-	result = result + '							<input type="text" class="form-control"  name="expenseAmount" id="expenseAmount" value="'+expenseAmountVal+'" field-name="Amount" data-validation="required validate_int">';
-	result = result + '						</div>';
-	result = result + '						</div>';
-	result = result + '					</div>';
-	result = result + '					<div class="form-group">';
-	result = result + '						<label class="col-md-4">Description</label>';
-	result = result + '						<div class="col-md-8">';
-	result = result + '							<textarea rows="2" class="form-control" name="entryDes" id="entryDes" placeholder="Description">'+entryDesVal+'</textarea>';
-	result = result + '						</div>';
-	result = result + '					</div>';
-	result = result + "                 <div id='attachmentSection' class='commentFile timesheet_week_comm ml'>"; 
-	result = result + "                 <input type='hidden' name='attcahmentMaxRowNumber'  id='attcahmentMaxRowNumber' value='1' />";
-	result = result + "                    <span>"; 
-	result = result + "                        <table class='timesheetAttachment' id='attachmentTable' cellpadding='0' cellspacing='0'>";
-	result = result + "                          <tr id='divAttachmentTsRow0'>";
-	result = result + "                              <td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment()'></i></div></td> ";
-	result = result + "                          </tr>";
-	result = result + "                      </table>";
-	result = result + "                    </span>";
-	result = result + "                  <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>"; 
-	result = result + "                </div>";
-	
-	
-	
-	result = result + '</form:form>';
-	result = result + '				</div>';
-	result = result + '			</div>';
-	result = result + '		</div>';
-    
-	result = result + '		<div class="modal-footer">';
-	result = result + '			<span class="col-md-4 jquery_form_error_message" id="exceedSpan"></span>';
-	if(null != trId && 'undefined' != trId && '' != trId){
-		result = result + '			<button type="button" class="btn btn-primary btn-sm" id="btnEntryUpdate" onclick="addEntity('+trId+');">Update</button>';
-	}else{
-		result = result + '			<button type="button" class="btn btn-primary btn-sm" id="btnEntryAdd" onclick="addEntity();">Add</button>';
+	if($("#divEntityTsRow"+rowId).is(':visible'))
+   {
+		$("#divEntityTsRow"+rowId).removeAttr('style');
+		$("#divEntityTsRow"+rowId).attr('style','display:none;');
+   }
+	else{
+		$("#divEntityTsRow"+rowId).removeAttr('style');
 	}
-	result = result + '			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearValidations();">Close</button>';
-	result = result + '		</div>';
-	result = result + '	</div>';
-	result = result + '</div>';
-	result = result + '</div>';
 	
-	$("#addExpenseEntity").empty();
-	$("#addExpenseEntity").append(result);
-	$("#expenseRateType").selectpicker("refresh");
-	
-	$('#categoryDate').datepicker({
-		dateFormat : 'dd-mm-yy',
-		changeMonth : true,
-		changeYear : true,
-		minDate : projectStartDate,
-		maxDate : projectEndDate,
-	  });
-	
-		$("#categoryDate").datepicker("destroy");
-		$('#categoryDate').datepicker({
-					dateFormat : 'dd-mm-yy',
-					changeMonth : true,
-					changeYear : true,
-					minDate : projectStartDate,
-					maxDate : projectEndDate,
-		});
-	
-	var selectedFile1 = document.getElementById("uploadBtn1");
-    selectedFile1.addEventListener("change", function() {
-    	 $("#uploadFile1").focus();
-    	 if(validate_fileupload(this.value)){
-    		 var docSize = this.files[0].size;
-   	      $("#uploadFileGroup1").find('p.jquery_form_error_message').remove();
-   	      if(docSize > 2097152){
-   	    	  document.getElementById("uploadFile1").value = '';
-   	    	  $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
-   			  $("input#uploadFile1").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-   			  document.getElementById("uploadFile1").setAttribute('record-exist','yes');
-   			  document.getElementById("uploadFile1").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-   	      }else{
-   	    	 $('input#uploadFile1').removeAttr( "record-exist record-exist-errormsg");
-      		 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove(); 
-    	    }
-    	 }
-    });
-   /* upload file script */
-   document.getElementById("uploadBtn1").onchange = function () {
-   	$('#uploadFile1').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-   };
-   
-	var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-			});
-$("#categoryType").trigger("chosen:updated");
 }
-
-</script>
-
-<script>
-function addAttachment(){  
-			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber").val();
-			var tbl = document.getElementById("attachmentTable");
-			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber']").val());
-			$("input[name = 'attcahmentMaxRowNumber']").val(maxRowNum + 1);
-			
-			
-			var row = tbl.insertRow(maxRowNum);
-			row.setAttribute("id", "divAttachmentTsRow" + maxRowNum);
-			
-			
-			var cell0 = row.insertCell(0);
-			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
-			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
-			cell0.innerHTML = divAttachmentTdStr;
-			
-			/* timesheetAttachmentValidationFun(); */
-			
-}			
-</script>
-
+</script>	
 <script type="text/javascript">
-	function removeAttachmentRow(rowId) {
-		 document.getElementById("divAttachmentTsRow"+rowId).style.display = 'none';
-		 document.getElementById("divAttachmentTsRow"+rowId).value= '';
-		 var  rId = "divAttachmentTsRow"+rowId;
-		  var r = document.getElementById("attachmentTable").rows[rId];
+	function removeDbAttachment(documentId,entityId) {
+		var validation_required = "true";
+		$("#"+documentId+"document"+entityId).attr('style','display:none');
+		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+		if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
+			   if($("#"+i+"document"+entityId).is(':visible'))
+			   {
+				   validation_required = "false";
+				   
+			   }
+			}
+		}
+		
+		if(validation_required == "true"){
+			 $("#0docFile"+entityId).removeAttr('data-validation-optional');
+			 $("#0docFile"+entityId).attr('data-validation','required');
+		}
+	}
+</script>
+<script type="text/javascript">
+	function removeAttachmentRow(rowId,entryRowId) {
+		 document.getElementById(entryRowId+"divAttachmentTsRow"+rowId).style.display = 'none';
+		 document.getElementById(entryRowId+"divAttachmentTsRow"+rowId).value= '';
+		 var  rId = entryRowId+"divAttachmentTsRow"+rowId;
+		  var r = document.getElementById("attachmentTable"+entryRowId).rows[rId];
           var count = 2*(r.cells.length);
 		    for(i=0;i<=count;i++){
 		        r.deleteCell(0);
@@ -248,90 +99,358 @@ function addAttachment(){
 		 
 	}
 </script>
+<script>
+function addAttachment(entityRowId,from){ 
+	      
+			var checkMaxTsRowNum = $("#attcahmentMaxRowNumber"+entityRowId).val();
+			var tbl = document.getElementById("attachmentTable"+entityRowId);
+			var maxRowNum = parseInt($("input[name = 'attcahmentMaxRowNumber"+entityRowId+"']").val());
+			$("input[name = 'attcahmentMaxRowNumber"+entityRowId+"']").val(maxRowNum + 1);
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", entityRowId+"divAttachmentTsRow" + maxRowNum);
+			
+			
+			var cell0 = row.insertCell(0);
+			var divAttachmentTdStr = document.getElementById("divAttachmentTd1").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			divAttachmentTdStr = divAttachmentTdStr.replace(/ENTITYROWID/g, (entityRowId));
+			if(from != null && from != '' && from !='undefined' && from == 'EDIT'){
+				divAttachmentTdStr = divAttachmentTdStr.replace(/ENTITYROWID/g, "data-validation-optional='true'");
+			}
+			else{
+				divAttachmentTdStr = divAttachmentTdStr.replace(/ENTITYROWID/g, "data-validation='required'");
+			}
+			cell0.innerHTML = divAttachmentTdStr;
+			
+			/* timesheetAttachmentValidationFun(); */
+			
+  }			
+</script>
+<script type="text/javascript">
+	function removeExpenseRow(rowId,detailsRowId) {
+		 document.getElementById("divEntityTsRow"+rowId).style.display = 'none';
+		 document.getElementById("divEntityTsRow"+rowId).value= '';
+		 var  rId = "divEntityTsRow"+rowId;
+		 var r = document.getElementById("categoryTable").rows[rId];
+		    
+	    document.getElementById("divEntityTsRow"+detailsRowId).style.display = 'none';
+		document.getElementById("divEntityTsRow"+detailsRowId).value= '';
+		var  rId1 ="divEntityTsRow"+detailsRowId;
+		var r1 = document.getElementById("categoryTable").rows[rId1];
+	    
+	    var count = 2*(r.cells.length);
+	     for(i=0;i<=count;i++){
+	        if(i==0){
+	    		 r1.deleteCell(0);
+	    	}
+	    	
+	        r.deleteCell(0);
+	     } 
+	}
+</script>
+<div id="divAttachmentTd1" style="display: none; float: left;">
+	   <div id='REPLACEROWIDdocFileuploadFileGroupENTITYROWID'>
+ 			<input type='file' name='REPLACEROWIDdocFileENTITYROWID' id='REPLACEROWIDdocFileENTITYROWID' VALIDATIONCONDITION  field-name="Attachment" class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID,ENTITYROWID)'> 
+ 			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID,ENTITYROWID);"></i>
+ 		</div>
+ </div>
+<div id="divAddRowTr1Td1" style="display: none; float: left;">
+    <div id="categoryTypeDivREPLACEROWID">--</div>
+</div>
+<div id="divAddRowTr1Td2" style="display: none; float: left;">
+    <div id="categoryDateDivREPLACEROWID">--</div>
+</div>
+<div id="divAddRowTr1Td3" style="display: none; float: left;">
+    <div id="paymentModeDivREPLACEROWID">--</div>
+</div>
+<div id="divAddRowTr1Td4" style="display: none; float: left;">
+    <div id="expenseRateTypeDivREPLACEROWID">--</div>
+</div>
+<div id="divAddRowTr1Td5" style="display: none; float: left;">
+    <div id="expenseAmountDivREPLACEROWID">--</div>
+    
+</div>
+<div id="divAddRowTr1Td6" style="display: none; float: left;">
+   <div id="entryDesDivREPLACEROWID" class="tbldata-dotdot_50">--</div>
+</div>
+<div id="divAddRowTr1Td7" style="display: none; float: left;">
+       <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
+			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(REPLACEDOWNROWID);"></i></span>
+			<i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID)"></i>
+		</div>
+</div>
+<div id="divAddRowTr2" style="display: none; float: left;">
+         <div class="expDetails">
+			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
+						<div class="col-md-4 mb10">
+						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
+							<select id="categoryTypeREPLACEROWID" name="categoryTypeREPLACEROWID" class="form-control" field-name="Category Type" data-validation="required">
+							   <option value="">Select Category Type</option>				 							   
+							   <c:forEach var="expCat" items="${expensesCategoryList}">
+					                 <option value="${expCat.id}">${expCat.expensesName}</option>
+	                	       </c:forEach>
+							</select>
+						</div>
+						<div class="col-md-4 mb10">
+							<label>Date<span class="text-danger">&nbsp;*</span></label>
+							<input type="text" id="categoryDateREPLACEROWID" name="categoryDateREPLACEROWID" readonly="readonly" onclick="displayCalendar('REPLACEROWID')" class="form-control calendar" value="" placeholder="Date" field-name="Date" data-validation="required"> 
+						</div>
+						<div class="col-md-4 mb10">
+							<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
+							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required"> 
+						</div>
+						<div class="col-md-4 mb10">
+							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
+							<select id="paymentModeREPLACEROWID" name="paymentModeREPLACEROWID" class="form-control" field-name="Payment Mode" data-validation="required">
+							         <option value="">Select Mode</option>
+	                                 <option  value="Credit Card">Credit Card</option>
+	                                 <option  value="Debit Card">Debit Card</option>
+	                                 <option  value="Cash">Cash</option>
+	                                 <option  value="Cheque">Cheque</option>
+	                                 <option  value="e-Wallet">e-Wallet</option>
+							</select>
+						</div>	
+	                  <div class="col-md-4 mb10">
+		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
+							  <div class="input-group er ratetype">
+									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
+											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseRateTypeREPLACEROWID" field-name="Rate Type" field-name="Rate Type" data-validation="required">
+											  	<option value="INR" ${currencyCode  == "INR" ? "selected" : ""}>INR</option>
+											  	<option value="AUD" ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>
+											  	<option value="USD" ${currencyCode  == "USD" ? "selected" : ""}>USD</option>
+											  	<option value="GBP" ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>
+											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</opton>
+											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
+											  </select>
+									 </div>
+							         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_int">
+								</div>
+	                 </div>
+					<div class="col-md-4 mb10">
+						<label>Description</label>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description"></textarea>
+					</div>		
+	                   <div id='attachmentSection' class='col-md-4 mb10'>
+	                   <div class="uploadFile timesheet_week_comm">
+		                 <input type='hidden' name='attcahmentMaxRowNumberREPLACEROWID'  id='attcahmentMaxRowNumberREPLACEROWID' value='1' />
+		                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
+		                 <span> 
+		                     <table class='timesheetAttachment' id='attachmentTableREPLACEROWID' cellpadding='0' cellspacing='0' width="100%">
+		                       <tr id='REPLACEROWIDdivAttachmentTsRow0'>
+		                           <td><div id='0docFileuploadFileGroupREPLACEROWID'><input type='file' name='0docFileREPLACEROWID' id='0docFileREPLACEROWID' field-name='Attachment' onchange='validateUploadFile(0,REPLACEROWID)' data-validation='required' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(REPLACEROWID,"NEW")'></i></div></td> 
+		                       </tr>
+		                   </table>
+		                 </span>
+		             </div>
+		             </div>   						  						  
+					</div>
+					      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
+						      <div class="pull-right  mr mt10">
+						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary ml" onclick="addExpenseCategory(REPLACEROWID);">
+						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default ml" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);">
+						      </div>
+					      </div>
+						 <div class="clearfix"></div>
+		   </div>
+</div>
 
 <script>
-window.recCount = 1;
-function addEntity(trId){
-	
-		var validationSettings = {
-			errorMessagePosition : 'element',
-			borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd'
-		};
-	
-	
-	
-	var entriesCount = $('#entriesTable >tbody >tr').length;
-	if(parseInt(entriesCount , 10) >= parseInt('20' , 10)){
-		$("#exceedSpan").text("Your entries limit is exceed");
-		$(this).hide();
-	}else{
-		
-		if ($('#entity_form').validate(false, validationSettings)) {
-				if(null != trId && 'undefined' != trId && '' != trId){
-					$("#btnEntryUpdate").attr("disabled", true);
-					deleteEntityRec(trId);
-				}else{
-					$("#btnEntryAdd").attr("disabled", true);
-				}
-				var categoryType = $("#categoryType").val();
-		  		var categoryTypeName = $("#categoryType option[value='"+categoryType+"']").text();
-				var categoryDate = $("#categoryDate").val();
-				var receiptIssuedBy = $("#receiptIssuedBy").val();
-				var paymentMode = $("#paymentMode").val();
-				var expenseRateType = $("#expenseRateType").val();
-				var expenseAmount = $("#expenseAmount").val();
-				var descriptions = $("#entryDes").val();
-				var startDate = $("#projectStartDateExpensesId").val();
-				var endDate = $("#projectEndDateExpensesId").val();
-				var attcahmentMaxRowNumber=$("#attcahmentMaxRowNumber").val();
-				var result = "";
-				result = result + '<tr id="'+recCount+'">';
-				result = result + '<td><input type="hidden" name="categoryType'+recCount+'" id="categoryType'+recCount+'" value="'+categoryType+'"><div>'+categoryTypeName+'</div></td>';
-				result = result + '<td><input type="hidden" name="categoryDate'+recCount+'" id="categoryDate'+recCount+'" value="'+categoryDate+'"><div>'+categoryDate+'</div></td>';
-				result = result + '<td><input type="hidden" name="receiptIssuedBy'+recCount+'" id="receiptIssuedBy'+recCount+'" value="'+receiptIssuedBy+'"><div>'+receiptIssuedBy+'</div></td>';
-				result = result + '<td><input type="hidden" name="expenseRateType'+recCount+'" id="expenseRateType'+recCount+'" value="'+expenseRateType+'"><div>'+expenseRateType+'</div></td>';
-				result = result + '<td><input type="hidden" name="expenseAmount'+recCount+'" id="expenseAmount'+recCount+'" value="'+expenseAmount+'"><div>'+expenseAmount+'</div>';
-				result = result + '<input type="hidden" name="paymentMode'+recCount+'" id="paymentMode'+recCount+'" value="'+paymentMode+'">';
-				result = result + '<input type="hidden" name="attcahmentMaxRowNumber'+recCount+'" id="attcahmentMaxRowNumber'+recCount+'" value="'+attcahmentMaxRowNumber+'">';
-				result = result + '<div  id="attachmentDiv'+recCount+'" >'; 
-				result = result + '</div></td>'; 
-				result = result + '<td><input type="hidden" class="tbldata-dotdot-me" name="entryDes'+recCount+'" id="entryDes'+recCount+'" value="'+descriptions+'"><div>'+descriptions+'</div></td>';
-				result = result + '<td><div class="tbldata-dotdot_50"><i class="fa fa-pencil-square-o" data-toggle="modal" data-target="#addExpenseEntity" onclick="loadCategoryDiv('+startDate+',\''+endDate+'\','+recCount+');"></i> <i class="glyphicon glyphicon-trash" onclick="deleteEntityRec('+recCount+');"></i></div></td>';
-				result = result + '</tr>';
-				$("#divBody").append(result);
-				for(var i=0 ;i<attcahmentMaxRowNumber;i++){
-					 var $fileInput = $("#"+i+"docFile");
-					 var $fakeInput = $fileInput.clone();
-					 $fileInput.removeAttr('id');
-					 $fileInput.attr('id',i+"docFile"+recCount);
-					 $fileInput.removeAttr('name');
-					 $fileInput.attr('name',i+"docFile"+recCount);
-					 $fileInput.removeAttr('data-validation');
-					 $fileInput.removeAttr('onchange');
-					 $("#attachmentDiv"+recCount).append($fileInput);
-					 $("#attachmentDiv"+recCount).removeAttr('style');
-					 $("#attachmentDiv"+recCount).attr('style','display:none;'); 
-				}
-				$(".modal-backdrop").fadeOut(200);
-				$(".modal").slideUp(200);
-				$(".modal-dialog").slideUp(300);
-				recCount = recCount + 1;
-				$("#addExpenseEntity").empty();
-				$("#addExpenseEntity").append("");
-			}
+function addExpenseRow(){ 
+	if ($('#add_expenses_form').validate(false, validationSettings)){
+		    var maxRecCount = $("#maxRecCount").val();
+			var tbl = document.getElementById("categoryTable");
+			var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+			$("#maxRecCount").val(parseInt(maxRowNum + 2));
+			
+			
+			var row = tbl.insertRow(maxRowNum);
+			row.setAttribute("id", "divEntityTsRow" + maxRowNum);
+			
+			var cell0 = row.insertCell(0);
+			var divRowTd1Str = document.getElementById("divAddRowTr1Td1").innerHTML;
+			divRowTd1Str = divRowTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell0.innerHTML = divRowTd1Str;
+			
+			
+			var cell1 = row.insertCell(1);
+			var divRowTd2Str = document.getElementById("divAddRowTr1Td2").innerHTML;
+			divRowTd2Str = divRowTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell1.innerHTML = divRowTd2Str;
+			
+			
+			var cell2 = row.insertCell(2);
+			var divRowTd3Str = document.getElementById("divAddRowTr1Td3").innerHTML;
+			divRowTd3Str = divRowTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell2.innerHTML = divRowTd3Str;
+			
+			
+			var cell3 = row.insertCell(3);
+			var divRowTd4Str = document.getElementById("divAddRowTr1Td4").innerHTML;
+			divRowTd4Str = divRowTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell3.innerHTML = divRowTd4Str;
+			
+			var cell4 = row.insertCell(4);
+			var divAttachmentTdStr = document.getElementById("divAddRowTr1Td5").innerHTML;
+			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+			cell4.innerHTML = divAttachmentTdStr;
+			
+			
+			var cell5 = row.insertCell(5);
+			var divRowTd5Str = document.getElementById("divAddRowTr1Td6").innerHTML;
+			divRowTd5Str = divRowTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
+			cell5.innerHTML = divRowTd5Str;
+			
+			var cell6 = row.insertCell(6);
+			var divRowTd6Str = document.getElementById("divAddRowTr1Td7").innerHTML;
+			divRowTd6Str = divRowTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divRowTd6Str = divRowTd6Str.replace(/REPLACEDOWNROWID/g, (parseInt(maxRowNum + 1)));
+			cell6.innerHTML = divRowTd6Str;
+			
+			
+			var detailsRow = parseInt(maxRowNum+1);
+		    var row1 = tbl.insertRow(detailsRow);
+		    row1.setAttribute("id", "divEntityTsRow" + detailsRow);
+			
+			
+			var cell2_0 = row1.insertCell(0);
+			var divRowTd2_0Str = document.getElementById("divAddRowTr2").innerHTML;
+			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divRowTd2_0Str = divRowTd2_0Str.replace(/REPLACEDOWNROWID/g, (maxRowNum+1));
+			cell2_0.innerHTML = divRowTd2_0Str;
+			cell2_0.colSpan = 7;
+			
+	   }
+	else{
+		var maxRecCount = $("#maxRecCount").val();
+		if(maxRecCount >1){
+			   var rowId = parseInt(maxRecCount-1);
+			   if($("#divEntityTsRow"+rowId).is(':hidden'))
+			   {
+					$("#divEntityTsRow"+rowId).removeAttr('style');
+			   }
+			
 		}
 	}
-
-function clearValidations(){
+			
+  }			
+</script>
+<script>
+	function addExpenseCategory(entityId) {
+		var dbAttachmentMaxRowNumber = $("#dbAttachmentMaxRowNumber"+entityId).val();
+		if(dbAttachmentMaxRowNumber != null && dbAttachmentMaxRowNumber != '' && dbAttachmentMaxRowNumber != 'undefined'){
+			for(var i = 0; i < dbAttachmentMaxRowNumber; i++){
+			   if($("#"+i+"document"+entityId).is(':hidden'))
+			   {
+				   $("#"+i+"DbdocFileIsDeleted"+entityId).val('Y');
+				   
+			   }
+			}
+		}
+		
+		/* $("#"+documentId+"DbdocFileIsDeleted"+entityId).val('Y'); */
+		if ($('#add_expenses_form').validate(false, validationSettings)){
+			
+			var categoryType = $("#categoryType"+entityId).val();
+			var categoryTypeName = $("#categoryType"+entityId+" option[value='"+categoryType+"']").text();
+			var categoryDate = $("#categoryDate"+entityId).val();
+			var receiptIssuedBy = $("#receiptIssuedBy"+entityId).val();
+			var paymentMode = $("#paymentMode"+entityId).val();
+			var expenseRateType = $("#expenseRateType"+entityId).val();
+			var expenseAmount = $("#expenseAmount"+entityId).val();
+			var descriptions = $("#entryDes"+entityId).val();
+			$("#categoryTypeDiv"+entityId).html(categoryTypeName);
+			$("#categoryDateDiv"+entityId).html(categoryDate);
+			$("#receiptIssuedByDiv"+entityId).html(receiptIssuedBy);
+			$("#paymentModeDiv"+entityId).html(paymentMode);
+			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
+			$("#expenseAmountDiv"+entityId).html(expenseAmount);
+			$("#entryDesDiv"+entityId).html(descriptions);
+			
+			
+			$("#hideAndShowDetailsButton"+entityId).removeAttr('style');
+			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
+			$("#hideAndShowDetailsButton"+entityId).remove();
+			$("#hideAndShowDetailsDiv"+entityId).prepend(hideAndShowDetailsHtml);
+			
+			$("#addExpenseCategoryButton"+entityId).removeAttr('value');
+			$("#addExpenseCategoryButton"+entityId).attr('value','Update');
+			
+			$("#cancelExpenseCategoryButton"+entityId).removeAttr('onclick');
+			$("#cancelExpenseCategoryButton"+entityId).attr('onclick','hideAndShowDetailsRow('+parseInt(entityId+1)+')');
+			
+			
+			$("#divEntityTsRow"+parseInt(entityId+1)).removeAttr('style');
+			$("#divEntityTsRow"+parseInt(entityId+1)).attr('style','display:none;');
+			
+			return true;
+		}else{
+			return false;
+		}
+	}
+</script>
+<script>
+function displayCalendar(entityId){
+	$("#categoryDate"+entityId).datepicker("destroy");
+	var projectStartDate = $('#projectStartDateExpensesId').val();
+	var projectEndDate =   $('#projectEndDateExpensesId').val();
+	if((projectStartDate != null && projectStartDate != '' && projectStartDate != 'undefined') || 
+		(projectEndDate != null && projectEndDate != '' && projectEndDate != 'undefined')){
+			$('#categoryDate'+entityId).datepicker({
+				dateFormat : 'dd-mm-yy',
+				changeMonth : true,
+				changeYear : true,
+				minDate : projectStartDate,
+				maxDate : projectEndDate,
+	       }); 
+	}
+	else {
+		alert("Please Select StartDate & EndDate")
+	}
 	
 }
-
-function deleteEntityRec(trId){
-	$('table#entriesTable tr#'+trId).remove();
-}
-
 </script>
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
 
+    var allowed_extensions = new Array("ppt", "pptx", "pps", "ppsx", "doc", "docx", "pdf", "rtf", "odt", "xls", "xlsx", "csv", "zip", "txt", "jpg","jpeg","bmp","png","gif","eps","tiff","TGA","psd","svg","msg","wpd","wps");
+    var file_extension = fileName.split('.').pop(); 
 
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i] != null && allowed_extensions[i] != '' && allowed_extensions[i] != 'undefined' && allowed_extensions[i]==file_extension.toLowerCase())
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+ <script type="text/javascript">
+ function validateUploadFile(id,entityId)
+	{
+		 var selectedFile = $('#'+id+'docFile'+entityId).val();
+		  if(validate_fileupload(selectedFile)){
+			   var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
+		       $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();
+		      if(docSize > 2097152){
+		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();
+		    	  $('#'+id+'docFileuploadFileGroup'+entityId).find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+				  $('#'+id+'docFile'+entityId).attr('record-exist','yes');
+				  $('#'+id+'docFile'+entityId).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+		      }else{
+		    	  $('input#'+id+'docFile'+entityId).removeAttr( "record-exist record-exist-errormsg");
+	   		       $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove(); 
+		      }
+		  }
+		  else{
+			      $('#'+id+'docFileuploadFileGroup'+entityId).find('p.jquery_form_error_message').remove();
+			      $('#'+id+'docFileuploadFileGroup'+entityId).find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
+				  $('#'+id+'docFile'+entityId).attr('record-exist','yes');
+				  $('#'+id+'docFile'+entityId).attr('record-exist-errorMsg','Invalid Format'); 
+		  }
+		
+	 }
+</script>
