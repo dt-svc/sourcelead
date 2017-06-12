@@ -238,11 +238,22 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			var entriesCount = $('#categoryTable >thead >tr').length;
-			if($('#categoryTable tr:visible').length){
+			
+			var maxRecCount = $('#maxRecCount').val();
+			var validation_required = "true";
+			if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
+				for(var i = 1; i < maxRecCount; i++){
+				   if($("#divEntityTsRow"+i).is(':visible'))
+				   {
+					   validation_required = "false";
+				   }
+				}
+			}
+			if(validation_required == true){
 				$("#exceedSpan") .html( "<p class='jquery_form_error_message'>Minimum one category is required</p>");
 				return false;
-			}else{
+			}
+			else{
 				var frm = $('#add_expenses_form').serializeFormJSON();
 				var jsonData = JSON.stringify(frm);
 				var form = $('#add_expenses_form')[0];
