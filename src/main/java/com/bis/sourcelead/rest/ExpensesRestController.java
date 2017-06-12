@@ -46,11 +46,11 @@ public class ExpensesRestController {
 	
 	
 	@RequestMapping(value = "/getExpensesList")
-	 public String getExpensesList(HttpServletRequest request) throws Exception {
+	 public String getExpensesList(HttpServletRequest request, String expenseStatus) throws Exception {
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser);
+		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus);
 		for(Expenses ex:expensesList){
 			if(null != ex.getProjectMembers())
 			{

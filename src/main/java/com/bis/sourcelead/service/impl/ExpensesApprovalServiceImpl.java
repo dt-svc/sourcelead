@@ -69,8 +69,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	
 	@Override
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc) throws Exception {
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId());
+	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus) throws Exception {
+		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus);
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){

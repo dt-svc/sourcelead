@@ -1,11 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -60,7 +62,36 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long userId,Long orgLocationId) {
+	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long userId,Long orgLocationId, String expenseStatus) {
+		String[] expStatus = expenseStatus.split(",");
+		String subQuery2 = "";
+		if (Arrays.asList(expStatus).contains("ALL") || StringUtils.isEmpty(expenseStatus)) {
+			subQuery2 = subQuery2
+					+ "  sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' or sah.expenseApprovalStatus = 'APPROVED' or sah.expenseApprovalStatus = 'REJECTED' or sah.expenseApprovalStatus = 'REOPENED' ";
+		}
+		else{
+			if (Arrays.asList(expStatus).contains("SUBMITTEDFORAPPROVAL")) {
+				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' ";
+			}
+			if (Arrays.asList(expStatus).contains("APPROVED")) {
+				if(StringUtils.isNotEmpty(subQuery2)){
+					subQuery2 = subQuery2 + " OR ";
+				}
+				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'APPROVED' ";
+			}
+			if (Arrays.asList(expStatus).contains("REJECTED")) {
+				if(StringUtils.isNotEmpty(subQuery2)){
+					subQuery2 = subQuery2 + " OR ";
+				}
+				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'REJECTED' ";
+			}
+			if (Arrays.asList(expStatus).contains("REOPENED")) {
+				if(StringUtils.isNotEmpty(subQuery2)){
+					subQuery2 = subQuery2 + " OR ";
+				}
+				subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'REOPENED' ";
+			}
+		}
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where exp.orgLocationId.id = :orgLocationId"
 				
@@ -74,7 +105,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
 				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
-				+ "   ) ";
+				+ "   ) and ( " + subQuery2 +" )";
 				
 		@SuppressWarnings("unchecked")
 		List<ExpensesApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();

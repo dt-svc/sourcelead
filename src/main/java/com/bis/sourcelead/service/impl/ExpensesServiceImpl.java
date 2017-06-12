@@ -68,8 +68,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
 	@Override
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser) {
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId());
+	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus) {
+		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(), expenseStatus);
 
 		return expensesList;
 
