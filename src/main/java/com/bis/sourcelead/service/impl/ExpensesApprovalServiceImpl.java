@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -176,7 +177,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(14);
+	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
             table.setWidths(new int[]{7,7,5,3,5,5,5,7,3,3,3,3,3,5});
@@ -192,10 +193,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        }
 	        table.completeRow();
 	        java.util.List<String[]> expenseList = new ArrayList<>();
-	       // for(ExpensesApproverHierarchy expApperover : expApperoverHierarchy){
 	        	expenseList.add(prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers));
-	       // }
-	        	System.out.println(">>>>>>>>>>>"+table);
 	        for (String[] expenseArray: expenseList) {
                 for (int i = 0; i < expenseArray.length; i++) {
                     String datum = expenseArray[i];
@@ -356,21 +354,19 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 	File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet createExcelsheet = createExcelworkbook.createSheet( "PradeeporgName"+ "_" + dateFormat.format(new Date()));//orgName
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName()+ "_" + dateFormat.format(new Date()));//orgName
 		Row writeRow = null;
 		TimeSheetSubmissionCount requirementSubCount=null;
 		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
 		int column = 0;
 		for (ExpensesApproverHierarchy expensesList : expApperoverHierarchy) {
-			writeRow = createExcelsheet.createRow(column + 2);
+			writeRow = createExcelsheet.createRow(column+1);
 			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesList);
 			column++;
 		}
-		 /*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
 		 try {
-			file = File.createTempFile("PradeeporgName" + "_Requirements_" + dateFormat.format(new Date()),".xls");
+			file = File.createTempFile(orgLoc.getOrg().getOrgName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		 file.setReadable(true);
@@ -390,13 +386,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
 	String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;;
-	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,14);
+	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
 
 	return createExcelsheet;
 }
 
 private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchy ex) {
-	
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
@@ -404,59 +399,73 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 					if(null != expenseId.getProjectMembers().getEmployee().getUser()){
 						if(null != expenseId.getProjectMembers().getEmployee().getUser().getFirstName()){
 							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getFirstName());
+							createExcelsheet.autoSizeColumn(0);
 						}
 						if(null != expenseId.getProjectMembers().getEmployee().getUser().getEmail()){
 							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getEmail());
+							createExcelsheet.autoSizeColumn(1);
 						}
 						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone()){
 							writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone());
+							createExcelsheet.autoSizeColumn(2);
 						}
 					}
 					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType()){
 						writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getEmployee().getUserEmploymentType());
+						createExcelsheet.autoSizeColumn(3);
 					}
 					if((null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType())
 							&& ((expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C") ||
 									(expenseId.getProjectMembers().getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")) ))){
 						 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(expenseId.getProjectMembers().getEmployee().getOrgLocations().getId(), expenseId.getProjectMembers().getEmployee().getOrgRelationId().getId());
 						 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						 createExcelsheet.autoSizeColumn(4);
 					}
 				}
 				if(null != expenseId.getProjectMembers().getProjects()){
 					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
 						writeRow.createCell(5).setCellValue(expenseId.getProjectMembers().getProjects().getProjectName());
+						createExcelsheet.autoSizeColumn(5);
 					}
 				}
 			}
 			if(null != expenseId.getClientName()){
 				writeRow.createCell(6).setCellValue(expenseId.getClientName());
+				createExcelsheet.autoSizeColumn(6);
+			
 			}
 			if(null != expenseId.getPurpose()){
 				writeRow.createCell(7).setCellValue(expenseId.getPurpose());
+				createExcelsheet.autoSizeColumn(7);
 			}
 			if(null != expenseId.getStartDateStr()){
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
+				createExcelsheet.autoSizeColumn(8);
 			}
 			if(null != expenseId.getEndDateStr()){
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
+				createExcelsheet.autoSizeColumn(9);
 			}
 			if(null != expenseId.getNoOfExpenses()){
 				writeRow.createCell(10).setCellValue(expenseId.getNoOfExpenses());
+				createExcelsheet.autoSizeColumn(10);
 			}
 			if(expenseId.getTotalAmount() != 0){
                 StringBuilder str = new StringBuilder();
                 writeRow.createCell(11).setCellValue(str.append(expenseId.getTotalAmount()).toString());
+                createExcelsheet.autoSizeColumn(11);
 			}
-			if(null != expenseId.getStatus()){
-				writeRow.createCell(12).setCellValue(expenseId.getStatus());
+			if(null != expenseId.getExpenseStatus()){
+				writeRow.createCell(12).setCellValue(expenseId.getExpenseStatus().getValue());
+				createExcelsheet.autoSizeColumn(12);
 			}
 			if(null != ex.getActionPerformedBy()){
 				writeRow.createCell(13).setCellValue(ex.getActionPerformedBy());
+				createExcelsheet.autoSizeColumn(13);
 			}
 		}
 	return createExcelsheet;
 }
-
 
 	@Override
 	public  Boolean isTheExpenseTotallyApproved(Long expenseId){
@@ -468,9 +477,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
 		return expensesApprovalDao.getexpensesApproverHierarchyForEmployeeByExpenseId(expenseId);
 	}
-
-
-
 
 	@Override
 	public void updateExpenseStatusByExpenseId(Long expenseId, String status) {
@@ -485,5 +491,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	}
 
 
-}
+	@Override
+	public User updateExpenseStatusByExpenseIdAndReOpenReason(Long expenseId, String reason, User loginUser,
+			String type, String isSuperUser) {
+		return expensesApprovalDao.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId, reason, loginUser, type, isSuperUser);
+	}
 
+	
+}

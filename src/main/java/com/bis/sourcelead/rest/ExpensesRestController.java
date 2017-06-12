@@ -1,15 +1,21 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,11 +47,9 @@ public class ExpensesRestController {
 	
 	@RequestMapping(value = "/getExpensesList")
 	 public String getExpensesList(HttpServletRequest request) throws Exception {
-
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		//Integer expStatus  =expenseStatus;
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser);
 		for(Expenses ex:expensesList){
 			if(null != ex.getProjectMembers())
@@ -106,7 +110,41 @@ public class ExpensesRestController {
 		return resultJson;
 	 }
 	
-	
+	@RequestMapping(value = "/exportMyExpensesList")
+	 public void exportMyExpensesList(HttpServletRequest request,HttpServletResponse response,
+			 @RequestParam(value = "type", required = false) String type,
+			 @RequestParam(value = "Expid", required = false) String Expid) throws Exception {
+		
+		File file = null;
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		
+		Expenses ExpenseDetails = expensesService.getExpenseByExpenseId(Long.parseLong(Expid));
+
+		if(type.equalsIgnoreCase("PDF")){
+			file = expensesService.exportMyExpensesToPdf(ExpenseDetails,orgLoc,loginUser);
+		}else{
+			file = expensesService.exportMyExpensesToExcel(ExpenseDetails,orgLoc,loginUser);	
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file != null){
+			file.delete();
+		}
+	 }
 	
 	
 

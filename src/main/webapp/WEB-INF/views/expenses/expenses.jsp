@@ -19,7 +19,7 @@
           <div class="pull-left">
             <h2>My Expenses</h2>
           </div>
-          <div class="pull-right brud-crum">Home &raquo; Expenses</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses</div>
         </section>
         
 		<!-- Timesheet -->
@@ -106,22 +106,21 @@ function getExpensesList(){
           url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus,       
           success :function(data) {
         	  var result = "";
-					result = result +" <table id='expensesPagination'>                            ";
-					result = result +"	<thead>                   ";
-					result = result +"   	<tr>                          ";
-					result = result +"       	<th>Exp Id</th>           ";
-					result = result +"           <th>Purpose</th>         ";
-					result = result +"           <th>Project</th>         ";
-					result = result +"           <th>Client</th>          ";
-					result = result +"           <th>Start Date</th>      ";
-					result = result +"           <th>End Date</th>        ";
-					result = result +"           <th>No of Exp</th>       ";
-					result = result +"           <th>Amount</th>          ";
-					result = result +"           <th>Status</th>          ";
-					result = result +"       </tr>                        ";
-					result = result +"	</thead>	                      ";
-					result = result +"       <tbody>                      ";
-        	  
+					result = result +" <table id='expensesPagination'>";
+					result = result +"<thead>";
+					result = result +"<tr>";
+					result = result +"<th>Exp Id</th>";
+					result = result +"<th>Purpose</th>";
+					result = result +"<th>Project</th>";
+					result = result +"<th>Client</th>";
+					result = result +"<th>Start Date</th>";
+					result = result +"<th>End Date</th>";
+					result = result +"<th>No of Exp</th>";
+					result = result +"<th>Amount</th>";
+					result = result +"<th>Status</th>";
+					result = result +"</tr>";
+					result = result +"</thead>";
+					result = result +"<tbody>";
 					
 	        	  var json = JSON.parse(data);
 	        	  for (var i = 0; i < json.length; i++) { 
@@ -166,18 +165,17 @@ function getExpensesList(){
 	        		  }else{
 	        			  totalAmount = "--";
 	        		  }
-						 result = result +"        <tr>";
-						 result = result +"        	<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>             ";
-						 result = result +"            <td><div>"+purpose+"</div></td>                                                                    ";
-						 result = result +"            <td><div>"+projectMemberId+"</div></td>                                                                       ";
-						 result = result +"            <td><div>"+clientName+"</div></td>                                                                        ";
-						 result = result +"            <td><div>"+startDateStr+"</div></td>                                                                      ";
-						 result = result +"            <td><div>"+endDateStr+"</div></td>                                                                      ";
-						 result = result +"            <td><div>"+noOfExpenses+"</div></td>                                                                              ";
-						 result = result +"            <td><div>"+totalAmount+"</div></td>                                                                            ";
-						 result = result +"            <td> <div>"+report.expenseStatus+"</div></td>                                                                                               ";
-						 result = result +"        </tr>               			                                     "; 
-	                 
+						 result = result +"<tr>";
+						 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+						 result = result +"<td><div>"+purpose+"</div></td>";
+						 result = result +"<td><div>"+projectMemberId+"</div></td>";
+						 result = result +"<td><div>"+clientName+"</div></td>";
+						 result = result +"<td><div>"+startDateStr+"</div></td>";
+						 result = result +"<td><div>"+endDateStr+"</div></td>";
+						 result = result +"<td><div>"+noOfExpenses+"</div></td>";
+						 result = result +"<td><div>"+totalAmount+"</div></td>";
+						 result = result +"<td> <div>"+report.expenseStatus+"</div></td>";
+						 result = result +"</tr>"; 
 	        	  }
    			
         	  result = result +" </tbody>";
