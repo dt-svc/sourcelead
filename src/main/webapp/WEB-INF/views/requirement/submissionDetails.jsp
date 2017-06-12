@@ -469,14 +469,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			          result = result + ' <div class="panel-body row">';
 			          result = result + ' <div class="clearfix"><label class="col-md-2 text-right paddingRight">Requested by:</label><span class="col-md-9">'+json.submittedBy+'</span></div>';
 				          if(json.submissionRateStatus == 'ACCEPTED'){
-					           
 				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 				        	  }else{
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
 				        	  }
 				        	 }
-				        	  
+				          if(json.submissionRateStatus == 'REJECTED'){
+				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
+				        	  }else{
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
+				        	  }
+				        	 }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
@@ -686,7 +691,15 @@ function getInternalInterviewsList(submissionId){
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
+			                    	 alert("status"+report.proposeTimeStatus);
+			                    	 if(report.proposeTimeStatus="Y"){
+			                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
+				                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
+											result = result + '			</div>';
+											result = result + ' </a>';
+			                    	 }
+			                    	 
+// 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	/*  } */
 		                    }
 	                    	 result = result + '</span>';
@@ -698,7 +711,10 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Maybe"){
-	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
+	                    		 result = result + '<a href="javascript:void(0)"> <i  class="brder-int" onclick="viewProposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');">ProposedTime</i>';
+		                    	 result = result + '			<div class="proposeTimePop" id="viewProposeTimediv'+report.interviewId.id+'" >';
+									result = result + '			</div>';
+									result = result + ' </a>';
 	                    	 }
 	                    	 
 	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined' || report.notificationToApplicant == 'N'){
@@ -803,7 +819,11 @@ function getInternalInterviewsList(submissionId){
 	                    // $('#accordion-sl').find('.test2'+interviewId+'').addClass('active').next().slideDown('slow');
 	                     $('#accordion-sl h2:first').addClass('active').next().slideDown('slow'); 
 	                     $('#accordion-sl h2').click(function(id) {
+	                    	 $(".newMaxRowNum").val('1');
+	                    	 $(".maxRowNum").val('1');
+	                    	 
 	                    	 $(".reSchPop").removeClass("reSchPopActive");
+	                    	 $(".proposeTimePop").removeClass("proposeTimePopActive");
 	                    	 $('.demo').hide();
 	                    	 $(".interview-type").show();
 	                         if($(this).next().is(':hidden')) {
@@ -937,7 +957,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
 			                    	 '</sec:authorize>';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"><i class="fa fa-question-circle text-muted"></i></a>';
+			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.id+',\'Maybe\');" title="Maybe"><i class="fa fa-question-circle text-muted">111</i></a>';
 		                    	 }
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
@@ -1157,13 +1177,12 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.clientName+'</p>';
 	                        	 result = result + '</div>';
 	                    	 }
-	                    	 
 	                    	 if(report.offerId.amount !=null && report.offerId.amount !='' && report.offerId.amount !='undefined'){
 	                    		 result = result + '<div class="row clearfix">';
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Rate</strong>';
 	                        	 result = result + '</label>';
-	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.amount+'</p>';
+	                        	 result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.paymentType+'  '+report.offerId.amount+'  '+report.offerId.paymentMode+'</p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -1424,7 +1443,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
 		result = result+'	                    <div class="col-md-12">';
 		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
 		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
 		result = result+'	                            </span> </label>';
 		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
@@ -1991,6 +2010,7 @@ function closefeedback(){
 <script>
 function rescheduleInterView(interviewId,timezone,submissionId){
 	$(".reSchPop").toggleClass("reSchPopActive");
+	$(".proposeTimePop").removeClass("proposeTimePopActive");
 	var result ='';
 	var parentRequirement = '${parentRequirement}';
 	result = result	+ ' <form id="rescheduleInterview_form"  name="rescheduleInterview_form" method="post">';
@@ -2361,7 +2381,269 @@ function pipelineList(requirementId){
 	filterReq(requirementId,submissionType);
 }
 </script>
+<script>
+function proposeTime(interviewId,submissionId){
+	$(".proposeTimePop").toggleClass("proposeTimePopActive");
+	$(".reSchPop").removeClass("reSchPopActive");
+	
+	var result ='';
+	var parentRequirement = '${parentRequirement}';
+	result = result	+ ' <form id="proposeTime_form"  name="proposeTime_form" method="post">';
+	result = result + '			  <div class="reSchPopInn">';
+	result = result + '			   <input type="hidden" id="requirementInterviewId" name="requirementInterviewId" value='+interviewId+' >';
+	result = result + '				  <h3>Propose New Time</h3>';
+	result = result + '				  <div class="reSchPopCta">';	
+	result = result + '         <input class="maxRowNum" type="hidden" name="proposeTimeMaxRowNumber'+interviewId+'"  id="proposeTimeMaxRowNumber'+interviewId+'" value="1" />';
+	result = result + '	         <input type="hidden" class="newMaxRowNum" name="proposeNewTimeRowsNum'+interviewId+'"  id="proposeNewTimeRowsNum'+interviewId+'" value="1" />';
+	result = result + '			<table width="100%" class="table table-responsive table-bordered table-hover" id="proposeTimeTbl'+interviewId+'">';
+	result = result + '			<tbody>';
+	result = result + '				<tr id="divProposeTimeTsRow0">';
+	result = result + '					<td>';
+	result = result + '					  <div id="errMsg0">';
+	result = result + '					  		<input type="text" class="form-control calendar input-sm" id="interviewDate0" name="interviewDate0" value="" placeholder="Interview Date" readonly data-validation="required" field-name="Interview Date">';
+	result = result + '					  </div>';
+	result = result + '					</td>';
+	result = result + '					<td>';
+	result = result + '						<div>';
+	result = result + '							  <input type="text" class="form-control timeicon timepicker input-sm" id="time0" name="time0" placeholder="Select Time" data-validation="required" field-name="Time">';
+	result = result + '						</div>		';								
+	result = result + '					</td>';
+	result = result + '					<td>';
+	result = result + '						<div>';
+	result = result + '					  		<button type="button" class="btn btn-primary btn-sm" onClick="addProposeTime('+interviewId+');"><i class="fa fa-plus"></i></button>';
+	result = result + '				  		</div>';
+	result = result + '					</td>';
+	result = result + '				</tr>';
+	result = result + '			</tbody>';
+	result = result + '			</table>';
+						
+	
+	result = result + '			<div class="clearfix mt"> ';
+	result = result + '				<div class="pull-right"> ';
+	result = result + '				  <button type="button" class="btn btn-sm btn-primary" onclick="saveProposeTime('+submissionId+')">Propose Time</button> ';
+	result = result + '				  <button type="button" class="btn btn-sm btn-danger" onclick="timePopUp();">Cancel</button> ';
+	result = result + '				</div> ';
+	result = result + '			  </div> ';
+	
+	result = result + '				  </div>   ';
+	result = result + '			  </div> ';
+	result = result	+ ' </form>';
 
+	$("#proposeTimediv"+interviewId+"").empty();
+    $("#proposeTimediv"+interviewId+"").append(result);
 
+    
+	$("#time0").timepicker({
+		'showDuration': true,
+		'disableTextInput': true
+	})
+	
+$('#interviewDate0').datepicker({
+	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true, 
+	minDate:0,
+	onSelect : function(selected) {
+			errInvoiceDate("0");
+	}
+});
+	
+}
+</script>
+<script>
+function errInvoiceDate(rowId){
+	$('#errMsg'+rowId+'').find('p.jquery_form_error_message').remove(); 
+}
+</script>
+<script>
+function timePopUp(){
+	$(".proposeTimePop").removeClass("proposeTimePopActive");
+}
+</script>
 
+<script>
+  function addProposeTime(interviewId){
+	  var checkMaxTsRowNum = $("#proposeTimeMaxRowNumber"+interviewId+"").val();
+		var tbl = document.getElementById("proposeTimeTbl"+interviewId+"");
+		var maxRowNum = parseInt($("input[name = 'proposeTimeMaxRowNumber"+interviewId+"']").val());
+		var row = tbl.insertRow(maxRowNum);
+		row.setAttribute("id", "divProposeTimeRow" + maxRowNum +interviewId);
+		
+		var rowNum = parseInt($("input[name = 'proposeNewTimeRowsNum"+interviewId+"']").val());
+		if(rowNum >= 5){
+			var result = "";
+     		result = result +"	<div class='project_inn_mask'></div>";
+     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+     		result = result +"		<p>Only can Add 5 Rows</p>";
+     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+     		result = result +"	</div>";
+     		$("#popUp").append(result);
+     		$("#invoice_pop").slideDown(200);
+     		$(".project_inn_mask").fadeIn(200);
+		}else{
+			$("input[name = 'proposeTimeMaxRowNumber"+interviewId+"']").val(maxRowNum + 1);
+			$("input[name = 'proposeNewTimeRowsNum"+interviewId+"']").val(rowNum + 1);
+			var text = "";
+			var cell0 = row.insertCell(0);
+			text = text+'<div id="errMsg'+maxRowNum+'">';
+			text = text+'  <input type="text" class="form-control calendar" id="interviewDate'+maxRowNum+'" name="interviewDate'+maxRowNum+'" value="" placeholder="Interview Date"  readonly data-validation="required" field-name="Invoice Date">';
+			text = text+'</div>';
+			cell0.innerHTML = text;
+			
+			$('#interviewDate'+maxRowNum+'').datepicker({
+				dateFormat : 'dd-mm-yy',
+				changeMonth: true,
+				changeYear: true, 
+				minDate:0,
+				onSelect : function(selected) {
+						errInvoiceDate(maxRowNum);
+				}
+			});
+			
+			var text = "";
+		    var cell1 = row.insertCell(1);
+			text = text+'<div>';
+			text = text+'  <input type="text" class="form-control timeicon timepicker input-sm ui-timepicker-input" id="time'+maxRowNum+'" name="time'+maxRowNum+'" placeholder="Select Time" data-validation="required" field-name="Time">';
+			text = text+'</div>	';
+			cell1.innerHTML = text;
+			
+			var text = "";
+		    var cell2 = row.insertCell(2);
+			text = text+'<div>';
+			text = text+'<button type="button" class="btn btn-danger btn-sm" id="remove"  onclick="removeRow('+maxRowNum+','+interviewId+')"><i class="fa fa-remove"></i></button>';
+			text = text+'</div>';
+			cell2.innerHTML = text;
+		}
+		
+		  $("#time"+maxRowNum+"").timepicker({
+				'showDuration': true,
+				'disableTextInput': true
+			}); 
+		 
+  }
+  </script>
+  <script>
+  function removeRow(rowId,interviewId){
+	  document.getElementById('divProposeTimeRow' + rowId+interviewId).style.display = 'none';
+	  
+	  var rowNum = parseInt($("input[name = 'proposeNewTimeRowsNum"+interviewId+"']").val());
+	  $("input[name = 'proposeNewTimeRowsNum"+interviewId+"']").val(rowNum - 1);
+		
+		var r = document.getElementById('proposeTimeTbl'+interviewId+'').rows[rowId];
+		var count = 2 * (r.cells.length);
+		for (i = 0; i <= count; i++) {
+			r.deleteCell(0);
+		}
+  }
+  
+  </script>
+  
+   <script>
+function saveProposeTime(submissionId){
+	if ($('#proposeTime_form').validate(false, validationSettings)){ 
+		var sourceleadUrl = '${sourceleadUrl}';
+		var frm = $('#proposeTime_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+		//It will escape all the special characters
+	    var jsonData = encodeURIComponent(con);
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&submissionId"+submissionId,
+					success : function(result) {
+						getInternalInterviewsList(submissionId);
+					},
+				});
+		return true;
+	 }else{ 
+			return false;
+	 } 
+}	 
+$('body').on('blur', '#proposeTime_form', function() {
+	$("#proposeTime_form").showHelpOnFocus();
+	$("#proposeTime_form").validateOnBlur(false, validationSettings);  
+});
+</script>
 
+<script>
+function viewProposeTime(interviewId,submissionId){
+	$(".proposeTimePop").toggleClass("proposeTimePopActive");
+	$(".reSchPop").removeClass("reSchPopActive");
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+		success : function(data) {
+			var json = JSON.parse(data);
+	        var result = "";
+// 	        result = result + '<button type="button" class="" onClick="naidu(this);">&times;</button>';
+			result = result	+ ' <form id="acceptProposeTime_form"  name="acceptProposeTime_form" method="post">';
+			result = result + '			   <input type="hidden" id="requirementInterviewId" name="requirementInterviewId" value='+interviewId+' >';
+	        result = result + '			  <div class="reSchPopInn">';
+	        result = result + '				  <h3>Propose New Time</h3>';
+    		result = result + '				  <div class="reSchPopCta">';	
+    		result = result + '			<table width="100%" class="table table-responsive table-bordered	">';
+    		result = result + '			<tbody>';
+        	for (var i=0; i<json.length; i++){
+        		var report = json[i];
+        		
+        		result = result + '				<tr>';
+        		result = result + '					<td>';
+        		result = result + '					  <div id="errMsg0">';
+        		result = result + '					  		<input type="text" class="form-control calendar input-sm" id="proposeDate" name="proposeDate" value="'+report.proposeDateStr+'" readonly>';
+        		result = result + '					  </div>';
+        		result = result + '					</td>';
+        		result = result + '					<td>';
+        		result = result + '						<div>';
+        		result = result + '							  <input type="text" class="form-control timeicon timepicker input-sm" id="proposeTime" name="proposeTime" value="'+report.proposeTime+'" readonly>';
+        		result = result + '						</div>		';								
+        		result = result + '					</td>';
+        		result = result + '					<td>';
+        		result = result + '						<div class="mt5">';
+        		if(report.interviewTimeStatus == "Accepted"){
+        			result = result +' <font color="orange" class="brder-int">Accepted</font>';
+        		}else{
+        			result = result + '                         <a href="javascript:void(0)"  onclick="acceptProposeTime(\''+report.id+'\',\''+report.proposeDateStr+'\',\''+report.proposeTime+'\',\''+submissionId+'\');"><i class="fa fa-check text-success"></i></a>';
+        		}
+        		
+        		result = result + '				  		</div>';
+        		result = result + '					</td>';
+        		result = result + '				</tr>';
+        		
+        	}
+        	result = result + '			</tbody>';
+    		result = result + '			</table>';
+    		result = result + '				  </div>   ';
+    		result = result + '			  </div> ';
+    		result = result	+ ' </form>';
+        	$("#viewProposeTimediv"+interviewId+"").empty();
+    	    $("#viewProposeTimediv"+interviewId+"").append(result);
+		},
+	});
+}
+</script>
+<script>
+function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	if ($('#acceptProposeTime_form').validate(false, validationSettings)){ 
+		var sourceleadUrl = '${sourceleadUrl}';
+		var frm = $('#acceptProposeTime_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+		//It will escape all the special characters
+	    var jsonData = encodeURIComponent(con);
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+"/acceptProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&proposeTimeId="+id+"&proposeDate="+proposeDate+"&proposeTime="+proposeTime,
+					success : function(result) {
+						getInternalInterviewsList(submissionId);
+					},
+				});
+		return true;
+	 }else{ 
+			return false;
+	 } 
+}
+
+</script>

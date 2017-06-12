@@ -146,6 +146,7 @@ public class SecurityConfig  {
     			.antMatchers("/getCitiesByStateAndCountry").permitAll()
     			.antMatchers("/saveProposeTime").permitAll()
     			.antMatchers("/jobAlertRequirementSummary").permitAll()
+    			.antMatchers("/proposeNewTimePublicpage").permitAll()
     			.antMatchers("/getJobDetailsForJobAlert").permitAll()
     			.antMatchers("/storeJobAlert").permitAll()
     			.antMatchers("/validateAlertUserEmail").permitAll()

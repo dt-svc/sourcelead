@@ -1112,4 +1112,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidatesListByOrgLocationIDAndUserId(orgLocationId, userId);
 	}
 
+	@Override
+	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		for (Candidate candidate : candidateList) {
+			StringBuilder sb = new StringBuilder();
+			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+			candidate.setEmail(candidate.getEmail());
+			candidate.setCandidateUpdateDateToString(Constants.DMY.format(candidate.getUpdatedDate()));
+			candidate.setPrimarySkill(candidate.getPrimarySkill());
+			StringBuilder stringBuilder = new StringBuilder();
+			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+		}
+		return candidateList;
+	}
+
 }
