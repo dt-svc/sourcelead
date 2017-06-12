@@ -312,11 +312,8 @@ public class RequirementInterviewRestController {
 			 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
 			 
 			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
-			 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"));
 			 //Applicant to created by interviewer send Email
-			 if(!requirementInterview.getCreatedBy().equalsIgnoreCase(user.getCreatedBy())){
-				 requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
-			 }
+			requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
 			
 			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			return "success";
