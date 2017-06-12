@@ -170,6 +170,18 @@ public class ExpencesController {
 			if(null != expenses.getEndDate()){
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
+			
+			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenses.getId());
+		    Submission_Status submissionStatus = eah.getExpenseStatus();
+		 	model.addObject("submissionStatus", submissionStatus);
+		 	model.addObject("expenseApproverHierarchy", eah);
+		 	 
+		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverChangesStatusForExpense(expenses.getId(), "APPROVED");
+		    boolean isSahApproved = false;
+		    if(isSah != null){
+		        	isSahApproved = true;
+		    }
+		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);
 			
 		   Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(expenses.getProjectMembers().getProjects().getId());

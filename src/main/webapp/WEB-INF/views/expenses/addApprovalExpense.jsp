@@ -11,6 +11,7 @@
 <div class="wraper"> 
 <!-- View Content Area Starts-->
 <c:if test = "${param.type == 'view'}">
+  <jsp:include page="viewApprovalExpenses.jsp"></jsp:include>
  </c:if>
  <c:if test = "${param.type != 'view'}">
   <section class="content-wraper" id="themeroller">
@@ -75,7 +76,7 @@
 				<div class="col-md-9">
 					<select class="chosen-select form-control" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required">
 					    <c:forEach var="projectMember" items="${projectMembers}">
-							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.firstName+"  "+projectMember.employee.user.lastName}</option>
+							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.fullName}</option>
 					   </c:forEach>
 					   
 					</select>
