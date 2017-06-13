@@ -20,8 +20,8 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- ends files of export -->
 
 <script type="text/javascript">
@@ -156,7 +156,7 @@ padding: 2px 300px 2px 0px;
             
 	</div>
 	<div id="loading"></div>
-    <div class="clients_wrap_table repoPositiNoCount">
+    <div class="clients_wrap_table repoPositiNoCount datatable_filter">
     <div id="vendorContractsList"  class=" overflow-data" ></div>
      <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
      <div id="applicantsContractsList"  class=" overflow-data" style="display: none"></div>
@@ -696,7 +696,7 @@ function preparedContractListDraft(data){
 		         result = result + '<div class="tbldata-dotdot_80">';
 		     	if(report.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
@@ -770,7 +770,7 @@ function preparedContractListDraft(data){
 	         opt = opt + '<td>';
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -779,9 +779,6 @@ function preparedContractListDraft(data){
 		     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 	     		'</sec:authorize>';
-	     	  }
-	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
 	     	  }
 	     		opt = opt + '</div></td>';
 	     	
@@ -855,7 +852,7 @@ function preparedContractListDraft(data){
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "DRAFT"){
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
@@ -916,7 +913,8 @@ function listContractsPagination(){
         ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
+    	"pageLength":true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -942,7 +940,7 @@ function vendorListContractsPagination(){
         ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -955,9 +953,10 @@ function vendorListContractsPagination(){
 }
 function appListContractsPagination(){ 
     $('#contractListTableDraft2').DataTable( { 
+    	
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1151,7 +1150,6 @@ function preparedContractListWFA(data){
 	         opt = opt + '<div class="tbldata-dotdot-vsm">';
 	         
 	         
-	         alert("1"); 
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
         		  if('${SourceLeadWeb_user.id}' == output.approverUser.id){
      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
@@ -1313,7 +1311,7 @@ function listContractsPaginationWFA(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1340,7 +1338,7 @@ function vendorListContractsPaginationWFA(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1368,7 +1366,7 @@ function appListContractsPaginationWFA(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1657,7 +1655,7 @@ function listContractsPaginationWTS(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1683,7 +1681,7 @@ function vendorListContractsPaginationWTS(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1709,7 +1707,7 @@ function appListContractsPaginationWTS(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2010,7 +2008,7 @@ function listContractsPaginationWTV(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2036,7 +2034,7 @@ function vendorListContractsPaginationWTV(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2063,7 +2061,7 @@ function applicantsContractsPaginationWTV(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2338,7 +2336,7 @@ function listContractsPaginationFinalize(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2364,7 +2362,7 @@ function vendorListContractsPaginationFinalize(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2390,7 +2388,7 @@ function applicantsContractsPaginationFinalize(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2637,7 +2635,7 @@ function listContractsPaginationEXP(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2663,7 +2661,7 @@ function vendorListContractsPaginationEXP(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2689,7 +2687,7 @@ function applicantsContractsPaginationEXP(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2970,7 +2968,7 @@ function listContractsPaginationREJ(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2996,7 +2994,7 @@ function vendorListContractsPaginationREJ(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3022,7 +3020,7 @@ function applicantsContractsPaginationREJ(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

@@ -203,7 +203,7 @@ font-size: 13px; width: 75px;
                   </div>
                   
                   
-                  <div class="candidate_wrap_table">
+                  <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
                 </div>
@@ -711,7 +711,7 @@ function invoicePagination(){
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[3,'desc']],
     	"ordering": true,

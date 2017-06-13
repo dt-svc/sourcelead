@@ -353,7 +353,7 @@ overflow-x: auto;
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table datatable_scroll" id ="vendorListFilter">
+				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
@@ -928,7 +928,7 @@ function pagination(){
     $('#clientList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1476,7 +1476,7 @@ function pagination1(){
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

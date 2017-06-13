@@ -207,7 +207,7 @@ $(document).ready(function(){
                   </div>
                   
                   
-                  <div class="candidate_wrap_table">
+                  <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
                 </div>
@@ -687,7 +687,7 @@ function invoicePagination(){
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	//
     	"aaSorting": [[3,'desc']],
     	"bDestroy": true,
