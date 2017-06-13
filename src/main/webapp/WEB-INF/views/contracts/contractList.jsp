@@ -3456,7 +3456,7 @@ function editClo(contractId){
      url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
      success :function(data) {
     	 $("#endVal").empty();
-		  $("#endVal").append(endDate);
+		  $("#endVal").append(": "+endDate);
      	 //   $("#tr"+id).empty();
     },
 });  
