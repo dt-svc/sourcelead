@@ -41,7 +41,8 @@ window.onload = function () {
         <ul class="pull-right list-unstyled list-inline">
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getOrgsList();">
-				<option value="">--Select Status--</option>
+				<option value="" selected>--Select Status--</option>
+				<option value="ALL" >All</option>
 				<option value="ACTIVE" >Active</option>
 				<option value="INACTIVE" >In Active</option>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>

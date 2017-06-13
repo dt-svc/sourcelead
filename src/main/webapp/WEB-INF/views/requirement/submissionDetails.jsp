@@ -257,38 +257,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    	
 			    	    	result = result + '<ul class="list-unstyled">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus == 'ACCEPTED' || json.submissionRateStatus == 'REJECTED'){ 
-			    	    		if(json.submissionRateStatus == 'REJECTED'){
-			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
-				    	    			result = result + '	<li>';
-					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
-										result = result + '	</li>';
-			    	    			}
-									/* if(json.rejectedReason != null && json.rejectedReason != '' && json.rejectedReason != 'undefined'){
-										result = result + '	<li>';
-					    	    		result = result + 'Rejected Reason : '+json.rejectedReason;
-										result = result + '	</li>';
-									} */
-			    	    		}
-			    	    		if(json.submissionRateStatus == 'ACCEPTED'){
-			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
-			    	    				result = result + '	<li>';
-					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
-										result = result + '	</li>';
-			    	    			}
-									/* if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-										result = result + '	<li>';
-					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
-										result = result + '	</li>';
-									}
-									if(json.submissionRequestFileName != null && json.submissionRequestFileName != '' && json.submissionRequestFileName != 'undefined'){
-										result = result + '	<li>';
-										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
-										result = result + '	</li>';
-									}	 */
-									
-			    	    		}
-			    	    	} 
+			    	    	
 			    	    	result = result + '</span>';
 			    	    	result = result + '</ul>';
 			    	    	
@@ -306,7 +275,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
 										result = result + '<li>';
-										result = result +"Status: "+ json.submissionRateStatus;
+										result = result +"Candidate status: "+ json.submissionRateStatus;
 										result = result + '</li>';
 									}
 						   }else{
