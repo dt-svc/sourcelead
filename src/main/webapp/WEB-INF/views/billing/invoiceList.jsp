@@ -42,9 +42,6 @@ $(document).ready(function(){
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
-          <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')"> 
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Createnbm Invoice</a>
-			</sec:authorize>
             <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
                 <option value="month">Last 30 days</option>
@@ -197,8 +194,10 @@ $(document).ready(function(){
                             </li>
                           </ul>
                         </div>
-                      </li>                      
+                      </li>     
+                       <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
                       <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
+                     </sec:authorize>
                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       <div class="clearfix"></div>
                     </ul>
