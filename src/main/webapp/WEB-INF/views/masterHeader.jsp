@@ -410,6 +410,10 @@ document.onkeydown=function(e){
 						  </ul>
 						  </li>	
 						  </sec:authorize>
+						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
+							<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  </sec:authorize>
+
 	              </ul>
 	            </div>
 	          </li>
