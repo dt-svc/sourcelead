@@ -288,7 +288,7 @@ overflow-x: auto;
         </div>
 			
 		    <div id="projectFilterList"></div>
-		    <div class="project_wrap_table" onclick="removeErroeMsg();">
+		    <div class="project_wrap_table datatable_filter" onclick="removeErroeMsg();">
 		    				<table id="example" class="display" cellspacing="0" width="100%">
 							</table>
 			</div>	   
@@ -518,7 +518,7 @@ function pagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
 		"aaSorting": [[4,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

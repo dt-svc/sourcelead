@@ -530,7 +530,7 @@ function pagination(){
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"aaSorting": [[7,'desc']],
@@ -1587,7 +1587,7 @@ function requirementPipeline(requirementId){
      <!--  <div id="loadingDiv"></div> -->
       
       <!-- list requirement -->
-      <div class="require_wrap_table">
+      <div class="require_wrap_table datatable_filter">
           <div id="requirementList"></div>
       </div>
     </div>
