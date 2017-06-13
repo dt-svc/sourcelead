@@ -29,37 +29,32 @@
 <div class="project_wrap">
 	<div class="timesheet_head">
         	<ul>
+        		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
 					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
-							<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
-							<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
-							<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-				<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>		
-                <div class="clearfix"></div>
+	                	<div class="approved_pop">
+	                    	<ul>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
+								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
+	                        </ul>
+	                    </div>                	
+	                </li>
+               </sec:authorize>
+               <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
+			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
+			   </sec:authorize>	
+               <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
             
         </div>
         
-        
-        
     <div class="project_wrap_table">
     	<div id="expensesListDiv">	</div>
 	</div>
-	
-	
-</div>
-
-
-
-
-		
-      </div>  
+	</div>
+</div>  
 	
   <!--   Error Message   -->
       <div class="side_mask"><div class="proj_close" onclick="activeTab();"></div></div>
@@ -153,7 +148,12 @@ function getExpensesList(){
 	        			  totalAmount = "--";
 	        		  }
 						 result = result +"<tr>";
+						 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 						 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+						 '</sec:authorize>';
+						 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
+						 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
+						 '</sec:authorize>';
 						 result = result +"<td><div>"+purpose+"</div></td>";
 						 result = result +"<td><div>"+projectMemberId+"</div></td>";
 						 result = result +"<td><div>"+clientName+"</div></td>";
