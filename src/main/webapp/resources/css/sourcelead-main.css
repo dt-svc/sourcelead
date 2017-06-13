@@ -1973,8 +1973,13 @@ clear: both; content: ""; height: 0; position: absolute; right: 10px; top: -10px
 /* For collapse div styels Ends */
 /* For Edit model Popup */
 .sideMask {
-position: fixed; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); top: 0px; left: 0px;
+position: fixed; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); top: 0px; left: 0px;
 z-index: 9999; display:none; background-image: "../images/cancel.png"; background-repeat: no-repeat; background-position: 10% 40px;
+}
+.sideMask .proj_close {
+    width: 60px; height: 60px; background-color: #fff; box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
+    text-align: center; position: relative; cursor: pointer; border-radius: 50%; background-image: url(../images/cancel.png);
+    background-repeat: no-repeat; background-position: center; background-size: 20px; left: 11%;
 }
 .skill-edit {
 	background: #fff none repeat scroll 0 0; border-radius: 10px; display: none;
@@ -2187,16 +2192,14 @@ addTask-widget table tr th {
 .addTask-widget table tr td{
 	height:50px;
 }
-.dropdown-select select {
+.dropdown-select select, select.sel {
     width:100%;  height:32px; padding:0px 10px; -webkit-border-radius:3px; -moz-border-radius:3px; -ms-border-radius:3px; border-radius:3px; box-sizing:border-box; -webkit-appearance:none; -moz-appearance:none; appearance:none;
-    background: #fff url("../images/arrow-d-g.png") no-repeat 95% center;
-    background-size: 10px;
-	border:1px solid #ccc;
+    background: #fff url("../images/arrow-d-g.png") no-repeat 95% center;background-size: 10px; border:1px solid #ccc;
 }
-.dropdown-select select option{
+.dropdown-select select option, select.sel option {
 	padding:2px 10px;
 }
-.dropdown-select select::-ms-expand{
+.dropdown-select select::-ms-expand, select.sel::-ms-expand {
   display:none;
 }
 .addTask-widget .tab-content{
@@ -5356,6 +5359,87 @@ float: none !important; padding: 0; color: #333;
 }
 .timesheet_head.timeHd_minHeight {
 min-height: 40px;
+}
+.dataFilterNew .dataTables_filter{
+    position: relative !important; top: 0 !important;
+}
+.dropdown-menu.dropdown-menu_width {
+    min-width: 225px;
+}
+.timesheet_head.timesheetheadLi_left ul li {
+    float: left;
+}
+.timesheet_head.timesheetheadLi_left ul li a{
+    color: #333;
+}
+/* Add taks newstyles */
+.tasks_wrapinn {
+    padding: 10px; background: #fff; margin: 10px; border: 1px solid #ddd; border-radius: 3px;
+}
+.tasks_side_wrap, .tasks_view_wrap {
+    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
+    }
+.tasks_side_wrap.tasks_side_wrap_active, .tasks_view_wrap.tasks_view_wrap_active {
+    right:0px;
+    }
+.bsvalues span.values{
+    padding: 2px 10px; min-width: 50px; position: absolute; top: 1px; left: 16px; min-height: 28px; line-height: 28px;
+    border-radius: 3px 0 0 3px;
+}
+.bsvalues input.form-control {
+    padding-left: 55px;
+}
+.tasks_wrapinn h4{
+margin-bottom: 10px; margin-left: 10px;    
+}
+.tasks_side_wrap .note-editor .note-editable, .tasks_view_wrap .note-editor .note-editable {
+    padding: 10px; overflow: auto; outline: 0;
+}
+.tasks_side_wrap .note-editable, .tasks_view_wrap .note-editable {
+    min-height: 150px; max-height: 150px;
+}
+.btnTimeEntry .btn {
+    position: absolute; right: 10px; top: 0px;
+}
+.modal-Time {
+    padding: 5px;border: 1px solid #ddd; margin: 10px; display: none;
+}
+.taskComments .media {
+    border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 5px;
+}
+.taskComments .media p {
+    margin-bottom: 0; font-size: 13px;
+}
+.exlpdf_btns .dt-buttons {
+       position: absolute !important; width: 90px; left: inherit; right: 220px !important; top: -37px;
+}
+.exlpdf_btns .dt-buttons a {
+   font-size: 18px; padding: 5px 9px !important; border: 1px solid #BCBCBC !important;
+}
+.exlpdf_btns .buttons-excel::before, .exlpdf_btns .buttons-pdf::before {
+   top: 0px; left: 0px;
+}
+.exlpdf_btns .dt-buttons a span {
+   display: none !important;
+}
+.timesheet_head.timesheetHead > ul {
+       padding-right: 300px;
+}
+/* Add taks newstyles */
+.dropdownSelect-100 select {
+    width: 100% !important; border: 1px solid #ddd !important;
+}
+.datatable_filter .dataTables_length {
+    position: absolute !important;
+    left: 0px !important;
+    margin: 0px 0px;
+    top: -35px !important;
+    padding: 0px 15px 0px 0px !important;
+}
+.datatable_filter .dataTables_length select {
+    border: 1px solid #ddd !important; padding: 4px 15px !important;
 }
 /* media 320px */
 @media (max-width: 320px) {
