@@ -61,7 +61,6 @@ public class InvoiceController {
  * @return model
  * @throws Exception
  */
-	 @PreAuthorize("hasAnyRole('ROLE_ADD_BILL')")
 	@RequestMapping(value = "/createInvoice")
 	public ModelAndView invoiceList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
 		

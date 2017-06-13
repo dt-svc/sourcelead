@@ -58,6 +58,7 @@
 	                 <option  ${contractsTemplate.templateType  == 'NSA' ? 'selected' : ''}>NSA</option>
 	                 <option  ${contractsTemplate.templateType  == 'W-4 Form' ? 'selected' : ''}>W-4 Form</option>
 	                 <option  ${contractsTemplate.templateType  == 'I-9 Form' ? 'selected' : ''}>I-9 Form</option>
+	                 <option  ${contractsTemplate.templateType  == 'Full Time Offer' ? 'selected' : ''}>Full Time Offer</option>
                    
                    <!--  <option value="Client MSA">Client MSA</option>
                     <option value="Vendor MSA">Vendor MSA</option>
@@ -226,11 +227,25 @@
                <li onclick="copyToClipboard('text_element86')"><i></i><p class="copyText" id="text_element86">[Expiration Date]</li>
                <li onclick="copyToClipboard('text_element87')"><i></i><p class="copyText" id="text_element87">[Join Date]</li>
                <li onclick="copyToClipboard('text_element104')"><i></i><p class="copyText" id="text_element104">[Billing Rate]</li>
-               <li onclick="copyToClipboard('text_element105')"><i></i><p class="copyText" id="text_element405">[Overtime]</li>
+               <li onclick="copyToClipboard('text_element105')"><i></i><p class="copyText" id="text_element105">[Overtime]</li>
                <li onclick="copyToClipboard('text_element106')"><i></i><p class="copyText" id="text_element106">[Payment Term]</li>
                <li onclick="copyToClipboard('text_element110')"><i></i><p class="copyText" id="text_element110">[State Of Jurisdiction]</p></li>
           </ul>
-               
+               <ul id="fullTimeOffer" style="display:none">
+                 <li onclick="copyToClipboard('text_element120')"><i></i><p class="copyText" id="text_element120">[Company Name]</li>
+                 <li onclick="copyToClipboard('text_element121')"><i></i><p class="copyText" id="text_element121">[Company Address]</li>
+                 <li onclick="copyToClipboard('text_element122')"><i></i><p class="copyText" id="text_element122">[Company City]</li>
+                 <li onclick="copyToClipboard('text_element123')"><i></i><p class="copyText" id="text_element123">[Company State]</li>
+                 <li onclick="copyToClipboard('text_element124')"><i></i><p class="copyText" id="text_element124">[Company Country]</li>
+                 <li onclick="copyToClipboard('text_element125')"><i></i><p class="copyText" id="text_element125">[Employee Name]</li>
+                 <li onclick="copyToClipboard('text_element126')"><i></i><p class="copyText" id="text_element126">[Join Date]</li>
+                 <li onclick="copyToClipboard('text_element127')"><i></i><p class="copyText" id="text_element127">[Rate]</li>
+                 <li onclick="copyToClipboard('text_element128')"><i></i><p class="copyText" id="text_element128">[Rate Per]</li>
+                 <li onclick="copyToClipboard('text_element129')"><i></i><p class="copyText" id="text_element129">[Rate Type]</li>
+                 <li onclick="copyToClipboard('text_element130')"><i></i><p class="copyText" id="text_element130">[Employee Location]</li>
+                 <li onclick="copyToClipboard('text_element131')"><i></i><p class="copyText" id="text_element131">[Work Location]</p></li>
+                 <li onclick="copyToClipboard('text_element132')"><i></i><p class="copyText" id="text_element132">[State of Jurisdiction]</p></li>
+            </ul>
         </div>  		      
 	</div>
 </div>      
@@ -322,6 +337,9 @@ function contractTemplateType(){
 		document.getElementById("nda").style.display="none";
 		document.getElementById("nsa").style.display="none";
 		document.getElementById("clientmsa").style.display="block";
+		document.getElementById("fullTimeOffer").style.display="none";
+		document.getElementById("I-9Form").style.display="none";
+		document.getElementById("w-4Form").style.display="none";
 	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("clientmsa").style.display="none";
@@ -330,6 +348,9 @@ function contractTemplateType(){
 		document.getElementById("nda").style.display="none";
 		document.getElementById("nsa").style.display="none";
 		document.getElementById("vendormsa").style.display="block";
+		document.getElementById("fullTimeOffer").style.display="none";
+		document.getElementById("I-9Form").style.display="none";
+		document.getElementById("w-4Form").style.display="none";
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("clientmsa").style.display="none";
@@ -338,6 +359,9 @@ function contractTemplateType(){
 		document.getElementById("nda").style.display="none";
 		document.getElementById("nsa").style.display="none";
 		document.getElementById("clientsow").style.display="block";
+		document.getElementById("fullTimeOffer").style.display="none";
+		document.getElementById("I-9Form").style.display="none";
+		document.getElementById("w-4Form").style.display="none";
 	}
 	
 	if(contractType == "Vendor SOW"){
@@ -347,6 +371,9 @@ function contractTemplateType(){
 		document.getElementById("nda").style.display="none";
 		document.getElementById("nsa").style.display="none";
 		document.getElementById("vendorsow").style.display="block";
+		document.getElementById("fullTimeOffer").style.display="none";
+		document.getElementById("I-9Form").style.display="none";
+		document.getElementById("w-4Form").style.display="none";
 	}
 	if(contractType == "NDA"){
 		document.getElementById("clientmsa").style.display="none";
@@ -355,6 +382,9 @@ function contractTemplateType(){
 		document.getElementById("vendorsow").style.display="none";
 		document.getElementById("nsa").style.display="none";
 		document.getElementById("nda").style.display="block";
+		document.getElementById("fullTimeOffer").style.display="none";
+		document.getElementById("I-9Form").style.display="none";
+		document.getElementById("w-4Form").style.display="none";
 	}
 	if(contractType == "NSA"){
 		document.getElementById("clientmsa").style.display="none";
@@ -363,6 +393,9 @@ function contractTemplateType(){
 		document.getElementById("vendorsow").style.display="none";
 		document.getElementById("nda").style.display="none";
 		document.getElementById("nsa").style.display="block";
+		document.getElementById("I-9Form").style.display="none";
+		document.getElementById("w-4Form").style.display="none";
+		document.getElementById("fullTimeOffer").style.display="none";
 	}
 	if(contractType == "W-4 Form"){
 		document.getElementById("clientmsa").style.display="none";
@@ -373,6 +406,7 @@ function contractTemplateType(){
 		document.getElementById("nsa").style.display="none";
 		document.getElementById("I-9Form").style.display="none";
 		document.getElementById("w-4Form").style.display="block";
+		document.getElementById("fullTimeOffer").style.display="none";
 	}
 	
 	if(contractType == "I-9 Form"){
@@ -384,6 +418,19 @@ function contractTemplateType(){
 		document.getElementById("nsa").style.display="none";
 		document.getElementById("I-9Form").style.display="block";
 		document.getElementById("w-4Form").style.display="none";
+		document.getElementById("fullTimeOffer").style.display="none";
+	}
+	
+	if(contractType == "Full Time Offer"){
+		document.getElementById("clientmsa").style.display="none";
+		document.getElementById("vendormsa").style.display="none";
+		document.getElementById("clientsow").style.display="none";
+		document.getElementById("vendorsow").style.display="none";
+		document.getElementById("nda").style.display="none";
+		document.getElementById("nsa").style.display="none";
+		document.getElementById("I-9Form").style.display="none";
+		document.getElementById("w-4Form").style.display="none";
+		document.getElementById("fullTimeOffer").style.display="block";
 	}
 }
 

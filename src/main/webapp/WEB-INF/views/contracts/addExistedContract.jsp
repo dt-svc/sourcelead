@@ -51,6 +51,7 @@
 		                    <option>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
+		                    <option>Full time offer</option>
 		                 </select>
 				    </c:otherwise>
 				 </c:choose>
@@ -106,7 +107,7 @@
             </div>
                      
              
-          <div class="form-group">
+          <div class="form-group" >
               <label class="col-md-4">Owner<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
@@ -121,8 +122,7 @@
                   </select>
               </div>
           </div>             
-            
-             <div class="form-group">
+             <div class="form-group" id="dateDiv">
               <label class="col-md-4">Start & End date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
 					<div class="row">
@@ -221,13 +221,25 @@
 	              </div>
             </div>
                           
-            <div class="form-group">
+            <div class="form-group " id="descriptionDiv">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
 					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250"></textarea>
               </div>
             </div>    
+            <div class="form-group" id="workLocationDiv">
+              <label class="col-md-4">Work Location</label>
+              <div class="col-md-8">
+					<textarea class="form-control" rows="3" id="workLocation" name="workLocation" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>
+              </div>
+            </div> 
             
+            <div class="form-group" id="joinDateDiv">
+              <label class="col-md-4">Join Date</label>
+                <div class="col-lg-6">
+					<input type="text" class="form-control calendar" value="${contract.startDateStr}" id="joinDate" name="joinDate" placeholder="Join date"  field-name="Join Date" readonly="readonly">
+				</div>
+            </div> 
             <div class="form-group">
               <label class="col-md-4">State of Jurisdiction</label>
               <div class="col-md-8">
@@ -371,27 +383,33 @@
                     </div>
             </div>
         </div>
-        <div class="row reqAddWrap">
+ 	<div class="row reqAddWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
   			<table width="100%" cellpadding="0" cellspacing="0" class="table table-striped table-responsive">
-           <thead id="addTaxTbl">
+           <thead >
            <tr>
-           <th>Request Documents</th>
-           <th colspan="4">
+           <th style="vertical-align: middle;">Request Documents</th>
+           <th colspan="2">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
             <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
            </th>
           </tr>
           </thead>
-          <tbody>
+          <tbody id="addTaxTbl">
+          <c:if test="${fn:length(docList) gt 0}">
+   				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
+		  </c:if>
+            <c:forEach var="doc" items="${docList}">
+	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
+                </c:forEach>
           <tr id="divTaxTsRow0">
           </tr>
           </tbody>
           </table>
         </div>
         
-      </div>    
+      </div>   
         <!-- billing end -->
       </div>      
       
@@ -434,14 +452,33 @@
 				
 	</div>
 
+
 <div id="divTaxTd3" style="display: none; float: left;">
+   	 <select class="form-control input-sm sel"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+		<option value="">--Select Type--</option>
+		<c:forEach var="doctype" items="${documentsList}">
+		<option value="${doctype.name}">${doctype.name}</option>
+		</c:forEach>
+	</select>
+</div>
+
+<div id="divTaxTd4" style="display: none; float: left;">
 	<div class="tblminwidth-75">
 			<textarea class="form-control miDHei" rows="3" placeholder="Description" id="REPLACEROWIDdescription"
 			 name="REPLACEROWIDdescription"></textarea>
 	</div>
 </div>
 
-<div id="divTaxTd4" style="display: none; float: right;">
+<div id="divTaxTd5" style="display: none; float: left;">
+   	 <select class="form-control input-sm"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
+		<option value="">--Select Type--</option>
+		<c:forEach var="doctype" items="${documentsList}">
+		<option value="${doctype.name}">${doctype.name}</option>
+		</c:forEach>
+	</select>
+</div>
+
+<div id="divTaxTd6" style="display: none; float: right;">
 	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
@@ -489,10 +526,20 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
 				cell2.innerHTML = divTaxTdStr2;
 				
-				var cell2 = row.insertCell(3);
-				var divTaxTdStr2 = document.getElementById("divTaxTd4").innerHTML;
-				divTaxTdStr2 = divTaxTdStr2.replace(/REPLACEROWID/g, (maxRowNum));
-				cell2.innerHTML = divTaxTdStr2;
+				var cell3 = row.insertCell(3);
+				var divTaxTdStr3 = document.getElementById("divTaxTd4").innerHTML;
+				divTaxTdStr3 = divTaxTdStr3.replace(/REPLACEROWID/g, (maxRowNum));
+				cell3.innerHTML = divTaxTdStr3;
+				
+				var cell4 = row.insertCell(4);
+				var divTaxTdStr4 = document.getElementById("divTaxTd5").innerHTML;
+				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
+				cell4.innerHTML = divTaxTdStr4;
+				
+				var cell5 = row.insertCell(5);
+				var divTaxTdStr5 = document.getElementById("divTaxTd6").innerHTML;
+				divTaxTdStr5 = divTaxTdStr5.replace(/REPLACEROWID/g, (maxRowNum));
+				cell5.innerHTML = divTaxTdStr5;
 	}			
 </script>
 <script type="text/javascript">
@@ -768,6 +815,10 @@ function getContractTemplates(){
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
 		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
 	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="block";
@@ -775,6 +826,10 @@ function getContractTemplates(){
 		document.getElementById("clientContactDiv").style.display="none";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -782,6 +837,10 @@ function getContractTemplates(){
 		document.getElementById("clientContactDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="none";
 		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -789,6 +848,10 @@ function getContractTemplates(){
 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -796,8 +859,22 @@ function getContractTemplates(){
 		document.getElementById("vendorDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="block";
 		document.getElementById("billingDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="none";
+		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="block";
+		document.getElementById("descriptionDiv").style.display="block";
 	}
-		 
+	if(contractType == "Full time offer"){
+		document.getElementById("clientDiv").style.display="none";
+		document.getElementById("clientContactDiv").style.display="none";
+		document.getElementById("vendorDiv").style.display="none";
+		document.getElementById("vendorContactDiv").style.display="none"; 
+		document.getElementById("billingDiv").style.display="none";
+		document.getElementById("dateDiv").style.display="none";
+		document.getElementById("descriptionDiv").style.display="none";
+		document.getElementById("joinDateDiv").style.display="block";
+		document.getElementById("workLocationDiv").style.display="block";
+	}	 
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
      type : "GET",
@@ -1013,6 +1090,59 @@ function contractTypeLabels(){
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
 	}
+if(contractType == "Full time offer"){
+	$('#clientOrgRelationId').removeAttr('data-validation');
+	$('#clientOrgRelationId').attr('data-validation-optional',"true");
+	$('#clientContact').removeAttr('data-validation');
+	$('#clientContact').attr('data-validation-optional',"true");
+	
+	$('#endDate').removeAttr('data-validation');
+	$('#endDate').attr('data-validation-optional',"true");
+	$('#startDate').removeAttr('data-validation');
+	$('#startDate').attr('data-validation-optional',"true");
+	
+	$('#orgRelationId').removeAttr('data-validation');
+	$('#orgRelationId').attr('data-validation-optional',"true");
+	$('#vendorContact').removeAttr('data-validation');
+	$('#vendorContact').attr('data-validation-optional',"true");
+	
+	$('#invoiceFrequency').removeAttr('data-validation');
+	$('#paymentFrequency').removeAttr('data-validation');
+	$('#taxPercentageRewardValue').removeAttr('data-validation');
+	$('#taxFlatRewardValue').removeAttr('data-validation');
+	
+	
+	$('#invoiceFrequency').attr('data-validation-optional',"true");
+	$('#paymentFrequency').attr('data-validation-optional',"true");
+	$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
+	$('#taxFlatRewardValue').attr('data-validation-optional',"true");
+	
+	$('#flatReward').removeAttr('data-validation');
+	$('#flatReward').attr('data-validation-optional',"true");
+	
+	$('#billingRateType').removeAttr('data-validation');
+	$('#billingRateType').attr('data-validation-optional',"true");
+	
+	$('#billingRatePer').removeAttr('data-validation');
+	$('#billingRatePer').attr('data-validation-optional',"true");
+	
+
+	$('#hoursPerWeek').val("");
+	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("hoursPerWeekDiv").style.display="none";
+	
+	$('#overTimeHours').val("");
+	$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("overTimeHoursDiv").style.display="none";
+	
+	$('#totalHoursEstimated').val("");
+	$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+	document.getElementById("totalHoursEstimatedDiv").style.display="none";
+	
+	$('#overtimeRate').val("");
+	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+	getRequirements("Vendor SOW");
+}
 </script>
 
 <script>
@@ -1064,6 +1194,7 @@ function hideCommonSOWFields(){
 	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 	document.getElementById("overtimeRateDiv").style.display="none";
 }
+
 </script>
 
 <script type="text/javascript">
@@ -1184,33 +1315,41 @@ function hideCommonSOWFields(){
 	    });
 
 	}
-	
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
-		
-		$("#flatReward").val("");
-	    $("#billingRateType").val('${currencyCode}').trigger('change');
-	    $("#billingRatePer").val("").trigger('change');
+		var sowType = $("#contractType").val();
+		if(sowType!="Full time offer"){
+			$("#flatReward").val("");
+		    $("#billingRateType").val('${currencyCode}').trigger('change');
+		    $("#billingRatePer").val("").trigger('change');
+		}
 		$.ajax({
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 	         success :function(data) {
-	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	            	  var json = JSON.parse(data);
-	            	  $("#offerRate").val("");
-	            	  document.getElementById("offerRateDiv").style.display="block";
-	            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
-	            	  $("#flatReward").val("");
-	            	  $("#flatReward").val(json.amount);
-	            	  
-	            	  $("#billingRateType").val("");
-	            	  $("#billingRateType").val(json.paymentType).trigger('change');
-	            	  
-	            	  $("#billingRatePer").val("");
-	            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
-	              }
-	       },
+	        	 
+		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		            	  var json = JSON.parse(data);
+		            	  $("#offerRate").val("");
+		            	  document.getElementById("offerRateDiv").style.display="block";
+		            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
+		            	  if(sowType!="Full time offer"){
+			            	  $("#flatReward").val("");
+			            	  $("#flatReward").val(json.amount);
+			            	  
+			            	  $("#billingRateType").val("");
+			            	  $("#billingRateType").val(json.paymentType).trigger('change');
+			            	  
+			            	  $("#billingRatePer").val("");
+			            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
+		            	  }
+		            	  else{
+		            		  $("#joinDate").val(json.dateOfJoiningStr); 
+		            	  }
+		            	  
+	        	 		}
+		       },
 	    });
 
 	}
