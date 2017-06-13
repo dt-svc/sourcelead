@@ -409,6 +409,11 @@ public List<Tasks> getTasksListOffboardingId(Long offboardingId) throws Exceptio
 public List<Tasks> getTasksListOnboardingId(Long onboardingId) throws Exception {
 	return taskDao.getTasksListOnboardingId(onboardingId);
 }
+
+@Override
+public List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus) throws Exception {
+	return taskDao.getTaskListByRepeatStatus(taskRepeatStatus);
+}
 }
 	
 

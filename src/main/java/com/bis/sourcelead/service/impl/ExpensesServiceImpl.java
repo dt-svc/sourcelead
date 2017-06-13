@@ -1,0 +1,409 @@
+package com.bis.sourcelead.service.impl;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesEntries;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfUtil;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
+/**
+ * 
+ * @author : Pradeep Kumar Reddy
+ *
+ */
+
+@Service
+public class ExpensesServiceImpl implements ExpensesService{
+	
+	@Autowired
+	ExpensesDao<Expenses> expensesDao;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;	
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
+	
+	@Override
+	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus) {
+		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(), expenseStatus);
+
+		return expensesList;
+
+	}
+	
+	@Override
+	public List<Expenses> getIndividualExpense(OrgLocations orgLoc,User loginUser,String expenseId) {
+		List<Expenses> expensesList =  expensesDao.getIndividualExpense(orgLoc.getId(),loginUser.getId(),expenseId);
+
+		return expensesList;
+
+	}
+	
+	@Override
+	public List<ExpensesEntries> getExpensesEntries(String expenseId) {
+		List<ExpensesEntries> expensesEntriesList =  expensesDao.getExpensesEntries(expenseId);
+
+		return expensesEntriesList;
+
+	}
+	
+	@Override
+	public Expenses getExpenseByExpenseId(long expenseId) {
+		return expensesDao.getExpenseByExpenseId(expenseId);
+	}
+	
+	@Override
+	public Expenses getExpenseByExpenseUniqueId(String expenseId) throws Exception {
+		return expensesDao.getExpenseByExpenseUniqueId(expenseId);
+	}
+	@Override
+	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception {
+		String[] myExpensesHeaders = Constants.MY_EXPENSES_HEADERS;
+		Document document = new Document(PageSize.LETTER.rotate());
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		    StringBuilder sbExpenses =  new StringBuilder();
+		    StringBuilder hedderLineString =  new StringBuilder();
+		    sbExpenses.append("Expenses_").append(dateFormat.format(new Date()));
+		    StringBuilder fileSB = new StringBuilder();
+		    File file = File.createTempFile(fileSB.append("Expenses_").append(dateFormat.format(new Date())).toString(),".pdf");
+		    file.setReadable(true);
+		    
+		    try {
+		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+		        PdfWriter.getInstance(document, new FileOutputStream(file));
+		        document.open();
+
+		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+			    Paragraph para = new Paragraph(hedderLineString.append(orgLoc.getOrg().getOrgName()).append(" Expenses.").toString(),boldFont);
+	            para.setAlignment(Element.ALIGN_CENTER);
+	            document.add(para);
+		        
+		        
+		       // Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+		        BaseColor myColor = WebColors.getRGBColor("#000000");
+		        boldFont.setColor(myColor);
+		        StringBuilder userStyle = new StringBuilder();
+		        userStyle.append("MY EXPENSES").append("-").append(orgLoc.getOrg().getOrgName()).append(" ");
+	            PdfPTable table = new PdfPTable(myExpensesHeaders.length);
+		        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+		        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+		        cell1.setColspan(11);
+		        headerCellStyle(cell1);
+		        table.setWidthPercentage(100);
+	            table.setWidths(new int[]{5,3,5,3,3,3,3,7});
+	            table.addCell(cell1);
+		        for (int i = 0; i < myExpensesHeaders.length; i++) {
+		            String header = myExpensesHeaders[i];
+		            PdfPCell cell = new PdfPCell();
+		            cell.setGrayFill(0.9f);
+		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+		            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+		            cell.setBackgroundColor(myBorderColor);
+		            table.addCell(cell);
+		        }
+		            table.completeRow();
+			        List<String[]> expensespdfArrayList = new ArrayList<>();
+			        List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
+			        for(ExpensesEntries expEntries :expenseEntries){
+			        	expensespdfArrayList.add(prepareMyExpensesStringArray(expEntries,myExpensesHeaders,orgLoc,loginUser));
+			        }
+			        	
+			        for (String[] expensesArray: expensespdfArrayList) {
+		                for (int i = 0; i < expensesArray.length; i++) {
+		                    String datum = expensesArray[i];
+		                    PdfPCell cell = new PdfPCell();
+		                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+		                    table.addCell(cell);
+		                }
+		                table.completeRow();
+		            }
+			        document.addTitle("My Expenses");
+			        table.setSpacingBefore(15f);
+			        
+			        com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
+		            StringBuilder reqNameBuilder=new StringBuilder();
+		            StringBuilder locBuilder=new StringBuilder();
+		            StringBuilder Client=new StringBuilder();
+		            StringBuilder StDate=new StringBuilder();
+		            StringBuilder edDate=new StringBuilder();
+			        orderedList.add(new ListItem(reqNameBuilder.append("Expense Id :").append(expenseDetails.getExpenseId()).toString()));
+			        orderedList.add(new ListItem(locBuilder.append("Project :").append(expenseDetails.getProjectMembers().getProjects().getProjectName()).toString()));
+			       if(null != expenseDetails.getClientName()){
+			    	   orderedList.add(new ListItem(Client.append("Client :").append(expenseDetails.getClientName()).toString()));
+			       }
+			        if(null != expenseDetails.getStartDate()){
+			        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
+			        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
+			        }
+			        if(null != expenseDetails.getEndDate()){
+			        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
+			        	orderedList.add(new ListItem(edDate.append("Start Date :").append(EndDate).toString()));
+			        }
+			        document.add(orderedList);
+			        
+			        document.add(table);
+			        
+			        
+			        
+			        
+		    }catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } catch (FileNotFoundException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		    }
+			return file;
+	}
+
+	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser) {
+		String userArray[] = new String[myExpensesHeaders.length];
+				if(null != expEntries.getExpensesCategoryId()){
+					if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
+						   userArray[0] = expEntries.getExpensesCategoryId().getExpensesName();
+					   }else{
+						   userArray[0] = "--";
+					  }	
+				}
+			if(null != expEntries.getExpenseDate())
+			{
+				expEntries.setExpenseDateString(Constants.DF_DMY.format(expEntries.getExpenseDate()));
+				 userArray[1] = expEntries.getExpenseDateString();
+			}
+			if(expEntries.getReceiptIssuedBy() != null && !"".equalsIgnoreCase(expEntries.getReceiptIssuedBy())){	
+				   userArray[2] = expEntries.getReceiptIssuedBy();
+			   }else{
+				   userArray[2] = "--";
+			 }
+			if(expEntries.getPaymentMode() != null && !"".equalsIgnoreCase(expEntries.getPaymentMode().toString())){	
+				   userArray[3] = expEntries.getPaymentMode().getValue();
+			   }else{
+				   userArray[3] = "--";
+			 }
+			if(expEntries.getCurrencyType() != null && !"".equalsIgnoreCase(expEntries.getCurrencyType())){	
+				   userArray[4] = expEntries.getCurrencyType();
+			   }else{
+				   userArray[4] = "--";
+			 }
+			if(expEntries.getAmount() != 0){
+				StringBuilder amount = new StringBuilder();
+				   userArray[5] = amount.append(expEntries.getAmount()).toString();
+			   }else{
+				   userArray[5] = "--";
+			 }
+			  userArray[6] = "NEED TO WORK ON IT";
+			 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
+				   userArray[7] = expEntries.getDescription();
+			   }else{
+				   userArray[7] = "--";
+			 }
+	return userArray;
+	}
+
+	@Override
+	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception {
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName() + "_" + dateFormat.format(new Date()));
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails);
+		int column = 0;
+		
+		List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
+		
+		for (ExpensesEntries expensesEntries : expenseEntries) {
+			writeRow = createExcelsheet.createRow(column + 9);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries);
+			column++;
+		}
+		 //file = new File(orgLoc.getOrg().getOrgName() + "_Expenses_" + dateFormat.format(new Date()) + ".xls");
+		 file = File.createTempFile(orgLoc.getOrg().getOrgName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
+		 file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries) {
+		if(null != expEntries.getExpensesCategoryId()){
+			if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
+				writeRow.createCell(0).setCellValue(expEntries.getExpensesCategoryId().getExpensesName());
+				createExcelsheet.autoSizeColumn(0);
+			   }
+		}
+		
+	if(null != expEntries.getExpenseDate()){
+		expEntries.setExpenseDateString(Constants.DF_DMY.format(expEntries.getExpenseDate()));
+		writeRow.createCell(1).setCellValue( expEntries.getExpenseDateString());
+		createExcelsheet.autoSizeColumn(1);
+	}
+	if(expEntries.getReceiptIssuedBy() != null && !"".equalsIgnoreCase(expEntries.getReceiptIssuedBy())){	
+		writeRow.createCell(2).setCellValue( expEntries.getReceiptIssuedBy());
+		createExcelsheet.autoSizeColumn(2);
+	}
+	if(expEntries.getPaymentMode() != null && !"".equalsIgnoreCase(expEntries.getPaymentMode().toString())){	
+		writeRow.createCell(3).setCellValue(expEntries.getPaymentMode().getValue());
+		createExcelsheet.autoSizeColumn(3);
+	   }
+	if(expEntries.getCurrencyType() != null && !"".equalsIgnoreCase(expEntries.getCurrencyType())){	
+		writeRow.createCell(4).setCellValue(expEntries.getCurrencyType());
+		createExcelsheet.autoSizeColumn(4);
+	   }
+	if(expEntries.getAmount() != 0){
+		StringBuilder amount = new StringBuilder();
+		writeRow.createCell(5).setCellValue(amount.append(expEntries.getAmount()).toString());
+		createExcelsheet.autoSizeColumn(5);
+	   }
+	writeRow.createCell(6).setCellValue( "NEED TO WORK ON IT");
+	createExcelsheet.autoSizeColumn(6);
+	 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
+		 writeRow.createCell(7).setCellValue( expEntries.getDescription());
+		 createExcelsheet.autoSizeColumn(7);
+	   }
+		return createExcelsheet;
+	}
+	
+
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp) {
+		
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		writeRow = createExcelsheet.createRow(1);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell1 = writeRow.createCell(0);
+		cell1.setCellValue("Expense id :");
+		cell1.setCellStyle(style);
+		Cell cell2 = writeRow.createCell(1);
+	    cell2.setCellValue(exp.getExpenseId());
+		cell2.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(2);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell3 = writeRow.createCell(0);
+		cell3.setCellValue("Project :");
+		cell3.setCellStyle(style);
+
+		Cell cell4 = writeRow.createCell(1);
+		cell4.setCellValue(exp.getProjectMembers().getProjects().getProjectName());
+		cell4.setCellStyle(style);
+
+		writeRow = createExcelsheet.createRow(3);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell5 = writeRow.createCell(0);
+		cell5.setCellValue("Client : ");
+		cell5.setCellStyle(style);
+
+		Cell cell6 = writeRow.createCell(1);
+		cell6.setCellValue("client");
+		cell6.setCellStyle(style);
+		
+		
+		writeRow = createExcelsheet.createRow(4);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell7 = writeRow.createCell(0);
+		cell7.setCellValue("Start Date : ");
+		cell7.setCellStyle(style);
+
+		Cell cell8 = writeRow.createCell(1);
+		String StrtDate = Constants.DMY.format(exp.getStartDate());
+		cell8.setCellValue(StrtDate);
+		cell8.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(5);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell9 = writeRow.createCell(0);
+		cell9.setCellValue("End Date : ");
+		cell9.setCellStyle(style);
+
+		Cell cell10 = writeRow.createCell(1);
+		String EndDate = Constants.DMY.format(exp.getEndDate());
+		cell10.setCellValue(EndDate);
+		cell10.setCellStyle(style);
+		
+		writeRow = createExcelsheet.createRow(6);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell11 = writeRow.createCell(0);
+		cell11.setCellValue("Purpose : ");
+		cell11.setCellStyle(style);
+
+		Cell cell12 = writeRow.createCell(1);
+		cell12.setCellValue(exp.getPurpose());
+		cell12.setCellStyle(style);
+		String headers [] = Constants.MY_EXPENSES_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
+
+		return createExcelsheet;
+	}
+	
+	private static void headerCellStyle(PdfPCell cell){
+	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    cell.setPaddingTop(0f);
+	    cell.setPaddingBottom(7f);
+	    cell.setBackgroundColor(new BaseColor(0,121,182));
+	    cell.setBorder(0);
+	    cell.setBorderWidthBottom(2f);
+	    }	
+		
+}

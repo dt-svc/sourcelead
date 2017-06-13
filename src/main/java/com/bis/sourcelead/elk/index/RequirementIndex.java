@@ -153,6 +153,8 @@ public class RequirementIndex {
 	
 	private String savedJobUUID;
 	
+	private String referUUID;
+	
 	
 	public String getManagerUserId() {
 		return managerUserId;
@@ -766,6 +768,16 @@ public class RequirementIndex {
 	public void setSavedJobUUID(String savedJobUUID)
 	{
 		this.savedJobUUID = savedJobUUID;
+	}
+
+	public String getReferUUID()
+	{
+		return referUUID;
+	}
+
+	public void setReferUUID(String referUUID)
+	{
+		this.referUUID = referUUID;
 	}
 
 	

@@ -551,7 +551,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 int column=0;
 	        for(Candidate candidate : candidatesList){
 	       	 writeRow = createExcelsheet.createRow(column+1);
-	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate,isAssociate);
 	       	 column++;
 	        }
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -582,7 +582,7 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @param candidate
 	 * @return
 	 */
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate) {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate,String isAssociate) {
 	if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
 		 writeRow.createCell(0).setCellValue(candidate.getFirstName());
 	}
@@ -665,6 +665,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}else{
 			writeRow.createCell(11).setCellValue("--");
 	}
+	
+	if(isAssociate.equalsIgnoreCase(Constants.YES)){
+		if(null != candidate.getIsFavouriteAssociate() && candidate.getIsFavouriteAssociate() == 1){
+			writeRow.createCell(12).setCellValue("Y");
+		}else{
+			writeRow.createCell(12).setCellValue("--");
+		}
+	}else if(null != candidate.getIsFavourite() && candidate.getIsFavourite() == 1){
+			writeRow.createCell(12).setCellValue("Y");
+		}else{
+			writeRow.createCell(12).setCellValue("--");
+	}
+	
 	return createExcelsheet;
 }
 
