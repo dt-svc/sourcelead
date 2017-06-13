@@ -275,7 +275,7 @@
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'My Expenses'}">
-	                   <li class="${sessionData.nav == 'My Expenses' ? 'side-nav-active' : ''}"><a href="<c:url value='/myExpensesList'/>" title="My Expenses"><span><i class="fa fa-money"></i></span><i class="subMenu">My Expenses</i></a></li>
+	                   <li class="${sessionData.nav == 'My Expenses' ? 'side-nav-active' : ''}"><a href="<c:url value='/expenses'/>" title="My Expenses"><span><i class="fa fa-money"></i></span><i class="subMenu">My Expenses</i></a></li>
 	                 </c:if>
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && userTabs.tabName == 'Expenses Approval'}">
