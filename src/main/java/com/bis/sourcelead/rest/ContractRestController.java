@@ -718,6 +718,7 @@ public class ContractRestController {
 		 	
 		 	if(null != contract.getContractsTemplate()){
 				contract.setTemplateName(contract.getContractsTemplate().getTemplateName());
+				contract.setTempUUID(contract.getContractsTemplate().getTemplateUUID());
 		 	}
 		 	
 		 	if(null != contract.getRequirementSubmission()){
@@ -744,6 +745,14 @@ public class ContractRestController {
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = standardFormat.format(endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
+			}
+			
+			if (null != contract && null != contract.getJoinDate()) {
+				String endTimeStr = Constants.TZ_DF.format(contract.getJoinDate());  
+				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
+				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
+				endDateInTimezone = standardFormat.format(endconverteDate);
+				contract.setJoinedDateStr(endDateInTimezone);
 			}
 			
 			if(null != contract && null != contract.getCreatedDate()){
