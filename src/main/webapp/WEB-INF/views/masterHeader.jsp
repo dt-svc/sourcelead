@@ -605,7 +605,7 @@ function notificationStatusAsRead(){
 			              </div>
 			              <div class="col-md-6">
 			                <label class="checkbox-inline">
-			                	<input type="checkbox" value="Email" name="email">Email
+			                	<input type="checkbox" value="Email" name="email" checked>Email
 			                 </label>
 			                <label class="checkbox-inline">
 			                    <input type="checkbox" name="notification" value="Notification">Notification
@@ -1208,5 +1208,4 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
-
 
