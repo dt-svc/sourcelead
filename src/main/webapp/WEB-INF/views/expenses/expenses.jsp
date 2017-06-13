@@ -44,13 +44,21 @@
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
 			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
 			   </sec:authorize>	
+			   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+					    <div id="exportPop" class="user_exp">
+						   <ul>
+									<li onclick="exportMyExpenses('PDF');"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
+									<li onclick="exportMyExpenses('EXCEL');"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
+								</ul>
+						</div>
+				   	</li>
                <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
             
         </div>
         
-    <div class="project_wrap_table">
+    <div class="project_wrap_table datatable_filter">
     	<div id="expensesListDiv">	</div>
 	</div>
 	</div>
@@ -189,7 +197,7 @@ function expensesPagination(){
 	           'aTargets': 0
 			}],
 		"aaSorting": [[0,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -425,5 +433,17 @@ function getEditExpense(eId){
 	alert("fgdfg");
 	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
 	alert("fgdfg");
+}
+</script>
+<script>
+function exportMyExpenses(type){
+	alert(">>>>>>>>>>>"+type);
+	var sourceleadUrl = '${sourceleadUrl}';
+	var expenseStatus = [];
+	$('input:checkbox[name=expenseStatus]:checked').each(function() 
+    {
+		expenseStatus.push($(this).val());
+    });
+	window.location.href = sourceleadUrl + "/getExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
 }
 </script>

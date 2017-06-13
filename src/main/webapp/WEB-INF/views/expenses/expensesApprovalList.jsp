@@ -101,7 +101,7 @@ margin-top: 3px;
 					</div> -->
 					<div class="clearfix"></div>
 				</div>
-				<div class="timesheet_appr_table">
+				<div class="timesheet_appr_table datatable_filter overflow_inherint">
 					<div id="approverDataExpensesDiv"></div>
 
 				</div>
@@ -498,7 +498,7 @@ function pagination(){
     $('#example').DataTable({ 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"aaSorting": [[7,'desc']],
@@ -507,12 +507,18 @@ function pagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
+    $("#example").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 <script>
 function exportToPdf(type){
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type;
+	var expenseStatus = [];
+	$('input:checkbox[name=expenseStatus]:checked').each(function() 
+	{
+		expenseStatus.push($(this).val());
+	});
+	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus;
 }
 </script>
 <script>
