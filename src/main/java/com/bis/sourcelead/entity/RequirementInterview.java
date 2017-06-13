@@ -71,6 +71,9 @@ import org.hibernate.annotations.FetchMode;
 	@Column(name="STATUS")
 	private Integer status;
 	
+	@Column(name = "PROPOSE_TIME")
+	private String proposeTime;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -237,8 +240,6 @@ import org.hibernate.annotations.FetchMode;
 		this.remainedBefore = remainedBefore;
 	}
 
-	
-
 	public Integer getStatus() {
 		return status;
 	}
@@ -247,6 +248,13 @@ import org.hibernate.annotations.FetchMode;
 		this.status = status;
 	}
 
+	public String getProposeTime() {
+		return proposeTime;
+	}
+
+	public void setProposeTime(String proposeTime) {
+		this.proposeTime = proposeTime;
+	}
 
 	public Date getCreatedDate() {
 		return createdDate;

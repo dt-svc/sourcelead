@@ -374,7 +374,7 @@
 						 var selected = jsonData.projectAssignedDateStr;
 						 var from = selected.split("-");
 						 var dt = new Date(from[2], from[1] - 1, from[0]);
-	 		             dt.setDate(dt.getDate() + 1);
+	 		             dt.setDate(dt.getDate());
 	 		             
 	 		             //Main project end date
 	 		             var projectEndDate = jsonData.endDate;
@@ -389,10 +389,19 @@
 				    		      dateFormat: 'dd-mm-yy',
 				    		      minDate: dt,
 				    		      maxDate: endDate,
+				    		      showOn: 'focus',
+			    	              dateFormat: 'dd-mm-yy',
+			    	              showButtonPanel: true,
+			    	              closeText: 'Clear',
 				    		      onClose: function() {
 				    		        	 var id = $(this).attr('id');
 										 var projectMemberId = $(this).attr('id').split('endDate')[1];
-				    		        	 inlineEditForEndDate(id,projectMemberId);
+				    		        	 var event = arguments.callee.caller.caller.arguments[0];
+				    		                // If "Clear" gets clicked, then really clear it
+				    		                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+				    		                    $(this).val('');
+				    		                }
+				    		                inlineEditForEndDate(id,projectMemberId);
 				    		      }
 				    		  }); 
 	    			 }
@@ -806,13 +815,20 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								changeYear: true, 
 								minDate:startDateStr,
 								maxDate:endDateStr,
-								onSelect : function(selected) {
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('startDate')[1];
 									var dt = toDate('#startDate'+actualId);
 									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
-									
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
 								}
 							});
 
@@ -822,12 +838,20 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								changeYear: true, 
 								maxDate:endDateStr,
 								minDate: datepickerStartDate,
-								onSelect : function(selected) {
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('endDate')[1];
 									var dt = toDate('#endDate'+actualId);
 									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
 								}
 							});
 							
@@ -837,12 +861,20 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								changeMonth: true,
 								changeYear: true, 
 								minDate:startDateStr,
-								onSelect : function(selected) {
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('startDate')[1];
 									var dt = toDate('#startDate'+actualId);
 									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() + 1);
 									$("#endDate"+actualId).datepicker("option", "minDate", dt);
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
 									
 								}
 							});
@@ -852,12 +884,20 @@ function getTeamMembers(projectId,startDateStr,endDateStr) {
 								changeMonth: true,
 								changeYear: true, 
 								minDate:datepickerStartDate,
-								onSelect : function(selected) {
+								showOn: 'focus',
+						        showButtonPanel: true,
+						        closeText: 'Clear',
+						        onClose : function(selected) {
 									var actualId = $(this).attr('id').split('endDate')[1];
 									var dt = toDate('#endDate'+actualId);
 									var id = $(this).attr('id');
 									dt.setDate(dt.getDate() - 1);
 									$("#startDate"+actualId).datepicker("option", "maxDate", dt);
+									var event = arguments.callee.caller.caller.arguments[0];
+					                // If "Clear" gets clicked, then really clear it
+					                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+					                    $(this).val('');
+					                }
 								}
 							});
 						}
@@ -1100,11 +1140,19 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  	  changeYear: true, 
 		  minDate:endDate,
 		  maxDate:projectEndDateStr,
-	      onSelect: function (selected) {
+		  showOn: 'focus',
+          showButtonPanel: true,
+          closeText: 'Clear',
+          onClose: function (selected) {
 	    	    removevalidation();
 	            var dt = toDate('#Re-StartDate');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 	  
 	  });
@@ -1115,10 +1163,18 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  	  changeYear: true, 
 	      minDate:endDate,
 	      maxDate:projectEndDateStr,
-	        onSelect: function (selected) {
+	      showOn: 'focus',
+          showButtonPanel: true,
+          closeText: 'Clear',
+          onClose: function (selected) {
 	            var dt = toDate('#Re-EndDate');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	        }
 	  });
   }
@@ -1128,10 +1184,18 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	      changeMonth: true,
 	  	  changeYear: true, 
 		  minDate:endDate,
-	      onSelect: function (selected) {
+		  showOn: 'focus',
+          showButtonPanel: true,
+          closeText: 'Clear',
+          onClose: function (selected) {
 	            var dt = toDate('#Re-StartDate');
 	            dt.setDate(dt.getDate() + 1);
 	            $("#Re-EndDate").datepicker("option", "minDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	            removevalidation();
 	        }
 	  });
@@ -1144,10 +1208,18 @@ function reActiveProject(projectMemberId,empName,startDate,endDate,projectEndDat
 	  	  changeYear: true, 
 	      minDate:endDate,
 	      maxDate:reStatertDate,
-	        onSelect: function (selected) {
+	      showOn: 'focus',
+          showButtonPanel: true,
+          closeText: 'Clear',
+          onClose: function (selected) {
 	            var dt = toDate('#Re-EndDate');
 	            dt.setDate(dt.getDate() - 1);
 	            $("#Re-StartDate").datepicker("option", "maxDate", dt);
+	            var event = arguments.callee.caller.caller.arguments[0];
+                // If "Clear" gets clicked, then really clear it
+                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                    $(this).val('');
+                }
 	            removevalidation();
 	        }
 	  });

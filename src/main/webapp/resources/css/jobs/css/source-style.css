@@ -447,6 +447,9 @@ footer {
 .footerInnCta ul {
 	padding:0px 0px; margin:0px 0px;
 	}
+.footerInnCta ul li {
+	list-style-type:none;
+}
 .footerInnCta ul li	a {
 	font-size:14px; font-weight:400; color:#bdbdbd; padding:4px 5px; display:inline-block;
 	}

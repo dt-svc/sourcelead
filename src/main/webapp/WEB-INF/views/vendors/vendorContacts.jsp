@@ -53,8 +53,12 @@ function vendorContacts(orgRelationID,clientLocationId){
 
     $("#tab-1").empty();
     $("#tab-2").empty(); 
-    $("#tab-3").empty();  
-    $("#tab-2").append(result);  
+    $("#tab-3").empty(); 
+    $("#tab-4").empty(); 
+	$("#tab-5").empty(); 
+    $("#tab-6").empty(); 
+    $("#tab-7").empty(); 
+    $("#tab-5").append(result);  
 	
     vendorContactList(orgRelationID,clientLocationId);
     

@@ -28,7 +28,12 @@
  .expensTableView table tr td {
  padding: 0 !important;
  }
-
+ .valid_ation p.jquery_form_error_message {
+ position: absolute; bottom: -13px; left: 0;
+ }
+ .valid_ation .positionRelative{
+ position: relative !important;
+ }
  </style>
 <script>
 function hideAndShowDetailsRow(rowId){
@@ -211,9 +216,9 @@ function addAttachment(entityRowId,from){
 	                                 <option  value="e-Wallet">e-Wallet</option>
 							</select>
 						</div>	
-	                  <div class="col-md-4 mb10">
+	                  <div class="col-md-4 mb10 valid_ation">
 		                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-							  <div class="input-group er ratetype">
+							  <div class="input-group positionRelative">
 									<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 											  <select class="btn btn-info" id="expenseRateTypeREPLACEROWID" name="expenseRateTypeREPLACEROWID" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 											  	<option value="INR" ${currencyCode  == "INR" ? "selected" : ""}>INR</option>

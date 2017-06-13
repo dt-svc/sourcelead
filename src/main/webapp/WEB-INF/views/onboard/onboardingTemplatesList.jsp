@@ -15,6 +15,8 @@
           <div class="pull-left">
             <h2>Onboard Templates List</h2>
           </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Onboard Templates List</div>
+ <div class="clearfix"></div>
     </section>
     
     <div class="timesheet_out">
@@ -122,7 +124,7 @@ function onboardingPagenation(){
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""
 	       }
-	    } );
+	    });
 }
 </script>
 

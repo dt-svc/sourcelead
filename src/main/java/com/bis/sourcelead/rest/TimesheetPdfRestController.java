@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.service.TimesheetEntriesService;
-import com.bis.sourcelead.web.AutoCompleteController;
 import com.bis.sourcelead.web.DocumentFonts;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;

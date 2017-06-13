@@ -91,6 +91,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		Sheet createExcelsheet = createExcelworkbook.createSheet("candidate");
 		createExcelsheet = setCandidateExcelHeader(createExcelsheet);
 		try {
+			int count = 0;
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
@@ -102,7 +103,6 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			int numberOfSheets = workbook.getNumberOfSheets();
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
-				int count = 0;
 				Iterator<Row> rowIterator = sheet.iterator();
 				while (rowIterator.hasNext()) {
 					CandidatesImport candidateImport = new CandidatesImport();
@@ -173,55 +173,55 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							}
 							if (row.getCell(10) != null) {
 								String experienceYears = getCellValueAsString(row.getCell(10), fileName);
-								candidateImport.setExperienceYears(experienceYears);
+								candidateImport.setExperience(experienceYears);
 							}
 							else {
-								candidateImport.setExperienceYears("");
+								candidateImport.setExperience("");
 							}
-							if (row.getCell(11) != null) {
+							/*if (row.getCell(11) != null) {
 								String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
 								candidateImport.setExperienceMonths(experienceMonths);
 							}
 							else {
 								candidateImport.setExperienceMonths("");
-							}
-							if (row.getCell(12) != null) {
-								String expectedRate = getCellValueAsString(row.getCell(12), fileName);
+							}*/
+							if (row.getCell(11) != null) {
+								String expectedRate = getCellValueAsString(row.getCell(11), fileName);
 								candidateImport.setExpectedRate(expectedRate);
 							}
 							else {
 								candidateImport.setExpectedRate("");
 							}
-							if (row.getCell(13) != null) {
-								String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
+							if (row.getCell(12) != null) {
+								String expectedRateType = getCellValueAsString(row.getCell(12), fileName);
 								candidateImport.setExpectedRateType(expectedRateType);
 							}
 							else {
 								candidateImport.setExpectedRateType("");
 							}
-							if (row.getCell(14) != null) {
-								String skillsName = getCellValueAsString(row.getCell(14), fileName);
+							if (row.getCell(13) != null) {
+								String skillsName = getCellValueAsString(row.getCell(13), fileName);
 								candidateImport.setSkillsName(skillsName);
 							}
 							else {
 								candidateImport.setSkillsName("");
 							}
-							if (row.getCell(15) != null) {
-								String education = getCellValueAsString(row.getCell(15), fileName);
+							if (row.getCell(14) != null) {
+								String education = getCellValueAsString(row.getCell(14), fileName);
 								candidateImport.setEducation(education);
 							}
 							else {
 								candidateImport.setEducation("");
 							}
-							if (row.getCell(16) != null) {
-								String employers = getCellValueAsString(row.getCell(16), fileName);
+							if (row.getCell(15) != null) {
+								String employers = getCellValueAsString(row.getCell(15), fileName);
 								candidateImport.setEmployers(employers);
 							}
 							else {
 								candidateImport.setEmployers("");
 							}
-							if (row.getCell(17) != null) {
-								String primarySkill = getCellValueAsString(row.getCell(17), fileName);
+							if (row.getCell(16) != null) {
+								String primarySkill = getCellValueAsString(row.getCell(16), fileName);
 								candidateImport.setPrimarySkill(primarySkill);
 							}
 							else {
@@ -237,7 +237,22 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 						}
 					}
 				}
-				if (!isValidated || isUserFound) {
+				if (count > 0) {
+					FileOutputStream fos = null;
+					if(!fileName.endsWith("xlsx")){
+						fos = new FileOutputStream("CandidateError.xls");
+						isFileCreated = "CandidateError.xls";
+					}else{
+						 fos = new FileOutputStream("CandidateError.xlsx");
+						 isFileCreated = "CandidateError.xlsx";
+					}
+					
+					createExcelworkbook.write(fos);
+					fos.close();
+				}else {
+					isFileCreated = "success";
+				}
+				/*if (!isValidated || isUserFound) {
 					FileOutputStream fos = null;
 					if (!fileName.endsWith("xlsx")) {
 						fos = new FileOutputStream("CandidateError.xls");
@@ -255,10 +270,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 					else {
 						isFileCreated = "CandidateError.xlsx";
 					}
-				}
-				else {
-					isFileCreated = "success";
-				}
+				}*/
+				
 			}
 			fis.close();
 		} catch (IOException e) {
@@ -349,56 +362,56 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		else {
 			writeRow.createCell(10).setCellValue("");
 		}
-		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+		/*if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
 			String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
 			writeRow.createCell(11).setCellValue(experienceMonths);
 		}
 		else {
 			writeRow.createCell(11).setCellValue("");
+		}*/
+		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+			String expectedRate = getCellValueAsString(row.getCell(11), fileName);
+			writeRow.createCell(11).setCellValue(expectedRate);
+		}
+		else {
+			writeRow.createCell(11).setCellValue("");
 		}
 		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-			String expectedRate = getCellValueAsString(row.getCell(12), fileName);
-			writeRow.createCell(12).setCellValue(expectedRate);
+			String expectedRateType = getCellValueAsString(row.getCell(12), fileName);
+			writeRow.createCell(12).setCellValue(expectedRateType);
 		}
 		else {
 			writeRow.createCell(12).setCellValue("");
 		}
 		if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
-			String expectedRateType = getCellValueAsString(row.getCell(13), fileName);
-			writeRow.createCell(13).setCellValue(expectedRateType);
+			String skillsName = getCellValueAsString(row.getCell(13), fileName);
+			writeRow.createCell(13).setCellValue(skillsName);
 		}
 		else {
 			writeRow.createCell(13).setCellValue("");
 		}
 		if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
-			String skillsName = getCellValueAsString(row.getCell(14), fileName);
-			writeRow.createCell(14).setCellValue(skillsName);
+			String education = getCellValueAsString(row.getCell(14), fileName);
+			writeRow.createCell(14).setCellValue(education);
 		}
 		else {
 			writeRow.createCell(14).setCellValue("");
 		}
 		if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
-			String education = getCellValueAsString(row.getCell(15), fileName);
-			writeRow.createCell(15).setCellValue(education);
+			String employers = getCellValueAsString(row.getCell(15), fileName);
+			writeRow.createCell(15).setCellValue(employers);
 		}
 		else {
 			writeRow.createCell(15).setCellValue("");
 		}
 		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
-			String employers = getCellValueAsString(row.getCell(16), fileName);
-			writeRow.createCell(16).setCellValue(employers);
+			String primarySkill = getCellValueAsString(row.getCell(16), fileName);
+			writeRow.createCell(16).setCellValue(primarySkill);
 		}
 		else {
 			writeRow.createCell(16).setCellValue("");
 		}
-		if (row.getCell(17) != null && !"".equalsIgnoreCase(row.getCell(17).toString())) {
-			String primarySkill = getCellValueAsString(row.getCell(17), fileName);
-			writeRow.createCell(17).setCellValue(primarySkill);
-		}
-		else {
-			writeRow.createCell(17).setCellValue("");
-		}
-		writeRow.createCell(18).setCellValue(candidateImport.getReason());
+		writeRow.createCell(17).setCellValue(candidateImport.getReason());
 	}
 	
 	private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception
@@ -490,17 +503,33 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		else {
 			jsonObj.put("designationType", "C2C");
 		}
-		if (null != candidate.getExperienceYears()) {
-			if (candidate.getExperienceYears().matches("[-a-zA-Z]+")) {
+		if (null != candidate.getExperience()) {
+			if (candidate.getExperience().matches("[-a-zA-Z]+")) {
 				jsonObj.put("experienceYears", "0");
 				jsonObj.put("experienceMonths", "0");
 			}else{
-				 String exp[] = getExperienceYearsAndMonths(candidate.getExperienceYears());
-					jsonObj.put("experienceYears", exp[0]);
-					if(!exp[1].matches("[-a-zA-Z]+")){
-						int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-						jsonObj.put("experienceMonths", String.valueOf(months));	
-					}
+				 String exp[] = getExperienceYearsAndMonths(candidate.getExperience());
+				 if(exp.length >1){
+					 jsonObj.put("experienceYears", exp[0]);
+						if(!exp[1].matches("[a-zA-Z]+")){
+							if(!"years".equalsIgnoreCase(exp[1])){
+							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+							jsonObj.put("experienceMonths", String.valueOf(months));
+							}
+								
+						} 
+				 }else{
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 jsonObj.put("experienceYears", String.valueOf(years));
+						 jsonObj.put("experienceMonths", "0");
+					 }else{
+						 jsonObj.put("experienceYears", "0");
+						 jsonObj.put("experienceMonths", "0");
+					 }
+					 
+				 }
+					
 					
 			}
 		}
@@ -598,7 +627,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	
 	private String[] getExperienceYearsAndMonths(String experience) {
     
-		return experience.split("\\.");
+		return experience.split("[\\p{Punct}\\s]+");
 		
 	}
 
@@ -697,15 +726,15 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		excelHeader.createCell(7).setCellValue(Constants.CANDIDATE_ADDRESS);
 		excelHeader.createCell(8).setCellValue(Constants.CANDIDATE_DESIGNATION);
 		excelHeader.createCell(9).setCellValue(Constants.CANDIDATE_TYPE);
-		excelHeader.createCell(10).setCellValue(Constants.CANDIDATE_EXPERIENCE_YEARS);
-		excelHeader.createCell(11).setCellValue(Constants.CANDIDATE_EXPERIENCE_MONTHS);
-		excelHeader.createCell(12).setCellValue(Constants.CANDIDATE_EXPECTED_RATE);
-		excelHeader.createCell(13).setCellValue(Constants.CANDIDATE_EXPECTED_RATE_TYPE);
-		excelHeader.createCell(14).setCellValue(Constants.CANDIDATE_SKILLS_NAME);
-		excelHeader.createCell(15).setCellValue(Constants.CANDIDATE_EDUCATION);
-		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_EMPLOERS);
-		excelHeader.createCell(17).setCellValue(Constants.CANDIDATE_PRIMARY_SKILL);
-		excelHeader.createCell(18).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(10).setCellValue(Constants.CANDIDATE_EXPERIENCE);
+		/*excelHeader.createCell(11).setCellValue(Constants.CANDIDATE_EXPERIENCE_MONTHS);*/
+		excelHeader.createCell(11).setCellValue(Constants.CANDIDATE_EXPECTED_RATE);
+		excelHeader.createCell(12).setCellValue(Constants.CANDIDATE_EXPECTED_RATE_TYPE);
+		excelHeader.createCell(13).setCellValue(Constants.CANDIDATE_SKILLS_NAME);
+		excelHeader.createCell(14).setCellValue(Constants.CANDIDATE_EDUCATION);
+		excelHeader.createCell(15).setCellValue(Constants.CANDIDATE_EMPLOERS);
+		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_PRIMARY_SKILL);
+		excelHeader.createCell(17).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	

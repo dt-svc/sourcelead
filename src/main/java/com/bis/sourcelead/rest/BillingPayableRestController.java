@@ -14,6 +14,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -111,8 +112,13 @@ public class BillingPayableRestController {
 					invoice.setVendorContactId(invoice.getContactUser().getId());
 				}
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
-		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));
-		    	invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));
+		    	if(invoice.getInvoiceDate() != null){
+		    		invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));	
+		    	}
+		    	if(invoice.getDueDate() != null){
+		    		invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));	
+		    	}
+		    	
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
 		    	
@@ -173,7 +179,6 @@ public class BillingPayableRestController {
 			
 			return resultJson;
 	 }
-	 
 	 
 	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {

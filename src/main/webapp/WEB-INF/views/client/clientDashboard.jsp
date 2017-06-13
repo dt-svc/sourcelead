@@ -20,6 +20,9 @@
 <jsp:include page="clientDocuments.jsp" />	
 <jsp:include page="clientSpocDocuments.jsp" />	
 <jsp:include page="submissionTemplateList.jsp" /> 
+<jsp:include page="clientContracts.jsp" />
+<jsp:include page="clientBilling.jsp" /> 
+<jsp:include page="requirementReleasedList.jsp" /> 
 
 <style type="text/css">
 clients_wrap {
@@ -350,7 +353,7 @@ overflow-x: auto;
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table datatable_scroll" id ="vendorListFilter">
+				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
@@ -925,7 +928,7 @@ function pagination(){
     $('#clientList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -957,8 +960,21 @@ function pagination(){
 		result = result+'  <li><a href="#tab-3" onclick="clientDocuments('+orgRelationId+','+clientLocationId+');">Documents</a></li>';		
 		'</sec:authorize>';	
 		
+		
+		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
 		result = result + '<li><a href="#tab-4" onclick="clientSubmissionTemplate('+clientLocationId+');">Submission Templates</a></li>';	
+		'</sec:authorize>';
+		
+		//for client requirement tab
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
+		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Requirement List</a></li>';	
+		'</sec:authorize>';
+		
+		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Billing</a></li>';
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		result = result + '<li><a href="#tab-7" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
 		'</sec:authorize>';
 		
 		result = result + '<div class="clearfix"></div>'
@@ -978,9 +994,20 @@ function pagination(){
 		result = result + '</div>';
 		
     	//for client submission template tab
-	   result = result + '<div id="tab-4" class="project_tabs_inn">';
+	    result = result + '<div id="tab-4" class="project_tabs_inn">';
 		result = result + '</div>';
+		
+		//for client requirement list
+		   result = result + '<div id="tab-5" class="project_tabs_inn">';
+			result = result + '</div>';
 
+		//for billing tab
+		 result = result + '<div id="tab-6" class="project_tabs_inn">';
+		 result = result + '</div>';
+		 
+		 //for client contracts
+		result = result + '<div id="tab-7" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -1013,11 +1040,11 @@ function preparedClientContacts(data){
 		   	/* if(json.length != null && json.length != ''){ */
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
+		   	result = result +'  <th>Client</th>';
 		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client Contact</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1029,7 +1056,11 @@ function preparedClientContacts(data){
 				{  
 		   		var report = json[i];
 		   		
+		   		
 		   		result = result +'<tr id="row'+report.id+'">';
+		   		
+		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
+		   		
 		   		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		   			result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title='+report.spocName+'>'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
 		   		'</sec:authorize>';
@@ -1045,7 +1076,6 @@ function preparedClientContacts(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 		   		result = result +'<td><div><span title='+report.ownerName+'>'+report.ownerName+'</span></div></td>';
-		   		result = result +'<td><div><span title='+report.orgName+'>'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
 		   		if(report.invitationStatus == 'Rejected'){
@@ -1127,11 +1157,11 @@ function preparedClientContactListFromElk(data){
 		   	var result = "";
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
+		   	result = result +'  <th>Client</th>';
 		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Client Contact</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1146,6 +1176,7 @@ function preparedClientContactListFromElk(data){
 		   		
 		   		result = result +'<tr id="row'+report.id+'">';
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 		   				result = result +'<td><div class="proj_show"onclick="clientSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\','+report.tempOwnerId+');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
@@ -1172,8 +1203,6 @@ function preparedClientContactListFromElk(data){
 		   		else if(null != report.ownerName && '' != report.ownerName && 'undefined' != report.ownerName){
 		   			result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
 				}
-		   		
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		result = result + ' <td><div>';
 		   		if(report.invitationStatus == 'Rejected'){
@@ -1447,7 +1476,7 @@ function pagination1(){
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2413,6 +2442,4 @@ function flushCheckBoxVal(){
 	
 }
  </script>
-
-
 <jsp:include page="../masterFooter.jsp" />	

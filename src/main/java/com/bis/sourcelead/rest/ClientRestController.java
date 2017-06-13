@@ -13,6 +13,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,17 +32,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -50,6 +54,8 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -98,6 +104,9 @@ public class ClientRestController {
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
 	private OrgSpocService orgSpocService;
 
 	@Autowired
@@ -118,6 +127,11 @@ public class ClientRestController {
 	@Autowired
 	NotificationsService notificationsService;
 	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
+
+	@Autowired
+	private RequirementService requirementService;
   
 	@Autowired
 	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
@@ -716,6 +730,43 @@ public class ClientRestController {
 			return resultJson;
 		}
 	 
+	   
+	   
+	@RequestMapping(value = "/getClientReleasedRequirementList", method = RequestMethod.POST)
+	@ResponseBody
+	String getClientReleasedRequirementList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String resultJson;
+		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
+		for (Requirement req : reqList) {
+			req.setPostedDateStr(Constants.DF_DMY.format(req.getCreatedDate()));
+			if (req.getManagerUserId() != null) {
+				String managerFirstName = "";
+				if (StringUtils.isNotEmpty(req.getManagerUserId().getFirstName())) {
+					managerFirstName = req.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if (StringUtils.isNotEmpty(req.getManagerUserId().getLastName())) {
+					managerLastName = req.getManagerUserId().getLastName();
+				}
+				StringBuilder name = new StringBuilder();
+				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+				int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "INTERVIEWED");
+				int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "OFFERED");
+				int bacOutCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), Constants.BACKOUT_STATUS);
+
+				req.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
+				req.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+				req.setNoOfBackOutApplicants(String.valueOf(bacOutCount));
+			}
+		}
+		resultJson = commonUtil.toJSON(reqList);
+		return resultJson;
+	}
+	   
 	/**
 	 * @author Prasanna vadla
 	 * @param json
@@ -1035,5 +1086,19 @@ public class ClientRestController {
 		return str == null || "".equals(str.trim());
 	}
 
+	
+	/**
+	 * @author Pavan Jampana
+	 * to get the client or vendor contracts List
+	 */
+	@RequestMapping(value = " /getClientOrVendorContracts")
+	 @ResponseBody
+	 public String  getClientOrVendorContracts(@RequestParam(value="orgRelationId", required=false)Long orgRelationId,@RequestParam(value="responderType", required=false)String responderType,@RequestParam(value="contractStatus", required=false)String contractStatus,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<Contracts> clientcontractsList = contractsTemplateService.getAllClientOrVendorContractsBasedOnLocationId(orgLocations,responderType,user,userRoleName,contractStatus);
+		return commonUtil.toJSON(clientcontractsList);
+	 }
 
 }
