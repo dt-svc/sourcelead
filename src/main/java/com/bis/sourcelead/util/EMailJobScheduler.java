@@ -877,7 +877,7 @@ public class EMailJobScheduler {
 			}
     }
 
-	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	/*@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void scheduleUserMail() throws Exception {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -900,7 +900,48 @@ public class EMailJobScheduler {
 		  }
 		}
 
-	}
+	}*/
+	
+	
+	
+	@Scheduled(cron = "0 30 18 1/1 * ?")
+	@Async
+	public void scheduleUserMailDailyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.JOB_ALERT_DURATION_DIALY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
+	
+	@Scheduled(cron = "0 30 18 ? * MON")
+	@Async
+	public void scheduleUserMailWeeklyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.JOB_ALERT_DURATION_WEEKLY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
+	
+	@Scheduled(cron = "0 30 18 1 1/1 ?")
+	@Async
+	public void scheduleUserMailMonthlyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.MONTHLY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
+	@Scheduled(cron = "0 30 18 1 1 ?")
+	@Async
+	public void scheduleUserMailYearlyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.YEARLY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
 	
 	public void sendEmailToManager(User user, List<ProjectMembers> projectMemberslist, List<Candidate> candidatesListToBeAddedInHotList, List<CandidatesHotListDummy> hotlist , OrgLocations orgLocations, Org org)	throws Exception {
 		 

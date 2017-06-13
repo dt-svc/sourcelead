@@ -260,7 +260,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String userStateSubQuery = "";
-		if (!isNullOrEmpty(userState)) {
+		if (!isNullOrEmpty(userState) && !userState.equalsIgnoreCase("ALL")) {
 			userStateSubQuery = "and org.user.id IN (select userRole.user.id from UserRole userRole) "
 					+ " and org.id IN (select userRole.orgLocations.org.id from UserRole userRole where userRole.userState = '" + userState + "')";
 		}

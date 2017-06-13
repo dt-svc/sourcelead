@@ -2,19 +2,18 @@
 
 /* crowdsourcing styles */
 .content-area.panelBody{
-    padding: 10px 15px;
-    min-height: 100px !important;
+    padding: 15px;
 }
 .chip {
     display:inline-block;
     padding: 5px 25px;
-    min-height: 10px;
+    min-height: 50px;
     font-size: 14px;
     line-height: 22px;
     border-radius: 25px;
     background-color: #CFD8DC;
     position:relative;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 .chip img {
     margin:0;
@@ -24,7 +23,7 @@
     position:absolute;
     left:0;
     margin-right:50px;
-    top:-25px;
+    top:-10px;
     border: 1px solid #333;
 }
 .chip span{
@@ -33,7 +32,7 @@
 }
 .professional-details {
     margin-left: 22%;
-    line-height: 18px;
+    line-height: 20px;
     font-size: 13px;
 }
 .professional-details i{
@@ -45,12 +44,12 @@
     color:#333;
 }
 .reachout p{
-    margin-bottom: 5px;
+    margin-bottom: 5px; position: relative; padding: 0px 0px 0px 20px; line-height: 21px;
 }
 .reachout .fa {
     font-size: 12px;
     color: #757575;
-    width: 20px;
+    width: 20px; position: absolute; left: 0px; top: 2px;
 }
 .skills .fa-code{
     font-size: 30px;
@@ -60,14 +59,14 @@
     line-height: 22px;
 }
 .skills p {
-	word-wrap: break-word;
+    word-wrap: break-word;
 }
 .pro_info h5{
     margin-bottom: 5px;
     font-size: 16px;
     color: #607d8b;
     border-bottom: 1px solid #cfd8dc;
-    padding-bottom:0px;
+    padding-bottom:3px;
     margin-top: 0;
 }
 .btn-fb i {
@@ -152,43 +151,6 @@
 }
 .db-widget-sm .fa {
     text-shadow: none;
-}
-.checkbox {
-	margin-top: 5px !important;
-}
-.checkbox input[type=checkbox]{
-	margin-top: 2px;
-}
-.dates p{
-	margin-bottom: 2px;
-	font-size: 13px;
-	color:#909090;
-	
-}
-.candiateInfo .dataTables_filter {
-	top: -30px !important;
-}
-/* .addPop .edit-details.edit-details-active {
-    visibility: visible;
-    opacity: 1;
-    -webkit-transform: translateX(175px);
-    -ms-transform: translateX(175px);
-    transform: translateX(175px);
-    top: 30px;
-}
-.addPop .edit-details{
-	right: 500px;
-} */
-.addPop .close-div {
-	left: auto;
-	right:-15px;
-}
-.addPop .edit-details:before{
-	left: 10px;
-	right: auto;
-}
-.addPop .edit-details.edit-details-active {
-	top: 30px;
 }
 /* NewDash Board Styles */
 /* Crowdsourcing Styels */

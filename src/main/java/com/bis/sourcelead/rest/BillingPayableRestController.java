@@ -30,12 +30,14 @@ import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -60,6 +62,9 @@ public class BillingPayableRestController {
 	
 	@Autowired
 	InvoiceTaxService invoiceTaxService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -99,6 +104,7 @@ public class BillingPayableRestController {
 		    String resultJson;
 		 
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		  
 		    if(null != invoice){
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
@@ -172,7 +178,8 @@ public class BillingPayableRestController {
 		    	List<InvoiceTax> invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
 		    	invoice.setInvoiceTaxList(invoiceTaxList);
 		    	
-		    	
+		    	invoice.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getLocationId().getCountry()));
+		    	invoice.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(invoice.getOrgRelationID().getLocationId().getCountry()));
 		    }
 		    
 		    resultJson = commonUtil.toJSON(invoice);
