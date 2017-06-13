@@ -25,8 +25,10 @@
 
 	<div class="timesheet_head candidateHead">
 	  <ul class="mt10">
-	  <li><a href="javascript:void(0)" class="addcon-pop" onclick="addExpenseCategory();"> <i class="glyphicon glyphicon-plus"></i>Add Category</a> 
-	  </li></ul>
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE')">
+	  	<li><a href="javascript:void(0)" class="addcon-pop" onclick="addExpenseCategory();"> <i class="glyphicon glyphicon-plus"></i>Add Category</a></li>
+	  </sec:authorize>
+	  </ul>
 	<div class="clearfix"></div>
 	</div>
 
@@ -242,14 +244,19 @@ function expenseCategoryList(){
 	                    		 }else{
 	                    			 result = result +"<td><div><span>Active</span></div></td>"; 
 	                    		 }
-			                    result = result+' <td><div class="tblicons tblminwidth-75"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"></a>';
-			                    
+			                    result = result+' <td><div class="tblicons tblminwidth-75">';
+			                    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
+			                    result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onclick ="editExpenseCategory('+opt.id+');" title="Edit"></a>';
+			                    '</sec:authorize>';
 			                    if(opt.status == '0'){
-			                    	result = result+'<a onclick="reActiveExpenseCategory('+opt.id+');" title="Remove">Re-Active</a></div></td>'; 
+			                    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EXPENSE_TYPE\')">'
+			                    	result = result+'<a onclick="reActiveExpenseCategory('+opt.id+');" title="Remove">Re-Active</a></div></td>';
+			                    	'</sec:authorize>';
 			                    }else{
-			                    	result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>';			                    	
+			                    	'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_EXPENSE_TYPE\')">'
+			                    	result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteExpenseCategory('+opt.id+');" title="Remove"></i></div></td>';
+			                    	'</sec:authorize>';
 			                    }
-			                    
 			                    
 		                     result = result +"</tr>";
 	                     }

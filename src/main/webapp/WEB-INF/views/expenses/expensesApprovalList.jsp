@@ -65,29 +65,34 @@ margin-top: 3px;
 				<div class="timesheet_head">
 							
 				<ul>
-				<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>
-							<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList();"><label >Sub for Approval</label></li>
-							<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList();"><label >Approved</label></li>
-							<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList();"><label >Rejected</label></li>
-							<li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-		   		<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
-							
-			<li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			    <div id="exportPop" class="user_exp">
-				   <ul class="ul_padding">
-				   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-				   <li onclick="exportToPdf('excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-				   </ul>
-				</div>
-		   </li>
-		   <div class="clearfix"></div>
-		   </ul>
+				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
+					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+	                	<div class="approved_pop">
+	                    	<ul>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>
+								<li><input id="expenseSubmitForApproval" type="checkbox" name="expenseStatus" value ="SUBMITTEDFORAPPROVAL" onclick="getExpensesApprovalDataList();"><label >Sub for Approval</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesApprovalDataList();"><label >Approved</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesApprovalDataList();"><label >Rejected</label></li>
+								<li><input id="expenseReopned" type="checkbox" name="expenseStatus" value ="REOPENED" onclick="getExpensesApprovalDataList();"><label >Re-Opened</label></li>
+	                        </ul>
+	                    </div>                	
+	                </li>
+                </sec:authorize>
+                <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES')">
+		   			<li><a href="<c:url value='/addApprovalExpense'/>"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Expense</a></li>
+		   		</sec:authorize>
+				<sec:authorize access="hasAnyRole('ROLE_EXPORT_EMPLOYEE_EXPENSES')">			
+					<li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+					    <div id="exportPop" class="user_exp">
+						   <ul class="ul_padding">
+						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+						   <li onclick="exportToPdf('excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+						   </ul>
+						</div>
+				   	</li>
+		   		</sec:authorize>
+		   		<div class="clearfix"></div>
+		   		</ul>
 							
 					
 		
@@ -172,7 +177,17 @@ $.ajax({
 	
 	
 	result = result+' <td><div class="sm">'+data.expenseId.totalAmount+'</div></td>';
-	result = result+' <td><div class="sm"><a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">'+data.expenseId.totalAmount+'</a></div></td>';
+	result = result+' <td><div class="sm">';
+	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
+	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
+	'</sec:authorize>';
+	
+	result = result+ data.expenseId.totalAmount;
+	
+	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
+	result = result+'</a>';
+	'</sec:authorize>';
+	result = result+'</div></td>';
 	result = result+' <td><div id="status'+data.expenseId.id+'">'+data.expenseApprovalStatus+'</div></td>';
 	
 	result = result+' <td>';
@@ -182,9 +197,11 @@ $.ajax({
      }
      if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus == 'SUBMITTEDFORAPPROVAL'){
         result = result+"<div class='sm text-center'id='action"+data.expenseId.id+"'>"
+        '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_EMPLOYEE_EXPENSES\')">' 
         result = result+ " <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
         result = result+ "|<i class='fa fa-times' title='Reject'  alt='Rejected' onclick='rejectExpenseByExpenseId(\""+data.expenseId.id+"\","+tdSpanLength+ ",\""+"approval"+"\");'></i>"
- 	    result = result+"</div>"; 
+        '</sec:authorize>';
+        result = result+"</div>"; 
  	                    
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REJECTED'){
