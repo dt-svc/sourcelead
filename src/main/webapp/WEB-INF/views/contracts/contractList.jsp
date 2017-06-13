@@ -913,7 +913,7 @@ function listContractsPagination(){
         ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"pageLength":true,
     	"bDestroy": true,
     	"ordering": true,
@@ -940,7 +940,7 @@ function vendorListContractsPagination(){
         ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -956,7 +956,7 @@ function appListContractsPagination(){
     	
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1311,7 +1311,7 @@ function listContractsPaginationWFA(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1338,7 +1338,7 @@ function vendorListContractsPaginationWFA(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1366,7 +1366,7 @@ function appListContractsPaginationWFA(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1655,7 +1655,7 @@ function listContractsPaginationWTS(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1681,7 +1681,7 @@ function vendorListContractsPaginationWTS(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1707,7 +1707,7 @@ function appListContractsPaginationWTS(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2008,7 +2008,7 @@ function listContractsPaginationWTV(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2034,7 +2034,7 @@ function vendorListContractsPaginationWTV(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2061,7 +2061,7 @@ function applicantsContractsPaginationWTV(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2336,7 +2336,7 @@ function listContractsPaginationFinalize(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2362,7 +2362,7 @@ function vendorListContractsPaginationFinalize(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2388,7 +2388,7 @@ function applicantsContractsPaginationFinalize(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2635,7 +2635,7 @@ function listContractsPaginationEXP(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2661,7 +2661,7 @@ function vendorListContractsPaginationEXP(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2687,7 +2687,7 @@ function applicantsContractsPaginationEXP(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2968,7 +2968,7 @@ function listContractsPaginationREJ(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2994,7 +2994,7 @@ function vendorListContractsPaginationREJ(){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3020,7 +3020,7 @@ function applicantsContractsPaginationREJ(){
 	        ],
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
