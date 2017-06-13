@@ -48,7 +48,7 @@ public class ProjectMembers implements Serializable{
 	private Projects projects;
 	
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="EMPLOYEE_ID", nullable=false )	
 	private Employees employee;
 	
