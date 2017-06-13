@@ -1632,6 +1632,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				if(jsonObj.has("comment")){
 					requirementSubmission.setRejectedReason(jsonObj.getString("comment"));
 				}
+				
+				
+				
+				if(jsonObj.has("rejectedCategory")){
+					requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
+				}
+				
+				
+				if(jsonObj.has("rejectedCategoryOther")){
+					requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+
+				}
+				
+				
 				StringBuilder name = new StringBuilder();
 				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
 					requirementSubmission.setSubmissionRequestUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
