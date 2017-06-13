@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
@@ -35,9 +37,7 @@ import com.bis.sourcelead.entity.OffBoardingDocuments;
 import com.bis.sourcelead.entity.OffBoardingTemplate;
 import com.bis.sourcelead.entity.OffboardCheckList;
 import com.bis.sourcelead.entity.OffboardTasks;
-import com.bis.sourcelead.entity.OnboardTasks;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -1467,6 +1467,38 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 			 return commonUtil.toJSON(documents);
 			 
 		   }
+		 
+		 
+		 @RequestMapping(value = "/getEndDateByEffectiveDateAndNoticePeriod", method = RequestMethod.GET)
+			public @ResponseBody String getEndDateByEffectiveDateAndNoticePeriod(@RequestParam(value = "noticePeriod", required = false) String noticePeriod,
+					@RequestParam(value = "effectiveDate", required = false) String effectiveDate,HttpServletRequest request) throws Exception {
+				
+				
+				String[] notice = noticePeriod.split(" ");
+				SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+				String endDateStr = null;
+				
+				try {
+
+					Date date =  formatter.parse(effectiveDate);
+					Calendar c = Calendar.getInstance();
+					c.setTime(date);
+					
+					if(noticePeriod.equalsIgnoreCase("15 Days")){
+						c.add(Calendar.DATE, Integer.parseInt(notice[0]));
+					}else{
+						c.add(Calendar.MONTH, Integer.parseInt(notice[0]));
+					}
+					
+					endDateStr =  formatter.format(c.getTime());
+
+		        } catch (ParseException e) {
+		            e.printStackTrace();
+		        }
+				
+				return endDateStr;
+			} 
+			
 		 
 		 
 		

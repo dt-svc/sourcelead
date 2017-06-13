@@ -51,7 +51,7 @@ padding-left: 25px;
               <li onclick="getOffboardCandidateCheckList();"><a href="checkList" data-toggle="tab"> <i class="fa fa-check-square-o paddingRight"></i> <span>Check List</span> <br>
               <small>Check List</small> </a> </li>
 
-              <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Taks</span> <br>
+              <li onclick="getOffboardingTasksList();"> <a href="#tasks" data-toggle="tab" id="templateTasks"> <i class="fa fa-check-square-o paddingRight"></i> <span>Tasks</span> <br>
               <small>List of tasks</small> </a></li>
               
               <li onclick="getOffboardDocuments();"><a href="#documents" data-toggle="tab" > <i class="fa fa-files-o paddingRight"></i> <span>Documents</span> <br>
