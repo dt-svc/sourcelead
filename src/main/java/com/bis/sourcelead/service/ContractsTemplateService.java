@@ -58,5 +58,7 @@ public interface ContractsTemplateService {
 
 	void documentsReceivedMailToOwner(Contracts contractId, User user, Org org) throws Exception;
 
+	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus)throws Exception;
+
 	
 }

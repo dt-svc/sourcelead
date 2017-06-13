@@ -232,7 +232,6 @@ function cancelAlert(){
 			  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
 			 }
 			 if(rejectedCategoryOther.match(/^[^\s-](.*)*$/) != null && rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
-				alert("dfgfdgdf");
 				 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
 			 }
 			 else{

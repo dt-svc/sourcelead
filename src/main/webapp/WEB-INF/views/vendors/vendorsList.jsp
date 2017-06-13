@@ -1410,6 +1410,15 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 </script>
 
 <script>
+function cancelTerminationReson(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reasonForSpoc").val('');
+	$("#reasonForVendorSpocDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForVendorSpocDiv").empty(); 
+}
+</script>
+
+<script>
 function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -1417,7 +1426,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1429,13 +1438,8 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForVendorSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1452,10 +1456,20 @@ function saveReason1(spocId, orgRelationID){
 	 			 msgFadein();
 		    }
 	   });
+	}else{
+		if(reason){
+			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForVendorSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForVendorSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 	  
 }
 </script>
+
+
 <script>
 function updateSpocStatus(spocId){
     var spocStatus = $('#spocState'+spocId).val();
@@ -1719,12 +1733,15 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		result = result + '<li><a href="#tab-5" onclick="vendorContracts('+orgRelationId+');">Contracts</a></li>'; 
+		'</sec:authorize>';
+		
 		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
 		
 		 // vendors associates list
 		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associate List</a></li>';
 
-		 
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -1741,18 +1758,20 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<div id="tab-3" class="project_tabs_inn">';
 		result = result + '</div>';
 		
+		//for vendor billing
+		result = result + '<div id="tab-4" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor Contracts
+		result = result + '<div id="tab-5" class="project_tabs_inn">';
+		result = result + '</div>';
+
 		//for vendor requirement list tab
 		result = result + '<div id="tab-6" class="project_tabs_inn">';
 		result = result + '</div>';
 		
 		//for vendor associate list tab
 		result = result + '<div id="tab-7" class="project_tabs_inn">';
-		result = result + '</div>';
-
-
-		//for vendor billing
-
-		result = result + '<div id="tab-4" class="project_tabs_inn">';
 		result = result + '</div>';
 
 		result = result + '</div>';
@@ -2131,6 +2150,7 @@ $(".addcon-pop").click(function(){
 <jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="vendorContacts.jsp" />
 <jsp:include page="vendorDocuments.jsp" />
+<jsp:include page="vendorContracts.jsp" />
 <jsp:include page="vendorSpocDocuments.jsp" />
 
 <jsp:include page="vendorRequirmentList.jsp" />

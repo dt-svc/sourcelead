@@ -112,8 +112,13 @@ public class BillingPayableRestController {
 					invoice.setVendorContactId(invoice.getContactUser().getId());
 				}
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
-		    	invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));
-		    	invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));
+		    	if(invoice.getInvoiceDate() != null){
+		    		invoice.setInvoiceDateStr(Constants.DMY.format(invoice.getInvoiceDate()));	
+		    	}
+		    	if(invoice.getDueDate() != null){
+		    		invoice.setDueDateStr(Constants.DMY.format(invoice.getDueDate()));	
+		    	}
+		    	
 		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
 		    	
@@ -175,7 +180,6 @@ public class BillingPayableRestController {
 			return resultJson;
 	 }
 	 
-	 @PreAuthorize("hasAnyRole('ROLE_DOWNLOAD_BILL')")
 	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
 			
