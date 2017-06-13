@@ -483,7 +483,6 @@ public class InvoiceRestController {
 	
     
 
-    @PreAuthorize("hasAnyRole('ROLE_ADD_PAYMENT')")
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
 
@@ -617,7 +616,6 @@ public class InvoiceRestController {
 	 	  resultJson = commonUtil.toJSON(viewinvoiceList);
 	 	  return resultJson;
 	 	}
-	  @PreAuthorize("hasAnyRole('ROLE_BILL_PAYMENT_HISTORY')")
 	  @RequestMapping(value = "/getViewPaymentHistory", method = RequestMethod.GET)
 	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
@@ -1107,7 +1105,6 @@ public class InvoiceRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasAnyRole('ROLE_SEND_BILL_REMINDER')")
 	@RequestMapping(value = "/sendReminder", method = RequestMethod.POST)
 	public @ResponseBody String sendReminder(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1124,7 +1121,6 @@ public class InvoiceRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasAnyRole('ROLE_PRINT_BILL')")
 	@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -1443,8 +1439,6 @@ public class InvoiceRestController {
 				LocalDate[] currentYearDates  = conversionUtil.getThisYearStartDateEndDate();
 				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
 				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
-				System.out.println("start date year "+startDateUTC);
-				System.out.println("end date year "+endDateUTC);
 				break;
 			case Constants.LAST_30DAYS:
 				Date[] last30Days = conversionUtil.getPreviousDates(30,orgLocation,startDateOutputFormatter,endDateOutputFormatter);
@@ -1557,7 +1551,7 @@ public class InvoiceRestController {
 				clientList.add(invce);
 			}
 		}
-		if (null != clientList && clientList.size() > 0){
+		if (clientList !=null && clientList.size() > 0){
 		resultJson = commonUtil.toJSON(clientList);	
 		}
 		return resultJson;

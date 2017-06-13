@@ -92,11 +92,11 @@ function candidateResumeById(candidateId){
 					            	}
 					            	
 					            	result = result+'	          <tr>';
-					           		result = result+'	            <td><div><span>'+title+'</span></div></td>';
-					           		result = result+'	            <td><div><span>'+opt.fileName+'</span></div></td>';
+					           		result = result+'	            <td><div><span title="'+title+'">'+title+'</span></div></td>';
+					           		result = result+'	            <td><div><span title="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
 					           		result = result+'	            <td><div><span title="'+description+'">'+description+'</span></div></td>';
-					           		result = result+'	            <td><div><span>'+createdBy+'</span></div></td>';
-					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
+					           		result = result+'	            <td><div><span title="'+createdBy+'">'+createdBy+'</span></div></td>';
+					           		result = result+'	            <td><div class="tblicons"><a class="glyphicon glyphicon-download-alt" title="Download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+opt.resumeUUID+'\"></a>';
 					           		/* if(window.candidateStatusGlobal == 0){
 					           			result = result+'	            <a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 						           		result = result+'	            <i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
