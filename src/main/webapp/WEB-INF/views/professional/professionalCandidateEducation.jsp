@@ -133,7 +133,11 @@ function candidateEducationList(candidateId){
 	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
 	                    	 }
 	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+			                 if(opt.gradeType == 'Percentage'){
+			                	 result  = result + '<td><div><span>%</span></div></td>';
+			                 }else{
+			                	 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+			                 }
 			                 }else{
 			                 result  = result + '<td><div><span>----</span></div></td>'; 
 			                 }
@@ -501,18 +505,22 @@ function EditEducation(candidateId,candidateEducationId) {
 							}
 							
 							$('#startDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							      onSelect: function (selected) {
-							            var dt = new Date(selected);
+							    	    var dt = toDate("#startDateEdit");
 							            dt.setDate(dt.getDate() + 1);
 							            $("#endDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#endDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							        onSelect: function (selected) {
-							            var dt = new Date(selected);
+							        	var dt = toDate("#endDateEdit");
 							            dt.setDate(dt.getDate() - 1);
 							            $("#startDateEdit").datepicker("option", "maxDate", dt);
 							        }

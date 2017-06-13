@@ -235,7 +235,11 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span title = "'+opt.provider+'">'+opt.provider+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
+	                    	 if(opt.scoreType == 'Percentage'){
+	                    		 result  = result + '           <td><div><span>%</span></div></td>';
+							}else{
+								result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
+							}
 	                    	 result  = result + '           <td><div><span title = "'+description+'">'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
@@ -570,24 +574,29 @@ function toDate(selector) {
 								$(".edit-details").removeClass("edit-details-active");
 							   });	 */
 
-							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
-							      onSelect: function (selected) {
-							            var dt = new Date(selected);
-							            dt.setDate(dt.getDate() + 1);
-							            $("#EndDateEdit").datepicker("option", "minDate", dt);
-							        }
-							  });
+							   
+							   $('#StartDateEdit').datepicker({
+									  dateFormat: 'dd-mm-yy',
+								      changeMonth: true,
+								  	  changeYear: true, 
+								      onSelect: function (selected) {
+								    	    var dt = toDate("#StartDateEdit");
+								            dt.setDate(dt.getDate() + 1);
+								            $("#EndDateEdit").datepicker("option", "minDate", dt);
+								        }
+								  });
+							   
+							   $('#EndDateEdit').datepicker({
+									  dateFormat: 'dd-mm-yy',
+								      changeMonth: true,
+								  	  changeYear: true, 
+								        onSelect: function (selected) {
+								        	var dt = toDate("#EndDateEdit");
+								            dt.setDate(dt.getDate() - 1);
+								            $("#StartDateEdit").datepicker("option", "maxDate", dt);
+								        }
+								  });
 							  
-							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
-							        onSelect: function (selected) {
-							            var dt = new Date(selected);
-							            dt.setDate(dt.getDate() - 1);
-							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
-							        }
-							  });
-																
 							}
 						
 						}
