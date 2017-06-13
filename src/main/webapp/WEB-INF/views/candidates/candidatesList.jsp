@@ -326,7 +326,7 @@ function cpagination(){
 	           'aTargets': 0
 			}],
 		"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1403,7 +1403,7 @@ function cancel(candidateId){
         
         <div class="clearfix"></div>
       </div>
-      <div class="candidate_wrap_table">
+      <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
         <div id="emptyPopup"></div>
       </div>
