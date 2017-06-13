@@ -13,6 +13,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -46,8 +47,18 @@ public interface InvoiceService {
 
 	CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal)throws Exception;
 
-	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount) throws Exception;
+	File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception;
 
 	Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
+
+	List<Invoice> getInvoiceByOrgLocationId(Long idorgLocationId, Date startDateUTC, Date endDateUTC, String invoiceTYpe)throws Exception;
+
+	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocationId, String invoiceType);
+
+	void linkInvoice(Invoice invoice)throws Exception;
+
+	List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId, Long clientLocationId, Date startDateUTC, Date endDateUTC, String invoiceStatus, String paymentStatus, String invoiceType, OrgLocations orgLocations);
+
+	List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long id, Date startDateUTC, Date endDateUTC)throws Exception;
 
 }

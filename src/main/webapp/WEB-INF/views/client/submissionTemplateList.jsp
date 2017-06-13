@@ -56,6 +56,7 @@ function clientSubmissionTemplate(clientLocationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty();  
+    $("#tab-5").empty();  
     $("#tab-4").append(result);  
 	
     submissionTemplateList(clientLocationId);

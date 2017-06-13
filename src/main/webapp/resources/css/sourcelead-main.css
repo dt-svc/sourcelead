@@ -1169,7 +1169,7 @@ padding: 10px; margin: 0; margin-bottom: 15px; font-size: 18px; color: #ff8f00;
 
 /* jQuery validation css by naresh */
 .jquery_form_error_message {
-	padding: 0px 0px 0px 15px !important; margin: 0px; font-size: 11px !important; color: #f12929 !important; font-weight: 500 !important;
+	padding: 0px 0px 0px 15px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500;
 }
 /* jQuery validation css by naresh */
 .side-bar .side-nav ul ul {

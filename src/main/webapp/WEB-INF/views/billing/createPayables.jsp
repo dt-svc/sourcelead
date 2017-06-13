@@ -1350,7 +1350,7 @@ function calculateDiscount(){
 	}
 	 
 	calculateTaxDiscount();
-	
+	conversion();
 }
 </script>
 
@@ -1504,7 +1504,7 @@ function calculateDiscount(){
         total = (first-second);
         $("#grandTotal").val(total);
        //=======================================
-        
+        conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addTaxTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
@@ -1552,7 +1552,7 @@ function calculateTaxDiscount(){
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
 	$("#conversionFrom").val(grandTotal.toFixed(2));
-  
+	conversion();
 }
 </script>
 
@@ -1902,6 +1902,7 @@ function getDueDateByFrequency(){
 				
 				$("#dueDate").val(dueDateStr);
 				$("#invoiceLoading").removeAttr("style");
+				errDueDate();
 			}
 		});
 		

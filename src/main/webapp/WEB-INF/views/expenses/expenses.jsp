@@ -35,6 +35,7 @@
 	                    	<ul>
 	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
 								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
+								<li><input id="expenseSubmitted" type="checkbox" name="expenseStatus" value ="SUBMITTED" onclick="getExpensesList();"><label >Submitted</label></li>
 								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
 								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
 	                        </ul>
@@ -50,7 +51,7 @@
             
         </div>
         
-    <div class="project_wrap_table">
+    <div class="project_wrap_table datatable_filter">
     	<div id="expensesListDiv">	</div>
 	</div>
 	</div>
@@ -189,7 +190,7 @@ function expensesPagination(){
 	           'aTargets': 0
 			}],
 		"aaSorting": [[0,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -34,8 +37,10 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -56,7 +61,13 @@ public class ContractController {
 	private String sourceleadUrl;
 	
 	@Autowired
+	ContractRequestDocumentsService contractRequestDocumentsService;
+	
+	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 	
 	@Autowired
 	private UserService userService;
@@ -155,6 +166,14 @@ public class ContractController {
 		if(null != contractUUID && !contractUUID.isEmpty()){
 			contract = contractsTemplateService.getContractByContractUUID(contractUUID);
 			
+			List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
+    		if(null != contract.getParentContractId()){
+    			Contracts parentcontracts  = contractsTemplateService.getContractById(contract.getParentContractId().getId());
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+    		}else{
+    			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+    		} 
+			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 			DateFormat standardFormat = new SimpleDateFormat ("dd-MM-yyyy");
@@ -172,6 +191,13 @@ public class ContractController {
 				endDateInTimezone = standardFormat.format(endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
+			if(null != contract && null != contract.getJoinDate()){
+				String joinDateStr = Constants.TZ_DF.format(contract.getJoinDate());  
+				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), joinDateStr);
+				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
+				endDateInTimezone = standardFormat.format(endconverteDate);
+				contract.setJoinedDateStr(endDateInTimezone);
+			}
 			if(null != contract){
 				List<ContractsTemplate> contractsTemplateList = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(),contract.getContractType());
 				model.addObject("contractsTemplateList", contractsTemplateList);
@@ -179,7 +205,7 @@ public class ContractController {
 				List<Requirement> requirementList = null;
 				List<RequirementSubmission> requirementSubmissionsList = null;
 				RequirementOffers requirementOffer = null;
-				if(contract.getContractType().contains("SOW")){
+				if(contract.getContractType().contains("SOW") || contract.getContractType().contains("Full time offer")){
 					requirementList = requirementService.getRequirementsForSOWByOrgLocationId(orgLocation.getId(), contract.getContractType());
 					if(requirementList.size() > 0){
 						for(Requirement requirement : requirementList){
@@ -210,7 +236,7 @@ public class ContractController {
 						requirementOffer = requirementOffersService.getRequirementOfferSubmissionById(contract.getRequirementSubmission().getId());
 					}
 				}
-				
+				if(null != contract.getOrgRelations()){
 				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(contract.getOrgRelations().getId());
 				
 				for(OrgSpoc orgSpoc : orgSpocList){
@@ -240,9 +266,11 @@ public class ContractController {
 						orgSpoc.setOwnerUserName(orgSpoc.getOwnerUser().getFirstName());
 					}
 				}
+				model.addObject("orgSpocList", orgSpocList);
+				}
+				model.addObject("docList",contractRequestDocumentsList);
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
-				model.addObject("orgSpocList", orgSpocList);
 				model.addObject("requirementOffer", requirementOffer);
 			}
 			
@@ -275,7 +303,8 @@ public class ContractController {
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
-		
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
 		model.addObject("orgLocation", orgLocation);
 		model.addObject("contract", contract);
 		model.addObject("userList", userList);
@@ -323,7 +352,8 @@ public class ContractController {
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
-		
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
 		model.addObject("orgLocation", orgLocation);
 		model.addObject("userList", userList);
 		model.addObject("clientList", clientList);
@@ -415,6 +445,7 @@ public class ContractController {
 					
 					if(null != contract.getRequirementSubmission()){
 						requirementOffer = requirementOffersService.getRequirementOfferSubmissionById(contract.getRequirementSubmission().getId());
+					
 					}
 				}
 				
@@ -438,7 +469,7 @@ public class ContractController {
 					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					orgSpoc.setOwnerName(clientSb.toString());
 					}
-				
+			
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
 				model.addObject("orgSpocList", orgSpocList);
@@ -469,12 +500,22 @@ public class ContractController {
 			}
 			orgRelations.setOrgName(orgName);
 		}
+		List<ContractRequestDocuments> contractRequestDocumentsList  = new ArrayList<>();
+		if(null != contract){
+			if(null != contract.getParentContractId()){
+				Contracts parentcontracts  = contractsTemplateService.getContractById(contract.getParentContractId().getId());
+				contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(parentcontracts.getId());
+			}else{
+				contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
+			} 
+		}
 		
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		if(null != countries){
         model.addObject("currencyCode", countries.getCurrency());
 		}
-		
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
 		model.addObject("orgLocation", orgLocation);
 		model.addObject("contract", contract);
 		model.addObject("userList", userList);

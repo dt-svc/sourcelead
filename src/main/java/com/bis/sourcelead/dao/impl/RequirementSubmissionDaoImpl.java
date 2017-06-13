@@ -626,6 +626,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 if(submissionStatus.equalsIgnoreCase("SHORTLISTED")){
 			 submissionStages = "and (rs.submissionStatus = 'SHORTLIST')";
 		 }
+		 if(submissionStatus.equalsIgnoreCase("BACKOUT")){
+			 submissionStages = "and (rs.submissionStatus = 'BACKOUT')";
+		 }
 		 
 		 if(submissionStatus.equalsIgnoreCase("SUBMITTED")){
 			 submissionStages = "and (rs.submissionStatus = 'SUBMIT_TO_CLIENT')";
@@ -2419,6 +2422,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}else{
 					return null;
 				}
+		}
+		
+		
+		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getApplicantRequirmentCountSubmittedByVendor(Long orgLocationId, Long requirementId, Long vendorLocationID)
+		{
+			Session session = this.sessionFactory.getCurrentSession();
+			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:vendorLocationID and rs.requirement.id = :requirementId and rs.sourceSubmission <> NULL";
+			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setLong("vendorLocationID", vendorLocationID).setCacheable(true).list();
+		    return subList;
 		}
 		
   }

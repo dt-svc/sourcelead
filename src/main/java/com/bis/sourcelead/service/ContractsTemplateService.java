@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -47,11 +48,17 @@ public interface ContractsTemplateService {
 
 	List<Contracts> getListOfContractsEnvId();
 	
-	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId);
+	Contracts findContractTitleByOrgLocationAndContractType(String contractTitle,String contractType,Long orgLocationId, Long contractId);
 
 	Contracts saveExistigContract(JSONObject jsonObj, MultipartFile multiFile, OrgLocations orgLocation, User user, Org org) throws Exception;
 
 	ContractsTemplate getContractTemplateByTemplateUUID(String tempUUID);
+
+	List<Contracts> getAllContractsBasedOnTimeFrequency(Date startDateUTC, Date endDateUTC) throws Exception;
+
+	void documentsReceivedMailToOwner(Contracts contractId, User user, Org org) throws Exception;
+
+	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus)throws Exception;
 
 	
 }

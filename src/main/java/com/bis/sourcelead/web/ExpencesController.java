@@ -97,11 +97,24 @@ public class ExpencesController {
 				expenses.setEndDateStr(Constants.DF_DMY.format(expenses.getEndDate()));
 			}
 			
+
 			ExpensesApproverHierarchy eah =expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 			 Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("expenseApproverHierarchy", eah);
-		 	 
+		 	
+		 	String type = request.getParameter("type");
+		 	
+		 	Boolean isEditable = false;
+		 	if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.DRAFT.getValue())){
+		 		isEditable = true;
+		 	}
+		 	
+		 	if(StringUtils.isEmpty(type) || (StringUtils.isNotEmpty(type) && type.equalsIgnoreCase("edit") && !isEditable)){
+		 		type = "view";
+		 	}
+		 	model.addObject("type", type);
+		 	
 		    ExpensesApproverHierarchy isSah = expensesApprovalService.isThereAnyApproverApprovedTheExpense(expenses.getId());
 		    boolean isSahApproved = false;
 		    if(isSah != null){
@@ -182,6 +195,18 @@ public class ExpencesController {
 		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expenses.getId());
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
+			 String type = request.getParameter("type");
+		 	
+		 	 Boolean isEditable = false;
+		 	 if(submissionStatus.getValue().equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+		 		isEditable = true;
+		 	 }
+		 	
+		  	 if(StringUtils.isEmpty(type) || (StringUtils.isNotEmpty(type) && type.equalsIgnoreCase("edit") && !isEditable)){
+		 		type = "view";
+		 	 }
+		 	 model.addObject("type", type);
+			 	
 			 
 			 boolean isSahReopened = false;
 		     if(null != isExpenseTotallyApproved && StringUtils.isNotEmpty(eah.getReopenReason())){

@@ -53,7 +53,8 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
 	 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
-	 
+	 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
+	  
 	 
 	 
 	 ModelAndView model = new ModelAndView();
@@ -61,6 +62,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
 	 model.addObject("vendorTabAccess", vendorTabAccess);
+	 model.addObject("billingTabAccess", billingTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
 	 model.setViewName("reports/userReports");
 	 return model;

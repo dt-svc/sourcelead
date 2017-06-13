@@ -330,7 +330,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		//store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType);
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType,vendorCurrencyCode,loginOrgCurrencyCode);
 		        invoice.setFileName(file.getName());
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
@@ -341,7 +341,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		        }
 		        
 		invoiceDao.saveInvoce(invoice);
-		if(saveType.equalsIgnoreCase("SENT")){
+		if(Constants.SENT.equalsIgnoreCase(saveType)){
 			//mail scenario for client accept or reject
 			/*int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
 			 for(int i=0;i<maxRowCount;i++){
@@ -649,14 +649,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	 public EmailAttachment zipFiles(List<TimesheetSubmissionsDocuments> docusList) throws MessagingException{
-         EmailAttachment ema = new EmailAttachment();
+         EmailAttachment ema = null;;
 	        FileOutputStream fos = null;
 	        ZipOutputStream zipOut = null;
 	        FileInputStream fis = null;
 	        try {
 	           ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 		    	 if(docusList != null && !docusList.isEmpty()){
-		    		    
+		    		 ema = new EmailAttachment();
 		    	         ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 		    	         
 				    	 int i= 0;
@@ -809,7 +809,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
-		 attachmentList.add(attachmentZip);
+		 if(null != attachmentZip){
+			 attachmentList.add(attachmentZip);
+		 }
 		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
 		 attachmentList.addAll(documentList);
 		 }
@@ -1091,13 +1093,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 	{
 		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
 			for(String id :submissionApproverHierarchyIds){
-				SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
-				if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
-					submissionApproverHierarchy.setBillingStatus(Constants.SENT);
-				}else{
-					submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
+					SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
+					if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
+						submissionApproverHierarchy.setBillingStatus(Constants.SENT);
+					}else{
+						submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+					}
+					submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 				}
-				submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
+				
 			}
 		}
 	}
@@ -1131,22 +1136,22 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount) throws Exception {
+	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			Workbook createExcelworkbook = new XSSFWorkbook();
-			DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate);
 			int column = 0;
 			for (Invoice invoice : invoiceList) {
 				writeRow = createExcelsheet.createRow(column + 13);
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
 				column++;
 			}
-			 file = File.createTempFile(orgName + "_Billing_" + dateFormat.format(new Date()),".xls");
+			 file = File.createTempFile(orgName + Constants.BILLING + dateFormat.format(new Date()),".xls");
 			 file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
@@ -1156,7 +1161,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				e.printStackTrace();
 			}
 		}else{
-			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount);
+			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount,exportStartDate,exportEndDate);
 		}
 			return file;
 	}
@@ -1224,14 +1229,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
 	}
 	
-	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
-		writeRow.createCell(12).setCellValue(invoice.getPaymentStatus());
+	if(null != invoice.getLinkInvoiceReferenceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))){
+		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceReferenceId()));
 	}
 		
 	return createExcelsheet;
 	}
 
-private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName) {
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate) {
 	
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
@@ -1255,7 +1260,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell3.setCellStyle(style);
 
 	Cell cell4 = writeRow.createCell(1);
-//	cell4.setCellValue(requirementSubCount.getOpenRequirementCount());
+	cell4.setCellValue(exportStartDate +" - "+exportEndDate);
 	cell4.setCellStyle(style);
 
 	writeRow = createExcelsheet.createRow(3);
@@ -1550,7 +1555,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<SubmissionApproverHierarchy> sahList = null;
 		invoice.setInvoiceFrequency(frequency);
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -1626,7 +1631,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<ProjectMembers> filteredMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId) {
-			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate);
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
 		}
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
@@ -1759,6 +1764,116 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			}
 		}
 		return contractsList;
+	}
+	
+	@Override
+	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationId,Date startDateUTC, Date endDateUTC,String invoiceTYpe) throws Exception
+	{
+		return invoiceDao.getInvoiceByOrgLocationId(orgLocationId,startDateUTC, endDateUTC,invoiceTYpe);
+
+	}
+	
+	@Override
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId,Long orgLocationId,String invoiceType)
+	{
+		return invoiceDao.getClientBasedInvoiceLists(orgRelationId,orgLocationId,invoiceType);
+	}
+	@Override
+	public void linkInvoice(Invoice invoice) throws Exception
+	{
+      invoiceDao.saveInvoce(invoice);		
+	}
+	
+	@Override
+	public List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId,Long clientLocationId,Date startDateUTC, Date endDateUTC,String invoiceStatus, String paymentStatus,String invoiceType,OrgLocations orgLocations)
+	{
+		
+		List<Invoice> invoiceList =  invoiceDao.getInvoiceByOrgRelationId(orgRelationId,clientLocationId,startDateUTC,endDateUTC,invoiceStatus,paymentStatus,invoiceType);
+//      		String currentDate = sdf.format(new Date());
+      		Date todayDate = new Date();
+      		if (null != invoiceList && invoiceList.size() > 0) {
+      			for (Invoice invoice : invoiceList) {
+      				Integer draftCount = 0;
+      				Integer paidCount = 0;
+      				Integer overDueInvoiceCount = 0;
+      				Integer openInvoiceCount = 0;
+      				if (invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+      					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+      				}
+      				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+      					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+      				}
+      				StringBuilder contactName = new StringBuilder();
+      				if (null != invoice.getContactUser()) {
+      					if (invoice.getContactUser().getLastName() != null) {
+      						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+      					}
+      					else {
+      						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+      					}
+      				}
+      				if (null != invoice.getInvoiceDate()) {
+      					invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
+      				}
+      				if (null != invoice.getDueDate()) {
+      					invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
+      				}
+      				invoice.setTotal(invoice.getTotal());
+      				invoice.setInvoiceStatus(invoice.getInvoiceStatus());
+      				invoice.setPaymentStatus(invoice.getPaymentStatus());
+      				if (null != invoice.getProjectID()) {
+      					invoice.setProjectId(invoice.getProjectID().getId().toString());
+      				}
+      				if (!isNullOrEmpty(invoice.getInvoiceStatus())) {
+      					if (Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							|| Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
+      						draftCount = draftCount + 1;
+      						invoice.setDraftInvoiceAmount(invoice.getDueAmount());
+      					}
+      					if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      							&& !Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())) {
+      						paidCount = paidCount + 1;
+      						Float paidAmount = Float.parseFloat(invoice.getTotal())
+      								- Float.parseFloat(invoice.getDueAmount());
+      						invoice.setPaidInvoiceAmount(paidAmount.toString());
+      					}
+      					if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& (Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()))) {
+      						Date invoiceDueDate = invoice.getDueDate();
+      						Float dueAmount = Float.parseFloat(invoice.getDueAmount());
+      						if (dueAmount > 0) {
+      							if (todayDate.after(invoiceDueDate)) {
+      								overDueInvoiceCount = overDueInvoiceCount + 1;
+      								invoice.setDueAfterInvoiceAmount(invoice.getDueAmount());
+      							}
+      							else {
+      								openInvoiceCount = openInvoiceCount + 1;
+      								invoice.setDueBeforeInvoiceAmount(invoice.getDueAmount());
+      							}
+      						}
+      					}
+      				}
+      				if (null != invoice.getParentInvoiceId()) {
+      					invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());
+      				}
+      				invoice.setDraftInvoiceCount(draftCount);
+      				invoice.setPaidInvoiceCount(paidCount);
+      				invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
+      				invoice.setDueBeforeInvoiceCount(openInvoiceCount);
+      			}
+      		}
+			return invoiceList;
+	}
+
+	@Override
+	public List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC) throws Exception
+	{
+		return invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocationId,startDateUTC,endDateUTC);
 	}
 
 }

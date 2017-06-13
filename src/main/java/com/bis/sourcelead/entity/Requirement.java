@@ -116,6 +116,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
+	@Column(name = "IS_RECEIVING_APPLICANTS")
+	private String isreceivingApplicants;
+	
 	@Column(name = "IS_PUBLIC")
 	private String isPublic;
 	
@@ -340,6 +343,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String noOfOfferedApplicants;
 	
 	@Transient
+	private String noOfBackOutApplicants;
+	
+	@Transient
 	private String clientContactName;
 	
 	@Transient
@@ -416,6 +422,17 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Transient
 	private String requirementOrgName;
+	
+	
+	
+	@Transient
+	private Integer vendorInterviewsCount;
+	
+	@Transient
+	private Integer vendorBackoutCount;
+	
+	@Transient
+	private Integer vendorOfferedCount;
 	
 	
 	public String getRequirementOrgName() {
@@ -1380,5 +1397,59 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	{
 		this.closedDateStringFormat = closedDateStringFormat;
 	}
+
+	public String getIsreceivingApplicants()
+	{
+		return isreceivingApplicants;
+	}
+
+	public void setIsreceivingApplicants(String isreceivingApplicants)
+	{
+		this.isreceivingApplicants = isreceivingApplicants;
+	}
+
+	public String getNoOfBackOutApplicants()
+	{
+		return noOfBackOutApplicants;
+	}
+
+	public void setNoOfBackOutApplicants(String noOfBackOutApplicants)
+	{
+		this.noOfBackOutApplicants = noOfBackOutApplicants;
+	}
+
+	
+	
+	public Integer getVendorBackoutCount()
+	{
+		return vendorBackoutCount;
+	}
+
+	public Integer getVendorInterviewsCount()
+	{
+		return vendorInterviewsCount;
+	}
+
+	public void setVendorInterviewsCount(Integer vendorInterviewsCount)
+	{
+		this.vendorInterviewsCount = vendorInterviewsCount;
+	}
+
+	public void setVendorBackoutCount(Integer vendorBackoutCount)
+	{
+		this.vendorBackoutCount = vendorBackoutCount;
+	}
+
+	public Integer getVendorOfferedCount()
+	{
+		return vendorOfferedCount;
+	}
+
+	public void setVendorOfferedCount(Integer vendorOfferedCount)
+	{
+		this.vendorOfferedCount = vendorOfferedCount;
+	}
+
+	
 
 }

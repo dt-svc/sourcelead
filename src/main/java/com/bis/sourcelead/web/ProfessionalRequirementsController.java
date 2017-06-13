@@ -228,6 +228,9 @@ public class ProfessionalRequirementsController {
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
+				List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
+				model.addObject("industryList", industryListWithoutId);
+				
 			    if(!isNullOrEmpty(requirementUUID)){
 			    	Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 				    	if(null != requirement){
@@ -482,5 +485,18 @@ public class ProfessionalRequirementsController {
 			model.addObject("requirementStatus", requirementStatus);
 			return model;
 
+		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/jobAlertRequirementSummary")
+		public ModelAndView jobAlertRequirementSummary(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) {
+			
+		 ModelAndView model = new ModelAndView();
+		 model.setViewName("jobAlert/jobAlertRequirementSummary");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("requirementUUID", requirementUUID);
+		 return model;
+			
 		}
 }

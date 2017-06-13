@@ -109,7 +109,7 @@ public class ExpensesRestController {
 		resultJson = commonUtil.toJSON(expensesEntriesList);
 		return resultJson;
 	 }
-	
+
 	@RequestMapping(value = "/exportMyExpensesList")
 	 public void exportMyExpensesList(HttpServletRequest request,HttpServletResponse response,
 			 @RequestParam(value = "type", required = false) String type,

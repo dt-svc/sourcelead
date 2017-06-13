@@ -132,6 +132,7 @@ public class Constants {
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
 	public static final String CLIENT_INTERVIEW = "CLIENT_INTERVIEW";
+	public static final String BACKOUT_STATUS = "BACKOUT";
 	public static final String INTERVIEW = "INTERVIEW";
 	public static final String MAIL_REOPEN_TIMESHEET = "ReopenTimeSheet";
 	public static final String MAIL_ACCEPT_REOPEN_TIMESHEET = "AcceptReopenTimeSheet";
@@ -174,6 +175,8 @@ public class Constants {
 	public static final String APPROVE_CONTRACT = "Approve Contract";
 	public static final String REJECT_CONTRACT = "Reject Contract";
 	public static final String CONTRACT_MAIL_TO_OWNER = "Contract Mail To Owner";
+	public static final String CONTRACT_EXPIRY_REMAINDER = "contractExpiryRemainder";
+	public static final String CONTRACT_DOCUMENTS_RECEIVED = "contractDocumentsReceived";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
 	public static final String APPLICANT_TENTATIVE_MAILTO_INTERVIEWCREATOR = "ApplicantTentativeMailToInterviewCreator";
@@ -241,6 +244,8 @@ public class Constants {
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
+	public static final String PROPOSE_NEW_TIME = "ProposeNewTime";
+	public static final String VENDOR_PROPOSE_NEW_TIME = "VendorProposeNewTime";
 	public static final String YES = "Y";
 	public static final String NO = "N";
 	public static final String WAIT = "W";
@@ -265,6 +270,7 @@ public class Constants {
 	public static final String MODULE_VMS_STR = "3";
 	public static final String MODULE_TIMESHEET_STR = "4";
 	public static final int TAB_VENDOR = 9;
+	public static final int TAB_BILLING = 20;
 	public static final int TAB_CLIENT = 7;
 	public static final int TAB_MY_TIMESHEET = 5;
 	public static final int TAB_TIMESHEET_APPROVAL = 6;
@@ -364,7 +370,7 @@ public class Constants {
 			"status" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
-			"Rate", "Vendor", "Vendor Contact"};
+			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
 	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Requirement id", "Requirement Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
 			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
@@ -511,6 +517,7 @@ public class Constants {
 	public static final String CANDIDATE_ADDRESS = "Address";
 	public static final String CANDIDATE_DESIGNATION = "Designation";
 	public static final String CANDIDATE_TYPE = "Type";
+	public static final String CANDIDATE_EXPERIENCE = "Experience";
 	public static final String CANDIDATE_EXPERIENCE_YEARS = "Experience (Years)";
 	public static final String CANDIDATE_EXPERIENCE_MONTHS = "Experience (Months)";
 	public static final String CANDIDATE_CURRENT_RATE = "Current Rate";
@@ -523,6 +530,7 @@ public class Constants {
 	public static final String CANDIDATE_EDUCATION = "Education";
 	public static final String CANDIDATE_EMPLOERS = "Employer's";
 	public static final String CANDIDATE_PRIMARY_SKILL = "Primary Skill";
+	public static final String CANDIDATE_INVITATION = "CandidateInvitation";
 	public static final String EMPLOYEE = "Employee";
 	public static final String CUSTOM_REPORTS = "custom";
 	public static final String UTC_TIMEZONE = "UTC";
@@ -574,7 +582,18 @@ public class Constants {
 	public static final String VENDOR_SOW ="vendorSow";
 	public static final String MY_EXPENSES = "My Expenses";
 	public static final String EXPENSES_APPROVAL =  "Expenses Approval";
-	
+	public static final String THIS_MONTH =  "THIS_MONTH";
+	public static final String THIS_QUARTER =  "THIS_QUARTER";
+	public static final String THIS_YEAR =  "THIS_YEAR";
+	public static final String LAST_30DAYS =  "LAST_30DAYS";
+	public static final String LAST_MONTH =  "LAST_MONTH";
+	public static final String LAST_QUARTER =  "LAST_QUARTER";
+	public static final String LAST_YEAR =  "LAST_YEAR";
+	public static final String CUSTOM =  "CUSTOM";
+
+	public static final String BILLING =  "Billing";
+	public static final String LINKED_STATUS =  "Linked";
+
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
 	public static final String EXPENSES_STATUS = "1";
 	
@@ -584,5 +603,12 @@ public class Constants {
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
 			"Amount" , "Status"  , "Approved by"};
+
+
+	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
+	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
+	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
+	public static final String JOB_ALERTS = "JobAlerts";
+    public static final String UNDEFINED = "undefined";
 
 }

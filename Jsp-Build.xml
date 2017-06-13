@@ -16,7 +16,6 @@
 	
     <!--Location Of Tomcat-Server -->
 	<property name="tomcat.dir" value="/tomcat8" />
-
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/WEB-INF/views" includeEmptyDirs="no">
 			<fileset dir="sourcelead/src/main/webapp/WEB-INF/views">
