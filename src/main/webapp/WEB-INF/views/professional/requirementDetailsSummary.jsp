@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: Interview Template</title>
+<title>Welcome to Source Lead :: Job Summary</title>
 <!-- Bootstrap -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet">

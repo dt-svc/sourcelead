@@ -60,17 +60,17 @@
 									result = result + '         <tr>';
 									if (opt.name != null && opt.name != ''
 											&& opt.name != 'undefined') {
-										result = result + '<td><div><span>'+ opt.name+ '</span></div></td>';
+										result = result + '<td><div><span title = "'+opt.name+'">'+ opt.name+ '</span></div></td>';
 									} else {
 										result = result+ '<td><div><span>--</span></div></td>';
 									}
 									if (opt.designation != null	&& opt.designation && opt.designation != 'undefined') {
-										result = result + '<td><div><span>'+ opt.designation+ '</span></div></td>';
+										result = result + '<td><div><span title = "'+opt.designation+'">'+ opt.designation+ '</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}
 									if (opt.address != null && opt.address	&& opt.address != 'undefined') {
-										result = result + '<td><div><span>'+ opt.address+'</span></div></td>';
+										result = result + '<td><div><span title = "'+opt.address+'">'+ opt.address+'</span></div></td>';
 									} else {
 										result = result	+ '<td><div><span>----</span></div></td>';
 									}

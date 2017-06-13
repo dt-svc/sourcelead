@@ -247,7 +247,7 @@ $("#selectall").change(function () {
 
 <script>
 function totalCheck1() {
-	if($("#selectid").is(':checked')){
+	if($("input[name='check[]']").is(':checked')){
         $("#navbar1").addClass("fa-trash-o delete-icn");
     } 
 	else{

@@ -89,7 +89,7 @@
         <div class="clearfix"></div>  
           
           
-          <div class="candidate_wrap_table">
+          <div class="candidate_wrap_table datatable_filter">
 	          <div id="onboardingLoading"></div>
 	          <div id="onboardingCandidatesList"></div>
 	          <div id="offboardingCandidatesList"></div>
@@ -125,7 +125,7 @@
 	                     result = result +"    <th>Type</th>";
 	                     result = result +"    <th>Date Of Join</th>";
 	                     result = result +"    <th>Onboard<br/>Documents</th>";
-	                     result = result +"    <th>Status</th>"; 
+	                     result = result +"    <th>Onboard Status</th>"; 
 	                     result = result +"    <th>Actions</th>"; 
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -147,7 +147,7 @@
 	                    	 
 	                    	 result = result +"<td>";
 	                    	 result = result +"<div class='width300px'>";
-	                    	 result = result +"<div class='tbldata-dotdot-big pull-left'>"+opt.candidateName+"</div>";
+	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
 	                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
 		                    	 if(opt.candidateOnBoardStatus == 'Draft'){
@@ -171,12 +171,14 @@
                         			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                         		 }
                     		 }else{
-                    			 result = result +"<td><div><span class='text-success'>Submitted</span></div></td>";
+                    			 result = result +"<td><div><span>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 }
                     		 
                     		 
                     		 if(opt.candidateOnBoardStatus == 'Accepted'){
                     			 result = result +"<td><div><span class='text-success'>"+opt.candidateOnBoardStatus+"</span></div></td>";
+                    		 }else  if(opt.candidateOnBoardStatus == 'Rejected'){
+                    			 result = result +"<td><div><span class='text-danger'>"+opt.candidateOnBoardStatus+"</span></div></td>";
                     		 }else{
                     			 if(opt.onboardSubmitted == 'Y'){
                         			 result = result	+ '<td><div><span><a><i class="fa fa-check text-success" onclick="acceptOnboardingCandiate(\''+opt.onboardCandidateUUID+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" onclick="rejectedReason(\''+opt.onboardCandidateUUID+'\',\''+opt.candidateName+'\',\''+opt.userEmail+'\');"></i></a></span></div></td>';
@@ -243,7 +245,7 @@
 	                    	 
 	                    	 result = result +"<td>";
 	                    	 result = result +"<div class='width300px'>";
-	                    	 result = result +"<div class='tbldata-dotdot-big pull-left'>"+opt.candidateName+"</div>";
+	                    	 result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.candidateName+"'>"+opt.candidateName+"</div>";
 	                    	 
 	                    	 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_OFF_BOARD_USER\')">'
 		                    	 if(opt.offboardSubmitted == 'N'){
@@ -290,7 +292,7 @@ function onboardingPagenation(){
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -306,7 +308,7 @@ function offboardingPagenation(){
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

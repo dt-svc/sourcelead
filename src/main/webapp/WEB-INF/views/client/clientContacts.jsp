@@ -41,7 +41,8 @@ function clientContacts(orgRelationID,clientLocationId){
 
     $("#tab-1").empty();
     $("#tab-2").empty(); 
-    $("#tab-3").empty();  
+    $("#tab-3").empty();
+    $("#tab-5").empty(); 
     $("#tab-2").append(result);  
 	
     clientContactList(orgRelationID,clientLocationId);

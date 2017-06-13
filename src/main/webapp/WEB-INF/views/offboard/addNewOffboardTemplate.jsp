@@ -17,7 +17,7 @@
     <div id="loading"></div>
     <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Off-board Template</h2>
+            <h2>Offboard Template</h2>
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='offboardingTemplatesList'/>">Templates List</a> &raquo; Create Template </div>
     </section>

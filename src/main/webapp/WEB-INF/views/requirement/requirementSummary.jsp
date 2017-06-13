@@ -634,7 +634,6 @@ function sideBar(requirementId){
 				        result = result+'</div>';
 				        result = result+'<div class="col-md-9">';
 				        result = result+'<div class="canDetails clearfix">';
-				        result = result+'<h4></h4>';
 				        result = result+'<div class="row">';
 				        result = result+'<div class="col-md-5">';
 				        result = result+'<ul class="list-unstyled can-perdt">';
@@ -650,29 +649,47 @@ function sideBar(requirementId){
 				   			result = result+'<li><i class="fa fa-black-tie" title="Experience"></i><span> -- </span></li>';
 			        	}
 			        
-			        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined')
+			        if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined')
 			    	   {
-			        result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.rate+' - '+json.currencyCode+' / '+json.rateType+'</span></li>';
+			        result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 			    	   }
-			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.rateType+'</span></li>';
+			        else if(json.currencyCode == 'INR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+				    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+			        }
+			       else if(json.currencyCode  == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
-			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' -'+json.maxRate+'- '+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode == 'USD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
+			       else if(json.currencyCode  == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' && json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 			       }
-			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode == 'AUD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
+			       else if(json.currencyCode  == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-dollar" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
-			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode == 'SGD' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
+			       else if(json.currencyCode  == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-eur" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
-			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.rateType != '' &&json.rateType != null && json.rateType != 'undefined'){
-				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.rate+' - '+json.maxRate+'-'+json.currencyCode+' / '+json.rateType+'</span></li>';
+			       else if(json.currencyCode == 'EUR' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
+			       else if(json.currencyCode  == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined' && json.maxRate != '' && json.maxRate != null && json.maxRate != 'undefined'){
+				   result = result+'<li><i class="fa fa-gbp" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' - '+json.maxRate+' / '+json.rateType+'</span></li>';
 
 			       }
+			       else if(json.currencyCode == 'GBP' && json.currencyCode  !='' && json.currencyCode  !='undefined' && json.rate != '' &&json.rate != null && json.rate != 'undefined'){
+					    result = result+' <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+json.currencyCode+' '+json.rate+' / '+json.rateType+'</span></li>';
+				        }
 			       else{
 				   result = result+'<li><i class="fa fa-money" title="Requirement Rate"></i><span> --- </span></li>';
 
@@ -689,8 +706,11 @@ function sideBar(requirementId){
 			        	}
 			        else{
 				     result = result+' <li><i class="fa fa-map-marker" title="Location"></i><span title="'+json.country+'">'+json.country+'</span></li>';
-			        }
+			        }if(json.travelAllowance != null && json.travelAllowance !=" " && json.travelAllowance != 'undefined'){
 			        result = result+' <li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
+			        }else{
+				    result = result+' <li><i class="fa fa-cab" title="Travel allowance"></i><span> --- </span></li>';
+			        }
 			        result = result+'</ul>';
 			        result = result+'</div>';
 			        result = result+'<div class="col-md-7">';
@@ -784,7 +804,7 @@ function sideBar(requirementId){
 					    result = result+'    <ul class="project-tabs-menu">';
 					    result = result+'      <li class="current"><a href="#tab-1" onclick="requirementDetails('+requirementId+');">Details</a></li>';
 					   
-					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
+					    if(json.requirementSubmissionStatus != 'SUBMITTED' && json.requirementSubmissionStatus != 'CLOSED' && json.requirementSubmissionStatus != 'REJECTED' &&  json.requirementSubmissionStatus != 'CANCEL' && json.requirementSubmissionStatus != 'DRAFT' && json.requirementSubmissionStatus != 'ONHOLD' && json.requirementSubmissionStatus != 'FILLEDCLOSED'){
                             var all = 'all';
                             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
@@ -792,6 +812,14 @@ function sideBar(requirementId){
 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
                              '</sec:authorize>';
+                        }else if(json.requirementSubmissionStatus == 'CLOSED' && json.isreceivingApplicants == "Y"){
+                        	 var all = 'all'; 
+                        	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\',\'ROLE_VIEW_APPLICANT\',\'ROLE_ADD_INTERVIEW\',\'ROLE_VIEW_INTERVIEW\',\'ROLE_VIEW_CANCEL_INTERVIEW\',\'ROLE_RATE_NEGOTIATION\',\'ROLE_SHORTLIST\',\'ROLE_SUBMIT_TO_CLIENT\',\'ROLE_CREAE_OFFER\',\'ROLE_VIEW_OFFER\',\'ROLE_VIEW_ACCEPT_OFFER\',\'ROLE_VIEW_REJECT_OFFER\')">';
+ 					    	result = result+'      <li><a href="#tab-2" onclick="requirementPipeline('+requirementId+',\''+all+'\');requirementStatusBar('+requirementId+');">Applicants</a></li>';
+ 					    	'</sec:authorize>';
+ 					    	'<sec:authorize access="hasAnyRole(\'ROLE_RECOMMENDATIONS\')">'; 
+                              result = result+'      <li><a href="#tab-3" onclick="requirementRecommendations('+requirementId+');">Recommendations</a></li>';
+                              '</sec:authorize>';
                         }
 					   
 					    result = result+'      <div class="clearfix"></div>';
@@ -1096,7 +1124,7 @@ function requirementDetails(requirementId){
 					           	 result = result +'   <div class="RDdetails">'+json.description+'</div>';
 					         }
 					         else{
-					           	 result = result +'   <div > NO DATA</div>';
+					           	 result = result +'   <div class="RDdetails"> NO DATA</div>';
 				    	        }
 				            
 				            result = result +'   <h1>Skills:</h1>';
@@ -1111,7 +1139,7 @@ function requirementDetails(requirementId){
 				            result = result +'   <h2 class="RPadT"> Requirement Details:</h2>';
 				            result = result +'   <div class="require_one">';
 				            if(json.positions != null && json.positions != '' && json.positions != 'undefined'){
-				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b>'+json.positions+'';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>No. of positions:</b><span>'+json.positions+'</span>';
 				            }
 				            else{
 				            result = result +'<div class="require_wrap_details_cta"> <b>No. of positions:</b> <span> -- </span>';	
@@ -1119,7 +1147,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.industryName != null && json.industryName != '' && json.industryName != 'undefined'){
-					            result = result +'     <div class="require_wrap_details_cta"> <b>Industry:</b>'+json.industryName+'';
+					            result = result +'     <div class="require_wrap_details_cta"> <b>Industry:</b><span>'+json.industryName+'</span>';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Industry:</b> <span> -- </span>';	
@@ -1127,7 +1155,7 @@ function requirementDetails(requirementId){
 					            result = result +'       <div class="clearfix"></div>';
 					            result = result +'     </div>';
 				            if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile "><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 					            }
 					            else{
 					            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -1136,7 +1164,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.education != null && json.education != '' && json.education != 'undefined'){
-					            result = result +'<div class="require_wrap_details_cta require_wrap_details_view  require_education"> <b>Education:</b><span>'+json.education+'</span>';
+					            result = result +'<div class="require_wrap_details_cta"> <b>Education:</b><span>'+json.education+'</span>';
 					            }else{
 					           	result = result +'<div class="require_wrap_details_cta "> <b>Education:</b> <span> -- </span>';
 					            }
@@ -1144,7 +1172,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.reqCoolingOffPeriod != null && json.reqCoolingOffPeriod != '' && json.reqCoolingOffPeriod != 'undefined'){
-					            result = result +'<div class="require_wrap_details_cta require_wrap_details_view  require_education"> <b>Cooling Off Period:</b><span>'+json.reqCoolingOffPeriod+'</span>';
+					            result = result +'<div class="require_wrap_details_cta"> <b>Cooling Off Period:</b><span>'+json.reqCoolingOffPeriod+'</span>';
 					            }else{
 					           	result = result +'<div class="require_wrap_details_cta "> <b>Cooling Off Period:</b> <span> -- </span>';
 					            }
@@ -1156,6 +1184,7 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
 				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'     </div>';
 
 				            if(json.isClientJob  == 'Y')
 				            	{
@@ -1165,7 +1194,7 @@ function requirementDetails(requirementId){
 				            
 				            if(json.spocName != '' && json.spocName !=null && json.spocName != 'undefined'){
 				            	
-				            result = result +'     <div class="require_wrap_details_cta require_wrap_details_view"> <b>Client Contact:</b> <span class="pull-left"> <span>'+json.spocName+'</span>';
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Client Contact:</b> <span class="pull-left"> <span>'+json.spocName+'</span>';
 				            }
 				            else{
 					        result = result +'     <div class="require_wrap_details_cta "> <b>Client contact:</b> <span class="pull-left"> -- </span>';
@@ -1174,7 +1203,7 @@ function requirementDetails(requirementId){
 				            result = result +'       <div class="clearfix"></div>';
 				            result = result +'     </div>';
 				            if(json.clientName != '' && json.clientName !=null && json.clientName != 'undefined'){
-					        result = result +'     <div class="require_wrap_details_cta require_wrap_details_view"> <b>Client Name:</b> <span class="pull-left"> '+json.clientName+' </span>';
+					        result = result +'     <div class="require_wrap_details_cta"> <b>Client Name:</b> <span class="pull-left"> '+json.clientName+' </span>';
 				            }
 				            else{
 						        result = result +'     <div class="require_wrap_details_cta "> <b>Client Name:</b> <span class="pull-left"> ---  </span>';
@@ -1273,7 +1302,10 @@ function requirementDetails(requirementId){
 				            
 				            
 				            result = result +'     <div class="clearfix"></div>';
-				            result = result +'   </div>';
+				          
+				           
+				            
+				            
 				            
 				            result = result +'   <h2>Internal Details:</h2>';
 				            result = result +'   <div class="require_one">';
@@ -1296,7 +1328,7 @@ function requirementDetails(requirementId){
 				            if(json.approvalMechanismType != null && json.approvalMechanismType !='' && json.approvalMechanismType !='undefined'){
 				           
 					            if(json.approvalMechanismType == 'PARALLEL'){
-					            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers:</b> <span>';
+					            	result = result +'<div class="require_wrap_details_cta"> <b>Approvers:</b> <span>';
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            	    if(json.approverNames[i] == json.approverNames[0]){
@@ -1307,13 +1339,14 @@ function requirementDetails(requirementId){
 					   				}
 					            	result = result +'</span>';
 					            	result = result +'</div>';
+					            	
 					            }else{
 					            	for (var i=0; i<json.approverNames.length; i++)
 					   				{
 					            		var level = 1;
 						            	for (var i=0; i<json.approverNames.length; i++)
 						   				{
-						            		result = result +'<div class="require_wrap_details_cta require_wrap_details_view"> <b>Approvers '+level+':</b> <span>'; 
+						            		result = result +'<div class="require_wrap_details_cta"> <b>Approvers '+level+':</b> <span>'; 
 						            		result = result +json.approverNames[i];
 						            		result = result +'</span>';
 						            		result = result +'</div>';
@@ -1346,6 +1379,7 @@ function requirementDetails(requirementId){
 				            result = result +'     <div class="clearfix"></div>';
 				            
 				            result = result +'     </div>';	
+				            result = result +'   </div>';
 				            
 				            result = result +'   </div>';
 				            result = result +' </div>';
@@ -1502,6 +1536,9 @@ function updateReuqirementStatusReject(status){
           			 }else{
           				$("#msgDiv").html("Requirement rejected Successfully");
           			   }
+          			$("#rejectRequirementAlert").empty();
+          			$(".project_inn_mask").fadeOut(200);
+          			$(".remove_user_pop").hide();
       				 requirementDetails(requirementId)
              			msgFadein();
                	 }
@@ -1755,10 +1792,10 @@ function requirementPipeline(requirementId,submissionType){
 							          if(report.submissionStatus == 'REJECTED'){
 							        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
 							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType != 'Other'){
-							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
+							        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+"Reason: "+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }
 							        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined' && report.rejectedCategoryType == 'Other'){
-							        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+"Other: "+report.rejectedCategoryOther+'<br>'+report.rejectedReason+'</p></div></i></div></td>';
+							        		   result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"category: "+report.rejectedCategoryType+'<br>'+"Other: "+report.rejectedCategoryOther+'<br>'+"Reason: "+report.rejectedReason+'</p></div></i></div></td>';
 							        	   }		  
 							           }else{
 							        	   result = result + '<td><div class="tblwidth-150">';
@@ -3981,7 +4018,7 @@ function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 				 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
 		  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
 		 }
-		 if(rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
+		 if(rejectedCategoryOther.match(/^[^\s-](.*)*$/) != null && rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
 			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
 		 }
 		 else{

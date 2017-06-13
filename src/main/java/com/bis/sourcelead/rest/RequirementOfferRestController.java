@@ -540,7 +540,7 @@ public class RequirementOfferRestController {
 	}
 	
 	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
-	public @ResponseBody String acceptRejectCandidateFromDashboard(Long submissionId,String status,@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception { 
+	public @ResponseBody String acceptRejectCandidateFromDashboard(Long submissionId,String status,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "rejectedCategoryType", required = false) String rejectedCategoryType, @RequestParam(value = "rejectedCateoryOther", required = false) String rejectedCategoryOther, HttpServletRequest request) throws Exception { 
 												 
 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -563,6 +563,12 @@ public class RequirementOfferRestController {
 				if(null != reason && !"".equalsIgnoreCase(reason)){
 					requirementSubmission.setRejectedReason(reason);
 				}
+				
+				requirementSubmission.setRejectedCategoryType(rejectedCategoryType);
+				if (null != rejectedCategoryOther) {
+					requirementSubmission.setRejectedCategoryOther(rejectedCategoryOther);
+				}
+				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			}
 		}

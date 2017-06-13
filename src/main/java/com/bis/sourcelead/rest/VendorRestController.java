@@ -42,17 +42,23 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -84,7 +90,12 @@ public class VendorRestController {
 	private CommonUtil commonUtil;
 	
 	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
 	UserService userService;
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	@Autowired
 	private ClientVendorExport clientVendorExport;
@@ -92,6 +103,8 @@ public class VendorRestController {
 	@Autowired
 	private UserRoleDao userRoleDao;
 
+	@Autowired
+	RequirementReportService requirementReportService;
 
 	@Autowired
 	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
@@ -1416,4 +1429,96 @@ public class VendorRestController {
 			resultJson = commonUtil.toJSON(uniVendorList);
 			return resultJson;
 		 }
+		 
+		 /**
+		  * for vendor jobs
+		  * 
+		  * @param searchValue
+		  * @param searchType
+		  * @param request
+		  * @return
+		  * @throws Exception
+		  */
+	@RequestMapping(value = "/getVendorJobs")
+	public String getVendorJobs(@RequestParam(value = "orgRelationID", required = false) Long orgRelationID, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		OrgRelations orgrel = orgRelationsService.getOrgRelationById(orgRelationID);
+		long vendorLocationId = 0L;
+		if (orgrel.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+			vendorLocationId = orgrel.getLocationId().getId();
+		}
+		else if (orgrel.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+			vendorLocationId = orgrel.getResponderLocationId().getId();
+		}
+		// List<Requirement> reqList =
+		// requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(),
+		// orgRelationID,null,null);
+		List<Requirement> reqList = requirementService.getAllVendorJobsBasedonRelationId(orgLocations.getId(), orgRelationID, userRoleName, loginUser, status);
+		for (Requirement requirement : reqList) {
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int backoutSum = 0;
+			List<RequirementSubmission> requirementSubmissionList1 = requirementSubmissionService.getApplicantRequirmentCountSubmittedByVendor(orgLocations.getId(), requirement.getParentRequirement().getId(), vendorLocationId);
+			if (null != requirementSubmissionList1 && requirementSubmissionList1.size() > 0) {
+				for (RequirementSubmission reqSub : requirementSubmissionList1) {
+					int vendorInterviewsCount = 0;
+					int vendorOfferedCount = 0;
+					int rejectedCount = 0;
+					int vendorBackoutCount = 0;
+					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(), null, null);
+					if (null != requirementSubmissionHistoryList
+							&& requirementSubmissionHistoryList.size() > 0) {
+						for (RequirementSubmissionHistory rsh : requirementSubmissionHistoryList) {
+							if ("interview".equalsIgnoreCase(rsh.getToStage())) {
+								vendorInterviewsCount++;
+							}
+							else if ("offermade".equalsIgnoreCase(rsh.getToStage())) {
+								vendorOfferedCount++;
+							}
+							else if ("rejected".equalsIgnoreCase(rsh.getToStage())) {
+								rejectedCount++;
+							}
+							else if ("backout".equalsIgnoreCase(rsh.getToStage())) {
+								vendorBackoutCount++;
+							}
+						}
+						interviewsSum = interviewsSum + vendorInterviewsCount;
+						offeredSum = offeredSum + vendorOfferedCount;
+						backoutSum = backoutSum + vendorBackoutCount;
+					}
+				}
+			}
+			requirement.setVendorInterviewsCount(interviewsSum);
+			requirement.setVendorOfferedCount(offeredSum);
+			requirement.setVendorBackoutCount(backoutSum);
+			requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
+			if (requirement.getManagerUserId() != null) {
+				String managerFirstName = "";
+				if (StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())) {
+					managerFirstName = requirement.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if (StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())) {
+					managerLastName = requirement.getManagerUserId().getLastName();
+				}
+				StringBuilder name = new StringBuilder();
+				requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+			}
+		}
+		return commonUtil.toJSON(reqList);
+	}
+	
+	
+	@RequestMapping(value = "/getVendorAssociatesListForVendors")
+	public String getVendorAssociatesListForVendors(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String resultJson;
+		List<Candidate> candidateList = candidateService.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocations.getId(), orgRelationId);
+		resultJson = commonUtil.toJSON(candidateList);
+		return resultJson;
+	}
 }
