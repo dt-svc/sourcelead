@@ -256,6 +256,10 @@ result = result  +'    <div class="billingArea"> ';
 		var payment = [];
 		var dayWisetype = $("#dayWiseTypeId").val();
 		
+		if(dayWisetype=="custom"){
+			dayWisetype = "";
+		}
+		
 		var startDate = $("#billingStartDate").val();
 		var endDate = $("#billingEndDate").val();
 		
@@ -300,8 +304,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
 			result = result +'         <th>Invoice ID</th>                    ';
-			result = result +'         <th>Client Name</th>           ';
-			result = result +'         <th>Contact</th>               ';
+			result = result +'         <th>Client Contact</th>               ';
 			result = result +'         <th>Invoice Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
@@ -359,9 +362,6 @@ result = result  +'    <div class="billingArea"> ';
 		 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
 					}
 					result = result +'         </td>  ';
-					result = result +'         <td>   ';
-					result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
-					result = result +'         </td> ';
 					result = result +'         <td>';
 					if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
 						result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
@@ -554,7 +554,7 @@ function searchResults(orgRelationId,clientLocationId){
 	var startDate =  $('#billingStartDate').val();
 	var endDate =  $('#billingEndDate').val();
 	if(startDate != null && startDate != '' && startDate != 'undefined' && endDate != null && endDate != '' && endDate != 'undefined'){
-		getClientInvoiceList(orgRelationId,clientLocationId);
+		getInvoiceListBasedonClient(orgRelationId,clientLocationId);
 	}else{
 		if(startDate != null && startDate != '' && startDate != 'undefined'){
 			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");

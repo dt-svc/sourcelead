@@ -195,6 +195,9 @@ public class Projects implements Serializable{
     @Transient
     private String createdByName;
 
+    @Transient
+    private String expensesClientName;
+    
 	public Long getId() {
 		return id;
 	}
@@ -579,4 +582,13 @@ public class Projects implements Serializable{
 	public void setCreatedByName(String createdByName) {
 		this.createdByName = createdByName;
 	}
+
+	public String getExpensesClientName() {
+		return expensesClientName;
+	}
+
+	public void setExpensesClientName(String expensesClientName) {
+		this.expensesClientName = expensesClientName;
+	}
+	
 }

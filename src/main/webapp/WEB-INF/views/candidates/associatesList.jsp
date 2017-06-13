@@ -270,6 +270,7 @@ else{
 	          result = result +"</table>";
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
+	          $("#noCandidates").val(json.length);
 	          cpagination(); 
   }
 </script>
@@ -306,7 +307,7 @@ function cpagination(){
 	           'aTargets': 0
 			}],
 		"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1376,7 +1377,7 @@ function cancel(candidateId){
         
         <div class="clearfix"></div>
       </div>
-      <div class="candidate_wrap_table">
+      <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
         <div id="emptyPopup"></div>
       </div>
@@ -1575,13 +1576,13 @@ function exportToPdf(){
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
-	  if(isCandidatesAvailable == ''){
+	  if(isCandidatesAvailable > 0){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&isAssociate=Y";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Candidate List is Empty</p>";
+			result = result +"		<p>Associates List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
 			result = result +"	</div>";
@@ -1616,13 +1617,13 @@ function exportToExcel(){
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
-	  if(isCandidatesAvailable == ''){
+	  if(isCandidatesAvailable > 0){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&isAssociate=Y";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Candidate List is Empty</p>";
+			result = result +"		<p>Associates List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
 			result = result +"	</div>";

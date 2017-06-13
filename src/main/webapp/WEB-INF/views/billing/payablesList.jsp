@@ -120,7 +120,7 @@ font-size: 13px; width: 75px;
             </div>
           </ul>
           <div class="tab-content"> 
-            
+              <div id="invoiceLoading"></div>
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
               <div class="timesheet_out mt">
@@ -203,7 +203,7 @@ font-size: 13px; width: 75px;
                   </div>
                   
                   
-                  <div class="candidate_wrap_table">
+                  <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
                 </div>
@@ -473,6 +473,10 @@ function getPayableInvoiceList(){
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
 	
+	if(dayWisetype=="custom"){
+		dayWisetype = "";
+	}
+	
 	var startDate = $("#billingStartDate").val();
 	var endDate = $("#billingEndDate").val();
 	
@@ -581,17 +585,22 @@ function getPayableInvoiceList(){
         		result = result +'       <tr> ';
 				result = result +'         <td>';
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-					
 					if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+						'</sec:authorize>';
 					}else{
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+						'</sec:authorize>';
 					}
 					
 
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+					'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+					'</sec:authorize>';
 				}
 				
 				result = result +'         </td>  ';
@@ -706,7 +715,7 @@ function invoicePagination(){
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"aaSorting": [[3,'desc']],
     	"ordering": true,
@@ -1330,11 +1339,14 @@ function cancelExport(){
 <script type="text/javascript">
 function generateAutomaticInvoice(){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=payables&contractType=vendorSow", 
              success: function(data) {
+            	 $("#invoiceLoading").removeAttr("style");
+            	 location.replace(sourceleadUrl+"/payablesList");	
         },
     });  
 }

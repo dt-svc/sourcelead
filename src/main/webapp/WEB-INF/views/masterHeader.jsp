@@ -397,6 +397,9 @@ document.onkeydown=function(e){
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Offboarding</a></li>
 						  </sec:authorize>	
+						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
+						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>
@@ -1205,5 +1208,4 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
-
 

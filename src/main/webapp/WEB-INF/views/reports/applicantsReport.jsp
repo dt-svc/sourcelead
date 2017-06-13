@@ -305,7 +305,7 @@ function requirementReportPagination(){
 
           <div class="clearfix"></div>
         </ul> -->
-        <div class="clearfix mt5"></div>
+        <div class="clearfix"></div>
       </div>
  
   <div class="repTab1">  

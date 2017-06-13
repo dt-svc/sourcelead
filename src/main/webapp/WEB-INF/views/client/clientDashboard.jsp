@@ -20,6 +20,7 @@
 <jsp:include page="clientDocuments.jsp" />	
 <jsp:include page="clientSpocDocuments.jsp" />	
 <jsp:include page="submissionTemplateList.jsp" /> 
+<jsp:include page="clientContracts.jsp" />
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
 
@@ -352,7 +353,7 @@ overflow-x: auto;
 					<div class="clearfix"></div>
 				</div>
 				
-				<div class="clients_wrap_table datatable_scroll" id ="vendorListFilter">
+				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
@@ -927,7 +928,7 @@ function pagination(){
     $('#clientList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -972,6 +973,10 @@ function pagination(){
 		
 		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Billing</a></li>';
 		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		result = result + '<li><a href="#tab-7" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
+		'</sec:authorize>';
+		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -989,7 +994,7 @@ function pagination(){
 		result = result + '</div>';
 		
     	//for client submission template tab
-	   result = result + '<div id="tab-4" class="project_tabs_inn">';
+	    result = result + '<div id="tab-4" class="project_tabs_inn">';
 		result = result + '</div>';
 		
 		//for client requirement list
@@ -999,6 +1004,10 @@ function pagination(){
 		//for billing tab
 		 result = result + '<div id="tab-6" class="project_tabs_inn">';
 		 result = result + '</div>';
+		 
+		 //for client contracts
+		result = result + '<div id="tab-7" class="project_tabs_inn">';
+		result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
@@ -1467,7 +1476,7 @@ function pagination1(){
     $('#vendorContactList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2433,6 +2442,4 @@ function flushCheckBoxVal(){
 	
 }
  </script>
-
-
 <jsp:include page="../masterFooter.jsp" />	

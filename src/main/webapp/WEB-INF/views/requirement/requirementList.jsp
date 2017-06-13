@@ -510,6 +510,7 @@ function prepareRequirementData(data){
     result = result +"</table>"; 
     $("#noReq").val('');
     $("#requirementList").append(result); 
+    $("#requirementEmptyListMessage").val(json.length);
     for (var i = 0; i < json.length; i++) { 
       	 var opt = json[i];
       	statusvalidating(opt.id);
@@ -529,7 +530,7 @@ function pagination(){
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"aaSorting": [[7,'desc']],
@@ -1586,7 +1587,7 @@ function requirementPipeline(requirementId){
      <!--  <div id="loadingDiv"></div> -->
       
       <!-- list requirement -->
-      <div class="require_wrap_table">
+      <div class="require_wrap_table datatable_filter">
           <div id="requirementList"></div>
       </div>
     </div>
@@ -1858,7 +1859,7 @@ function exportToPdf(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
 		}else{
 			 var result = "";
@@ -1890,7 +1891,7 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";	
 		}else{
 			 var result = "";
