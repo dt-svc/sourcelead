@@ -22,7 +22,7 @@ public interface ExpensesApprovalService {
 	  
     //ExpensesApproverHierarchy getExpensesApproverHierarchyByExpenseIdAndApproverUserId(Long expenseId,Long approverUserId);
     
-	void updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
+	Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
 	
 	ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId);
 	

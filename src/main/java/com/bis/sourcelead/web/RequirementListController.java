@@ -166,6 +166,7 @@ public class RequirementListController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("requirement/releaseRequirement");
 			
+
 			
 			StringBuilder  description = new StringBuilder("'");
 			description.append("Job Title : ").append(requirement.getJobTitle()).append("; ").append("Posted By : ").append(requirement.getPostedOrgName()).append("; ")
@@ -181,6 +182,46 @@ public class RequirementListController {
 			model.addObject("socialpost_picture", "");
 			model.addObject("socialpost_comment", "");
 			
+
+			 String experience = "";
+			    if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isEmpty(requirement.getMaxExp())){
+					experience = requirement.getMinExp()+" Years";
+				}else if(StringUtils.isEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
+					experience = requirement.getMaxExp()+" Years";
+				}else if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
+					experience = requirement.getMinExp()+" to "+requirement.getMaxExp()+" Years";
+				}
+				
+			    String location ="";
+				if(StringUtils.isNotEmpty(requirement.getState()) && StringUtils.isNotEmpty(requirement.getCountry())){
+						location = requirement.getState()+", "+requirement.getCountry();
+				}else{
+					location = requirement.getCountry();
+				}
+				
+				StringBuilder  description = new StringBuilder("");
+				description = description.append("Job Title : ").append(requirement.getJobTitle()).append("; ")
+				            .append("Posted By : ").append(requirement.getOrgLocationId().getOrg().getOrgName()).append("; ")
+				            .append("Skills : ").append(requirement.getSkills()).append("; ").append("Job Type : ").append(requirement.getJobType()).append("; ");
+				if(StringUtils.isNotEmpty(experience)){
+					description =   description.append("Experience : ").append(experience).append("; ");
+				}
+				if(StringUtils.isNotEmpty(location)){
+					description =   description.append("Job Location : ").append(location).append("; ");	
+				}
+				if(StringUtils.isNotEmpty(requirement.getNoticePeriod())){
+					description =   description.append("Notice Period : ").append(requirement.getNoticePeriod()).append("; ");
+				}
+				
+				description = description.append("Posted Date : ").append(requirement.getCreatedDate()).append("; ").append("");
+				
+				model.addObject("socialpost_title", "");
+				model.addObject("socialpost_link", new StringBuilder("").append(sourceleadUrl).append("/openJobsPublicPage?requirementUUID=").append(requirementUUID));
+				model.addObject("socialpost_description", description);
+				model.addObject("socialpost_picture", "");
+				model.addObject("socialpost_comment", "");
+				
+
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{

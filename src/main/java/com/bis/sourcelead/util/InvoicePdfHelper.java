@@ -1,20 +1,22 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.transport.TransportResponse.Empty;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,25 +32,25 @@ import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.List;
 import com.itextpdf.text.ListItem;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -85,7 +87,13 @@ public class InvoicePdfHelper {
 	@Autowired
 	private CountriesService countriesService;
 	
-	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,String invoiceType) throws IOException, Exception
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
+	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,String invoiceType, String vendorCurrencyCode, String loginOrgCurrencyCode) throws IOException, Exception
 	{
 		Countries countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
 		String countryCurrency  = countries.getCurrency();
@@ -236,21 +244,23 @@ public class InvoicePdfHelper {
 	        document.add(p);
 			document.add(Chunk.NEWLINE);
 			
-			p= new Paragraph("Conversion From  "  + invoice.getCurrencyCode()  + "   "+ invoice.getTotal(), font12b);
-            p.setAlignment(Element.ALIGN_RIGHT );
-	        document.add(p);
+			if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
+				p= new Paragraph("Conversion From  "  + invoice.getCurrencyCode()  + "   "+ invoice.getTotal(), font12b);
+	            p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+				document.add(Chunk.NEWLINE);
+				
+				p= new Paragraph("Conversion To  "  + invoice.getConvertCurrencyCode()  + "   "+ invoice.getConvertAmount(), font12b);
+		        p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+		        
+				document.add(Chunk.NEWLINE);
+				
+				p= new Paragraph("Exchange Rate  "  + invoice.getCurrencyCode()  +" 1 = "+invoice.getConvertCurrencyCode()+"   "+  invoice.getExchangeRate(), font12b);
+		        p.setAlignment(Element.ALIGN_RIGHT );
+		        document.add(p);
+			}
 			document.add(Chunk.NEWLINE);
-			
-			p= new Paragraph("Conversion To  "  + invoice.getConvertCurrencyCode()  + "   "+ invoice.getConvertAmount(), font12b);
-	        p.setAlignment(Element.ALIGN_RIGHT );
-	        document.add(p);
-			document.add(Chunk.NEWLINE);
-			
-			p= new Paragraph("Exchange Rate  "  + invoice.getCurrencyCode()  +" 1 = "+invoice.getConvertCurrencyCode()+"   "+  invoice.getExchangeRate(), font12b);
-	        p.setAlignment(Element.ALIGN_RIGHT );
-	        document.add(p);
-			document.add(Chunk.NEWLINE);
-			
 			
 			LineSeparator ls = new LineSeparator();
 			ls.setAlignment(Element.ALIGN_BOTTOM);
@@ -576,17 +586,17 @@ public class InvoicePdfHelper {
 			return table;
 	}
 	
-	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName,InvoiceAmount totalStagesAmount) throws Exception {
+	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception {
 		String[] headers = Constants.BILLING_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-
-	    /*File file = new File(orgName+"_Requirements_"+dateFormat.format(new Date())+".pdf");*/
+	    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	    
+	   
 	    StringBuilder sbReq =new StringBuilder();
-	    sbReq.append(orgName).append("_Billing_").append(dateFormat.format(new Date()));
+	    sbReq.append(orgName).append(Constants.BILLING).append(dateFormat.format(new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append(orgName).append("_Billing_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append(orgName).append(Constants.BILLING).append(dateFormat.format(new Date())).toString(),".pdf");
 
 	    file.setReadable(true);
 	    try {
@@ -598,17 +608,17 @@ public class InvoicePdfHelper {
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
 	        StringBuilder sbReqStyle = new StringBuilder();
-	        sbReqStyle.append(orgName).append(" ").append("Billing");
+	        sbReqStyle.append(orgName).append(" ").append(Constants.BILLING);
 
 	        StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append("Billing.").toString(),boldFont);
+            Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append(Constants.BILLING).toString(),boldFont);
 
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
             List orderedList = new List(List.ORDERED);
 	        orderedList.add(new ListItem("Company Name :" +orgName));
-	        orderedList.add(new ListItem("Duration  :"));
+	        orderedList.add(new ListItem("Duration  :" +exportStartDate+" - "+exportEndDate));
 	        orderedList.add(new ListItem("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount()));
 	        orderedList.add(new ListItem("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount()));
 	        orderedList.add(new ListItem("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount()));
@@ -660,6 +670,14 @@ public class InvoicePdfHelper {
 	    }
 		return file;
 	}
+	
+	 private Date getPreviousDate(DateTime zoned, DateTimeFormatter outputFormatter, DateFormat TZ_DF_TS, Timezone timezone, int numberOfDays) throws ParseException
+		{
+			DateTime yesterDayZoned = zoned.minusDays(numberOfDays);
+			String yesterDayDate = outputFormatter.print(yesterDayZoned);
+			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
+			return TZ_DF_TS.parse(startDateString);
+		}
 	
 	
 	private static void headerCellStyle(PdfPCell cell){
@@ -761,8 +779,8 @@ public class InvoicePdfHelper {
 		billingArray[11] = "--";
 	}
 	
-	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
-		billingArray[12] = invoice.getPaymentStatus();
+	if(null != invoice.getLinkInvoiceReferenceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))){
+		billingArray[12] = String.valueOf(invoice.getLinkInvoiceReferenceId());
 	}else{
 		billingArray[12] = "--";
 	}

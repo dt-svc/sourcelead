@@ -16,6 +16,11 @@
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
+				    /* $("#closedDate").datepicker({
+			                minDate: 0
+			            });
+			        */
+			  
 			});
        </script> 
 
@@ -375,8 +380,28 @@ $(document).ready(function () {
 	                 <option  ${requirement.projectDurationYears  == '6' ? 'selected' : ''}>6</option>
 	                 <option  ${requirement.projectDurationYears  == '7' ? 'selected' : ''}>7</option>
 	                 <option  ${requirement.projectDurationYears  == '8' ? 'selected' : ''}>8</option>
-	                  <option  ${requirement.projectDurationYears  == '9' ? 'selected' : ''}>9</option>
-	                   <option  ${requirement.projectDurationYears  == '10' ? 'selected' : ''}>10</option>
+	                 <option  ${requirement.projectDurationYears  == '9' ? 'selected' : ''}>9</option>
+	                 <option  ${requirement.projectDurationYears  == '10' ? 'selected' : ''}>10</option>
+	                 <option  ${requirement.projectDurationYears  == '11' ? 'selected' : ''}>11</option>
+	                 <option  ${requirement.projectDurationYears  == '12' ? 'selected' : ''}>12</option>
+	                 <option  ${requirement.projectDurationYears  == '13' ? 'selected' : ''}>13</option>
+	                 <option  ${requirement.projectDurationYears  == '14' ? 'selected' : ''}>14</option>
+	                 <option  ${requirement.projectDurationYears  == '15' ? 'selected' : ''}>15</option>
+	                 <option  ${requirement.projectDurationYears  == '16' ? 'selected' : ''}>16</option>
+	                 <option  ${requirement.projectDurationYears  == '17' ? 'selected' : ''}>17</option>
+	                 <option  ${requirement.projectDurationYears  == '18' ? 'selected' : ''}>18</option>
+	                 <option  ${requirement.projectDurationYears  == '19' ? 'selected' : ''}>19</option>
+	                 <option  ${requirement.projectDurationYears  == '20' ? 'selected' : ''}>20</option>
+	                 <option  ${requirement.projectDurationYears  == '21' ? 'selected' : ''}>21</option>
+	                 <option  ${requirement.projectDurationYears  == '22' ? 'selected' : ''}>22</option>
+	                 <option  ${requirement.projectDurationYears  == '23' ? 'selected' : ''}>23</option>
+	                 <option  ${requirement.projectDurationYears  == '24' ? 'selected' : ''}>24</option>
+	                 <option  ${requirement.projectDurationYears  == '25' ? 'selected' : ''}>25</option>
+	                 <option  ${requirement.projectDurationYears  == '26' ? 'selected' : ''}>26</option>
+	                 <option  ${requirement.projectDurationYears  == '27' ? 'selected' : ''}>27</option>
+	                 <option  ${requirement.projectDurationYears  == '28' ? 'selected' : ''}>28</option>
+	                 <option  ${requirement.projectDurationYears  == '29' ? 'selected' : ''}>29</option>
+	                 <option  ${requirement.projectDurationYears  == '30' ? 'selected' : ''}>30</option>
 	                   
 						</select>	                 
 	                </div>
@@ -598,15 +623,36 @@ $(document).ready(function () {
 		 </div>
 		 
 		 <div class="form-group">
-                      <label class="col-md-3">Requirement Closed Date</label>
+                      <label class="col-md-3">Closed Date</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text"  name="closedDate" class="form-control" id=closedDate readonly="readonly" value="${requirement.closedDateStringFormat}">
+                              <input type="text"  name="closedDate" class="form-control" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
                               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                            </div>
                         </div>
                   </div>
-		        
+                  
+                  
+              <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+		     <c:if test="${! empty requirement.closedDateStringFormat}">
+		     <div class="form-group"  style="display:block">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+		     </c:if>
           
           <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -1305,8 +1351,11 @@ $(document).ready(function () {
 	  $('#closedDate').datepicker({
 	      dateFormat: 'dd-mm-yy',
 	      changeMonth: true,
-	  	  changeYear: true, 
-	      //minDate: 0  this line for to restrict selection of previous dates
+	  	  changeYear: true,
+	  	  minDate: 1,
+	  	onSelect : function(selected) {
+	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
+	  	}
 	  });
 	  
   } );
@@ -1359,7 +1408,23 @@ function validate_fileupload(fileName)
 </script>
 
 
+<script type="text/javascript">
 
+ function receivingApplicants(){
+	
+	if (document.getElementById('receivingApplicantsId').checked){
+		 $("#receivingApplicantsId").val('Y');
+	}
+	
+	else{
+		
+		 $("#receivingApplicantsId").val('N');
+		
+		}
+	
+} 
+	  
+</script>
 
 
 

@@ -140,9 +140,9 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 
 	@Override
-	public void updateApprovalStatusByApproverForExpense(Long expenseId, Long approverUserId, String status,
+	public Integer updateApprovalStatusByApproverForExpense(Long expenseId, Long approverUserId, String status,
 			String rejectedReason) throws Exception {
-		 expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason);
+		return expensesApprovalDao.updateApprovalStatusByApproverForExpense(expenseId, approverUserId, status, rejectedReason);
 	}
 
 
