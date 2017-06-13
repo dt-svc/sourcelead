@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -34,11 +36,40 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId){
-		//System.out.println("expes>>>>>>>>>>>>"+expStatus);
-		//System.out.println("temp");
+	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId, String expenseStatus){
+		String[] expStatus = expenseStatus.split(",");
+		String subQuery2 = "";
+		if (Arrays.asList(expStatus).contains("ALL") || StringUtils.isEmpty(expenseStatus)) {
+			subQuery2 = subQuery2
+					+ "  expenses.expenseStatus = 'APPROVED' or expenses.expenseStatus = 'DRAFT' or expenses.expenseStatus = 'REJECTED' ";
+		}
+		else{
+			if (Arrays.asList(expStatus).contains("APPROVED")) {
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'APPROVED' ";
+			}
+			if (Arrays.asList(expStatus).contains("DRAFT")) {
+				if(StringUtils.isNotEmpty(subQuery2)){
+					subQuery2 = subQuery2 + " OR ";
+				}
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'DRAFT' ";
+			}
+			if (Arrays.asList(expStatus).contains("REJECTED")) {
+				if(StringUtils.isNotEmpty(subQuery2)){
+					subQuery2 = subQuery2 + " OR ";
+				}
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'REJECTED' ";
+			}
+		}
+		
+
+		/*if (expStatus[0] != null && expStatus[0].length() > 0) {
+			subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+		} else if (subQuery2 != null && !"".equals(subQuery2)) {
+			subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+		}
+		*/
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId ";
+		String query = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId and ( " + subQuery2 +" )";
 		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();
 		return expensesList;
 	}

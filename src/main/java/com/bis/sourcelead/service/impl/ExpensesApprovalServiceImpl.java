@@ -1,3 +1,4 @@
+
 package com.bis.sourcelead.service.impl;
 
 
@@ -69,8 +70,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	
 	@Override
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc) throws Exception {
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId());
+	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus) throws Exception {
+		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus);
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
@@ -233,6 +234,7 @@ private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHier
 							expenseArray[1] = "--";
 						}
 						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone()){
+
 							expenseArray[2] = expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone();
 						}else{
 							expenseArray[2] = "--";
@@ -240,6 +242,7 @@ private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHier
 						
 					}
 					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType()){
+
 						expenseArray[3] = expenseId.getProjectMembers().getEmployee().getUserEmploymentType();
 					}else{
 						expenseArray[3] = "--";
