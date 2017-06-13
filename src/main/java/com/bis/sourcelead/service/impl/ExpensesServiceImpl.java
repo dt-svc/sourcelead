@@ -68,8 +68,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
 	@Override
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser) {
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId());
+	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus) {
+		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(), expenseStatus);
 
 		return expensesList;
 
@@ -179,7 +179,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	String StartDate = Constants.DMY.format(expenseDetails.getStartDate());
 			        	orderedList.add(new ListItem(StDate.append("Start Date :").append(StartDate).toString()));
 			        }
-			        if(null != expenseDetails.getStartDate()){
+			        if(null != expenseDetails.getEndDate()){
 			        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
 			        	orderedList.add(new ListItem(edDate.append("Start Date :").append(EndDate).toString()));
 			        }

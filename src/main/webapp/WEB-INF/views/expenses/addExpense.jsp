@@ -91,6 +91,7 @@
 	</div>
 </div>
 <div class="expensHead">
+	<div class="pull-left" id="exceedSpan"></div>
 	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
 </div>
@@ -237,28 +238,45 @@
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
-			var frm = $('#add_expenses_form').serializeFormJSON();
-			var jsonData = JSON.stringify(frm);
-			var form = $('#add_expenses_form')[0];
-      		var formData = new FormData(form); 
-      		formData.append("json",jsonData);
-			var sourceleadUrl = '${sourceleadUrl}';
-			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
-			window.location.replace(sourceleadUrl+'/expenses');
-     		$.ajax({
-       	        type : "POST",
-        	    data: formData,
-        	    contentType : 'application/json; charset=utf-8',
-        	    enctype: 'multipart/form-data',
-    	        processData: false,
-    	        contentType:false,
-        	    dataType : 'json',
-				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
-				success : function(data) {
-					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
-				},
-			});
-			return true;
+			
+			var maxRecCount = $('#maxRecCount').val();
+			var validation_required = "true";
+			if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
+				for(var i = 1; i < maxRecCount; i++){
+				   if($("#divEntityTsRow"+i).is(':visible'))
+				   {
+					   validation_required = "false";
+				   }
+				}
+			}
+			if(validation_required == true){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message'>Minimum one category is required</p>");
+				return false;
+			}
+			else{
+				var frm = $('#add_expenses_form').serializeFormJSON();
+				var jsonData = JSON.stringify(frm);
+				var form = $('#add_expenses_form')[0];
+	      		var formData = new FormData(form); 
+	      		formData.append("json",jsonData);
+				var sourceleadUrl = '${sourceleadUrl}';
+				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+				window.location.replace(sourceleadUrl+'/expenses');
+	     		$.ajax({
+	       	        type : "POST",
+	        	    data: formData,
+	        	    contentType : 'application/json; charset=utf-8',
+	        	    enctype: 'multipart/form-data',
+	    	        processData: false,
+	    	        contentType:false,
+	        	    dataType : 'json',
+					url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
+					success : function(data) {
+						$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
+					},
+				});
+				return true;
+			}
 		}else{
 			return false;
 		}

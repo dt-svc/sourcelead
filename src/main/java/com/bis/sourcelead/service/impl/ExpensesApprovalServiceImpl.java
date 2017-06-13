@@ -69,8 +69,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	
 	@Override
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc) throws Exception {
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId());
+	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus) throws Exception {
+		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus);
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
@@ -438,11 +438,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				writeRow.createCell(7).setCellValue(expenseId.getPurpose());
 				createExcelsheet.autoSizeColumn(7);
 			}
-			if(null != expenseId.getStartDateStr()){
+			if(null != expenseId.getStartDate()){
+				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
 				createExcelsheet.autoSizeColumn(8);
 			}
-			if(null != expenseId.getEndDateStr()){
+			if(null != expenseId.getEndDate()){
+				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
 				createExcelsheet.autoSizeColumn(9);
 			}
@@ -467,7 +469,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	return createExcelsheet;
 }
 
-
 	@Override
 	public  Boolean isTheExpenseTotallyApproved(Long expenseId){
 		return expensesApprovalDao.isTheExpenseTotallyApproved(expenseId);
@@ -478,9 +479,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	public ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId) {
 		return expensesApprovalDao.getexpensesApproverHierarchyForEmployeeByExpenseId(expenseId);
 	}
-
-
-
 
 	@Override
 	public void updateExpenseStatusByExpenseId(Long expenseId, String status) {
@@ -493,9 +491,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 			Long expenseId) throws Exception {
 		return expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(approverUserId, expenseId);
 	}
-
-
-}
 
 
 	@Override
