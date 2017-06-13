@@ -43,6 +43,7 @@ function clientContacts(orgRelationID,clientLocationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty();
     $("#tab-5").empty(); 
+    $("#tab-2").empty(); 
     $("#tab-2").append(result);  
 	
     clientContactList(orgRelationID,clientLocationId);
@@ -304,6 +305,14 @@ $(document).ready(function() {
 });	
 </script> 
 
+<script>
+function cancelTerminationResonforClientSpoc(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reasonForSpoc").val('');
+	$("#reasonForSpocDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForSpocDiv").empty(); 
+}
+</script>
 
 <script>
 function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
@@ -313,7 +322,7 @@ function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
 	//result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason' ></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveSpocTerminateReason("+spocId+","+orgRelationID+","+clientLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveSpocTerminateReason("+spocId+","+orgRelationID+","+clientLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationResonforClientSpoc();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -325,13 +334,9 @@ function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
 function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
+	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
-		  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+		  $("#reasonForSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -345,6 +350,14 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName
 		    	clientTerminateMsgFadein();
 		    }
 	   });
+	}else{
+		if(reason){
+			 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 	  
 }

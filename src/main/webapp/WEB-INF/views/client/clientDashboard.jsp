@@ -1933,6 +1933,16 @@ function acceptInvitation(spocId){
 </script>
 
 <script>
+function cancelRejectPopupClient(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reasonForSpoc").val('');
+	$("#reasonForSpocDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForSpocDiv").empty(); 
+
+}
+</script>
+
+<script>
 function terminateSpoc1(spocId, orgRelationID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -1940,7 +1950,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	//result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopupClient();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1952,13 +1962,9 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-	  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-  	  $("#reasonForSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-  	  
-	}else{
-	  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reasonForSpocDiv").empty(); 
+	
 		$.ajax({
 		   	type: "POST",
 		   url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1976,10 +1982,17 @@ function saveReason1(spocId, orgRelationID){
 	             msgFadein();
 		    }
 	   });
+	}else{
+		if(reason){
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
-	  
 }
 </script>
+
+
 <script>
 function rejectInvitation(spocId){
 	 var sourceleadUrl ='${sourceleadUrl}';
