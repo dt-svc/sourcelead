@@ -141,6 +141,9 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		
 		if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod"))){
 			candidateOffBoarding.setNoticePeriod(jsonObj.getString("noticePeriod"));
+		}
+		
+		if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod")) && !jsonObj.getString("noticePeriod").equalsIgnoreCase("Relieve Immediately")){
 			candidateOffBoarding.setHaveToWorkInNoticePeriod(jsonObj.getString("workInNoticePeriod"));
 		}else{
 			candidateOffBoarding.setHaveToWorkInNoticePeriod(null);

@@ -657,7 +657,7 @@ $(document).ready(function () {
           <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country" >
+				 <select class="chosen-select form-control select-bg" data-validation="required" name="countryReq" id="countryReq" field-name="Country" >
                  </select>
                    <input type="hidden" id="existingCountry" value="${requirement.country}" >
 				</div>
