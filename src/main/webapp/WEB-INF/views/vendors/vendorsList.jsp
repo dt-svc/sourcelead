@@ -361,7 +361,7 @@ border:none; background-color: none !important; padding:0 5px !important;
             <div class="clearfix"></div>
         </div>
         
-    <div class="clients_wrap_table">
+    <div class="clients_wrap_table datatable_filter">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
 	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
     
@@ -1042,7 +1042,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1410,14 +1410,24 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 </script>
 
 <script>
+function cancelTerminationReson(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reasonForSpoc").val('');
+	$("#reasonForVendorSpocDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForVendorSpocDiv").empty(); 
+}
+</script>
+
+<script>
 function terminateSpoc1(spocId, orgRelationID){
+	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1429,13 +1439,8 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForVendorSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1452,10 +1457,20 @@ function saveReason1(spocId, orgRelationID){
 	 			 msgFadein();
 		    }
 	   });
+	}else{
+		if(reason){
+			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForVendorSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForVendorSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 	  
 }
 </script>
+
+
 <script>
 function updateSpocStatus(spocId){
     var spocStatus = $('#spocState'+spocId).val();
@@ -1487,7 +1502,7 @@ function pagination(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1627,7 +1642,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1714,7 +1729,8 @@ function getVendorDashboardName(vendorDashboardName){
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
 		'</sec:authorize>';
-		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+		
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
 		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Requirment List</a></li>'; 
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
@@ -1723,10 +1739,13 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<li><a href="#tab-5" onclick="vendorContracts('+orgRelationId+');">Contracts</a></li>'; 
 		'</sec:authorize>';
 		
+		
 		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
 		
 		 // vendors associates list
+		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
 		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associate List</a></li>';
+		 '</sec:authorize>';
 
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';

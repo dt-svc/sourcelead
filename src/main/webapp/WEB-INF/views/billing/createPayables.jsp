@@ -65,10 +65,11 @@ function errRemoveVendorContact(){
 							<div class="col-md-9 select-field" id="errVendor">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId"
-									onchange="getVendorContacts();errRemoveVendor();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Vendor">
+									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();" data-validation="required" field-name="Vendor">
 								</select>
 							</div>
 							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+							<input type="hidden" name="vendorCurrency" id="vendorCurrency">
 						</div>
 						<div class="form-group">
 							<label class="col-md-3">Vendor Contact<span
@@ -213,6 +214,7 @@ function errRemoveVendorContact(){
 
 <script>
 	function buildLineItemAndTaxAddRows(){
+	 	var vendorCurrency = $("#vendorCurrency").val(); 
 		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
 		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
@@ -343,21 +345,21 @@ function errRemoveVendorContact(){
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly="readonly"></div>';
                    result = result +'  </div>';
                    
-                   //New Div for currency conversion: srinivas l
-                   result = result +'  <div class="row">';
-                   result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-                   
-                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
-                   
-                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
-	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
-	                  
-                   
-                   result = result +'  </div>';
-                   result = result +'  </div>'; 
-                 //New Div for currency conversion: srinivas l
-                   
-                   
+                    if(vendorCurrency != currencyCode){ 
+                	 //New Div for currency conversion: srinivas l
+                       result = result +'  <div class="row">';
+                       result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                       
+                       result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                       
+                        result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+    	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+    	                  
+                       
+                       result = result +'  </div>';
+                       result = result +'  </div>'; 
+                     //New Div for currency conversion: srinivas l
+                  } 
                    result = result +'  </div>';
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -387,7 +389,7 @@ function errRemoveVendorContact(){
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");
-		           	 
+		           	$('#vendorCurrency').val(json['vendorCurrency']);
 		           	getVendorContacts(json['vendorContactId']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
@@ -1712,10 +1714,14 @@ function getVendorContacts(vendorContactId){
 			selected = 'selected';
 		}
 		output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+		$("#vendorCurrency").val(opt.vendorCurrency);
 		}
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
+		if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
+			buildLineItemAndTaxAddRows();
+		}
 	},
 	});
 

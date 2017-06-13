@@ -89,7 +89,7 @@
         <div class="clearfix"></div>  
           
           
-          <div class="candidate_wrap_table">
+          <div class="candidate_wrap_table datatable_filter">
 	          <div id="onboardingLoading"></div>
 	          <div id="onboardingCandidatesList"></div>
 	          <div id="offboardingCandidatesList"></div>
@@ -292,7 +292,7 @@ function onboardingPagenation(){
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
@@ -308,7 +308,7 @@ function offboardingPagenation(){
 	 $('#offboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

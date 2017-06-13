@@ -495,15 +495,14 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		public List<Projects> getProjectsByOrgLocationsIdAndApproverUserId(Long orgLocationsId, Long userId) {
 			logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 			Session session = this.sessionFactory.getCurrentSession();
-			Query query= session.createQuery(" from Projects projects where projects.orgLocationsId = :orgLocationsId and projects.id IN "
+			String query= " from Projects projects where projects.orgLocationsId.id = :orgLocationsId and projects.id IN "
 					   +"("
 						 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
 						 + "  hierarchy.approverUserId.id = :userId "
 						 + " OR "
 						 + Constants.loginUserAsAdminForProjects
-					  + " )"
-					+ "");
-			List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
+					  + " )";
+			List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setLong("userId", userId).setCacheable(true).list();
 			return projectsList;
 		}
 

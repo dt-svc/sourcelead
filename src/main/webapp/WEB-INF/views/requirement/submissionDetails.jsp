@@ -257,38 +257,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    	
 			    	    	result = result + '<ul class="list-unstyled">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus == 'ACCEPTED' || json.submissionRateStatus == 'REJECTED'){ 
-			    	    		if(json.submissionRateStatus == 'REJECTED'){
-			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
-				    	    			result = result + '	<li>';
-					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
-										result = result + '	</li>';
-			    	    			}
-									/* if(json.rejectedReason != null && json.rejectedReason != '' && json.rejectedReason != 'undefined'){
-										result = result + '	<li>';
-					    	    		result = result + 'Rejected Reason : '+json.rejectedReason;
-										result = result + '	</li>';
-									} */
-			    	    		}
-			    	    		if(json.submissionRateStatus == 'ACCEPTED'){
-			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
-			    	    				result = result + '	<li>';
-					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
-										result = result + '	</li>';
-			    	    			}
-									/* if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-										result = result + '	<li>';
-					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
-										result = result + '	</li>';
-									}
-									if(json.submissionRequestFileName != null && json.submissionRequestFileName != '' && json.submissionRequestFileName != 'undefined'){
-										result = result + '	<li>';
-										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
-										result = result + '	</li>';
-									}	 */
-									
-			    	    		}
-			    	    	} 
+			    	    	
 			    	    	result = result + '</span>';
 			    	    	result = result + '</ul>';
 			    	    	
@@ -306,7 +275,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
 										result = result + '<li>';
-										result = result +"Status: "+ json.submissionRateStatus;
+										result = result +"Candidate status: "+ json.submissionRateStatus;
 										result = result + '</li>';
 									}
 						   }else{
@@ -671,32 +640,36 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav" >';
 	                    	 result = result + '<span id="'+report.interviewId.id+'actionDiv">';
+	                    	
 		                    	 if(report.interviewId.interviewStatus == null || report.interviewId.interviewStatus == '' || report.interviewId.interviewStatus =='undefined'){
 		                    		 /* if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime != "feedbackEndTime"){ */
 		                    	   //Latest interview for Reschedule  start
 		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
-		                    	   if(submissionId == report.interviewSubmissionId){
-		                    		   if(i == 0){
-				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
-											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
-											result = result + '			</div>';
-											result = result + '			 </a> ';
-				                    				                    		
-				                    	}
+		                    	   if(report.submissionStatus == "REJECTED"){
+		                    	   }else{
+		                    		   if(submissionId == report.interviewSubmissionId){
+			                    		   if(i == 0){
+					                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+												result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+												result = result + '			</div>';
+												result = result + '			 </a> ';
+					                    				                    		
+					                    	}
+			                    	   }
+				                    	
+				                    	//Latest interview for Reschedule  ends
+			                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+			                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
+				                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+				                    	 '</sec:authorize>';
+				                    	 if(report.proposeTimeStatus=="Y"){
+				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
+					                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
+												result = result + '			</div>';
+												result = result + ' </a>';
+				                    	 }
 		                    	   }
-		                    		  
-			                    	
-			                    	//Latest interview for Reschedule  ends
-		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
-		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
-			                    	 '</sec:authorize>';
-			                    	 if(report.proposeTimeStatus=="Y"){
-			                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
-				                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
-											result = result + '			</div>';
-											result = result + ' </a>';
-			                    	 }
+		                    	  
 			                    	 
 // 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	/*  } */
@@ -710,10 +683,16 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Maybe"){
-	                    		 result = result + '<a href="javascript:void(0)"> <i  class="brder-int" onclick="viewProposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');">ProposedTime</i>';
+	                    		 if(report.submissionStatus == "REJECTED"){
+	                    			 result = result + '<a href="javascript:void(0)"> <i  class="brder-int">ProposedTime</i>';	 
+	                    		 }else{
+	                    			 result = result + '<a href="javascript:void(0)"> <i  class="brder-int" onclick="viewProposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');">ProposedTime</i>';
+	                    		 }
+	                    		
 		                    	 result = result + '			<div class="proposeTimePop" id="viewProposeTimediv'+report.interviewId.id+'" >';
 									result = result + '			</div>';
 									result = result + ' </a>';
+	                    		
 	                    	 }
 	                    	 
 	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined' || report.notificationToApplicant == 'N'){

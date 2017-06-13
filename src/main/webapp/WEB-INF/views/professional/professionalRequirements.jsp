@@ -754,7 +754,7 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
+			 					rate = requirements.rate+" "+requirements.currentRateCurrency+" / "+requirements.rateType;
 			 				}else{
 			 					rate = '--';
 			 				}

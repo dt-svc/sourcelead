@@ -1582,24 +1582,29 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				String billableHours = String.valueOf(sah.getBillableHours());;
-				String arr[] = billableHours.split("\\.");
+				String billableHours = String.valueOf(sah.getBillableHours());
 				StringBuilder sb = new StringBuilder();
-				if (arr[0].length() == 2) {
-					sb.append("0").append(arr[0]);
+				if(billableHours != null){
+					String arr[] = billableHours.split("\\.");
+					if (arr[0].length() == 2) {
+						sb.append("0").append(arr[0]);
+					}
+					else if (arr[0].length() == 3) {
+						sb.append(arr[0]);
+					}
+					else if (arr[0].length() == 1) {
+						sb.append("00").append(arr[0]);
+					}
+					if (arr[1].length() == 1) {
+						sb.append(":").append("0").append(arr[1]);
+					}
+					else {
+						sb.append(":").append(arr[1]);
+					}
+				}else{
+					sb.append("0");
 				}
-				else if (arr[0].length() == 3) {
-					sb.append(arr[0]);
-				}
-				else if (arr[0].length() == 1) {
-					sb.append("00").append(arr[0]);
-				}
-				if (arr[1].length() == 1) {
-					sb.append(":").append("0").append(arr[1]);
-				}
-				else {
-					sb.append(":").append(arr[1]);
-				}
+				
 				projectMember.setTotalHours(sb.toString());
 				projectMembersList.add(projectMember);
 			}

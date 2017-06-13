@@ -51,6 +51,7 @@
 		                    <option>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
+		                    <option>Full time offer</option>
 		                 </select>
 				    </c:otherwise>
 				 </c:choose>
@@ -448,6 +449,7 @@
             </div>
             <div class="clearfix"></div>
         </div>
+         </div>
         <!-- billing end -->
 	<div class="row reqAddWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -455,7 +457,7 @@
            <thead >
            <tr>
            <th style="vertical-align: middle;">Request Documents</th>
-           <th colspan="2">
+           <th colspan="3">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
             <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
@@ -488,7 +490,7 @@
         
       </div>        
         
-      </div>      
+  
       </div>
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
@@ -1327,7 +1329,6 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
-		
 		$("#flatReward").val("");
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
@@ -1372,6 +1373,8 @@ function hideCommonSOWFields(){
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
+		alert("sssvvvvss"+reqSubId);
+		var sowType = $("#contractType").val();
 		if(sowType!="Full time offer"){
 			$("#flatReward").val("");
 		    $("#billingRateType").val('${currencyCode}').trigger('change');
@@ -1381,6 +1384,7 @@ function hideCommonSOWFields(){
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 	         success :function(data) {
+	        	 alert(data);
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
 	            	  document.getElementById("offerRateDiv").style.display="block";

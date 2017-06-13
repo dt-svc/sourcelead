@@ -383,13 +383,14 @@
                     </div>
             </div>
         </div>
+         </div>
  	<div class="row reqAddWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
   			<table width="100%" cellpadding="0" cellspacing="0" class="table table-striped table-responsive">
            <thead >
            <tr>
            <th style="vertical-align: middle;">Request Documents</th>
-           <th colspan="2">
+           <th colspan="4">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
             <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
@@ -397,9 +398,9 @@
           </tr>
           </thead>
           <tbody id="addTaxTbl">
-          <c:if test="${fn:length(docList) gt 0}">
+          
    				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
-		  </c:if>
+		
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
                 </c:forEach>
@@ -441,7 +442,7 @@
 	<input type='file' name='REPLACEROWIDattachment' id='REPLACEROWIDattachment' field-name='Attachment' 
 	class='timesheetAttachmentValidation'></div> -->
 	
-							 <div class="col-md-8">                                                                                                            
+							 <div class="col-md-12">                                                                                                            
 					  			<div class="input-group positionRelative ratetype" id="uploadFileGroupREPLACEROWID" title="Document Type: .pdf format only">     
 					  				<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse        
 					               <input name="uploadBtnREPLACEROWID" id="uploadBtnREPLACEROWID" style="display: none;" multiple="" class="upload" type="file" onclick="check(REPLACEROWID);"  >                      
@@ -469,16 +470,16 @@
 	</div>
 </div>
 
-<div id="divTaxTd5" style="display: none; float: left;">
+<%-- <div id="divTaxTd5" style="display: none; float: left;">
    	 <select class="form-control input-sm"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
 		<option value="${doctype.name}">${doctype.name}</option>
 		</c:forEach>
 	</select>
-</div>
+</div> --%>
 
-<div id="divTaxTd6" style="display: none; float: right;">
+<div id="divTaxTd5" style="display: none; float: right;">
 	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
@@ -536,10 +537,10 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
 				cell4.innerHTML = divTaxTdStr4;
 				
-				var cell5 = row.insertCell(5);
+				/* var cell5 = row.insertCell(5);
 				var divTaxTdStr5 = document.getElementById("divTaxTd6").innerHTML;
 				divTaxTdStr5 = divTaxTdStr5.replace(/REPLACEROWID/g, (maxRowNum));
-				cell5.innerHTML = divTaxTdStr5;
+				cell5.innerHTML = divTaxTdStr5; */
 	}			
 </script>
 <script type="text/javascript">
