@@ -18,7 +18,7 @@ public interface ExpensesApprovalDao {
   
     User updateExpenseStatusByExpenseIdAndReOpenReason(Long expenseId,String reason,User loginUser, String type, String isSuperUser);
     
-    void updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
+    Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason) throws Exception;
     
     ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId);
     
