@@ -967,7 +967,7 @@ function pagination(){
 		'</sec:authorize>';
 		
 		//for client requirement tab
-		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_SUBMISSION_TEMPLATE\')">';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
 		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Requirement List</a></li>';	
 		'</sec:authorize>';
 		
@@ -1944,6 +1944,7 @@ function cancelRejectPopupClient(){
 
 <script>
 function terminateSpoc1(spocId, orgRelationID){
+	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
