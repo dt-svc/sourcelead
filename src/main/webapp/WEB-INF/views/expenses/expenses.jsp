@@ -51,7 +51,7 @@
             
         </div>
         
-    <div class="project_wrap_table">
+    <div class="project_wrap_table datatable_filter">
     	<div id="expensesListDiv">	</div>
 	</div>
 	</div>
@@ -190,7 +190,7 @@ function expensesPagination(){
 	           'aTargets': 0
 			}],
 		"aaSorting": [[0,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
