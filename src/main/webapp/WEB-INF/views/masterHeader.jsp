@@ -1219,4 +1219,3 @@ $("#searchType").selectpicker('refresh');
 
 <!-- Task related code Ends -->
 
-
