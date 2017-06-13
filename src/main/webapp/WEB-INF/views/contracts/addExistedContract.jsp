@@ -220,7 +220,7 @@
 	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
 	              </div>
             </div> --%>
-            <div class="form-group" id="offerRateDiv" style="display: none";>
+            <div class="form-group" id="offerRateDiv" style="display: none;">
                 <label class="col-md-4">Offer Rate<span class="text-danger">&nbsp;*</span></label>
                   	<div class="col-lg-8" >
 			             <div class="input-group er ratetype">
@@ -952,6 +952,14 @@ function contractTypeLabels(){
 			hideCommonSOWFields();
 		} */
 		if(contractType == "Client MSA"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#orgRelationId').removeAttr('data-validation');
 			$('#orgRelationId').attr('data-validation-optional',"true");
 			$('#vendorContact').removeAttr('data-validation');
@@ -981,6 +989,14 @@ function contractTypeLabels(){
 			hideCommonSOWFields();
 		}
 		if(contractType == "Vendor MSA"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#clientOrgRelationId').removeAttr('data-validation');
 			$('#clientOrgRelationId').attr('data-validation-optional',"true");
 			$('#clientContact').removeAttr('data-validation');
@@ -1009,6 +1025,14 @@ function contractTypeLabels(){
 			hideCommonSOWFields();
 		}
 		if(contractType == "Client SOW"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#orgRelationId').removeAttr('data-validation');
 			$('#orgRelationId').attr('data-validation-optional',"true");
 			$('#vendorContact').removeAttr('data-validation');
@@ -1033,6 +1057,14 @@ function contractTypeLabels(){
 			getRequirements("Client SOW");
 		}
 		if(contractType == "Vendor SOW"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#clientOrgRelationId').removeAttr('data-validation');
 			$('#clientOrgRelationId').attr('data-validation-optional',"true");
 			$('#clientContact').removeAttr('data-validation');
@@ -1057,7 +1089,14 @@ function contractTypeLabels(){
 			getRequirements("Vendor SOW");
 		}
 		if(contractType == "NDA" || contractType == "NSA"){
-
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			//$('#percentageRewardValue').removeAttr('data-validation');
 			//$('#flatRewardValue').removeAttr('data-validation');
 			$('#invoiceFrequency').removeAttr('data-validation');
@@ -1122,6 +1161,14 @@ function contractTypeLabels(){
 		
 	
 if(contractType == "Full time offer"){
+	$('#candiFlatReward').removeAttr('data-validation-optional');
+	$('#candiFlatReward').attr('data-validation',"required validate_int validate_length length1-8");
+	
+	$('#candiRateType').removeAttr('data-validation-optional');
+	$('#candiRateType').attr('data-validation',"required");
+	
+	$('#candiRatePer').removeAttr('data-validation-optional');
+	$('#candiRatePer').attr('data-validation',"required");
 	$('#clientOrgRelationId').removeAttr('data-validation');
 	$('#clientOrgRelationId').attr('data-validation-optional',"true");
 	$('#clientContact').removeAttr('data-validation');
@@ -1247,7 +1294,6 @@ function hideCommonSOWFields(){
       		var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#newcontract_form").attr("disabled", "disabled");
-			alert(jsonData);
 			
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 		$.ajax({
