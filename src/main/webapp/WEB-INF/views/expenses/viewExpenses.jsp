@@ -41,12 +41,13 @@
 						       <b class='proj_active pull-right'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
-						       <b class='proj_closed pull-right'>${submissionStatus}</b>
+						        <b class='proj_closed pull-right'>${submissionStatus}</b>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
+						      </i>
 						  </c:if>
 						</div>
 				</div>                
-
-
 					<ul class="UiPado">
 						<li title="Export"><i class="glyphicon glyphicon-export"
 							id="export-pop"></i>
