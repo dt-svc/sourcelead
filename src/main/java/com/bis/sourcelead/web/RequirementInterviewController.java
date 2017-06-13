@@ -158,7 +158,7 @@ public class RequirementInterviewController {
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
-				
+		     String dateOfInterviewStr ="";
 				List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
 				for(ProposeTime pst:proposeTime){
 					if(null != pst.getProposeDate()){
@@ -199,12 +199,20 @@ public class RequirementInterviewController {
 					String convertedDateStr = DF_DMY.format(convertedDate);
 					model.addObject("interviewEndTimeStr",convertedDateStr);
 				}
-				
+				if(requirementInterview.getDateOfInterview() != null){
+
+					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,requirementInterview.getTimezone().getTimeZoneId(), currentTimeStr);
+					Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
+					interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+					dateOfInterviewStr = interviewDateInTimezone;
+			    }
 				model.setViewName("requirement/proposeTime");
 				model.addObject("interviewStatus","Maybe");
 				model.addObject("requirementInterviewId",requirementInterviewId);
 				model.addObject("requirementInterview",requirementInterview);
-				model.addObject("requirementInterviewDate",Constants.DMY.format(requirementInterview.getDateOfInterview()));
+				model.addObject("requirementInterviewDate",dateOfInterviewStr);
 				model.addObject("interviewEndTime",requirementInterview.getEndTimeStr());
 				model.addObject("interviewStartTime",requirementInterview.getStartTimeStr());
 				model.addObject("sourceleadUrl", sourceleadUrl);
