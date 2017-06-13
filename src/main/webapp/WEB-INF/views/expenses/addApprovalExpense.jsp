@@ -390,8 +390,7 @@ function getMembersForSelectedProject(){
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
-			window.location.replace(sourceleadUrl+'/expensesApprovalList');
-     		$.ajax({
+			$.ajax({
        	        type : "POST",
         	    data: formData,
         	    contentType : 'application/json; charset=utf-8',
@@ -402,6 +401,7 @@ function getMembersForSelectedProject(){
 				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
+					window.location.replace(sourceleadUrl+'/expensesApprovalList');
 				},
 			});
 			return true;
