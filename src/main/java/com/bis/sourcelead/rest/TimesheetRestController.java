@@ -1348,7 +1348,7 @@ public class TimesheetRestController {
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/newSaveTimesheet", method = RequestMethod.POST)
 	public @ResponseBody String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm,@RequestParam(value="json", required=false) String json,
-			MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status,String savingType) throws Exception {
+			MultipartHttpServletRequest request,@RequestParam(value="status", required=false) String status,@RequestParam(value="savingType", required=false)  String savingType) throws Exception {
 			
 			
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

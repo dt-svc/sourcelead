@@ -256,6 +256,10 @@ result = result  +'    <div class="billingArea"> ';
 		var payment = [];
 		var dayWisetype = $("#dayWiseTypeId").val();
 		
+		if(dayWisetype=="custom"){
+			dayWisetype = "";
+		}
+		
 		var startDate = $("#billingStartDate").val();
 		var endDate = $("#billingEndDate").val();
 		
@@ -550,7 +554,7 @@ function searchResults(orgRelationId,clientLocationId){
 	var startDate =  $('#billingStartDate').val();
 	var endDate =  $('#billingEndDate').val();
 	if(startDate != null && startDate != '' && startDate != 'undefined' && endDate != null && endDate != '' && endDate != 'undefined'){
-		getClientInvoiceList(orgRelationId,clientLocationId);
+		getInvoiceListBasedonClient(orgRelationId,clientLocationId);
 	}else{
 		if(startDate != null && startDate != '' && startDate != 'undefined'){
 			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");

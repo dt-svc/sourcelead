@@ -166,7 +166,8 @@ public class RequirementListController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("requirement/releaseRequirement");
 			
-			 String experience = "";
+
+			    String experience = "";
 			    if(StringUtils.isNotEmpty(requirement.getMinExp()) && StringUtils.isEmpty(requirement.getMaxExp())){
 					experience = requirement.getMinExp()+" Years";
 				}else if(StringUtils.isEmpty(requirement.getMinExp()) && StringUtils.isNotEmpty(requirement.getMaxExp())){
@@ -204,6 +205,7 @@ public class RequirementListController {
 				model.addObject("socialpost_picture", "");
 				model.addObject("socialpost_comment", "");
 				
+
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{

@@ -361,7 +361,7 @@ border:none; background-color: none !important; padding:0 5px !important;
             <div class="clearfix"></div>
         </div>
         
-    <div class="clients_wrap_table">
+    <div class="clients_wrap_table datatable_filter">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
 	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
     
@@ -1042,7 +1042,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1502,7 +1502,7 @@ function pagination(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1642,7 +1642,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
