@@ -29,40 +29,32 @@
 <div class="project_wrap">
 	<div class="timesheet_head">
         	<ul>
-				<li>Pradeep</li>
-<!--                 <li id="filterToApprovePop"><i class="fa fa-filter"></i><span id="expensesListFilterDiv">Status</span><i class="glyphicon glyphicon-play"></i>| -->
-<!--                 	<div id="filterToApprovedPop" class="approved_pop"> -->
-						<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
-                	<div class="approved_pop">
-                    	<ul>
-                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="3" checked onclick="getExpensesList();"><label for="c5">All</label></li>
-							<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="2" onclick="getExpensesList();"><label for="c6">Approved</label></li>
-							<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="1" onclick="getExpensesList();"><label for="c7">Draft</label></li>
-							<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="0" onclick="getExpensesList();"><label for="c8">Rejected</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-				<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>		
-                <div class="clearfix"></div>
+        		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
+					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+	                	<div class="approved_pop">
+	                    	<ul>
+	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
+								<li><input id="expenseApproved" type="checkbox" name="expenseStatus" value ="APPROVED" onclick="getExpensesList();"><label >Approved</label></li>
+								<li><input id="expenseDraft" type="checkbox" name="expenseStatus" value ="DRAFT" onclick="getExpensesList();"><label >Draft</label></li>
+								<li><input id="expenseRejected" type="checkbox" name="expenseStatus" value ="REJECTED" onclick="getExpensesList();"><label >Rejected</label></li>
+	                        </ul>
+	                    </div>                	
+	                </li>
+               </sec:authorize>
+               <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
+			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
+			   </sec:authorize>	
+               <div class="clearfix"></div>
             </ul>
             <div class="clearfix"></div>
             
         </div>
         
-        
-        
     <div class="project_wrap_table">
     	<div id="expensesListDiv">	</div>
 	</div>
-	
-	
-</div>
-
-
-
-
-		
-      </div>  
+	</div>
+</div>  
 	
   <!--   Error Message   -->
       <div class="side_mask"><div class="proj_close" onclick="activeTab();"></div></div>
@@ -85,21 +77,11 @@
 function getExpensesList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
-	//For filter
-	var expenseFilterCheckbox = $('input[name=expenseStatus]');
-	  var expenseStatus = expenseFilterCheckbox.filter(':checked').val();
-	  
-	  if(expenseStatus == 3){
-        $("#expenseListFilterDiv").text("All Expenses");
-    }else if(expenseStatus == 2){
-  	  $("#expenseListFilterDiv").text("Approved Expenses");
-    }else if(expenseStatus == 1){
-  	  $("#expenseListFilterDiv").text("Draft Expenses");
-    }else if(expenseStatus == 0){
-  	  $("#expenseListFilterDiv").text("Rejected Expenses");
-    }else{
-        $("#expenseListFilterDiv").removeAttr("onClick");
-    }
+	var expenseStatus = [];
+	$('input:checkbox[name=expenseStatus]:checked').each(function() 
+    {
+		expenseStatus.push($(this).val());
+    });
 	
 	 $.ajax({
          type : "POST",
@@ -166,7 +148,12 @@ function getExpensesList(){
 	        			  totalAmount = "--";
 	        		  }
 						 result = result +"<tr>";
+						 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 						 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+						 '</sec:authorize>';
+						 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
+						 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
+						 '</sec:authorize>';
 						 result = result +"<td><div>"+purpose+"</div></td>";
 						 result = result +"<td><div>"+projectMemberId+"</div></td>";
 						 result = result +"<td><div>"+clientName+"</div></td>";
@@ -180,7 +167,7 @@ function getExpensesList(){
    			
         	  result = result +" </tbody>";
         	  result = result +" </table>";
-        	  $("#expensesListDiv").val('');
+        	  $("#expensesListDiv").empty();
 	          $("#expensesListDiv").append(result);
 	          expensesPagination();
           },
