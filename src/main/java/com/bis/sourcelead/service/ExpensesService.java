@@ -23,4 +23,8 @@ public interface ExpensesService {
 	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception;
 
 	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception;
+	
+	public File exportAllMyExpensesToPdf(List<Expenses> expensesList, OrgLocations orgLoc, User loginUser) throws Exception;
+
+	public File exportAllMyExpensesToExcel(List<Expenses> expensesList, OrgLocations orgLoc) throws Exception;
 }
