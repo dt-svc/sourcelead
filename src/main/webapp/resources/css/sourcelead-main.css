@@ -5441,6 +5441,9 @@ margin-bottom: 10px; margin-left: 10px;
 .datatable_filter .dataTables_length select {
     border: 1px solid #ddd !important; padding: 4px 15px !important;
 }
+.textWarning {
+  color: #FF8F00; margin-bottom: 0; padding-top: 5px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
