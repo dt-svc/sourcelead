@@ -1714,7 +1714,7 @@ function getClientContacts(clientContactId){
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
 	$('#clientContact').trigger("chosen:updated");
-	if(clientContactId == null && clientContactId == ''){
+	if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
 		buildLineItemAndTaxAddRows();
 	}
 	},

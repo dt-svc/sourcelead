@@ -1719,7 +1719,7 @@ function getVendorContacts(vendorContactId){
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
-		if(clientContactId == null && clientContactId == ''){
+		if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
 			buildLineItemAndTaxAddRows();
 		}
 	},
