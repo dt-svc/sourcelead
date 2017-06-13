@@ -694,13 +694,25 @@ public class LoginSessionController {
 			
 			StringBuilder managerName = new StringBuilder();
 			String manager  = null;
-			if(!isNullOrEmpty(team.getOwnerUserId().getLastName())){
-				manager = managerName.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString();
+			if(!isNullOrEmpty(candidateOnBoarding.getManagerUserId().getLastName())){
+				manager = managerName.append(candidateOnBoarding.getManagerUserId().getFirstName()).append(" ").append(candidateOnBoarding.getManagerUserId().getLastName()).toString();
 			}else{
-				manager = managerName.append(team.getOwnerUserId().getFirstName()).toString();
+				manager = managerName.append(candidateOnBoarding.getManagerUserId().getFirstName()).toString();
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "managerName", manager);
+			
+			StringBuilder teamOwnerName = new StringBuilder();
+			String teamOwnerUserName  = null;
+			if(!isNullOrEmpty(team.getOwnerUserId().getLastName())){
+				teamOwnerUserName = teamOwnerName.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString();
+			}else{
+				teamOwnerUserName = teamOwnerName.append(team.getOwnerUserId().getFirstName()).toString();
+			}
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerName", teamOwnerUserName);
+			
+			
 			UserRole teamOwner = userRoleService.getUserDetailsByUserIdAndLocationId(team.getOwnerUserId().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerRole", teamOwner.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerUserId", team.getOwnerUserId().getId());

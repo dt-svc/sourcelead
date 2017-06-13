@@ -136,12 +136,7 @@
                   
                 <div class="clearfix"></div>
                 <p><strong>Offboard Details</strong></p>
-				<div class="form-group" id="endDateDiv">
-                  <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
-                  <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
-                  </div>
-                </div>
+				
                   <div class="form-group">
                       <label class="col-md-3 control-label">Reason<span class="paddingLeft text-danger">*</span></label>
                   <div class="col-md-6">
@@ -161,12 +156,19 @@
                  </div>
             </div>
 
+               <div class="form-group" id="effectiveDateDiv">
+                  <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
+                  <div class="col-md-6">
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
+                  </div>
+                </div>
                   
                   <div class="form-group">
                   <label class="col-md-3 control-label">Notice Period</label>
                   <div class="col-md-6 select-field">
-                    <select class="chosen-select"  id="noticePeriod" name="noticePeriod" onchange="getNoticePeriod()">
+                    <select class="chosen-select"  id="noticePeriod" name="noticePeriod" onchange="getNoticePeriod();getEndDate();">
                       <option  selected="selected" value=''>- Select Notice Period -</option>
+                      <option value='Relieve Immediately'>Relieve Immediately</option>
                       <option value='15 Days'>15 Days</option>
                       <option value='1 Month'>1 Month</option>
                       <option value='2 Months'>2 Months</option>
@@ -175,11 +177,10 @@
                   </div>
                 </div>
                   
-                  
-                  <div class="form-group" id="effectiveDateDiv">
-                  <label class="col-md-3 control-label">Effective Date<span class="text-danger paddingLeft">*</span></label>
+                <div class="form-group" id="endDateDiv">
+                  <label class="col-md-3 control-label">End date<span class="text-danger paddingLeft">*</span></label>
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Effective Date" id="effectiveDate" name="effectiveDate" readonly="readonly" >
+                    <input type="text" class="form-control input-sm calendar" data-validation="required" field-name="End Date" id="endDate" name="endDate" readonly="readonly">
                   </div>
                 </div>
                 <div class="form-group" id="workInNotice" style="display: none;">
@@ -870,6 +871,7 @@ function getTemplateOffboardPackDocumentsDetails(offboardId){
 	  	  minDate: 0  ,
 	  	  onSelect : function(selected) {
 			addValidClass();
+			getEndDate();
 			}
 	  });
 	  
@@ -1006,7 +1008,7 @@ function loadOffBoardingTemplates(offboardTemplateId){
  <script>
  function getNoticePeriod(){
 	 var noticePeriod = document.getElementById("noticePeriod").value;
-	 if(noticePeriod != '' && noticePeriod != null && noticePeriod != 'undefined'){
+	 if(noticePeriod != '' && noticePeriod != null && noticePeriod != 'undefined' && noticePeriod != "Relieve Immediately"){
 		 document.getElementById("workInNotice").style.display="";
 	 }else{
 		 document.getElementById("workInNotice").style.display="none";
@@ -1075,7 +1077,12 @@ function loadOffBoardingTemplates(offboardTemplateId){
 		    	if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] !="undefined"){
 		    		$("#noticePeriod").val(json['noticePeriod']);
 			    	$('#noticePeriod').trigger("chosen:updated");
-			    	document.getElementById("workInNotice").style.display="";
+			    	
+			    	if(json['noticePeriod']  != 'Relieve Immediately'){
+			    		document.getElementById("workInNotice").style.display="";
+			    	}else{
+			    		document.getElementById("workInNotice").style.display="none";
+			    	}
 			    	
 			    	if(json['haveToWorkInNoticePeriod'] == 'Y'){
 			    		$("#checkedY").val(json['haveToWorkInNoticePeriod']);
@@ -1764,6 +1771,35 @@ $('body').on('blur', '#addoffboardTask_form', function() {
 	$("#addoffboardTask_form").showHelpOnFocus();
 	$("#addoffboardTask_form").validateOnBlur(false, validationSettings);  
 });
+</script>
+
+<script>
+function getEndDate(){
+	
+	var effectiveDate = document.getElementById("effectiveDate").value;
+	if(effectiveDate){
+		 var noticePeriod = document.getElementById("noticePeriod").value;
+		 if(noticePeriod && noticePeriod != 'Relieve Immediately'){
+			 var sourceleadUrl ='${sourceleadUrl}';
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			 
+			    $.ajax({
+					type : "GET",
+					url: sourceleadUrl+"/getEndDateByEffectiveDateAndNoticePeriod?${_csrf.parameterName}=${_csrf.token}&noticePeriod="+noticePeriod+"&effectiveDate="+effectiveDate,
+					success :function(endDateStr) {
+						
+						$("#endDate").val(endDateStr);
+						$("#loading").removeAttr("style");
+						addValidClass();
+					}
+				});
+			    
+		 }else{
+			 $("#endDate").val(effectiveDate);
+			 addValidClass();
+		 }
+	}
+}
 </script>
 
 
