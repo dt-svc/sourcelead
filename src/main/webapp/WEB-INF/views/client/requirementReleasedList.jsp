@@ -42,8 +42,9 @@ function clientRequirementList(orgRelationId){
 		result = result + '           	<li><input type="checkbox" value="UNFILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Unfilled Closed</label></li>';
 		result = result + '           	<li><input type="checkbox" value="ONHOLD"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>On Hold</label></li>';
 		result = result + '           	<li><input type="checkbox" value="CLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Closed</label></li>';
-
-
+		result = result + '           	<li><input type="checkbox" value="REJECTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Rejected</label></li>';
+		result = result + '           	<li><input type="checkbox" value="CANCEL"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Cancel</label></li>';
+		
 		//result = result + '           	<li><input type="checkbox" name="rl"><label>Checkbox3</label></li>';
 		result = result + '           </ul>';
 		result = result + '       </div>'; 
