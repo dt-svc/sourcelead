@@ -1420,6 +1420,7 @@ function cancelTerminationReson(){
 
 <script>
 function terminateSpoc1(spocId, orgRelationID){
+	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -1728,7 +1729,8 @@ function getVendorDashboardName(vendorDashboardName){
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
 		'</sec:authorize>';
-		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+		
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
 		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Requirment List</a></li>'; 
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
@@ -1737,10 +1739,13 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<li><a href="#tab-5" onclick="vendorContracts('+orgRelationId+');">Contracts</a></li>'; 
 		'</sec:authorize>';
 		
+		
 		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
 		
 		 // vendors associates list
+		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
 		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associate List</a></li>';
+		 '</sec:authorize>';
 
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
