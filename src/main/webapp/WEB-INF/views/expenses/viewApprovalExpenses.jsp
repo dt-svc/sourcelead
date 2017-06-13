@@ -29,7 +29,7 @@
 						             </i>
 						        </c:if>
 					      
-						     <div class="timeNewSe pull-right" style="margin: 0px;margin-left: -57px">
+						     <div class="timeNewSe pull-right">
 						      <b class='proj_withdraw pull-right' onClick='reOpenMyExpense(${expenses.id});'>Re-open</b>
 						     </div>
 					     </c:if> 
@@ -59,14 +59,19 @@
 						       <b class='proj_draft pull-right' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'SUBMITTED'}">
-						       <b class='proj_process pull-right'>${submissionStatus}</b>
+						       <b class='proj_process pull-right' style='width: 90% !important'>${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'APPROVED'}">
 						       <b class='proj_active pull-right'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
 						       <b class='proj_closed pull-right'>${submissionStatus}</b>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
+						      </i>
 						  </c:if>
+						  
+	        	
 						</div>
 					</div>                
 

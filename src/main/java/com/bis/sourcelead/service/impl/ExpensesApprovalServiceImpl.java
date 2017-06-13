@@ -1,3 +1,4 @@
+
 package com.bis.sourcelead.service.impl;
 
 
@@ -69,8 +70,8 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	
 	@Override
-	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc) throws Exception {
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId());
+	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser, OrgLocations orgLoc, String expenseStatus) throws Exception {
+		List<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalDao.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser.getId(),orgLoc.getId(), expenseStatus);
 		for(ExpensesApproverHierarchy expensesApproverHierarchy : expApperoverHierarchy){
 			
 			if(null != expensesApproverHierarchy.getExpenseId().getEndDate()){
@@ -147,18 +148,15 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 
 	@Override
 	public File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc) throws IOException {
-		System.out.println("In Service Impl");
 		String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
-	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("Expenses_Approval_List").append(dateFormat.format(new Date()));
+	    sbUser.append("ExpensesApproval_").append(dateFormat.format(new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("Expenses_Approval_List").append(dateFormat.format(new Date())).toString(),".pdf");
-
+	    File file = File.createTempFile(fileSB.append("_ExpensesApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
 	    file.setReadable(true);
 	    
 	    try {
@@ -170,8 +168,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("Expenses_Approval_List");
-          
+	        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("- Employee Expenses");
 	       
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
@@ -180,7 +177,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{7,7,5,3,5,5,5,7,3,3,3,3,3,5});
+            table.setWidths(new int[]{7,7,7,4,5,5,5,7,6,6,4,5,5,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -282,15 +279,15 @@ private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHier
 				expenseArray[7] = "--";
 			}
 			
-			if(null != expenseId.getStartDateStr()){
-
+			if(null != expenseId.getStartDate()){
+				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
 				expenseArray[8] = expenseId.getStartDateStr();
 			}else{
 				expenseArray[8] = "--";
 			}
 			
-			if(null != expenseId.getEndDateStr()){
-
+			if(null != expenseId.getEndDate()){
+				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
 				expenseArray[9] = expenseId.getEndDateStr();
 			}else{
 				expenseArray[9] = "--";
@@ -308,7 +305,7 @@ private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHier
 				expenseArray[11] = "--";
 			}
 			if(null != expenseId.getStatus()){
-				expenseArray[12] = expenseId.getStatus();
+				expenseArray[12] = expenseId.getExpenseStatus().getValue();
 			}else{
 				expenseArray[12] = "--";
 			}
@@ -438,11 +435,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				writeRow.createCell(7).setCellValue(expenseId.getPurpose());
 				createExcelsheet.autoSizeColumn(7);
 			}
-			if(null != expenseId.getStartDateStr()){
+			if(null != expenseId.getStartDate()){
+				expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
 				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
 				createExcelsheet.autoSizeColumn(8);
 			}
-			if(null != expenseId.getEndDateStr()){
+			if(null != expenseId.getEndDate()){
+				expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
 				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
 				createExcelsheet.autoSizeColumn(9);
 			}

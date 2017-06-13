@@ -87,6 +87,7 @@
 	</div>
 </div>
 <div class="expensHead">
+	<div class="pull-left" id="exceedSpan"></div>
 	<a href="#" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Row</a>
 	<div class="clearfix"></div>
 </div>
@@ -366,6 +367,22 @@ function getMembersForSelectedProject(){
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
+			var entriesCount = $('#categoryTable >thead >tr').length;
+			var maxRecCount = $('#maxRecCount').val();
+			var validation_required = "true";
+			if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
+				for(var i = 1; i < maxRecCount; i++){
+				   if($("#divEntityTsRow"+i).is(':visible'))
+				   {
+					   validation_required = "false";
+				   }
+				}
+			}
+			if(validation_required == true){
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message'>Minimum one category is required</p>");
+				return false;
+			}
+			else{
 			var frm = $('#add_expenses_form').serializeFormJSON();
 			var jsonData = JSON.stringify(frm);
 			var form = $('#add_expenses_form')[0];
@@ -373,8 +390,7 @@ function getMembersForSelectedProject(){
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
-			window.location.replace(sourceleadUrl+'/expenses');
-     		$.ajax({
+			$.ajax({
        	        type : "POST",
         	    data: formData,
         	    contentType : 'application/json; charset=utf-8',
@@ -385,9 +401,11 @@ function getMembersForSelectedProject(){
 				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
+					window.location.replace(sourceleadUrl+'/expensesApprovalList');
 				},
 			});
 			return true;
+		}
 		}else{
 			return false;
 		}
