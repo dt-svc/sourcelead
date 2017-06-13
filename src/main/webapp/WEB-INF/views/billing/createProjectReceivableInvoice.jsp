@@ -328,14 +328,14 @@ function getProjectFrequency(invoiceFrequency){
 		for (var i=0; i<json.length; i++)
 		{
 		var opt = json[i];
-		var convertOpt = opt.replace(/\//g, " To ");
+		var convertOpt = opt.replace(/\//g, " to ");
 		/* output = output + "<option value='" +opt+ "'>"+opt+"</option>"; */
 		var selected = "";
 		if(invoiceFrequency != null && invoiceFrequency != "" && invoiceFrequency !="undefined" && invoiceFrequency == opt){
 			selected = 'selected';
 			/* getProjectAssignedMem1();  */
 		}
-		output = output + "<option value='" +convertOpt+ "' "+selected+">"+convertOpt+"</option>";
+		output = output + "<option value='" +opt+ "' "+selected+">"+convertOpt+"</option>";
 		}
 		$("#frequency").empty();
 		$("#frequency").append(output);
@@ -558,7 +558,12 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
-    	 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
+    	 if(opt.rate != null && opt.rate !='' && opt.rate !='undefined'){
+    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
+    	 }else{
+    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value="0.00" placeholder="Amount" type="text" readonly="readonly">';
+    	 }
+    	 
     	 result = result +'</td>';
     	 result = result +'</tr>';
     }
