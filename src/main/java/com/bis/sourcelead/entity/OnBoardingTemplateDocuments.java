@@ -57,6 +57,17 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String fileName;
 	
+    @Column(name = "UPLOADED_DOC_FILE",columnDefinition="mediumblob")
+	@Lob
+	private  byte[] uploadedDocFile;
+		
+	@Column(name = "UPLOADED_DOC_FILE_CONTENT_TYPE")
+	private String uploadedFileContentType;
+	
+	@Column(name = "UPLOADED_DOC_FILE_NAME")
+	@Type(type="text")
+	private String uploadedDocFileName;
+	
 	@Column(name = "DOCUMENT_UUID")
 	private String documentUUID;
 	
@@ -202,5 +213,35 @@ private static final long serialVersionUID = 1L;
 
 	public void setDocumentStatus(OnboardStatus documentStatus) {
 		this.documentStatus = documentStatus;
+	}
+
+	public byte[] getUploadedDocFile()
+	{
+		return uploadedDocFile;
+	}
+
+	public void setUploadedDocFile(byte[] uploadedDocFile)
+	{
+		this.uploadedDocFile = uploadedDocFile;
+	}
+
+	public String getUploadedFileContentType()
+	{
+		return uploadedFileContentType;
+	}
+
+	public void setUploadedFileContentType(String uploadedFileContentType)
+	{
+		this.uploadedFileContentType = uploadedFileContentType;
+	}
+
+	public String getUploadedDocFileName()
+	{
+		return uploadedDocFileName;
+	}
+
+	public void setUploadedDocFileName(String uploadedDocFileName)
+	{
+		this.uploadedDocFileName = uploadedDocFileName;
 	}
 }
