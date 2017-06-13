@@ -110,7 +110,7 @@ function addExpenseCategory(categoryId) {
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12 mt">';
-	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_Description validate_length length1-500" data-validation-optional="true"></textarea>';
+	result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_length length1-500" data-validation-optional="true"></textarea>';
 	result = result  +' </div>';
 	result = result  +' </div>';
 	result = result  +'';
@@ -567,7 +567,7 @@ function reActiveExpenseCategory(categoryId){
 								if(json.amountType == 'Percentage' && json.allowedAmount != null){
 								result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward">';
 								result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-								result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward"   onblur="getTaxPercentageValue()" placeholder="Percentage">';
+								result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="'+json.allowedAmount+'" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
 								result = result  +' <i class="fa fa-percent"></i>'; 
 								result = result  +' </div>';
 								result = result  +' </div>';
@@ -575,7 +575,7 @@ function reActiveExpenseCategory(categoryId){
 								result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  style="display: none">';
 								result = result  +'<div class="row flat">';
 								result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
-								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="" name="taxFlatReward" placeholder="Flat">';
+								result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
 								result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 								result = result  +' </div>';
 								result = result  +' </div>';
@@ -585,7 +585,7 @@ function reActiveExpenseCategory(categoryId){
 								if(json.amountType == 'Flat' && json.allowedAmount != null){
 									result = result  +'<div class="col-md-7 paddingLeft" id="taxPercentageReward" style="display: none">';
 									result = result  +'<div class="positionRelative iconHolder percentage fullWid" >'; 
-									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="" name="taxPercentageReward"   onblur="getTaxPercentageValue()" placeholder="Percentage">';
+									result = result  +'<input type="text" class="form-control input-sm" field-name="Percentage"  id="taxPercentageRewardValue" value="" name="taxPercentageReward" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true"  onblur="getTaxPercentageValue()" placeholder="Percentage">';
 									result = result  +' <i class="fa fa-percent"></i>'; 
 									result = result  +' </div>';
 									result = result  +' </div>';
@@ -593,7 +593,7 @@ function reActiveExpenseCategory(categoryId){
 									result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  ">';
 									result = result  +'<div class="row flat">';
 									result = result  +' <div class="form-group col-md-8 paddingRight positionRelative iconHolder" >';
-									result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" name="taxFlatReward" placeholder="Flat">';
+									result = result  +'<input type="text" class="form-control input-sm" field-name="Flat" id="taxFlatRewardValue" value="'+json.allowedAmount+'" data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" name="taxFlatReward" placeholder="Flat">';
 									result = result  +'<i class="fa fa-money" id="taxFlatRewardIcon"></i>';
 									result = result  +' </div>';
 									result = result  +' </div>';
@@ -606,7 +606,7 @@ function reActiveExpenseCategory(categoryId){
 								
 								result = result  +'<div class="clearfix mb10">';
 								result = result  +'<div class="col-md-12 mt">';
-								result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_Description validate_length length1-500" data-validation-optional="true">'+description+'</textarea>';
+								result = result + '<textarea placeholder="Description" class="form-control input-sm" id="description" name="description" rows="2" cols="5" data-validation="validate_Space validate_length length1-500" data-validation-optional="true">'+description+'</textarea>';
 								result = result  +' </div>';
 								result = result  +' </div>';
 								result = result  +'';
