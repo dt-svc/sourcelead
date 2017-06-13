@@ -10,16 +10,23 @@
 
 <div class="wraper"> 
 <!-- View Content Area Starts-->
-<c:if test = "${type == 'view'}">
+<c:if test = "${param.type == 'view'}">
   <jsp:include page="viewApprovalExpenses.jsp"></jsp:include>
  </c:if>
- <c:if test = "${type != 'view'}">
+ <c:if test = "${param.type != 'view'}">
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>${type != 'edit' ? 'Add' : 'Edit'} Expense</h2>
+        <h2>${param.type != 'edit' ? 'Add' : 'Edit'} Expense</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; Add Expense</div>
+      <c:choose>
+	    <c:when test="${expenses.id !='' && expenses.id != null}">
+	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList?expenseId=${expenses.expenseId}&type=view"'/>">View Approval Expenses</a> &raquo; Edit Expense</div> 
+	    </c:when>    
+	    <c:otherwise>
+	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Approval Expenses</a> &raquo; Add Expense</div> 
+	    </c:otherwise>
+	</c:choose>
     </section>
     <form:form id="add_expenses_form" name="add_expenses_form"  enctype='multipart/form-data'>
 	<div class="content-area content-new clearfix">
@@ -378,8 +385,8 @@ function getMembersForSelectedProject(){
 				   }
 				}
 			}
-			if(validation_required == true){
-				$("#exceedSpan") .html( "<p class='jquery_form_error_message'>Minimum one category is required</p>");
+			if(validation_required == "true"){
+				$("#exceedSpan") .html( "<p class='textWarning small'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
 				return false;
 			}
 			else{
@@ -390,8 +397,7 @@ function getMembersForSelectedProject(){
       		formData.append("json",jsonData);
 			var sourceleadUrl = '${sourceleadUrl}';
 			$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
-			window.location.replace(sourceleadUrl+'/expensesApprovalList');
-     		$.ajax({
+			$.ajax({
        	        type : "POST",
         	    data: formData,
         	    contentType : 'application/json; charset=utf-8',
@@ -402,6 +408,7 @@ function getMembersForSelectedProject(){
 				url : sourceleadUrl+"/storeAddExpensesData?${_csrf.parameterName}=${_csrf.token}&status="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
+					window.location.replace(sourceleadUrl+'/expensesApprovalList');
 				},
 			});
 			return true;
