@@ -15,6 +15,8 @@
           <div class="pull-left">
             <h2>Offboard Templates List</h2>
           </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Offboard Templates List</div>
+ <div class="clearfix"></div>
     </section>
     
     <div class="timesheet_out">
@@ -120,7 +122,7 @@ function offboardingPagenation(){
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""
 	       }
-	    } );
+	    });
 }
 </script>
 

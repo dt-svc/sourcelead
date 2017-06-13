@@ -314,10 +314,10 @@ public class PdfUtil {
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbCandStyle.toString(),font));
-	        cell1.setColspan(12);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{4, 3, 3,5, 4, 3,4,3,5,3,4,4});
+            table.setWidths(new int[]{4, 3, 3,5, 4, 3,4,3,5,3,4,4,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -331,7 +331,7 @@ public class PdfUtil {
 	        table.completeRow();
 	        java.util.List<String[]> candidateList = new ArrayList<>();
 	        for(Candidate candidate : candidatesList){
-	        	candidateList.add(prepareStringArray(candidate));
+	        	candidateList.add(prepareStringArray(candidate,isAssociate));
 	        }
 	        
 	        for (String[] canArray: candidateList) {
@@ -363,7 +363,7 @@ public class PdfUtil {
 		return file;
 	
 	}
-	private String[] prepareStringArray(Candidate candidate) {
+	private String[] prepareStringArray(Candidate candidate, String isAssociate) {
 		String candidateArray[] = new String[Constants.CANDIDATE_EXCEL_HEADERS.length];
 
 		if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
@@ -467,6 +467,18 @@ public class PdfUtil {
 		}else{
 				candidateArray[11] = "--";
 		}
+		if(isAssociate.equalsIgnoreCase(Constants.YES)){
+			if(null != candidate.getIsFavouriteAssociate() && candidate.getIsFavouriteAssociate() == 1){
+				candidateArray[12] = "Y";
+			}else{
+				candidateArray[12] = "--";
+			}
+		}else if(null != candidate.getIsFavourite() && candidate.getIsFavourite() == 1){
+				candidateArray[12] = "Y";
+			}else{
+				candidateArray[12] = "--";
+			}
+		
 		return candidateArray;
 		
 	}
