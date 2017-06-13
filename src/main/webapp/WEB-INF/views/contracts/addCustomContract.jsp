@@ -51,6 +51,7 @@
 		                    <option>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
+		                    <option>Full time offer</option>
 		                 </select>
 				    </c:otherwise>
 				 </c:choose>
@@ -448,6 +449,7 @@
             </div>
             <div class="clearfix"></div>
         </div>
+         </div>
         <!-- billing end -->
 	<div class="row reqAddWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
@@ -455,7 +457,7 @@
            <thead >
            <tr>
            <th style="vertical-align: middle;">Request Documents</th>
-           <th colspan="2">
+           <th colspan="3">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
             <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
@@ -488,7 +490,7 @@
         
       </div>        
         
-      </div>      
+  
       </div>
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
@@ -963,6 +965,15 @@ function contractTypeLabels(){
 		hideCommonSOWFields();
 	} */
 	if(contractType == "Client MSA"){
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
@@ -992,6 +1003,15 @@ function contractTypeLabels(){
 		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
@@ -1020,6 +1040,15 @@ function contractTypeLabels(){
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
+		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
@@ -1044,6 +1073,15 @@ function contractTypeLabels(){
 		getRequirements("Client SOW");
 	}
 	if(contractType == "Vendor SOW"){
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
@@ -1069,6 +1107,15 @@ function contractTypeLabels(){
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		//$('#percentageRewardValue').removeAttr('data-validation');
 		//$('#flatRewardValue').removeAttr('data-validation');
 		$('#invoiceFrequency').removeAttr('data-validation');
@@ -1132,6 +1179,15 @@ function contractTypeLabels(){
 	}
 	
 	if(contractType == "Full time offer"){
+		$('#candiFlatReward').removeAttr('data-validation-optional');
+		$('#candiFlatReward').attr('data-validation',"required validate_int validate_length length1-8");
+		
+		$('#candiRateType').removeAttr('data-validation-optional');
+		$('#candiRateType').attr('data-validation',"required");
+		
+		$('#candiRatePer').removeAttr('data-validation-optional');
+		$('#candiRatePer').attr('data-validation',"required");
+		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
@@ -1327,7 +1383,6 @@ function hideCommonSOWFields(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementId = $("#requirementsList").val();
 		var sowType = $("#contractType").val();
-		
 		$("#flatReward").val("");
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
@@ -1372,6 +1427,7 @@ function hideCommonSOWFields(){
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		var reqSubId = $("#submissionOffersList").val();
+		var sowType = $("#contractType").val();
 		if(sowType!="Full time offer"){
 			$("#flatReward").val("");
 		    $("#billingRateType").val('${currencyCode}').trigger('change');
