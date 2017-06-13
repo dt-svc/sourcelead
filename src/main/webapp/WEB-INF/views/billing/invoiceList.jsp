@@ -207,7 +207,7 @@ $(document).ready(function(){
                   </div>
                   
                   
-                  <div class="candidate_wrap_table">
+                  <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
                 </div>
@@ -438,12 +438,15 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 <script>
 function getInvoiceList(){
-	$(".custom_search").hide();
+// 	$(".custom_search").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
 	
+	if(dayWisetype=="custom"){
+		dayWisetype = "";
+	}
 	var startDate = $("#billingStartDate").val();
 	var endDate = $("#billingEndDate").val();
 	
@@ -687,7 +690,7 @@ function invoicePagination(){
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	//
     	"aaSorting": [[3,'desc']],
     	"bDestroy": true,

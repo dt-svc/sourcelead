@@ -365,19 +365,21 @@ public class InvoiceRestController {
 			else if (Constants.ONE_YEAR.equals(reportType)) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 			}
-			}else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.getDateFormat(customStartDate);
-					Date endTime = commonUtil.getDateFormat(customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
+			}
+		}else {
+			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
+				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+				Date startTime = commonUtil.getDateFormat(customStartDate);
+				Date endTime = commonUtil.getDateFormat(customEndDate);
+				String customStartTimeStr = TZ_DF_CSD.format(startTime);
+				String customEndTimeStr = TZ_DF_CED.format(endTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+				endDateUTC = TZ_DF_TS.parse(endDateString);
+			}else{
+				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
 		}
 		
@@ -1628,21 +1630,22 @@ public class InvoiceRestController {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 				}
 			}
-			else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)
-						&& !"undefined".equalsIgnoreCase(customStartDate)
-						&& !"undefined".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.getDateFormat(customStartDate);
-					Date endTime = commonUtil.getDateFormat(customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
+		}else {
+			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)
+					&& !"undefined".equalsIgnoreCase(customStartDate)
+					&& !"undefined".equalsIgnoreCase(customEndDate)) {
+				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+				Date startTime = commonUtil.getDateFormat(customStartDate);
+				Date endTime = commonUtil.getDateFormat(customEndDate);
+				String customStartTimeStr = TZ_DF_CSD.format(startTime);
+				String customEndTimeStr = TZ_DF_CED.format(endTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+				endDateUTC = TZ_DF_TS.parse(endDateString);
+			}else{
+				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
 		}
 		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgRelationId(orgRelationId, clientLocationId, startDateUTC, endDateUTC, invoiceStatus, paymentStatus, invoiceType,orgLocations);

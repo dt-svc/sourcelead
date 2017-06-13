@@ -22,6 +22,9 @@
 .top_o{
 top:0 !important;
 }
+.repoPositi .dataTables_filter {
+    top: 0px !important;
+}
  </style>
 
 <script>
@@ -156,7 +159,7 @@ function portletListFilter(requirementStatus){
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 
-	    	   result = result + '<div class="require_wrap_table overflow-data filter-position">';
+	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi">';
 	    	   result = result + '<div class="clerfix">';
 	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';
@@ -342,7 +345,9 @@ function rejectedPagenatio(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+	$(".require_wrap_table").find('a.buttons-excel').prop("title", "Excel");
+	$(".require_wrap_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 <script>
