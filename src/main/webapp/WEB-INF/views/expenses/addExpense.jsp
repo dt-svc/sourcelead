@@ -15,12 +15,12 @@
 		 };
 </script>
 <!-- View Content Area Starts-->
-<c:if test = "${param.type == 'view'}">
+<c:if test = "${type == 'view'}">
    <jsp:include page="viewExpenses.jsp"></jsp:include>
  </c:if>
 <!-- View Content Area Ends-->
   <!-- Content Area -->
-  <c:if test = "${param.type != 'view'}">
+  <c:if test = "${type != 'view'}">
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">

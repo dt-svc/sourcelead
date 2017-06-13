@@ -10,14 +10,14 @@
 
 <div class="wraper"> 
 <!-- View Content Area Starts-->
-<c:if test = "${param.type == 'view'}">
+<c:if test = "${type == 'view'}">
   <jsp:include page="viewApprovalExpenses.jsp"></jsp:include>
  </c:if>
- <c:if test = "${param.type != 'view'}">
+ <c:if test = "${type != 'view'}">
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>${param.type != 'edit' ? 'Add' : 'Edit'} Expense</h2>
+        <h2>${type != 'edit' ? 'Add' : 'Edit'} Expense</h2>
       </div>
       <div class="pull-right brud-crum">Home &raquo; My Expenses &raquo; Add Expense</div>
     </section>
