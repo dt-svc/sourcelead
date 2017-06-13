@@ -194,10 +194,10 @@ public class InvoiceRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
+			orgSpoc.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getClientLocationId().getCountry()));
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
-	
 	
 	@RequestMapping(value = "/downloadInvoiceAttachment")
     public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
@@ -1652,4 +1652,5 @@ public class InvoiceRestController {
 		
 		return commonUtil.toJSON(invoiceList);
 	}
+	
 }

@@ -254,6 +254,12 @@ public class Invoice {
 	@Transient
 	private float payableAmount;
 	
+	@Transient
+	private String vendorCurrency;
+	
+	@Transient
+	private String clientCurrency;
+	
 	
 	public Long getId()
 	{
@@ -881,6 +887,22 @@ public class Invoice {
 	public void setPayableAmount(float payableAmount)
 	{
 		this.payableAmount = payableAmount;
+	}
+
+	public String getVendorCurrency() {
+		return vendorCurrency;
+	}
+
+	public void setVendorCurrency(String vendorCurrency) {
+		this.vendorCurrency = vendorCurrency;
+	}
+
+	public String getClientCurrency() {
+		return clientCurrency;
+	}
+
+	public void setClientCurrency(String clientCurrency) {
+		this.clientCurrency = clientCurrency;
 	}
 	
 	
