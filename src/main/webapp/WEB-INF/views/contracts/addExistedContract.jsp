@@ -214,12 +214,46 @@
               </div>
             </div>
         
-            <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
+            <%-- <div class="form-group" id="offerRateDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
 	              <label class="col-md-4">Offer Rate</label>
 	              <div class="col-md-8">
 	                <input type="text" class="form-control" disabled value="${requirementOffer.paymentType} ${requirementOffer.amount}/${requirementOffer.paymentMode}" id="offerRate" name="offerRate" field-name="Offer Rate">
 	              </div>
-            </div>
+            </div> --%>
+            <div class="form-group" id="offerRateDiv" style="display: none;">
+                <label class="col-md-4">Offer Rate<span class="text-danger">&nbsp;*</span></label>
+                  	<div class="col-lg-8" >
+			             <div class="input-group er ratetype">
+			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
+				                
+				                <select class="selectpicker" id="candiRateType" name="candiRateType" field-name="Rate Per" >
+					                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
+					                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
+					                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
+					                 <option ${contract.billingRateType == 'GBP' ? 'selected' : currencyCode  == 'GBP' ? 'selected' : ''}>GBP</option>
+					                 <option ${contract.billingRateType == 'SGD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>SGD</option>
+					                 <option ${contract.billingRateType == 'EUR' ? 'selected' : currencyCode  == 'EUR' ? 'selected' : ''}>EUR</option>
+				                
+				                </select>
+			                </div>
+							  	
+							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" value="${contract.billingAmount}" placeholder="Billing Amount"  field-name="Billing Amount">
+			                
+			                <div class="input-group-btn tblminwidth-75 ratetype">
+			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer" field-name="Rate Per">
+			                      <option>Rate per</option>
+			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
+			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-weekly' ? 'selected' : ''}>Bi-weekly</option>
+			                    <option ${contract.billingRatePer  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+			                    <option ${contract.billingRatePer  == 'Yearly' ? 'selected' : ''}>Yearly</option>
+			                  </select>
+			                </div>
+			            </div>
+		            </div>
+                  </div>
                           
             <div class="form-group " id="descriptionDiv">
               <label class="col-md-4">Description</label>
@@ -383,13 +417,14 @@
                     </div>
             </div>
         </div>
+         </div>
  	<div class="row reqAddWrap">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
   			<table width="100%" cellpadding="0" cellspacing="0" class="table table-striped table-responsive">
            <thead >
            <tr>
            <th style="vertical-align: middle;">Request Documents</th>
-           <th colspan="2">
+           <th colspan="4">
            <div class="pull-right"><button type="button" class="btn btn-sm btn-primary" title="Add Doc" onclick="addDoc()">
            <i class="fa fa-plus"></i></button>
             <input type="hidden" id="maxTaxRowNum" name="maxTaxRowNum" value="1" /></div>
@@ -397,9 +432,9 @@
           </tr>
           </thead>
           <tbody id="addTaxTbl">
-          <c:if test="${fn:length(docList) gt 0}">
+          
    				<tr><td><strong>Name</strong></td><td><strong>Description</strong></td><td><strong>Doc Type</strong></td><td><strong>Action</strong></td></tr>
-		  </c:if>
+		
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}"><td><div class="tbldata-dotdot-me">${doc.fileName}</div></td><td><div class="tbldata-dotdot-big">${doc.description}</div></td><td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td></tr>
                 </c:forEach>
@@ -441,7 +476,7 @@
 	<input type='file' name='REPLACEROWIDattachment' id='REPLACEROWIDattachment' field-name='Attachment' 
 	class='timesheetAttachmentValidation'></div> -->
 	
-							 <div class="col-md-8">                                                                                                            
+							 <div class="col-md-12">                                                                                                            
 					  			<div class="input-group positionRelative ratetype" id="uploadFileGroupREPLACEROWID" title="Document Type: .pdf format only">     
 					  				<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse        
 					               <input name="uploadBtnREPLACEROWID" id="uploadBtnREPLACEROWID" style="display: none;" multiple="" class="upload" type="file" onclick="check(REPLACEROWID);"  >                      
@@ -469,16 +504,16 @@
 	</div>
 </div>
 
-<div id="divTaxTd5" style="display: none; float: left;">
+<%-- <div id="divTaxTd5" style="display: none; float: left;">
    	 <select class="form-control input-sm"  id="REPLACEROWIDcandiDoc" name="REPLACEROWIDcandiDoc" >
 		<option value="">--Select Type--</option>
 		<c:forEach var="doctype" items="${documentsList}">
 		<option value="${doctype.name}">${doctype.name}</option>
 		</c:forEach>
 	</select>
-</div>
+</div> --%>
 
-<div id="divTaxTd6" style="display: none; float: right;">
+<div id="divTaxTd5" style="display: none; float: right;">
 	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
@@ -536,10 +571,10 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 				divTaxTdStr4 = divTaxTdStr4.replace(/REPLACEROWID/g, (maxRowNum));
 				cell4.innerHTML = divTaxTdStr4;
 				
-				var cell5 = row.insertCell(5);
+				/* var cell5 = row.insertCell(5);
 				var divTaxTdStr5 = document.getElementById("divTaxTd6").innerHTML;
 				divTaxTdStr5 = divTaxTdStr5.replace(/REPLACEROWID/g, (maxRowNum));
-				cell5.innerHTML = divTaxTdStr5;
+				cell5.innerHTML = divTaxTdStr5; */
 	}			
 </script>
 <script type="text/javascript">
@@ -917,6 +952,14 @@ function contractTypeLabels(){
 			hideCommonSOWFields();
 		} */
 		if(contractType == "Client MSA"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#orgRelationId').removeAttr('data-validation');
 			$('#orgRelationId').attr('data-validation-optional',"true");
 			$('#vendorContact').removeAttr('data-validation');
@@ -946,6 +989,14 @@ function contractTypeLabels(){
 			hideCommonSOWFields();
 		}
 		if(contractType == "Vendor MSA"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#clientOrgRelationId').removeAttr('data-validation');
 			$('#clientOrgRelationId').attr('data-validation-optional',"true");
 			$('#clientContact').removeAttr('data-validation');
@@ -974,6 +1025,14 @@ function contractTypeLabels(){
 			hideCommonSOWFields();
 		}
 		if(contractType == "Client SOW"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#orgRelationId').removeAttr('data-validation');
 			$('#orgRelationId').attr('data-validation-optional',"true");
 			$('#vendorContact').removeAttr('data-validation');
@@ -998,6 +1057,14 @@ function contractTypeLabels(){
 			getRequirements("Client SOW");
 		}
 		if(contractType == "Vendor SOW"){
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			$('#clientOrgRelationId').removeAttr('data-validation');
 			$('#clientOrgRelationId').attr('data-validation-optional',"true");
 			$('#clientContact').removeAttr('data-validation');
@@ -1022,7 +1089,14 @@ function contractTypeLabels(){
 			getRequirements("Vendor SOW");
 		}
 		if(contractType == "NDA" || contractType == "NSA"){
-
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			//$('#percentageRewardValue').removeAttr('data-validation');
 			//$('#flatRewardValue').removeAttr('data-validation');
 			$('#invoiceFrequency').removeAttr('data-validation');
@@ -1084,13 +1158,17 @@ function contractTypeLabels(){
 			$('#overtimeRate').val("");
 			$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 		}
-		getContractTemplates();
 		
-		$("#flatReward").val("");
-	    $("#billingRateType").val('${currencyCode}').trigger('change');
-	    $("#billingRatePer").val("").trigger('change');
-	}
+	
 if(contractType == "Full time offer"){
+	$('#candiFlatReward').removeAttr('data-validation-optional');
+	$('#candiFlatReward').attr('data-validation',"required validate_int validate_length length1-8");
+	
+	$('#candiRateType').removeAttr('data-validation-optional');
+	$('#candiRateType').attr('data-validation',"required");
+	
+	$('#candiRatePer').removeAttr('data-validation-optional');
+	$('#candiRatePer').attr('data-validation',"required");
 	$('#clientOrgRelationId').removeAttr('data-validation');
 	$('#clientOrgRelationId').attr('data-validation-optional',"true");
 	$('#clientContact').removeAttr('data-validation');
@@ -1142,6 +1220,12 @@ if(contractType == "Full time offer"){
 	$('#overtimeRate').val("");
 	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
 	getRequirements("Vendor SOW");
+}
+getContractTemplates();
+
+$("#flatReward").val("");
+$("#billingRateType").val('${currencyCode}').trigger('change');
+$("#billingRatePer").val("").trigger('change');
 }
 </script>
 
@@ -1210,7 +1294,6 @@ function hideCommonSOWFields(){
       		var formData = new FormData(form); 
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#newcontract_form").attr("disabled", "disabled");
-			alert(jsonData);
 			
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 		$.ajax({
@@ -1331,9 +1414,7 @@ function hideCommonSOWFields(){
 	        	 
 		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 		            	  var json = JSON.parse(data);
-		            	  $("#offerRate").val("");
 		            	  document.getElementById("offerRateDiv").style.display="block";
-		            	  $("#offerRate").val(json.paymentType+" "+json.amount+"/"+json.paymentMode);
 		            	  if(sowType!="Full time offer"){
 			            	  $("#flatReward").val("");
 			            	  $("#flatReward").val(json.amount);
@@ -1343,9 +1424,38 @@ function hideCommonSOWFields(){
 			            	  
 			            	  $("#billingRatePer").val("");
 			            	  $("#billingRatePer").val(json.paymentMode).trigger('change');
+			            	  
+			            	  $('#candiFlatReward').attr("disabled","disabled");
+			            	  $('#candiRateType').attr("disabled","true");
+			            	  $('#candiRatePer').attr("disabled","true");
+			            	  
+			            	  $("#candiFlatReward").val("");
+			            	  $("#candiFlatReward").val(json.amount);
+			            	  
+			            	  $("#candiRateType").val("");
+			            	  $("#candiRateType").val(json.paymentType).trigger('change');
+			            	  
+			            	  $("#candiRatePer").val("");
+			            	  $("#candiRatePer").val(json.paymentMode).trigger('change');
 		            	  }
 		            	  else{
 		            		  $("#joinDate").val(json.dateOfJoiningStr); 
+		            		  
+		            		  $('#candiFlatReward').removeAttr("disabled");
+		            		  $('#candiRateType').removeAttr("disabled");
+		            		  $('#candiRatePer').removeAttr("disabled");
+		            		  
+			            	//  $('#candiRateType').attr("disabled","false");
+			            	 // $('#candiRatePer').attr("disabled","false");
+			            	  
+		            		  $("#candiFlatReward").val("");
+			            	  $("#candiFlatReward").val(json.amount);
+			            	  
+			            	  $("#candiRateType").val("");
+			            	  $("#candiRateType").val(json.paymentType).trigger('change');
+			            	  
+			            	  $("#candiRatePer").val("");
+			            	  $("#candiRatePer").val(json.paymentMode).trigger('change');
 		            	  }
 		            	  
 	        	 		}

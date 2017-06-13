@@ -473,6 +473,10 @@ function getPayableInvoiceList(){
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
 	
+	if(dayWisetype=="custom"){
+		dayWisetype = "";
+	}
+	
 	var startDate = $("#billingStartDate").val();
 	var endDate = $("#billingEndDate").val();
 	
