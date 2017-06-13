@@ -200,6 +200,16 @@ padding-left: 25px;
 					 result = result +'       </div>                                                                                                      ';
 					 result = result +'     </div>                                                                                                        ';
 				 }
+				 
+				 if(json.companyEmail != null && json.companyEmail != '' && json.companyEmail != 'undefined'){
+					 result = result +'                                                                          ';
+					 result = result +'     <div class="form-group">                                             ';
+					 result = result +'       <label class="col-md-3 control-label">Company Email </label> ';
+					 result = result +'       <div class="col-md-6">                                                                                      ';
+					 result = result +'           <label>'+json.companyEmail+'</label>                                                            ';
+					 result = result +'       </div>                                                                                                      ';
+					 result = result +'     </div>                                                                                                        ';
+				 }
 			    
 				if(json.mobileNumber != null && json.mobileNumber != '' && json.mobileNumber != 'undefined'){
 					 result = result +'     <div class="form-group">                                                                                      ';
