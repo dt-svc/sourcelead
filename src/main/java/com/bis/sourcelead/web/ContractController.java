@@ -416,7 +416,7 @@ public class ContractController {
 				List<Requirement> requirementList = null;
 				List<RequirementSubmission> requirementSubmissionsList = null;
 				RequirementOffers requirementOffer = null;
-				if(contract.getContractType().contains("SOW")){
+				if(contract.getContractType().contains("SOW") || contract.getContractType().contains("Full time offer")){
 					requirementList = requirementService.getRequirementsForSOWByOrgLocationId(orgLocation.getId(), contract.getContractType());
 					if(requirementList.size() > 0){
 						for(Requirement requirement : requirementList){
@@ -448,31 +448,33 @@ public class ContractController {
 					
 					}
 				}
-				
-				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(contract.getOrgRelations().getId());
-				
-				for(OrgSpoc orgSpoc : orgSpocList){
-					StringBuilder sb = new StringBuilder();
-					StringBuilder clientSb = new StringBuilder();
-					if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
-					sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
-					}else{
-					sb.append(orgSpoc.getVendorUser().getFirstName());
+				if(null != contract){
+					if(null != contract.getOrgRelations()){
+					List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(contract.getOrgRelations().getId());
+					
+					for(OrgSpoc orgSpoc : orgSpocList){
+						StringBuilder sb = new StringBuilder();
+						StringBuilder clientSb = new StringBuilder();
+						if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
+						sb.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName());
+						}else{
+						sb.append(orgSpoc.getVendorUser().getFirstName());
+						}
+						if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
+						clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
+						}else{
+						clientSb.append(orgSpoc.getClientUser().getFirstName());
+						}
+						orgSpoc.setSpocName(sb.toString());
+						orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
+						orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
+						orgSpoc.setOwnerName(clientSb.toString());
+						}
+					model.addObject("orgSpocList", orgSpocList);
 					}
-					if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-					clientSb.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName());
-					}else{
-					clientSb.append(orgSpoc.getClientUser().getFirstName());
-					}
-					orgSpoc.setSpocName(sb.toString());
-					orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
-					orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
-					orgSpoc.setOwnerName(clientSb.toString());
-					}
-			
+				}
 				model.addObject("requirementList", requirementList);
 				model.addObject("requirementSubmissionsList", requirementSubmissionsList);
-				model.addObject("orgSpocList", orgSpocList);
 				model.addObject("requirementOffer", requirementOffer);
 			}
 			

@@ -287,33 +287,56 @@ function PopUp(contractUUID){
 			if(json.templateName != null && 'Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i  title="View Template" class="fa fa-eye" onclick="previewTemplatePDF(\''+json.contractsTemplate.templateUUID+'\', \''+json.contractsTemplate.templateName+'\')"></i></a></div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i  title="View Template" class="fa fa-eye" onclick="previewTemplatePDF(\''+json.tempUUID+'\', \''+json.templateName+'\')"></i></a></div>';
 				result = result +	'	</div>';
 			}
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
-			result = result +	'	</div>';
-			
-			if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
+			if(null != json.startDateStr && "" != json.startDateStr && 'undefined' != json.startDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-				result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-				result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
-				result = result +	'	</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
 				result = result +	'	</div>';
 			}
-			else{
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-				result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-				result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
-				result = result +	'	</div>';
-				result = result +	'	</div>';
-			}
-	
 			
+			if(null != json.joinedDateStr && "" != json.joinedDateStr && 'undefined' != json.joinedDateStr){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Join Date</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.joinedDateStr+'</div>';
+				result = result +	'	</div>';
+			}
+			if(null != json.workLocation && "" != json.workLocation && 'undefined' != json.workLocation){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Work Location</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.workLocation+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(json.contractType!="Full time offer"){
+				if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
+					result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
+					result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+					result = result +	'	</div>';
+					result = result +	'	</div>';
+				}
+				else{
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
+					result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
+					result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+					result = result +	'	</div>';
+					result = result +	'	</div>';
+				}
+				
+			}
+			if(json.contractType =="Full time offer"){
+				if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingRateType+' '+json.billingAmount+' / '+json.billingRatePer+'</div>';
+					result = result +	'	</div>';
+				}
+			}
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
 			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
@@ -326,14 +349,14 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			}
 			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Applicant Name</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.applicantName+'</div>';
@@ -358,24 +381,25 @@ function PopUp(contractUUID){
 				}
 			}
 			
-			if(null != json.initiatorType && "Client" == json.initiatorType){
+			if(null != json.initiatorType && "Client" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.initiatorType && "Vendor" == json.initiatorType){
+			if(null != json.initiatorType && "Vendor" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
-			result = result +	'	</div>';
+			if(json.contractType!="Full time offer"){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
+				result = result +	'	</div>';
+			}
 			
 			if(null != json.stateJurisdiction && "" != json.stateJurisdiction && 'undefined' != json.stateJurisdiction){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
@@ -384,7 +408,7 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.description && "" != json.description && 'undefined' != json.description){
+			if(null != json.description && "" != json.description && 'undefined' != json.description && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
@@ -393,7 +417,7 @@ function PopUp(contractUUID){
 			
 			result = result +	'<div class="clearfix"/>';
 			
-		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA"){
+		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
 			result = result +	'<h4>Billing Details</h4>';
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
@@ -3432,7 +3456,7 @@ function editClo(contractId){
      url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
      success :function(data) {
     	 $("#endVal").empty();
-		  $("#endVal").append(endDate);
+		  $("#endVal").append(": "+endDate);
      	 //   $("#tr"+id).empty();
     },
 });  

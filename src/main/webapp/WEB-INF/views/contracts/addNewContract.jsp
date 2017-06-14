@@ -1267,11 +1267,11 @@ function contractTypeLabels(){
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
 		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').removeAttr('data-validation');
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
 		$('#taxFlatRewardValue').removeAttr('data-validation');
-		
 		
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').attr('data-validation-optional',"true");
