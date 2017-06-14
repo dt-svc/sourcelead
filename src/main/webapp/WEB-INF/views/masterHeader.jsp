@@ -506,7 +506,7 @@ function notificationStatusAsRead(){
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
 									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="myTaskDatpicker" id="myTaskDatpicker"  type="text" readonly="readonly">
-									<i class="fa fa-calendar"></i></span>
+									<i class="fa fa-calendar mr"></i></span>
 				               </div>	
 				          
 				            <div class="clearfix require_wrap_table">
@@ -518,8 +518,8 @@ function notificationStatusAsRead(){
 				          <div id="other-task" class="tab-pane fade">
 							 <div class="col-md-6 clearfix newdate">
 			                    <i class="fa fa-filter"></i>
-								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
-								<i class="fa fa-calendar"></i></span>
+								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm calendar"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
+								<i class="fa fa-calendar mr"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
 					              <div id="assignedTasksId"></div>
@@ -530,7 +530,7 @@ function notificationStatusAsRead(){
 				             <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
 									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="closedTaskDatpicker" id="closedTaskDatpicker" type="text" readonly="readonly">
-									<i class="fa fa-calendar"></i></span>
+									<i class="fa fa-calendar mr"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
 				               <div id="closedTasksId"></div>
@@ -605,7 +605,7 @@ function notificationStatusAsRead(){
 			              </div>
 			              <div class="col-md-6">
 			                <label class="checkbox-inline">
-			                	<input type="checkbox" value="Email" name="email">Email
+			                	<input type="checkbox" value="Email" name="email" checked>Email
 			                 </label>
 			                <label class="checkbox-inline">
 			                    <input type="checkbox" name="notification" value="Notification">Notification
@@ -876,12 +876,12 @@ function tasksList(status){
         			description = "---";
         		}
         		result = result + '       <tr>';
-        		result = result + '         <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + '         <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + '         <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + '         <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + '         <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + '         <td>'+alertType+'</td>';
+        		result = result + '         <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + '         <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + '         <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + '         <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
             	
        			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
@@ -958,12 +958,12 @@ function assignedTasksList(status){
         			description = "---";
         		}
         		result = result + ' <tr>';
-        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + ' <td>'+alertType+'</td>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
             	
 		        result = result + '<select id="assignTaskState'+report.id+'" name="assignTaskState" onchange="updateAssignTaskStatus('+report.id+');">';
@@ -1040,12 +1040,12 @@ function closedTasksList(status){
         			description = "---";
         		}
         		result = result + ' <tr>';
-        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + ' <td>'+alertType+'</td>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
 		        result = result + report.taskStatus;
             	
@@ -1208,5 +1208,4 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
-
 

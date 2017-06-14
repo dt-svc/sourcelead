@@ -93,10 +93,10 @@ function candidateEducationList(candidateId){
 	                     result = result +"  <tr>"; 
 	                     result  = result + '           <th>Education</th>';
 	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date</th>';
-	                 	 result  = result + '           <th>End date</th>';
-	                 	 result  = result + '           <th>score</th>';
-	                 	 result  = result + '           <th>score Type</th>';
+	                 	 result  = result + '           <th>Start Date</th>';
+	                 	 result  = result + '           <th>End Date</th>';
+	                 	 result  = result + '           <th>Score</th>';
+	                 	 result  = result + '           <th>Score Type</th>';
 	                 	 result  = result + '           <th>Institute/University</th>';
 	                 	 result  = result + '           <th>Address</th>';
 	                 	 result  = result + '           <th>Action</th>';
@@ -133,7 +133,11 @@ function candidateEducationList(candidateId){
 	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
 	                    	 }
 	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+			                 if(opt.gradeType == 'Percentage'){
+			                	 result  = result + '<td><div><span>%</span></div></td>';
+			                 }else{
+			                	 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+			                 }
 			                 }else{
 			                 result  = result + '<td><div><span>----</span></div></td>'; 
 			                 }
@@ -183,7 +187,7 @@ function educationPagination(){
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -501,18 +505,22 @@ function EditEducation(candidateId,candidateEducationId) {
 							}
 							
 							$('#startDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							      onSelect: function (selected) {
-							            var dt = new Date(selected);
+							    	    var dt = toDate("#startDateEdit");
 							            dt.setDate(dt.getDate() + 1);
 							            $("#endDateEdit").datepicker("option", "minDate", dt);
 							        }
 							  });
 							  
 							  $('#endDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
+							      dateFormat: 'dd-mm-yy',
+							      changeMonth: true,
+							  	  changeYear: true, 
 							        onSelect: function (selected) {
-							            var dt = new Date(selected);
+							        	var dt = toDate("#endDateEdit");
 							            dt.setDate(dt.getDate() - 1);
 							            $("#startDateEdit").datepicker("option", "maxDate", dt);
 							        }

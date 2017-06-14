@@ -778,7 +778,7 @@ function addCertification(candidateId) {
       
 <script type="text/javascript">
 function deleteCerPopup(){
-	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
 }
 </script>
 
@@ -788,13 +788,13 @@ function deleteCerPopup(){
 function removeCertification(candidateCertificationId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop_certificates' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Certification</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteCertificationPopUp").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_pop_certificates").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 
 }
@@ -823,7 +823,7 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
             			 $("#selector5").removeAttr("style");
              			 $("#selector5").css({ display: "block" });
              			 $("#cerMsgDiv").html("Certification deleted");
-             			$("#remove_user_pop, .project_inn_mask").fadeOut();
+             			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
              			cerMsgFadein();
 			    	}

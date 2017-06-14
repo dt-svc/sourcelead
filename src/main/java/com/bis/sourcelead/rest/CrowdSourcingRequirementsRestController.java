@@ -396,6 +396,7 @@ public class CrowdSourcingRequirementsRestController {
     					  }
     					  requirementIndex.setReferedUser(referedUser.toString());
     					  requirementIndex.setReferId(refer.getId());
+    					  requirementIndex.setReferUUID(refer.getReferUUID());
     					  
     					  requirementIndex.setNoOfSearchHits(referedToRequirementList.size());
     					  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

@@ -387,7 +387,7 @@
             <div class="form-group">
               <label class="col-md-4">Billing Cycle<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 dropdown-select" id="errInvoice">
-                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Billing Cycle" onchange="removeBillCycleValidation();">
+                  <select class="form-control" id="invoiceFrequency" name="invoiceFrequency" ${ contract.contractType == 'Full time offer' ||contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Billing Cycle" onchange="removeBillCycleValidation();">
                     <option value="">Select Cycle</option>
                     <option ${contract.invoiceFrequency == 'Weekly' ? 'selected' : ''} value="Weekly">Weekly</option>
                     <option ${contract.invoiceFrequency == 'Bi-Weekly' ? 'selected' : ''} value="Bi-Weekly">Bi-Weekly</option>
@@ -400,7 +400,7 @@
               <div class="form-group">
               <label class="col-md-4">Payment Frequency<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 dropdown-select" id="errPayment">
-                  <select class="form-control" id="paymentFrequency" name="paymentFrequency" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Payment Frequency" onchange="removePaymentvalidation();">
+                  <select class="form-control" id="paymentFrequency" name="paymentFrequency" ${ contract.contractType == 'Full time offer' ||contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'} field-name="Payment Frequency" onchange="removePaymentvalidation();">
                     <option value="">Select Frequency</option>
                     <option ${contract.paymentTerm == '10 days' ? 'selected' : ''} value="10 days">10 days</option>
                     <option ${contract.paymentTerm == '15 days' ? 'selected' : ''} value="15 days">15 days</option>
@@ -1151,6 +1151,7 @@ function contractTypeLabels(){
 		
 		$('#invoiceFrequency').removeAttr('data-validation');
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		$('#paymentFrequency').removeAttr('data-validation');
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
 		$('#taxFlatRewardValue').removeAttr('data-validation');

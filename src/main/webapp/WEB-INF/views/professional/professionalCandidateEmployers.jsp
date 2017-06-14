@@ -159,12 +159,12 @@ function closeCertificatePopup(){
 		
 		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
 		result = result + '	                 <p>Start Date</p>';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Select Start Date"  field-name="Start Date" >';
+		result = result	+ '	                   <input type="text" max class="form-control calendar" value="" id="startYear" name="startYear"  placeholder="Start Date"  field-name="Start Date" readonly>';
 		result = result + '	                 </div>';
 
 		result = result + '	                  <div class="col-md-6 endDate" id="endDateDiv">';
 		result = result + '	                 <p>End Date</p>';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Select End Date" >';
+		result = result	+ '	                   <input type="text" max class="form-control calendar" id="endYear" name="endYear" field-name="End Year"  placeholder="End Date" readonly>';
 		result = result + '	                 </div> ';
 
 		result = result + '	                 </div> ';
@@ -265,7 +265,7 @@ function closeCertificatePopup(){
 								if (json.isCurrentPosition == 'Y' && json.isCurrentPosition != '' && json.isCurrentPosition !== 'undefined') {
 									result = result	+ '	 <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '"   checked="checked"    onClick ="iscurrentPositionEdit();" name = "isCurrentPosition"> Is Current Position</label>';
 								} else {
-									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
+									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="Y" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
@@ -287,32 +287,28 @@ function closeCertificatePopup(){
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
-								result = result	+ '	               <div class="clearfix mb10">';
-								result = result + '	                 <p class="ml">Start Date</p>';
-								
+								result = result	+ '	               <div class="clearfix mb10 dates">';
 								result = result	+ '<div class="col-md-6">';
+								result = result + '	                 <p class="ml">Start Date</p>';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control calendar" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" readonly>';
 								}else{
-									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select End Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control calendar" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" readonly>';
 								}
 								result = result + '</div>';
-								result = result + '</div>';
 								
-								result = result	+ '<div id="endDateEditDiv">';
-								result = result	+ '<div class="clearfix mb10 endDate >';
+								result = result	+ '<div class="col-md-6" id="endDateEditDiv">';
 								result = result	+ '<p class="ml">End Date</p>';
-								
-								result = result	+ '<div class="col-md-6">';
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
-									result = result	+ '<input type="text"  class="form-control" value="'+ json.endYear+'" id="endYearEdit" name="endYear" placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text"  class="form-control calendar" value="'+ json.endYear+'" id="endYearEdit" name="endYear" placeholder="End Date"  field-name="end Date" data-validation="required" data-validation-optional="true" readonly>';
 									result = result	+ '<input type="hidden" value="'+json.endYear+'" id="exisitngEndYear">';
 								}else{
-									result = result	+ '<input type="text"  class="form-control" value="" id="endYearEdit" name="endYear" placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text"  class="form-control calendar" value="" id="endYearEdit" name="endYear" placeholder="End Date"  field-name="end Date" data-validation="required" data-validation-optional="true" readonly>';
 								}
-								result = result + '</div>';
-								result = result + '</div>';
 								result = result + '	                 </div> ';
+								
+								result = result + '	                 </div> ';
+
 								result = result + '	                 </div> ';
 								result = result	+ '	               <div class="clearfix mr">';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateEmpId+'" id="candidateEmpId"  name="candidateEmployeeId" >';
@@ -430,8 +426,8 @@ function closeCertificatePopup(){
 								result = result	+ '           <th>Employer</th>';
 								result = result	+ '           <th>Designation</th>';
 								result = result + '           <th>Address</th>';
-								result = result	+ '           <th>Start date</th>';
-								result = result	+ '           <th>End date</th>';
+								result = result	+ '           <th>Start Date</th>';
+								result = result	+ '           <th>End Date</th>';
 								result = result + '           <th>Action</th>';
 								result = result + "  </tr>";
 								result = result + "</thead>";
@@ -497,7 +493,7 @@ function employeePagination(){
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -649,9 +645,8 @@ function alertMessageforEmp(candidateemployerId, candidateId){
 --%>
 <script>
 	function iscurrentPosition() {
-
 		var currentposition = document.getElementById("isCurrentPosition").checked;
-			 
+			 alert("currentposition"+currentposition);
 		if (currentposition) {
 			document.getElementById("endDateDiv").style.display = 'none';
 			$('#endYear').removeAttr('data-validation');
