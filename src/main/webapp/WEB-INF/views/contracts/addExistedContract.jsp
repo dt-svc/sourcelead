@@ -1300,6 +1300,7 @@ function hideCommonSOWFields(){
 
 <script>
 	function getRequirements(sowType){
+		$("#requirementsList").empty();
 		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	        type : "GET",
