@@ -213,6 +213,9 @@ public class User implements Serializable{
 	@Transient
 	private String employmentType;
 	
+	@Transient
+	private String registrationType;
+	
 	
 
 	public Status getPreviousUserState() {
@@ -665,6 +668,16 @@ public class User implements Serializable{
 	public void setEmploymentType(String employmentType)
 	{
 		this.employmentType = employmentType;
+	}
+
+	public String getRegistrationType()
+	{
+		return registrationType;
+	}
+
+	public void setRegistrationType(String registrationType)
+	{
+		this.registrationType = registrationType;
 	}
 
 	

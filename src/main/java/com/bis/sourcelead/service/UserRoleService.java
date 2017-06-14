@@ -120,6 +120,8 @@ public interface UserRoleService {
 	 
 	 UserRole getChangeRolePermissions(List<Long> userRoletabIds,Long userId,Long orgLocationId) throws Exception;
 	
-	 List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId ) throws Exception;;
+	 List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId ) throws Exception;
+	 
+	 public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId,Long locationId,String userType) throws Exception;
 
 }

@@ -766,6 +766,14 @@ var validationSettings = {
 			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
 			        		}
 			        		
+			        	}else if((result == 'login')){
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
+			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/login?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/login");  
+			        		}
+			        		
 			        	}
 			        	
 			        },  
@@ -832,6 +840,12 @@ var validationSettings = {
 			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID);  
 			        		}else{
 			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		}
+			        	}else if((result == 'login')){
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/login?requirementUUID="+requirementUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/login");  
 			        		}
 			        	}
 			        	
