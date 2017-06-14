@@ -46,29 +46,26 @@ public class ExpensesRestController {
 	
 	
 	@RequestMapping(value = "/getExpensesList")
-	 public String getExpensesList(HttpServletRequest request, String expenseStatus) throws Exception {
+	 public String getExpensesList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
 		String resultJson="";
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus);
-		if(expensesList != null && expensesList.size() >0){
-			for(Expenses ex:expensesList){
-				if(null != ex.getProjectMembers())
-				{
-					ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
-				}
-				if(null != ex.getStartDate())
-				{
-				ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
-				}
-				if(null != ex.getEndDate())
-				{
-					ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
-				}
+		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus, startDate, endDate);
+		for(Expenses ex:expensesList){
+			if(null != ex.getProjectMembers())
+			{
+				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
 			}
-			resultJson = commonUtil.toJSON(expensesList);
+			if(null != ex.getStartDate())
+			{
+			ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+			}
+			if(null != ex.getEndDate())
+			{
+				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+			}
 		}
-		
+		resultJson = commonUtil.toJSON(expensesList);
 		return resultJson;
 	 }
 	
@@ -160,8 +157,9 @@ public class ExpensesRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		
-		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus);
+		String startDate = null;
+		String endDate = null;
+		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus, startDate, endDate);
 		if(expensesList != null && expensesList.size() > 0){
 			for(Expenses ex:expensesList){
 				if(null != ex.getProjectMembers())
