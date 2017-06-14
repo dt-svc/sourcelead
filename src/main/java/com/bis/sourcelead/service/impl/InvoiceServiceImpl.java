@@ -1142,7 +1142,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception {
+	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1150,10 +1150,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
 			int column = 0;
 			for (Invoice invoice : invoiceList) {
-				writeRow = createExcelsheet.createRow(column + 13);
+				writeRow = createExcelsheet.createRow(column + 10);
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
 				column++;
 			}
@@ -1167,7 +1167,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				e.printStackTrace();
 			}
 		}else{
-			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount,exportStartDate,exportEndDate);
+			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount,exportStartDate,exportEndDate,invoiceType);
 		}
 			return file;
 	}
@@ -1190,26 +1190,32 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(1).setCellValue(org.getOrgName());
 	}
 	
-	if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
 		StringBuilder contactName = new StringBuilder();
 		writeRow.createCell(2).setCellValue(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
 	}else if(null != invoice.getContactUser().getFirstName()){
 		writeRow.createCell(2).setCellValue(invoice.getContactUser().getFirstName());
 	}
+	}
 	
-	if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
 		writeRow.createCell(3).setCellValue(invoice.getContactUser().getEmail()); 
 	}
-	
-	if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
-		 writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
 	}
 	
-	if(null != invoice.getInvoiceDate() && !"".equalsIgnoreCase(invoice.getInvoiceDate().toString())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
+		 writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
+	}
+	}
+	
+	if(null != invoice.getInvoiceDate()){
 		 writeRow.createCell(5).setCellValue(invoice.getInvoiceDate().toString());
 	}
 	
-	if(null != invoice.getDueDate() && !"".equalsIgnoreCase(invoice.getDueDate().toString())){
+	if(null != invoice.getDueDate()){
 		writeRow.createCell(6).setCellValue(invoice.getDueDate().toString());  
 	}
 	
@@ -1242,7 +1248,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	return createExcelsheet;
 	}
 
-private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate) {
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate, String invoiceType) {
 	
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
@@ -1318,7 +1324,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell12.setCellValue(totalStagesAmount.getTotalUnbilledAmount());
 	cell12.setCellStyle(style);
 	
-	String headers [] = Constants.BILLING_HEADERS;
+	String[] headers = null;
+	if(Constants.Payables.equalsIgnoreCase(invoiceType)){
+		 headers  = Constants.BILLING_PAYABLE_HEADERS;
+	}else{
+		 headers  = Constants.BILLING_HEADERS;
+	}
 	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
 	return createExcelsheet;
 }
