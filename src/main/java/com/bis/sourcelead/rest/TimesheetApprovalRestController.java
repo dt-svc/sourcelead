@@ -126,7 +126,7 @@ public class TimesheetApprovalRestController {
         StringBuilder selectedStage = new StringBuilder("");
         
         
-	    LinkedHashSet<String> datesList = timesheetApprovalFrequencyGeneratorUtil.getMonthsListFromCurrentDate(2, 2);
+	    LinkedHashSet<String> datesList = timesheetApprovalFrequencyGeneratorUtil.getMonthsListFromCurrentDate(4, 2);
 		
 		timesheetApprovalDiv.append("		<div class='timesheet_out'> ");
 		timesheetApprovalDiv.append("		<div class='timesheet_appr_wrap'>");
@@ -625,7 +625,7 @@ public class TimesheetApprovalRestController {
 					timesheetApprovalDiv.append("	                	<th>Employment Type</th>           ");
 					timesheetApprovalDiv.append("	                    <th>Project</th>            ");
 					timesheetApprovalDiv.append("	                    <th>Client</th>             ");
-					timesheetApprovalDiv.append("	                    <th>Vendor</th>             ");
+					//timesheetApprovalDiv.append("	                    <th>Vendor</th>             ");
 					
 					LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
 					Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(startDate, endDate);
@@ -670,11 +670,32 @@ public class TimesheetApprovalRestController {
 						 timesheetApprovalDiv.append("   <div>");
 						 timesheetApprovalDiv.append(" </td>");
 						 
-						 if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
+						 
+						 
+						/* if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
 						 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()).append("</b></span></div></td>");
 						 }else{
 						 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>");	 
-						 }
+						 }*/
+						 
+						 
+						 
+						 if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType()) && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
+					    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
+					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()+","+orgRelation.getResponderLocationId().getOrg().getOrgName()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()+"<br/>"+orgRelation.getResponderLocationId().getOrg().getOrgName()).append("</b></span></div></td>"); 
+					     }else if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType())){
+					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getEmployee().getUserEmploymentType()).append("'>").append(projectMember.getEmployee().getUserEmploymentType()).append("</b></span></div></td>"); 
+					     }else{
+					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>"); 
+					     }
+						 
+						 
+						 
+						 
+						 
+						 
+						 
+						 
 					     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</b></span></div></td>");
 					     
 					     if(null != projectMember.getProjects().getOrgRelationId()){
@@ -690,13 +711,6 @@ public class TimesheetApprovalRestController {
 		     					}
 					     }else{
 					    	 timesheetApprovalDiv.append("<td><div>").append("--").append("</div></td>");
-					     }
-					     
-					     if(null != projectMember.getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(projectMember.getEmployee().getUserEmploymentType()) && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
-					    	 OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
-					    	 timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("'>").append(orgRelation.getResponderLocationId().getOrg().getOrgName()).append("</b></span></div></td>"); 
-					     }else{
-					     timesheetApprovalDiv.append("	<td><div class='tbldata-dotdot-sm'><span><b title='").append("--").append("'>").append("--").append("</b></span></div></td>"); 
 					     }
 					     
 					     Float totalHours = 0f;

@@ -880,6 +880,7 @@ function calculateDisCount(){
 					 	 }
 
 					 	 calculateTaxDiscount();
+					 	conversion();
 }
 }
 </script>
@@ -972,7 +973,7 @@ function calculateDisCount(){
         $("#grandTotal").val(total); 
         $("#conversionFrom").val(total);
        //=======================================
-        
+        conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
 		var r = document.getElementById('addTaxTbl').rows[rowId];
 		var count = 2 * (r.cells.length);
@@ -1037,13 +1038,15 @@ function calculateTaxDiscount(){
 	
 	var taxGrandTotal = 0;
 	for(var i=1; i<maxTaxRowNum; i++){
-		taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));
+		if($("#"+i+"taxTotal").val() != null && $("#"+i+"taxTotal").val() != '' && $("#"+i+"taxTotal").val() != 'undefined'){
+			taxGrandTotal = parseFloat(taxGrandTotal + parseFloat($("#"+i+"taxTotal").val()));			
+		}
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
 	 $("#grandTotal").val(grandTotal.toFixed(2));
    	 $("#conversionFrom").val(grandTotal.toFixed(2)); 
-  
+   	conversion();
 }
 </script>
 

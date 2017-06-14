@@ -25,6 +25,8 @@ public class RequirementIndex {
 	
 	private Float maxRate;
 	
+	private String isreceivingApplicants;
+	
 	private String rateType;
 	
 	private String minExperience;
@@ -142,6 +144,14 @@ public class RequirementIndex {
 	private String reqCoolingOffPeriod;
 	
 	private String closedDate;
+	
+	private String description;
+	
+	private String jobAlertTitle;
+	
+	private String isJobSaved;
+	
+	private String savedJobUUID;
 	
 	
 	public String getManagerUserId() {
@@ -707,5 +717,57 @@ public class RequirementIndex {
 	{
 		this.closedDate = closedDate;
 	}
+
+	public String getIsreceivingApplicants()
+	{
+		return isreceivingApplicants;
+	}
+
+	public void setIsreceivingApplicants(String isreceivingApplicants)
+	{
+		this.isreceivingApplicants = isreceivingApplicants;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public String getJobAlertTitle()
+	{
+		return jobAlertTitle;
+	}
+
+	public void setJobAlertTitle(String jobAlertTitle)
+	{
+		this.jobAlertTitle = jobAlertTitle;
+	}
+
+	public String getIsJobSaved()
+	{
+		return isJobSaved;
+	}
+
+	public void setIsJobSaved(String isJobSaved)
+	{
+		this.isJobSaved = isJobSaved;
+	}
+
+	public String getSavedJobUUID()
+	{
+		return savedJobUUID;
+	}
+
+	public void setSavedJobUUID(String savedJobUUID)
+	{
+		this.savedJobUUID = savedJobUUID;
+	}
+
+	
 	
 }

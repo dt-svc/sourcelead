@@ -394,7 +394,7 @@ function reqQwikCertificates(candidateId){
 	                	 $("#reqQvcertificationSubmission").empty();
 	                	 var result = "";
 	                	 result = result +'<div class="col-md-12">';
-						 result = result +' <h4>Certificates</h4>';
+						 result = result +' <h4>Certifications</h4>';
 							var json = JSON.parse(data);
 							for (var i = 0; i < json.length; i++) { 
 								if(i < 3){
@@ -416,7 +416,11 @@ function reqQwikCertificates(candidateId){
 								}else{
 									name = '';
 								}
-								result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
+								if(opt.scoreType == 'Percentage'){
+									result = result +' <h4>'+name+' ('+opt.score+' %) </h4>';
+								}else{
+									result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
+								}
 								/* result = result +'<div class="description">';
 								result = result +'  <p>'+opt.provider+'</p>';
 								result = result +'</div>';   */

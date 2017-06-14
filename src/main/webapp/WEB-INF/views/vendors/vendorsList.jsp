@@ -361,7 +361,7 @@ border:none; background-color: none !important; padding:0 5px !important;
             <div class="clearfix"></div>
         </div>
         
-    <div class="clients_wrap_table">
+    <div class="clients_wrap_table datatable_filter">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
 	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
     
@@ -1042,7 +1042,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1140,7 +1140,7 @@ function preparedVendorContactListFromElk(data){
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
 			result = result +'  <th>Vendor</th>';
-		   	result = result +'	<th>Name</th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
@@ -1270,11 +1270,11 @@ function preparedVendorContactList(data){
 		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
-		   	result = result +'	<th>Name</th>';
+			result = result +'  <th>Vendor</th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Vendor</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1288,6 +1288,7 @@ function preparedVendorContactList(data){
 		   		var report = json[i];
 		   		result = result +'<tr id="row'+report.id+'">';
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 		   				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
@@ -1306,7 +1307,6 @@ function preparedVendorContactList(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 		   		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
 		   		result = result + ' <td><div>';
@@ -1487,7 +1487,7 @@ function pagination(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1627,7 +1627,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1714,7 +1714,20 @@ function getVendorDashboardName(vendorDashboardName){
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
 		'</sec:authorize>';
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
+		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Requirment List</a></li>'; 
+		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		result = result + '<li><a href="#tab-5" onclick="vendorContracts('+orgRelationId+');">Contracts</a></li>'; 
+		'</sec:authorize>';
+		
+		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
+		
+		 // vendors associates list
+		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associate List</a></li>';
+
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -1729,6 +1742,22 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		//for vendor documents tab
 		result = result + '<div id="tab-3" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor billing
+		result = result + '<div id="tab-4" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor Contracts
+		result = result + '<div id="tab-5" class="project_tabs_inn">';
+		result = result + '</div>';
+
+		//for vendor requirement list tab
+		result = result + '<div id="tab-6" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor associate list tab
+		result = result + '<div id="tab-7" class="project_tabs_inn">';
 		result = result + '</div>';
 
 		result = result + '</div>';
@@ -2107,7 +2136,14 @@ $(".addcon-pop").click(function(){
 <jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="vendorContacts.jsp" />
 <jsp:include page="vendorDocuments.jsp" />
+<jsp:include page="vendorContracts.jsp" />
 <jsp:include page="vendorSpocDocuments.jsp" />
+
+<jsp:include page="vendorRequirmentList.jsp" />
+
+<jsp:include page="vendorBilling.jsp" /> 
+<jsp:include page="vendorAssociatesList.jsp" /> 
+
 
 
 

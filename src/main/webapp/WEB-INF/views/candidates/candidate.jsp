@@ -49,7 +49,7 @@
         <div class="col-md-12 clearfix">
         <div class="well">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
-            <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
+            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
@@ -359,6 +359,17 @@
           </div>
         </div>
         </div>
+        <div class="clearfix"></div>
+        <div class="form-group">
+            <label class="col-md-3"></label>
+             <div class="col-md-9">
+               <div class="checkbox checkBox">
+                 <label>
+                   <input type="checkbox" value="Y" name="email">
+                   Invite to SourceLead</label>
+               </div>
+                </div>
+         </div>
         
         
         <div class="clearfix"></div>

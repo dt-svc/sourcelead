@@ -45,7 +45,7 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 		
 				
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from ExpensesCategory ec where ec.orgLocationId.id = :orgLocationId";
+	    String query = "from ExpensesCategory ec where ec.orgLocationId.id = :orgLocationId  ORDER BY ec.id DESC";
 	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
         return documentsList;
 	}

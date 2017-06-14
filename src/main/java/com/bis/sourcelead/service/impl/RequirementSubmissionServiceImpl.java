@@ -1632,6 +1632,26 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				if(jsonObj.has("comment")){
 					requirementSubmission.setRejectedReason(jsonObj.getString("comment"));
 				}
+				
+				
+				
+				if(jsonObj.has("rejectedCategory")){
+					requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
+				}
+				
+				
+				if(jsonObj.has("rejectedCategoryOther")){
+					requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+
+				}
+				
+				
+				StringBuilder name = new StringBuilder();
+				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
+					requirementSubmission.setSubmissionRequestUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					requirementSubmission.setSubmissionRequestUser(user.getFirstName());
+				}
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "request")){
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REQUEST);
@@ -1643,7 +1663,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				if(jsonObj.has("comment")){
 					requirementSubmission.setSubmissionRequestComment(jsonObj.getString("comment"));
 				}
-				requirementSubmission.setSubmissionRequestUser(user.getUserCode());
+				StringBuilder name = new StringBuilder();
+				if(null !=user.getLastName() && !" ".equalsIgnoreCase(user.getLastName())){
+					requirementSubmission.setSubmissionRequestUser(name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					requirementSubmission.setSubmissionRequestUser(user.getFirstName());
+				}
 				
 				//send mail to requirement manager.
 				sendEmailtoRequirementManager(loginOrg, user,requirementSubmission,loginOrgLocation);
@@ -2772,7 +2797,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         for(RequirementSubmission reqsub :submittedApplicantsList){
         	RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(reqsub.getId());
         	StringBuilder sb = new  StringBuilder();
-        	if(reqsub.getCandidate().getLastName() != null && !" ".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
+        	if(requirementSubmissionTemplateFields.getLastName() != null && !" ".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 	        		
         		reqsub.setCandidateName(sb.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
         	}else{
@@ -4185,6 +4210,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<RequirementSubmission> getApplicantCountSubmittedByVendor(Long orgLocationId, Long orgRelationId) {
 		return requirementSubmissionDao.getApplicantCountSubmittedByVendor(orgLocationId,orgRelationId);
+	}
+	
+	@Override
+	public List<RequirementSubmission> getApplicantRequirmentCountSubmittedByVendor(Long orgLocationId, Long requirementId,Long vendorLocationID) {
+		return requirementSubmissionDao.getApplicantRequirmentCountSubmittedByVendor(orgLocationId,requirementId,vendorLocationID);
 	}
 
 	@Override

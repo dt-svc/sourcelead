@@ -398,8 +398,8 @@ document.onkeydown=function(e){
 	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Offboarding</a></li>
 						  </sec:authorize>	
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-	                      <li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
-	                      </sec:authorize>
+						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>
@@ -411,6 +411,8 @@ document.onkeydown=function(e){
             	<div class="setting-area">
             	<ul class="list-unstyled">
             	<li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+            	
+            	<li><a href="<c:url value="/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
             	</ul>
             	</div>
             	</li>

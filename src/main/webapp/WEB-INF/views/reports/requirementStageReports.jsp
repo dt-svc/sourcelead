@@ -354,7 +354,7 @@ function getRequirementStageList(){
 	</span>
 </div>
                      
-        <ul style="padding: 2px 300px 2px 0px;" id="statusDiv" style="display: block">
+        <ul style="padding: 0px 310px 0px 0px;" id="statusDiv" style="display: block">
         <li>
         	<b id="filter2ApprovePop"><i class="fa fa-filter paddingRight"></i>Status<span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
         	<div id="filter2ApprovedPop" class="approved_pop">
