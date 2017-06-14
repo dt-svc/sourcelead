@@ -1109,8 +1109,8 @@ function preparedContractListWFA(data){
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
 	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '     <th>Req Docs</th>'; 
 // 	opt = opt + '    <th>Contract Type</th>';
 	opt = opt + '    <th>Approver</th>';
 	opt = opt + '    <th>Action</th>';
@@ -1271,7 +1271,7 @@ function preparedContractListWFA(data){
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-					if('${SourceLeadWeb_user.id}' == output.approverUserId){
+					if('${SourceLeadWeb_user.id}' == appReport.approverUserId){
 					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+appReport.id+',\'REJECTED\');"></i></div></div>';
 					}
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1815,10 +1815,9 @@ function preparedContractListWTV(data){
 		         result = result + '<td>';
 		         result = result + '<div><span>'+report.invoiceFrequency+'</span></div>';
 		         result = result + '</td>';
-		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
-		         if('${SourceLeadWeb_user.id}' == report.ownerUser){
+ 		         if('${SourceLeadWeb_user.id}' == report.ownerUser){
 		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	            	 }
@@ -1892,11 +1891,11 @@ function preparedContractListWTV(data){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	         if('${SourceLeadWeb_user.id}' == report.ownerUser){
+ 	         if('${SourceLeadWeb_user.id}' == output.ownerUser){
 	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		     		}
-	         }
+ 	         }
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
      		'</sec:authorize>';
@@ -1977,7 +1976,7 @@ function preparedContractListWTV(data){
 		         
 		         res = res + '<td>';//Waiting to be signed
 		         res = res + '<div class="tbldata-dotdot_80">';
-		         if('${SourceLeadWeb_user.id}' == report.ownerUser){
+ 		         if('${SourceLeadWeb_user.id}' == appReport.ownerUser){
 		        	 if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
 			        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 			     		}
@@ -3359,16 +3358,13 @@ function CountClick(contractUUID,parentId){
 							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
-						  }else{
-							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
-							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
-							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
-							  result = result +'	             </span> </label>                                                                                                                 ';
-							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
-							  result = result +'				</div>                                                                                                                            ';
+						  }
+						  else{
+							  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
+							  result = result +'	       <label class="text-center">--</label>                                                 ';
 							  result = result +'	       </div>			                                                                                                                  ';
-					  }
+							  $("#saveAction").empty(); 
+						  }
 				  }
 				  else{
 					  $("#saveAction").empty(); 

@@ -1064,7 +1064,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				
 				ContractsHistory childContractsHistory = new ContractsHistory();
 				childContractsHistory.setFromStage("NEW");
-				childContractsHistory.setContractsId(contracts);
+				childContractsHistory.setContractsId(savedChildContracts);
 				childContractsHistory.setToStage("WAITING_TO_BE_SIGNED");
 				childContractsHistory.setCreatedDate(new Date());
 				childContractsHistory.setUpdatedDate(new Date());
@@ -1083,7 +1083,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							}
 					  }
 					  else{
-							 if(null != contracts.getContractType()  && !"".equalsIgnoreCase(contracts.getContractType() ) && "custom".equalsIgnoreCase(contracts.getContractType() )){
+							 if(null != contracts.getTypeOfContract()  && !"".equalsIgnoreCase(contracts.getTypeOfContract() ) && "custom".equalsIgnoreCase(contracts.getTypeOfContract() )){
 								con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(upadatedContracts.getContactUser(),contracts,orgLocation,user,upadatedContracts,org,new RequirementSubmission());				 
 							 }else{
 								 con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org,new RequirementSubmission());

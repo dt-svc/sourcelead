@@ -1817,13 +1817,14 @@ public class EMailJobScheduler {
 			            		String currentTimeStr = TZ_DF_TS.format(date);
 			    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
 			            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+			            			contracts.setId(contracts.getId());
+			        				contracts.setTemplateSubmissionStatus("EXPIRED");
+			        				String fromStage = contracts.getTemplateSubmissionStatus();
 			            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				        			if(null != childContarct && null != childContarct.getParentContractId()){
-				        				String fromStage = childContarct.getTemplateSubmissionStatus();
+				        				fromStage = childContarct.getTemplateSubmissionStatus();
 				        				childContarct.setId(childContarct.getId());
 				        				childContarct.setTemplateSubmissionStatus("EXPIRED");
-				        				contracts.setId(contracts.getId());
-				        				contracts.setTemplateSubmissionStatus("EXPIRED");
 				        				contractsTemplateService.saveNewContract(childContarct);
 				        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
 					        				if(!("EXPIRED").equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
