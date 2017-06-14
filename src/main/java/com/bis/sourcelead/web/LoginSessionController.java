@@ -687,20 +687,34 @@ public class LoginSessionController {
 			candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
 		}
 		
+		
+		if(null != candidateOnBoarding.getManagerUserId()){
+			StringBuilder managerName = new StringBuilder();
+			String manager  = null;
+			if(!isNullOrEmpty(candidateOnBoarding.getManagerUserId().getLastName())){
+				manager = managerName.append(candidateOnBoarding.getManagerUserId().getFirstName()).append(" ").append(candidateOnBoarding.getManagerUserId().getLastName()).toString();
+			}else{
+				manager = managerName.append(candidateOnBoarding.getManagerUserId().getFirstName()).toString();
+			}
+			
+			SourceLeadSessionManager.setSessionAttribute(request, "managerName", manager);
+		}
+		
 		if(null != candidateOnBoarding.getTeamId()){
 			Team team = teamService.getTeamByTeamId(candidateOnBoarding.getTeamId().getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "teamName", team.getName());
 			
-			
-			StringBuilder managerName = new StringBuilder();
-			String manager  = null;
+			StringBuilder teamOwnerName = new StringBuilder();
+			String teamOwnerUserName  = null;
 			if(!isNullOrEmpty(team.getOwnerUserId().getLastName())){
-				manager = managerName.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString();
+				teamOwnerUserName = teamOwnerName.append(team.getOwnerUserId().getFirstName()).append(" ").append(team.getOwnerUserId().getLastName()).toString();
 			}else{
-				manager = managerName.append(team.getOwnerUserId().getFirstName()).toString();
+				teamOwnerUserName = teamOwnerName.append(team.getOwnerUserId().getFirstName()).toString();
 			}
 			
-			SourceLeadSessionManager.setSessionAttribute(request, "managerName", manager);
+			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerName", teamOwnerUserName);
+			
+			
 			UserRole teamOwner = userRoleService.getUserDetailsByUserIdAndLocationId(team.getOwnerUserId().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerRole", teamOwner.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "teamOwnerUserId", team.getOwnerUserId().getId());

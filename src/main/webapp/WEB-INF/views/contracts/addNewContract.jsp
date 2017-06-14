@@ -1098,6 +1098,15 @@ function contractTypeLabels(){
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
 		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
@@ -1127,9 +1136,27 @@ function contractTypeLabels(){
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
 		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		$('#orgRelationId').removeAttr('data-validation');
 		$('#orgRelationId').attr('data-validation-optional',"true");
 		$('#vendorContact').removeAttr('data-validation');
@@ -1155,6 +1182,15 @@ function contractTypeLabels(){
 		getRequirements("Client SOW");
 	}
 	if(contractType == "Vendor SOW"){
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
@@ -1180,6 +1216,15 @@ function contractTypeLabels(){
 		getRequirements("Vendor SOW");
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		//$('#percentageRewardValue').removeAttr('data-validation');
 		//$('#flatRewardValue').removeAttr('data-validation');
 		$('#invoiceFrequency').removeAttr('data-validation');
@@ -1251,6 +1296,15 @@ function contractTypeLabels(){
 		
 	}
 	if(contractType == "Full time offer"){
+		$('#candiFlatReward').removeAttr('data-validation-optional');
+		$('#candiFlatReward').attr('data-validation',"required validate_int validate_length length1-8");
+		
+		$('#candiRateType').removeAttr('data-validation-optional');
+		$('#candiRateType').attr('data-validation',"required");
+		
+		$('#candiRatePer').removeAttr('data-validation-optional');
+		$('#candiRatePer').attr('data-validation',"required");
+		
 		$('#clientOrgRelationId').removeAttr('data-validation');
 		$('#clientOrgRelationId').attr('data-validation-optional',"true");
 		$('#clientContact').removeAttr('data-validation');
@@ -1267,11 +1321,11 @@ function contractTypeLabels(){
 		$('#vendorContact').attr('data-validation-optional',"true");
 		
 		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').removeAttr('data-validation');
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
 		$('#taxFlatRewardValue').removeAttr('data-validation');
-		
 		
 		$('#invoiceFrequency').attr('data-validation-optional',"true");
 		$('#paymentFrequency').attr('data-validation-optional',"true");

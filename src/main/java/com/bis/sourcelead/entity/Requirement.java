@@ -434,6 +434,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Transient
 	private Integer vendorOfferedCount;
 	
+	@Transient
+	private Long referId;
+	
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -1449,6 +1452,17 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	{
 		this.vendorOfferedCount = vendorOfferedCount;
 	}
+
+	public Long getReferId()
+	{
+		return referId;
+	}
+
+	public void setReferId(Long referId)
+	{
+		this.referId = referId;
+	}
+
 
 	
 

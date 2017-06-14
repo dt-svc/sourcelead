@@ -78,13 +78,26 @@
 					</div>
 					<div class="clearfix"></div>
 				</div>
+				
+				
+<c:if test="${SourceLeadWeb_candidateOnBoarding.managerUserId != null}">
+		<h4>Manager</h4>
+        <div class="welMana">
+			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWeb_managerUserId}'/>"></img>
+			<span>
+				<b><u>Name</u>: ${SourceLeadWeb_managerName}</b>
+			</span>
+			<div class="clearfix"></div>
+        </div>
+        <br>
+</c:if>				
 		
 <c:if test="${SourceLeadWeb_candidateOnBoarding.teamId != null}">
-		<h4>Manager</h4>
+		<h4>Team Owner</h4>
         <div class="welMana">
 			<img onerror="predefineProfileImage(this);" class='m-t-xs' src="<c:url value='${sourceleadUrl}/displayOnboardingUserImage/${SourceLeadWeb_teamOwnerUserId}'/>"></img>
 			<span>
-				<b><u>Name</u>: ${SourceLeadWeb_managerName}</b>
+				<b><u>Name</u>: ${SourceLeadWeb_teamOwnerName}</b>
 				<b><u>Role</u>: ${SourceLeadWeb_teamOwnerRole}</b>
 				<b><u>Team</u>: <a href="javascript:void(0)">${SourceLeadWeb_teamName}</a> 
 				</b>

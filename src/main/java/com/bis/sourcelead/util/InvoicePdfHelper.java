@@ -173,6 +173,8 @@ public class InvoicePdfHelper {
 					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
 					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+					}else{
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 				}else{
 					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
@@ -259,8 +261,9 @@ public class InvoicePdfHelper {
 				p= new Paragraph("Exchange Rate  "  + invoice.getCurrencyCode()  +" 1 = "+invoice.getConvertCurrencyCode()+"   "+  invoice.getExchangeRate(), font12b);
 		        p.setAlignment(Element.ALIGN_RIGHT );
 		        document.add(p);
+		        document.add(Chunk.NEWLINE);
 			}
-			document.add(Chunk.NEWLINE);
+			
 			
 			LineSeparator ls = new LineSeparator();
 			ls.setAlignment(Element.ALIGN_BOTTOM);
@@ -353,6 +356,8 @@ public class InvoicePdfHelper {
 						Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
 						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+						}else{
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
 					}else{
 						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
@@ -411,7 +416,7 @@ public class InvoicePdfHelper {
 					table.addCell(cell);
 					table.addCell(cell);
 					table.addCell(getCell("Sub Total", Element.ALIGN_CENTER, font10b));
-					table.addCell(getCell(" " + countryCurrency  +  invoice.getSubTotal(), Element.ALIGN_CENTER, font10b));
+					table.addCell(getCell(countryCurrency + " "+  invoice.getSubTotal(), Element.ALIGN_CENTER, font10b));
 				
 				document.add(table);
 				
@@ -423,6 +428,7 @@ public class InvoicePdfHelper {
 		        document.add(p);
 				document.add(Chunk.NEWLINE);
 				
+				if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
 				p= new Paragraph("Conversion From  "  + invoice.getCurrencyCode()  + "   "+ invoice.getTotal(), font12b);
 	            p.setAlignment(Element.ALIGN_RIGHT );
 		        document.add(p);
@@ -437,7 +443,7 @@ public class InvoicePdfHelper {
 		        p.setAlignment(Element.ALIGN_RIGHT );
 		        document.add(p);
 				document.add(Chunk.NEWLINE);
-				
+				}
 				LineSeparator ls = new LineSeparator();
 				ls.setAlignment(Element.ALIGN_BOTTOM);
 				document.add(new Chunk(ls));
@@ -586,8 +592,14 @@ public class InvoicePdfHelper {
 			return table;
 	}
 	
-	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception {
-		String[] headers = Constants.BILLING_HEADERS;
+	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType) throws Exception {
+		
+		String[] headers = null;
+		if(Constants.Payables.equalsIgnoreCase(invoiceType)){
+		 headers = Constants.BILLING_PAYABLE_HEADERS;
+		}else{
+		 headers = Constants.BILLING_HEADERS;
+		}
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	    
@@ -607,8 +619,8 @@ public class InvoicePdfHelper {
 
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
-	        StringBuilder sbReqStyle = new StringBuilder();
-	        sbReqStyle.append(orgName).append(" ").append(Constants.BILLING);
+//	        StringBuilder sbReqStyle = new StringBuilder();
+//	        sbReqStyle.append(orgName).append(" ").append(Constants.BILLING);
 
 	        StringBuilder orgNameSB = new StringBuilder();
             Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append(Constants.BILLING).toString(),boldFont);
@@ -626,7 +638,12 @@ public class InvoicePdfHelper {
 	        document.add(orderedList);
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
-	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
+            PdfPCell cell1 = null;
+            if(Constants.Payables.equalsIgnoreCase(invoiceType)){
+	         cell1 = new PdfPCell(new Phrase(Constants.BILLING_LIST,font));
+            }else{
+             cell1 = new PdfPCell(new Phrase(Constants.INVOICE_LIST,font));
+            }
 	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
@@ -636,7 +653,7 @@ public class InvoicePdfHelper {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
 	            cell.setGrayFill(0.9f);
-	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
 	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
 	            cell.setBackgroundColor(myColor);
 	            table.addCell(cell);
@@ -713,8 +730,8 @@ public class InvoicePdfHelper {
 			billingArray[1] = "--";
 	}
 	
-	
-	if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
 		StringBuilder contactName = new StringBuilder();
 		billingArray[2] = contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString();
 	}else if(null != invoice.getContactUser().getFirstName()){
@@ -722,25 +739,37 @@ public class InvoicePdfHelper {
 	}else{
 		billingArray[2] = "--";
 	}
-	if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
+	}else{
+		billingArray[2] = "--";
+	}
+	
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
 		billingArray[3] = invoice.getContactUser().getEmail(); 
 	}else{
 		billingArray[3] =  "--";
 	}
+	}else{
+		billingArray[3] = "--";
+	}
 
-	if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
-		billingArray[4] = invoice.getContactUser().getMobilePhone();
+	if(null != invoice.getContactUser()){
+		if(invoice.getContactUser().getMobilePhone() != null && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
+			billingArray[4] = invoice.getContactUser().getMobilePhone();
+		}else{
+			billingArray[4] = "--";	
+		}
 	}else{
 		billingArray[4] = "--";
 	}
 	
-	if(null != invoice.getInvoiceDate() && !"".equalsIgnoreCase(invoice.getInvoiceDate().toString())){
+	if(null != invoice.getInvoiceDate()){
 		billingArray[5] = invoice.getInvoiceDate().toString();
 	}else{
 		billingArray[5] = "--";
 	}
 	
-	if(null != invoice.getDueDate() && !"".equalsIgnoreCase(invoice.getDueDate().toString())){
+	if(null != invoice.getDueDate()){
 		billingArray[6] = invoice.getDueDate().toString();  
 	}else{
 		billingArray[6] = "--";

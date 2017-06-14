@@ -72,7 +72,7 @@ public class PdfUtil {
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
-			String userState, String orgName) throws IOException{
+			String userState, String orgName) throws Exception{
 		String[] headers = Constants.USER_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -181,31 +181,32 @@ public class PdfUtil {
 	/**
 	 * Prepares Array to store data into the Pdf Table
 	 * @param headers 
+	 * @param orgLocations 
 	 * @param userRole
 	 * @return
+	 * @throws Exception 
 	 */
-	private String[] prepareUserStringArray(UserRole userRoles, String[] headers) {
+	private String[] prepareUserStringArray(UserRole userRoles, String[] headers) throws Exception {
 		String userArray[] = new String[headers.length];
-		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
-		 for(Employees emp : employeeSet){
-			 if(emp.getEmployeeId() !=null){
-				 userArray[0] = emp.getEmployeeId();
+		//Set<Employees> employeeSet = userRoles.getUser().getEmployee();
+		  Employees empl = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
+			 if(empl.getEmployeeId() !=null){
+				 userArray[0] = empl.getEmployeeId();
 			 }else{
 				 userArray[0] = "--";
 			 }
-			 if(emp.getHireDate() !=null){
-				 String dateOfJoin = Constants.DF_YMD.format(emp.getHireDate());
+			 if(empl.getHireDate() !=null){
+				 String dateOfJoin = Constants.DF_YMD.format(empl.getHireDate());
 				 userArray[5] = dateOfJoin;
 			 }else{
 				 userArray[5] = "--";
 			 }
-			 if(emp.getRate() !=null && !"".equalsIgnoreCase(emp.getRate())){
+			 if(empl.getRate() !=null && !"".equalsIgnoreCase(empl.getRate())){
 				 StringBuilder ratePerSB = new StringBuilder();
-				 userArray[6] = ratePerSB.append(emp.getRate()).append("/").append(emp.getRatePer()).toString();
+				 userArray[6] = ratePerSB.append(empl.getRate()).append("/").append(empl.getRatePer()).toString();
 			 }else{
 				 userArray[6] = "--";
 			 }
- 	    } 
 		   if(userRoles.getUser().getFirstName() !=null){
 			   userArray[1] = userRoles.getUser().getFirstName();
 		   }else{
