@@ -188,7 +188,7 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
-						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'} field-name="Start Date" readonly="readonly">
+						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
 						</div>
 					  </div>
 					  <div class="col-lg-6">
