@@ -350,4 +350,17 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		return employeesList;
 	}
 
+	@Override
+	@Transactional
+	public Employees getEmployeByUserIdAndOrgRelationId(Long userId, Long orgRelationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.user left join fetch emp.orgLocations left join fetch emp.orgRelationId where emp.user.id = :userId and  emp.orgRelationId.id= :orgRelationId");
+		Employees employee = null;
+		List<Employees> employeesList = employeesListQuery.setLong("userId", userId).setLong("orgRelationId", orgRelationId).setCacheable(true).list();
+		if(employeesList != null && employeesList.size() >0){
+			employee = employeesList.get(0);
+		}
+		return employee;
+	}
+
 }

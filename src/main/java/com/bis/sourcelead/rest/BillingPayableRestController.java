@@ -31,10 +31,12 @@ import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.InvoiceLineItemService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.InvoiceTaxService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -65,6 +67,9 @@ public class BillingPayableRestController {
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	private UserService userService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -130,13 +135,40 @@ public class BillingPayableRestController {
 		    	
 		    	for(InvoiceLineItems lineItems : invoiceLineItemsList){
 		    		StringBuilder sb = new StringBuilder();
-		    		Candidate candidate = candidateService.getCandidateByCandidateId(lineItems.getCandidate().getId());
+		    		if(lineItems.getCandidate() !=null){
+		    			Candidate candidate = candidateService.getCandidateByCandidateId(lineItems.getCandidate().getId());
+		    			if(null != candidate.getLastName()){
+			    			sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
+		    			  }else{
+			    			sb.append(candidate.getFirstName());
+		    			 }
+		    			lineItems.setCandidateId(lineItems.getCandidate().getId());
+		    			
+		    			if(null != lineItems.getContract()){
+			    			lineItems.setContractId(lineItems.getContract().getId());
+			    			lineItems.setSowContractName(lineItems.getContract().getContractTitle());
+			    			String contractType = "";
+			    			if(Constants.RECEIVABLE.equalsIgnoreCase(invoice.getInvoiceType())){
+			    				contractType = "clientSow";
+			    			}else{
+			    				contractType = "vendorSow";
+			    			}
+			    			List<Contracts> contractList = getSowContract(candidate.getId(),lineItems.getOrgLocation(),invoice.getOrgRelationID().getId(),"contractType");
+			    			lineItems.setContractList(contractList);
+			    			//if(null != contractList && contractList.size() >0){
+//								projectMember.setContractsList(contractList);
+//							}
+			    		}
+		    		}else{
+		    			User user = userService.getUserById(lineItems.getUser().getId());
+		    			if(null != user.getLastName()){
+			    			sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+		    			  }else{
+			    			sb.append(user.getFirstName());
+		    			 }
+		    			lineItems.setUserId(lineItems.getUser().getId());
+		    		}
 		    		
-		    		if(null != candidate.getLastName()){
-		    			sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
-	    			  }else{
-		    			sb.append(candidate.getFirstName());
-	    			 }
 		    		
 		    		if(null != lineItems.getStartDate()){
 		    			lineItems.setStartDateStr(Constants.DMY.format(lineItems.getStartDate()));
@@ -147,23 +179,9 @@ public class BillingPayableRestController {
 		    		}
 		    		
 		    		lineItems.setCandidateName(sb.toString());
-		    		lineItems.setCandidateId(lineItems.getCandidate().getId());
 		    		
-		    		if(null != lineItems.getContract()){
-		    			lineItems.setContractId(lineItems.getContract().getId());
-		    			lineItems.setSowContractName(lineItems.getContract().getContractTitle());
-		    			String contractType = "";
-		    			if("Receivable".equalsIgnoreCase(invoice.getInvoiceType())){
-		    				contractType = "clientSow";
-		    			}else{
-		    				contractType = "vendorSow";
-		    			}
-		    			List<Contracts> contractList = getSowContract(candidate.getId(),lineItems.getOrgLocation(),invoice.getOrgRelationID().getId(),"contractType");
-		    			lineItems.setContractList(contractList);
-		    			//if(null != contractList && contractList.size() >0){
-//							projectMember.setContractsList(contractList);
-//						}
-		    		}
+		    		
+		    	
 		    		lineItemsList.add(lineItems);
 		    	}
 		    	if(null != invoice.getProjectID()){
