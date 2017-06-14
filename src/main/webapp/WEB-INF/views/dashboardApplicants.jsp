@@ -9,6 +9,9 @@
           </h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data filter_position">
+         <div class="success_pop" id="selector4" style="display: none;">
+  		<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>
+   		 </div>
             <ul class="nav nav-tabs">
               <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Request Sent</a></li>
               <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
@@ -96,7 +99,7 @@ function ApplicantAuthorization(status){
                                     	    resultToday  = resultToday + '<td><div>'+report.submissionRateStatus+'</div></td>';
                                     	    resultToday = resultToday +"<td>";
                                     	    if(report.submissionRateStatus == 'REQUEST'){
-                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Accept"  onClick="acceptRejectCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
+                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
                                     	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
                                     	    }
                                     	    resultToday = resultToday +"</td>";
@@ -176,6 +179,49 @@ function rejectApplicantAlertMessage(submissionId, status){
 }
 </script>
 
+
+<script type="text/javascript">
+    function acceptCandidateFromDashboard(submissionId, status){
+             var sourceleadUrl = '${sourceleadUrl}';
+             var reason;
+             if ($('#rejectReason').length)
+             {
+                 reason = document.getElementById("rejectReason").value;
+             }
+             else
+             {
+                 reason = '';
+             }
+             $.ajax({
+                     type : "POST",
+                     url : sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status+"&reason="+reason,
+                     success : function(result) {
+                                 if( result.indexOf('Sign In') >= 0){
+                                    location.replace(sourceleadUrl);
+                                 }
+                                 else if (result.indexOf('exception') >= 0) {
+                                     location.replace(sourceleadUrl+"/errorPage");
+                                 }
+                                 else{
+                                     ApplicantAuthorization('requestSent');
+                                    /*  $('#accpet-div').fadeOut();
+                                     $('#reject').fadeOut(); */
+								 if(status=='accept'){
+			            				 
+			            				 $("#selector4").removeAttr("style");
+					            			$("#selector4").css({ display: "block" });
+				            				$("#eduMsgDiv").html("Accepted");
+					               			eduMsgFadeinFunction();
+					               				 
+			            				 
+			            				 
+			            			 }
+                                 }
+                     },
+                });
+    }
+</script>
+
 <script>
 function getRejectedCategory(){
 	var rejectedCategory = document.getElementById("rejectedCategory").value;
@@ -194,7 +240,12 @@ function getRejectedCategory(){
 	
 }
 </script>
-
+<script>
+	function eduMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <%-- 
      @author : Venkat Kesav
@@ -259,7 +310,20 @@ function cancelAlert(){
 			            			 ApplicantAuthorization('requestSent');
 			            			/*  $('#accpet-div').fadeOut();
 			            			 $('#reject').fadeOut(); */
+			            			 if(status=='rejected'){
+			            			 
+				            			$("#selector4").removeAttr("style");
+				            			$("#selector4").css({ display: "block" });
+			            				$("#eduMsgDiv").html("Rejected");
+				               			eduMsgFadeinFunction();
+				               			
+			            			 }
+			            			 
+			            			
 			            		 }
+								 
+								 
+								 
 					 },
 				}); 
 		 }

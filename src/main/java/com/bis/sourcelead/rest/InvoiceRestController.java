@@ -732,6 +732,7 @@ public class InvoiceRestController {
 					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
+				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
 					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if(null != candidate){
@@ -1306,7 +1307,7 @@ public class InvoiceRestController {
 			File file= null;
 			String convertedExportStartDate = conversionUtil.getDateAsString(startDateUTC);
 			String convertedExportEndDate = conversionUtil.getDateAsString(endDateUTC);
-			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrg().getOrgName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate);
+			file = invoiceService.getExportBillingFile(invoiceList,orgLocations.getOrg().getOrgName(),exportType,totalStagesAmount,convertedExportStartDate,convertedExportEndDate,invoiceType);
 	
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {

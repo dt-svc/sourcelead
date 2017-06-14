@@ -39,6 +39,10 @@ public class InvoiceLineItems {
 	private Candidate candidate;
 	
 	@ManyToOne
+	@JoinColumn(name = "USER_ID", nullable = false)
+	private User user;
+	
+	@ManyToOne
 	@JoinColumn(name = "CONTRACT_ID", nullable = false)
 	private Contracts contract; 
 	
@@ -366,5 +370,14 @@ public class InvoiceLineItems {
 	{
 		this.contractList = contractList;
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 	
 }

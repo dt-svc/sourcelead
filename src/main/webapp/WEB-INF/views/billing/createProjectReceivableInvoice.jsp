@@ -395,6 +395,7 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
              result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
+             result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
              result = result +' </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
