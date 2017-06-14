@@ -29,7 +29,7 @@
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getCandidateList();
+	getDayWiseReports();
 	}
 </script>
 
@@ -310,10 +310,10 @@ function toDate(selector) {
 				<span><i class="fa fa-users"></i></span><b>${candidateCount}</b>
 			</li>
 			
-			
-			<li title="Associates" class="colorTwo">
+<!-- 			commented by pavan jampana -->
+			<%-- <li title="Associates" class="colorTwo">
 				<span><i class="fa fa-file-text"></i></span><b>${consultantCount}</b>
-			</li>
+			</li> --%>
 			
 			<div class="clearfix"></div>
 		</ul>

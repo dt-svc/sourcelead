@@ -312,7 +312,13 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 							}
 						}
 						applicantReport.setRequirementTitle(reqSub.getRequirement().getJobTitle());
-						applicantReport.setApplicantName(reqSub.getCandidate().getFirstName());
+						if(reqSub.getCandidate().getLastName() != null && !"".equalsIgnoreCase(reqSub.getCandidate().getLastName())){
+							StringBuilder sb = new StringBuilder();
+							applicantReport.setApplicantName(sb.append(reqSub.getCandidate().getFirstName()).append(" ").append(reqSub.getCandidate().getLastName()).toString());
+						}else{
+							applicantReport.setApplicantName(reqSub.getCandidate().getFirstName());
+						}
+						
 						applicantReport.setSubmissionDate(submissionDate);
 						applicantReport.setShortlistDate(shortlistDate);
 						applicantReport.setInterviewDate(interviewDate);
@@ -1057,11 +1063,14 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 			}
 		
 		String client = null;
-		String clientids = "{" + jsonData + "}";
-		JSONObject jsonObj = new JSONObject(clientids);
-		if(jsonObj.has("client")){
-			client = jsonObj.getString("client");
+		if(jsonData != null){
+			String clientids = "{" + jsonData + "}";
+			JSONObject jsonObj = new JSONObject(clientids);
+			if(jsonObj.has("client")){
+				client = jsonObj.getString("client");
+			}
 		}
+		
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(orgLocation.getId(), client,filterDate,startDateUTC,endDateUTC);
 			
 			ArrayList<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();

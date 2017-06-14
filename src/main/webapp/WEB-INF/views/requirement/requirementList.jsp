@@ -529,7 +529,7 @@ function pagination(){
 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
