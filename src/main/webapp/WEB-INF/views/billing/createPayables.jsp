@@ -17,6 +17,12 @@
 .inline_field, .inline_field:focus {
 	width:100px !important; text-align:center;
 }
+.timesheet_week_comm .form-group {
+margin-bottom: 0;
+}
+.timesheet_week_comm.invoiceDocs_add span .fa-times {
+    margin: 6px;
+}
 </style>
 
 
@@ -225,7 +231,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>SOW</th>';
-		 result = result +'  <th>Rate</th>';
+		 result = result +'  <th>Rate Hourly</th>';
 		 result = result +'  <th>Total Hours</th>';
 		 result = result +'  <th>Amount</th>';
 		 result = result +'  <th><i class="fa fa-remove"></i></th>';
@@ -236,7 +242,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
+		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -1531,15 +1537,15 @@ function calculateTaxDiscount(){
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
-			        $("#"+i+"taxTotal").val(first);
+			        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    	}
 		    	
 		    }
 		    
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
-		        first = parseFloat(perCentValue.toFixed(2));
-		        $("#"+i+"taxTotal").val(first);
+		        first = parseFloat(perCentValue);
+		        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    }   
 		}
 	}
@@ -1719,7 +1725,7 @@ function getVendorContacts(vendorContactId){
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
-		if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
+		if(vendorContactId == null || vendorContactId == '' || vendorContactId == 'undefined'){
 			buildLineItemAndTaxAddRows();
 		}
 	},

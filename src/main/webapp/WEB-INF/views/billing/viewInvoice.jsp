@@ -250,7 +250,7 @@ function getViewInvoice(){
 					result = result +'                     <th>Associates</th>                                        ';
 					result = result +'                     <th>SOW/PO</th>                                          ';
 					result = result +'                     <th>Date</th>                                             ';
-					result = result +'                     <th>Rate</th>                                             ';
+					result = result +'                     <th>Rate Hourly</th>                                             ';
 					result = result +'                     <th>Total Hours</th>                                      ';
 					result = result +'                     <th>Total Amount</th>                                     ';
 					result = result +'                 </tr>                                                         ';
