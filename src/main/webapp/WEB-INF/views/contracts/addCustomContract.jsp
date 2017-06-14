@@ -991,6 +991,15 @@ function contractTypeLabels(){
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
 		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Vendor MSA"){
@@ -1019,6 +1028,16 @@ function contractTypeLabels(){
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
+		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -1041,6 +1060,16 @@ function contractTypeLabels(){
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
+		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Client SOW");
@@ -1065,6 +1094,16 @@ function contractTypeLabels(){
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
+		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
+		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Vendor SOW");
@@ -1105,7 +1144,14 @@ function contractTypeLabels(){
 		/* $('#vendorContact').removeAttr('data-validation');
 		$('#vendorContact').attr('data-validation-optional',"true"); */
 		
+		$('#candiFlatReward').removeAttr('data-validation');
+		$('#candiFlatReward').attr('data-validation-optional',"true");
 		
+		$('#candiRateType').removeAttr('data-validation');
+		$('#candiRateType').attr('data-validation-optional',"true");
+		
+		$('#candiRatePer').removeAttr('data-validation');
+		$('#candiRatePer').attr('data-validation-optional',"true");
 		
 		$('#requirementsList').removeAttr('data-validation');
 		$('#requirementsList').attr('data-validation-optional',"true");
@@ -1197,6 +1243,16 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
+		$('#candiFlatReward').removeAttr('data-validation-optional');
+		$('#candiFlatReward').attr('data-validation',"required validate_int validate_length length1-8");
+		
+		$('#candiRateType').removeAttr('data-validation-optional');
+		$('#candiRateType').attr('data-validation',"required");
+		
+		$('#candiRatePer').removeAttr('data-validation-optional');
+		$('#candiRatePer').attr('data-validation',"required");
+		
 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
