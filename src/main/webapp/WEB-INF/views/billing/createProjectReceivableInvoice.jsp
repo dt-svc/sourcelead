@@ -375,7 +375,7 @@ function populateInlineItemsGrid(data){
             result = result +' <th>Date</th>';
             result = result +' <th>Candiate</th>';
             result = result +' <th>SOW / PO</th>';
-            result = result +' <th>Rate</th>';
+            result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
             result = result +' <th>Amount</th>';
             result = result +' </tr>';
@@ -432,7 +432,7 @@ function populateInlineItemsGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="4"></td>';
         result = result +'<td><strong>Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +' </tr>';
         result = result +' </tfoot> ';
         result = result +' </tbody>';
@@ -580,7 +580,7 @@ function populateInlineItemsGrid1(data){
     result = result +' <tr>';
     result = result +' <td colspan="4"></td>';
     result = result +'<td><strong>Total</strong></td>';
-    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
     result = result +' </tfoot> ';
     result = result +' </tbody>';
@@ -1096,15 +1096,15 @@ function calculateTaxDiscount(){
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
-			        $("#"+i+"taxTotal").val(first);
+			        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    	}
 		    	
 		    }
 		    
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
-		        first = parseFloat(perCentValue.toFixed(2));
-		        $("#"+i+"taxTotal").val(first);
+		        first = parseFloat(perCentValue);
+		        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    }   
 		}
 	}
@@ -1278,8 +1278,11 @@ var validationSettings = {
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-					 errInvoiceDate(); 
-					 getDueDateByFrequency();
+				var dt = toDate("#invoiceDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#dueDate").datepicker("option", "minDate", dt);
+						errInvoiceDate();
+						getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1287,14 +1290,22 @@ var validationSettings = {
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				errDueDate(); 
+				var dt = toDate("#dueDate");
+				dt.setDate(dt.getDate() - 1);
+				$("#invoiceDate").datepicker("option", "maxDate", dt);
+					errDueDate();
 				
 			}
 		});
 		
 	});
 </script>
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
