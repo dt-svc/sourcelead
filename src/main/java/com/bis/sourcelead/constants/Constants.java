@@ -603,6 +603,8 @@ public class Constants {
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
 			"Amount" , "Status"  , "Approved by"};
+	
+	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense","purpose","Project","Client","Start Date","End Date","No of Exp","Amount","Status"};
 
 
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
