@@ -291,7 +291,7 @@ function portletListFilter(requirementStatus){
 		        	  if(report.submissionStatus != null && report.submissionStatus != '' && report.submissionStatus != 'undefined'){
 		        		  submissionStatus = report.submissionStatus;
 		        	  }else{
-		        		  submissionStatus = "--"
+		        		  submissionStatus = "NEW"
 		        	  }
 		        	   result = result +'         <tr>';
 		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
@@ -340,7 +340,7 @@ function rejectedPagenatio(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

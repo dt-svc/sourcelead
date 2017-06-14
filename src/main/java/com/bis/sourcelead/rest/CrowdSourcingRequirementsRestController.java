@@ -1818,6 +1818,11 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementRateType(rr.getRequirementId().getRateType());
 						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
 						
+						RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
+						if(null != rs){
+							rr.setSubmissionStatus(rs.getSubmissionStatus().toString());	
+						}
+						
 						StringBuilder referredUser = new StringBuilder();
 						if(null != rr.getReferFromUser().getLastName()){
 							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).append(" ").append(rr.getReferFromUser().getLastName()).toString());	
