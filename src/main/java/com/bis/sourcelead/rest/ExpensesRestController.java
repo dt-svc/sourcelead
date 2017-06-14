@@ -151,14 +151,14 @@ public class ExpensesRestController {
 	@RequestMapping(value = "/exportAllMyExpensesList")
 	 public void exportAllMyExpensesList(HttpServletRequest request,HttpServletResponse response,
 			 @RequestParam(value = "type", required = false) String type,
-			 @RequestParam(value = "expenseStatus", required = false) String expenseStatus) throws Exception {
+			 @RequestParam(value = "expenseStatus", required = false) String expenseStatus,
+			 @RequestParam(value="startDate", required=false) String startDate,
+			 @RequestParam(value="endDate", required=false) String endDate) throws Exception {
 		
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String startDate = null;
-		String endDate = null;
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus, startDate, endDate);
 		if(expensesList != null && expensesList.size() > 0){
 			for(Expenses ex:expensesList){

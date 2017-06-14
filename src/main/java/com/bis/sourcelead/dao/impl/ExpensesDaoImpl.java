@@ -92,7 +92,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		*/
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+startDateSubQuery+" ";
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" ";
 		params.put("loginUserId",loginUserId);
 		params.put("orgLocId",orgLocId);
 		

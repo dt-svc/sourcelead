@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -8,7 +9,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalDao {
 
-	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long approverUserId, Long orglocationId, String expenseStatus);
+	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long approverUserId, Long orglocationId, String expenseStatus, Date startDateUTC, Date endDateUTC);
 	
    ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId) throws Exception;
 	
