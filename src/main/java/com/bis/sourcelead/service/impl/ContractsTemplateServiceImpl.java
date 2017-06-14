@@ -225,7 +225,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		
-		if(multiFile != null){
+		if(multiFile != null && multiFile.getBytes() != null && !"".equalsIgnoreCase(multiFile.getOriginalFilename())){
 			contracts.setDocFile(multiFile.getBytes());
 			contracts.setFileName(multiFile.getOriginalFilename());
 			contracts.setFileType(multiFile.getContentType());
@@ -1677,7 +1677,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		
-		if(multiFile != null){
+		if(multiFile != null && multiFile.getBytes() != null && !"".equalsIgnoreCase(multiFile.getOriginalFilename())){
 			contracts.setDocFile(multiFile.getBytes());
 			contracts.setFileName(multiFile.getOriginalFilename());
 			contracts.setFileType(multiFile.getContentType());

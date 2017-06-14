@@ -754,7 +754,7 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
+			 					rate = requirements.rate+" "+requirements.currentRateCurrency+" / "+requirements.rateType;
 			 				}else{
 			 					rate = '--';
 			 				}
@@ -770,7 +770,15 @@ function requirementsList(offset){
 			 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 			 				result = '<section class="openCta" id="job'+requirements.requirementUUID+'">';
 			 				result = result +'<div class="OpenJob">';
-			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 				
+			 				if(requirements.referUUID != null && requirements.referUUID != 'undefined'){
+			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 				}else{
+			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					
+			 				}
+			 				
+			 				
 			 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
@@ -1608,13 +1616,13 @@ $('body').on('submit', '#referToContacts', function(e){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var email = document.getElementById('email').value; 
 	  if(email != null && email != ''){
-		  $("#submit_refer").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
 		       url: sourceleadUrl+"/validateReferedEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
+					    	 $("#submit_refer").attr("disabled", "disabled");
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is already refered</span>");
 			    				$('input#email').attr('record-exist','yes');
@@ -1622,6 +1630,7 @@ $('body').on('submit', '#referToContacts', function(e){
 					     } 
 					     
 					     else if(data == 'Invalid Email'){
+					    	 $("#submit_refer").attr("disabled", "disabled");
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $("input#email").after("<p class='jquery_form_error_message'> you can't refer user self</span>");
 			    				$('input#email').attr('record-exist','yes');
