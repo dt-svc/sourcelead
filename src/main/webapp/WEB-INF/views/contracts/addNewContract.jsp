@@ -1554,7 +1554,6 @@ function hideCommonSOWFields(){
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 	         success :function(data) {
-	        	 
 		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 		            	  var json = JSON.parse(data);
 		            	  document.getElementById("offerRateDiv").style.display="block";
