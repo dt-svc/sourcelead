@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +27,14 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -71,11 +72,36 @@ public class ExpensesServiceImpl implements ExpensesService{
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private TimeZoneService timeZoneService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
 	@Override
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus) {
-		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(), expenseStatus);
+	public List<Expenses> getAllExpenses(OrgLocations orgLoc,User loginUser, String expenseStatus, String startDate, String endDate) throws Exception {
+			Date endDateUTC = null;
+			Date startDateUTC = null;
+			
+			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+			if(StringUtils.isNotEmpty(startDate)){
+				Date startTime = commonUtil.getDateFormat(startDate);
+				String customStartTimeStr = TZ_DF_CSD.format(startTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+			}
+			
+			if(StringUtils.isNotEmpty(endDate)){
+				Date endTime = commonUtil.getDateFormat(endDate);
+				String customEndTimeStr = TZ_DF_CED.format(endTime);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				endDateUTC = TZ_DF_TS.parse(endDateString);
+			}
+		
+		List<Expenses> expensesList =  expensesDao.getAllExpenses(orgLoc.getId(),loginUser.getId(), expenseStatus, startDateUTC, endDateUTC);
 
 		return expensesList;
 
