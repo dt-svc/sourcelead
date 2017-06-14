@@ -173,6 +173,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private String feedbackDate;
 	
 	@Transient
+	private String submissionStatus;
+	
+	@Transient
 	private String proposeTimeStatus;
 	
 	public String getCandidateEmail() {
@@ -562,5 +565,13 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setProposeTimeStatus(String proposeTimeStatus) {
 		this.proposeTimeStatus = proposeTimeStatus;
+	}
+
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
 	}
 }

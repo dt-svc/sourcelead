@@ -133,7 +133,7 @@ public class Contracts {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
 	private RequirementSubmission requirementSubmission;
 	
@@ -285,7 +285,20 @@ public class Contracts {
 	@Transient
 	private String empName;
 	
+	@Transient
+	private String tempUUID;
 	
+	
+	public String getTempUUID()
+	{
+		return tempUUID;
+	}
+
+	public void setTempUUID(String tempUUID)
+	{
+		this.tempUUID = tempUUID;
+	}
+
 	public String getEmpName()
 	{
 		return empName;

@@ -42,6 +42,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 </select>
               </div>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+               <input type="hidden" name="clientCurrency" id="clientCurrency">
             </div>
               
             <div class="form-group">
@@ -210,20 +211,9 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                     <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli"></span></div>
               </div>
               
-              
-               <!-- New Div for currency conversion: srinivas l -->
-                  <div class="row">
-                    <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">
-                   
-                   <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>
-                   
-                      <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>
-	              <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>
-	                  
-                   
-                     </div>
-                   </div>
-                 <!-- New Div for currency conversion: srinivas l -->
+             <!--  Added Rajashekar -->
+                <div id="conversionId"></div>
+                  <!--  End Rajashekar -->
               
               </div>
           </div>
@@ -264,6 +254,7 @@ function getClientContacts(){
 	// need to use in edit
 	//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
 	output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+"</option>";
+	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
@@ -384,7 +375,7 @@ function populateInlineItemsGrid(data){
             result = result +' <th>Date</th>';
             result = result +' <th>Candiate</th>';
             result = result +' <th>SOW / PO</th>';
-            result = result +' <th>Rate</th>';
+            result = result +' <th>Rate Hourly</th>';
             result = result +' <th>Total Hours</th>';
             result = result +' <th>Amount</th>';
             result = result +' </tr>';
@@ -441,7 +432,7 @@ function populateInlineItemsGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="4"></td>';
         result = result +'<td><strong>Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
         result = result +' </tr>';
         result = result +' </tfoot> ';
         result = result +' </tbody>';
@@ -454,7 +445,8 @@ function populateInlineItemsGrid(data){
         document.getElementById("bottomGrid").style.display="block";
         document.getElementById("lineItemAddRows").style.display="block";
         document.getElementById("tableBody").style.display="block";
-        addTaxDivs();    
+        addTaxDivs();   
+        addConversionDiv();
         /* getSow(); */
     }else{
         document.getElementById("bottomGrid").style.display="none";
@@ -468,7 +460,24 @@ function populateInlineItemsGrid(data){
 }
 </script>
 
-
+<script>
+function addConversionDiv(){
+	var clientCurrency = $("#clientCurrency").val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	if(clientCurrency != currencyCode){
+		var result = "";
+		result = result +' <div class="row">';
+		result = result +' <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode"></span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+		result = result +'  </div>';
+		result = result +'  </div>';
+		$("#conversionId").empty();
+		$("#conversionId").append(result);
+	}
+}
+</script>
 
 <script type="text/javascript">
 function alertMessageInReceivable(){
@@ -571,7 +580,7 @@ function populateInlineItemsGrid1(data){
     result = result +' <tr>';
     result = result +' <td colspan="4"></td>';
     result = result +'<td><strong>Total</strong></td>';
-    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+    result = result +' <td><div class="tblminwidth-150"> <span class="pull-left paddingRight">'+currencyCode+'</span> <input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
     result = result +' </tr>';
     result = result +' </tfoot> ';
     result = result +' </tbody>';
@@ -585,6 +594,7 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("tableBody").style.display="block";
 	
     addTaxDivs();
+    addConversionDiv();
     /* getSow(); */
 }
 </script>
@@ -1086,15 +1096,15 @@ function calculateTaxDiscount(){
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
-			        $("#"+i+"taxTotal").val(first);
+			        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    	}
 		    	
 		    }
 		    
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
-		        first = parseFloat(perCentValue.toFixed(2));
-		        $("#"+i+"taxTotal").val(first);
+		        first = parseFloat(perCentValue);
+		        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    }   
 		}
 	}
@@ -1268,8 +1278,11 @@ var validationSettings = {
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-					 errInvoiceDate(); 
-					 getDueDateByFrequency();
+				var dt = toDate("#invoiceDate");
+				dt.setDate(dt.getDate() + 1);
+				$("#dueDate").datepicker("option", "minDate", dt);
+						errInvoiceDate();
+						getDueDateByFrequency();
 			}
 		});
 	  $('#dueDate').datepicker({
@@ -1277,14 +1290,22 @@ var validationSettings = {
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
-				errDueDate(); 
+				var dt = toDate("#dueDate");
+				dt.setDate(dt.getDate() - 1);
+				$("#invoiceDate").datepicker("option", "maxDate", dt);
+					errDueDate();
 				
 			}
 		});
 		
 	});
 </script>
-
+<script>
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
 <!-- To Get the Existed invoice details to Edit -->
 <script>
 	function loadInvoiceDetails(invoiceUUID){
@@ -1302,7 +1323,7 @@ var validationSettings = {
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated");
-		           	 
+		           	$("#clientCurrency").val(json['clientCurrency']);
 		           	getClientContactsExisted(json['vendorContactId']);
 		           	getProjectsList(json['projectName']);
 		           	getProjectFrequency(json['invoiceFrequency'],json['id']);

@@ -1591,6 +1591,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 							finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
 							finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));	
 						}
+						finalSah.setTotalHours(0f);
+						finalSah.setBillableHours(0f);
+						finalSah.setNonBillableHours(0f);	
 						count++;	
 				 }
 				 else{
@@ -1626,6 +1629,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 							finalSah.setBillableHours(CommonUtil.getCombinedHours(billableTotalHours, weekBillableTotalHours));
 							finalSah.setNonBillableHours(CommonUtil.getCombinedHours(nonBillableTotalHours,weekNonBillableTotalHours));
 						}
+						finalSah.setTotalHours(0f);
+						finalSah.setBillableHours(0f);
+						finalSah.setNonBillableHours(0f);
 						count++;
 				 }
 				
