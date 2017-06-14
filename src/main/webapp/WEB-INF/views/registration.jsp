@@ -376,7 +376,7 @@ window.onload = function () {
                     <b></b>
                 </div>
                 
-                <div class="col-xs-12 col-md-12 mb10" id="emailDiv">
+                <div class="col-xs-12 col-md-12 mb10" id="recruiterEmailDiv">
                     <i class="fa fa-envelope"></i>
                     <label>Email <span class="text-danger">*</span></label>
                     <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
@@ -551,7 +551,7 @@ function validateEmail(type){
 			$("#register_button").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -559,6 +559,13 @@ function validateEmail(type){
 					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 			    				$('input#email').attr('record-exist','yes');
 			    				$('input#email').attr('record-exist-errorMsg',email+' is Invalid'); 
+					     } 
+					     
+					     else if(data == 'Invalid Domain'){
+					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#email").after("<p class='jquery_form_error_message'>Invalid Domain Name. Domain name should not with org extension</span>");
+			    				$('input#email').attr('record-exist','yes');
+			    				$('input#email').attr('record-exist-errorMsg','Invalid Domain Name'); 
 					     } 
 					     
 				       	else{
@@ -586,11 +593,12 @@ function validateRecruiterEmail(type){
 	
     var email = document.getElementById("recruiterEmail").value;
     var sourceleadUrl ='${sourceleadUrl}';
+    
 		if(email != null && email != ''){
 			$("#recruiter_register").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
-		       url: sourceleadUrl+"/validateCrowdSourcingEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
+		       url: sourceleadUrl+"/validateCrowdSourcingRegistrationEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&type="+type,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
@@ -598,6 +606,13 @@ function validateRecruiterEmail(type){
 					    	    $("input#recruiterEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
 			    				$('input#recruiterEmail').attr('record-exist','yes');
 			    				$('input#recruiterEmail').attr('record-exist-errorMsg',email+' is Invalid'); 
+					     } 
+					     
+					     else if(data == 'Invalid Domain'){
+					    	    $('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+					    	    $("input#recruiterEmail").after("<p class='jquery_form_error_message'>Invalid Domain Name. Domain name should not with org extension</span>");
+			    				$('input#recruiterEmail').attr('record-exist','yes');
+			    				$('input#recruiterEmail').attr('record-exist-errorMsg','Invalid Domain Name'); 
 					     } 
 					     
 				       	else{
@@ -676,7 +691,7 @@ function validatepopRecruiterEmail(type){
 			    				$('input#poprecruiterEmail').attr('record-exist','yes');
 			    				$('input#poprecruiterEmail').attr('record-exist-errorMsg',email+' is Invalid'); 
 					     } 
-					     
+					    
 				       	else{
 				       		 $("#poprecruiter_register").removeAttr("disabled");
 							 $('input#poprecruiterEmail').removeAttr( "record-exist record-exist-errormsg");

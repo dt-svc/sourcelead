@@ -1289,7 +1289,7 @@ function requirementPipeline(requirementId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Requirement List</h2>
+      <h2 class="pull-left paddingRight">Requirement List</h2> <span class="paddingLeft pull-left">|<a class="paddingLeft" href="<c:url value='/professionalRequirements'/>">Crowdsourcing Requirements</a></span>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement List</div>
     	<%-- <div class=" pull-left reportsH">
