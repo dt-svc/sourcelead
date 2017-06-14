@@ -590,9 +590,7 @@ function getPayableInvoiceList(){
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 						'</sec:authorize>';
 					}else{
-						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
-						'</sec:authorize>';
 					}
 					
 
@@ -644,8 +642,13 @@ function getPayableInvoiceList(){
 				result = result +'  </div> ';  
 				
 				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						if(report.paymentStatus == "Paid"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';
+						}else if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+						}
+							
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
@@ -660,8 +663,13 @@ function getPayableInvoiceList(){
 					}
 					
 				}else{
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						if(report.paymentStatus == "Paid"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+						}else{
+							result = result +'           <span class="text-primary successBtn primary pull-left" title="Paid" >Send</span> </td>          ';
+						}
+							
 					}else{
 						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
 					}
