@@ -52,9 +52,12 @@ function vendorContacts(orgRelationID,clientLocationId){
 	result = result+'	    </div>';
 
     $("#tab-1").empty();
-    $("#tab-2").empty(); 
     $("#tab-3").empty(); 
     $("#tab-4").empty(); 
+    $("#tab-6").empty(); 
+    $("#tab-7").empty(); 
+    $("#tab-5").empty(); 
+    $("#tab-2").empty(); 
     $("#tab-2").append(result);  
 	
     vendorContactList(orgRelationID,clientLocationId);
@@ -248,6 +251,17 @@ function changeSpocStatus(spocId,vendorLocationId){
    });
 }
 </script>
+
+<script>
+function cancelTerminationResonforSpoc(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reasonForSpoc").val('');
+	$("#reasonForSpocDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForSpocDiv").empty(); 
+}
+</script>
+
+
 <script>
 function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	var result = "";
@@ -256,7 +270,7 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 	//result = result +"		<p>Vendor delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonForVendorSpocTermination("+spocId+","+orgRelationID+","+vendorLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationResonforSpoc();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -268,14 +282,10 @@ function terminateVendorSpoc(spocId, orgRelationID,vendorLocationId,spocName){
 function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocationId,spocName){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
+	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
-		  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
+		  $("#reasonForSpocDiv").empty();
 	  	  
-		}else{
-		  $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
-		
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -289,6 +299,14 @@ function saveReasonForVendorSpocTermination(spocId, orgRelationID,vendorLocation
    			    vendorConactTerminateMsgFadein();
 		    }
 	   });
+	}else{
+		if(reason){
+			 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			 $("#reasonForSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 	  
 }
@@ -425,7 +443,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	
 	result = result  +'	  <div class="clearfix mr">';
-	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="check('+orgRelationID+','+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
+	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="checkVendorContactAdd('+orgRelationID+','+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
 	result = result  +'	  </div>';
 	
 	result = result  +'	 </div>';
@@ -477,7 +495,7 @@ $('html').click(function(){
  <!-- This Script is For Popup Div Ends --> 
  <!-- to add new contact -->
 <script type="text/javascript">
-	function check(orgRelationId,vendorLocationId) {
+	function checkVendorContactAdd(orgRelationId,vendorLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
 			var frm = $('#clinetContact_form').serializeFormJSON();
 			var con = JSON.stringify(frm);

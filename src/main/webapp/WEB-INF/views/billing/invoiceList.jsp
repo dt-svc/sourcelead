@@ -14,12 +14,8 @@ color:#337ab7 !important;
 .successBtn {
 background-color: #1ab394;
 border-color: #1ab394;
-cursor: default;
-    border: 1px solid;
-    color: #fff;
-    padding: 1px 5px;
-    border-radius: 3px;
-    font-size: 13px;
+cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+font-size: 13px; width: 75px;
 }
 
 </style>
@@ -42,9 +38,6 @@ $(document).ready(function(){
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
-          <sec:authorize access="hasAnyRole('ROLE_ADD_BILL')"> 
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Createnbm Invoice</a>
-			</sec:authorize>
             <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
                 <option value="month">Last 30 days</option>
@@ -128,7 +121,7 @@ $(document).ready(function(){
             </div>
           </ul>
           <div class="tab-content"> 
-            
+            <div id="invoiceLoading"></div>
             <!-- Employee Details -->
             <div class="tab-pane active" id="unbilled">
               <div class="timesheet_out mt">
@@ -197,8 +190,10 @@ $(document).ready(function(){
                             </li>
                           </ul>
                         </div>
-                      </li>                      
+                      </li>     
+                       <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
                       <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
+                     </sec:authorize>
                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       <div class="clearfix"></div>
                     </ul>
@@ -207,7 +202,7 @@ $(document).ready(function(){
                   </div>
                   
                   
-                  <div class="candidate_wrap_table">
+                  <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
                   </div>
                 </div>
@@ -345,7 +340,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix"></div>                                            ';
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
-	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_PAYMENT\')">';
+	'<sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">';
 	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
 	'</sec:authorize>';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
@@ -438,12 +433,15 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 <script>
 function getInvoiceList(){
-	$(".custom_search").hide();
+// 	$(".custom_search").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var invoice = [];
 	var payment = [];
 	var dayWisetype = $("#dayWiseTypeId").val();
 	
+	if(dayWisetype=="custom"){
+		dayWisetype = "";
+	}
 	var startDate = $("#billingStartDate").val();
 	var endDate = $("#billingEndDate").val();
 	
@@ -556,11 +554,14 @@ function getInvoiceList(){
 				result = result +'         <td>';
 
 				if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
 					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
-
+					'</sec:authorize>' ;
 				}
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
-	 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+					'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+					'</sec:authorize>' ;
 				}
 				result = result +'         </td>  ';
 				result = result +'         <td>   ';
@@ -594,7 +595,7 @@ function getInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				result = result +'     <div class="tblminwidth-75">';
+				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
 					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
@@ -602,8 +603,13 @@ function getInvoiceList(){
 				} 
 				result = result +'  </div> ';                 
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						if(report.paymentStatus == "Paid"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
+						}else{
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>   ';	
+						}
+							
 					}else{
 						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 					}
@@ -617,7 +623,7 @@ function getInvoiceList(){
 						
 					}else{
 						if(report.invoiceStatus == "Rejected"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span>           ';	
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
 						}else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 						}
@@ -684,7 +690,7 @@ function invoicePagination(){
     $('#invoiceListPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	//
     	"aaSorting": [[3,'desc']],
     	"bDestroy": true,
@@ -709,15 +715,15 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){
-			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
+			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			'</sec:authorize>'
 		 }
-		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
+		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
 	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
 	 	'</sec:authorize>'
 	 	
-	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
+	 	'<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
 	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
 	     '</sec:authorize>'
 	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
@@ -1267,11 +1273,13 @@ function linkInvoice(invoiceId,totalAmount){
 <script type="text/javascript">
 function generateAutomaticInvoice(){
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceType=Receivable&contractType=clientSow", 
              success: function(data) {
+            	 $("#invoiceLoading").removeAttr("style");
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },
     });  

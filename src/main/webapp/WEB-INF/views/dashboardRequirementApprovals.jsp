@@ -110,8 +110,8 @@ function requirementApproverList(statusType){
  				            result = result +"<td>";
 				             if(opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementSubmissionStatus  !='OPEN'  &&  opt.requirementApproverHierarchyStatus !='APPROVED' &&  opt.requirementApproverHierarchyStatus != 'REJECTED' && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
 				            	
-				            	 result = result + '<a  href="javascript:void(0)"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
-		                    	 result = result + '<a  href="javascript:void(0)"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
+				            	 result = result + '<a  href="javascript:void(0)" title="Accept"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
+		                    	 result = result + '<a  href="javascript:void(0)" title="Reject"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
 				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
 				            	 result = result +'<div  id="requirementStatus"  ><span title ="'+opt.approvedBy+'">'+opt.approvedBy+'</span></div>';
@@ -178,18 +178,8 @@ function updateReuqirementStatus(status,requirementId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = requirementId;
-	
-	
-	 
-	 var reason;
-	 if ($('#rejectReason').length)
-	 {
-		 reason = document.getElementById("rejectReason").value; 
-	 }
-	 else
-	 {
-		 reason = '';
-	 }
+	 var reason = document.getElementById("rejectReason").value;
+	  if(reason.match(/^[^\s-](.*)*$/) != null){
 	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementsAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
@@ -207,6 +197,17 @@ function updateReuqirementStatus(status,requirementId){
             }
        },
 	  }); 
+	
+	  }
+	  
+	  else{
+		  if(reason){
+				$("#reasonDasbordDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			}else{
+				$("#reasonDasbordDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+			}
+	  }
+	  
 }
 </script>
 
@@ -224,6 +225,7 @@ function rejectRequirementAlertMessage(status,requirementId){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"	<div id='reasonDasbordDiv'/>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatus(\""+ status+"\",\""+requirementId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlertDashboard();'></b>";
 	result = result +"	</div>";

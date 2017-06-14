@@ -27,6 +27,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -51,6 +52,9 @@ public class BillingPayableController {
 	
     @Autowired
     CommonUtil commonUtil;
+    
+    @Autowired
+    ConversionUtil conversionUtil;
 	
 	
 	
@@ -171,6 +175,7 @@ public class BillingPayableController {
 			
 			orgSpoc.setOwnerName(sb.toString());
 			orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
+			orgSpoc.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getVendorLocationId().getCountry()));
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 

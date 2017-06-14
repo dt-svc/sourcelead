@@ -96,8 +96,8 @@ function ApplicantAuthorization(status){
                                     	    resultToday  = resultToday + '<td><div>'+report.submissionRateStatus+'</div></td>';
                                     	    resultToday = resultToday +"<td>";
                                     	    if(report.submissionRateStatus == 'REQUEST'){
-                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)"  onClick="acceptRejectCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
-                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
+                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Accept"  onClick="acceptRejectCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
+                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
                                     	    }
                                     	    resultToday = resultToday +"</td>";
                                       }
@@ -142,19 +142,58 @@ function ApplicantAuthorization(status){
 <script type="text/javascript">
 function rejectApplicantAlertMessage(submissionId, status){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='vendor_wrap_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	 result = result +"    <div class='col-md-12 inputOther mt10 inputOther'>";
+     result = result +"    <div class='dropdown-select mb10' id='rejectedCategorytDiv'>";
+     result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='true'>";
+     result = result +"<option selected value=''>--Select Category--</option>";
+     result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
+     result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
+     result = result +"<option value='Bad Fit'>Bad Fit</option>";
+     result = result +"<option value='Salary'>Salary</option>";
+     result = result +"<option value='Interview Rejection'>Interview Rejection</option>";
+     result = result +"<option value='Other'>Other</option>";
+     result = result +"</select>";
+     result = result +"    </div>";
+    
+     
+     result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mb10'>";
+     result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' >";
+     result = result +" </div>";
+     
+     result = result +" </div>";
+     
+     //result = result +"        <p>Applicant reject message here</p>";
+     result = result +"        <textarea  id='reasonForReject' class='form-control' name='reasonForReject'  placeholder='Comments here'></textarea>";
+     result = result + ' <div id="reasonForApplicantDiv"/>';
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptRejectCandidateFromDashboard(\" "+submissionId+"\", \"rejected\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	$("#rejectApplicantAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".vendor_wrap_mask").fadeIn(200);
 }
 </script>
 
-
+<script>
+function getRejectedCategory(){
+	var rejectedCategory = document.getElementById("rejectedCategory").value;
+	if(rejectedCategory == 'Other'){
+		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
+	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
+		$('#rejectedCategoryOther').attr("data-validation","required"); 
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#rejectedCategoryOther").attr("data-validation-optional","true");
+		$("#rejectedCategoryOther").removeAttr("data-validation");
+		$("#rejectedCategoryOther").val('');
+		document.getElementById("rejectOtherCategoryDiv").style.display="none";
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+	
+}
+</script>
 
 
 <%-- 
@@ -165,24 +204,50 @@ function rejectApplicantAlertMessage(submissionId, status){
 <script type="text/javascript">
 function cancelAlert(){ 
 	$("#rejectApplicantAlert").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".vendor_wrap_mask").fadeOut(200);
 }
 </script>
 <script type="text/javascript">
 	function acceptRejectCandidateFromDashboard(submissionId, status){
-			 var sourceleadUrl = '${sourceleadUrl}';
-			 var reason;
-			 if ($('#rejectReason').length)
-			 {
-				 reason = document.getElementById("rejectReason").value; 
+		 var sourceleadUrl = '${sourceleadUrl}';
+		 var reason= document.getElementById("reasonForReject").value;
+		 var rejectedCategoryType= document.getElementById("rejectedCategory").value; 
+		 var rejectedCategoryOther= document.getElementById("rejectedCategoryOther").value;
+		 if((reason == null || reason == '' || reason == 'undefined') 
+				 || (rejectedCategoryType == null || rejectedCategoryType == '' || rejectedCategoryType == 'undefined') 
+				 || ( (rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined' && rejectedCategoryType == 'Other') 
+						  &&  (rejectedCategoryOther == null || rejectedCategoryOther == '' || rejectedCategoryOther == 'undefined')
+					 )
+		     ){
+			 if(reason != null && reason != '' && reason != 'undefined'){
+				 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+			 }else{
+					 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+			  	    $("#reasonForApplicantDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
 			 }
-			 else
-			 {
-				 reason = '';
+			 if(rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined'){
+				 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+			 }else{
+					 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+			  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
 			 }
+			 if(rejectedCategoryOther.match(/^[^\s-](.*)*$/) != null && rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
+				 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
+			 }
+			 else{
+				 
+				 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
+				 $("#rejectOtherCategoryDiv").append("<p class='jquery_form_error_message'>Other Type Is Required</p>");
+		  	 
+		      }
+			}
+			
+		 else{
+				$("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
+			  $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
 			 $.ajax({
 					 type : "POST",
-					 url : sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status+"&reason="+reason,
+					 url : sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status+"&reason="+reason+"&rejectedCategoryType="+rejectedCategoryType+"&rejectedCateoryOther="+rejectedCategoryOther,
 					 success : function(result) {
 								 if( result.indexOf('Sign In') >= 0){
 						    		location.replace(sourceleadUrl);
@@ -197,6 +262,7 @@ function cancelAlert(){
 			            		 }
 					 },
 				}); 
+		 }
 	}
 </script>
 

@@ -22,6 +22,8 @@ public interface TaskService {
 	
 	List<Tasks> getTaskByScheduledTime(String currentTime)throws Exception;
 	
+	List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus)throws Exception;
+	
 	List<Tasks> getTasskByAssignedUserIdAndOrgLocationId(Long orgLocationId,Long userId)throws Exception;
 
 	void mailToUserTask(Tasks task) throws Exception;

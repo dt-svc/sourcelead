@@ -272,6 +272,7 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	@Override
 	public void mailToUserTask(Tasks task) throws Exception{
+		Timezone timezone = timeZoneService.getTimezone(task.getOwnerOrglocationId().getTimezone().getId());
 			EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
 			 emailMessage.setLastName(task.getTaskOwnerId().getLastName());
@@ -301,11 +302,18 @@ public class TaskServiceImpl implements TaskService{
 			 }else{
 		     globalVarsMap.put("date","--"); 
 			 }
-			 if(task.getTaskTime()!= null  && !"".equalsIgnoreCase(task.getTaskTime())){
-			 globalVarsMap.put("time", task.getTaskTime());	 
-			 }else{
-			 globalVarsMap.put("time","--"); 
-			 }
+			 if(task.getTaskTime() != null){
+			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+					String currentTimeStr = Constants.TZ_DF.format(task.getTaskDate());  
+					String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+					String convertedDateStr = DF_DMY.format(convertedDate);
+					globalVarsMap.put("time", convertedDateStr);	 
+				 
+			    }
+			 
+			 
 			 if(task.getDescription()!= null  && !"".equalsIgnoreCase(task.getDescription())){
 			 globalVarsMap.put("description", task.getDescription()); 
 			 }else{
@@ -342,7 +350,7 @@ public class TaskServiceImpl implements TaskService{
 			 notificationScenario.setBody(notificationbody);
 			 
 			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, task.getOwnerOrglocationId().getOrg());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
@@ -400,6 +408,11 @@ public List<Tasks> getTasksListOffboardingId(Long offboardingId) throws Exceptio
 @Override
 public List<Tasks> getTasksListOnboardingId(Long onboardingId) throws Exception {
 	return taskDao.getTasksListOnboardingId(onboardingId);
+}
+
+@Override
+public List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus) throws Exception {
+	return taskDao.getTaskListByRepeatStatus(taskRepeatStatus);
 }
 }
 	

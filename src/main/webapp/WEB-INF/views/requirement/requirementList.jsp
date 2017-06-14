@@ -370,11 +370,11 @@ function prepareRequirementData(data){
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
 			}else if(opt.requirementSubmissionStatus == "CLOSED"){
-				result = result +"<option disabled selected hidden>CLOSED</option>";
+				result = result +"<option disabled selected >CLOSED</option>";
 
 			}
 			else if(opt.requirementSubmissionStatus == "CANCEL"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 
 			}else if(opt.requirementSubmissionStatus == "OPEN"){
 				result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
@@ -407,11 +407,11 @@ function prepareRequirementData(data){
 					result = result +"<option value='CANCEL'>CANCEL</option>";
 				'</sec:authorize>';
 			}else if(opt.requirementSubmissionStatus == "APPROVED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			else if(opt.requirementSubmissionStatus == "REJECTED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 			
@@ -474,7 +474,7 @@ function prepareRequirementData(data){
 				result = result +"<option value='OPEN'>OPEN</option>";
 				
 			}else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-				result = result +"<option disabled selected hidden>"+opt.requirementSubmissionStatus+"</option>";
+				result = result +"<option disabled selected >"+opt.requirementSubmissionStatus+"</option>";
 				
 			}
 
@@ -510,6 +510,7 @@ function prepareRequirementData(data){
     result = result +"</table>"; 
     $("#noReq").val('');
     $("#requirementList").append(result); 
+    $("#requirementEmptyListMessage").val(json.length);
     for (var i = 0; i < json.length; i++) { 
       	 var opt = json[i];
       	statusvalidating(opt.id);
@@ -529,7 +530,7 @@ function pagination(){
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"aaSorting": [[7,'desc']],
@@ -1586,7 +1587,7 @@ function requirementPipeline(requirementId){
      <!--  <div id="loadingDiv"></div> -->
       
       <!-- list requirement -->
-      <div class="require_wrap_table">
+      <div class="require_wrap_table datatable_filter">
           <div id="requirementList"></div>
       </div>
     </div>
@@ -1858,7 +1859,7 @@ function exportToPdf(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 		window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=pdf";
 		}else{
 			 var result = "";
@@ -1890,7 +1891,7 @@ function exportToExcel(){
 	    {
 			clients.push($(this).val());
 	    });
-		if(requirementEmptyMessage != 'noRequirement'){
+		if(requirementEmptyMessage > 0){
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&status="+status+"&clients="+clients+"&exportType=xls";	
 		}else{
 			 var result = "";

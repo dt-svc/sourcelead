@@ -1278,6 +1278,12 @@ public class RequirementDaoImpl implements RequirementDao {
 		if (Arrays.asList(requirementStatus).contains("CLOSED")) {
 			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'CLOSED' or ";
 		}
+		if (Arrays.asList(requirementStatus).contains("CANCEL")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'CANCEL' or ";
+		}
+		if (Arrays.asList(requirementStatus).contains("REJECTED")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'REJECTED' or ";
+		}
 		if ((requirementStatus[0] != null && requirementStatus[0].length() > 0)) {
 			subQuery8 = "and (" + subQuery8.substring(0, subQuery8.length() - 4) + ")";
 		}
@@ -1315,7 +1321,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<Requirement> releasedJobsList = null;
 			String query = "";
-			if(parentreqIds != null && relationId != null){
+			if(parentreqIds != null && !parentreqIds.isEmpty() && relationId != null){
 				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.parentRequirement.id IN (:parentreqIds) and requirement.clientId.id =:relationId";
 				releasedJobsList = session.createQuery(query).setParameterList("parentreqIds", parentreqIds).setLong("relationId", relationId).setCacheable(true).list();
 			}

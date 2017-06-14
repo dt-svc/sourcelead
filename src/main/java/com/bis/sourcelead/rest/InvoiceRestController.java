@@ -194,10 +194,10 @@ public class InvoiceRestController {
 			orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 			orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 			orgSpoc.setOwnerName(clientSb.toString());
+			orgSpoc.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getClientLocationId().getCountry()));
 			}
 		return commonUtil.toJSON(orgSpocList);
 	} 
-	
 	
 	@RequestMapping(value = "/downloadInvoiceAttachment")
     public void downloadInvoiceAttachment(@RequestParam(value="invoiceId", required=false) Long invoiceId ,HttpServletResponse response) throws Exception {
@@ -365,19 +365,21 @@ public class InvoiceRestController {
 			else if (Constants.ONE_YEAR.equals(reportType)) {
 				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 			}
-			}else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.getDateFormat(customStartDate);
-					Date endTime = commonUtil.getDateFormat(customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
+			}
+		}else {
+			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate) && !"undefined".equalsIgnoreCase(customStartDate) && !"undefined".equalsIgnoreCase(customEndDate)) {
+				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+				Date startTime = commonUtil.getDateFormat(customStartDate);
+				Date endTime = commonUtil.getDateFormat(customEndDate);
+				String customStartTimeStr = TZ_DF_CSD.format(startTime);
+				String customEndTimeStr = TZ_DF_CED.format(endTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+				endDateUTC = TZ_DF_TS.parse(endDateString);
+			}else{
+				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
 		}
 		
@@ -483,7 +485,6 @@ public class InvoiceRestController {
 	
     
 
-    @PreAuthorize("hasAnyRole('ROLE_ADD_PAYMENT')")
 	@RequestMapping(value = "/saveInvoicePayment", method = RequestMethod.POST)
 	public @ResponseBody String saveInvoicePayment(@RequestParam(value = "json", required = false) String json,@RequestParam(value = "invoiceId", required = false) Long invoiceId,MultipartHttpServletRequest request) throws Exception {
 
@@ -617,7 +618,6 @@ public class InvoiceRestController {
 	 	  resultJson = commonUtil.toJSON(viewinvoiceList);
 	 	  return resultJson;
 	 	}
-	  @PreAuthorize("hasAnyRole('ROLE_BILL_PAYMENT_HISTORY')")
 	  @RequestMapping(value = "/getViewPaymentHistory", method = RequestMethod.GET)
 	 	public @ResponseBody  String getViewPaymentHistory(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
@@ -1107,7 +1107,6 @@ public class InvoiceRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasAnyRole('ROLE_SEND_BILL_REMINDER')")
 	@RequestMapping(value = "/sendReminder", method = RequestMethod.POST)
 	public @ResponseBody String sendReminder(@RequestParam(value = "invoiceId", required = false) String invoiceId,HttpServletRequest request) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1124,7 +1123,6 @@ public class InvoiceRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	 @PreAuthorize("hasAnyRole('ROLE_PRINT_BILL')")
 	@RequestMapping(value = "/getPrint/{id}", method = RequestMethod.GET)
 	public @ResponseBody  void getPrint(@PathVariable("id") String invoiceId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -1443,8 +1441,6 @@ public class InvoiceRestController {
 				LocalDate[] currentYearDates  = conversionUtil.getThisYearStartDateEndDate();
 				startDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[0], startDateOutputFormatter);
 				endDateUTC = conversionUtil.getUtcDateFormat(orgLocation, currentYearDates[1], endDateOutputFormatter);
-				System.out.println("start date year "+startDateUTC);
-				System.out.println("end date year "+endDateUTC);
 				break;
 			case Constants.LAST_30DAYS:
 				Date[] last30Days = conversionUtil.getPreviousDates(30,orgLocation,startDateOutputFormatter,endDateOutputFormatter);
@@ -1557,7 +1553,7 @@ public class InvoiceRestController {
 				clientList.add(invce);
 			}
 		}
-		if (null != clientList && clientList.size() > 0){
+		if (clientList !=null && clientList.size() > 0){
 		resultJson = commonUtil.toJSON(clientList);	
 		}
 		return resultJson;
@@ -1634,25 +1630,27 @@ public class InvoiceRestController {
 					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 365);
 				}
 			}
-			else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)
-						&& !"undefined".equalsIgnoreCase(customStartDate)
-						&& !"undefined".equalsIgnoreCase(customEndDate)) {
-					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-					Date startTime = commonUtil.getDateFormat(customStartDate);
-					Date endTime = commonUtil.getDateFormat(customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);
-					String customEndTimeStr = TZ_DF_CED.format(endTime);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-					endDateUTC = TZ_DF_TS.parse(endDateString);
-				}
+		}else {
+			if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)
+					&& !"undefined".equalsIgnoreCase(customStartDate)
+					&& !"undefined".equalsIgnoreCase(customEndDate)) {
+				DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+				DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+				Date startTime = commonUtil.getDateFormat(customStartDate);
+				Date endTime = commonUtil.getDateFormat(customEndDate);
+				String customStartTimeStr = TZ_DF_CSD.format(startTime);
+				String customEndTimeStr = TZ_DF_CED.format(endTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+				startDateUTC = TZ_DF_TS.parse(startDateString);
+				endDateUTC = TZ_DF_TS.parse(endDateString);
+			}else{
+				startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
 			}
 		}
 		List<Invoice> invoiceList = invoiceService.getInvoiceByOrgRelationId(orgRelationId, clientLocationId, startDateUTC, endDateUTC, invoiceStatus, paymentStatus, invoiceType,orgLocations);
 		
 		return commonUtil.toJSON(invoiceList);
 	}
+	
 }

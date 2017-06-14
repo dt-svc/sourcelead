@@ -20,38 +20,35 @@ width: 100% !important;
 <div id="popUp"></div>	
 
 <script>
-function vendorRequirementListInclude(orgRelationID,vendorLocationId){
+function vendorRequirementListInclude(orgRelationID){
 	var result = "";
-	result = result  +'<div class="timesheet_head">';
-// 	result  = result + '<div id="vendorConactMsgDiv" ></div>';
-// 	result  = result + '<div class="success_pop" id="vendorConactTerminateMsgDiv" style="display: none;">';
-//     result  = result + '<i class="fa fa-check-circle"></i><span id="vendorConactTerminateMsg"></span>';
-    	result  = result + '</div>';
-		result = result  +'    <div class="timesheet_head addUser-org"> ';  
+	result = result  +'<div class="timesheet_head top_filters">';
+	result = result  +'    <div> ';  
+
 	    result = result + '<ul>';
 	    
 	    
-	    result = result + '<li class="dropdown mt10"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
-        result = result + '<div class="dropdown-menu bootstrap_dropdownMenu dropdown-menu_width">                                                                                                                                       ';
-        result = result + '<ul>';
+	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
+	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
+	    result = result + '<ul>';
         result = result + '<li>';
-        result = result + '<input type="checkbox" value="open" name="requirementStatus" id="requirementStatus" onclick="test('+orgRelationID+');" >';
+        result = result + '<input type="checkbox" value="open" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">OPEN</label>';
         result = result + '</li>';
         result = result + '<li>';
-        result = result + '<input type="checkbox" value="new" name="requirementStatus" id="requirementStatus" onclick="test('+orgRelationID+');" >';
+        result = result + '<input type="checkbox" value="new" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">NEW</label>';
         result = result + '</li>';
         result = result + '<li>';
-        result = result + '<input type="checkbox" value="filledClose" name="requirementStatus" id="requirementStatus" onclick="test('+orgRelationID+');" >';
+        result = result + '<input type="checkbox" value="filledClose" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">FILLED CLOSED</label>';
         result = result + '</li>';
         result = result + '<li>';
-        result = result + '<input type="checkbox" value="unfilledClose" name="requirementStatus" id="requirementStatus" onclick="test('+orgRelationID+');" >';
+        result = result + '<input type="checkbox" value="unfilledClose" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">UNFILLED CLOSED</label>';
         result = result + '</li>';
         result = result + '<li>';
-        result = result + '<input type="checkbox" value="onhold" name="requirementStatus" id="requirementStatus" onclick="test('+orgRelationID+');" >';
+        result = result + '<input type="checkbox" value="onhold" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">ON HOLD</label>';
         result = result + '</li>';
        /*  result = result + '<li>';
@@ -59,8 +56,9 @@ function vendorRequirementListInclude(orgRelationID,vendorLocationId){
         result = result + '<label class="paddingLeft">On Hold</label>';
         result = result + '</li>'; */
         result = result + '</ul>';
-        result = result + '</li>';
-	   
+		result = result + '       </div>'; 
+		result = result + '   </li>';
+		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div id="vendorRequirmentListDiv" ></div>';
@@ -72,16 +70,17 @@ function vendorRequirementListInclude(orgRelationID,vendorLocationId){
     $("#tab-2").empty(); 
     $("#tab-3").empty(); 
     $("#tab-5").empty(); 
+    $("#tab-6").empty(); 
     $("#tab-6").append(result);  
 	
-    getVendorRequirementListTab(orgRelationID);
+    vendorReqListFunction(orgRelationID);
     
 }
 </script>
 
 <script type="text/javascript">
-	function getVendorRequirementListTab(orgRelationID) {
-		 var orgRelationId =$("#orgRelationId").val();
+	function vendorReqListFunction(orgRelationID) {
+		// var orgRelationId =$("#orgRelationId").val();
 	        var sourceleadUrl = '${sourceleadUrl}';
 	        var status = [];
 	        $('input:checkbox[name=requirementStatus]:checked').each(function()

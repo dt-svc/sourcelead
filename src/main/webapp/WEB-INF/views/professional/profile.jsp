@@ -173,13 +173,13 @@ function getProfessionalInfo(){
 		    	 }
 		    	 
 		    	 if(json.currentRateCurrency != null  && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefiend'){
-		    		 currentRateCurrency = ' / '+json.currentRateCurrency;
+		    		 currentRateCurrency = json.currentRateCurrency+' / ';
 		    	 }else{
 		    		 currentRateCurrency = "";
 		    	 }
 		    	 
 		    	 if(json.expectedRateCurrencey != null  && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefiend'){
-		    		 expectedRateCurrencey = ' / '+json.expectedRateCurrencey;
+		    		 expectedRateCurrencey = json.expectedRateCurrencey+' / ';
 		    	 }else{
 		    		 expectedRateCurrencey = "";
 		    	 }
@@ -212,16 +212,16 @@ function getProfessionalInfo(){
 				 result = result +'	            <li><i class="fa fa-briefcase" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
 				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
 				 result = result +'	            <li> <i class="fa fa-rupee" title="Current Rate"></i>';
-				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateType+' '+currentRateCurrency+'</span>';
+				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	            <li> <i class="fa fa-rupee" title="Expected Rate"></i>';
-				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+rateType+' '+expectedRateCurrencey+'</span>';
+				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
 				 result = result +'	            </li>';
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
 				 result = result +'	        <h5>Can be Reached at</h5>';
-				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt25">';
+				 result = result +'	        <ul class="list-inline list-unstyled reachout-links mt10">';
 				 result = result +'	            <li><a href="'+facebook+'"  title="Facebook" class="btn-fb"><i class="fa fa-facebook-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+linkedIn+'" title="LinkedIn" class="btn-li"><i class="fa fa-linkedin-square fa-2x"></i></a></li>';
 				 result = result +'	            <li><a href="'+twitter+'" title="Twitter" class="btn-tw"><i class="fa fa-twitter-square fa-2x"></i></a></li>';
@@ -236,7 +236,7 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Primary Skill</h5>';
-				 result = result +'	        <div class="skills mt25">';
+				 result = result +'	        <div class="skills mt10 mb10">';
 				 result = result +'	            <p><strong>';
 				 result = result +'	        '+primarySkill+'</strong>';
 				 result = result +'	        </p>';
@@ -245,7 +245,7 @@ function getProfessionalInfo(){
 				 
 				 result = result +'	    <div class="col-md-4">';
 				 result = result +'	        <h5>Skills</h5>';
-				 result = result +'	        <div class="skills mt25">';
+				 result = result +'	        <div class="skills mt10">';
 				 result = result +'	            <p><strong>';
 				 result = result +'	        '+skillsName+'</strong>';
 				 result = result +'	        </p>';

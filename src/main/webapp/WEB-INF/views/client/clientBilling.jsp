@@ -60,10 +60,9 @@ var result = "";
 result = result  +'<div class="">';
 result = result  +'    <div class="billingArea"> ';  
  result = result + '			    <div class="clearfix">																																				                   ';
- result = result + '			      <div class="billing_dashboard">                                                                                                                                                                              ';
+ result = result + '			      <div class="billing_dashboard">                                                                                                                                                                             ';
  result = result + '			        <div class="tabbable positionRelative">                                                                                                                                                                    ';
  result = result + '			          <div class="onboardcreateButtons">                                                                                                                                                                       ';
- result = result + '			          <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>                            ';
  result = result + '			            <div class="pull-right select-field ml">                                                                                                                                                               ';
  result = result + '			              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceListBasedonClient('+orgRelationId+','+clientLocationId+');customInvoiceList('+orgRelationId+','+clientLocationId+');">                                                                                           ';
  result = result + '			                <option value="month">Last 30 days</option>                                                                                                                                                        ';
@@ -209,7 +208,9 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                          </ul>                                                                                                                                                                                    ';
  result = result + '			                        </div>                                                                                                                                                                                     ';
  result = result + '			                      </li>                                                                                                                                                                                        ';
+ 													'<sec:authorize access="hasAnyRole(\'ROLE_ADD_INVOICE\')"> ';
  result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>        ';
+ 													'</sec:authorize>';
  result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>';
  result = result + '			                      <div class="clearfix"></div>                                                                                                                                                                 ';
  result = result + '			                    </ul>                                                                                                                                                                                          ';
@@ -256,6 +257,10 @@ result = result  +'    <div class="billingArea"> ';
 		var payment = [];
 		var dayWisetype = $("#dayWiseTypeId").val();
 		
+		if(dayWisetype=="custom"){
+			dayWisetype = "";
+		}
+		
 		var startDate = $("#billingStartDate").val();
 		var endDate = $("#billingEndDate").val();
 		
@@ -300,8 +305,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
 			result = result +'         <th>Invoice ID</th>                    ';
-			result = result +'         <th>Client Name</th>           ';
-			result = result +'         <th>Contact</th>               ';
+			result = result +'         <th>Client Contact</th>               ';
 			result = result +'         <th>Invoice Date</th>               ';
 			result = result +'         <th>Total</th>                 ';
 			result = result +'         <th>Due</th>                   ';
@@ -352,16 +356,16 @@ result = result  +'    <div class="billingArea"> ';
 	        		result = result +'       <tr> ';
 					result = result +'         <td>';
 					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_INVOICE\')">';
 						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'">'+report.invoiceId+'</a></div>   ';
-
+						'</sec:authorize>' ;
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
-		 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+						'</sec:authorize>' ;
 					}
 					result = result +'         </td>  ';
-					result = result +'         <td>   ';
-					result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</div>';
-					result = result +'         </td> ';
 					result = result +'         <td>';
 					if(report.clientContactName !='' && report.clientContactName != null && report.clientContactName != 'undefined'){
 						result = result +'           <div class="tbldata-dotdot-vsm" title="'+report.clientContactName+'">'+report.clientContactName+'</div>  ';	
@@ -554,7 +558,7 @@ function searchResults(orgRelationId,clientLocationId){
 	var startDate =  $('#billingStartDate').val();
 	var endDate =  $('#billingEndDate').val();
 	if(startDate != null && startDate != '' && startDate != 'undefined' && endDate != null && endDate != '' && endDate != 'undefined'){
-		getClientInvoiceList(orgRelationId,clientLocationId);
+		getInvoiceListBasedonClient(orgRelationId,clientLocationId);
 	}else{
 		if(startDate != null && startDate != '' && startDate != 'undefined'){
 			$("input#billingEndDate") .after( "<p class='jquery_form_error_message'>End Date is Required</span>");
@@ -724,7 +728,9 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix"></div>                                            ';
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
+	'<sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">';
 	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
+	'</sec:authorize>';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
 	result = result +'          </div>                                                                                                ';
@@ -909,11 +915,19 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){
+			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 '</sec:authorize>'
 		 }
-	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
-	     result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
+		 result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		 '</sec:authorize>'
+		
+		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
+		 result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+		 '</sec:authorize>'
+		 
+		 result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();

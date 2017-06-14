@@ -257,38 +257,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	    	
 			    	    	result = result + '<ul class="list-unstyled">';
 			    	   		result = result + '<span id="statusDiv">';
-			    	    	if(json.submissionRateStatus == 'ACCEPTED' || json.submissionRateStatus == 'REJECTED'){ 
-			    	    		if(json.submissionRateStatus == 'REJECTED'){
-			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
-				    	    			result = result + '	<li>';
-					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
-										result = result + '	</li>';
-			    	    			}
-									/* if(json.rejectedReason != null && json.rejectedReason != '' && json.rejectedReason != 'undefined'){
-										result = result + '	<li>';
-					    	    		result = result + 'Rejected Reason : '+json.rejectedReason;
-										result = result + '	</li>';
-									} */
-			    	    		}
-			    	    		if(json.submissionRateStatus == 'ACCEPTED'){
-			    	    			if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
-			    	    				result = result + '	<li>';
-					    	    		result = result + 'Candidate status : '+json.submissionRateStatus;
-										result = result + '	</li>';
-			    	    			}
-									/* if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
-										result = result + '	<li>';
-					    	    		result = result + 'Request Comment : '+json.submissionRequestComment;
-										result = result + '	</li>';
-									}
-									if(json.submissionRequestFileName != null && json.submissionRequestFileName != '' && json.submissionRequestFileName != 'undefined'){
-										result = result + '	<li>';
-										result = result + '<a href="downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'">'+json.submissionRequestFileName+'</a>';
-										result = result + '	</li>';
-									}	 */
-									
-			    	    		}
-			    	    	} 
+			    	    	
 			    	    	result = result + '</span>';
 			    	    	result = result + '</ul>';
 			    	    	
@@ -306,7 +275,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 									result = result + '	</li>';
 									if(json.submissionRateStatus != null && json.submissionRateStatus != '' && json.submissionRateStatus != 'undefined'){
 										result = result + '<li>';
-										result = result +"Status: "+ json.submissionRateStatus;
+										result = result +"Candidate status: "+ json.submissionRateStatus;
 										result = result + '</li>';
 									}
 						   }else{
@@ -469,14 +438,19 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			          result = result + ' <div class="panel-body row">';
 			          result = result + ' <div class="clearfix"><label class="col-md-2 text-right paddingRight">Requested by:</label><span class="col-md-9">'+json.submittedBy+'</span></div>';
 				          if(json.submissionRateStatus == 'ACCEPTED'){
-					           
 				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 				        	  }else{
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
 				        	  }
 				        	 }
-				        	  
+				          if(json.submissionRateStatus == 'REJECTED'){
+				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
+				        	  }else{
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
+				        	  }
+				        	 }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Attachment:</label><span class="col-md-9"><a href=\"'+sourceleadUrl+'/downloadRequestDocumentBySubmissionId?submissionId='+submissionId+'\" class="pull-left" style="color:#151B8D">'+json.submissionRequestFileName+'</a></span></div>';
 					          result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Comment:</label><span class="col-md-9">'+json.submissionRequestComment+'</span></div>';
@@ -666,39 +640,36 @@ function getInternalInterviewsList(submissionId){
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav" >';
 	                    	 result = result + '<span id="'+report.interviewId.id+'actionDiv">';
+	                    	
 		                    	 if(report.interviewId.interviewStatus == null || report.interviewId.interviewStatus == '' || report.interviewId.interviewStatus =='undefined'){
 		                    		 /* if(report.feedbackStartTime != "feedbackStartTime" || report.feedbackEndTime != "feedbackEndTime"){ */
 		                    	   //Latest interview for Reschedule  start
 		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
-		                    	   if(submissionId == report.interviewSubmissionId){
-		                    		   if(i == 0){
-				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
-											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
-											result = result + '			</div>';
-											result = result + '			 </a> ';
-				                    				                    		
-				                    	}
+		                    	   if(report.submissionStatus == "REJECTED"){
+		                    	   }else{
+		                    		   if(submissionId == report.interviewSubmissionId){
+			                    		   if(i == 0){
+					                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+												result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+												result = result + '			</div>';
+												result = result + '			 </a> ';
+					                    				                    		
+					                    	}
+			                    	   }
+				                    	
+				                    	//Latest interview for Reschedule  ends
+			                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
+			                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
+				                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
+				                    	 '</sec:authorize>';
+				                    	 if(report.proposeTimeStatus=="Y"){
+				                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
+					                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
+												result = result + '			</div>';
+												result = result + ' </a>';
+				                    	 }
 		                    	   }
-		                    		  
-			                    	
-			                    	//Latest interview for Reschedule  ends
-		                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
-		                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANCEL_INTERVIEW\')">';
-			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Not_Attending\');" title="Not Attending"><i class="fa fa-close text-danger"></i></a>';
-			                    	 '</sec:authorize>';
-			                    	 
-			                    	 if(report.proposeTimeList.length > 0){
-			                    		 result = result + '<a href="javascript:void(0)"> <i  class="brder-int" onclick="viewProposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');">ProposedTime</i>';
-				                    	 result = result + '			<div class="proposeTimePop" id="viewProposeTimediv'+report.interviewId.id+'" >';
-											result = result + '			</div>';
-											result = result + ' </a>';
-			                    	 }else{
-			                    		 result = result + '<a href="javascript:void(0)"  class="brder-int"><i class="fa fa-clock-o text-muted" onclick="proposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');"></i>';
-				                    	 result = result + '			<div class="proposeTimePop" id="proposeTimediv'+report.interviewId.id+'" >';
-											result = result + '			</div>';
-											result = result + ' </a>';
-			                    	 }
-			                    	 
+		                    	  
 			                    	 
 // 			                    	 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Maybe\');" title="Maybe"  class="brder-int"><i class="fa fa-question-circle text-muted"></i></a>';
 		                    	/*  } */
@@ -712,10 +683,16 @@ function getInternalInterviewsList(submissionId){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Maybe"){
-	                    		 result = result + '<a href="javascript:void(0)"> <i  class="brder-int" onclick="viewProposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');">ProposedTime</i>';
+	                    		 if(report.submissionStatus == "REJECTED"){
+	                    			 result = result + '<a href="javascript:void(0)"> <i  class="brder-int">ProposedTime</i>';	 
+	                    		 }else{
+	                    			 result = result + '<a href="javascript:void(0)"> <i  class="brder-int" onclick="viewProposeTime(\''+report.interviewId.id+'\',\''+submissionId+'\');">ProposedTime</i>';
+	                    		 }
+	                    		
 		                    	 result = result + '			<div class="proposeTimePop" id="viewProposeTimediv'+report.interviewId.id+'" >';
 									result = result + '			</div>';
 									result = result + ' </a>';
+	                    		
 	                    	 }
 	                    	 
 	                    	 if(report.notificationToApplicant == null || report.notificationToApplicant == '' || report.notificationToApplicant =='undefined' || report.notificationToApplicant == 'N'){
@@ -1399,29 +1376,45 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 	$("html").click(function(e){
 		 $('#accpet-div').fadeOut();
 	 }); */
-	function rejectFun(submissionId,requirementId){
-		$('#reject').empty();
-		$('#accpet-div').empty();
-		var result = "";
-		result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
-		result = result + '			<div class="row">';
-		result = result + '				<div class="col-md-12">';
-		result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
-		result = result + '				</div>';
-		result = result + '			</div>';
-		result = result + '			<div class="row">';
-		result = result + '				<div class="col-md-12"><input type="button" id="reject_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="rejectCandidate(\''+submissionId+'\',\'reject\','+requirementId+');">';
-		result = result + '				</div>';
-		result = result + '			</div>';
-		result = result + '	        </form>';
-		$('#reject').toggle();
-		$('#reject').append(result);
-		$('#accpet-div').fadeOut();
-		$('#request').fadeOut();
-	};
-	$("#reject, .acceptreject-pop, .labelsuccess").click(function(e){
-		 e.stopPropagation();
-	});
+	 function rejectFun(submissionId,requirementId){
+			$('#reject').empty();
+			$('#accpet-div').empty();
+			var result = "";
+			result = result + '	        <form id="reject_form" name="reject_form" action="upload" enctype="multipart/form-data" method="post">';
+	        result = result +"    <div class='dropdown-select mb10' id='rejectedCategorytDiv'>";
+	        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getApplicantOtherizationRejectedCategory()' data-validation='required' field-name='Category'>";
+	        result = result +"<option selected value=''>--Select Category--</option>";
+	        result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
+	        result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
+	        result = result +"<option value='Bad Fit'>Bad Fit</option>";
+	        result = result +"<option value='Salary'>Salary</option>";
+	        result = result +"<option value='Interview Rejection'>Interview Rejection</option>";
+	        result = result +"<option value='Other'>Other</option>";
+	        result = result +"</select>";
+	        result = result +"    </div>";
+	        
+	        result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mb10'>";
+	        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control nomr' data-validation-optional='true' field-name='Other Type '>";
+	        result = result +" </div>";
+	        
+			result = result + '			<div class="row">';
+			result = result + '				<div class="col-md-12">';
+			result = result + '					<textarea rows="2" class="form-control" placeholder="Comment *" id="comment" name="comment" data-validation="required validate_Space validate_length length2-250" field-name="Comment"></textarea>';
+			result = result + '				</div>';
+			result = result + '			</div>';
+			result = result + '			<div class="row">';
+			result = result + '				<div class="col-md-12"><input type="button" id="reject_candidate" value="Submit" title="Sibmit" class="pull-right btn btn-primary mt10 btn-sm ml10" onclick="rejectCandidate(\''+submissionId+'\',\'reject\','+requirementId+');">';
+			result = result + '				</div>';
+			result = result + '			</div>';
+			result = result + '	        </form>';
+			$('#reject').toggle();
+			$('#reject').append(result);
+			$('#accpet-div').fadeOut();
+			$('#request').fadeOut();
+		};
+		$("#reject, .acceptreject-pop, .labelsuccess").click(function(e){
+			 e.stopPropagation();
+		});
 	
 	function requestFun(submissionId){
 		$('#reject').empty();
@@ -1444,7 +1437,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
 		result = result+'	                    <div class="col-md-12">';
 		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
 		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;"  multiple="" class="upload">';
 		result = result+'	                            </span> </label>';
 		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
@@ -1512,7 +1505,24 @@ function attachmentValidationFun(){
 }   
 </script>
 
-
+<script>
+function getApplicantOtherizationRejectedCategory(){
+	var rejectedCategory = document.getElementById("rejectedCategory").value;
+	if(rejectedCategory == 'Other'){
+		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
+	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
+		$('#rejectedCategoryOther').attr("data-validation","required"); 
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#rejectedCategoryOther").attr("data-validation-optional","true");
+		$("#rejectedCategoryOther").removeAttr("data-validation");
+		$("#rejectedCategoryOther").val('');
+		document.getElementById("rejectOtherCategoryDiv").style.display="none";
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+	
+}
+</script>
 <%-- 
      @author : Venkat Kesav
      this script is for accept Candidate

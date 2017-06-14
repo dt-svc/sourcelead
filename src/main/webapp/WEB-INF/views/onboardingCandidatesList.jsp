@@ -16,6 +16,12 @@
 
 <script src="resources/js/formvalidator.js"></script>
 
+<style>
+.settPop .form-control {
+    height: auto !important; 
+}
+</style>
+
 <div class="content-dashboard clearfix"> 
       <div class="clearfix dashboard-widget mb col-md-12 hdrPosition">
         <h4 class="clearfix">
@@ -25,6 +31,7 @@
         <div class="clearfix require_wrap_table dashboard-data filter_position"> 
                  <div id="onboardingLoading"></div>
         		 <div id="onboardingCandidatesList"></div>
+        		 <div id="rejectedReasonDiv"></div>
         </div>
       </div>
     </div>
@@ -79,19 +86,24 @@ function onboardingCandidatesList(){
 	                    		 result = result +"<td><div><span>"+opt.offerJoinDate+"</span></div></td>";
 	                    		 
 			                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
-				                     result = result +"<td><div><span>"+opt.paymentType+" "+opt.rate+" / "+opt.rateType+"</span></div></td>";
+				                     result = result +"<td><div><span title='"+opt.paymentType+" "+opt.rate+" / "+opt.rateType+"'>"+opt.paymentType+" "+opt.rate+" / "+opt.rateType+"</span></div></td>";
 			                     }else{
 				                     result = result +"<td><div><span>-----</span></div></td>";
 			                     }
 		                     
 			                     if(opt.positionType != null && opt.positionType != '' && opt.positionType != 'undefined'){
-			                    	 result = result +"<td><div><span>"+opt.positionType+"</span></div></td>";
+			                    	 result = result +"<td><div><span title='"+opt.positionType+"'>"+opt.positionType+"</span></div></td>";
 			                     }else{
 				                     result = result +"<td><div><span>-----</span></div></td>";
 			                     }
 			                     
 			                     if(opt.onboardStatus != null && opt.onboardStatus != '' && opt.onboardStatus != 'undefined'){
-			                    	 result = result +"<td><div><span>"+opt.onboardStatus+"</span></div></td>";
+			                    	 if(opt.onboardStatus == "Finished"){
+			                    		 result = result +"<td><div><span title='Sent'>Sent</span></div></td>";
+			                    	 }else{
+			                    		 result = result +"<td><div><span title='"+opt.onboardStatus+"'>"+opt.onboardStatus+"</span></div></td>";
+			                    	 }
+			                    	
 			                     }else{
 				                     result = result +"<td><div><span>Ready to onboard</span></div></td>";
 			                     }
@@ -99,10 +111,15 @@ function onboardingCandidatesList(){
 			                     '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
 				                     if(opt.onboardUUId != null && opt.onboardUUId != '' && opt.onboardUUId != 'undefined'){
 				                    	 if(opt.onboardStatus == 'Draft'){
-				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
+				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateDetails?onboardUUID="+opt.onboardUUId+"'><span class='text-success'>View Onboard</span></a></div></td>";
 				                    	 }else{
-				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span> </a> </div></td>";
+				                    		 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/viewOnboardCandidateSummary?onboardUUID="+opt.onboardUUId+"'> <span class='text-success'>View Onboard</span></i></a> ";
+				                    		 if(opt.onboardStatus == 'Submitted'){
+				                    			 result = result	+ '<span>&nbsp;&nbsp;|&nbsp;&nbsp;<a><i class="fa fa-check text-success" title="Accept" onclick="acceptOnboardingCandiate(\''+opt.onboardUUId+'\');"></i></a></span>&nbsp;&nbsp;&nbsp;<span><a><i class="fa fa-close text-danger" title="Reject" onclick="rejectedReason(\''+opt.onboardUUId+'\',\''+opt.candidateName+'\',\''+opt.candidateEmail+'\');"></i></a></span>';
+				                    		 }
+				                    		 
 				                    	 }
+				                    	 result = result +"</div></td>";
 				                    	
 				                    }else{
 				                    	result = result +"<td><div class='tbldata-dotdot-sm'><a href='"+sourceleadUrl+"/candidateOnBoardingDetails?candidateUUId="+opt.candidateUUID+"&offerUUID="+opt.offerUUID+"'><span class='text-success'>Onboard</span></a></div></td>";
@@ -124,7 +141,114 @@ function onboardingCandidatesList(){
             
        }); 
   } 
-</script>   
+</script> 
+
+
+  <script>
+  function acceptOnboardingCandiate(onboardCandidateUUID){
+	  var sourceleadUrl ='${sourceleadUrl}';
+	 	 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/acceptOnboardingCandiate?${_csrf.parameterName}=${_csrf.token}&onboardCandidateUUID="+onboardCandidateUUID, 
+		        success: function(result) {
+		        	 location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+		        },
+		    }); 
+  }
+  </script> 
+  
+  <script>
+ function rejectedReason(onboardCandidateUUID,candidateName,candidateEmail){
+	
+	    var result = "";
+		result = result + '	<div class="settPop">';
+		result = result + '	<div id="loading"></div>';
+		result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
+		result = result + '<input type="hidden" name="onboardCandidateUUID" value="'+onboardCandidateUUID+'">';
+		result = result + '	<h3>Onboard Rejected Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+		result = result + '	<div class="settPopInn"> ';
+		
+		result = result + '		<div class="clearfix">  ';
+		result = result + '		<div class="col-md-12">  ';
+		result = result + '		  <label class="col-md-2 paddingLeft" for="Candidate Name">Name :</label> ';
+		result = result + '		  <label class="col-md-8 paddingRight">'+candidateName+'</label> ';
+		result = result + '		</div>  ';
+
+		result = result + '		<div class="col-md-12">  ';
+		result = result + '		  <label class="col-md-2 paddingLeft" for="Email">Email :</label> ';
+		result = result + '		  <label class="col-md-8 paddingRight">'+candidateEmail+'</label> ';
+		result = result + '		</div>  ';
+		
+		
+		result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
+		result = result + '		  <div class="col-md-12 taskdesp mt10">   ';
+		result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+		result = result + '			<span class="hidden"></span> </div>  ';
+		result = result + '		</div>';
+		result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+		result = result + '		<div class="pull-right">  ';
+		result = result + '		  <input type="submit" value="Save" id="submit_rejectedReason"  class="btn btn-primary" >';
+		result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelRejectedReason();">';
+		result = result + '		</div>';
+		result = result + '		</div>';
+		result = result + '		<div class="clearfix"></div>   ';
+		result = result + '	</div>  ';
+		result = result + '</form>';
+		result = result + '	</div>';
+	    $("#rejectedReasonDiv").empty();
+	    $("#rejectedReasonDiv").append(result);
+	    
+	    $(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	    
+ }
+ </script> 
+ 
+ 
+ <script type="text/javascript">
+$('body').on('submit', '#rejectedReason_form', function(e){
+	  if ($(this).validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var frm = $('#rejectedReason_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      var sourceleadUrl ='${sourceleadUrl}';
+      
+        $("#submit_rejectedReason").attr("disabled", "disabled");
+		
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 	 $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/rejectOnboardedCandidate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	cancelRejectedReason();
+		        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+		        },
+		    }); 
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#rejectedReason_form', function() {
+		$("#rejectedReason_form").showHelpOnFocus();
+		$("#rejectedReason_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
+ 
+ 
+<script>
+function cancelRejectedReason(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script> 
 
 <script>
 function onboardingPagenation(){ 

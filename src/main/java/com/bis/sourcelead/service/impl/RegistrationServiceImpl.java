@@ -255,12 +255,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
+		/*saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
 		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
 		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
 		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
 		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template","NDA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");
+		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");*/
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		
@@ -273,8 +273,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 ContractsTemplate contractsTemplate = new ContractsTemplate();
 		 contractsTemplate.setTemplateName(templateStringBuilder.append(org.getOrgName()).append(template).toString());
 		 contractsTemplate.setDescription(templateStringBuilder.append(org.getOrgName()).append(template).toString());
+		 contractsTemplate.setTemplateContent("");
 		 contractsTemplate.setOrgLocationId(orgLocations);
 		 contractsTemplate.setTemplateType(templateType);
+		 contractsTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 contractsTemplate.setTemplateStatus(Constants.MEMBER_IN_ACTIVE);
 		 contractsTemplate.setUpdatedBy(user.getUserCode());
 		 contractsTemplate.setUpdatedDate(new Date());
@@ -848,7 +850,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 userService.addUser(user);
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","<font color='green'>Note : <b>Login with your existing Sourcelead password.</b></font>");
+			 globalVarsMap.put("password","<font color='green'><b>Login with your existing Sourcelead password.</b></font>");
 		 }
 		 
 		

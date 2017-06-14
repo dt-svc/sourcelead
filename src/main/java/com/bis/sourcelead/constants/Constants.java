@@ -88,6 +88,7 @@ public class Constants {
 	public static final String ONBOARDING_SUPPORTED = "Supported";
 	public static final String MAIL_TEAM_MEMBERS = "Mail To Team Members";
 	public static final String INVITE_USER = "Invite User";
+	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
 	public static final String ACCEPT_CLIENT_INVITATION = "Accept Client Invitation";
@@ -125,6 +126,8 @@ public class Constants {
 	public static final String MAIL_PROJECT_MANAGER_TIMESHEET = "Mail To Manager At Timesheet Submission";
 	public static final String MAIL_TEAM_MEMBERS_APPROVED_TIMESHEET = "Timesheet Approved By Approver";
 	public static final String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
+	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
+	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -242,6 +245,7 @@ public class Constants {
 	public static final DateFormat TMS_FORMAT = new SimpleDateFormat("HH:mm aa");
 	public static final String INTERVIEWER_INVITATION_REDIFINED = "Interviewer InvitationRedifined";
 	public static final String PROPOSE_NEW_TIME = "ProposeNewTime";
+	public static final String VENDOR_PROPOSE_NEW_TIME = "VendorProposeNewTime";
 	public static final String YES = "Y";
 	public static final String NO = "N";
 	public static final String WAIT = "W";
@@ -334,6 +338,8 @@ public class Constants {
 	/** For LookUpData (Eductions,Skills) **/
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
+	public static final String EXPENSESCATEGORY = "Expense Category";
+	
 	public static final String DOCUMENT_TYPE = "Document Type";
 	public static final String ADMIN = "Admin";
 	public static final String MAIL_SENT = "Sent";
@@ -352,6 +358,7 @@ public class Constants {
 	public static final String BI_WEEKLY = "Bi-Weekly";
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
+	public static final String YEARLY = "Yearly";
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
 	public static final String[] STATUS_DROPDOWN = { "Active", "In-Active", "New", "Negotiation",
@@ -364,7 +371,7 @@ public class Constants {
 			"status" };
 	public static final String[] CANDIDATE_EXCEL_HEADERS = { "Firstname", "Last name", "Email id",
 			"Phone Number", "Location", "Designation", "Education", "Experience", "Skills",
-			"Rate", "Vendor", "Vendor Contact"};
+			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
 	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Requirement id", "Requirement Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
 			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
@@ -589,10 +596,20 @@ public class Constants {
 	public static final String LINKED_STATUS =  "Linked";
 
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
+	public static final String EXPENSES_STATUS = "1";
 	
+
+	public static final String[] MY_EXPENSES_HEADERS ={"Expense Type","Date","Receipt Issued by","Payment Mode","Currency","Amount","Conversion Rate","Description"};
+
+	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
+			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
+			"Amount" , "Status"  , "Approved by"};
+
+
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
 	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
 	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
 	public static final String JOB_ALERTS = "JobAlerts";
+    public static final String UNDEFINED = "undefined";
 
 }

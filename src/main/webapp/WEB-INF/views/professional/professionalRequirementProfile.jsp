@@ -50,10 +50,11 @@ function requirementProfile(requirementUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var candidateId = '${SourceLeadWeb_candidateId}'
     var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	
+    var referUUID = '${referUUID}';
+    
     $.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
@@ -160,7 +161,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'                  <div class="row">';
 				 result = result +'                    <div class="col-md-12">';
 				 result = result +'                      <ul class="list-unstyled can-perdt">';
-				 
+				 result = result +'                        <li><i class="fa fa-building" title="Company"></i><span>'+json.postedOrgName+'</span></li>';
 				 if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
 				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+'-'+json.maxExp+' years</span></li>';
 				 }else if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
@@ -203,10 +204,10 @@ function requirementProfile(requirementUUID){
 				 
 				 if(json.isJobApplied == 'N'){
 					 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
-						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Apply</a>';
+						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob(\''+json.jobTitle+'\','+json.id+','+json.referId+');"  class="jobApply">Apply</a>';
 					 }
 					 if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
-						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob('+json.id+');"  class="jobApply">Submit</a>';
+						 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();applyToJob(\''+json.jobTitle+'\','+json.id+','+json.referId+');"  class="jobApply">Submit</a>';
 					 }
 				 }else{
 					 result = result +'<a href="javascript:void(0)" onclick="cancelReferPopUp();getSubmissionDetailsSideBar(\''+json.jobTitle+'\','+json.submissionId+','+candidateId+','+json.id+');" class="jobApply">Applied</a>';

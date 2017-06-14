@@ -551,7 +551,7 @@ public class CandidateServiceImpl implements CandidateService {
 		 int column=0;
 	        for(Candidate candidate : candidatesList){
 	       	 writeRow = createExcelsheet.createRow(column+1);
-	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate,isAssociate);
 	       	 column++;
 	        }
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -582,7 +582,7 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @param candidate
 	 * @return
 	 */
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate) {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate,String isAssociate) {
 	if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
 		 writeRow.createCell(0).setCellValue(candidate.getFirstName());
 	}
@@ -665,6 +665,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}else{
 			writeRow.createCell(11).setCellValue("--");
 	}
+	
+	if(isAssociate.equalsIgnoreCase(Constants.YES)){
+		if(null != candidate.getIsFavouriteAssociate() && candidate.getIsFavouriteAssociate() == 1){
+			writeRow.createCell(12).setCellValue("Y");
+		}else{
+			writeRow.createCell(12).setCellValue("--");
+		}
+	}else if(null != candidate.getIsFavourite() && candidate.getIsFavourite() == 1){
+			writeRow.createCell(12).setCellValue("Y");
+		}else{
+			writeRow.createCell(12).setCellValue("--");
+	}
+	
 	return createExcelsheet;
 }
 
@@ -1110,6 +1123,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<Candidate> getCandidatesListByOrgLocationIDAndUserId(Long orgLocationId, Long userId) throws Exception {
 		return candidateDao.getCandidatesListByOrgLocationIDAndUserId(orgLocationId, userId);
+	}
+
+	@Override
+	public List<Candidate> getCandidatesListByOrgLocationIdAndOrgRelationId(Long orgLocationId, Long orgRelationId) throws Exception
+	{
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationIdAndOrgRelationId(orgLocationId, orgRelationId);
+		for (Candidate candidate : candidateList) {
+			StringBuilder sb = new StringBuilder();
+			candidate.setCandidateName(sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString());
+			candidate.setEmail(candidate.getEmail());
+			candidate.setCandidateUpdateDateToString(Constants.DMY.format(candidate.getUpdatedDate()));
+			candidate.setPrimarySkill(candidate.getPrimarySkill());
+			StringBuilder stringBuilder = new StringBuilder();
+			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
+		}
+		return candidateList;
 	}
 
 }
