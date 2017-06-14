@@ -437,11 +437,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 			changeYear: true, 
 			dateFormat : 'dd-mm-yy',
 			onSelect : function(selected) {
-				var dt = new Date(selected);
-				var dt = toDate("#filterStartDate");
-				dt.setDate(dt.getDate() + 1);
-				$("#filterEndDate").datepicker("option", "minDate", dt);
-				addValidClass();
+				$("#filterEndDate").datepicker("option", "minDate", selected);
 			}
 		
 		});
@@ -450,32 +446,12 @@ var sourceleadUrl = '${sourceleadUrl}';
 			changeMonth: true,
 			changeYear: true, 
 			dateFormat : 'dd-mm-yy',
-			beforeShow: function(){
-		           this.value='';
-		     },
 			onSelect : function(selected) {
-				var dt = new Date(selected);
-				var dt = toDate("#filterEndDate");
-				dt.setDate(dt.getDate() - 1);
-				$("#filterStartDate").datepicker("option", "maxDate", dt);
-				addValidClass();
+				$("#filterStartDate").datepicker("option", "maxDate", selected);
 			}
 		});
 		
 	});
-</script>
-<script type="text/javascript"> 
-	function addValidClass(){
-		 var StartDate = document.getElementById("filterStartDate").value;
-		 if(StartDate){
-			 $('#reportStartDate').empty() 
-		 }
-		 
-		 var EndDate = document.getElementById("filterEndDate").value;
-		 if(EndDate){
-			 $('#reportEndDate').empty(); 
-		 }
-}
 </script>
 
 <script>
@@ -502,7 +478,9 @@ function exportToPdf(type){
 		{
 			expenseStatus.push($(this).val());
 		});
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
+		var startDate = $("#filterStartDate").val();
+		var endDate = $("#filterEndDate").val();
+		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
