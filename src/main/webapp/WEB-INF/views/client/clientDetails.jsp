@@ -51,6 +51,8 @@
 						result = result + '<strong>Website :</strong>';
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 						result = result + '<span title='+json.webSite+'>'+json.webSite+'</span><div class="clearfix"></div>';
+						}else{
+							result = result + '<span> --- </span><div class="clearfix"></div>';
 						}
 						result = result + '</div>';
 					
