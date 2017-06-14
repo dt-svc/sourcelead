@@ -821,7 +821,7 @@ function candidateProfile(candidateId,candidateType){
 							result = result +'		<div class="clearfix">';
 							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
 							if(candidateType == "Candidates"){
-								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\')">';
+								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
 								 '</sec:authorize>';
 							}else{

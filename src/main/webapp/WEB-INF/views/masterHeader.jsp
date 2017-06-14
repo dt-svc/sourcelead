@@ -381,34 +381,24 @@ document.onkeydown=function(e){
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
-	                     <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
+	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
 	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
-	                    	   
-	                    <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE',
-	                    'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                    	   <li class="templateLi">
-	                    	   			<a href="javascript:void(0)"><i class="fa fa-columns"></i>Templates <b class="fa fa-caret-down ml paddingLeft"></b></a>
-								<ul>	               		 
-	               		 
 	               		 <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
-	                    	   <li>
-	                    	   		<a href="<c:url value="/orgSubmissionTemplate"/>"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Submission
-	                    	   		</a>
-	                    	   </li>
+	                    	   <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 	                     </sec:authorize>
 
 						<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
-	                     <li><a href="<c:url value="/orgContractTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contract</a></li>
+	                     <li><a href="<c:url value="/orgContractTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Contract Template</a></li>
 						</sec:authorize>
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
 	                    	 <li><a href="<c:url value="/onboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Onboarding</a></li>
 	                      </sec:authorize>
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Offboarding</a></li>
-						  </sec:authorize>
-						  </ul>
-						  </li>	
+						  </sec:authorize>	
+						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
+						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
 	              </ul>
 	            </div>
@@ -516,7 +506,7 @@ function notificationStatusAsRead(){
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
 									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="myTaskDatpicker" id="myTaskDatpicker"  type="text" readonly="readonly">
-									<i class="fa fa-calendar"></i></span>
+									<i class="fa fa-calendar mr"></i></span>
 				               </div>	
 				          
 				            <div class="clearfix require_wrap_table">
@@ -528,8 +518,8 @@ function notificationStatusAsRead(){
 				          <div id="other-task" class="tab-pane fade">
 							 <div class="col-md-6 clearfix newdate">
 			                    <i class="fa fa-filter"></i>
-								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
-								<i class="fa fa-calendar"></i></span>
+								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm calendar"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
+								<i class="fa fa-calendar mr"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
 					              <div id="assignedTasksId"></div>
@@ -540,7 +530,7 @@ function notificationStatusAsRead(){
 				             <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
 									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="closedTaskDatpicker" id="closedTaskDatpicker" type="text" readonly="readonly">
-									<i class="fa fa-calendar"></i></span>
+									<i class="fa fa-calendar mr"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
 				               <div id="closedTasksId"></div>
@@ -615,7 +605,7 @@ function notificationStatusAsRead(){
 			              </div>
 			              <div class="col-md-6">
 			                <label class="checkbox-inline">
-			                	<input type="checkbox" value="Email" name="email">Email
+			                	<input type="checkbox" value="Email" name="email" checked>Email
 			                 </label>
 			                <label class="checkbox-inline">
 			                    <input type="checkbox" name="notification" value="Notification">Notification
@@ -886,12 +876,12 @@ function tasksList(status){
         			description = "---";
         		}
         		result = result + '       <tr>';
-        		result = result + '         <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + '         <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + '         <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + '         <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + '         <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + '         <td>'+alertType+'</td>';
+        		result = result + '         <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + '         <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + '         <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + '         <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
             	
        			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
@@ -968,12 +958,12 @@ function assignedTasksList(status){
         			description = "---";
         		}
         		result = result + ' <tr>';
-        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + ' <td>'+alertType+'</td>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
             	
 		        result = result + '<select id="assignTaskState'+report.id+'" name="assignTaskState" onchange="updateAssignTaskStatus('+report.id+');">';
@@ -1050,12 +1040,12 @@ function closedTasksList(status){
         			description = "---";
         		}
         		result = result + ' <tr>';
-        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + ' <td>'+alertType+'</td>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
 		        result = result + report.taskStatus;
             	
@@ -1218,5 +1208,4 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
-
 

@@ -107,7 +107,7 @@ width: 8%;
 						  <div class="propWrap">
 								  
 							<div class="propWrapRight">
-							  	<h2>Propose new time</h2>	  
+							  	<h2>Propose New Time</h2>	  
 							  <ul>
 								  <li><span>Requirement title:</span><b><i class="fa fa-briefcase"></i>${requirementInterview.submissionId.requirement.jobTitle}</b><div class="clearfix"></div></li>
 								  <li><span>Interview Date:</span><b><i class="fa fa-calendar"></i>${requirementInterviewDate}</b><div class="clearfix"></div></li>

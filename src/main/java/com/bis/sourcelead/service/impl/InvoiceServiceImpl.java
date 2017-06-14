@@ -758,7 +758,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
-		 globalVarsMap.put("address",invoice.getBillingAddress());
+		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
 		/* StringBuilder acceptBuilder = new StringBuilder();
 		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptedInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
@@ -1582,24 +1582,29 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				}
 				projectMember.setStartDate(startDateStr);
 				projectMember.setEndDate(endDateStr);
-				String billableHours = String.valueOf(sah.getBillableHours());;
-				String arr[] = billableHours.split("\\.");
+				String billableHours = String.valueOf(sah.getBillableHours());
 				StringBuilder sb = new StringBuilder();
-				if (arr[0].length() == 2) {
-					sb.append("0").append(arr[0]);
+				if(billableHours != null){
+					String arr[] = billableHours.split("\\.");
+					if (arr[0].length() == 2) {
+						sb.append("0").append(arr[0]);
+					}
+					else if (arr[0].length() == 3) {
+						sb.append(arr[0]);
+					}
+					else if (arr[0].length() == 1) {
+						sb.append("00").append(arr[0]);
+					}
+					if (arr[1].length() == 1) {
+						sb.append(":").append("0").append(arr[1]);
+					}
+					else {
+						sb.append(":").append(arr[1]);
+					}
+				}else{
+					sb.append("0");
 				}
-				else if (arr[0].length() == 3) {
-					sb.append(arr[0]);
-				}
-				else if (arr[0].length() == 1) {
-					sb.append("00").append(arr[0]);
-				}
-				if (arr[1].length() == 1) {
-					sb.append(":").append("0").append(arr[1]);
-				}
-				else {
-					sb.append(":").append(arr[1]);
-				}
+				
 				projectMember.setTotalHours(sb.toString());
 				projectMembersList.add(projectMember);
 			}

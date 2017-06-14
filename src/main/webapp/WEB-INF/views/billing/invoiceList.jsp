@@ -14,12 +14,8 @@ color:#337ab7 !important;
 .successBtn {
 background-color: #1ab394;
 border-color: #1ab394;
-cursor: default;
-    border: 1px solid;
-    color: #fff;
-    padding: 1px 5px;
-    border-radius: 3px;
-    font-size: 13px;
+cursor: default; border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
+font-size: 13px; width: 75px;
 }
 
 </style>
@@ -42,9 +38,6 @@ $(document).ready(function(){
       <div class="billing_dashboard">
         <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
-          <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')"> 
-			  <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Createnbm Invoice</a>
-			</sec:authorize>
             <div class="pull-right select-field ml">
               <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceList();customInvoiceList();">
                 <option value="month">Last 30 days</option>
@@ -197,8 +190,10 @@ $(document).ready(function(){
                             </li>
                           </ul>
                         </div>
-                      </li>                      
+                      </li>     
+                       <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
                       <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
+                     </sec:authorize>
                       <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
                       <div class="clearfix"></div>
                     </ul>
@@ -600,7 +595,7 @@ function getInvoiceList(){
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';
-				result = result +'     <div class="tblminwidth-75">';
+				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 				if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
 					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
@@ -608,8 +603,13 @@ function getInvoiceList(){
 				} 
 				result = result +'  </div> ';                 
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
-					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
+						if(report.paymentStatus == "Paid"){
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';
+						}else{
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>   ';	
+						}
+							
 					}else{
 						result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 					}
@@ -623,7 +623,7 @@ function getInvoiceList(){
 						
 					}else{
 						if(report.invoiceStatus == "Rejected"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Rejected</span>           ';	
+							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
 						}else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 						}

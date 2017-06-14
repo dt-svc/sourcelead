@@ -436,8 +436,20 @@ public class CandidateOnBoardRestController {
 		    
 		    response.setContentType("application/octet-stream");
 		    StringBuilder fileName = new StringBuilder();
-	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(templateDocuments.getFileName()).append("\"").toString());
-			InputStream inputStream = new ByteArrayInputStream(templateDocuments.getDocFile());
+		    InputStream inputStream = null;
+	        
+		    if(!isNullOrEmpty(templateDocuments.getUploadedDocFileName())){
+		    	response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(templateDocuments.getUploadedDocFileName()).append("\"").toString());
+		    }else{
+		    	response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(templateDocuments.getFileName()).append("\"").toString());
+		    }
+		    
+	        if(null != templateDocuments.getUploadedDocFile()){
+	        	inputStream = new ByteArrayInputStream(templateDocuments.getUploadedDocFile());
+	        }else{
+	        	inputStream = new ByteArrayInputStream(templateDocuments.getDocFile());
+	        }
+	        
 			try {
 				OutputStream outStream = response.getOutputStream();
 
@@ -1232,11 +1244,11 @@ public class CandidateOnBoardRestController {
 					       		     
 					       		    MultipartFile  multiFile = (MultipartFile)files.get("docFile"+contractsDocs.getId());
 					       		    if(multiFile != null && !multiFile.isEmpty()){
-					       			contractsDocs.setDocFile(multiFile.getBytes());
-					       			contractsDocs.setFileName(multiFile.getOriginalFilename());
+					       			contractsDocs.setUploadedDocFile(multiFile.getBytes());
+					       			contractsDocs.setUploadedDocFileName(multiFile.getOriginalFilename());
 				                       
 				                       if(null != multiFile.getContentType()){
-				                    	   contractsDocs.setFileContentType(multiFile.getContentType());
+				                    	   contractsDocs.setUploadedFileContentType(multiFile.getContentType());
 				                       }
 				                       contractsDocs.setDocumentStatus(OnboardStatus.ACCEPTED);
 				                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(contractsDocs);
@@ -1262,11 +1274,11 @@ public class CandidateOnBoardRestController {
 					       		     
 					       		    MultipartFile  multiFile = (MultipartFile)files.get("docFile"+formsDocs.getId());
 					       		    if(multiFile != null && !multiFile.isEmpty()){
-					       		    	formsDocs.setDocFile(multiFile.getBytes());
-					       		    	formsDocs.setFileName(multiFile.getOriginalFilename());
+					       		    	formsDocs.setUploadedDocFile(multiFile.getBytes());
+					       		    	formsDocs.setUploadedDocFileName(multiFile.getOriginalFilename());
 				                       
 				                       if(null != multiFile.getContentType()){
-				                    	   formsDocs.setFileContentType(multiFile.getContentType());
+				                    	   formsDocs.setUploadedFileContentType(multiFile.getContentType());
 				                       }
 				                       formsDocs.setDocumentStatus(OnboardStatus.ACCEPTED);
 				                       onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(formsDocs);
@@ -1902,7 +1914,14 @@ public class CandidateOnBoardRestController {
 			 
 			 
 			 OnBoardingTemplateDocuments document = onBoardingTemplateDocumentsService.getOnBoardingTemplateDocumentsBydocumentUUID(documentUUID);
-			 document.setDocumentStatus(OnboardStatus.PENDING);
+			 
+			 if(null != document){
+				 document.setUploadedDocFile(null);
+				 document.setUploadedDocFileName(null);
+				 document.setUploadedFileContentType(null);
+				 document.setDocumentStatus(OnboardStatus.PENDING);
+			 }
+			
 			 onBoardingTemplateDocumentsService.saveOnBoardingTemplateDocuments(document);
 			 return "success";
 			 
