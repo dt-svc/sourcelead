@@ -687,11 +687,8 @@ public class LoginSessionController {
 			candidateOnBoarding.setDueDateStr(Constants.DMY.format(candidateOnBoarding.getDueDate()));
 		}
 		
-		if(null != candidateOnBoarding.getTeamId()){
-			Team team = teamService.getTeamByTeamId(candidateOnBoarding.getTeamId().getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "teamName", team.getName());
-			
-			
+		
+		if(null != candidateOnBoarding.getManagerUserId()){
 			StringBuilder managerName = new StringBuilder();
 			String manager  = null;
 			if(!isNullOrEmpty(candidateOnBoarding.getManagerUserId().getLastName())){
@@ -701,6 +698,11 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "managerName", manager);
+		}
+		
+		if(null != candidateOnBoarding.getTeamId()){
+			Team team = teamService.getTeamByTeamId(candidateOnBoarding.getTeamId().getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "teamName", team.getName());
 			
 			StringBuilder teamOwnerName = new StringBuilder();
 			String teamOwnerUserName  = null;

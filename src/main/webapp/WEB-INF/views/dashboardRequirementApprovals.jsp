@@ -9,6 +9,9 @@
           <h4 class="clearfix">Requirement Approvals &nbsp;&nbsp;<!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
           <div class="clearfix require_wrap_table dashboard-data filter_position">
+           <div class="success_pop" id="selector4" style="display: none;">
+  		<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>
+   		 </div>
             <ul class="nav nav-tabs">
               <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
               <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
@@ -110,7 +113,7 @@ function requirementApproverList(statusType){
  				            result = result +"<td>";
 				             if(opt.requirementSubmissionStatus  !='DRAFT'  && opt.requirementSubmissionStatus  !='OPEN'  &&  opt.requirementApproverHierarchyStatus !='APPROVED' &&  opt.requirementApproverHierarchyStatus != 'REJECTED' && opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null){
 				            	
-				            	 result = result + '<a  href="javascript:void(0)" title="Accept"  onClick="updateReuqirementStatus(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
+				            	 result = result + '<a  href="javascript:void(0)" title="Accept"  onClick="updateReuqirementStatusAccept(\''+ APPROVED+ '\','+opt.id+');"   ><i class="fa fa-check text-success"></i></a>';
 		                    	 result = result + '<a  href="javascript:void(0)" title="Reject"  onClick="rejectRequirementAlertMessage(\''+ REJECTED+ '\','+opt.id+');"  ><i class="fa fa-close text-danger"></i></a>';
    				           	 
 				             }else if((opt.requirementApproverHierarchyStatus == 'APPROVED' ||  opt.requirementSubmissionStatus == 'OPEN')  || (opt.requirementApproverHierarchyStatus !='' && opt.requirementApproverHierarchyStatus !='undefined' && opt.requirementApproverHierarchyStatus !=null)){
@@ -173,6 +176,61 @@ function requirementApprovalPagination(){
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
+
+<script>
+	function eduMsgFadeinFunction() {
+		$("#selector4").fadeIn(200);
+        $('#selector4').delay(2000).fadeOut('slow');
+	}
+</script> 
+<script>
+function updateReuqirementStatusAccept(status,requirementId){
+    
+    var sourceleadUrl = '${sourceleadUrl}';
+    var requirementId = requirementId;
+    
+    
+    
+     var reason;
+     if ($('#rejectReason').length)
+     {
+         reason = document.getElementById("rejectReason").value;
+     }
+     else
+     {
+         reason = '';
+     }
+    $.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/requirementsAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason,
+              success :function(data) {  
+            if(data != null && data != 'undefined' && data != ""){  
+                   if( data.indexOf('Sign In') >= 0){
+                        location.replace(sourceleadUrl);
+                     }
+                   else if (data.indexOf('exception') >= 0) {
+                       location.replace(sourceleadUrl+"/errorPage");
+                   }
+                   else{
+                      requirementApproverList('SUBMITTED');
+                      if(status=='APPROVED'){
+         				 
+         				 $("#selector4").removeAttr("style");
+		            			$("#selector4").css({ display: "block" });
+	            				$("#eduMsgDiv").html("Accepted");
+		               			eduMsgFadeinFunction();
+		               				 
+         				 
+         				 
+         			 }
+                   }
+            }
+       },
+      });
+}
+</script>
+
+
 <script>
 function updateReuqirementStatus(status,requirementId){
 	
@@ -193,6 +251,16 @@ function updateReuqirementStatus(status,requirementId){
           		 }
           		 else{ 
           			requirementApproverList('SUBMITTED');
+          			 if(status=='REJECTED'){
+            			 
+	            			$("#selector4").removeAttr("style");
+	            			$("#selector4").css({ display: "block" });
+         				$("#eduMsgDiv").html("Rejected");
+	               			eduMsgFadeinFunction();
+	               			
+         			 }
+          			
+          			
           		 }
             }
        },
