@@ -758,7 +758,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
-		 globalVarsMap.put("address",invoice.getBillingAddress());
+		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
 		/* StringBuilder acceptBuilder = new StringBuilder();
 		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptedInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
