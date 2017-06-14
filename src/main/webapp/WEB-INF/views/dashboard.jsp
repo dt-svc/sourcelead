@@ -101,6 +101,11 @@ overflow-x: auto;
 					<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
 				</c:if>
 		     </sec:authorize>
+		     
+	    </div>
+	    
+	    <div class="clearfix row mb">
+		     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
 	    </div>
 	    	
 	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
