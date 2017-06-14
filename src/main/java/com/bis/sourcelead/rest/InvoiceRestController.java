@@ -732,6 +732,7 @@ public class InvoiceRestController {
 					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
+				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
 					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if(null != candidate){

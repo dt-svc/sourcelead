@@ -575,8 +575,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"candidate") && !"".equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
-						 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
-						 invoiceLineItems.setCandidate(candidate);
+						 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
+							 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
+							 invoiceLineItems.setCandidate(candidate);
+						 }
+						 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"user"))){
+							 User usr = userService.getUserById(Long.parseLong(jsonObj.getString(i+"user")));
+							 invoiceLineItems.setUser(usr);
+						 }
 					 }
 					 
 					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
