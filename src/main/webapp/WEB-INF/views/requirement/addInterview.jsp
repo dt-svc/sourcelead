@@ -622,7 +622,7 @@ function getNotifyToOtersVal(){
 		    });     
         }
         else if(selectedInterviewApplicants == 0){
-        	alertInterviewMessage("<b>Selected Applicants</b>");
+        	alertInterviewMessage("<b>Select an applicant before submission</b>");
         }
         else{
         	alertInterviewMessage("<b>Selected Applicants should not more than 50</b>");
