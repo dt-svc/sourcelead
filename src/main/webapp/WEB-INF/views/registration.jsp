@@ -498,7 +498,10 @@ function resetCredentials(type){
 	$("#lastName").val('');
 	$("#email").val('');
 	$("#location").val('');
-
+	
+	$('#emailDiv').find('p.jquery_form_error_message').remove(); 
+	$('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+	
 	$("#recruiterFirstName").val('');
 	$("#recruiterLastName").val('');
 	$("#recruiterEmail").val('');
@@ -766,6 +769,14 @@ var validationSettings = {
 			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
 			        		}
 			        		
+			        	}else if((result == 'login')){
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
+			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/login?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/login");  
+			        		}
+			        		
 			        	}
 			        	
 			        },  
@@ -832,6 +843,12 @@ var validationSettings = {
 			        			location.replace(sourceleadUrl+"/resetloginCredentials?requirementUUID="+requirementUUID);  
 			        		}else{
 			        			location.replace(sourceleadUrl+"/resetloginCredentials");  
+			        		}
+			        	}else if((result == 'login')){
+			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
+			        			location.replace(sourceleadUrl+"/login?requirementUUID="+requirementUUID);  
+			        		}else{
+			        			location.replace(sourceleadUrl+"/login");  
 			        		}
 			        	}
 			        	
