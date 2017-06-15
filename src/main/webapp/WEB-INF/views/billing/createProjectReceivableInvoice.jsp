@@ -395,6 +395,7 @@ function populateInlineItemsGrid(data){
              result = result +'<td>';
              result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
              result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
+             result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
              result = result +' </td>';
              result = result +'  <td>';
              result = result +' <div class="tbldata-dotdot-100 select-field">';
@@ -534,6 +535,7 @@ function populateInlineItemsGrid1(data){
     	 result = result +'<td>';
     	 result = result +' <div class="tbldata-dotdot-vsm select-field" id="'+i+'candidateName" name="'+i+'candidateName" data-validation="required" field-name="Candidate Name">'+opt.candidateName+'</div>';
     	 result = result +' <input type="hidden" value='+opt.candidateId+' id="'+i+'candidate" name="'+i+'candidate">';
+    	  result = result +' <input type="hidden" value='+opt.userId+' id="'+i+'user" name="'+i+'user">';
     	 result = result +' </td>';
     	 result = result +'  <td>';
     	 result = result +' <div class="tbldata-dotdot-100 select-field">';
@@ -606,7 +608,6 @@ function populateInlineItemsGrid1(data){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var maxRowNum = $("#maxTsRowNum").val();
 		  for(var id=0;id < maxRowNum;id++){
-			  alert("id "+id); 
 			    var result = "";
 	        	result = result + "<option value='' >select sow</option>"
 			  var candidateId = $("#"+id+'candidate').val();
