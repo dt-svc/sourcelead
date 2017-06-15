@@ -688,10 +688,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-				}else if(null != contracts.getOwnerUserId().getLastName()){
-					ownerName.append(contracts.getOwnerUserId().getFirstName());	
 				}else{
-					ownerName.append("---");
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
 			}else{
 				ownerName.append("---");
@@ -768,10 +766,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-				}else if(null != contracts.getOwnerUserId().getLastName()){
-					ownerName.append(contracts.getOwnerUserId().getFirstName());	
 				}else{
-					ownerName.append("---");
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
 			}else{
 				ownerName.append("---");
@@ -780,8 +776,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
 					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
-				}else if(null != contracts.getContactUser().getLastName()){
-					vendorName.append(contracts.getContactUser().getFirstName());	
 				}else{
 					vendorName.append("---");
 				}
@@ -845,10 +839,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-				}else if(null != contracts.getOwnerUserId().getLastName()){
-					ownerName.append(contracts.getOwnerUserId().getFirstName());	
 				}else{
-					ownerName.append("---");
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
 			}else{
 				ownerName.append("---");
