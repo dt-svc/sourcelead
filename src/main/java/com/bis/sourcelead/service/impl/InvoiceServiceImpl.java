@@ -1109,15 +1109,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
 			for(String id :submissionApproverHierarchyIds){
 				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
-					SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
-					if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
-						submissionApproverHierarchy.setBillingStatus(Constants.SENT);
-					}else{
-						submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
-					}
-					submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
 				}
-				
 			}
 		}
 	}

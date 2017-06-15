@@ -43,10 +43,11 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	EmployerPayrollCostDao employerPayrollCostDao;
 
 	@Override
-	public String saveEmployerPayrollCost(MultipartFile multipartFile,OrgLocations orgLocation,User user ) throws Exception {
-		
+	public String saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user)
+			throws Exception {
+
 		String fileName = multipartFile.getOriginalFilename();
-		Workbook workbook = null ;
+		Workbook workbook = null;
 
 		if (fileName.endsWith("xlsx")) {
 			workbook = new XSSFWorkbook();
@@ -54,111 +55,102 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			workbook = (Workbook) new HSSFWorkbook();
 		}
 
-//		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
-//		createExcelsheet = setExcelHeader(createExcelsheet);
-	
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
 			multipartFile.transferTo(file);
 			FileInputStream fis = new FileInputStream(file);
-//			Workbook workbook;
-			logger.debug("===========================FIle Extension is: " + multipartFile.getOriginalFilename());
-//				boolean isValidated = false;
-//				boolean isUserFound = false;
-				workbook = WorkbookFactory.create(fis);
+			workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
-			DataFormatter objDefaultFormat = new DataFormatter();
-			FormulaEvaluator objFormulaEvaluator = new HSSFFormulaEvaluator((HSSFWorkbook) workbook);
 			for (int i = 0; i < numberOfSheets; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
-				int count = 0;
 				Iterator<Row> rowIterator = sheet.iterator();
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-//					if (row.getRowNum() > 0) {
-//						isValidated = validateExeclData(row,userImport,fileName);
-//					}
 					if (true) {
 						if (row.getRowNum() > 0) { // Excluding column names
-							logger.info("Reading Row :" + row.getRowNum() + " records");
+							EmployerPayrollCost  employerPayrollCost = new EmployerPayrollCost();
+							float grossWages =0f;
+							float fica =0f;
+							float futa =0f;
+							float sui =0f;
+							float erLocals =0f; 
+							float wcCost =0f;
+							float adminFee =0f; 
+							float totalErCost =0f; 
 							if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(0),fileName));
-							} else {
-								logger.info("*******Cell(0)*********************Empty");
-							}
+								String empName = getCellValueAsString(row.getCell(0), fileName);
+								employerPayrollCost.setEmployeeName(empName);
+							} 
 							if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(1),fileName));
-							} else {
-								logger.info("*******Cell(1)*********************Empty");
-							}
+								String empId = getCellValueAsString(row.getCell(1), fileName);
+								employerPayrollCost.setEmployeeId(empId);
+							} 
 							if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(2),fileName));
-							} else {
-								logger.info("*******Cell(2)*********************Empty");
-							}
+								String ssn = getCellValueAsString(row.getCell(2), fileName);
+								employerPayrollCost.setSsn(ssn);
+							} 
 							if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
-								objFormulaEvaluator.evaluate(row.getCell(3)); // This will evaluate the cell, And any type of cell will return string value
-							    String cellValueStr = objDefaultFormat.formatCellValue(row.getCell(3),objFormulaEvaluator);
-								logger.info("++++++++++++++++++++++ "+cellValueStr);
-							} else {
-								logger.info("*******Cell(3)*********************Empty");
-							}
+								String totalHrs = getCellValueAsString(row.getCell(3), fileName);
+								employerPayrollCost.setTotalHrs(totalHrs);
+							} 
 							if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-								objFormulaEvaluator.evaluate(row.getCell(4)); // This will evaluate the cell, And any type of cell will return string value
-							    String cellValueStr = objDefaultFormat.formatCellValue(row.getCell(4),objFormulaEvaluator);
-								logger.info("****************************"+cellValueStr);
-							} else {
-								logger.info("*******Cell(4)*********************Empty");
-							}
+								 grossWages = Float.parseFloat(getCellValueAsString(row.getCell(4), fileName));
+								employerPayrollCost.setGrossWages(grossWages);
+							} 
 							if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(5),fileName));
-							} else {
-								logger.info("*******Cell(5)*********************Empty");
-							}
+								 fica = Float.parseFloat(getCellValueAsString(row.getCell(5), fileName));
+								employerPayrollCost.setFica(fica);
+							} 
 							if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(6),fileName));
-							} else {
-								logger.info("*******Cell(6)*********************Empty");
-							}
-							
+								 futa = Float.parseFloat(getCellValueAsString(row.getCell(6), fileName));
+								employerPayrollCost.setFuta(futa);
+							} 
 							if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(7),fileName));
-							} else {
-								logger.info("*******Cell(7)*********************Empty");
-							}
+								 sui = Float.parseFloat(getCellValueAsString(row.getCell(7), fileName));
+								employerPayrollCost.setSui(sui);
+							} 
 							if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(8),fileName));
-							} else {
-								logger.info("*******Cell(8)*********************Empty");
-							}
+								 erLocals = Float.parseFloat(getCellValueAsString(row.getCell(8), fileName));
+								employerPayrollCost.setErLocals(erLocals);
+							} 
 							if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(9),fileName));
-							} else {
-								logger.info("*******Cell(9)*********************Empty");
-							}
+								 wcCost = Float.parseFloat(getCellValueAsString(row.getCell(9), fileName));
+								employerPayrollCost.setWcCost(wcCost);
+							} 
 							if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(10),fileName));
-							} else {
-								logger.info("*******Cell(10)*********************Empty");
-							}
+								 adminFee = Float.parseFloat(getCellValueAsString(row.getCell(10), fileName));
+								employerPayrollCost.setAdminFee(adminFee);
+							} 
 							if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
-								logger.info("****************************"+getCellValueAsString(row.getCell(11),fileName));
-							} else {
-								logger.info("*******Cell(11)*********************Empty");
-							}
+								 totalErCost = Float.parseFloat(getCellValueAsString(row.getCell(11), fileName));
+								employerPayrollCost.setAdminFee(totalErCost);
+							} 
+							
+							logger.info("=================="+employerPayrollCost.getEmployeeName());
+							logger.info("=================="+employerPayrollCost.getEmployeeId());
+							logger.info("=================="+employerPayrollCost.getSsn());
+							logger.info("=================="+employerPayrollCost.getTotalHrs());
+							logger.info("=================="+employerPayrollCost.getGrossWages());
+							logger.info("=================="+employerPayrollCost.getFica());
+							logger.info("=================="+employerPayrollCost.getFuta());
+							logger.info("=================="+employerPayrollCost.getSui());
+							logger.info("=================="+employerPayrollCost.getErLocals());
+							logger.info("=================="+employerPayrollCost.getWcCost());
+							logger.info("=================="+employerPayrollCost.getAdminFee());
+							logger.info("=================="+employerPayrollCost.getTotalErCost());
 							
 						}
-					} 
+					}
 				}
-			
 
 			}
 			fis.close();
 		} catch (IOException e) {
-			 logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 		}
-		
-		EmployerPayrollCost employerPayrollCost = employerPayrollCostDao.saveEmployerPayrollCost(new EmployerPayrollCost());
+
+		EmployerPayrollCost employerPayrollCost = employerPayrollCostDao
+				.saveEmployerPayrollCost(new EmployerPayrollCost());
 		return "";
 	}
 

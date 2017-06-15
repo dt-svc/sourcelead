@@ -171,12 +171,23 @@ public class InvoicePdfHelper {
 
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 				if(invoiceLineItems.getCandidate() !=null){
-					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
-					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
-						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+					Employees employee = null;
+					if(invoiceLineItems.getCandidate() !=null){
+						if(invoiceLineItems.getCandidate().getConsultantUser() != null){
+							employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+						}
 					}else{
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						employee=employeesService.getEmployeeByUserId(invoiceLineItems.getUser().getId());
 					}
+					 	
+					if(employee != null){
+						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
+							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+						}else{
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						}	
+					}
+					
 				}else{
 					if(invoiceLineItems.getUser() !=null){
 						table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
@@ -368,12 +379,21 @@ public class InvoicePdfHelper {
 				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
 					if(invoiceLineItems.getCandidate() !=null){
-							Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+						Employees employee = null;
+						if(invoiceLineItems.getCandidate() !=null){
+							if(invoiceLineItems.getCandidate().getConsultantUser() != null){
+							 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
+							}
+						}else{
+							 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getUser().getId());
+						}
+						if(employee != null){
 							if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 								table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
 							}else{
 								table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 							}
+						}
 					}else{
 						if(invoiceLineItems.getUser() !=null){
 							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));

@@ -91,4 +91,186 @@ public class EmployerPayrollCost implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public String getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(String ssn) {
+		this.ssn = ssn;
+	}
+
+	public String getTotalHrs() {
+		return totalHrs;
+	}
+
+	public void setTotalHrs(String totalHrs) {
+		this.totalHrs = totalHrs;
+	}
+
+	public float getGrossWages() {
+		return grossWages;
+	}
+
+	public void setGrossWages(float grossWages) {
+		this.grossWages = grossWages;
+	}
+
+	public float getFica() {
+		return fica;
+	}
+
+	public void setFica(float fica) {
+		this.fica = fica;
+	}
+
+	public float getFuta() {
+		return futa;
+	}
+
+	public void setFuta(float futa) {
+		this.futa = futa;
+	}
+
+	public float getSui() {
+		return sui;
+	}
+
+	public void setSui(float sui) {
+		this.sui = sui;
+	}
+
+	public float getErLocals() {
+		return erLocals;
+	}
+
+	public void setErLocals(float erLocals) {
+		this.erLocals = erLocals;
+	}
+
+	public float getWcCost() {
+		return wcCost;
+	}
+
+	public void setWcCost(float wcCost) {
+		this.wcCost = wcCost;
+	}
+
+	public float getAdminFee() {
+		return adminFee;
+	}
+
+	public void setAdminFee(float adminFee) {
+		this.adminFee = adminFee;
+	}
+
+	public float getTotalErCost() {
+		return totalErCost;
+	}
+
+	public void setTotalErCost(float totalErCost) {
+		this.totalErCost = totalErCost;
+	}
+
+	public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getBatchNumber() {
+		return batchNumber;
+	}
+
+	public void setBatchNumber(String batchNumber) {
+		this.batchNumber = batchNumber;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
 }
