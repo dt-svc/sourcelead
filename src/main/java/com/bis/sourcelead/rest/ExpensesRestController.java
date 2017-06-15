@@ -47,25 +47,28 @@ public class ExpensesRestController {
 	
 	@RequestMapping(value = "/getExpensesList")
 	 public String getExpensesList(HttpServletRequest request, String expenseStatus) throws Exception {
-		String resultJson;
+		String resultJson="";
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus);
-		for(Expenses ex:expensesList){
-			if(null != ex.getProjectMembers())
-			{
-				ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
+		if(expensesList != null && expensesList.size() >0){
+			for(Expenses ex:expensesList){
+				if(null != ex.getProjectMembers())
+				{
+					ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
+				}
+				if(null != ex.getStartDate())
+				{
+				ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+				}
+				if(null != ex.getEndDate())
+				{
+					ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+				}
 			}
-			if(null != ex.getStartDate())
-			{
-			ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
-			}
-			if(null != ex.getEndDate())
-			{
-				ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
-			}
+			resultJson = commonUtil.toJSON(expensesList);
 		}
-		resultJson = commonUtil.toJSON(expensesList);
+		
 		return resultJson;
 	 }
 	
@@ -122,10 +125,64 @@ public class ExpensesRestController {
 		
 		Expenses ExpenseDetails = expensesService.getExpenseByExpenseId(Long.parseLong(Expid));
 
-		if(type.equalsIgnoreCase("PDF")){
-			file = expensesService.exportMyExpensesToPdf(ExpenseDetails,orgLoc,loginUser);
-		}else{
-			file = expensesService.exportMyExpensesToExcel(ExpenseDetails,orgLoc,loginUser);	
+		if(ExpenseDetails != null){
+			if(type.equalsIgnoreCase("PDF")){
+				file = expensesService.exportMyExpensesToPdf(ExpenseDetails,orgLoc,loginUser);
+			}else{
+				file = expensesService.exportMyExpensesToExcel(ExpenseDetails,orgLoc,loginUser);	
+			}
+		}
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file != null){
+			file.delete();
+		}
+	 }
+	
+	@RequestMapping(value = "/exportAllMyExpensesList")
+	 public void exportAllMyExpensesList(HttpServletRequest request,HttpServletResponse response,
+			 @RequestParam(value = "type", required = false) String type,
+			 @RequestParam(value = "expenseStatus", required = false) String expenseStatus) throws Exception {
+		
+		File file = null;
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		
+		List<Expenses> expensesList = expensesService.getAllExpenses(orgLoc,loginUser, expenseStatus);
+		if(expensesList != null && expensesList.size() > 0){
+			for(Expenses ex:expensesList){
+				if(null != ex.getProjectMembers())
+				{
+					ex.setProjectMemberId(ex.getProjectMembers().getProjects().getProjectName());	
+				}
+				if(null != ex.getStartDate())
+				{
+					ex.setStartDateStr(Constants.DF_DMY.format(ex.getStartDate()));
+				}
+				if(null != ex.getEndDate())
+				{
+					ex.setEndDateStr(Constants.DF_DMY.format(ex.getEndDate()));
+				}
+			}
+
+			if(type.equalsIgnoreCase("PDF")){
+				file = expensesService.exportAllMyExpensesToPdf(expensesList,orgLoc,loginUser);
+			}else{
+				file = expensesService.exportAllMyExpensesToExcel(expensesList,orgLoc);	
+			}
 		}
 		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());

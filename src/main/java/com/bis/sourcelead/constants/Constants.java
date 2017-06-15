@@ -445,7 +445,7 @@ public class Constants {
 	public static final String MAIL_DELETE = "Deleted";
 	public static final String MAIL_REQUESTED = "Requested";
 	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name", "Emp Email", "Start Date",
-			"End Date", "Approved Hrs", "Rejected Hrs", "Wiating for Approval", "Saved Hrs" };
+			"End Date", "Approved Hrs", "Rejected Hrs", "Waiting for Approval", "Saved Hrs" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
@@ -609,6 +609,8 @@ public class Constants {
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
 			"Amount" , "Status"  , "Approved by"};
+	
+	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense","purpose","Project","Client","Start Date","End Date","No of Exp","Amount","Status"};
 
 
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
