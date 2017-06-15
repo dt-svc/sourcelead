@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -104,6 +105,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	@Autowired
+	CandidateService candidateService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -342,6 +345,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		if(onboardingUserRole == null){
 			onboardingUserRole = saveUserRoles(candidateOnBoarding,onboardingUser,loginUser,orgLocations);
 		    userRoleDao.addUserRole(onboardingUserRole);
+		}
+		
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		if(null != candidate){
+			candidate.setConsultantUser(onboardingUser);
+			candidateService.addCandidate(candidate);
 		}
 	    
 	    onboardingEmployee = employeesDao.getEmployeeByUserIdAndOrgLocationsId(onboardingUser.getId(), orgLocations.getId());

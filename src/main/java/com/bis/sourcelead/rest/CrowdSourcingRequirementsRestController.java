@@ -203,18 +203,23 @@ public class CrowdSourcingRequirementsRestController {
 	     }
 	     
 	     else if(requirementType.equalsIgnoreCase("ReferredByMe")){
-    			 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
-    			 if(referedRequirementList.size() > 0){
-    				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();
-    				 for(int i=0; i<referedRequirementList.size(); i++){
-    					 subBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementId", referedRequirementList.get(i)));
-	    			 } 
-    				 
-    				 boolQueryBuilder.must(subBoolQueryBuilder);
-    				 
-    			 }else{
-    				 isELKSearchEnable = false;
-    			 }
+	    	 
+	    	  if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+	    	     boolQueryBuilder.mustNot(QueryBuilders.matchQuery("isPublicJob", "Y"));
+	    	  }
+			
+	    	 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
+			 if(referedRequirementList.size() > 0){
+				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();
+				 for(int i=0; i<referedRequirementList.size(); i++){
+					 subBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementId", referedRequirementList.get(i)));
+    			 } 
+				 
+				 boolQueryBuilder.must(subBoolQueryBuilder);
+				 
+			 }else{
+				 isELKSearchEnable = false;
+			 }
     			 
     	 }
 	     
@@ -280,7 +285,7 @@ public class CrowdSourcingRequirementsRestController {
 		 						userId.add(Long.parseLong(s));
 		 					 }
 		 					boolean flag = userId.contains(user.getId());
-		 					if(flag == true){
+		 					if(flag == true && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 		 						requirementIndex.setIsJobApplied(Constants.YES);
 		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 		 		 	    		   if(null != submission){

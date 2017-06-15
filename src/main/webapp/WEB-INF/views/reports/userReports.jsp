@@ -77,7 +77,7 @@
  <c:if test="${requirementTabAccess == true }">
   <div style="overflow: auto;" class=" vendor_wrap"> 
    
-   <div class="pull-left reportBtns mt10">
+   <div class="pull-left reportBtns mt5 mb10">
 <h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
@@ -112,7 +112,7 @@
  <div class="timesheet_out mt40">
     <div class="vendor_wrap">
       <div class="timesheet_head">
-<div class="pull-left reportBtns mt10">
+<div class="pull-left reportBtns mt5 mb10">
 <h4 class="pull-left mr">Vendors Report</h4>
 	  <div class="reportBtn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
@@ -163,7 +163,7 @@
  <div class="timesheet_out mt40">
     <div class="vendor_wrap clearfix">
       <div class="timesheet_head">
-<div class="pull-left reportBtns mt10">
+<div class="pull-left reportBtns mt5 mb10">
 <h4 class="pull-left mr">Billing Report</h4>
 	  <div class="reportBtn select-field pull-left">
 		<select class="form-control" id="billingReportType" onChange="flushBillingCustom(); getBillingReports('Receivable');custBillingDates();">

@@ -2388,7 +2388,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String subQuery = "";
 			 if(sowType.equalsIgnoreCase("Client SOW")){
-		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
