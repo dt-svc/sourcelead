@@ -53,6 +53,11 @@ public class ExpensesCategoryController {
 		return str == null || "".equals(str.trim());
 	}
 	
+	/**
+	 * Handles to display expenseCategory jsp (this page having ExpensesCategoryList,AddExpensesCategory),
+	 * @return ModelAndView
+	 * @throws Exception
+	 */
 	
 	@RequestMapping(value = "/expenseCategory")
  	public ModelAndView expenseCategory(HttpServletRequest request) throws Exception {
@@ -80,19 +85,15 @@ public class ExpensesCategoryController {
 		    		   expensesCategoryDao.storeExpenseCategory(expensesCategory); 
 		    	  }
 		    }
-		  
-		  
 		    
 		    model.addObject("lookUpExpCatList", lookUpExpCatList);
-		    
-		    
-		    
 		    
 		    List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLocations.getId());
 		    model.addObject("expensesCategoryList", expensesCategoryList);
 		    
 		    model.setViewName("expenses/expenseCategory");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			
  			return model;
  	}
 	
