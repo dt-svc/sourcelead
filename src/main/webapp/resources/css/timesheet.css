@@ -4915,6 +4915,3 @@ width: 100% !important; margin: 0px !important;
 .setTog {
 	position: absolute; right: 0px; top: 10px; color: #95ccff;
 }
-input[type="text"] {
-	margin: 0px; margin-bottom: 0px !important;
-}
