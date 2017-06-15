@@ -685,6 +685,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
 			if(null != contracts.getOwnerUserId()){
+				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 				}else if(null != contracts.getOwnerUserId().getLastName()){
@@ -740,6 +741,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 
 			if(null != contracts.getApproverUser() ){
+				contracts.setApproverUserId(contracts.getApproverUser().getId());
 				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
 					StringBuilder sb = new StringBuilder();
 					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
@@ -763,6 +765,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
 			if(null != contracts.getOwnerUserId()){
+				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 				}else if(null != contracts.getOwnerUserId().getLastName()){
@@ -817,6 +820,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 			
 			if(null != contracts.getApproverUser()){
+				contracts.setApproverUserId(contracts.getApproverUser().getId());
 				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
 					StringBuilder sb = new StringBuilder();
 					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
@@ -838,6 +842,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		for(Contracts contracts : fullTimeoffercontractsList ){
 			StringBuilder ownerName = new StringBuilder();
 			if(null != contracts.getOwnerUserId()){
+				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 				}else if(null != contracts.getOwnerUserId().getLastName()){
@@ -879,6 +884,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 			
 			if(null != contracts.getApproverUser()){
+				contracts.setApproverUserId(contracts.getApproverUser().getId());
 				if(null != contracts.getApproverUser().getFirstName() && null != contracts.getApproverUser().getLastName()){
 					StringBuilder sb = new StringBuilder();
 					contracts.setApproverUserName(sb.append(contracts.getApproverUser().getFirstName()).append(" ").append(contracts.getApproverUser().getLastName()).toString());	
@@ -1058,7 +1064,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				
 				ContractsHistory childContractsHistory = new ContractsHistory();
 				childContractsHistory.setFromStage("NEW");
-				childContractsHistory.setContractsId(contracts);
+				childContractsHistory.setContractsId(savedChildContracts);
 				childContractsHistory.setToStage("WAITING_TO_BE_SIGNED");
 				childContractsHistory.setCreatedDate(new Date());
 				childContractsHistory.setUpdatedDate(new Date());
@@ -1077,7 +1083,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							}
 					  }
 					  else{
-							 if(null != contracts.getContractType()  && !"".equalsIgnoreCase(contracts.getContractType() ) && "custom".equalsIgnoreCase(contracts.getContractType() )){
+							 if(null != contracts.getTypeOfContract()  && !"".equalsIgnoreCase(contracts.getTypeOfContract() ) && "custom".equalsIgnoreCase(contracts.getTypeOfContract() )){
 								con = signatureRequestUtil.sendDocumentForSignatureRequestForCustom(upadatedContracts.getContactUser(),contracts,orgLocation,user,upadatedContracts,org,new RequirementSubmission());				 
 							 }else{
 								 con = signatureRequestUtil.sendDocumentForSignatureRequest(upadatedContracts.getContactUser(),upadatedContracts.getContractsTemplate(),orgLocation,user,upadatedContracts,org,new RequirementSubmission());

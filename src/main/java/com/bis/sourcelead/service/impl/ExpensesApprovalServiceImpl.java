@@ -158,7 +158,6 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	    StringBuilder fileSB = new StringBuilder();
 	    File file = File.createTempFile(fileSB.append("_ExpensesApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
 	    file.setReadable(true);
-	    
 	    try {
 	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
 	        PdfWriter.getInstance(document, new FileOutputStream(file));
@@ -189,17 +188,18 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	            table.addCell(cell);
 	        }
 	        table.completeRow();
-	        java.util.List<String[]> expenseList = new ArrayList<>();
-	        	expenseList.add(prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers));
-	        for (String[] expenseArray: expenseList) {
-                for (int i = 0; i < expenseArray.length; i++) {
-                    String datum = expenseArray[i];
-                    PdfPCell cell = new PdfPCell();
-                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
-                    table.addCell(cell);
-                }
-                table.completeRow();
-            }
+	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers);
+	        if(expenseList != null && expenseList.size() >0){
+	        	for (String[] expenseArray: expenseList) {
+	        		for (int i = 0; i < expenseArray.length; i++) {
+	        			String datum = expenseArray[i];
+	        			PdfPCell cell = new PdfPCell();
+	        			cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	        			table.addCell(cell);
+	        		}
+	        		table.completeRow();
+	        	}
+	        }
 	        document.addTitle("Expenses Approval Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
@@ -213,10 +213,11 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	    }
 		return file;
 	}
-private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers) {
-	String expenseArray[] = new String[headers.length];
+private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchy> expApperoverHierarchy, String[] headers) {
+	
+	List<String[]> arrayList = new ArrayList<>();
 	for(ExpensesApproverHierarchy ex:expApperoverHierarchy){
-
+		String expenseArray[] = new String[headers.length];
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseByExpenseId(ex.getExpenseId().getId());
 			if(null != expenseId.getProjectMembers()){
@@ -315,8 +316,9 @@ private String[] prepareExpenseApprovalListStringArray(List<ExpensesApproverHier
 				expenseArray[13] = "--";
 			}
 		}
+		arrayList.add(expenseArray);
 	}
-	return expenseArray;
+	return arrayList;
 }
 
 	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId)
@@ -351,7 +353,7 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 	File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName()+ "_" + dateFormat.format(new Date()));//orgName
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName()+ "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
 		TimeSheetSubmissionCount requirementSubCount=null;
 		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);

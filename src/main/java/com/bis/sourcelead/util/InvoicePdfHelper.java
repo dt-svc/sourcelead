@@ -99,7 +99,7 @@ public class InvoicePdfHelper {
 		String countryCurrency  = countries.getCurrency();
 		
 		File invoiceFile = new File(org.getOrgName() + "_" + invoice.getInvoiceId() + ".pdf");
-		if(invoiceType.equalsIgnoreCase("payable")){
+		if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
 		//StringBuilder fileSB = new StringBuilder();
 		Document document = new Document();
 		//File invoiceFile = File.createTempFile(fileSB.append(org.getOrgName()).append(invoice.getInvoiceId()).toString(),".pdf");
@@ -169,7 +169,7 @@ public class InvoicePdfHelper {
 			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-				if(null != invoiceLineItems.getCandidate().getConsultantUser()){
+				if(invoiceLineItems.getCandidate() !=null){
 					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
 					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
@@ -177,16 +177,30 @@ public class InvoicePdfHelper {
 						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 				}else{
-					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+					if(invoiceLineItems.getUser() !=null){
+						table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
+					}
+					else{
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+					}
 				}
 			
 				StringBuffer name = new StringBuffer();
+				
 				if (null != invoiceLineItems.getCandidate()) {
-					table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+					if (invoiceLineItems.getCandidate().getFirstName() !=null && invoiceLineItems.getCandidate().getLastName() != null) {
+						table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+					}else {
+						table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
+					}
+				}else{
+					if(invoiceLineItems.getUser() !=null){
+						table.addCell(getCell(name.append(invoiceLineItems.getUser().getFirstName()).append(" ").append(invoiceLineItems.getUser().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+					}else{
+						table.addCell(getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+					}
 				}
-				else {
-					table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
-				}
+				
 				StringBuffer startAndEndDate = new StringBuffer();
 				if (null != invoiceLineItems.getStartDate()
 						&& null != invoiceLineItems.getEndDate()) {
@@ -352,23 +366,38 @@ public class InvoicePdfHelper {
 				Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
-					if(null != invoiceLineItems.getCandidate().getConsultantUser()){
-						Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
-						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
-							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+					if(invoiceLineItems.getCandidate() !=null){
+							Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+							if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
+								table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+							}else{
+								table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+							}
+					}else{
+						if(invoiceLineItems.getUser() !=null){
+							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
 						}else{
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
-					}else{
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 					StringBuffer name = new StringBuffer();
+					
+					
 					if (null != invoiceLineItems.getCandidate()) {
-						table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+						if (invoiceLineItems.getCandidate().getFirstName() !=null && invoiceLineItems.getCandidate().getLastName() !=null) {
+							table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+						}else {
+							table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
+						}
+						
+					}else{
+						if (null != invoiceLineItems.getUser()) {
+							table.addCell(getCell(name.append(invoiceLineItems.getUser().getFirstName()).append(" ").append(invoiceLineItems.getUser().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+						}else{
+							table.addCell(getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+						}
 					}
-					else {
-						table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
-					}
+					
 					StringBuffer startAndEndDate = new StringBuffer();
 					if (null != invoiceLineItems.getStartDate()
 							&& null != invoiceLineItems.getEndDate()) {
@@ -592,8 +621,14 @@ public class InvoicePdfHelper {
 			return table;
 	}
 	
-	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception {
-		String[] headers = Constants.BILLING_HEADERS;
+	public File getBillingPdf(java.util.List<Invoice> invoiceList, String orgName,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType) throws Exception {
+		
+		String[] headers = null;
+		if(Constants.Payables.equalsIgnoreCase(invoiceType)){
+		 headers = Constants.BILLING_PAYABLE_HEADERS;
+		}else{
+		 headers = Constants.BILLING_HEADERS;
+		}
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	    
@@ -613,8 +648,8 @@ public class InvoicePdfHelper {
 
 	        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myBordColor);
-	        StringBuilder sbReqStyle = new StringBuilder();
-	        sbReqStyle.append(orgName).append(" ").append(Constants.BILLING);
+//	        StringBuilder sbReqStyle = new StringBuilder();
+//	        sbReqStyle.append(orgName).append(" ").append(Constants.BILLING);
 
 	        StringBuilder orgNameSB = new StringBuilder();
             Paragraph para = new Paragraph(orgNameSB.append(orgName).append(" ").append(Constants.BILLING).toString(),boldFont);
@@ -632,7 +667,12 @@ public class InvoicePdfHelper {
 	        document.add(orderedList);
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
-	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
+            PdfPCell cell1 = null;
+            if(Constants.Payables.equalsIgnoreCase(invoiceType)){
+	         cell1 = new PdfPCell(new Phrase(Constants.BILLING_LIST,font));
+            }else{
+             cell1 = new PdfPCell(new Phrase(Constants.INVOICE_LIST,font));
+            }
 	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
@@ -642,7 +682,7 @@ public class InvoicePdfHelper {
 	            String header = headers[i];
 	            PdfPCell cell = new PdfPCell();
 	            cell.setGrayFill(0.9f);
-	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
 	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
 	            cell.setBackgroundColor(myColor);
 	            table.addCell(cell);
@@ -719,8 +759,8 @@ public class InvoicePdfHelper {
 			billingArray[1] = "--";
 	}
 	
-	
-	if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
 		StringBuilder contactName = new StringBuilder();
 		billingArray[2] = contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString();
 	}else if(null != invoice.getContactUser().getFirstName()){
@@ -728,25 +768,37 @@ public class InvoicePdfHelper {
 	}else{
 		billingArray[2] = "--";
 	}
-	if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
+	}else{
+		billingArray[2] = "--";
+	}
+	
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
 		billingArray[3] = invoice.getContactUser().getEmail(); 
 	}else{
 		billingArray[3] =  "--";
 	}
+	}else{
+		billingArray[3] = "--";
+	}
 
-	if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
-		billingArray[4] = invoice.getContactUser().getMobilePhone();
+	if(null != invoice.getContactUser()){
+		if(invoice.getContactUser().getMobilePhone() != null && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
+			billingArray[4] = invoice.getContactUser().getMobilePhone();
+		}else{
+			billingArray[4] = "--";	
+		}
 	}else{
 		billingArray[4] = "--";
 	}
 	
-	if(null != invoice.getInvoiceDate() && !"".equalsIgnoreCase(invoice.getInvoiceDate().toString())){
+	if(null != invoice.getInvoiceDate()){
 		billingArray[5] = invoice.getInvoiceDate().toString();
 	}else{
 		billingArray[5] = "--";
 	}
 	
-	if(null != invoice.getDueDate() && !"".equalsIgnoreCase(invoice.getDueDate().toString())){
+	if(null != invoice.getDueDate()){
 		billingArray[6] = invoice.getDueDate().toString();  
 	}else{
 		billingArray[6] = "--";
