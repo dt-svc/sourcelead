@@ -33,119 +33,117 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembers")
-public class ProjectMembers implements Serializable{
-	
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembers")
+public class ProjectMembers implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
-    private Long id;
-	
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="PROJECT_ID", nullable=false )	
+	@Column(name = "ID", nullable = false)
+	private Long id;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
-	
-	
+
 	@ManyToOne
-	@JoinColumn(name="EMPLOYEE_ID", nullable=false )	
+	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
-	
-	/*@Column(name = "TIMESHEET_FREQUENCY")
-	private String timesheetFrequency;*/
-	
+
+	/*
+	 * @Column(name = "TIMESHEET_FREQUENCY") private String timesheetFrequency;
+	 */
+
 	@Column(name = "PROJECT_ASSIGNED_DATE")
-    private Date projectAssignedDate;
-	
+	private Date projectAssignedDate;
+
 	@Column(name = "PROJECT_END_DATE")
-    private Date projectEndDate;
-	
+	private Date projectEndDate;
+
 	@Column(name = "ROLE")
 	private String role;
-	
+
 	@Column(name = "CURRENT_BILL_RATE")
-    private Float currentBillRate;
-	
+	private Float currentBillRate;
+
 	@Column(name = "RATE_TYPE")
 	private String rateType;
-	
+
 	@Column(name = "STATUS")
 	private String status;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "IS_MANUALLY_TERMINATED")
 	private Primary isManuallyTerminated;
-	
-	@Column(name = "CREATED_DATE")
-    private Date createdDate;
-    
-    @Column(name = "CREATED_BY")
-    private String createdBy;
-    
-    @Column(name = "UPDATED_DATE")
-    private Date updatedDate;
-    
-    @Column(name = "UPDATED_BY")
-    private String updatedBy;
 
-    @Transient
-    private String empName;
-    @Transient
-    private String empEmail;
-    @Transient
-    private String startDate;
-    @Transient
-    private String endDate;
-    @Transient
-    private String approvedHrs;
-    @Transient
-    private String rejectedHrs;
-    @Transient
-    private String openHrs;
-    @Transient
-    private String draftHrs;
-    @Transient
-    private String submittedHrs;
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+
+	@Column(name = "CREATED_BY")
+	private String createdBy;
+
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+
+	@Column(name = "UPDATED_BY")
+	private String updatedBy;
+
 	@Transient
-    private String projectAssignedDateStr;
-    @Transient
-    private String projectEndDateStr;  
-    @Transient
-    private String projectName;
-    @Transient
-    private String userId;
-    @Transient
-    @Enumerated(EnumType.STRING)
+	private String empName;
+	@Transient
+	private String empEmail;
+	@Transient
+	private String startDate;
+	@Transient
+	private String endDate;
+	@Transient
+	private String approvedHrs;
+	@Transient
+	private String rejectedHrs;
+	@Transient
+	private String openHrs;
+	@Transient
+	private String draftHrs;
+	@Transient
+	private String submittedHrs;
+	@Transient
+	private String projectAssignedDateStr;
+	@Transient
+	private String projectEndDateStr;
+	@Transient
+	private String projectName;
+	@Transient
+	private String userId;
+	@Transient
+	@Enumerated(EnumType.STRING)
 	private Status userState;
-    
-    @Transient
-    private String projectStatus;
-    
-    @Column(name = "TERMINATE_REASON")
-    private String terminateReason;
-    
-    @Transient
-    private String totalHours;
-    
-    @Transient
-    private String candidateName;
-    
-    @Transient
-    private Long candidateId;
-    
-    @Transient
-    private String userRoleType;
-    
-    @Transient
-    private Long submissionApproverHierarchyId;
-    
-    
-    @Transient
-    private Long submissionInvoiceId;
-    
-    
-    public Long getSubmissionInvoiceId() {
+
+	@Transient
+	private String projectStatus;
+
+	@Column(name = "TERMINATE_REASON")
+	private String terminateReason;
+
+	@Transient
+	private String totalHours;
+
+	@Transient
+	private String candidateName;
+
+	@Transient
+	private Long candidateId;
+
+	@Transient
+	private String userRoleType;
+
+	@Transient
+	private Long submissionApproverHierarchyId;
+
+	@Transient
+	private Long submissionInvoiceId;
+
+	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
 
@@ -154,19 +152,17 @@ public class ProjectMembers implements Serializable{
 	}
 
 	@Transient
-    private List<Contracts> contractsList;
-    
-    
-    
-    @JsonIgnore
-    @OneToMany(mappedBy = "projectMemberId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JsonBackReference
+	private List<Contracts> contractsList;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
-	
-    @Transient
+
+	@Transient
 	private List<ProjectMembers> projectMembersList;
-    
+
 	public Date getProjectAssignedDate() {
 		return projectAssignedDate;
 	}
@@ -247,7 +243,7 @@ public class ProjectMembers implements Serializable{
 	public void setProjects(Projects projects) {
 		this.projects = projects;
 	}
-	
+
 	@JsonIgnore
 	public Employees getEmployee() {
 		return employee;
@@ -257,14 +253,12 @@ public class ProjectMembers implements Serializable{
 		this.employee = employee;
 	}
 
-/*	public String getTimesheetFrequency() {
-		return timesheetFrequency;
-	}
-
-	public void setTimesheetFrequency(String timesheetFrequency) {
-		this.timesheetFrequency = timesheetFrequency;
-	}*/
-
+	/*
+	 * public String getTimesheetFrequency() { return timesheetFrequency; }
+	 * 
+	 * public void setTimesheetFrequency(String timesheetFrequency) {
+	 * this.timesheetFrequency = timesheetFrequency; }
+	 */
 
 	public String getRole() {
 		return role;
@@ -434,33 +428,27 @@ public class ProjectMembers implements Serializable{
 		this.projectMembersList = projectMembersList;
 	}
 
-	public String getTotalHours()
-	{
+	public String getTotalHours() {
 		return totalHours;
 	}
 
-	public void setTotalHours(String totalHours)
-	{
+	public void setTotalHours(String totalHours) {
 		this.totalHours = totalHours;
 	}
 
-	public String getCandidateName()
-	{
+	public String getCandidateName() {
 		return candidateName;
 	}
 
-	public void setCandidateName(String candidateName)
-	{
+	public void setCandidateName(String candidateName) {
 		this.candidateName = candidateName;
 	}
 
-	public Long getCandidateId()
-	{
+	public Long getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Long candidateId)
-	{
+	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
 	}
 
@@ -472,23 +460,19 @@ public class ProjectMembers implements Serializable{
 		this.userRoleType = userRoleType;
 	}
 
-	public Long getSubmissionApproverHierarchyId()
-	{
+	public Long getSubmissionApproverHierarchyId() {
 		return submissionApproverHierarchyId;
 	}
 
-	public void setSubmissionApproverHierarchyId(Long submissionApproverHierarchyId)
-	{
+	public void setSubmissionApproverHierarchyId(Long submissionApproverHierarchyId) {
 		this.submissionApproverHierarchyId = submissionApproverHierarchyId;
 	}
 
-	public List<Contracts> getContractsList()
-	{
+	public List<Contracts> getContractsList() {
 		return contractsList;
 	}
 
-	public void setContractsList(List<Contracts> contractsList)
-	{
+	public void setContractsList(List<Contracts> contractsList) {
 		this.contractsList = contractsList;
 	}
 

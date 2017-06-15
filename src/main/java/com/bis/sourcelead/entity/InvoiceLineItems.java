@@ -114,7 +114,8 @@ public class InvoiceLineItems {
 	@Transient
 	private List<Contracts> contractList;
 	
-	
+	@Transient
+	private Long userId;
 
 	public Long getId()
 	{
@@ -126,6 +127,14 @@ public class InvoiceLineItems {
 		this.id = id;
 	}
 	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	public Date getStartDate()
 	{
 		return startDate;
