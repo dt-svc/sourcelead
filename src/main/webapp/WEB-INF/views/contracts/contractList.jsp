@@ -156,7 +156,7 @@ padding: 2px 300px 2px 0px;
             
 	</div>
 	<div id="loading"></div>
-    <div class="clients_wrap_table repoPositiNoCount datatable_filter">
+    <div class="clients_wrap_table repoPositiNoCount">
     <div id="vendorContractsList"  class=" overflow-data" ></div>
      <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
      <div id="applicantsContractsList"  class=" overflow-data" style="display: none"></div>
