@@ -17,6 +17,12 @@
 .inline_field, .inline_field:focus {
 	width:100px !important; text-align:center;
 }
+.timesheet_week_comm .form-group {
+margin-bottom: 0;
+}
+.timesheet_week_comm.invoiceDocs_add span .fa-times {
+    margin: 6px;
+}
 </style>
 
 
@@ -225,7 +231,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>SOW</th>';
-		 result = result +'  <th>Rate</th>';
+		 result = result +'  <th>Rate Hourly</th>';
 		 result = result +'  <th>Total Hours</th>';
 		 result = result +'  <th>Amount</th>';
 		 result = result +'  <th><i class="fa fa-remove"></i></th>';
@@ -236,7 +242,7 @@ function errRemoveVendorContact(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
+		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -1246,13 +1252,39 @@ function pagination(){
 	  var splitHours = split[0];
 	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
+		 setHours(finalmin,rowId);
+		 var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
 	     $('#'+rowId+'amount').empty();
 	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
 	     calTotalamount(rowId,totlalAmount);
   }
   </script>
+
+<!-- Converting minutes to hours if minutes >60 -->
+<script>
+function setHours(finalmin,rowId){
+	 var actualHours = Math.floor(finalmin / 60); 
+     var actualMinutes = finalmin % 60;
+     var actualTotal = 0;
+     if (actualHours >= 10 && actualHours < 100) {
+			actualHours = '0' + actualHours;
+	  }
+     if (actualHours < 10) {
+			actualHours = '00' + actualHours;
+	  }
+	 if (actualMinutes < 10) {
+		actualMinutes = '0' + actualMinutes;
+	 }
+	 if(!isNaN(actualHours) && !isNaN(actualMinutes)){
+		 actualTotal = actualHours +":"+ actualMinutes;
+	 }else{
+		 actualTotal =  "000:00";
+	 }
+	 $('#'+rowId+'totalHours').empty();
+     $('#'+rowId+'totalHours').val(actualTotal);
+}
+</script>
 
 <script>
   function  calTotalamount(rowId,totlalAmount){
@@ -1531,15 +1563,15 @@ function calculateTaxDiscount(){
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
-			        $("#"+i+"taxTotal").val(first);
+			        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    	}
 		    	
 		    }
 		    
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
-		        first = parseFloat(perCentValue.toFixed(2));
-		        $("#"+i+"taxTotal").val(first);
+		        first = parseFloat(perCentValue);
+		        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    }   
 		}
 	}
@@ -1719,7 +1751,7 @@ function getVendorContacts(vendorContactId){
 		$("#vendorContact").empty();
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
-		if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
+		if(vendorContactId == null || vendorContactId == '' || vendorContactId == 'undefined'){
 			buildLineItemAndTaxAddRows();
 		}
 	},

@@ -92,6 +92,7 @@ margin-top: 3px;
 				   	</li>
 		   		</sec:authorize>
 		   		<div class="clearfix"></div>
+		   		<input type="hidden" id="temp"/>
 		   		</ul>
 							
 					
@@ -145,6 +146,8 @@ $.ajax({
 	result = result+' </tr>';
 	result = result+' </thead>';
 	result = result+' <tbody>';
+	
+	if(data !=''){
 	var json = JSON.parse(data);
 	 for (var i = 0; i < json.length; i++) { 
 	 var data = json[i];
@@ -218,6 +221,10 @@ $.ajax({
 /* 	 result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';       */        
 	 result = result+' </tr>';
 	 }
+	 $("#temp").val("temp");
+	  }else{
+		  alert("empty");
+	  }
 	result = result+' </tbody>';
 	result = result+' </table>';
 	$("#approverDataExpensesDiv").empty();
@@ -512,6 +519,18 @@ function pagination(){
 </script>
 <script>
 function exportToPdf(type){
+	var temp = $("#temp").val();
+	if(temp != null && temp != ''){
+		var sourceleadUrl = '${sourceleadUrl}';
+		var expenseStatus = [];
+		$('input:checkbox[name=expenseStatus]:checked').each(function() 
+		{
+			expenseStatus.push($(this).val());
+		});
+		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
+	}else{
+		alert("test");
+	}
 	var sourceleadUrl = '${sourceleadUrl}';
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 

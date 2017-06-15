@@ -413,9 +413,12 @@ public class Constants {
 			"Phone Number", "Owner", "Role", "Status" };
 	public static final String[] SHORTLIST_CANDIDATE_FROM_CLIENT_TO_VENDOR_HEADER = { "CandidateName",
 			"PhoneNumber", "Work Experience", "status" };
-	public static final String[] BILLING_HEADERS = { "Invoice_Id", "Client_Name",
-			"Client_Contact_Name"," Client_Contact_Email", "Client_Phone ", "Invoice_Date", "Due_Date", "Total_Amount", "Due_Amount",
-			"Paid_Amount", "Invoice_Status", "Payment_Status", "Linked_Invoice_Id"};
+	public static final String[] BILLING_HEADERS = { "Invoice Id", "Client Name",
+			"Client Contact Name"," Client Contact Email", "Client Phone ", "Invoice Date", "Due Date", "Total Amount", "Due Amount",
+			"Paid Amount", "Status", "Payment Status", "Linked Invoice Id"};
+	public static final String[] BILLING_PAYABLE_HEADERS = { "Bill Id", "Vendor Name",
+			"Vendor Contact Name"," Vendor Contact Email", "Vendor Phone ", "Bill Date", "Due Date", "Total Amount", "Due Amount",
+			"Paid Amount", "Status", "Payment Status", "Linked Bill Id"};
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -442,7 +445,7 @@ public class Constants {
 	public static final String MAIL_DELETE = "Deleted";
 	public static final String MAIL_REQUESTED = "Requested";
 	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name", "Emp Email", "Start Date",
-			"End Date", "Approved Hrs", "Rejected Hrs", "Wiating for Approval", "Saved Hrs" };
+			"End Date", "Approved Hrs", "Rejected Hrs", "Waiting for Approval", "Saved Hrs" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
@@ -593,6 +596,8 @@ public class Constants {
 	public static final String CUSTOM =  "CUSTOM";
 
 	public static final String BILLING =  "Billing";
+	public static final String INVOICE_LIST =  "Invoice List";
+	public static final String BILLING_LIST =  "Billing List";
 	public static final String LINKED_STATUS =  "Linked";
 
 	public static final String APPLICANT_REJECTED = "Applicant Rejected";
@@ -604,6 +609,8 @@ public class Constants {
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Exp",
 			"Amount" , "Status"  , "Approved by"};
+	
+	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense","purpose","Project","Client","Start Date","End Date","No of Exp","Amount","Status"};
 
 
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";

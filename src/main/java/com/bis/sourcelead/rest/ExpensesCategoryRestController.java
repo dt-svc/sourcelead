@@ -55,9 +55,9 @@ public class ExpensesCategoryRestController {
 	private ExpensesCategoryDao expensesCategoryDao;
 	
 	/**
-	 * this method is used to save Expense Category into DB
+	 * this method is used to Save or Store Expense Category into DB
+	 * 
 	 * @param json
-	 * @param candidateId
 	 * @param request
 	 * @return string
 	 * @throws NullPointer Exception
@@ -76,6 +76,13 @@ public class ExpensesCategoryRestController {
 	
 	
 	
+	/**
+	 * This method is used to for getting Expense Category List By OrgLocationID
+	 *  
+	 * @param request
+	 * @return
+	 * @throws NullPointer
+	 */
 	
 	@RequestMapping(value = "/getExpensesCategoryList", method = RequestMethod.GET)
 	public @ResponseBody String getExpensesCategoryList(HttpServletRequest request) throws Exception {
@@ -87,7 +94,14 @@ public class ExpensesCategoryRestController {
 	}
 	
 		
-	
+	/**
+	 * This Method is for getting ExpensesCategory by category ID
+	 * 
+	 * @param categoryId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/getExpensesCategoryByCategoryId")
 	public String getExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
 		String resultJson;
@@ -102,6 +116,15 @@ public class ExpensesCategoryRestController {
 				     return resultJson;
 	}
 	
+	/**
+	 * This Method is for update  ExpensesCategory by category ID
+	 * 
+	 * @param json
+	 * @param categoryId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/upDateExpensesCategoryByCategoryId")
 	public String upDateExpensesCategoryByCategoryId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
 
@@ -115,6 +138,14 @@ public class ExpensesCategoryRestController {
 			return "success";
 	}
 	
+	/**
+	 * This Method is for remove  ExpensesCategory by category ID
+	 * 
+	 * @param categoryId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	
 		@RequestMapping(value = "/removeExpensesCategoryByCategoryId")
 		public String removeExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
@@ -125,6 +156,14 @@ public class ExpensesCategoryRestController {
 			 return resultJson;
 		}
 		
+		/**
+		 * This Method is for ReActivate  ExpensesCategory by category ID
+		 * 
+		 * @param categoryId
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
 		@RequestMapping(value = "/reActiveExpenseCategoryByCategoryId")
 		public ExpensesCategory reActiveExpenseCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
 			ExpensesCategory expenCat = expensesCategoryService.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(categoryId);
@@ -133,6 +172,14 @@ public class ExpensesCategoryRestController {
 			 return expenCat;
 		}
 		
+		/**
+		 * This Method is used for To Check Expense Category Name Is Unique Or Not
+		 * 
+		 * @param name
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
 		
 		@RequestMapping(value = "/validateExpenseCategoryType")
 		public Boolean validateExpenseCategoryType(@RequestParam(value="name", required=false) String  name ,HttpServletRequest request) throws Exception {
