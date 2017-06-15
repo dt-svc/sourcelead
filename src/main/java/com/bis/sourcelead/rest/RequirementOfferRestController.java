@@ -540,39 +540,40 @@ public class RequirementOfferRestController {
 	}
 	
 	@RequestMapping(value = "/acceptRejectCandidateFromDashboard", method = RequestMethod.POST)
-	public @ResponseBody String acceptRejectCandidateFromDashboard(Long submissionId,String status,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "rejectedCategoryType", required = false) String rejectedCategoryType, @RequestParam(value = "rejectedCateoryOther", required = false) String rejectedCategoryOther, HttpServletRequest request) throws Exception { 
-												 
-
+	public @ResponseBody String acceptRejectCandidateFromDashboard(@RequestParam(value = "json", required = false) String json, Long submissionId, String status, HttpServletRequest request) throws Exception
+	{
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		
-		if(null !=submissionId){
+		if (null != submissionId) {
 			RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
-			if(StringUtils.equalsIgnoreCase(status, "accept")){
+			if (StringUtils.equalsIgnoreCase(status, "accept")) {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
-				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""
+						+ user.getLastName());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				requirementSubmissionService.sendEmailtoApplicant(loginOrg, user, requirementSubmission, orgLocation);
 			}
-			else if(StringUtils.equalsIgnoreCase(status, "rejected")){
+			else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-				requirementSubmission.setSubmissionRequestUser(user.getFirstName()+""+user.getLastName());
+				requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""
+						+ user.getLastName());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
-				if(null != reason && !"".equalsIgnoreCase(reason)){
-					requirementSubmission.setRejectedReason(reason);
+				if (jsonObj.has("reasonForReject")) {
+					requirementSubmission.setRejectedReason(jsonObj.getString("reasonForReject"));
 				}
-				
-				requirementSubmission.setRejectedCategoryType(rejectedCategoryType);
-				if (null != rejectedCategoryOther) {
-					requirementSubmission.setRejectedCategoryOther(rejectedCategoryOther);
+				if (jsonObj.has("rejectedCategory")) {
+					requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
 				}
-				
+				if (jsonObj.has("rejectedCategoryOther")) {
+					requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+				}
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			}
 		}
-		return "success";	  
+		return "success";
 	}
-	
 }
