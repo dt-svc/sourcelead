@@ -1199,7 +1199,11 @@ $(document).ready(function () {
             <div class="col-md-9">
            
               <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
+                       
+                       <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null}">
                        <option selected="selected" value="${SourceLeadWeb_user.id}">${SourceLeadWeb_user.firstName}&nbsp;${SourceLeadWeb_user.lastName}</option>
+                       </c:if>
+                       
                        <c:forEach var="report" items="${approverList}">
                        	<c:if test="${SourceLeadWeb_user.id != report.id}">
                        		<option value="${report.id}" ${report.id  == requirement.managerUserId.id ? 'selected' : ''}>${report.firstName}&nbsp;${report.lastName}</option>

@@ -197,4 +197,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet) {
 		return orgLocationsDao.getAllOrgsStartsWithAlphabet(alphabet);
 	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception
+	{
+		return orgLocationsDao.getAllRegisteredOrgLocations();
+	}
 }

@@ -214,6 +214,30 @@ public class DashboardRestController {
 	}
 	
 	
+	@RequestMapping(value = "/productionSupportdashboard/{orgLocationId}/{loginOrgLocatonId}" , method = RequestMethod.GET)
+	 public @ResponseBody void productionSupportdashboard(@PathVariable Long orgLocationId,@PathVariable Long loginOrgLocatonId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+		     //to update user state in user role based on location----> Prasad Salina
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+ 			    userRole.setUserState(Status.ACTIVE);
+ 			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+ 			   
+ 			   
+ 			   
+ 			   //user update/save in user Elk
+ 			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
+ 		      }
+				
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&loginOrgLocatonId=").append(loginOrgLocatonId).toString());
+			
+	}
+	
+	
 	 /**
 	   * @author sarath kumar
 	   * @since  aug 30 2016

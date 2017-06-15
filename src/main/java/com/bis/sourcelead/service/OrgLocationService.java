@@ -40,5 +40,7 @@ public interface OrgLocationService {
 	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception;
 
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
 
 }
