@@ -57,6 +57,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 @Component
 public class InvoicePdfHelper {
@@ -657,14 +658,39 @@ public class InvoicePdfHelper {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
-            List orderedList = new List(List.ORDERED);
-	        orderedList.add(new ListItem("Company Name :" +orgName));
-	        orderedList.add(new ListItem("Duration  :" +exportStartDate+" - "+exportEndDate));
-	        orderedList.add(new ListItem("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount()));
-	        orderedList.add(new ListItem("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount()));
-	        orderedList.add(new ListItem("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount()));
-	        orderedList.add(new ListItem("Total Unbilled Amount  :"+totalStagesAmount.getTotalUnbilledAmount()));
-	        document.add(orderedList);
+//            List orderedList = new List(List.ORDERED);
+//	        orderedList.add(new ListItem("Company Name :" +orgName));
+//	        orderedList.add(new ListItem("Duration  :" +exportStartDate+" - "+exportEndDate));
+//	        orderedList.add(new ListItem("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount()));
+//	        orderedList.add(new ListItem("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount()));
+//	        orderedList.add(new ListItem("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount()));
+//	        orderedList.add(new ListItem("Total Unbilled Amount  :"+totalStagesAmount.getTotalUnbilledAmount()));
+//	        document.add(orderedList);
+            
+            Chunk glue = new Chunk(new VerticalPositionMark());
+	        Paragraph p = new Paragraph("Company Name :" +orgName);
+	        p.add(new Chunk(glue));
+	        p.setIndentationLeft(0);
+	        p.add("Duration  :" +exportStartDate+" - "+exportEndDate);
+	        p.setIndentationRight(223);
+	        document.add(p);  
+	        
+	        Chunk glue1 = new Chunk(new VerticalPositionMark());
+	        Paragraph p1 = new Paragraph("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount());
+	        p1.add(new Chunk(glue1));
+	        p1.setIndentationLeft(0);
+	        p1.add("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount());
+	        p1.setIndentationRight(220);
+	        document.add(p1); 
+	        
+	        Chunk glue2 = new Chunk(new VerticalPositionMark());
+	        Paragraph p2 = new Paragraph("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount());
+	        p2.add(new Chunk(glue2));
+	        p2.setIndentationLeft(0);
+	        p2.add("Total Unbilled Amount  :"+totalStagesAmount.getTotalUnbilledAmount());
+	        p2.setIndentationRight(227);
+	        document.add(p2); 
+            
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
             PdfPCell cell1 = null;
