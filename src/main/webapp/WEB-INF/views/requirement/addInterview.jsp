@@ -602,7 +602,6 @@ function getNotifyToOtersVal(){
         
         var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
         
-        alert(selectedInterviewApplicants);
         
         if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
 	        $("#add_interview").attr("disabled", "disabled");
