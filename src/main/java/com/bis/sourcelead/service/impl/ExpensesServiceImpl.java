@@ -26,12 +26,15 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.PdfUtil;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -61,6 +64,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;	
+	
+	@Autowired
+	private OrgRelationsService orgRelationsService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -404,6 +410,246 @@ public class ExpensesServiceImpl implements ExpensesService{
 	    cell.setBackgroundColor(new BaseColor(0,121,182));
 	    cell.setBorder(0);
 	    cell.setBorderWidthBottom(2f);
-	    }	
+	    }
+	
+	
+	
+	@Override
+	public File exportAllMyExpensesToPdf(List<Expenses> expenseList, OrgLocations orgLoc, User loginUser) throws Exception {
+		String[] headers = Constants.ALL_MY_EXPENSES_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("Expenses_").append(dateFormat.format(new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("_Expenses_").append(dateFormat.format(new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("- My Expenses");
+	       
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(18);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5});
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> expenseAllList = prepareExpenseListStringArray(expenseList,headers);
+	        for (String[] expenseArray: expenseAllList) {
+                for (int i = 0; i < expenseArray.length; i++) {
+                    String datum = expenseArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("All Expenses Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+	}
+	
+	private List<String[]> prepareExpenseListStringArray(List<Expenses> expList, String[] headers) {
+		
+		List<String[]> arrayList = new ArrayList<>();
+		for(Expenses ex:expList){
+			String expenseArray[] = new String[headers.length];
+			if(ex.getExpenseId() !=null){
+				Expenses expenseId = getExpenseByExpenseId(ex.getId());
+				
+							if(null != expenseId.getExpenseId()){
+								expenseArray[0] = expenseId.getExpenseId();
+							}else{
+								expenseArray[0] = "--";
+							}
+							if(null != expenseId.getPurpose()){
+
+								expenseArray[1] = expenseId.getPurpose();
+							}else{
+								expenseArray[1] = "--";
+							}
+							
+							if(null != expenseId.getProjectMembers().getProjects()){
+								if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
+									expenseArray[2] = expenseId.getProjectMembers().getProjects().getProjectName();
+								}
+							}else{
+								expenseArray[2] = "--";
+							}
+							
+							if(null != expenseId.getClientName()){
+
+								expenseArray[3] = expenseId.getClientName();
+							}else{
+								expenseArray[3] = "--";
+							}
+							
+							if(null != expenseId.getStartDate()){
+								expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+								expenseArray[4] = expenseId.getStartDateStr();
+							}else{
+								expenseArray[4] = "--";
+							}
+							
+							if(null != expenseId.getEndDate()){
+								expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+								expenseArray[5] = expenseId.getEndDateStr();
+							}else{
+								expenseArray[5] = "--";
+							}
+							
+							if(null != expenseId.getNoOfExpenses()){
+
+								expenseArray[6] = expenseId.getNoOfExpenses();
+							}else{
+								expenseArray[6] = "--";
+							}
+							
+
+							if(expenseId.getTotalAmount() != 0){
+				                StringBuilder str = new StringBuilder();
+								expenseArray[7] = str.append(expenseId.getTotalAmount()).toString();
+							}else{
+								expenseArray[7] = "--";
+							}
+							
+							if(null != expenseId.getStatus()){
+								expenseArray[8] = expenseId.getExpenseStatus().getValue();
+							}else{
+								expenseArray[8] = "--";
+							}
+							
+			}
+			arrayList.add(expenseArray);
+		}
+		return arrayList;
+	}
+
+	@Override
+	public File exportAllMyExpensesToExcel(List<Expenses> expenseList,OrgLocations orgLoc) throws IOException {
+		
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName()+ "_" + dateFormat.format(new Date()));
+		Row writeRow = null;
+		TimeSheetSubmissionCount requirementSubCount=null;
+		createExcelsheet = getAllExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
+		int column = 0;
+		for (Expenses expensesList : expenseList) {
+			writeRow = createExcelsheet.createRow(column+1);
+			createExcelsheet = createAllXlsSheet(createExcelsheet, writeRow, expensesList);
+			column++;
+		}
+		 try {
+			file = File.createTempFile(orgLoc.getOrg().getOrgName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		 file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		return file;
+	}
+	
+	private Sheet getAllExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, TimeSheetSubmissionCount requirementSubCount) {
+		
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+
+		String[] headers = Constants.ALL_MY_EXPENSES_HEADERS;;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+
+		return createExcelsheet;
+	}
+	
+	private Sheet createAllXlsSheet(Sheet createExcelsheet, Row writeRow, Expenses ex) {
+		if(ex.getExpenseId() !=null){
+			Expenses expenseId =getExpenseByExpenseId(ex.getId());
+			
+						if(null != expenseId.getExpenseId()){
+							writeRow.createCell(0).setCellValue(expenseId.getExpenseId());
+							createExcelsheet.autoSizeColumn(0);
+						}
+						if(null != expenseId.getPurpose()){
+							writeRow.createCell(1).setCellValue(expenseId.getPurpose());
+							createExcelsheet.autoSizeColumn(1);
+						}
+						if(null != expenseId.getProjectMembers().getProjects()){
+							if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
+								writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getProjects().getProjectName());
+								createExcelsheet.autoSizeColumn(2);
+							}
+						}
+						
+						if(null != expenseId.getClientName()){
+							writeRow.createCell(3).setCellValue(expenseId.getClientName());
+							createExcelsheet.autoSizeColumn(3);
+						}
+						
+						if(null != expenseId.getStartDate()){
+							expenseId.setStartDateStr(Constants.DF_DMY.format(expenseId.getStartDate()));
+							writeRow.createCell(4).setCellValue(expenseId.getStartDateStr());
+							createExcelsheet.autoSizeColumn(4);
+						}
+						if(null != expenseId.getEndDate()){
+							expenseId.setEndDateStr(Constants.DF_DMY.format(expenseId.getEndDate()));
+							writeRow.createCell(5).setCellValue(expenseId.getEndDateStr());
+							createExcelsheet.autoSizeColumn(5);
+						}
+						
+						if(null != expenseId.getNoOfExpenses()){
+							writeRow.createCell(6).setCellValue(expenseId.getNoOfExpenses());
+							createExcelsheet.autoSizeColumn(6);
+						}
+						if(expenseId.getTotalAmount() != 0){
+			                StringBuilder str = new StringBuilder();
+			                writeRow.createCell(7).setCellValue(str.append(expenseId.getTotalAmount()).toString());
+			                createExcelsheet.autoSizeColumn(7);
+						}
+						if(null != expenseId.getExpenseStatus()){
+							writeRow.createCell(8).setCellValue(expenseId.getExpenseStatus().getValue());
+							createExcelsheet.autoSizeColumn(8);
+						}
+		}
+	return createExcelsheet;
+}
+	
 		
 }
