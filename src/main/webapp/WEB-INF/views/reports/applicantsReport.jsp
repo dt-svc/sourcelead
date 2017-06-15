@@ -347,7 +347,7 @@ function toDate(selector) {
 			<li title="Rejected" id="rejectedli" class="colorTwo">
 				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
 			</li>
-			<li title="Rejected" id="rejectedli">
+			<li title="Backout" id="backoutli">
 				<span><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>
 			</li>
 					<div class="clearfix"></div>
@@ -635,7 +635,7 @@ function allApplicantsCount(reportType,startDate,endDate){
 		}
     	if($(".oneB" ).hasClass( "actRE" )){
 
-     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientSum,json.offeredSum,json.rejectedSum,json.requestSentSum);
+     	getApplicantBarChat(json.applicantsSum,json.shortlistedSum,json.interviewsSum,json.submitToClientSum,json.offeredSum,json.rejectedSum,json.requestSentSum,json.backoutSum);
 
        	 
     	}
@@ -723,7 +723,7 @@ function getCustomReports(){
 <script src="resources/reports/light.js"></script>
   
      <script>
-     function getApplicantBarChat(applicantsCount,shortlisted,interviewCount,submitToClientCount,offeredCount,rejectedCount,requestSentCount){
+     function getApplicantBarChat(applicantsCount,shortlisted,interviewCount,submitToClientCount,offeredCount,rejectedCount,requestSentCount,backoutCount){
      var chart = AmCharts.makeChart("chartdiv", {
 	     "type": "serial",
 	     "theme": "light",
@@ -756,6 +756,11 @@ function getCustomReports(){
 	     "Stage": "Rejected",
 	     "StageCount": rejectedCount,
 	     "color": "#B0DE09"
+	
+	     },{
+	     "Stage": "Backout",
+	     "StageCount": backoutCount,
+	     "color": "#ffa726"
 	
 	     }],
 	     "valueAxes": [{

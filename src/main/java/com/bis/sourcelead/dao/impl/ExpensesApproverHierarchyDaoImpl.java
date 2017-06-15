@@ -1,13 +1,19 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 
 /**
 *
@@ -41,6 +47,47 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+			Long orgLocationId, String submissionStatus) {
+		return null;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> getTotalSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+			String status, Long orgLocationId) throws Exception {
+		
+		return null;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> getTotalApprovedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+			Long orgLocationId, String submissionStatus) throws Exception {
+		return null;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> getTotalRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+			Long orgLocationId, String submissionStatus) throws Exception {
+		return null;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(
+			Long userId, Long orgLocationId, String submissionStatus) throws Exception {
+		return null;
 	}
 	
 	

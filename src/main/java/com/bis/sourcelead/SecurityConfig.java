@@ -150,6 +150,7 @@ public class SecurityConfig  {
     			.antMatchers("/getJobDetailsForJobAlert").permitAll()
     			.antMatchers("/storeJobAlert").permitAll()
     			.antMatchers("/validateAlertUserEmail").permitAll()
+    			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
     			
     			
     			

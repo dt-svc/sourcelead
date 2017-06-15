@@ -262,7 +262,7 @@ function vendorContractsList(orgRelationId){
 	                		         result = result + '<td>';
 	                		         result = result + '<div class="tbldata-dotdot_80">';
 	                		         
-	                		         if(report.ownerUserId != null && '${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+	                		         if(report.ownerUserId != null && '${SourceLeadWeb_user.id}' == report.ownerUser){
 	                		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 	                			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	                	            	 }
@@ -281,7 +281,7 @@ function vendorContractsList(orgRelationId){
 	                		     		}
 	                		     		'</sec:authorize>';
 	                		     		
-	                		     		 if(report.approverUser != null && '${SourceLeadWeb_user.id}' == report.approverUser.id){
+	                		     		 if(report.approverUser != null && '${SourceLeadWeb_user.id}' == report.approverUserId){
 	                	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
 	                	      	         }
 	                		     		//result = result + '</div>';

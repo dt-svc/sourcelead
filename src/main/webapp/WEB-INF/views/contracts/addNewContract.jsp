@@ -18,6 +18,12 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
+<script>
+ window.onload = function() {
+	 changeSaveButton();
+};
+</script>
+
 <!-- Content Area -->
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -176,7 +182,12 @@
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
                   <option value=''>Select Owner</option>
                   <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  <c:if test = "${!empty contract.ownerUserId.id}">
+	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.ownerUserId.id}">
+	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
                   </c:forEach>
                   </select>
               </div>
@@ -1803,7 +1814,7 @@ function changeSaveButton(){
 	 var approverId = $("#approver").val();
 	if(approverId !='' && approverId != null){
 		if(approverId == userId){
-			document.getElementById("save_approver_template").value="Approve";
+			document.getElementById("save_approver_template").value="Save";
 		}else{
 			document.getElementById("save_approver_template").value="Send For Approve";
 		}
