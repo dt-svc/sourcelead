@@ -61,7 +61,6 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			      <div class="billing_dashboard">                                                                                                                                                                              ';
  result = result + '			        <div class="tabbable positionRelative">                                                                                                                                                                    ';
  result = result + '			          <div class="onboardcreateButtons">                                                                                                                                                                       ';
- result = result + '			          <a href="javascript:void(0)" class="btn btn-primary btn-sm hidden" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>                            ';
  result = result + '			            <div class="pull-right select-field ml">                                                                                                                                                               ';
  result = result + '			              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceListBasedonVendor('+orgRelationId+','+vendorLocationId+');customInvoiceList('+orgRelationId+','+vendorLocationId+');">                                                                                           ';
  result = result + '			                <option value="month">Last 30 days</option>                                                                                                                                                        ';
@@ -207,7 +206,9 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                          </ul>                                                                                                                                                                                    ';
  result = result + '			                        </div>                                                                                                                                                                                     ';
  result = result + '			                      </li>                                                                                                                                                                                        ';
+ 													'<sec:authorize access="hasAnyRole(\'ROLE_ADD_BILL\')"> ';
  result = result + '			                      <li><a href="javascript:void(0)" class="anchorTag" title="Create Bill"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Bill</a>&nbsp;&nbsp;&nbsp;|</li>        ';
+ 													'</sec:authorize>';
  result = result + '			                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>';
  result = result + '			                      <div class="clearfix"></div>                                                                                                                                                                 ';
  result = result + '			                    </ul>                                                                                                                                                                                          ';
@@ -367,15 +368,21 @@ result = result  +'    <div class="billingArea"> ';
 					if(report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 						
 						if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">'
 							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+							'</sec:authorize>';
 						}else{
+							'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
 							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+							'</sec:authorize>';
 						}
 						
 
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
-		 				result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+						'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+						'</sec:authorize>';
 					}
 					
 					result = result +'         </td>  ';
@@ -931,11 +938,19 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
 		 if(invoiceParentId == 'undefined'){
+			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 '</sec:authorize>'
 		 }
-	     result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
-	     result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
-	     result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
+		 result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		 '</sec:authorize>'
+		 
+		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
+		 result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+		 '</sec:authorize>'
+		 
+		 result = result +'      <li onclick="linkPayableInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+id+"").append(result);
     	 showMenu();

@@ -944,6 +944,15 @@ function contractTypeLabels(){
 			$('#paymentFrequency').removeAttr('data-validation-optional');
 			$('#paymentFrequency').attr('data-validation',"required");
 			
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
+			
 			hideCommonSOWFields();
 		}
 		if(contractType == "Vendor MSA"){
@@ -972,6 +981,15 @@ function contractTypeLabels(){
 			
 			$('#paymentFrequency').removeAttr('data-validation-optional');
 			$('#paymentFrequency').attr('data-validation',"required");
+			
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 			hideCommonSOWFields();
 		}
 		if(contractType == "Client SOW"){
@@ -994,6 +1012,16 @@ function contractTypeLabels(){
 			
 			$('#paymentFrequency').removeAttr('data-validation-optional');
 			$('#paymentFrequency').attr('data-validation',"required");
+			
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
+			
 			hideCommonSOWFields();
 			showCommonSOWFields();
 			getRequirements("Client SOW");
@@ -1018,6 +1046,16 @@ function contractTypeLabels(){
 			
 			$('#paymentFrequency').removeAttr('data-validation-optional');
 			$('#paymentFrequency').attr('data-validation',"required");
+			
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
+			
 			hideCommonSOWFields();
 			showCommonSOWFields();
 			getRequirements("Vendor SOW");
@@ -1084,66 +1122,86 @@ function contractTypeLabels(){
 			
 			$('#overtimeRate').val("");
 			$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+			
+			$('#candiFlatReward').removeAttr('data-validation');
+			$('#candiFlatReward').attr('data-validation-optional',"true");
+			
+			$('#candiRateType').removeAttr('data-validation');
+			$('#candiRateType').attr('data-validation-optional',"true");
+			
+			$('#candiRatePer').removeAttr('data-validation');
+			$('#candiRatePer').attr('data-validation-optional',"true");
 		}
-		getContractTemplates();
 		
-		$("#flatReward").val("");
-	    $("#billingRateType").val('${currencyCode}').trigger('change');
-	    $("#billingRatePer").val("").trigger('change');
+	if(contractType == "Full time offer"){
+		
+		$('#candiFlatReward').removeAttr('data-validation-optional');
+		$('#candiFlatReward').attr('data-validation',"required validate_int validate_length length1-8");
+		
+		$('#candiRateType').removeAttr('data-validation-optional');
+		$('#candiRateType').attr('data-validation',"required");
+		
+		$('#candiRatePer').removeAttr('data-validation-optional');
+		$('#candiRatePer').attr('data-validation',"required");
+		
+		$('#clientOrgRelationId').removeAttr('data-validation');
+		$('#clientOrgRelationId').attr('data-validation-optional',"true");
+		$('#clientContact').removeAttr('data-validation');
+		$('#clientContact').attr('data-validation-optional',"true");
+		
+		$('#endDate').removeAttr('data-validation');
+		$('#endDate').attr('data-validation-optional',"true");
+		$('#startDate').removeAttr('data-validation');
+		$('#startDate').attr('data-validation-optional',"true");
+		
+		$('#orgRelationId').removeAttr('data-validation');
+		$('#orgRelationId').attr('data-validation-optional',"true");
+		$('#vendorContact').removeAttr('data-validation');
+		$('#vendorContact').attr('data-validation-optional',"true");
+		
+		$('#invoiceFrequency').removeAttr('data-validation');
+		$('#paymentFrequency').removeAttr('data-validation');
+		$('#taxPercentageRewardValue').removeAttr('data-validation');
+		$('#taxFlatRewardValue').removeAttr('data-validation');
+		
+		
+		$('#invoiceFrequency').attr('data-validation-optional',"true");
+		$('#paymentFrequency').attr('data-validation-optional',"true");
+		$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
+		$('#taxFlatRewardValue').attr('data-validation-optional',"true");
+		
+		$('#flatReward').removeAttr('data-validation');
+		$('#flatReward').attr('data-validation-optional',"true");
+		
+		$('#billingRateType').removeAttr('data-validation');
+		$('#billingRateType').attr('data-validation-optional',"true");
+		
+		$('#billingRatePer').removeAttr('data-validation');
+		$('#billingRatePer').attr('data-validation-optional',"true");
+		
+	
+		$('#hoursPerWeek').val("");
+		$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("hoursPerWeekDiv").style.display="none";
+		
+		$('#overTimeHours').val("");
+		$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("overTimeHoursDiv").style.display="none";
+		
+		$('#totalHoursEstimated').val("");
+		$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
+		document.getElementById("totalHoursEstimatedDiv").style.display="none";
+		
+		$('#overtimeRate').val("");
+		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		getRequirements("Vendor SOW");
 	}
-if(contractType == "Full time offer"){
-	$('#clientOrgRelationId').removeAttr('data-validation');
-	$('#clientOrgRelationId').attr('data-validation-optional',"true");
-	$('#clientContact').removeAttr('data-validation');
-	$('#clientContact').attr('data-validation-optional',"true");
+	getContractTemplates();
 	
-	$('#endDate').removeAttr('data-validation');
-	$('#endDate').attr('data-validation-optional',"true");
-	$('#startDate').removeAttr('data-validation');
-	$('#startDate').attr('data-validation-optional',"true");
-	
-	$('#orgRelationId').removeAttr('data-validation');
-	$('#orgRelationId').attr('data-validation-optional',"true");
-	$('#vendorContact').removeAttr('data-validation');
-	$('#vendorContact').attr('data-validation-optional',"true");
-	
-	$('#invoiceFrequency').removeAttr('data-validation');
-	$('#paymentFrequency').removeAttr('data-validation');
-	$('#taxPercentageRewardValue').removeAttr('data-validation');
-	$('#taxFlatRewardValue').removeAttr('data-validation');
-	
-	
-	$('#invoiceFrequency').attr('data-validation-optional',"true");
-	$('#paymentFrequency').attr('data-validation-optional',"true");
-	$('#taxPercentageRewardValue').attr('data-validation-optional',"true");
-	$('#taxFlatRewardValue').attr('data-validation-optional',"true");
-	
-	$('#flatReward').removeAttr('data-validation');
-	$('#flatReward').attr('data-validation-optional',"true");
-	
-	$('#billingRateType').removeAttr('data-validation');
-	$('#billingRateType').attr('data-validation-optional',"true");
-	
-	$('#billingRatePer').removeAttr('data-validation');
-	$('#billingRatePer').attr('data-validation-optional',"true");
-	
-
-	$('#hoursPerWeek').val("");
-	$('#hoursPerWeekDiv').find('p.jquery_form_error_message').remove();
-	document.getElementById("hoursPerWeekDiv").style.display="none";
-	
-	$('#overTimeHours').val("");
-	$('#overTimeHoursDiv').find('p.jquery_form_error_message').remove();
-	document.getElementById("overTimeHoursDiv").style.display="none";
-	
-	$('#totalHoursEstimated').val("");
-	$('#totalHoursEstimatedDiv').find('p.jquery_form_error_message').remove();
-	document.getElementById("totalHoursEstimatedDiv").style.display="none";
-	
-	$('#overtimeRate').val("");
-	$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
-	getRequirements("Vendor SOW");
-}
+	$("#flatReward").val("");
+	$("#billingRateType").val('${currencyCode}').trigger('change');
+	$("#billingRatePer").val("").trigger('change');
+	}
 </script>
 
 <script>
@@ -1242,6 +1300,7 @@ function hideCommonSOWFields(){
 
 <script>
 	function getRequirements(sowType){
+		$("#requirementsList").empty();
 		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	        type : "GET",

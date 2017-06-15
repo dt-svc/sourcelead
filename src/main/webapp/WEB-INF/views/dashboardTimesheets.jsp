@@ -30,8 +30,8 @@ $(document).ready(function(){
             
              <c:if test="${bothTimesheets}">
 	             <ul class="nav nav-tabs">
-	               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-req">My Timesheets</a></li>
-	               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" href="#prev-req">Employees</a></li>
+	               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-myTimesheets">My Timesheets</a></li>
+	               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" href="#prev-employees">Employees</a></li>
 	             </ul>
              </c:if>
              

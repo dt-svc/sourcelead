@@ -18,7 +18,9 @@ padding:0!important;
 .fullCount, .particalCount {
 	display: none;
 }
-
+ul.tagit li.tagit-choice-editable {
+z-index: 9 !important;
+}
 
 </style>
 <!-- For add New Interview -->
@@ -119,7 +121,7 @@ function addInterview(requirementId){
 	result = result + '<div class="mb10 mt clearfix" id="notifyOthersDiv" style="display: none;">';
 	result = result + '<div class="col-md-6">';
 	result = result + '<input type="hidden" class="form-control input-sm mt10" value="" id="notificationToOthersEmails" name="notificationToOthersEmails">';
-	result = result + '<ul id="mails" class="form-control" ></ul>';
+	result = result + '<ul id="mails" class="form-control"></ul>';
 	result = result + '</div>';
 	result = result + '</div>';
 	

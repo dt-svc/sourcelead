@@ -28,7 +28,14 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Requirement Details</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Requirement List </a> » Requirement Details</div>
+    <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Requirement List </a> &raquo; Requirement Details</div>
+    </c:if>
+    
+    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Requirement List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Requirement List </a> &raquo; Requirement Details</div>
+    </c:if>
+  
   </section>
   
   <div class="side_mask"><div class="proj_close"></div></div>
@@ -242,9 +249,7 @@ function requirementProfile(requirementUUID){
 				 
 			     result = result+'    <ul class="nav nav-tabs mt">';
 			     result = result+'      <li class="active"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementDetails(\''+requirementUUID+'\');" >Details</a></li>';
-			     if(json.isCrowdSourcing == 'Y'){
-			     	result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referrals</a></li>';
-			     }
+			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referrals</a></li>';
 			     '<sec:authorize access="hasRole(\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getSubmissionDetails(\''+requirementUUID+'\');">Submissions</a></li>';
 			     '</sec:authorize>';

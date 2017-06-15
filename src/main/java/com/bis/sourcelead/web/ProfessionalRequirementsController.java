@@ -188,7 +188,6 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
 		public ModelAndView professionalProfile(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
 				@RequestParam(value="referUUID", required=false) String  referUUID) throws Exception {
@@ -222,8 +221,12 @@ public class ProfessionalRequirementsController {
 			        model.addObject("statesList", statesList);
 				}
 				
-				Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
-				model.addObject("resumesCount", resumesCount);
+				if(null != candidateId){
+					Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+					model.addObject("resumesCount", resumesCount);
+					model.addObject("candidateId", candidateId);
+				}
+				
 				
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
@@ -253,7 +256,7 @@ public class ProfessionalRequirementsController {
 				
 				model.setViewName("professional/professionalRequirements");
 				model.addObject("sourceleadUrl", sourceleadUrl);
-				model.addObject("candidateId", candidateId);
+				
 				
 				return model;
 	}
@@ -303,8 +306,11 @@ public class ProfessionalRequirementsController {
 			 	sessionData = new SessionMaintainanceData();
 			 }
 			 
-			 Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
-			 model.addObject("resumesCount", resumesCount);
+			 if(null != candidateId){
+				 Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+				 model.addObject("resumesCount", resumesCount);
+			 }
+			 
 			 
 			sessionData.setNav(Constants.Requirement);
 			request.getSession().setAttribute("sessionData",sessionData);
@@ -333,7 +339,7 @@ public class ProfessionalRequirementsController {
 		        	}
 		        }
 		        
-		        if(null !=  requirement.getAppliedProfessionals() && null != user){
+		        if(null !=  requirement.getAppliedProfessionals() && null != user && null != candidateId){
 	    			  List<Long> userId = new ArrayList<Long>();
 	    			  String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 	 					for (int i=0; i < appliedProfessionals.length; i++){
