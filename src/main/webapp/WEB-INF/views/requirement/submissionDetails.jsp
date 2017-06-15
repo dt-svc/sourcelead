@@ -384,7 +384,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 					     result = result + '<div class="clearfix sub-details">';
 					     result = result + ' <h2 class="active">Submission Details</h2>';
 					     result = result + ' <div class="content clearfix" style="display: block;">';
-					     result = result + 'submissionDetails';
+					     result = result + submissionDetails;
 					     result = result + ' </div>';
 					     result = result + ' </div>';
 		                 
