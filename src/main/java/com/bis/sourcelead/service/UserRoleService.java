@@ -123,5 +123,7 @@ public interface UserRoleService {
 	 List<UserRole> getAllUsersListByOrgLocationId(Long orgLocationId,Long loginUserId ) throws Exception;
 	 
 	 public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId,Long locationId,String userType) throws Exception;
+	 
+	 UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email,String userType) throws Exception;
 
 }

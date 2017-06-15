@@ -498,7 +498,10 @@ function resetCredentials(type){
 	$("#lastName").val('');
 	$("#email").val('');
 	$("#location").val('');
-
+	
+	$('#emailDiv').find('p.jquery_form_error_message').remove(); 
+	$('#recruiterEmailDiv').find('p.jquery_form_error_message').remove(); 
+	
 	$("#recruiterFirstName").val('');
 	$("#recruiterLastName").val('');
 	$("#recruiterEmail").val('');

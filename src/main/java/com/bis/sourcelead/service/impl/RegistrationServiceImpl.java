@@ -902,6 +902,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
 				user.setCountry(jsonObj.getString("location"));
+				user.setProfessionalRegisterCountry(jsonObj.getString("location"));
 			}
 			
 			user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
@@ -917,6 +918,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 		}else{
 			user.setRegistrationType("Existed User");
+			user.setProfessionalRegisterCountry(jsonObj.getString("location"));
+			userService.addUser(user);
 			result = "login";
 		}
 		
@@ -1081,6 +1084,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			if(jsonObj.has("location") && !isNullOrEmpty(jsonObj.getString("location"))){
 				user.setCountry(jsonObj.getString("location"));
+				user.setRecruiterRegisterCountry(jsonObj.getString("location"));
 			}
 			
 			//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
@@ -1097,6 +1101,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			result = "success";
 		}else{
 			user.setRegistrationType("Existed User");
+			user.setRecruiterRegisterCountry(jsonObj.getString("location"));
+			userService.addUser(user);
 			result = "login";
 		}
 		

@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -310,6 +311,11 @@ public class LoginSessionController {
 				e.printStackTrace();
 			}
 			
+			if(userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+				userRole.setUserState(Status.ACTIVE);
+				userRoleService.addUserRole(userRole);
+			}
+			
 						
 			Candidate candidate = null;
 			if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
@@ -330,6 +336,13 @@ public class LoginSessionController {
 					}
 				}
 				
+				
+				if(isNullOrEmpty(user.getProfessionalRegisterCountry())){
+					SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+				}else{
+					SourceLeadSessionManager.setSessionAttribute(request, "country", user.getProfessionalRegisterCountry());
+				}
+				
 			}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
 				
@@ -338,6 +351,12 @@ public class LoginSessionController {
 					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 				}else{
 					model.setViewName("recruiter/recruiterDashboard");
+				}
+				
+				if(isNullOrEmpty(user.getRecruiterRegisterCountry())){
+					SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+				}else{
+					SourceLeadSessionManager.setSessionAttribute(request, "country", user.getRecruiterRegisterCountry());
 				}
 			}
 			
@@ -508,7 +527,6 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
 				SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
 				SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-				SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
 				
 				OrgLocations orgLocations = userRole.getOrgLocations();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
@@ -532,16 +550,24 @@ public class LoginSessionController {
 					candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 					StringBuilder redirectUrl = new StringBuilder();
 					
-					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
-						response.sendRedirect(redirectUrl.append("/sourcelead/professionalPraseCandidate").toString());
+					model.setViewName("professional/professionalDashboard");
+					if(isNullOrEmpty(user.getProfessionalRegisterCountry())){
+						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
 					}else{
-						model.setViewName("professional/professionalDashboard");
+						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getProfessionalRegisterCountry());
 					}
+					
 					
 				}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 					candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
 					
 					model.setViewName("recruiter/recruiterDashboard");
+					
+					if(isNullOrEmpty(user.getRecruiterRegisterCountry())){
+						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
+					}else{
+						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getRecruiterRegisterCountry());
+					}
 				}
 				
 				userRole.setNewlyLoginUser(Constants.NO);

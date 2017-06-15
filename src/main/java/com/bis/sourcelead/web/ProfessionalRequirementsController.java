@@ -22,6 +22,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.RegistrationOptionalService;
 import com.bis.sourcelead.entity.Requirement;
@@ -194,6 +195,8 @@ public class ProfessionalRequirementsController {
 		    
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		        Countries countries = null;
 		        
 		        ModelAndView model = new ModelAndView();
 				
@@ -211,15 +214,19 @@ public class ProfessionalRequirementsController {
 			    List<Countries> countryList = countriesService.getAllCountries();
 				model.addObject("countryList", countryList);
 				
-				if(StringUtils.isNotEmpty(user.getCountry())){
-				
-					Countries countries = countriesService.getCountriesByCountryName(user.getCountry());
-					if(null != countries){
-					   model.addObject("loginCountryName", countries.getName());
-					}
-			        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
-			        model.addObject("statesList", statesList);
+				if(StringUtils.isNotEmpty(user.getProfessionalRegisterCountry())){
+					countries = countriesService.getCountriesByCountryName(user.getProfessionalRegisterCountry());
+				}else{
+					countries = countriesService.getCountriesByCountryName(user.getCountry());
 				}
+				
+				
+				if(null != countries){
+					   model.addObject("loginCountryName", countries.getName());
+					   List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+				       model.addObject("statesList", statesList);
+				}
+			       
 				
 				if(null != candidateId){
 					Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
@@ -256,7 +263,6 @@ public class ProfessionalRequirementsController {
 				
 				model.setViewName("professional/professionalRequirements");
 				model.addObject("sourceleadUrl", sourceleadUrl);
-				
 				
 				return model;
 	}

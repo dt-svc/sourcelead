@@ -314,7 +314,7 @@ document.onkeydown=function(e){
 				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
+					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
 					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
 					                     </div>
 					                   </div>
@@ -327,17 +327,32 @@ document.onkeydown=function(e){
 				                </a>
 			              </c:if>
 			              
-			              <c:if test="${links.roles.displayName == 'Professional' || links.roles.displayName == 'Independent Recruiter'}">
+			              <c:if test="${links.roles.displayName == 'Professional'}">
 			              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink">
+					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Professional' ? 'active-comp' : ''}">
 					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
 				                       </div>
 					                   </div>
 					                   <div class="pull-left">
 					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+					                   </div>
+					                </div>
+				                </a>
+			              </c:if>
+			              
+			              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
+			              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+					                <div class="clearfix">
+					                   <div class="pull-left image-parent positionRelative">
+					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Recruiter' ? 'active-comp' : ''}">
+					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                       </div>
+					                   </div>
+					                   <div class="pull-left">
+					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
 					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
 					                   </div>
 					                </div>
