@@ -330,6 +330,7 @@ public class Constants {
 	public static final String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
 	public static final String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	public static final String Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
+	public static final String Applicant_Authorization_Manager_Acceptence_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantAuthorizationManagerAcceptance";
 	public static final String[] RATEPER_LIST = { "Daily", "Hourly", "Weekly", "Bi-Weekly",
 			"Semi-Monthly", "Monthly", "Yearly" };
 	public static final String[] ROLE_LIST = { "Admin", "Employee", "Project Manager", "Team Lead" };

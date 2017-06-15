@@ -258,4 +258,6 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId, Long orgRelationId, Date startUTCDate, Date endUTCDate);
 	
 	RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId,Long requirementId) throws Exception;
+	public void sendEmailtoAssignedMemberApplicantAuthorization(Org loginOrg, User users,RequirementSubmission requirementSubmission,
+			 OrgLocations loginOrgLocation) throws Exception;
 }
