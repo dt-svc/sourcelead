@@ -441,14 +441,14 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 				        	  }else{
-				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Accepted by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</span></div>';
 				        	  }
 				        	 }
 				          if(json.submissionRateStatus == 'REJECTED'){
 				        	  if(json.submissionRequestUser != null && json.submissionRequestUser != 'undefined'){
 				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.submissionRequestUser+'</span></div>';
 				        	  }else{
-				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+'</span></div>';
+				        		  result = result + ' <div class="clearfix mt10"><label class="col-md-2 text-right paddingRight">Rejected by:</label><span class="col-md-9">'+json.requirementSubmissionTemplateFields.firstName+' '+lastName+'</span></div>';
 				        	  }
 				        	 }
 				          if(json.submissionRequestComment != null && json.submissionRequestComment != '' && json.submissionRequestComment != 'undefined'){

@@ -277,6 +277,7 @@ public class SubmissionsRateController {
 			
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 			}
 			
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
