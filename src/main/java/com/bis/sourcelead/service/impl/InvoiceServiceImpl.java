@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -151,6 +153,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 
 	@Autowired
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
+	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@Override
 
@@ -575,8 +580,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"candidate") && !"".equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
-						 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
-						 invoiceLineItems.setCandidate(candidate);
+						 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
+							 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
+							 invoiceLineItems.setCandidate(candidate);
+						 }
+						 if(jsonObj.has(i+"user")){
+							 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"user"))){
+								 User usr = userService.getUserById(Long.parseLong(jsonObj.getString(i+"user")));
+								 invoiceLineItems.setUser(usr);
+							 } 
+						 }
 					 }
 					 
 					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
@@ -1136,7 +1149,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	@Override
-	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate) throws Exception {
+	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType) throws Exception {
 		
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
@@ -1144,10 +1157,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
 			Row writeRow = null;
-			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate);
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
 			int column = 0;
 			for (Invoice invoice : invoiceList) {
-				writeRow = createExcelsheet.createRow(column + 13);
+				writeRow = createExcelsheet.createRow(column + 10);
 				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
 				column++;
 			}
@@ -1161,7 +1174,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 				e.printStackTrace();
 			}
 		}else{
-			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount,exportStartDate,exportEndDate);
+			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount,exportStartDate,exportEndDate,invoiceType);
 		}
 			return file;
 	}
@@ -1184,26 +1197,32 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 		writeRow.createCell(1).setCellValue(org.getOrgName());
 	}
 	
-	if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
 		StringBuilder contactName = new StringBuilder();
 		writeRow.createCell(2).setCellValue(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
 	}else if(null != invoice.getContactUser().getFirstName()){
 		writeRow.createCell(2).setCellValue(invoice.getContactUser().getFirstName());
 	}
+	}
 	
-	if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
 		writeRow.createCell(3).setCellValue(invoice.getContactUser().getEmail()); 
 	}
-	
-	if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
-		 writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
 	}
 	
-	if(null != invoice.getInvoiceDate() && !"".equalsIgnoreCase(invoice.getInvoiceDate().toString())){
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
+		 writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
+	}
+	}
+	
+	if(null != invoice.getInvoiceDate()){
 		 writeRow.createCell(5).setCellValue(invoice.getInvoiceDate().toString());
 	}
 	
-	if(null != invoice.getDueDate() && !"".equalsIgnoreCase(invoice.getDueDate().toString())){
+	if(null != invoice.getDueDate()){
 		writeRow.createCell(6).setCellValue(invoice.getDueDate().toString());  
 	}
 	
@@ -1236,7 +1255,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoi
 	return createExcelsheet;
 	}
 
-private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate) {
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate, String invoiceType) {
 	
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 
@@ -1312,7 +1331,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	cell12.setCellValue(totalStagesAmount.getTotalUnbilledAmount());
 	cell12.setCellStyle(style);
 	
-	String headers [] = Constants.BILLING_HEADERS;
+	String[] headers = null;
+	if(Constants.Payables.equalsIgnoreCase(invoiceType)){
+		 headers  = Constants.BILLING_PAYABLE_HEADERS;
+	}else{
+		 headers  = Constants.BILLING_HEADERS;
+	}
 	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
 	return createExcelsheet;
 }
@@ -1458,22 +1482,30 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<String> submissionApproverHiearachyIds = new ArrayList<>();
 		float subTotal = 0;
 		for (ProjectMembers projectMember : projectMembersList) {
-			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
-			invoiceLineItems.setStartDate(conversionUtil.getDateFromString(projectMember.getStartDate()));
-			invoiceLineItems.setEndDate(conversionUtil.getDateFromString(projectMember.getEndDate()));
-			Candidate candidate = candidateService.getCandidateByCandidateId(projectMember.getCandidateId());
-			invoiceLineItems.setCandidate(candidate);
-			List<Contracts> contractsList = projectMember.getContractsList();
 			String rate = null;
 			String ratePer = null;
 			String rateCurrencyType = null;
-			if (null != contractsList && contractsList.size() > 0) {
-				Contracts contract = contractsList.get(0);
-				invoiceLineItems.setContract(contract);
-				rate = contract.getBillingAmount();
-				ratePer = contract.getBillingRatePer();
-				rateCurrencyType = contract.getBillingRateType();
+			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
+			invoiceLineItems.setStartDate(conversionUtil.getDateFromString(projectMember.getStartDate()));
+			invoiceLineItems.setEndDate(conversionUtil.getDateFromString(projectMember.getEndDate()));
+			if(projectMember.getCandidateId() !=null){
+				Candidate candidate = candidateService.getCandidateByCandidateId(projectMember.getCandidateId());
+				invoiceLineItems.setCandidate(candidate);
+				List<Contracts> contractsList = projectMember.getContractsList();
+				if (null != contractsList && contractsList.size() > 0) {
+					Contracts contract = contractsList.get(0);
+					invoiceLineItems.setContract(contract);
+					rate = contract.getBillingAmount();
+					ratePer = contract.getBillingRatePer();
+					rateCurrencyType = contract.getBillingRateType();
+				}
+			}else{
+				if (projectMember.getUserId() !=null) {
+					User usr = userService.getUserById(Long.parseLong(projectMember.getUserId()));
+					invoiceLineItems.setUser(usr);
+				}
 			}
+			
 			if (null != projectMember.getTotalHours()) {
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
@@ -1570,6 +1602,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
+				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
 					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if (null != candidate) {
@@ -1643,8 +1676,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
-				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
-				if (null != candidate) {
+				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
+//				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
+				if (null != employee) {
 					StringBuilder empName = new StringBuilder();
 					if (null != projectMember.getEmployee().getUser().getFirstName()
 							&& null != projectMember.getEmployee().getUser().getLastName()) {
@@ -1654,9 +1688,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						empName.append(projectMember.getEmployee().getUser().getFirstName());
 					}
 					projectMember.setCandidateName(empName.toString());
-					if (null != candidate) {
-						projectMember.setCandidateId(candidate.getId());
-					}
+					projectMember.setUserId(employee.getUser().getId().toString());
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
 					String billableHours = String.valueOf(sah.getBillableHours());;
@@ -1678,10 +1710,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						sb.append(":").append(arr[1]);
 					}
 					projectMember.setTotalHours(sb.toString());
-					List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
-					if (null != contractList && contractList.size() > 0) {
-						projectMember.setContractsList(contractList);
+					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
+					if (null != candidate) {
+						projectMember.setCandidateId(candidate.getId());
+						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
+						if (null != contractList && contractList.size() > 0) {
+							projectMember.setContractsList(contractList);
+						}
 					}
+				
 					filteredMembersList.add(projectMember);
 				}
 			}
