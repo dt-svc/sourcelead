@@ -16,6 +16,12 @@
 .inline_field, .inline_field:focus {
 	width:100px !important; text-align:center;
 }
+.timesheet_week_comm .form-group {
+margin-bottom: 0;
+}
+.timesheet_week_comm.invoiceDocs_add span .fa-times {
+    margin: 6px;
+}
 </style>
 
 
@@ -64,10 +70,11 @@ function errRemoveClientContact(){
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
 				              <div class="col-md-9 select-field" id="errClient">
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();buildLineItemAndTaxAddRows();getPaymentTerms();" data-validation="required" field-name="Client">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="Client">             
 				                </select>
 				              </div>
 				              <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+				                <input type="hidden" name="clientCurrency" id="clientCurrency">
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
@@ -206,6 +213,7 @@ function errRemoveClientContact(){
 
 <script>
 	function buildLineItemAndTaxAddRows(){
+		var clientCurrency = $("#clientCurrency").val(); 
 		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
 		 result = result +'  <div class="project_wrap_table mt25 invoice_table" id="invoiceTable">';
@@ -216,7 +224,7 @@ function errRemoveClientContact(){
 		 result = result +'  <th>Date</th>';
 		 result = result +'  <th>Associate</th>';
 		 result = result +'  <th>SOW</th>';
-		 result = result +'  <th>Rate</th>';
+		 result = result +'  <th>Rate Hourly</th>';
 		 result = result +'  <th>Total Hours</th>';
 		 result = result +'  <th>Amount</th>';
 		 result = result +'  <th><i class="fa fa-remove"></i></th>';
@@ -227,7 +235,7 @@ function errRemoveClientContact(){
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="4"></td>';
 		 result = result +'  <td><strong>Subtotal</strong></td>';
-		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00:00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
+		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
 		 result = result +'  </tr>';
@@ -338,18 +346,20 @@ function errRemoveClientContact(){
                    result = result +'  </div>';
                    
                    //New Div for currency conversion: srinivas l
-                   result = result +'  <div class="row">';
-                   result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
-                   
-                   result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span id="loginCurrencyCode" class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
-                   
-                    result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
-	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
-	                  
-                   
-                   result = result +'  </div>';
-                   result = result +'  </div>'; 
-                 //New Div for currency conversion: srinivas l
+                 if(clientCurrency != currencyCode){ 
+                	 result = result +'  <div class="row">';
+                     result = result +'  <div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+                     
+                     result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span id="loginCurrencyCode" class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+                     
+                      result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+  	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+  	                  
+                     
+                     result = result +'  </div>';
+                     result = result +'  </div>'; 
+                   //New Div for currency conversion: srinivas l 
+                 }
                    
                    result = result +'  </div>';
                    result = result +'  </div>';
@@ -380,8 +390,8 @@ function errRemoveClientContact(){
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
-		           	 $('#clientOrgRelationId').trigger("chosen:updated");
-		           	 
+		           	 $('#clientOrgRelationId').trigger("chosen:updated"); 
+		           	 $('#clientCurrency').val(json['clientCurrency']);
 		           	getClientContacts(json['vendorContactId']);
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	
@@ -1209,11 +1219,13 @@ function pagination(){
   }
   
   function calAddRowAmount(hours,minute,rowId){
+	  
 	  var rate = $("#"+rowId+"rate").val();
 	  var split = hours.split(':');
 	  var splitHours = split[0];
 	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
+		 setHours(finalmin,rowId);
 	     var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
 	     $('#'+rowId+'amount').empty();
@@ -1221,6 +1233,32 @@ function pagination(){
 	     calTotalamount(rowId,totlalAmount);
   }
   </script>
+
+<!-- Converting minutes to hours if minutes >60 -->
+<script>
+function setHours(finalmin,rowId){
+	 var actualHours = Math.floor(finalmin / 60); 
+     var actualMinutes = finalmin % 60;
+     var actualTotal = 0;
+     if (actualHours >= 10 && actualHours < 100) {
+			actualHours = '0' + actualHours;
+	  }
+     if (actualHours < 10) {
+			actualHours = '00' + actualHours;
+	  }
+	 if (actualMinutes < 10) {
+		actualMinutes = '0' + actualMinutes;
+	 }
+	 if(!isNaN(actualHours) && !isNaN(actualMinutes)){
+		 actualTotal = actualHours +":"+ actualMinutes;
+	 }else{
+		 actualTotal =  "000:00";
+	 }
+	 $('#'+rowId+'totalHours').empty();
+     $('#'+rowId+'totalHours').val(actualTotal);
+}
+</script>
+
 
 <script>
   function  calTotalamount(rowId,totlalAmount){
@@ -1504,15 +1542,15 @@ function calculateTaxDiscount(){
 		    if(taxType == 'flat'){
 		    	if(taxValue){
 		    		first = parseFloat(taxValue);
-			        $("#"+i+"taxTotal").val(first);
+			        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    	}
 		    	
 		    }
 		    
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
-		        first = parseFloat(perCentValue.toFixed(2));
-		        $("#"+i+"taxTotal").val(first);
+		        first = parseFloat(perCentValue);
+		        $("#"+i+"taxTotal").val(first.toFixed(2));
 		    }   
 		}
 	}
@@ -1704,15 +1742,20 @@ function getClientContacts(clientContactId){
 		selected = 'selected';
 	}
 	output = output + "<option value='" +opt.spocUserId+ "' "+selected+">"+opt.ownerName+"</option>";
+	$("#clientCurrency").val(opt.clientCurrency);
 	}
 	
 	$("#clientContact").empty();
 	$("#clientContact").append(output);
 	$('#clientContact').trigger("chosen:updated");
+	if(clientContactId == null || clientContactId == '' || clientContactId == 'undefined'){
+		buildLineItemAndTaxAddRows();
+	}
 	},
 	});
 	}
 </script>
+
 
 <script> 
 function getPaymentTerms(){

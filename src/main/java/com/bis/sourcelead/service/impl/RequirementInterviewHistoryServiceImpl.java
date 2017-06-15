@@ -100,6 +100,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				if(null != requirementInterview.getProposeTime()){
 					interviewHistory.setProposeTimeStatus(requirementInterview.getProposeTime());
 				}
+				interviewHistory.setSubmissionStatus(interviewHistory.getSubmissionId().getSubmissionStatus().toString());
 				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
 					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
 					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);
@@ -401,6 +402,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				if(null !=requirementInterview.getProposeTime()){
 			    	interviewHistory.setProposeTimeStatus(requirementInterview.getProposeTime());	
 			    }
+				interviewHistory.setSubmissionStatus(interviewHistory.getSubmissionId().getSubmissionStatus().toString());
 				if(requirementInterview.getRemainedBefore() != null && !requirementInterview.getRemainedBefore().isEmpty()){
 					Integer hours = (Integer.parseInt(requirementInterview.getRemainedBefore()) / 60);
 					Integer minutes = (Integer.parseInt(requirementInterview.getRemainedBefore()) % 60);

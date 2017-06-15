@@ -39,6 +39,10 @@ public class InvoiceLineItems {
 	private Candidate candidate;
 	
 	@ManyToOne
+	@JoinColumn(name = "USER_ID", nullable = false)
+	private User user;
+	
+	@ManyToOne
 	@JoinColumn(name = "CONTRACT_ID", nullable = false)
 	private Contracts contract; 
 	
@@ -110,7 +114,8 @@ public class InvoiceLineItems {
 	@Transient
 	private List<Contracts> contractList;
 	
-	
+	@Transient
+	private Long userId;
 
 	public Long getId()
 	{
@@ -122,6 +127,14 @@ public class InvoiceLineItems {
 		this.id = id;
 	}
 	
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	public Date getStartDate()
 	{
 		return startDate;
@@ -366,5 +379,14 @@ public class InvoiceLineItems {
 	{
 		this.contractList = contractList;
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 	
 }

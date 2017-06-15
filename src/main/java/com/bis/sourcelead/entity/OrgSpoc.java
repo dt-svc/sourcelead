@@ -87,6 +87,14 @@ public class OrgSpoc implements Serializable{
 	@Transient
 	private Long spocUserId;
 	
+	public String getVendorCurrency() {
+		return vendorCurrency;
+	}
+
+	public void setVendorCurrency(String vendorCurrency) {
+		this.vendorCurrency = vendorCurrency;
+	}
+
 	@Transient
 	private String ownerName;
 	
@@ -178,6 +186,12 @@ public class OrgSpoc implements Serializable{
 
 	@Transient
 	private String paymentTerms;
+	
+	@Transient
+	private String vendorCurrency;
+	
+	@Transient
+	private String clientCurrency;
 
 	public Long getSpocLocationId() {
 		return spocLocationId;
@@ -562,6 +576,14 @@ public class OrgSpoc implements Serializable{
 	public void setStringDate(String stringDate)
 	{
 		this.stringDate = stringDate;
+	}
+
+	public String getClientCurrency() {
+		return clientCurrency;
+	}
+
+	public void setClientCurrency(String clientCurrency) {
+		this.clientCurrency = clientCurrency;
 	}
 	
 }

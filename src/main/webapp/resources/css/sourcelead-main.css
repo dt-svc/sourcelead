@@ -1,4 +1,4 @@
-@charset "utf-8";
+@@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -60,6 +60,9 @@ textarea {
 }
 .mb10 {
 	margin-bottom: 10px;
+}
+.mb5 {
+	margin-bottom: 5px;
 }
 .ml {
 	margin-left: 15px;
@@ -325,24 +328,50 @@ min-height: 30px; padding: 0; position: absolute; right: 0; min-width: 185px; z-
 #settingArea:hover .setting-area {
 -webkit-transform: translateX(0px); -ms-transform: translateX(0px); transform: translateX(0px); 
 }
-.setting-area ul {
+#settingArea .setting-area ul {
+-webkit-transition: all ease-in-out 0.5s; -o-transition: all ease-in-out 0.5s; -moz-transition: all ease-in-out 0.5s; transition: all ease-in-out 0.5s;
+}
+#settingArea .setting-area li.templateLi ul {
+    display: none; background-color: #375d81; border-top:1px solid #3a8bd5; transition: all ease-in-out 0.5s;
+}
+#settingArea .setting-area li.templateLi ul li {
+    font-size: 14px; line-height: 25px; border-bottom:1px solid #325475;
+    transition: all ease-in-out 0.5s;
+}
+#settingArea .setting-area li.templateLi ul li .fa {
+    width: 25px;
+}
+#settingArea .setting-area li.templateLi:hover ul {
+    display: block;
 }
 .setting-area ul li {
-line-height: 35px; height: 35px; padding: 0 !important; margin: 0; border-bottom: 1px solid #3a8bd5;
+line-height: 35px; height: auto; padding: 0 !important; margin: 0; border-bottom: 1px solid #3a8bd5; position: relative;
 }
 .setting-area ul li:last-child {
 	border-bottom: 0;
 }
 .setting-area ul li i {
-	padding-right: 10px;
+	width: 25px;
 }
 .setting-area ul li a {
 position: relative; display: block; padding: 0 15px !important; transition: all ease-in-out 0.5s; text-align: left;
 }
-.setting-area ul li a:hover {
+.setting-area ul li a:hover, .setting-area ul li.acMenu {
 	background: #2970B1;
 }
-/*sidebar menu styles */
+.setting-area ul ul {
+	background: #2970B1; border-top: 1px solid #3a8bd5; display: none;
+}
+.setting-area ul ul li {
+	font-size: 13px;
+}
+.setting-area ul ul li a {
+	padding: 0px 10px 0px 20px !important;
+}
+.setting-area ul ul li i {
+	width: 22px; font-size: 12px;
+}
+/*sidebar menu styles  */
 .side-bar {
 background-color: #375d81; left: 0; min-height: 100%; position: fixed; top: 0; width: 230px; z-index: 810;
 padding-top: 50px; box-shadow: 1px 1px 2px #707070; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
@@ -1445,7 +1474,7 @@ visibility: hidden; opacity: 0; -webkit-transition: 0.6s;
 	padding: 10px 15px;
 }
 .collapse-div-adduser, .edit-details {
-	right: 92px;
+	right: 40px;
 	padding: 10px 5px;
 }
 .collapse-div-adduser a, .edit-details a {
@@ -5406,6 +5435,11 @@ margin-bottom: 10px; margin-left: 10px;
 .modal-Time {
     padding: 5px;border: 1px solid #ddd; margin: 10px; display: none;
 }
+.modal-comment {
+ padding: 5px; border: 1px solid #ddd; margin: 0px; display: none; position: absolute; top: 35px;
+ right: 15px; background: #fff; z-index: 999; width: 100%; box-shadow: 1px 1px 2px rgba(000,000,000,0.4);
+ border-radius:5px;
+}
 .taskComments .media {
     border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 5px;
 }
@@ -5432,14 +5466,53 @@ margin-bottom: 10px; margin-left: 10px;
     width: 100% !important; border: 1px solid #ddd !important;
 }
 .datatable_filter .dataTables_length {
-    position: absolute !important;
-    left: 0px !important;
-    margin: 0px 0px;
-    top: -35px !important;
-    padding: 0px 15px 0px 0px !important;
+    position: absolute !important; left: 15px; margin: 0px 0px; bottom: 3px; padding: 0px 15px 0px 0px !important;
 }
 .datatable_filter .dataTables_length select {
-    border: 1px solid #ddd !important; padding: 4px 15px !important;
+    padding: 4px 5px !important;  height:32px; padding:0px 10px; -webkit-border-radius:3px; -moz-border-radius:3px; -ms-border-radius:3px; border-radius:3px; box-sizing:border-box; -webkit-appearance:none; -moz-appearance:none; appearance:none;
+    background: #fff url("../images/arrow-d-g.png") no-repeat 85% center;background-size: 10px; border:1px solid #ccc; width: 55px !important;
+}
+.datatable_filter .dataTables_length select option {
+    padding:2px 10px;
+}
+.datatable_filter .dataTables_length select::-ms-expand {
+  display:none;
+}
+.datatable_filter .dataTables_info {
+    padding-left:165px !important;
+}
+.alert.alertInfo {
+    padding: 4px 5px 2px 5px; margin-bottom: 0;
+}
+.alert.alertInfo .btn-sm{
+    padding: 3px 5px;
+}
+.alert.alertInfo .mtop {
+    margin-top: 2px;
+}
+.reportBtns.reportcutom_Btns  {
+    width:52%; margin-bottom: 7px; padding-top: 2px
+}
+.reportBtns.reportcutom_Btns .dropdown-select select {
+height: 34px; margin-top: 2px;
+}
+.reportBtns.reportcutom_Btns .repoBtns a {
+    height: 33px; padding: 5px 8px 0px 8px;
+}
+.reportBtns.reportcutom_Btns .reportBtn {
+ width: 25%;
+}
+.reportBtns.reportcutom_Btns .repoBtns {
+margin-left: 10px;
+}
+.reportsCount.reportsCount7 ul li {
+    min-width: 148px; width: auto;
+}
+.reportsCount.reportsCount7 ul {
+    padding: 0 10px;
+}
+.reportsCount.reportsCount7 ul li:first-child + li + li + li + li + li + li span {
+    background-color: #ffa726;
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -691,7 +691,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 //			UserRole userRole  = userRoleDao.getUserRoleByUserIdAndLocationId(user.getId(), loginOrgLocations.getId());
 			/*if("Admin".equalsIgnoreCase(userRole.getUserType())){*/
-				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id";
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId  and requirement.clientId.id IN (  select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId )and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
 				releasedJobsList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setLong( "orgRelationId", orgRelationId ).setCacheable(true).list();
 			/*}else{
 				query = "from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.clientId.id =:orgRelationId and parentRequirement !='null' and requirement.spocId.createdBy =:loginUserCode";
@@ -1186,7 +1186,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			List<Requirement> releasedJobsList = null;
 			String query = "";
 			if(orgRelationId != null && orgLocationId != null){
-				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC ) and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id";
+				query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC ) and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
 				releasedJobsList = session.createQuery(query).setLong( "orgRelationId", orgRelationId ).setParameter("startDateUTC", startDateUTC).setParameter( "endDateUTC", endDateUTC ).setCacheable(true).list();
 			}
 	        return releasedJobsList;
@@ -1277,6 +1277,12 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 		if (Arrays.asList(requirementStatus).contains("CLOSED")) {
 			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'CLOSED' or ";
+		}
+		if (Arrays.asList(requirementStatus).contains("CANCEL")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'CANCEL' or ";
+		}
+		if (Arrays.asList(requirementStatus).contains("REJECTED")) {
+			subQuery8 = subQuery8 + "requirement.requirementSubmissionStatus = 'REJECTED' or ";
 		}
 		if ((requirementStatus[0] != null && requirementStatus[0].length() > 0)) {
 			subQuery8 = "and (" + subQuery8.substring(0, subQuery8.length() - 4) + ")";

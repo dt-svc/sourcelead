@@ -83,7 +83,7 @@ function getPostValueDetails(){
 <script type="text/javascript">
 window.onload = function () {
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+	if(loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
 		document.getElementById('requirementType').value = 'OpenJobs';
 		document.getElementById('openjobs').checked = true;
 		document.getElementById('openActive').className = 'activeBackground'
@@ -132,11 +132,15 @@ window.onload = function () {
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
            <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
            </c:if>
+           
+           <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard'/>">Home </a> &raquo; <a href="<c:url value='/requirementList'/>">Requirements List </a> </div>
+           </c:if>
           
           <div class="clearfix"></div> 
          <div class="reportsCount req_Crowd clearfix">
           <ul class="clearfix">
-          <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li><label class="mr10"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('OpenJobs');" value="OpenJobs">&nbsp;Open</label></b></li>
           </c:if>
           <li id="crowd"><label class="mr10"><span><i class="fa fa-mixcloud"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="crowdSourcingjobs" onchange="selectRequirementType('CrowdSourcingJobs');" value="CrowdSourcingJobs">&nbsp;Crowdsourcing</label></b></li>
@@ -754,7 +758,7 @@ function requirementsList(offset){
 			 				}
 			 				
 			 				if(requirements.rate != null && requirements.rate != '' && requirements.rate != 'undefined'){
-			 					rate = requirements.rate+" / "+requirements.rateType+" "+requirements.currentRateCurrency;
+			 					rate = requirements.rate+" "+requirements.currentRateCurrency+" / "+requirements.rateType;
 			 				}else{
 			 					rate = '--';
 			 				}
@@ -770,7 +774,15 @@ function requirementsList(offset){
 			 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 			 				result = '<section class="openCta" id="job'+requirements.requirementUUID+'">';
 			 				result = result +'<div class="OpenJob">';
-			 				result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 				
+			 				if(requirements.referUUID != null && requirements.referUUID != 'undefined'){
+			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 				}else{
+			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					
+			 				}
+			 				
+			 				
 			 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
@@ -838,7 +850,7 @@ function requirementsList(offset){
 								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
 								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 				 				result = result +'</span>'; 
-				 				result = result +'<div class="openPostBtns">';
+				 				result = result +'<div class="openPostBtns clearfix">';
 				 				
 				 				if(requirements.isJobSaved != 'Y'){
 				 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
@@ -851,8 +863,10 @@ function requirementsList(offset){
 				 					
 				 				}
 				 				
+				 				if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+				 					result = result +'  <a href="#" title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="removeReferPopUp();alertFunction();createAlert(\''+requirements.requirementUUID+'\')";><i class="fa fa-bell-o"></i></a>';
+				 				}
 				 				
-				 				result = result +'  <a href="#" title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="removeReferPopUp();alertFunction();createAlert(\''+requirements.requirementUUID+'\')";><i class="fa fa-bell-o"></i></a>';
 				 				if((requirementType == "OpenJobs")|| ((requirementType == "CrowdSourcingJobs" || requirementType == "ReferredToMe" || requirementType == "ReferredByMe" || requirementType == "SavedJobs") && requirements.isJobApplied == 'N')){
 				 					
 				 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
@@ -887,7 +901,7 @@ function requirementsList(offset){
 			 					}
 				 				
 				 				result = result +'</div>';
-				 				result = result +'<div class="openPostDate">';
+				 				result = result +'<div class="openPostDate clearfix">';
 				 				result = result +'Posted :';
 				 				result = result +'<b><i class="fa fa-clock-o"></i> '+requirements.calDays+'</b>';
 				 				result = result +'</div>';
@@ -910,7 +924,7 @@ function requirementsList(offset){
 			 						result = result +'<i class="fa fa-check-circle"></i>';
 			 					}
 			 					
-			 					result = result +'<div class="openPostDate">';
+			 					result = result +'<div class="openPostDate clearfix">';
 			 					
 			 					var appliedDate = requirements.requirementAppliedDate;
 			 					if(appliedDate != null && appliedDate !="" && appliedDate !='undefined'){
@@ -1162,7 +1176,7 @@ function searchRequirement(offset){
 														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
 														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
 										 				result = result +'</span>'; 
-										 				result = result +'<div class="openPostBtns">';
+										 				result = result +'<div class="openPostBtns clearfix">';
 										 				
 										 				if(requirements.isJobSaved != 'Y'){
 										 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
@@ -1170,7 +1184,10 @@ function searchRequirement(offset){
 										 					result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bg-green"  ><i class="fa fa-floppy-o"></i></a>';
 										 				}
 										 				
-										 				result = result +'  <a href="#" title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="removeReferPopUp();alertFunction();createAlert(\''+requirements.requirementUUID+'\')";><i class="fa fa-bell-o"></i></a>';
+										 				if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
+										 					result = result +'  <a href="#" title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="removeReferPopUp();alertFunction();createAlert(\''+requirements.requirementUUID+'\')";><i class="fa fa-bell-o"></i></a>';
+										 				}
+										 				
 										 				if((requirementType == "OpenJobs") || (requirementType == "CrowdSourcingJobs" && requirements.isJobApplied == 'N')){
 										 					if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 										 					result = result +'<a href="javascript:void(0)" onclick="removeReferPopUp();applyToJob(\''+requirements.jobTitle+'\','+requirements.requirementId+');"  class="jobApply">Apply</a>';
@@ -1194,7 +1211,7 @@ function searchRequirement(offset){
 										 				result = result +'</div>';
 										 				
 										 				result = result +'</div>';
-										 				result = result +'<div class="openPostDate">';
+										 				result = result +'<div class="openPostDate clearfix">';
 										 				result = result +'Posted :';
 										 				result = result +'<b><i class="fa fa-clock-o"></i> '+requirements.calDays+'</b>';
 										 				result = result +'</div>';			  
@@ -1608,13 +1625,13 @@ $('body').on('submit', '#referToContacts', function(e){
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var email = document.getElementById('email').value; 
 	  if(email != null && email != ''){
-		  $("#submit_refer").attr("disabled", "disabled");
 		$.ajax({
 		   	type: "GET",
 		       url: sourceleadUrl+"/validateReferedEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId,
 		       success: function(data) {
 		    		if(data != null && data != ''){
 					     if(data == 'Invalid'){
+					    	 $("#submit_refer").attr("disabled", "disabled");
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $("input#email").after("<p class='jquery_form_error_message'>"+email+" is already refered</span>");
 			    				$('input#email').attr('record-exist','yes');
@@ -1622,6 +1639,7 @@ $('body').on('submit', '#referToContacts', function(e){
 					     } 
 					     
 					     else if(data == 'Invalid Email'){
+					    	 $("#submit_refer").attr("disabled", "disabled");
 					    	    $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 					    	    $("input#email").after("<p class='jquery_form_error_message'> you can't refer user self</span>");
 			    				$('input#email').attr('record-exist','yes');
@@ -1657,8 +1675,12 @@ $('body').on('submit', '#referToContacts', function(e){
     		document.getElementById('openActive').className = 'activeBackground'
     		document.getElementById("crowdActive").removeAttribute("class");
     		document.getElementById("referByMeActive").removeAttribute("class")
-    		document.getElementById("referToMeActive").removeAttribute("class")
-    		document.getElementById("appliedActive").removeAttribute("class")
+    		
+    		if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
+    			document.getElementById("referToMeActive").removeAttribute("class")
+        		document.getElementById("appliedActive").removeAttribute("class")
+    		}
+    		
     		document.getElementById("savedActive").removeAttribute("class")
     	}
     	else if (type == "CrowdSourcingJobs"){
@@ -1669,6 +1691,10 @@ $('body').on('submit', '#referToContacts', function(e){
    	       		document.getElementById("referToMeActive").removeAttribute("class")
    	       		document.getElementById("appliedActive").removeAttribute("class")
    		    }
+   		    
+	   		 if(loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
+	   			document.getElementById("openActive").removeAttribute("class");
+	   		 }
        		
        		document.getElementById("referByMeActive").removeAttribute("class")
        		document.getElementById("savedActive").removeAttribute("class")
@@ -1680,6 +1706,7 @@ $('body').on('submit', '#referToContacts', function(e){
 	        document.getElementById('referByMeActive').className = 'activeBackground'
        		document.getElementById("crowdActive").removeAttribute("class")
        		document.getElementById("savedActive").removeAttribute("class")
+       		
        		if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
        		document.getElementById("submittedActive").removeAttribute("class")
        		}
@@ -1689,6 +1716,10 @@ $('body').on('submit', '#referToContacts', function(e){
 	       		document.getElementById("openActive").removeAttribute("class");
 	       		document.getElementById("appliedActive").removeAttribute("class")
        		}
+       		
+       	    if(loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
+       	    	document.getElementById("openActive").removeAttribute("class");
+	   		 }
        		
        		
 	    }
@@ -1734,6 +1765,9 @@ $('body').on('submit', '#referToContacts', function(e){
 	       		document.getElementById("appliedActive").removeAttribute("class")
        		}
        		
+       	    if(loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
+    	    	document.getElementById("openActive").removeAttribute("class");
+	   		 }
        		
 	    }
     	

@@ -150,11 +150,11 @@ function candDocumentsList(candidateId){
 			           			result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
 			           			if(candidateType =="Candidates"){
 			           				'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
 			           			'</sec:authorize>';
 			           			}else{
 			           				'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\')">';
-			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
+			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
 			           			'</sec:authorize>';
 			           			}
 			           			
@@ -488,7 +488,29 @@ function getDocument(candidateId, documentId){
 }
 </script>
 
+<script type="text/javascript">
+function deleteDocumentPopup(){
+	$("#remove_user_pop_documents, .project_inn_mask").fadeOut();
+}
+</script>
 
+<div id="deleteDocumentPopUp"></div> 
+
+<script type="text/javascript">
+function removeDocument(candidateId, documentId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_documents' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Documents</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteDocumentPopUp").append(result);
+	$("#remove_user_pop_documents").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 <%-- 
      @author : prasad K
      this script is for terminate Doc (inactive status)
@@ -500,8 +522,7 @@ function getDocument(candidateId, documentId){
 function deleteDocument(candidateId, documentId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	var message = confirm("You are choosing to delete the document");
-	if (message == true) {
+	//var message = confirm("You are choosing to delete the document");
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateDoc?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&documentId="+documentId, 	   
@@ -511,12 +532,13 @@ function deleteDocument(candidateId, documentId){
          			 $("#selector9").css({ display: "block" });
          			 $("#docMsgDiv").html("Document deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
+        			 $("#remove_user_pop_documents, .project_inn_mask").fadeOut();
         			 candDocumentsList(candidateId);
         		     resMsgFadein();
    		    	}
    		    },
 	     });
-}
+
 }
 </script>
 

@@ -877,7 +877,7 @@ public class EMailJobScheduler {
 			}
     }
 
-	@Scheduled(cron = "0 0/30 * 1/1 * ?")
+	/*@Scheduled(cron = "0 0/30 * 1/1 * ?")
 	@Async
 	public void scheduleUserMail() throws Exception {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -900,7 +900,48 @@ public class EMailJobScheduler {
 		  }
 		}
 
-	}
+	}*/
+	
+	
+	
+	@Scheduled(cron = "0 30 18 1/1 * ?")
+	@Async
+	public void scheduleUserMailDailyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.JOB_ALERT_DURATION_DIALY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
+	
+	@Scheduled(cron = "0 30 18 ? * MON")
+	@Async
+	public void scheduleUserMailWeeklyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.JOB_ALERT_DURATION_WEEKLY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
+	
+	@Scheduled(cron = "0 30 18 1 1/1 ?")
+	@Async
+	public void scheduleUserMailMonthlyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.MONTHLY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
+	@Scheduled(cron = "0 30 18 1 1 ?")
+	@Async
+	public void scheduleUserMailYearlyTask() throws Exception {
+		List<Tasks> taskDetails = taskService.getTaskListByRepeatStatus(Constants.YEARLY);
+		for (Tasks task : taskDetails) {
+			taskService.mailToUserTask(task);
+		  }
+		}
+	
 	
 	public void sendEmailToManager(User user, List<ProjectMembers> projectMemberslist, List<Candidate> candidatesListToBeAddedInHotList, List<CandidatesHotListDummy> hotlist , OrgLocations orgLocations, Org org)	throws Exception {
 		 
@@ -1776,13 +1817,14 @@ public class EMailJobScheduler {
 			            		String currentTimeStr = TZ_DF_TS.format(date);
 			    				Date curDate = TZ_DF_TS.parse(currentTimeStr);
 			            		if(contracts.getEndDate().before(curDate)|| contracts.getEndDate().equals(curDate)){
+			            			contracts.setId(contracts.getId());
+			        				contracts.setTemplateSubmissionStatus("EXPIRED");
+			        				String fromStage = contracts.getTemplateSubmissionStatus();
 			            			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
 				        			if(null != childContarct && null != childContarct.getParentContractId()){
-				        				String fromStage = childContarct.getTemplateSubmissionStatus();
+				        				fromStage = childContarct.getTemplateSubmissionStatus();
 				        				childContarct.setId(childContarct.getId());
 				        				childContarct.setTemplateSubmissionStatus("EXPIRED");
-				        				contracts.setId(contracts.getId());
-				        				contracts.setTemplateSubmissionStatus("EXPIRED");
 				        				contractsTemplateService.saveNewContract(childContarct);
 				        				if(!fromStage.equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){
 					        				if(!("EXPIRED").equalsIgnoreCase(childContarct.getTemplateSubmissionStatus())){

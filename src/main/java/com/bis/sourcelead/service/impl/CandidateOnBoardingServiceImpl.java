@@ -710,9 +710,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 }
 		 if (task.getAssignedUserId().getFirstName() != null && task.getAssignedUserId().getLastName()!= null  && !"".equalsIgnoreCase( task.getAssignedUserId().getFirstName()) && !"".equalsIgnoreCase( task.getAssignedUserId().getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
-			 globalVarsMap.put("assignedUser",userBuild.append(task.getAssignedUserId().getFirstName()).append(" ").append(task.getAssignedUserId().getLastName()).toString());
+			 globalVarsMap.put("assignedUser",userBuild.append(task.getAssignedUserId().getFirstName()).append(" ").append(task.getAssignedUserId().getLastName()).toString().trim());
 		 }else{
-		 globalVarsMap.put("assignedUser",task.getAssignedUserId().getFirstName()); 
+		 globalVarsMap.put("assignedUser",task.getAssignedUserId().getFirstName().trim()); 
 		 }
 		 
 		 

@@ -188,7 +188,6 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	 @RequestMapping(value = "/professionalRequirements")
 		public ModelAndView professionalProfile(HttpServletRequest request,@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
 				@RequestParam(value="referUUID", required=false) String  referUUID) throws Exception {
@@ -222,8 +221,12 @@ public class ProfessionalRequirementsController {
 			        model.addObject("statesList", statesList);
 				}
 				
-				Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
-				model.addObject("resumesCount", resumesCount);
+				if(null != candidateId){
+					Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+					model.addObject("resumesCount", resumesCount);
+					model.addObject("candidateId", candidateId);
+				}
+				
 				
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
@@ -253,7 +256,7 @@ public class ProfessionalRequirementsController {
 				
 				model.setViewName("professional/professionalRequirements");
 				model.addObject("sourceleadUrl", sourceleadUrl);
-				model.addObject("candidateId", candidateId);
+				
 				
 				return model;
 	}
@@ -277,15 +280,24 @@ public class ProfessionalRequirementsController {
 	}
 	 
 	 @RequestMapping(value = "/requirementProfile/{requirementUUID}", method = RequestMethod.GET)
-		public @ResponseBody void userSummary(@PathVariable String requirementUUID, HttpServletRequest request,
+		public @ResponseBody void userRequirementSummary(@PathVariable String requirementUUID, HttpServletRequest request,
 				HttpServletResponse response) throws Exception {
 			StringBuilder redirectUrl = new StringBuilder();
 			response.sendRedirect(redirectUrl.append("/sourcelead/requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
 
-		}
+	 }
+	 
+	 @RequestMapping(value = "/requirementProfile/{requirementUUID}/{referUUID}", method = RequestMethod.GET)
+		public @ResponseBody void userSummary(@PathVariable String requirementUUID,@PathVariable String referUUID, HttpServletRequest request,
+				HttpServletResponse response) throws Exception {
+			StringBuilder redirectUrl = new StringBuilder();
+			response.sendRedirect(redirectUrl.append("/sourcelead/requirementProfileDetails?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+
+	 }
 	 
 	 @RequestMapping(value = "/requirementProfileDetails")
-		public ModelAndView userSummaryDetails(HttpServletRequest request, @RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception {
+		public ModelAndView userSummaryDetails(HttpServletRequest request, @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+				@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
 		 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");	 
 		 ModelAndView model = new ModelAndView();
 			  SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -294,21 +306,27 @@ public class ProfessionalRequirementsController {
 			 	sessionData = new SessionMaintainanceData();
 			 }
 			 
-			 Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
-			 model.addObject("resumesCount", resumesCount);
+			 if(null != candidateId){
+				 Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+				 model.addObject("resumesCount", resumesCount);
+			 }
+			 
 			 
 			sessionData.setNav(Constants.Requirement);
 			request.getSession().setAttribute("sessionData",sessionData);
 			model.setViewName("professional/professionalRequirementProfile");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirementUUID", requirementUUID);
+			model.addObject("referUUID", referUUID);
+			
 			model.addObject("candidateId", candidateId);
 			return model;
 
 		}
 	 
 	    @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
-		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,HttpServletRequest request) throws Exception {
+		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
+				@RequestParam(value="referUUID", required=false) String  referUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
@@ -321,7 +339,7 @@ public class ProfessionalRequirementsController {
 		        	}
 		        }
 		        
-		        if(null !=  requirement.getAppliedProfessionals() && null != user){
+		        if(null !=  requirement.getAppliedProfessionals() && null != user && null != candidateId){
 	    			  List<Long> userId = new ArrayList<Long>();
 	    			  String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 	 					for (int i=0; i < appliedProfessionals.length; i++){
@@ -340,6 +358,14 @@ public class ProfessionalRequirementsController {
 	    		     }else{
 	    		    	 requirement.setIsJobApplied(Constants.NO);
 	    		      }
+		        
+		        if(!isNullOrEmpty(referUUID)){
+			    	RequirementRefer refer = requirementReferService.getRequirementReferByReferUUID(referUUID);
+			    	if(null != refer){
+			    		requirement.setReferId(refer.getId());
+			    	}
+			    }
+				
 		        
 		        resultJson = commonUtil.toJSON(requirement);
 				return resultJson;
