@@ -99,7 +99,7 @@ public class InvoicePdfHelper {
 		String countryCurrency  = countries.getCurrency();
 		
 		File invoiceFile = new File(org.getOrgName() + "_" + invoice.getInvoiceId() + ".pdf");
-		if(invoiceType.equalsIgnoreCase("payable")){
+		if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
 		//StringBuilder fileSB = new StringBuilder();
 		Document document = new Document();
 		//File invoiceFile = File.createTempFile(fileSB.append(org.getOrgName()).append(invoice.getInvoiceId()).toString(),".pdf");
@@ -169,7 +169,7 @@ public class InvoicePdfHelper {
 			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-				if(null != invoiceLineItems.getCandidate().getConsultantUser()){
+				if(invoiceLineItems.getCandidate() !=null){
 					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
 					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
@@ -177,16 +177,30 @@ public class InvoicePdfHelper {
 						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 				}else{
-					table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+					if(invoiceLineItems.getUser() !=null){
+						table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
+					}
+					else{
+						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+					}
 				}
 			
 				StringBuffer name = new StringBuffer();
+				
 				if (null != invoiceLineItems.getCandidate()) {
-					table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+					if (invoiceLineItems.getCandidate().getFirstName() !=null && invoiceLineItems.getCandidate().getLastName() != null) {
+						table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+					}else {
+						table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
+					}
+				}else{
+					if(invoiceLineItems.getUser() !=null){
+						table.addCell(getCell(name.append(invoiceLineItems.getUser().getFirstName()).append(" ").append(invoiceLineItems.getUser().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+					}else{
+						table.addCell(getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+					}
 				}
-				else {
-					table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
-				}
+				
 				StringBuffer startAndEndDate = new StringBuffer();
 				if (null != invoiceLineItems.getStartDate()
 						&& null != invoiceLineItems.getEndDate()) {
@@ -352,23 +366,38 @@ public class InvoicePdfHelper {
 				Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
-					if(null != invoiceLineItems.getCandidate().getConsultantUser()){
-						Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
-						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
-							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+					if(invoiceLineItems.getCandidate() !=null){
+							Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+							if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
+								table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+							}else{
+								table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+							}
+					}else{
+						if(invoiceLineItems.getUser() !=null){
+							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
 						}else{
 							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 						}
-					}else{
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 					}
 					StringBuffer name = new StringBuffer();
+					
+					
 					if (null != invoiceLineItems.getCandidate()) {
-						table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+						if (invoiceLineItems.getCandidate().getFirstName() !=null && invoiceLineItems.getCandidate().getLastName() !=null) {
+							table.addCell(getCell(name.append(invoiceLineItems.getCandidate().getFirstName()).append(" ").append(invoiceLineItems.getCandidate().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+						}else {
+							table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
+						}
+						
+					}else{
+						if (null != invoiceLineItems.getUser()) {
+							table.addCell(getCell(name.append(invoiceLineItems.getUser().getFirstName()).append(" ").append(invoiceLineItems.getUser().getLastName()).toString(), Element.ALIGN_CENTER, font10));
+						}else{
+							table.addCell(getCell(invoiceLineItems.getUser().getFirstName(), Element.ALIGN_CENTER, font10));
+						}
 					}
-					else {
-						table.addCell(getCell(invoiceLineItems.getCandidate().getFirstName(), Element.ALIGN_CENTER, font10));
-					}
+					
 					StringBuffer startAndEndDate = new StringBuffer();
 					if (null != invoiceLineItems.getStartDate()
 							&& null != invoiceLineItems.getEndDate()) {

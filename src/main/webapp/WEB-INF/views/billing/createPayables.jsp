@@ -1252,13 +1252,39 @@ function pagination(){
 	  var splitHours = split[0];
 	  var hourminits = splitHours * 60;
 		 var finalmin = parseInt(hourminits) + parseInt(minute);
-	     var perMinit = rate / 60;
+		 setHours(finalmin,rowId);
+		 var perMinit = rate / 60;
 	     var totlalAmount = (perMinit * finalmin);
 	     $('#'+rowId+'amount').empty();
 	     $('#'+rowId+'amount').val(totlalAmount.toFixed(2));
 	     calTotalamount(rowId,totlalAmount);
   }
   </script>
+
+<!-- Converting minutes to hours if minutes >60 -->
+<script>
+function setHours(finalmin,rowId){
+	 var actualHours = Math.floor(finalmin / 60); 
+     var actualMinutes = finalmin % 60;
+     var actualTotal = 0;
+     if (actualHours >= 10 && actualHours < 100) {
+			actualHours = '0' + actualHours;
+	  }
+     if (actualHours < 10) {
+			actualHours = '00' + actualHours;
+	  }
+	 if (actualMinutes < 10) {
+		actualMinutes = '0' + actualMinutes;
+	 }
+	 if(!isNaN(actualHours) && !isNaN(actualMinutes)){
+		 actualTotal = actualHours +":"+ actualMinutes;
+	 }else{
+		 actualTotal =  "000:00";
+	 }
+	 $('#'+rowId+'totalHours').empty();
+     $('#'+rowId+'totalHours').val(actualTotal);
+}
+</script>
 
 <script>
   function  calTotalamount(rowId,totlalAmount){
