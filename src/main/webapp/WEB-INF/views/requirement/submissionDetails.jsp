@@ -368,10 +368,10 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 
 		       result = result + '<div class="require_wrap_details">';
 		       if(json.submissionStatus == 'REJECTED'){
-		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'rejected\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       if(json.submissionStatus == 'BACKOUT'){
-		    	   result = result + '<div ><a href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
+		    	   result = result + '<div class="clearfix"><a class="pull-right btn btn-primary btn-sm color_white" href="#" onClick="reActivateApplicant('+submissionId+','+candidateId+','+requirementId+',\'backout\');"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; ReActivate</a> </div>';
 		       }
 		       result = result + '<div class="clearfix">';
 			   result = result + '</div> ';        
