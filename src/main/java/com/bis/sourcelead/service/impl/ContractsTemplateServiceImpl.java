@@ -1911,6 +1911,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				if (null != contracts.getOwnerUserId()) {
+					contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 					if (null != contracts.getOwnerUserId().getFirstName()
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
@@ -1969,6 +1970,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setParentId("--");
 				}
 				if (null != contracts.getApproverUser()) {
+					contracts.setApproverUserId(contracts.getApproverUser().getId());
 					if (null != contracts.getApproverUser().getFirstName()
 							&& null != contracts.getApproverUser().getLastName()) {
 						StringBuilder sb = new StringBuilder();
@@ -1995,6 +1997,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				if (null != contracts.getOwnerUserId()) {
+					contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 					if (null != contracts.getOwnerUserId().getFirstName()
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
@@ -2056,6 +2059,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setParentId("");
 				}
 				if (null != contracts.getApproverUser()) {
+					contracts.setApproverUserId(contracts.getApproverUser().getId());
 					if (null != contracts.getApproverUser().getFirstName()
 							&& null != contracts.getApproverUser().getLastName()) {
 						StringBuilder sb = new StringBuilder();

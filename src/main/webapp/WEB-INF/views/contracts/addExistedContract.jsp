@@ -443,7 +443,7 @@
 	class='timesheetAttachmentValidation'></div> -->
 	
 							 <div class="col-md-12">                                                                                                            
-					  			<div class="input-group positionRelative ratetype" id="uploadFileGroupREPLACEROWID" title="Document Type: .pdf format only">     
+					  			<div class="input-group positionRelative ratetype" id="uploadFileGroupREPLACEROWID" title="Upload a file">     
 					  				<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse        
 					               <input name="uploadBtnREPLACEROWID" id="uploadBtnREPLACEROWID" style="display: none;" multiple="" class="upload" type="file" onclick="check(REPLACEROWID);"  >                      
 					               </span> </label>                                                                                                                

@@ -259,13 +259,13 @@ public class RegistrationRestController {
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
-		 registrationService.saveProfessional(jsonObj,contactUUID);
+		 String result = registrationService.saveProfessional(jsonObj,contactUUID);
 		 
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
 	 	
-		 return "success";
+		 return result;
 	   }
 	 
 	 @RequestMapping(value = "/registerAsIndividualRecruiter" , method = RequestMethod.POST)
@@ -275,13 +275,13 @@ public class RegistrationRestController {
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
-		 registrationService.saveIndividualRecruiter(jsonObj);
+		 String result = registrationService.saveIndividualRecruiter(jsonObj);
 		 
 		 SourceLeadSessionManager.setSessionAttribute(request, "crowdSourcingRegistrationSuccessMsg",
 					"Username sent to your mail.");
 	 	
 	 	
-		 return "success";
+		 return result;
 	   }
 	 
 	 
