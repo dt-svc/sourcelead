@@ -18,6 +18,14 @@ public class ExpensesCount implements Serializable{
 	
 	private Integer  expensesRejectCount;
 	
+	private Integer empExpensesSubmittedForApprovalCount;
+	
+	private Integer empExpensesApprovedCount;
+	
+	private Integer empExpensesRejectedCount;
+	
+	private Integer empExpensesReopenCount;
+	
 	Collection<ExpensesApproverHierarchy>  expensesDraftList;
 	
 	Collection<ExpensesApproverHierarchy>  expensesSubmittedForApprovalList;
@@ -56,6 +64,38 @@ public class ExpensesCount implements Serializable{
 
 	public void setExpensesRejectCount(Integer expensesRejectCount) {
 		this.expensesRejectCount = expensesRejectCount;
+	}
+
+	public Integer getEmpExpensesSubmittedForApprovalCount() {
+		return empExpensesSubmittedForApprovalCount;
+	}
+
+	public void setEmpExpensesSubmittedForApprovalCount(Integer empExpensesSubmittedForApprovalCount) {
+		this.empExpensesSubmittedForApprovalCount = empExpensesSubmittedForApprovalCount;
+	}
+
+	public Integer getEmpExpensesApprovedCount() {
+		return empExpensesApprovedCount;
+	}
+
+	public void setEmpExpensesApprovedCount(Integer empExpensesApprovedCount) {
+		this.empExpensesApprovedCount = empExpensesApprovedCount;
+	}
+
+	public Integer getEmpExpensesRejectedCount() {
+		return empExpensesRejectedCount;
+	}
+
+	public void setEmpExpensesRejectedCount(Integer empExpensesRejectedCount) {
+		this.empExpensesRejectedCount = empExpensesRejectedCount;
+	}
+
+	public Integer getEmpExpensesReopenCount() {
+		return empExpensesReopenCount;
+	}
+
+	public void setEmpExpensesReopenCount(Integer empExpensesReopenCount) {
+		this.empExpensesReopenCount = empExpensesReopenCount;
 	}
 
 	public Collection<ExpensesApproverHierarchy> getExpensesDraftList() {
