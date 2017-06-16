@@ -258,21 +258,22 @@ function vendorContractsList(orgRelationId){
 	                		        	 result = result + '<div class="tblminwidth-75 ">---</div>';
 	                		         }
 	                		         result = result + '</td>';
-	                		         
+	                		        
 	                		         result = result + '<td>';
 	                		         result = result + '<div class="tbldata-dotdot_80">';
 	                		         
-	                		         if(report.ownerUserId != null && '${SourceLeadWeb_user.id}' == report.ownerUser){
-	                		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
-	                			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
-	                	            	 }
+	                		         if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+		                		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
+	                	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
+	                	      	         }
 	                		         }
 	                		         
 	                		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	                	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	                	     		 	result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 	                	     		'</sec:authorize>';
 	                	     		
-	                		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+	                	     		if(report.templateSubmissionStatus != "EXPIRED"){
+	                	     			'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                		     		if(report.typeOfContract == "New"){
 	                		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 	                		     		}
@@ -280,10 +281,13 @@ function vendorContractsList(orgRelationId){
 	                		     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 	                		     		}
 	                		     		'</sec:authorize>';
-	                		     		
-	                		     		 if(report.approverUser != null && '${SourceLeadWeb_user.id}' == report.approverUserId){
-	                	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
-	                	      	         }
+	                	     		}
+	                		     		 
+                		     		if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
+	                		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+	                			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+	                	            	 }
+	                		         }
 	                		     		//result = result + '</div>';
 	                		         result = result + '</div></td>';
 	                		     	 
