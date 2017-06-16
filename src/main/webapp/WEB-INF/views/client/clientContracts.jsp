@@ -266,7 +266,7 @@ function clientContractsList(orgRelationId){
 	                		         opt = opt + '<div class="tbldata-dotdot_80">';
 	                		     	  if(output.templateSubmissionStatus == "DRAFT" ){
 	                		     		  
-	                		     		 if('${SourceLeadWeb_user.id}' == output.approverUser.id){
+	                		     		 if('${SourceLeadWeb_user.id}' == output.approverUserId){
 	                	     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
 	                	     	         }
 	                	     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -281,7 +281,7 @@ function clientContractsList(orgRelationId){
 	                	       			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	                	       			'</sec:authorize>';
 	                		     		
-	                	       			if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+	                	       			if('${SourceLeadWeb_user.id}' == report.ownerUser){
 	                	   	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 	                	   		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	                	   		     		}

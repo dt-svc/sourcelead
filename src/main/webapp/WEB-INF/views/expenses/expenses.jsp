@@ -45,7 +45,16 @@
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
 			   		<li><a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
 			   </sec:authorize>	
+			   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
+					    <div id="exportPop" class="user_exp">
+						   <ul class="ul_padding">
+						   <li onclick="exportToPdf('pdf');" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
+						   <li onclick="exportToPdf('excel');" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
+						   </ul>
+						</div>
+				   	</li>
                <div class="clearfix"></div>
+               <input type="hidden" id="temp"/>
             </ul>
             <div class="clearfix"></div>
             
@@ -77,7 +86,6 @@
 
 function getExpensesList(){
 	var sourceleadUrl = '${sourceleadUrl}';
-	
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 
     {
@@ -105,66 +113,72 @@ function getExpensesList(){
 					result = result +"</thead>";
 					result = result +"<tbody>";
 					
-	        	  var json = JSON.parse(data);
-	        	  for (var i = 0; i < json.length; i++) { 
-	        		  var report = json[i]; 
-	        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
-	        			  expenseId = report.expenseId;
-	        		  }else{
-	        			  expenseId = "--";
-	        		  }
-	        		  if(report.purpose != null && report.purpose != '' && report.purpose != 'undefined'){
-	        			  purpose = report.purpose;
-	        		  }else{
-	        			  purpose = "--";
-	        		  }
-	        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
-	        			  projectMemberId = report.projectMemberId;
-	        		  }else{
-	        			  projectMemberId = "--";
-	        		  }
-	        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
-	        			  clientName = report.clientName;
-	        		  }else{
-	        			  clientName = "--";
-	        		  }
-	        		  if(report.startDateStr != null && report.startDateStr != '' && report.startDateStr != 'undefined'){
-	        			  startDateStr = report.startDateStr;
-	        		  }else{
-	        			  startDateStr = "--";
-	        		  }
-	        		  if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-	        			  endDateStr = report.endDateStr;
-	        		  }else{
-	        			  endDateStr = "--";
-	        		  }
-	        		  if(report.noOfExpenses != null && report.noOfExpenses != '' && report.noOfExpenses != 'undefined'){
-	        			  noOfExpenses = report.noOfExpenses;
-	        		  }else{
-	        			  noOfExpenses = "--";
-	        		  }
-	        		  if(report.totalAmount != null && report.totalAmount != '' && report.totalAmount != 'undefined'){
-	        			  totalAmount = report.totalAmount;
-	        		  }else{
-	        			  totalAmount = "--";
-	        		  }
-						 result = result +"<tr>";
-						 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-						 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
-						 '</sec:authorize>';
-						 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
-						 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
-						 '</sec:authorize>';
-						 result = result +"<td><div>"+purpose+"</div></td>";
-						 result = result +"<td><div>"+projectMemberId+"</div></td>";
-						 result = result +"<td><div>"+clientName+"</div></td>";
-						 result = result +"<td><div>"+startDateStr+"</div></td>";
-						 result = result +"<td><div>"+endDateStr+"</div></td>";
-						 result = result +"<td><div>"+noOfExpenses+"</div></td>";
-						 result = result +"<td><div>"+totalAmount+"</div></td>";
-						 result = result +"<td> <div>"+report.expenseStatus+"</div></td>";
-						 result = result +"</tr>"; 
-	        	  }
+					 if(data !=''){
+						 var json = JSON.parse(data);
+			        	  for (var i = 0; i < json.length; i++) { 
+			        		  var report = json[i]; 
+			        		  if(report.expenseId != null && report.expenseId != '' && report.expenseId != 'undefined'){
+			        			  expenseId = report.expenseId;
+			        		  }else{
+			        			  expenseId = "--";
+			        		  }
+			        		  if(report.purpose != null && report.purpose != '' && report.purpose != 'undefined'){
+			        			  purpose = report.purpose;
+			        		  }else{
+			        			  purpose = "--";
+			        		  }
+			        		  if(report.projectMemberId != null && report.projectMemberId != '' && report.projectMemberId != 'undefined'){
+			        			  projectMemberId = report.projectMemberId;
+			        		  }else{
+			        			  projectMemberId = "--";
+			        		  }
+			        		  if(report.clientName != null && report.clientName != '' && report.clientName != 'undefined'){
+			        			  clientName = report.clientName;
+			        		  }else{
+			        			  clientName = "--";
+			        		  }
+			        		  if(report.startDateStr != null && report.startDateStr != '' && report.startDateStr != 'undefined'){
+			        			  startDateStr = report.startDateStr;
+			        		  }else{
+			        			  startDateStr = "--";
+			        		  }
+			        		  if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+			        			  endDateStr = report.endDateStr;
+			        		  }else{
+			        			  endDateStr = "--";
+			        		  }
+			        		  if(report.noOfExpenses != null && report.noOfExpenses != '' && report.noOfExpenses != 'undefined'){
+			        			  noOfExpenses = report.noOfExpenses;
+			        		  }else{
+			        			  noOfExpenses = "--";
+			        		  }
+			        		  if(report.totalAmount != null && report.totalAmount != '' && report.totalAmount != 'undefined'){
+			        			  totalAmount = report.totalAmount;
+			        		  }else{
+			        			  totalAmount = "--";
+			        		  }
+								 result = result +"<tr>";
+								 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
+								 result = result +"<td><a href='"+sourceleadUrl+"/addExpense?expenseId="+expenseId+"&type=view'><div class='proj_show'><span>"+expenseId+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+								 '</sec:authorize>';
+								 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
+								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
+								 '</sec:authorize>';
+								 result = result +"<td><div>"+purpose+"</div></td>";
+								 result = result +"<td><div>"+projectMemberId+"</div></td>";
+								 result = result +"<td><div>"+clientName+"</div></td>";
+								 result = result +"<td><div>"+startDateStr+"</div></td>";
+								 result = result +"<td><div>"+endDateStr+"</div></td>";
+								 result = result +"<td><div>"+noOfExpenses+"</div></td>";
+								 result = result +"<td><div>"+totalAmount+"</div></td>";
+								 result = result +"<td> <div>"+report.expenseStatus+"</div></td>";
+								 result = result +"</tr>"; 
+			        	  }
+		        		  $("#temp").val("temp");
+		        	  }else{
+		        		  /* $("#temp").val(''); */
+		        	  }
+	        	 
    			
         	  result = result +" </tbody>";
         	  result = result +" </table>";
@@ -428,3 +442,44 @@ function getEditExpense(eId){
 	alert("fgdfg");
 }
 </script>
+<script>
+function exportToPdf(type){
+	var temp = $("#temp").val();
+	if(temp != null && temp != ''){
+		var sourceleadUrl = '${sourceleadUrl}';
+		var expenseStatus = [];
+		$('input:checkbox[name=expenseStatus]:checked').each(function() 
+		{
+			expenseStatus.push($(this).val());
+		});
+		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
+	}else{
+		var result = "";
+		alert(">>>>>>>>>>>>>")
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Candidate List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"	</div>";
+		$("#emptyPopup").append(result);
+		$("#expensesListDiv").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+}
+</script>
+<script>
+  $("#selector").fadeIn(200);
+  $('#selector').delay(2000).fadeOut('slow');
+	   $("#export-pop").click(function(){
+	               $("#exportPop").toggle();
+	       });
+	   $("html").click(function() {
+	       $("#exportPop").hide();
+	   });
+	   $("#exportPop, #export-pop").click(function(e) {
+	       e.stopPropagation();
+	   });        
+</script> 
+<jsp:include page="../masterFooter.jsp" />

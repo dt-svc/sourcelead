@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,7 +204,7 @@ public class CandidateListRestController {
 			}
 			
 			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange) && !updatedDateRange.equalsIgnoreCase("all")  && !updatedDateRange.equalsIgnoreCase("undefined")){
-				
+				DateTime zoned = new DateTime(DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
 				// This Code is for  getting the sql enddate based on range
 		    	 Calendar c = Calendar.getInstance();
 			     c.setTime(new Date()); // Now use today date.
@@ -211,9 +212,11 @@ public class CandidateListRestController {
 		         c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 		         String updatedDate = df.format(c.getTime());
 		         Date parsed = df.parse(updatedDate);
-		         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 		         
-		         boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate));
+		         Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
+		         java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
+		         
+		         boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
 	   	    	
 			}
 			
@@ -248,7 +251,15 @@ public class CandidateListRestController {
 		return resultJson;
 	 }
 	 
-	 
+	 private Date getPreviousDate(DateTime zoned, Timezone timezone) throws ParseException
+		{
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			DateTime yesterDayZoned = zoned;
+			String yesterDayDate = outputFormatter.print(yesterDayZoned);
+			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
+			return TZ_DF_TS.parse(startDateString);
+		}
 	 
 	 @RequestMapping(value = "/getUniversalCandidatesListByOrgLocationID")
 	 public String getUniversalCandidatesListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
