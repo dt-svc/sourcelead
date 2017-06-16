@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -20,6 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,8 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
+import com.bis.sourcelead.util.ConversionUtil;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 @Service
 public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostService {
@@ -41,14 +46,18 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	
 	@Autowired
 	EmployerPayrollCostDao employerPayrollCostDao;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 
 	@Override
-	public String saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user)
+	public String saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
 			throws Exception {
 
 		String fileName = multipartFile.getOriginalFilename();
+		int count = 0;
 		Workbook workbook = null;
-
+		List<EmployerPayrollCost> employerPayrollCostList = new ArrayList<>();
 		if (fileName.endsWith("xlsx")) {
 			workbook = new XSSFWorkbook();
 		} else if (fileName.endsWith("xls")) {
@@ -66,7 +75,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 				Iterator<Row> rowIterator = sheet.iterator();
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-					if (true) {
+				/*	if (true) {*/
 						if (row.getRowNum() > 0) { // Excluding column names
 							EmployerPayrollCost  employerPayrollCost = new EmployerPayrollCost();
 							float grossWages =0f;
@@ -125,36 +134,69 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 								 totalErCost = Float.parseFloat(getCellValueAsString(row.getCell(11), fileName));
 								employerPayrollCost.setAdminFee(totalErCost);
 							} 
-							
-							logger.info("=================="+employerPayrollCost.getEmployeeName());
-							logger.info("=================="+employerPayrollCost.getEmployeeId());
-							logger.info("=================="+employerPayrollCost.getSsn());
-							logger.info("=================="+employerPayrollCost.getTotalHrs());
-							logger.info("=================="+employerPayrollCost.getGrossWages());
-							logger.info("=================="+employerPayrollCost.getFica());
-							logger.info("=================="+employerPayrollCost.getFuta());
-							logger.info("=================="+employerPayrollCost.getSui());
-							logger.info("=================="+employerPayrollCost.getErLocals());
-							logger.info("=================="+employerPayrollCost.getWcCost());
-							logger.info("=================="+employerPayrollCost.getAdminFee());
-							logger.info("=================="+employerPayrollCost.getTotalErCost());
-							
+							if(jsonObj.has("fromDate") && jsonObj.getString("fromDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("fromDate"))){
+								employerPayrollCost.setFromDate(conversionUtil.getDateFromString(jsonObj.getString("fromDate")));
+							}
+							if(jsonObj.has("toDate") && jsonObj.getString("toDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("toDate"))){
+								employerPayrollCost.setToDate(conversionUtil.getDateFromString(jsonObj.getString("toDate")));
+							}
+							if(jsonObj.has("batchNumber")){
+								if(jsonObj.getString("batchNumber") !=null && !"".equalsIgnoreCase(jsonObj.getString("batchNumber"))){
+									employerPayrollCost.setBatchNumber(jsonObj.getString("batchNumber"));
+								}
+							}
+							employerPayrollCost.setCreatedBy(user.getUserCode());
+							employerPayrollCost.setCreatedDate(new Date());
+							employerPayrollCost.setUpdatedBy(user.getUserCode());
+							employerPayrollCost.setUpdatedDate(new Date());
+							EmployerPayrollCost empPayrollCost = saveEmpPayrollCost(employerPayrollCost);
+							if(empPayrollCost != null){
+								count++;
+							}
+							employerPayrollCostList.add(employerPayrollCost);
 						}
 					}
 				}
 
+			/*}*/
+			logger.info("================size"+employerPayrollCostList.size());
+			logger.info("================count is -----------------------"+count);
+			for(EmployerPayrollCost employerPayrollCost : employerPayrollCostList){
+				logger.info("=================="+employerPayrollCost.getEmployeeName());
+				logger.info("=================="+employerPayrollCost.getEmployeeId());
+				logger.info("=================="+employerPayrollCost.getSsn());
+				logger.info("=================="+employerPayrollCost.getTotalHrs());
+				logger.info("=================="+employerPayrollCost.getGrossWages());
+				logger.info("=================="+employerPayrollCost.getFica());
+				logger.info("=================="+employerPayrollCost.getFuta());
+				logger.info("=================="+employerPayrollCost.getSui());
+				logger.info("=================="+employerPayrollCost.getErLocals());
+				logger.info("=================="+employerPayrollCost.getWcCost());
+				logger.info("=================="+employerPayrollCost.getAdminFee());
+				logger.info("=================="+employerPayrollCost.getTotalErCost());
+				logger.info("****************************************************************************");
+				
 			}
+			
 			fis.close();
 		} catch (IOException e) {
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 		}
 
-		EmployerPayrollCost employerPayrollCost = employerPayrollCostDao
-				.saveEmployerPayrollCost(new EmployerPayrollCost());
 		return "";
 	}
 
-	
+	/**
+	 * save EmployerPayrollCost 
+	 * @param employerPayrollCost
+	 * @return EmployerPayrollCost
+	 * @throws Exception 
+	 */
+	private EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
+		return employerPayrollCostDao.saveEmployerPayrollCost(new EmployerPayrollCost());
+	}
+
+
 	private String getCellValueAsString(Cell cell, String fileName) {
 		String cellValue = "";
 		if(fileName.toLowerCase().endsWith("xls")){
