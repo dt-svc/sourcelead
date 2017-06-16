@@ -7,6 +7,7 @@ $(document).ready(function(){
 		expensesCount("myExpenses");
 });
 </script>
+
 <div class="col-md-6">
         <div class="dashboard-widget dashboard-widget-icons">
           <h4 class="clearfix">Expenses &nbsp;&nbsp;</h4>
@@ -88,34 +89,42 @@ function expensesCount(expenseType){
 		        	 var  empExpensesReopenCount = json.empExpensesReopenCount;
 		        	 
 		        	 if(expensesDraftCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial1txt").text("Draft");
+		        		  $("#dial1txt").html("<a href='/sourcelead/expenses'>Draft</a>");
 		        		  $("#expensesDraftCount").html(expensesDraftCount);
 	                  }else{
-	                	  $("#dial1txt").text("Sub for Appr");
+	                	  $("#dial1txt").html("<a href='/sourcelead/expensesApprovalList'>Submitted</a>");
 	                	  $("#expensesDraftCount").html(empExpensesSubmittedForApprovalCount);
 	                  }
 		        	if(expensesSubmittedForApprovalCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial2txt").text("Submitted");
+		        		  $("#dial2txt").html("<a href='/sourcelead/expenses'>Submitted</a>");
 		        		  $("#expensesSubmittedForApprovalCount").html(expensesSubmittedForApprovalCount);
 	                  }else{
-	                	  $("#dial2txt").text("Approved");
+	                	  $("#dial2txt").html("<a href='/sourcelead/expensesApprovalList'>Approved</a>");
 	                	  $("#expensesSubmittedForApprovalCount").html(empExpensesApprovedCount);
 	                  }
 		        	if(expensesApprovedCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial3txt").text("Approved");
+		        		  $("#dial3txt").html("<a href='/sourcelead/expenses'>Approved</a>");
 		        		  $("#expensesApprovedCount").html(expensesApprovedCount);
 	                }else{
-	                	  $("#dial3txt").text("Rejected");
+	                	  $("#dial3txt").html("<a href='/sourcelead/expensesApprovalList'>Rejected</a>");
 	                	  $("#expensesApprovedCount").html(empExpensesRejectedCount);
 	                  }
 		        	if(expensesRejectCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial4txt").text("Rejected");
+		        		  $("#dial4txt").html("<a href='/sourcelead/expenses'>Rejected</a>");
 		        		  $("#expensesRejectCount").html(expensesRejectCount);
 	                 }else{
-	                	 $("#dial4txt").text("Reopen");
+	                	 $("#dial4txt").html("<a href='/sourcelead/expensesApprovalList'>Reopen</a>");
 	                	 $("#expensesRejectCount").html(empExpensesReopenCount);
 	                  }
+		        	
+		        	  
 		 		}
 		  });
 	}
 </script>
+
+<!-- <script type="text/javascript">
+	function forEachCountOfExpense(expenseType){
+	location.replace(sourceleadUrl+ "/expenses");
+	}
+</script> -->
