@@ -2686,6 +2686,99 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 	}
 	
+	
+	
+	
+	public void sendEmailtoAssignedMemberApplicantAuthorization(Org loginOrg, User loginUser, RequirementSubmission requirementSubmission, OrgLocations loginOrgLocation) throws Exception
+	{
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		User assignedUser = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(assignedUser.getFirstName());
+		emailMessage.setLastName(assignedUser.getLastName());
+		emailMessage.setToEmail(assignedUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		if (null != loginUser.getLastName()) {
+			StringBuilder loginUserName = new StringBuilder();
+			emailMessage.setFromName(loginUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			emailMessage.setFromName(loginUser.getFirstName());
+		}
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// To get the RateNegatiotion of RequirementSubmission based on
+		// Submission Id
+		RequirementRateSubmissionNegotiation reqRateNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (requirementSubmission.getRequirement().getJobTitle() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())) {
+			globalVarsMap.put("requirmentName", requirementSubmission.getRequirement().getJobTitle());
+		}
+		else {
+			globalVarsMap.put("requirmentName", "--");
+		}
+		if (requirementSubmissionTemplateFields.getLastName() != null
+				&& !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())) {
+			StringBuilder candName = new StringBuilder();
+			globalVarsMap.put("applicantName", candName.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("applicantName", requirementSubmissionTemplateFields.getFirstName());
+		}
+		StringBuilder location = new StringBuilder();
+		if (requirementSubmission.getRequirement().getState() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState())) {
+			globalVarsMap.put("requirmentLocation", location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).toString());
+		}
+		else if (loginOrgLocation.getCity() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCity())) {
+			globalVarsMap.put("requirmentLocation", location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).append(",").append(requirementSubmission.getRequirement().getCity()).toString());
+		}
+		else {
+			globalVarsMap.put("requirmentLocation", requirementSubmission.getRequirement().getCountry());
+		}
+		if (reqRateNegotiation != null && reqRateNegotiation.getExpectedRate() != null
+				&& !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())) {
+			globalVarsMap.put("applicantRate", reqRateNegotiation.getExpectedRate());
+		}
+		else if (requirementSubmission.getCandidate().getExpectedRate() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getCandidate().getExpectedRate())) {
+			globalVarsMap.put("applicantRate", requirementSubmission.getCandidate().getExpectedRate());
+		}
+		else {
+			globalVarsMap.put("applicantRate", "--");
+		}
+		if (assignedUser.getFirstName() != null && !"".equalsIgnoreCase(assignedUser.getFirstName())
+				&& assignedUser.getLastName() != null
+				&& !"".equalsIgnoreCase(assignedUser.getLastName())) {
+			StringBuilder assUser = new StringBuilder();
+			globalVarsMap.put("assignedUser", assUser.append(assignedUser.getFirstName()).append(" ").append(assignedUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("assignedUser", assignedUser.getFirstName());
+		}
+		globalVarsMap.put("loginOrg", loginOrgLocation.getOrg().getOrgName());
+		globalVarsMap.put("loginUser", loginUser.getFirstName());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Authorization_Manager_Acceptence_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Authorization_Manager_Acceptence_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager, Constants.ENTITY_TYPE_NOTIFICATION);
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrg);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, assignedUser, loginOrgLocation, notificationScenario);
+	}
+	
+	
+	
 	private void sendEmailToAssignedMember(Org loginOrg, User loginUser, RequirementSubmission requirementSubmission,
 			OrgLocations loginOrgLocation) throws Exception {
 		
