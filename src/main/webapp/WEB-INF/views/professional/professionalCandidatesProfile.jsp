@@ -646,12 +646,11 @@ function professionalProfile(candidateId){
 							}
 							else{
 					           	 result = result +'   <textarea placeholder="Enter description" readonly> --- </textarea>';
-				    	        }
+			    	        }
 							
 							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
 							result = result +'		    <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>                                                              ';
-							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
 							result = result +'		  </ul>                                                                                                                                       ';
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
 							result = result +'		    <div id="skills" class="tab-pane fade in active">                                                                                         ';
@@ -691,23 +690,7 @@ function professionalProfile(candidateId){
 								});
 							
 							
-							
-							/* <c:forEach var="skill" items="${skillsList}">
-					                var existed = 0;
-					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-						                var res = [];
-						                res = json.skillsName.split(",");
-						                res.forEach(function(item) {
-						                	if('${skill.name}' == item){
-						                		existed = 1;
-						                		result = result + ' <option selected value="${skill.name}">${skill.name}</option>';
-						                	}
-						                });
-					                }
-					                if(existed == 0){
-					                	result = result + ' <option value="${skill.name}">${skill.name}</option>';
-					                }
-			                </c:forEach> */
+						
 			                result = result + '</select>';
 							result = result +'</div>';
 							result = result +'<div class="clearfix"></div>';
@@ -744,7 +727,6 @@ function professionalProfile(candidateId){
 							$("#tab-6").empty();  
 							$("#tab-1").append(result);  
 							    
-							candidateSkillsList(candidateId);
 							employeeSubmissionProfile(candidateId);
 							educationSubmissionProfile(candidateId);
 							certificationSubmissionProfile(candidateId);
@@ -1072,156 +1054,6 @@ function cancelEdit(){
      2.parameter : csrf token candidateId.
      3.ajax url implementation in CandidateListRestController.
 --%>  
-<script>
-function candidateSkillsList(candidateId){  
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({  
-          type : "POST",
-          url: sourceleadUrl+"/getCandidatesSkillsBycandidateID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-               if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	                	 $("#candidateSkillList").empty();
-	                	 var result = "";
-                	     result = result + '      <table class="table table-responsive table-hover clearfix">';
-                		 result = result + '        <thead>';
-                		 result = result + '          <tr>';
-                		 result = result + '            <th>Skills</th>';
-                		 result = result + '            <th>Level</th>';
-                		 result = result + '            <th>Experience</th>';
-                		 result = result + '            <th>Action</th>';
-                		 result = result + '          </tr>';
-                		 result = result + '        </thead>';
-                		 result = result + '        <tbody>';
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) {  
-	                    	 var opt = json[i]; 
-	                    	    result = result + '<tr>';
-		                		result = result + '<td><p class="form-control-static">'+opt.name+'</p></td>';
-		                		
-		                		if(window.candidateStatusGlobal == '0'){
-		                			result = result + '            <td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
-		                			if(opt.scale == 'undefined'|| opt.scale==null || opt.scale== 0){
-			                			 result = result + '<option selected=""disabled="">select</option>'; 
-				                	 }else{
-		                			result = result + '<option selected="" value="'+opt.scale+'" disabled="">'+opt.scale+'</option>';
-				                	 }
-		                		}else{
-		                		
-		                		result = result + '<td><select id="scale" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);" >';
-		                		result = result + '<option selected="" value="'+opt.scale+'" disabled="">Select</option>';
-		                		
-		                		if(opt.scale == "Beginner"){
-		                			result = result + '<option selected>Beginner</option>';
-		                		}else{
-		                			result = result + '<option>Beginner</option>';
-		                		}
-		                		if(opt.scale == "Familiar"){
-		                		    result = result +'<option selected>Familiar</option>';
-		                		}else{
-		                			result = result +'<option>Familiar</option>';
-		                		}
-		                		if(opt.scale == "proficient"){
-		                			result = result + '<option selected>proficient</option>';
-		                		}else{
-		                			result = result + '<option>proficient</option>';
-		                		}
-		                		if(opt.scale == "Expert"){
-		                			result = result + '<option selected>Expert</option>';
-		                		}else{
-		                			result = result + '<option>Expert</option>';
-		                		}
-		                		if(opt.scale == "Master"){
-		                			result = result + '<option selected>Master</option>';
-		                		}else{
-		                			result = result + '  <option>Master</option>';
-		                		}
-		                		}
-		                		result = result + '              </select></td>';
-		                		
-		                		 if(window.candidateStatusGlobal == '0'){ 
-		                			 result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
-				                	 if(opt.totalExperience == 'undefined'|| opt.totalExperience==null || opt.totalExperience== 0){
-			                			 result = result + ' <option selected="">select</option>'; 
-				                	 }else{
-		                			 result = result + '<option selected="" value="'+opt.totalExperience+'" >'+opt.totalExperience+'</option>'; 
-		                		 }
-				                }else{
-		                		result = result + '<td><select id="totalExperience" class="tbldata-dotdot-me width100percnt" onChange="fieldUpdateCandidate('+opt.id+',this);">';
-		                		result = result + '<option selected="" >Select</option>';
-		                		if(opt.totalExperience == "0"){
-		                			result = result + '<option selected>0</option>';   
-		                		}else{
-		                			result = result + '<option>0</option>';
-		                		}
-		                		if(opt.totalExperience == "1"){
-		                			result = result + '<option selected>1</option>';   
-		                		}else{
-		                			result = result + '<option>1</option>';
-		                		}
-		                		if(opt.totalExperience == "2"){
-		                			result = result + '<option selected>2</option>';   
-		                		}else{
-		                			result = result + '<option>2</option>';
-		                		}
-		                		if(opt.totalExperience == "3"){
-		                			result = result + '<option selected>3</option>';   
-		                		}else{
-		                			result = result + '<option>3</option>';
-		                		}
-		                		if(opt.totalExperience == "4"){
-		                			result = result + '<option selected>4</option>';   
-		                		}else{
-		                			result = result + '<option>4</option>';
-		                		}
-		                		if(opt.totalExperience == "5"){
-		                			result = result + '<option selected>5</option>';   
-		                		}else{
-		                			result = result + '<option>5</option>';
-		                		}
-		                		if(opt.totalExperience == "6"){
-		                			result = result + '<option selected>6</option>';   
-		                		}else{
-		                			result = result + '<option>6</option>';
-		                		}
-		                		}
-		                		result = result + '              </select></td>';
-		                		
-		                		 if(window.candidateStatusGlobal == '0'){ 
-				                result = result + '            <td><div class="text-center"><a href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
-		                		 }else{
-		                		result = result + '            <td><div class="text-center"><a onclick="removeSkillById('+candidateId+', '+opt.id+');" href="javascript:void(0)"> <i class="fa fa-trash"></i></a></div></td>';
-		                		 }
-		                		result = result + '          </tr>';
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#candidateSkillList").append(result); 
-	                     
-	                     $("#candidateSkills").trigger("chosen:updated");
-	                     
-	                     
-               }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Skills Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateSkillList").empty();
-				    $("#candidateSkillList").append(result); 
-               }
-        },
-          
-     }); 
-}
-</script>
-
-
 
 <%-- 
      @author : Venkat Kesav

@@ -443,8 +443,8 @@ public class RegistrationController {
 	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
-		  User user = userService.getUserByEmailAndUserType(email, type);
-		  if(null == user){
+		  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+		  if(null == userRole){
 			  return "Success";
 		  }else{
 			  return "Invalid";
@@ -461,8 +461,8 @@ public class RegistrationController {
 		  EmailDomains emailDomains = emailDomainsService.getEmailDomainsByDomainName(registeredEmail[1]);
 		  
 		  if(null != emailDomains){
-			  User user = userService.getUserByEmailAndUserType(email, type);
-			  if(null == user){
+			  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+			  if(null == userRole){
 				  return "Success";
 			  }else{
 				  return "Invalid";

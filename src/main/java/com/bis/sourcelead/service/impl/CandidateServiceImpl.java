@@ -276,7 +276,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setAddress(jsonObj.getString("address"));
 		}
 		
-		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(),orgLocations.getId(),"Recruiter");
 		if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
 			candidate.setRecruiterUserId(userRole.getUser());	
 		}
