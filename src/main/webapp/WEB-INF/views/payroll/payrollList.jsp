@@ -32,15 +32,15 @@
  <div class="project_wrap">
 	<div class="project_tabs_inn_head">
                   <input class="vendorfild" type="text">
-                  <i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a> 
+                   <i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a>
                   
                   <!-- Popup Div -->
                   <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                      
                       <div class="clearfix mb10">
-                        <div class="col-md-6"><input type="text" class="form-control calendar" value="" placeholder="From Date*"></div>
-                        <div class="col-md-6"><input type="text" class="form-control calendar" value="" placeholder="To Date*"></div>
+                        <div class="col-md-6"><input type="text" class="form-control calendar" id="fromDate" value="" placeholder="From Date*"></div>
+                        <div class="col-md-6"><input type="text" class="form-control calendar" id="toDate" value="" placeholder="To Date*"></div>
                       </div>                     
                      
                       <div class="clearfix mb10">
@@ -174,50 +174,59 @@
 	</ul>
 	<div class="clearfix"></div>
 </nav>	
-    
-	
-	
-</div>
- 
-  <!--<div class="clearfix contracts">
-      <ul class="nav nav-tabs">
-          <li class="active"><a href="#draft" data-toggle="tab">Draft</a></li>
-          <li><a href="#signed" data-toggle="tab">Waiting to be signed</a></li>
-          <li><a href="#approval" data-toggle="tab">Waiting for Approval</a></li>
-          <li><a href="#finalised" data-toggle="tab">Finalised</a></li>
-          <li><a href="#expired" data-toggle="tab">Expired</a></li>
-		  <div class="conBtn">
-			  <span>Add Contract <i class="fa fa-caret-down"></i></span>
-			  <ul>
-				  <li><a href="new-contract.html"><i class="fa fa-caret-right"></i>New Contract</a></li>
-				  <li><a href="existing-contract.html"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
-			  </ul>
-		  </div>
-      </ul>
-      <div class="tab-content">
-          <div id="draft" class="tab-pane fade in active">
-              <div class="tab_filterArea">
-                <div class="remove_search pull-right">
-            	<input type="text" placeholder="search" />
-            </div>
-              </div>
-              <h4>Draft:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="signed" class="tab-pane">
-              <h4>Waiting to be signed:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="approval" class="tab-pane">
-              <h4>Waiting to be approval:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="finalised" class="tab-pane">
-              <h4>Finalised:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-          <div id="expired" class="tab-pane">
-              <h4>Expired:</h4> This is a database language that you will use to extract and manipulate data.
-          </div>
-      </div>
-  </div>-->
+
+
+
+
+                 
+                  
+                  
+ </div>
+
 </div>
 </section>
+
+<script>
+$(function() {
+$('#fromDate').datepicker({
+changeMonth: true,
+changeYear: true, 
+dateFormat : 'dd-mm-yy',
+onSelect : function(selected) {
+$("#toDate").datepicker("option", "minDate", selected);
+}
+
+});
+
+$('#toDate').datepicker({
+changeMonth: true,
+changeYear: true, 
+dateFormat : 'dd-mm-yy',
+onSelect : function(selected) {
+$("#fromDate").datepicker("option", "maxDate", selected);
+}
+});
+
+});
+</script>
+
+<script>
+$(".addcon-pop").click(function(){
+	 $(".collapse-div-adduser").toggleClass("show-div");
+	 $(".collapse-div").removeClass("show-div");
+});
+$(".close-div").click(function(){
+	 $(this).parent().removeClass("show-div");
+	 });
+$(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
+	 e.stopPropagation();
+});
+$('html').click(function(){
+   $(".collapse-div-adduser").removeClass("show-div");
+	$(".collapse-div").removeClass("show-div");
+  });	
+		
+  
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
