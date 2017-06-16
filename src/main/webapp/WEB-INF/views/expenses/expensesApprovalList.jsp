@@ -180,7 +180,7 @@ $.ajax({
 	}
 	
 	if(data.expenseId.clientName != null && data.expenseId.clientName != '' && data.expenseId.clientName !='undefined'){
-		result = result+' <td><div><span>'+data.expensesProjectName+'</span><br><span>'+data.expenseId.clientName+'</span></div></td>';	
+		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span><br><span>'+data.expenseId.clientName+'</span></div></td>';	
 	}else{
 		result = result+' <td><div><span>'+data.expensesProjectName+'</span></div></td>';	
 	}

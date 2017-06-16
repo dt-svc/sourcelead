@@ -185,8 +185,8 @@ function getExpensesList(){
 								 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
 								 '</sec:authorize>';
-								 result = result +"<td><div>"+purpose+"</div></td>";
-								 result = result +"<td><div>"+projectMemberId+"</div></td>";
+								 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
+								 result = result +"<td><div title="+projectMemberId+">"+projectMemberId+"</div></td>";
 								 result = result +"<td><div>"+clientName+"</div></td>";
 								 result = result +"<td><div>"+startDateStr+"</div></td>";
 								 result = result +"<td><div>"+endDateStr+"</div></td>";
