@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCount;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 
 /**
@@ -30,50 +28,50 @@ public class ExpensesApproverHierarchyServiceImpl implements ExpensesApproverHie
 	ExpensesApproverHierarchyDao expensesApproverHierarchyDao;
     
 	/**
-	 * employees For counts
+	 * Expenses dashboard counts for employee expenses tab(Expenses dial)
+	 * 
 	 */
 	
 	@Override
 	public ExpensesCount getExpensesCountByUserIdAndOrgLocationIdForApprover(Long userId, Long orgLocationId)
 			throws Exception {
-		   
 		        ExpensesCount expCount = new ExpensesCount();
-			 
-			    Collection<ExpensesApproverHierarchy> approvedindividualEmployeeList = expensesApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,  "APPROVED");
-			    expCount.setExpensesApprovedCount(approvedindividualEmployeeList.size());;
-				 
-				Collection<ExpensesApproverHierarchy> rejectedindividualEmployeeList = expensesApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, "REJECTED");
-				expCount.setExpensesRejectCount(rejectedindividualEmployeeList.size());
 				
-				Collection<ExpensesApproverHierarchy> submittedForApprovalindividualEmployeeList   = expensesApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTED");
-				expCount.setExpensesSubmittedForApprovalCount(submittedForApprovalindividualEmployeeList.size());
+		        Collection<ExpensesApproverHierarchy> submittedForApprovalEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"SUBMITTEDFORAPPROVAL");
+				expCount.setEmpExpensesSubmittedForApprovalCount(submittedForApprovalEmployeeList.size());
 				
+				Collection<ExpensesApproverHierarchy> reopenEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"REOPENED");
+				expCount.setEmpExpensesReopenCount(reopenEmployeeList.size());
 				
-				Collection<ExpensesApproverHierarchy> draftEmployeeList   = expensesApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"DRAFT");
-				expCount.setExpensesDraftCount(draftEmployeeList.size());
+				Collection<ExpensesApproverHierarchy> approvedEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"APPROVED");
+				expCount.setEmpExpensesApprovedCount(approvedEmployeeList.size());
 				
-			    return expCount;
+				Collection<ExpensesApproverHierarchy> rejectedEmployeeList   = expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId,"REJECTED");
+				expCount.setEmpExpensesRejectedCount(rejectedEmployeeList.size());
+				
+				return expCount;
 	}
      
 	/**
-	 * Myexpenses For counts
+	 * Expenses dashboard counts for My expenses tab(Expenses dial)
+	 * 
 	 */
 	@Override
 	public ExpensesCount getExpensesCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
 		    
 		    ExpensesCount expCount = new ExpensesCount();
 		 
-			Collection<ExpensesApproverHierarchy> draftMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId,"DRAFT");
+			Collection<ExpensesApproverHierarchy> draftMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "DRAFT");
 			Integer expensesDraftCount = draftMyexpensesList.size();
 			expCount.setExpensesDraftCount(expensesDraftCount);
 			
-			Collection<ExpensesApproverHierarchy> submittedMyexpensesList = expensesApproverHierarchyDao.getTotalSubmittedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, "SUBMITTED",orgLocationId);
+			Collection<ExpensesApproverHierarchy> submittedMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "SUBMITTED");
 			expCount.setExpensesSubmittedForApprovalCount(submittedMyexpensesList.size());
 			
-			Collection<ExpensesApproverHierarchy> approvedMyexpensesList = expensesApproverHierarchyDao.getTotalApprovedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "APPROVED");
+			Collection<ExpensesApproverHierarchy> approvedMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "APPROVED");
 			expCount.setExpensesApprovedCount(approvedMyexpensesList.size());
 			
-			Collection<ExpensesApproverHierarchy> rejectedMyexpensesList = expensesApproverHierarchyDao.getTotalRejectedListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "REJECTED");
+			Collection<ExpensesApproverHierarchy> rejectedMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "REJECTED");
 			expCount.setExpensesRejectCount(rejectedMyexpensesList.size());
 			
 			return expCount;
