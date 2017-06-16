@@ -151,6 +151,7 @@ public class SecurityConfig  {
     			.antMatchers("/getJobDetailsForJobAlert").permitAll()
     			.antMatchers("/storeJobAlert").permitAll()
     			.antMatchers("/validateAlertUserEmail").permitAll()
+    			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
     			
     			
     			
@@ -165,8 +166,8 @@ public class SecurityConfig  {
     			.successHandler(sourceleadAuthenticationSuccessHandler)
     			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
-    			.and().csrf()
-    			.and().exceptionHandling().accessDeniedPage("/403");
+    			.and().exceptionHandling().accessDeniedPage("/403")
+    			.and().csrf().disable();
     			
     			
         }

@@ -66,6 +66,18 @@ margin-top: 3px;
 							
 				<ul>
 				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
+					<div class="pull-left mt5 mr">   		
+				     <span class="dashboard-datepkr pull-left">
+					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+					 <p id="reportStartDate" class="ReError"></p>
+					 </span>
+					 <span class="dashboard-datepkr pull-left">
+					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+					 <p id="reportEndDate" class="ReError"></p>
+					 </span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
+					</div>
+					
 					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
@@ -121,6 +133,8 @@ margin-top: 3px;
 <script type="text/javascript">
 function getExpensesApprovalDataList(){
 var sourceleadUrl = '${sourceleadUrl}';
+var startDate = $("#filterStartDate").val();
+var endDate = $("#filterEndDate").val();
 var expenseStatus = [];
 $('input:checkbox[name=expenseStatus]:checked').each(function() 
 {
@@ -128,7 +142,7 @@ $('input:checkbox[name=expenseStatus]:checked').each(function()
 });
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus,       
+     url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
      success :function(data) {
     var result = "";
 	result = result+' <table id="example">';
@@ -228,7 +242,6 @@ $.ajax({
 	 }
 	 $("#temp").val("temp");
 	  }else{
-		  alert("empty");
 	  }
 	result = result+' </tbody>';
 	result = result+' </table>';
@@ -534,7 +547,6 @@ function exportToPdf(type){
 		});
 		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
 	}else{
-		alert("test");
 	}
 	var sourceleadUrl = '${sourceleadUrl}';
 	var expenseStatus = [];
@@ -542,7 +554,9 @@ function exportToPdf(type){
 	{
 		expenseStatus.push($(this).val());
 	});
-	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus;
+	var startDate = $("#filterStartDate").val();
+	var endDate = $("#filterEndDate").val();
+	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 }
 </script>
 <script>
@@ -558,5 +572,29 @@ function exportToPdf(type){
 	       e.stopPropagation();
 	   });        
 </script> 
+
+<script>
+	$(function() {
+		$('#filterStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterEndDate").datepicker("option", "minDate", selected);
+			}
+		
+		});
+		
+		$('#filterEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterStartDate").datepicker("option", "maxDate", selected);
+			}
+		});
+		
+	});
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

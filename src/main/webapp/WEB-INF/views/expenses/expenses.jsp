@@ -30,7 +30,19 @@
 	<div class="timesheet_head">
         	<ul>
         		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
-					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+				    <div class="pull-left mt5 mr">   		
+				     <span class="dashboard-datepkr pull-left">
+					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+					 <p id="reportStartDate" class="ReError"></p>
+					 </span>
+					 <span class="dashboard-datepkr pull-left">
+					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+					 <p id="reportEndDate" class="ReError"></p>
+					 </span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList();" /></span>
+					</div>
+					
+					<li class="ml"><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
@@ -86,6 +98,15 @@
 
 function getExpensesList(){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var startDate = $("#filterStartDate").val();
+	var endDate = $("#filterEndDate").val();
+	/* if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#reportStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#reportEndDate").empty().append("End Date is Required") ; 
+	} */
+	
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 
     {
@@ -94,7 +115,7 @@ function getExpensesList(){
 	
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus,       
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>";
@@ -195,7 +216,6 @@ function getExpensesList(){
 
 <script>
 function expensesPagination(){ 
-// 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#expensesPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
@@ -217,6 +237,226 @@ function expensesPagination(){
 </script> 
 
 <script>
+
+function expenseView(expenseId){
+var sourceleadUrl = '${sourceleadUrl}';
+	$(".project_side_wrap").addClass("project_side_wrap_active");
+	        $(".side_mask").fadeIn(200);
+	        $("body").css('overflow-y', 'hidden');
+	        $.ajax({
+	            type : "GET",
+	             url: sourceleadUrl+"/getIndividualExpense?expenseId="+expenseId,       
+	             success :function(data) {
+	           	  var result = "";
+	           	  
+	          	result = result +'<div class="project_side_wrap_inn">';                 
+	        	result = result +'<h1>Expense name here</h1>';
+	        	result = result +'<div class="project_side_wrap_inn_tabs">';
+	        	result = result +'<ul class="project-tabs-menu">';
+	        	result = result +'<li class="current"><a href="#tab-1">Details</a></li>';
+	        	result = result +'				        <li><a href="#tab-2">History</a></li>                                                                                         ';
+	        	result = result +'<div class="clearfix"></div>';
+	        	result = result +'</ul>';
+
+	        	result = result +'<div class="project_tabs">';
+	        	result = result +'<div id="tab-1" class="project_tabs_inn">';
+	        	result = result +'<div class="project_tabs_inn_table">';
+	        	result = result +'<div class="project_details project_detailsExp">';
+
+	        	result = result +'<div class="Expdit">';
+	        	result = result +'<a href="#" class="btn btn-primary">Status</a>';
+	        	result = result +'<a href="add-expense.html" class="btn btn-default ml10"><i class="fa fa-pencil-square-o"></i> &nbsp;Edit</a>';
+	        	result = result +'<!--<a href="add-expense.html"><i class="glyphicon glyphicon-pencil"></i>Edit</a>-->';
+	        	result = result +'</div>';
+
+	        	 var json = JSON.parse(data);
+	        		  var reportExpense = json[0];
+	        		  var reportExpenseEntries = json;
+	        		  var expenseId="";
+	        		  if(reportExpense.expenseIndList[0].expenseId != null && reportExpense.expenseIndList[0].expenseId != '' && reportExpense.expenseIndList[0].expenseId != 'undefined'){
+	        			  expenseId = reportExpense.expenseIndList[0].expenseId;
+	        		  }else{
+	        			  expenseId = "--";
+	        		  }
+	        		  var projectMemberId="";
+	        		  if(reportExpense.expenseIndList[0].projectMemberId != null && reportExpense.expenseIndList[0].projectMemberId != '' && reportExpense.expenseIndList[0].projectMemberId != 'undefined'){
+	        			  projectMemberId = reportExpense.expenseIndList[0].projectMemberId;
+	        		  }else{
+	        			  projectMemberId = "--";
+	        		  }
+	        		  var clientName="";
+	        		  if(reportExpense.expenseIndList[0].clientName != null && reportExpense.expenseIndList[0].clientName != '' && reportExpense.expenseIndList[0].clientName != 'undefined'){
+	        			  clientName = reportExpense.expenseIndList[0].clientName;
+	        		  }else{
+	        			  clientName = "--";
+	        		  }
+	        		  var startDateStr="";
+	        		  if(reportExpense.expenseIndList[0].startDateStr != null && reportExpense.expenseIndList[0].startDateStr != '' && reportExpense.expenseIndList[0].startDateStr != 'undefined'){
+	        			  startDateStr = reportExpense.expenseIndList[0].startDateStr;
+	        		  }else{
+	        			  startDateStr = "--";
+	        		  }
+	        		  var endDateStr="";
+	        		  if(reportExpense.expenseIndList[0].endDateStr != null && reportExpense.expenseIndList[0].endDateStr != '' && reportExpense.expenseIndList[0].endDateStr != 'undefined'){
+	        			  endDateStr = reportExpense.expenseIndList[0].endDateStr;
+	        		  }else{
+	        			  endDateStr = "--";
+	        		  }
+	        		  var noOfExpenses="";
+	        		  if(reportExpense.expenseIndList[0].noOfExpenses != null && reportExpense.expenseIndList[0].noOfExpenses != '' && reportExpense.expenseIndList[0].noOfExpenses != 'undefined'){
+	        			  noOfExpenses = reportExpense.expenseIndList[0].noOfExpenses;
+	        		  }else{
+	        			  noOfExpenses = "--";
+	        		  }
+	        		  var totalAmount="";
+	        		  if(reportExpense.expenseIndList[0].totalAmount != null && reportExpense.expenseIndList[0].totalAmount != '' && reportExpense.expenseIndList[0].totalAmount != 'undefined'){
+	        			  totalAmount = reportExpense.expenseIndList[0].totalAmount;
+	        		  }else{
+	        			  totalAmount = "--";
+	        		  }
+	        	result = result +'<div class="clearfix"></div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Expenses Id:</strong><span>'+expenseId+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Project Name:</strong><span>'+projectMemberId+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Client:</strong><span>'+clientName+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Start date:</strong><span>'+startDateStr+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>End date:</strong><span>'+endDateStr+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>No of Expenses:</strong><span>'+noOfExpenses+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="project_details_cta">';
+	        	result = result +'<strong>Amount:</strong><span>'+totalAmount+'</span><div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        	result = result +'<div class="clearfix"></div>';
+	        	result = result +'</div>';
+	        		  
+	        	result = result +'<div class="project_wrap_table expensTableView">';
+	        	result = result +'<table>';
+	        	result = result +'<thead>';
+	        	result = result +'<tr>';
+	        	result = result +'<th>Exp Category</th>';
+	        	result = result +'<th>Date</th>';
+	        	result = result +'<th>Payment Mode</th>';
+	        	result = result +'<th>Currency</th>';
+	        	result = result +'<th>Description</th>';
+	        	result = result +'<th>Amount</th>';
+	        	result = result +'</tr>';
+	        	result = result +'</thead>';
+	        	result = result +'<tbody>';
+
+	        	
+	        	var expensesCategoryId= "";
+	        	var paymentMode= "";
+	        	var expenseDateStr= "";
+	        	var currencyType= "";
+	        	var description= "";
+	        	var amount= "";
+	        	
+	       for (var i = 0; i < reportExpenseEntries.length; i++) {	
+	    	   
+	          if(reportExpenseEntries[i].paymentMode != null && reportExpenseEntries[i].paymentMode != '' && reportExpenseEntries[i].paymentMode != 'undefined'){
+	        		paymentMode = reportExpenseEntries[i].paymentMode;
+      		  }else{
+      			paymentMode = "--";
+      		  }
+	        	if(reportExpenseEntries[i].expenseDateStr != null && reportExpenseEntries[i].expenseDateStr != '' && reportExpenseEntries[i].expenseDateStr != 'undefined'){
+	        		expenseDateStr = reportExpenseEntries[i].expenseDateStr;
+      		  }else{
+      			expenseDateStr = "--";
+      		  }
+	        	if(reportExpenseEntries[i].currencyType != null && reportExpenseEntries[i].currencyType != '' && reportExpenseEntries[i].currencyType != 'undefined'){
+	        		currencyType = reportExpenseEntries[i].currencyType;
+      		  }else{
+      			currencyType = "--";
+      		  }
+	        	if(reportExpenseEntries[i].description != null && reportExpenseEntries[i].description != '' && reportExpenseEntries[i].description != 'undefined'){
+	        		description = reportExpenseEntries[i].description;
+      		  }else{
+      			description = "--";
+      		  }
+	        	if(reportExpenseEntries[i].amount != null && reportExpenseEntries[i].amount != '' && reportExpenseEntries[i].amount != 'undefined'){
+	        		amount = reportExpenseEntries[i].amount;
+      		  }else{
+      			amount = "--";
+      		  }
+	        	
+	        	result = result +'<tr>';
+	        	result = result +'<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'+expensesCategoryId+'</div></td>';
+	        	result = result +'<td><div>'+expenseDateStr+'</div></td>';
+	        	result = result +'<td><div>'+paymentMode+'</div></td>';
+	        	result = result +'<td><div>'+currencyType+'</div></td>';
+	        	result = result +'<td><div class="tbldata-dotdot-me">'+description+'</div></td>';
+	        	result = result +'<td><div>'+amount+'</div></td>';
+	        	result = result +'</tr>';
+	       }
+	        	result = result +'</tbody>';
+	        	result = result +'</table>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+
+	        	result = result +'<div class="project_inn_mask"></div>';
+	        	result = result +'<div class="project_error">';
+	        	result = result +'<p>Delete conformation message....</p>';
+	        	result = result +'<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+ 
+	$("#expensesViewDiv").val('');
+    $("#expensesViewDiv").append(result);
+    $("#tab-1").show();
+    $(".project-tabs-menu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".project_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+	             }
+	        });          
+	}                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                       
+</script>
+
+
+<script>
+	$(function() {
+		$('#filterStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterEndDate").datepicker("option", "minDate", selected);
+			}
+		
+		});
+		
+		$('#filterEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterStartDate").datepicker("option", "maxDate", selected);
+			}
+		});
+		
+	});
+</script>
+
+<script>
 function activeTab(){
 	$(".project_side_wrap").removeClass("project_side_wrap_active");
     $(".side_mask").fadeOut(200);
@@ -227,9 +467,7 @@ function activeTab(){
 
 <script>
 function getEditExpense(eId){
-	alert("fgdfg");
 	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
-	alert("fgdfg");
 }
 </script>
 <script>
@@ -242,10 +480,11 @@ function exportToPdf(type){
 		{
 			expenseStatus.push($(this).val());
 		});
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
+		var startDate = $("#filterStartDate").val();
+		var endDate = $("#filterEndDate").val();
+		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 	}else{
 		var result = "";
-		alert(">>>>>>>>>>>>>")
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Candidate List is Empty</p>";

@@ -288,6 +288,11 @@ public class Contracts {
 	@Transient
 	private String tempUUID;
 	
+	@Transient
+	private Long approverUserId;
+	
+	@Transient
+	private Long ownerUser;
 	
 	public String getTempUUID()
 	{
@@ -978,4 +983,25 @@ public class Contracts {
 	public void setContractWith(String contractWith) {
 		this.contractWith = contractWith;
 	}
+
+	public Long getApproverUserId()
+	{
+		return approverUserId;
+	}
+
+	public void setApproverUserId(Long approverUserId)
+	{
+		this.approverUserId = approverUserId;
+	}
+
+	public Long getOwnerUser()
+	{
+		return ownerUser;
+	}
+
+	public void setOwnerUser(Long ownerUser)
+	{
+		this.ownerUser = ownerUser;
+	}
+
 }

@@ -10,7 +10,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalService {
 
-	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc, String expenseStatus) throws Exception;
+	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception;
 	
 	ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId) throws Exception;
 	
