@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -59,5 +60,12 @@ public class PayrollController {
 			
 		}
 		return returnVal;
+	}
+	
+	@RequestMapping(value = "/payrollList")
+	public ModelAndView getPayrollList(Model model) {
+		   ModelAndView m = new ModelAndView();
+	  	   m.setViewName("payroll/payrollList");
+	       return m;
 	}
 }
