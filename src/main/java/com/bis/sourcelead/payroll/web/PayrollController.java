@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,6 +29,9 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 @Controller
 public class PayrollController {
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
 	@Autowired
 	PayrollFileValidator validator;
@@ -47,25 +51,13 @@ public class PayrollController {
 		return "payroll/uploadPayroll";
 	}
 
-	@RequestMapping(value = "/uploadPayrollForm", method = RequestMethod.POST)
-	public String fileUploaded(HttpServletRequest request,HttpServletResponse response,Model model, @Validated File file, BindingResult result) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String returnVal = "payroll/uploadPayroll";
-		if (result.hasErrors()) {
-			returnVal = "payroll/uploadPayroll";
-		} else {
-			MultipartFile multipartFile = file.getFile();
-			String isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user);
-			
-		}
-		return returnVal;
-	}
+	
 	
 	@RequestMapping(value = "/payrollList")
-	public ModelAndView getPayrollList(Model model) {
-		   ModelAndView m = new ModelAndView();
-	  	   m.setViewName("payroll/payrollList");
-	       return m;
+	public ModelAndView getPayrollList(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("payroll/payrollList");
+	       return model;
 	}
 }
