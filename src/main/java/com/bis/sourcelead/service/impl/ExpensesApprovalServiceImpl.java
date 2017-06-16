@@ -10,7 +10,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,14 +26,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApprovalDao;
+import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -64,6 +74,12 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	ProjectMembersDao projectMembersDao;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesApprovalServiceImpl.class);
@@ -234,7 +250,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 						}else{
 							expenseArray[1] = "--";
 						}
-						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone()){
+						if(null != expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone())){
 
 							expenseArray[2] = expenseId.getProjectMembers().getEmployee().getUser().getMobilePhone();
 						}else{
@@ -242,7 +258,7 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 						}
 						
 					}
-					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType()){
+					if(null != expenseId.getProjectMembers().getEmployee().getUserEmploymentType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getEmployee().getUserEmploymentType())){
 
 						expenseArray[3] = expenseId.getProjectMembers().getEmployee().getUserEmploymentType();
 					}else{
@@ -496,6 +512,71 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 	public User updateExpenseStatusByExpenseIdAndReOpenReason(Long expenseId, String reason, User loginUser,
 			String type, String isSuperUser) {
 		return expensesApprovalDao.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId, reason, loginUser, type, isSuperUser);
+	}
+
+	@Override
+	public void sendReopenExpenseAcceptOrRejectMail(Long expenseId,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser) throws Exception {
+		
+				 EmailScenario emailScenario = null;
+				 EmailScenario  notificationScenario = null;
+				 EmailMessage emailMessage = new EmailMessage();
+				 emailMessage.setFirstName(reopenedUser.getFirstName());
+				 emailMessage.setLastName(reopenedUser.getLastName());
+				 emailMessage.setToEmail(reopenedUser.getEmail());
+				 
+				 emailMessage.setFromEmail(loginUser.getEmail());
+				 emailMessage.setCreatedBy(loginUser.getUserCode());
+				 emailMessage.setFromName(loginUser.getFullName());
+				 
+				 
+				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				 
+//				 ProjectMembers projectMembers = projectMembersDao.getgetProjectMemberById(expenseId);
+				 
+				//setting the class filed values
+				 /*
+				  * Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 globalVarsMap.put("superUserName",loginUser.getFullName());
+				 globalVarsMap.put("employeeName",projectMembers.getEmployee().getUser().getFullName());
+				 globalVarsMap.put("managerName",reopenedUser.getFullName());
+				 globalVarsMap.put("projectName", projectMembers.getProjects().getProjectName());
+				 globalVarsMap.put("reason",reason);
+				 
+				 globalVarsMap.put("loginURL","<a href='"+sourceleadUrl+"/"+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+			
+				 //setting the Recipient information
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				 
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 if(null != type && "accept".equalsIgnoreCase(type)){
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ACCEPT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
+				 }if(null != type && "reject".equalsIgnoreCase(type)){
+					 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_REJECT_REOPEN_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION); 
+				 }
+				 
+				
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = sourceleadUrl;;
+				 
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				 
+				 //calling the sendEmail method of emailScenerioUtil
+				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				
+				//calling the sendNotification method of emailScenerioUtil
+				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+				notificationScenario.setBody(notificationBody);
+				String actionLink = "";
+				emailScenerioUtil.sendNotification(actionLink, loginUser, reopenedUser, orgLocations, notificationScenario);
+				  */
 	}
 
 	

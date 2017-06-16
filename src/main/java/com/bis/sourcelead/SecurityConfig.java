@@ -125,6 +125,7 @@ public class SecurityConfig  {
     			.antMatchers("/downloadOfferAttachment").permitAll()
     			.antMatchers("/downloadInvoiceAttachment").permitAll()
     			.antMatchers("/acceptOrRejectReopenTimeSheet").permitAll() 
+    			.antMatchers("/acceptOrRejectReopenExpenseBySuperUser").permitAll()
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
     			.antMatchers("/resources/**/**").permitAll() 
