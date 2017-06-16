@@ -1,0 +1,223 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+<!-- these files for autocomplete with tagit -->
+<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+<section class="content-wraper">
+<section class="content-header clearfix">
+  <div class="pull-left">
+    <h2>Expenses New</h2>
+  </div>
+  <div class="pull-right brud-crum">Home &raquo; Expenses New</div>
+</section>
+
+<section class="contrHead">
+<ul>
+<li title=""><a href="#" class="wVer">Tab 1</a></li>
+<li title=""><a href="#">Tab 2</a></li>
+<li title=""><a href="#">Tab 3</a></li>
+<li title=""><a href="#">Tab 4</a></li>
+<div class="clearfix"></div>
+</ul>
+</section>
+	
+<div class="content-area content-new clearfix">
+ <div class="project_wrap">
+	<div class="project_tabs_inn_head">
+                  <input class="vendorfild" type="text">
+                  <i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a> 
+                  
+                  <!-- Popup Div -->
+                  <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
+                    <div class="form-horizontal clearfix">
+                     
+                      <div class="clearfix mb10">
+                        <div class="col-md-6"><input type="text" class="form-control calendar" value="" placeholder="From Date*"></div>
+                        <div class="col-md-6"><input type="text" class="form-control calendar" value="" placeholder="To Date*"></div>
+                      </div>                     
+                     
+                      <div class="clearfix mb10">
+                        <div class="col-md-12">
+                          <input type="text" class="form-control" value="" placeholder="Batch Name">
+                        </div>
+                      </div>
+                      <div class="clearfix mb10">
+                        <div class="col-md-12">
+                          <select class="chosen-select">
+                            <option value="Select Month">Select Type</option>
+                            <option value="January">Type 1</option>
+                            <option value="February">Type 2</option>
+                            <option value="March">Type 3</option>
+                            <option value="April">Type 4</option>
+                          </select>
+                        </div>
+                        <div class="col-md-12 mt10">
+                          <div class="input-group">
+                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                              <input type="file" style="display: none;" multiple id="uploadBtn" class="upload">
+                              </span> </label>
+                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="clearfix mr">
+                        <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Popup Div --> 
+                  
+                </div>
+    <div class="project_tabs_inn_table vendor_wrap_inn_table">
+    	<table>
+        	<tbody>
+			</tbody><thead>
+            	<tr>
+                	<th>From Date</th>
+                    <th>To Date</th>
+                    <th>Batch Name</th>
+                    <th>Type</th>
+                    <th>Attachment</th>
+                </tr>
+			</thead>	
+                <tbody>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>
+                <tr>
+                	<td><div>16/06/2017</div></td>
+                    <td><div>16/06/2017</div></td>
+                    <td><div>Batch One</div></td>
+                    <td><div>Batch Type</div></td>
+                    <td><div>Attachment.doc</div></td>
+                </tr>                                  		
+            </tbody>
+        </table>
+	</div>
+	
+<nav>
+<ul id="paging" class="pagination">
+	<li><a href="#">Previous</a></li>
+	<li><a href="#">2</a></li>
+	<li><a href="#">3</a></li>
+	<li><a href="#">4</a></li>
+	<li><a href="#">5</a></li>
+	<li class="disabled"><a href="#">6</a></li>
+	<li data-page="last"><a href="#">Next</a></li>
+	</ul>
+	<div class="clearfix"></div>
+</nav>	
+    
+	
+	
+</div>
+ 
+  <!--<div class="clearfix contracts">
+      <ul class="nav nav-tabs">
+          <li class="active"><a href="#draft" data-toggle="tab">Draft</a></li>
+          <li><a href="#signed" data-toggle="tab">Waiting to be signed</a></li>
+          <li><a href="#approval" data-toggle="tab">Waiting for Approval</a></li>
+          <li><a href="#finalised" data-toggle="tab">Finalised</a></li>
+          <li><a href="#expired" data-toggle="tab">Expired</a></li>
+		  <div class="conBtn">
+			  <span>Add Contract <i class="fa fa-caret-down"></i></span>
+			  <ul>
+				  <li><a href="new-contract.html"><i class="fa fa-caret-right"></i>New Contract</a></li>
+				  <li><a href="existing-contract.html"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
+			  </ul>
+		  </div>
+      </ul>
+      <div class="tab-content">
+          <div id="draft" class="tab-pane fade in active">
+              <div class="tab_filterArea">
+                <div class="remove_search pull-right">
+            	<input type="text" placeholder="search" />
+            </div>
+              </div>
+              <h4>Draft:</h4> This is a database language that you will use to extract and manipulate data.
+          </div>
+          <div id="signed" class="tab-pane">
+              <h4>Waiting to be signed:</h4> This is a database language that you will use to extract and manipulate data.
+          </div>
+          <div id="approval" class="tab-pane">
+              <h4>Waiting to be approval:</h4> This is a database language that you will use to extract and manipulate data.
+          </div>
+          <div id="finalised" class="tab-pane">
+              <h4>Finalised:</h4> This is a database language that you will use to extract and manipulate data.
+          </div>
+          <div id="expired" class="tab-pane">
+              <h4>Expired:</h4> This is a database language that you will use to extract and manipulate data.
+          </div>
+      </div>
+  </div>-->
+</div>
+</section>
+
+<jsp:include page="../masterFooter.jsp" />
