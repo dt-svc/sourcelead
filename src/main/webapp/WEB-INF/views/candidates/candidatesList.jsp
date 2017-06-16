@@ -320,7 +320,7 @@ function cpagination(){
 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0
@@ -1057,7 +1057,7 @@ function cancel(candidateId){
 		
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap minHeight_225" style="overflow-X:auto;">
+    <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">

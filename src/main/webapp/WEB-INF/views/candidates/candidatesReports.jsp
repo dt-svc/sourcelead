@@ -29,7 +29,7 @@
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getCandidateList();
+	getDayWiseReports();
 	}
 </script>
 
@@ -252,7 +252,7 @@ function toDate(selector) {
 
       <div class="timesheet_head">
 
-<div class="pull-left reportBtns">
+<div class="pull-left reportBtns reportcutom_Btns">
 
 	  <div class="reportBtn dropdown-select">
 		<select class="form-control" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
@@ -266,16 +266,17 @@ function toDate(selector) {
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
-	 <span class="dashboard-datepkr cusShow">
+	 <div class="cusShow pull-left">
+	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
 	 <p id="reportStartDate" class="ReError"></p>
 	 </span>
-	<span class="dashboard-datepkr cusShow">
+	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
 	<p id="reportEndDate" class="ReError"></p>
 	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
-	
+	<span><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+	</div>
 		<!-- <span class="repoBtns">
 		<a href="javascript:void(0)" class="oneA actRE"><i class="fa fa-list"></i></a>
 		<a href="javascript:void(0)" class="oneB"><i class="fa fa-pie-chart"></i></a>
@@ -310,10 +311,10 @@ function toDate(selector) {
 				<span><i class="fa fa-users"></i></span><b>${candidateCount}</b>
 			</li>
 			
-			
-			<li title="Associates" class="colorTwo">
+<!-- 			commented by pavan jampana -->
+			<%-- <li title="Associates" class="colorTwo">
 				<span><i class="fa fa-file-text"></i></span><b>${consultantCount}</b>
-			</li>
+			</li> --%>
 			
 			<div class="clearfix"></div>
 		</ul>
