@@ -287,10 +287,7 @@ public class HomeController {
 
 	}
 	
-	@RequestMapping(value = "/rest/{name}", method = RequestMethod.GET)
-	public String getMovie(@PathVariable String name) {
-		return name;
-	}
+	
 
 	/**
 	 * Returns File upload jsp
