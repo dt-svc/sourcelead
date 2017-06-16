@@ -1968,9 +1968,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
-   		 
    		
    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+   		 
+   		 // for store candidate submit to client with child record in submission history. 
+   		RequirementSubmissionHistory clientSubmissionHistory = new RequirementSubmissionHistory();
+   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
+		requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory);
    		 
    		 
    		 if(requirementSubmissionHistoryForCoolingOff != null){
