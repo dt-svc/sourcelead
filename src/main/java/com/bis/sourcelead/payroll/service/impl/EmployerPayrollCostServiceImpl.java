@@ -132,7 +132,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							} 
 							if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
 								 totalErCost = Float.parseFloat(getCellValueAsString(row.getCell(11), fileName));
-								employerPayrollCost.setAdminFee(totalErCost);
+								employerPayrollCost.setTotalErCost(totalErCost);
 							} 
 							if(jsonObj.has("fromDate") && jsonObj.getString("fromDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("fromDate"))){
 								employerPayrollCost.setFromDate(conversionUtil.getDateFromString(jsonObj.getString("fromDate")));
@@ -159,25 +159,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 					}
 				}
 
-			/*}*/
-			logger.info("================size"+employerPayrollCostList.size());
-			logger.info("================count is -----------------------"+count);
-			for(EmployerPayrollCost employerPayrollCost : employerPayrollCostList){
-				logger.info("=================="+employerPayrollCost.getEmployeeName());
-				logger.info("=================="+employerPayrollCost.getEmployeeId());
-				logger.info("=================="+employerPayrollCost.getSsn());
-				logger.info("=================="+employerPayrollCost.getTotalHrs());
-				logger.info("=================="+employerPayrollCost.getGrossWages());
-				logger.info("=================="+employerPayrollCost.getFica());
-				logger.info("=================="+employerPayrollCost.getFuta());
-				logger.info("=================="+employerPayrollCost.getSui());
-				logger.info("=================="+employerPayrollCost.getErLocals());
-				logger.info("=================="+employerPayrollCost.getWcCost());
-				logger.info("=================="+employerPayrollCost.getAdminFee());
-				logger.info("=================="+employerPayrollCost.getTotalErCost());
-				logger.info("****************************************************************************");
-				
-			}
+			
 			
 			fis.close();
 		} catch (IOException e) {

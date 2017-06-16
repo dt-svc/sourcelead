@@ -6,11 +6,13 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
+@Repository
 public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(WageTaxSummaryDaoImpl.class);
