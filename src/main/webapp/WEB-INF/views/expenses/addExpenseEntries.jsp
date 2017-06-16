@@ -203,7 +203,7 @@ function addAttachment(entityRowId,from){
 						</div>
 						<div class="col-md-4 mb10">
 							<label>Receipt Issued by<span class="text-danger">&nbsp;*</span></label>
-							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required"> 
+							<input type="text" id="receiptIssuedByREPLACEROWID" name="receiptIssuedByREPLACEROWID" class="form-control" value=""  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation="required validate_Space validate_length length1-100"> 
 						</div>
 						<div class="col-md-4 mb10">
 							<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
@@ -229,17 +229,18 @@ function addAttachment(entityRowId,from){
 											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
 											  </select>
 									 </div>
-							         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_int">
+							         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmountREPLACEROWID" id="expenseAmountREPLACEROWID" value="" field-name="Amount" data-validation="required validate_float">
 								</div>
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description</label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" data-validation="validate_Space validate_length length5-500"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
+	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
+	                   <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
 	                   <div class="uploadFile timesheet_week_comm">
 		                 <input type='hidden' name='attcahmentMaxRowNumberREPLACEROWID'  id='attcahmentMaxRowNumberREPLACEROWID' value='1' />
-		                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
 		                 <span> 
 		                     <table class='timesheetAttachment' id='attachmentTableREPLACEROWID' cellpadding='0' cellspacing='0' width="100%">
 		                       <tr id='REPLACEROWIDdivAttachmentTsRow0'>
@@ -252,8 +253,8 @@ function addAttachment(entityRowId,from){
 					</div>
 					      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 						      <div class="pull-right  mr mt10">
-						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary ml" onclick="addExpenseCategory(REPLACEROWID);">
-						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default ml" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);">
+						        <input type="button" value="Add" id="addExpenseCategoryButtonREPLACEROWID" class="btn btn-primary btn-sm mr10" onclick="addExpenseCategory(REPLACEROWID);">
+						        <input type="button" id="cancelExpenseCategoryButtonREPLACEROWID" value="Cancel" class="btn btn-default btn-sm" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);">
 						      </div>
 					      </div>
 						 <div class="clearfix"></div>
@@ -371,6 +372,7 @@ function addExpenseRow(){
 			$("#expenseRateTypeDiv"+entityId).html(expenseRateType);
 			$("#expenseAmountDiv"+entityId).html(expenseAmount);
 			$("#entryDesDiv"+entityId).html(descriptions);
+			$("#entryDesDiv"+entityId).prop("title", descriptions);
 			
 			
 			$("#hideAndShowDetailsButton"+entityId).removeAttr('style');
