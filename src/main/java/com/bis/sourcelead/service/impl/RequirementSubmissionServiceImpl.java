@@ -2651,11 +2651,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 globalVarsMap.put("EmploymentType","--");
 		 }
-		 
+		 StringBuilder sb1 = new StringBuilder();
 		 if( reqRateNegotiation !=null && reqRateNegotiation.getExpectedRate() != null && !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())){
-			 globalVarsMap.put("Rate", reqRateNegotiation.getExpectedRate());
+			
+			 globalVarsMap.put("Rate", sb1.append(reqRateNegotiation.getExpectedRate()).append("/").append(reqRateNegotiation.getExpectedRateType()).toString());
 		 }else if(requirementSubmission.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getExpectedRate())){
-			 globalVarsMap.put("Rate", requirementSubmission.getCandidate().getExpectedRate());
+			 
+			 globalVarsMap.put("Rate", sb1.append(requirementSubmission.getCandidate().getExpectedRateCurrencey()).append(" ").append(requirementSubmission.getCandidate().getExpectedRate()).append("/").append(requirementSubmission.getCandidate().getRateType()).toString());
 		 }else{
 			 globalVarsMap.put("Rate","--");
 		 }
