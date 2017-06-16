@@ -646,8 +646,10 @@ public class SubmissionsRateRestController {
 			if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder candBuild = new StringBuilder();
 			 requirementSubmission.setUpdatedUser(candBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+			 requirementSubmission.setSubmissionRequestUser(candBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			 }else{
 				 requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
+				 requirementSubmission.setSubmissionRequestUser(requirementSubmissionTemplateFields.getFirstName());
 			 }
 			
 			requirementSubmission.setRejectedReason(rejectreason);
