@@ -23,6 +23,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -109,9 +110,47 @@ public class OrgLocations implements Serializable{
 	
     @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
-
+    
+    @Column(name = "MODULES_ID")
+	@Type(type="text")
+	private String modulesId;
+    
+    @Column(name = "ORG_NAME")
+	private String orgLocationName;
+    
+    @Column(name = "ORG_LOCATION_ADDRESS")
+   	@Type(type="text")
+   	private String orgLocationAddress;
+    
+    @Column(name = "WEB_SITE")
+	private String website;
+    
+    @Column(name = "ABOUT_COMPANY")
+	@Type(type="text")
+	private String orgDescription;
+       
+    
     @Transient
     private String orgName;
+    
+    @Transient
+    private String orglocationUserName;
+    
+    @Transient
+    private String orglocationUserEmail;
+    
+    @Transient
+    private String orglocationUserPhone;
+    
+    @Transient
+    private String orglocationUserStatus;
+    
+    @Transient
+    private Long orglocationUserId;
+    
+    @Transient
+    private String orgCode;
+    
 
 	public Timezone getTimezone() {
 		return timezone;
@@ -290,6 +329,116 @@ public class OrgLocations implements Serializable{
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public String getModulesId()
+	{
+		return modulesId;
+	}
+
+	public void setModulesId(String modulesId)
+	{
+		this.modulesId = modulesId;
+	}
+
+	public String getOrgLocationName()
+	{
+		return orgLocationName;
+	}
+
+	public void setOrgLocationName(String orgLocationName)
+	{
+		this.orgLocationName = orgLocationName;
+	}
+
+	public String getOrgLocationAddress()
+	{
+		return orgLocationAddress;
+	}
+
+	public void setOrgLocationAddress(String orgLocationAddress)
+	{
+		this.orgLocationAddress = orgLocationAddress;
+	}
+
+	public String getWebsite()
+	{
+		return website;
+	}
+
+	public void setWebsite(String website)
+	{
+		this.website = website;
+	}
+
+	public String getOrgDescription()
+	{
+		return orgDescription;
+	}
+
+	public void setOrgDescription(String orgDescription)
+	{
+		this.orgDescription = orgDescription;
+	}
+
+	public String getOrglocationUserName()
+	{
+		return orglocationUserName;
+	}
+
+	public void setOrglocationUserName(String orglocationUserName)
+	{
+		this.orglocationUserName = orglocationUserName;
+	}
+
+	public String getOrglocationUserEmail()
+	{
+		return orglocationUserEmail;
+	}
+
+	public void setOrglocationUserEmail(String orglocationUserEmail)
+	{
+		this.orglocationUserEmail = orglocationUserEmail;
+	}
+
+	public String getOrglocationUserPhone()
+	{
+		return orglocationUserPhone;
+	}
+
+	public void setOrglocationUserPhone(String orglocationUserPhone)
+	{
+		this.orglocationUserPhone = orglocationUserPhone;
+	}
+
+	public String getOrglocationUserStatus()
+	{
+		return orglocationUserStatus;
+	}
+
+	public void setOrglocationUserStatus(String orglocationUserStatus)
+	{
+		this.orglocationUserStatus = orglocationUserStatus;
+	}
+
+	public Long getOrglocationUserId()
+	{
+		return orglocationUserId;
+	}
+
+	public void setOrglocationUserId(Long orglocationUserId)
+	{
+		this.orglocationUserId = orglocationUserId;
+	}
+
+	public String getOrgCode()
+	{
+		return orgCode;
+	}
+
+	public void setOrgCode(String orgCode)
+	{
+		this.orgCode = orgCode;
 	}
 	
 }

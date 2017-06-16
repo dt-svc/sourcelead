@@ -128,7 +128,7 @@ public class RegistrationRestController {
 
 	}
 	 
-	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public String addCompanyRegistration(
 				@RequestParam(value="json", required=false) String json ,
@@ -544,10 +544,10 @@ public class RegistrationRestController {
 				if("" != orgModules){
 					orgModules = orgModules.substring(0, orgModules.length()-1);
 					StringBuilder orgModulesstr = new StringBuilder();
-					orgModules = orgModulesstr.append(org.getModulesId()).append(",").append(orgModules).toString();
-					org.setModulesId(orgModules);
+					orgModules = orgModulesstr.append(orgLocations.getModulesId()).append(",").append(orgModules).toString();
+					orgLocations.setModulesId(orgModules);
 				}
-			    orgService.addOrganization(org);
+			    orgLocationService.updateOrgLocations(orgLocations);
 		   
 		return "success";
 	   }
@@ -656,19 +656,28 @@ public class RegistrationRestController {
 	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
 	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
-		    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			String status = null;
-			if(!isNullOrEmpty(companyName) && !org.getOrgName().equalsIgnoreCase(companyName)){
-			    boolean flag;
+			boolean flag = false;
 				try {
-					flag = orgService.isOrgNameExisted(companyName);
-					if (flag == true) {
-						status = "Company Duplicated";
+					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+					if(null != orgLocationsList){
+						for(OrgLocations orgLocations : orgLocationsList){
+							if(orgLocations.getOrgLocationName().equalsIgnoreCase(companyName)){
+								flag = true;
+							}
+						}
 					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+		   
+		   if(flag == true){
+			   status = "Company Duplicated";
+		   }else{
+			   status = "success";
+		   }
+		   
 	       return status;
 	   }
 	   
@@ -714,6 +723,50 @@ public class RegistrationRestController {
 	   		@RequestParam(value="email", required=false) String email) throws Exception {
 		   return userService.validateEmailandCandidate(website, email, sourceleadBLockedwebsites);
 	   }
+	   
+	   
+	    @RequestMapping(value = "/getRegisteredOrgsLocationsList")
+		public @ResponseBody String getRegisteredOrgsLocationsList(HttpServletRequest request) {
+
+		String resultJson;
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		List<OrgLocations> orgLocationsList = new ArrayList<>();
+
+		ArrayList<OrgLocations> regOrgsLocationsList = new ArrayList<OrgLocations>();
+
+		try {
+			orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsByOrgId(org.getId());
+			for(OrgLocations orgLocations : orgLocationsList){
+				if(null != orgLocations.getUser()){
+					
+					StringBuilder userName = new StringBuilder();
+					if(!isNullOrEmpty(orgLocations.getUser().getLastName())){
+						userName = userName.append(orgLocations.getUser().getFirstName()).append(" ").append(orgLocations.getUser().getLastName());
+					}else{
+						userName = userName.append(orgLocations.getUser().getFirstName());
+					}
+					orgLocations.setOrglocationUserName(userName.toString());
+					orgLocations.setOrglocationUserEmail(orgLocations.getUser().getEmail());
+					orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
+					orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
+					orgLocations.setOrgCode(org.getOrgCode());
+					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(),orgLocations.getId());
+					if(null != userRole){
+						orgLocations.setOrglocationUserStatus(userRole.getUserState().toString());
+					}
+				}
+				
+				regOrgsLocationsList.add(orgLocations);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		resultJson = commonUtil.toJSON(regOrgsLocationsList);
+		return resultJson;
+
+	}
+	   
+	   
 	
 	   protected boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());

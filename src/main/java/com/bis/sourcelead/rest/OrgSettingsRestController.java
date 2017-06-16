@@ -106,8 +106,8 @@ public class OrgSettingsRestController {
 			orgLocations = orgLocationService.saveOrgLocations(orgSettings, orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(request, "org", org);
 		    SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-		    SourceLeadSessionManager.setSessionAttribute(request, "orgName", org.getOrgName());
-		    SourceLeadSessionManager.setSessionAttribute(request, "address", org.getOrgAddress());
+		    SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
+		    SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
 			
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e)); 

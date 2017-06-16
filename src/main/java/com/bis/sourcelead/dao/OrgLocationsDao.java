@@ -34,5 +34,7 @@ public interface OrgLocationsDao {
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
 	
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId) throws Exception;
     
 }

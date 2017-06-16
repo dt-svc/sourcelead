@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -53,6 +55,9 @@ public class OrgSettingsController {
 	@Autowired
 	TimeZoneService timeZoneService;
 	
+	@Autowired
+	ModulesService modulesService;
+	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
  	public ModelAndView orgSettings(HttpServletRequest request) throws Exception {
@@ -61,6 +66,21 @@ public class OrgSettingsController {
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
  			List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
+ 			
+			List<Modules> modulesList = null;
+			List<Modules> requirementSubModulesList = null;
+			try {
+				 modulesList = modulesService.getSourceLeadModules();
+				 model.addObject("modulesList", modulesList);
+				 
+				 requirementSubModulesList = modulesService.getRequirementSubModules();
+				 model.addObject("requirementSubModulesList", requirementSubModulesList);
+				 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+ 			
+ 			
 			model.addObject("timezoneList", timezoneList);
 			model.addObject("orgLocations", orgLocations);
  			model.setViewName("orgSettings");
@@ -165,7 +185,7 @@ public class OrgSettingsController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			if(null != roles){
 			
-			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActions(org);
+			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
 			
 			if(null != roles.getActionId()){
 				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
