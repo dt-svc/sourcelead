@@ -545,6 +545,12 @@ public class RequirementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/template");
 		
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCreateMsgTemplate");
+		if(!isNullOrEmpty(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "userCreateMsgTemplate");
+		}
+		
 		return model;
 
 	}
