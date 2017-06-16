@@ -128,6 +128,7 @@ public class Constants {
 	public static final String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
+	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";

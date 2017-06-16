@@ -193,7 +193,7 @@ $.ajax({
 	}
 	
 	
-	result = result+' <td><div class="sm">'+data.expenseId.totalAmount+'</div></td>';
+	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
 	result = result+' <td><div class="sm">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
@@ -230,7 +230,12 @@ $.ajax({
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
          result = result+" <div class='sm text-center'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
-    }  
+    }
+    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){
+    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
+    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
+    	'</sec:authorize>'; 
+   }
      result = result+' </td>'; 
 /* 	 result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';       */        
 	 result = result+' </tr>';
@@ -326,7 +331,7 @@ function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
 	    result = result +'<div class="time_appr_rejct_pop" id="reject'+expenseId+'panel" style="top:25%">';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" ></textarea>';
 		result = result + ' <div id="rejectReasonDiv"/>';
-		result = result +'<a href="#" onClick="saveRejectExpenseByExpenseId(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
 		result = result +'</div>';
 		result = result +'</div>';
 		$("#rejectedPopup").append(result);

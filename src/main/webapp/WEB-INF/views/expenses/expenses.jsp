@@ -235,6 +235,7 @@ function expensesPagination(){
     $("#expensesPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 }
 </script> 
+
 <script>
 
 function expenseView(expenseId){
@@ -429,6 +430,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 	}                                                                                                                                                                                                                                                  
                                                                                                                                                                                                                                                        
 </script>
+
 
 <script>
 	$(function() {
