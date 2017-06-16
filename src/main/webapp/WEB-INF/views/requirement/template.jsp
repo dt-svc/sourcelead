@@ -10,11 +10,14 @@
 	 requirementTemplateList();
 };
 </script>
-
 <section class="content-wraper">
   <section class="content-header clearfix">
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector_template"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
     <div class="pull-left">
-
       <h2>Requirement Templates</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Templates</div>
@@ -44,7 +47,10 @@
   </div>
 </section>
 
-
+<script>
+  $("#selector_template").fadeIn(200);
+  $('#selector_template').delay(2000).fadeOut('slow');
+</script>   
 <script>
 function requirementTemplateList(){  
 	
