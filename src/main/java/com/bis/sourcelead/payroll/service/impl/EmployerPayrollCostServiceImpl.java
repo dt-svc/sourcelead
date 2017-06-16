@@ -149,6 +149,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							employerPayrollCost.setCreatedDate(new Date());
 							employerPayrollCost.setUpdatedBy(user.getUserCode());
 							employerPayrollCost.setUpdatedDate(new Date());
+							employerPayrollCost.setOrgLocationId(orgLocation);
 							EmployerPayrollCost empPayrollCost = saveEmpPayrollCost(employerPayrollCost);
 							if(empPayrollCost != null){
 								count++;
@@ -193,7 +194,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	 * @throws Exception 
 	 */
 	private EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
-		return employerPayrollCostDao.saveEmployerPayrollCost(new EmployerPayrollCost());
+		return employerPayrollCostDao.saveEmployerPayrollCost(employerPayrollCost);
 	}
 
 

@@ -31,6 +31,7 @@
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
 	<div class="project_tabs_inn_head">
+	<form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
                   <input class="vendorfild" type="text">
                    <i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a>
                   
@@ -39,41 +40,42 @@
                     <div class="form-horizontal clearfix">
                      
                       <div class="clearfix mb10">
-                        <div class="col-md-6"><input type="text" class="form-control calendar" id="fromDate" value="" placeholder="From Date*"></div>
-                        <div class="col-md-6"><input type="text" class="form-control calendar" id="toDate" value="" placeholder="To Date*"></div>
+                        <div class="col-md-6"><input type="text" class="form-control calendar" id="fromDate" name="fromDate" value="" placeholder="From Date*"></div>
+                        <div class="col-md-6"><input type="text" class="form-control calendar" id="toDate" name="toDate" value="" placeholder="To Date*"></div>
                       </div>                     
                      
                       <div class="clearfix mb10">
                         <div class="col-md-12">
-                          <input type="text" class="form-control" value="" placeholder="Batch Name">
+                          <input type="text" class="form-control" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber">
                         </div>
                       </div>
                       <div class="clearfix mb10">
                         <div class="col-md-12">
-                          <select class="chosen-select">
-                            <option value="Select Month">Select Type</option>
-                            <option value="January">Type 1</option>
-                            <option value="February">Type 2</option>
+                          <select class="chosen-select" id="payrollType" name="payrollType">
+                            <option value="">Select Type</option>
+                            <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
+                            <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="March">Type 3</option>
                             <option value="April">Type 4</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
-                          <div class="input-group">
-                            <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-                              <input type="file" style="display: none;" multiple id="uploadBtn" class="upload">
-                              </span> </label>
-                            <input type="text" class="form-control" readonly id="uploadFile" placeholder="Files are not selected...">
-                          </div>
+                          <div class="input-group" id="uploadFileGroup">
+	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
+	                            </span> </label>
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
+	                        </div>
+                          
                         </div>
                       </div>
                       <div class="clearfix mr">
-                        <button type="submit" class="btn btn-sm btn-primary pull-right">Add</button>
+                        <button type="button" class="btn btn-sm btn-primary pull-right" id="uploadPayroll" onclick="uploadPayrollDocument();">Upload</button>
                       </div>
                     </div>
                   </div>
                   <!-- Popup Div --> 
-                  
+                  </form:form>
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
     	<table>
@@ -228,5 +230,68 @@ $('html').click(function(){
 		
   
 </script>
+
+<!-- Added By Rajashekar  -->
+<script type="text/javascript">
+	function uploadPayrollDocument() {
+		alert("hiii")
+		/* if ($('#upload_payroll_form').validate(false, validationSettings)) { */
+			
+			
+			var frm = $('#upload_payroll_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+	        var jsonData = encodeURIComponent(con);
+	        var form = $('#upload_payroll_form')[0];
+      		var formData = new FormData(form); 
+			
+			var sourceleadUrl = '${sourceleadUrl}';
+	 		$.ajax({
+	 			type : "POST",
+        	    data: formData,
+        	    contentType : 'application/json; charset=utf-8',
+        	    enctype: 'multipart/form-data',
+    	        processData: false,
+    	        contentType:false,
+        	    dataType : 'json',
+					url : sourceleadUrl+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(result) {
+						location.replace(sourceleadUrl+"/payrollList");
+					},
+					}); 
+			/* return true; */
+		/* } else {
+			return false;
+		} */
+	}
+	/* $('body').on('blur', '#upload_payroll_form', function() {
+		$("#upload_payroll_form").showHelpOnFocus();
+		$("#upload_payroll_form").validateOnBlur(false, validationSettings);
+	}); */
+</script>
+<!-- End By Rajashekar -->
+
+<<script type="text/javascript">
+$(document.body).on('change', '#uploadBtn' ,function(){
+	 $('#uploadFile').val(this.value.split( '\\' ).pop());
+	 $("#uploadFile").focus();
+	 if(validate_fileupload(this.value)){
+	 var docFileSize = $('#uploadFile');
+		 var docSize = this.files[0].size;
+	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
+	      if(docSize > 2097152){
+	    	  document.getElementById("uploadFile").value = '';
+	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
+			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	      }else{
+	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
+  		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	      }
+	 }
+});
+</script>
+
 
 <jsp:include page="../masterFooter.jsp" />
