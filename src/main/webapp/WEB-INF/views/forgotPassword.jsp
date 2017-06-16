@@ -84,7 +84,7 @@ function applyInputSlide() {
             	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName",
+                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(result) {
                     		if((result == 'Invalid')){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
