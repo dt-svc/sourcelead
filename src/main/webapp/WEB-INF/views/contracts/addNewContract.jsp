@@ -1755,8 +1755,11 @@ function getTaxRewardType(rewardType){
 		document.getElementById("taxFlatReward").style.display="none";
 		document.getElementById("taxFlatRateType").style.display="none";
 		
-		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
-	    document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
+		$("#taxPercentageBtn").addClass('btn btn-sm btn-primary active');
+		$("#taxFlatBtn").addClass('btn btn-sm btn-primary ');
+		
+		//document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
+	  //  document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
     	$('#taxPercentageRewardValue').attr("data-validation","required validate_float");  
 		$('#taxPercentageRewardValue').removeAttr('data-validation-optional');
 	    $('#taxFlatRewardValue').removeAttr('data-validation');
@@ -1771,8 +1774,11 @@ function getTaxRewardType(rewardType){
 		document.getElementById("taxFlatRateType").style.display="";
 		document.getElementById("taxPercentageReward").style.display="none";
 		
-		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
-		document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
+		$("#taxPercentageBtn").addClass('btn btn-sm btn-primary');
+		$("#taxFlatBtn").addClass('btn btn-sm btn-primary active');
+		
+		//document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
+		//document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
 		$('#taxFlatRewardValue').attr("data-validation","required validate_float");
 		$('#taxFlatRewardValue').removeAttr('data-validation-optional');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
