@@ -4229,8 +4229,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
-		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType);
+	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType,OrgLocations loginOrgLocation) {
+		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType,loginOrgLocation);
 	}
 
 	@Override
@@ -4243,6 +4243,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId, Long requirementId) throws Exception
 	{
 		return requirementSubmissionDao.getRequirementSubmissionByCandidateIdAndRequirementId(candidateId, requirementId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation)
+	{
+		return requirementSubmissionDao.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
 	}
 
 }
