@@ -247,6 +247,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
 			contracts.setRequirementSubmission(rs);
+			contracts.setCandidate(rs.getCandidate());			
 		}
 		
 		if("Client SOW".equals(jsonObj.getString("contractType")) || "Vendor SOW".equals(jsonObj.getString("contractType"))){
@@ -1537,6 +1538,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
 			contracts.setRequirementSubmission(rs);
+			contracts.setCandidate(rs.getCandidate());	
 		}
 		
 		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){

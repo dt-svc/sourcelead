@@ -43,7 +43,7 @@
 				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();submissionOffers();" data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
@@ -93,7 +93,7 @@
             <div class="form-group" id="requirementDiv" style="display: none;">
               <label class="col-md-4">Select Requirement<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-                  <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
+                  <select class="form-control" id="requirementsList" name="requirementsList" field-name="Requirement">
                   </select>
               </div>
             </div>
@@ -809,6 +809,7 @@ function getContractTemplates(){
 		$('#vendorContact').trigger("chosen:updated");
 		document.getElementById("billingDiv").style.display="block";
 		document.getElementById("vendorContactDiv").style.display="none";
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
  	if(contractType == "Client MSA"){
  		document.getElementById("billingDiv").style.display="block";
@@ -820,6 +821,7 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="block";
@@ -831,6 +833,7 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -842,6 +845,7 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
+		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -853,6 +857,7 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
+		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -864,6 +869,7 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Full time offer"){
 		document.getElementById("clientDiv").style.display="none";
@@ -875,6 +881,7 @@ function getContractTemplates(){
 		document.getElementById("descriptionDiv").style.display="none";
 		document.getElementById("joinDateDiv").style.display="block";
 		document.getElementById("workLocationDiv").style.display="block";
+		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}	 
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -1330,9 +1337,9 @@ function hideCommonSOWFields(){
 		
 	function submissionOffers(){
 		var sourceleadUrl ='${sourceleadUrl}';
-		var requirementId = $("#requirementsList").val();
+		var requirementId = "";
 		var sowType = $("#contractType").val();
-		
+		if(sowType == 'Client SOW' || sowType == 'Vendor SOW'){
 		$("#flatReward").val("");
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
@@ -1346,7 +1353,7 @@ function hideCommonSOWFields(){
 	            	  result = result + '<option value="">Select Candidate</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
-	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
+	                 	result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
 	                  }
 	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
@@ -1372,7 +1379,7 @@ function hideCommonSOWFields(){
 	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
 	    });
-
+		}
 	}
 	function getOfferRate(){
 		var sourceleadUrl ='${sourceleadUrl}';
