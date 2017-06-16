@@ -35,5 +35,7 @@ public interface ExpensesApprovalService {
 	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc) throws IOException;
 
 	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchy> expApperoverHierarchy,OrgLocations orgLoc)throws IOException;
+	
+	public void sendReopenExpenseAcceptOrRejectMail(Long expenseId,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser) throws Exception;
 
 }
