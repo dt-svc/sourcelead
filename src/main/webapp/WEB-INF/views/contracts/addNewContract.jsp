@@ -18,6 +18,12 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
+<script>
+ window.onload = function() {
+	 changeSaveButton();
+};
+</script>
+
 <!-- Content Area -->
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -176,7 +182,12 @@
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
                   <option value=''>Select Owner</option>
                   <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  <c:if test = "${!empty contract.ownerUserId.id}">
+	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.ownerUserId.id}">
+	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
                   </c:forEach>
                   </select>
               </div>
@@ -188,7 +199,7 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
-						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'} field-name="Start Date" readonly="readonly">
+						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -1465,6 +1476,7 @@ function hideCommonSOWFields(){
 
 <script>
 	function getRequirements(sowType){
+		$("#requirementsList").empty();
 		var sourceleadUrl ='${sourceleadUrl}';
 		$.ajax({
 	        type : "GET",
@@ -1553,7 +1565,6 @@ function hideCommonSOWFields(){
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
 	         success :function(data) {
-	        	 
 		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 		            	  var json = JSON.parse(data);
 		            	  document.getElementById("offerRateDiv").style.display="block";
@@ -1803,7 +1814,7 @@ function changeSaveButton(){
 	 var approverId = $("#approver").val();
 	if(approverId !='' && approverId != null){
 		if(approverId == userId){
-			document.getElementById("save_approver_template").value="Approve";
+			document.getElementById("save_approver_template").value="Save";
 		}else{
 			document.getElementById("save_approver_template").value="Send For Approve";
 		}
