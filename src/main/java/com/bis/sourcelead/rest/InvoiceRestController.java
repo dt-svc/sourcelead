@@ -732,6 +732,7 @@ public class InvoiceRestController {
 					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
+				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
 					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if(null != candidate){
@@ -824,8 +825,9 @@ public class InvoiceRestController {
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
-				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
-				if(null != candidate){
+				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
+//				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
+				if(null != employee){
 					StringBuilder empName =new StringBuilder();
 					if(null != projectMember.getEmployee().getUser().getFirstName() && null != projectMember.getEmployee().getUser().getLastName()){
 						empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
@@ -833,11 +835,9 @@ public class InvoiceRestController {
 						empName.append(projectMember.getEmployee().getUser().getFirstName());
 					}
 					projectMember.setCandidateName(empName.toString());
-					if(null != candidate){
-						projectMember.setCandidateId(candidate.getId());
-					}
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
+					projectMember.setUserId(employee.getUser().getId().toString());
 					String billableHours = String.valueOf(sah.getBillableHours());
 					StringBuilder sb = new StringBuilder();
 					if(sah.getBillableHours() !=null){
@@ -859,10 +859,16 @@ public class InvoiceRestController {
 						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-					List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,orgRelationId,contractType);
-					if(null != contractList && contractList.size() >0){
-						projectMember.setContractsList(contractList);
+					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),orgLocation.getId(),orgRelationId);
+					if(candidate !=null){
+						projectMember.setCandidateId(candidate.getId());
+						List<Contracts> contractList = getSowContract(candidate.getId(),orgLocation,orgRelationId,contractType);
+						if(null != contractList && contractList.size() >0){
+							projectMember.setContractsList(contractList);
+						}
+						projectMember.setCandidateId(candidate.getId());
 					}
+					
 					filteredMembersList.add(projectMember);
 				}
 				
