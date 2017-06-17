@@ -104,7 +104,7 @@ public class RegistrationRestController {
 		try {
 			orgsList = orgService.getEnrolledOrgs(org.getId(), userState, searchByName);
 			for(Org regOrg : orgsList){
-				OrgLocations orglocations = orgLocationService.getOrgLocationByOrgId(regOrg.getId());
+				OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 				if(null != regOrg.getUser()){
 					regOrg.setEmail(regOrg.getUser().getEmail());
 					regOrg.setIsMailSent(regOrg.getUser().getIsMailSent());
@@ -119,6 +119,7 @@ public class RegistrationRestController {
 				
 				if(null != orglocations){
 					regOrg.setLocation(orglocations.getCountry());
+					regOrg.setPrimaryOrgLocationId(orglocations.getId());
 				}
 				regOrgsList.add(regOrg);
 			}
@@ -205,17 +206,18 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
 	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
-			 @RequestParam(value="userId", required=false) Long userId ,HttpServletRequest request) throws Exception {
+			 @RequestParam(value="userId", required=false) Long userId ,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId ,HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	 OrgLocations orgLocations= (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 	 	 
 	 	 User primaryUser = userService.getUserById(userId);
 	 	 if(null != primaryUser){
@@ -357,16 +359,15 @@ public class RegistrationRestController {
 	 
 	 
 	
-	  @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	   @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
-	   public String updateOrgModules(@RequestParam(value="orgId", required=false) Long orgId,
+	   public String updateOrgModules(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
 				@RequestParam(value="submodulesList", required=false) String submodulesList ,
 			    @RequestParam(value="actionIds", required=false) String actionIds,
 			    HttpServletRequest request) throws Exception {
 		
-		     OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
-		     Org org = orgLocations.getOrg();
+		     OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			 String orgModules = "";
 			 StringBuilder strbul = null; 
 			 StringBuilder strbul2 = null; 

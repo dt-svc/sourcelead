@@ -129,7 +129,9 @@ public class OrgLocations implements Serializable{
     @Column(name = "ABOUT_COMPANY")
 	@Type(type="text")
 	private String orgDescription;
-       
+    
+    @Column(name = "IS_PRIMARY")
+	private String isPrimary;
     
     @Transient
     private String orgName;
@@ -163,6 +165,12 @@ public class OrgLocations implements Serializable{
     
     @Transient
     private String createdDateStr;
+    
+    @Transient
+    private String orgLocationUserFirstName;
+    
+    @Transient
+    private String orgLocationUserLastName;
     
 
 	public Timezone getTimezone() {
@@ -492,6 +500,36 @@ public class OrgLocations implements Serializable{
 	public void setCreatedDateStr(String createdDateStr)
 	{
 		this.createdDateStr = createdDateStr;
+	}
+
+	public String getIsPrimary()
+	{
+		return isPrimary;
+	}
+
+	public void setIsPrimary(String isPrimary)
+	{
+		this.isPrimary = isPrimary;
+	}
+
+	public String getOrgLocationUserFirstName()
+	{
+		return orgLocationUserFirstName;
+	}
+
+	public void setOrgLocationUserFirstName(String orgLocationUserFirstName)
+	{
+		this.orgLocationUserFirstName = orgLocationUserFirstName;
+	}
+
+	public String getOrgLocationUserLastName()
+	{
+		return orgLocationUserLastName;
+	}
+
+	public void setOrgLocationUserLastName(String orgLocationUserLastName)
+	{
+		this.orgLocationUserLastName = orgLocationUserLastName;
 	}
 
 	

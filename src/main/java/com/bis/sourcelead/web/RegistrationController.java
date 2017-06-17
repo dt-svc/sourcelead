@@ -274,7 +274,7 @@ public class RegistrationController {
 				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			
-				OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(orgId);
 
 				List<Modules> modulesList = null;
 				List<Modules> requirementSubModulesList = null;

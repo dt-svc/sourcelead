@@ -418,6 +418,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setOrgLocationName(registration.getCompanyName());
 		orgLocations.setWebsite(registration.getWebsite());
 		
+		if(isNullOrEmpty(registration.getRegisteredOrgId())){
+			orgLocations.setIsPrimary(Constants.YES);
+		}
+		
 		String orgModules = "";
 		
 		if(!isNullOrEmpty(subModules)){

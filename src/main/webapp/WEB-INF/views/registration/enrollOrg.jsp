@@ -80,7 +80,7 @@
 			<div class="form-group">
 			  <label class="col-md-3">Address</label>
 				<div class="col-md-9">
-				   <textarea name="address" rows="5" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"></textarea>
+				 <input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>
 				</div>
 			 </div>
        

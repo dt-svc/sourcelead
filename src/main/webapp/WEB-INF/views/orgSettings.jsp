@@ -347,6 +347,11 @@ function cancelOrgImg(){
 	                			<div id="registeredOrgLocationSummary"></div>  
 	                			</form:form>
 	                			
+	                			<form:form class="login-form clearfix"  id="editPrimaryUser_form"  name="editPrimaryUser_form" method="post" >
+	                			<div id="editPrimaryUserLoading"></div>
+	                			<div id="editPrimaryUserContactDiv"></div>
+	                			</form:form>
+	                			
 	                			</div>
 	
 			</div>
@@ -735,6 +740,7 @@ function loadSignature(){
 	document.getElementById("settings").style.display="none";
 
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 
 	 $("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 
 		 $.ajax({
@@ -806,7 +812,8 @@ function loadSignature(){
 									labelText = '${SourceLeadWeb_user.firstName}'
 								}
 								
-							}else if(opt.labelName == 'Designation'){
+							}
+							 else if(opt.labelName == 'Designation'){
 								if('${SourceLeadWeb_designation}' != null){
 									labelText = '${SourceLeadWeb_designation}';
 								}
@@ -860,7 +867,7 @@ function loadSignature(){
 									labelText = '${SourceLeadWeb_website}';
 								}
 								
-							}
+							} 
 							
 							readonly = "readonly";
 						}
@@ -1188,6 +1195,7 @@ function loadRegisteredOrgs(){
      $("#locationOrgsName").html("Locations List");
      $("#registeredOrgs").empty();
      $("#registeredOrgLocationSummary").empty();
+     $("#editPrimaryUserContactDiv").empty();
      
      
      
@@ -1275,6 +1283,7 @@ function getOrgLocationDetails(orgLocationId){
 	$("#locationOrgsName").html("Location Details");
     $("#registeredOrgs").empty();
     $("#registeredOrgLocationSummary").empty();
+    $("#editPrimaryUserContactDiv").empty();
     document.getElementById("orgsList").style.display=""; 
     
     var sourceleadUrl = '${sourceleadUrl}';
@@ -1287,6 +1296,11 @@ function getOrgLocationDetails(orgLocationId){
     		 
     		    var json = JSON.parse(data);
     	        var result = '';
+    	        var editPrimaryUser = '';
+    	        
+    	        if(json.orglocationUserStatus == 'NOT_LOGGEDIN'){
+    	        	editPrimaryUser = '<a id="edit-user" href="javascript:editPrimaryUser('+orgLocationId+');"><i class="fa fa-edit" title="Edit Contact Details"></i></a>';
+    	        }
     	        
     	        result = result +'<div class="col-xs-12 col-sm-3 col-md-3">';
     	        result = result +'<div class="well well-sm text-center">';
@@ -1298,6 +1312,8 @@ function getOrgLocationDetails(orgLocationId){
     	        result = result +'<div class="col-xs-12 col-sm-9 col-md-9">';
     	        result = result +'<div class="row mrng0">';
     	        result = result +'<div class="col-md-6">';
+    	        
+    	        result = result +'<div id="editUserContact"></div>';
     								
 	    	        result = result +'<div class="form-group">';
 	    	        result = result +'<div class="col-md-12 clearfix">';
@@ -1353,7 +1369,7 @@ function getOrgLocationDetails(orgLocationId){
     	        result = result +'<div class="col-md-6">';
 	    	        result = result +'<div class="form-group">';
 	    	        result = result +'<div class="col-md-12 clearfix">';
-	    	        result = result +'<h5>Contact Details&nbsp;</h5>';
+	    	        result = result +'<h5>Contact Details&nbsp;'+editPrimaryUser+'</h5>';
 	    	        result = result +'</div>';
 	    	        result = result +'</div>';
 	    	        
@@ -1376,7 +1392,7 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
     	            result = result +'</div>';
     	            
-    	            /* result = result +'<div class="col-md-6">';
+    	             result = result +'<div class="col-md-6">';
 	    	            
     	            	result = result +'<div class="form-group">';
 		    	        result = result +'<div class="col-md-12 clearfix">';
@@ -1402,9 +1418,18 @@ function getOrgLocationDetails(orgLocationId){
 			    	        	        
 			    	        	        result = result +'<ul class="list-unstyled pull-left tree-checkbox">';
 			    	        	        if(json.subModulesList != null && json.subModulesList != "" && json.subModulesList != 'undefined' && json.subModulesList.length > 0){
-			    	        	        	
-			    	        	        	for(var i=0; i<json.modulesList.length; i++){
-			    	        	        		
+			    	        	        	for(var j=0; j<json.subModulesList.length; j++){
+			    	        	        		var subModules = json.subModulesList[j];
+			    	        	        		    result = result +'<label>';
+			    	        	        	        if(subModules.isModuleConfigured == 'Y'){
+				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" id="submodules"  checked="checked" disabled="disabled">';
+				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
+			    	        	        			} 
+			    	        	        	        if(subModules.isModuleConfigured != 'Y'){
+				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" value="'+subModules.id+'"  id="submodules"  name="submodulesList[]">';
+				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
+			    	        	        			} 
+			    	        	        	        result = result +'</label><br/>';
 			    	        	        	}
 			    	        	        }
 			    	        	        
@@ -1412,20 +1437,41 @@ function getOrgLocationDetails(orgLocationId){
 			    	        	 	}
 			    	        	 
 			    	        	 result = result +'</li>';
+			    	        	 
+			    	        	 
+			    	        	 
+			    	        	 
+			    	        	 result = result +'<li>';
+			    	             result = result +'<label class="mr pull-left">';
+				    	             if(module.id != "1" && module.isModuleConfigured  == "Y"){
+				    	            	 result = result +'<input type="checkbox" id="isRecruiting"  checked="checked" disabled="disabled" >';
+				    	            	 result = result +'<p>'+module.moduleName+'</p>';
+				    	             }
+				    	             
+				    	             if(module.id != "1" && module.isModuleConfigured  != "Y"){
+				    	            	 result = result +'<input type="checkbox" id="isRecruiting" value="'+module.id+'"  name="modulesList[]"  >';
+				    	            	 result = result +'<p>'+module.moduleName+'</p>';
+				    	             } 
+			    	             result = result +'</label>';
+			    	             result = result +'</li>';
+			    	        	 
 			    	        	 result = result +'</ul>';
 				    	        	
 				    	        	
 				    	        }
 		    	        }
-		    	       
-		    	        
-		    	        
 		    	        
 		    	        result = result +'</div>';
 		    	        result = result +'</div>';
 		    	        
+		    	        result = result +'<div class="clearfix">';
+		    	        result = result +'<div class="pull-right">';
+		    	        result = result +'<input type="button" value="Upgrade" onclick="updateModules('+orgLocationId+');" id="save_button" class="btn btn-primary mr">';
+		    	        result = result +'<input type="button" value="Cancel" class="btn btn-default" onClick="loadRegisteredOrgs();">';
+		    	        result = result +'</div>';
+		    	        result = result +'</div>';
 		    	        
-    	            result = result +'</div>'; */
+    	                result = result +'</div>'; 
     	       	
     	       	    	
     	    	$("#loading").removeAttr("style"); 
@@ -1433,6 +1479,39 @@ function getOrgLocationDetails(orgLocationId){
     	 }
     }); 
 }
+</script>
+
+
+<script type="text/javascript">
+	function updateModules(orgLocationId) {
+		
+			var sourceleadUrl ='${sourceleadUrl}'; 
+			
+			 var modulesList = [];
+			 $("input[name='modulesList[]']:checked").each( function (i) {
+				modulesList[i] = $(this).val();
+			});
+			 
+			
+			 var submodulesList = [];
+			 $("input[name='submodulesList[]']:checked").each( function (i) {
+				submodulesList[i] = $(this).val();
+			});
+			 
+	 	 
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({ 
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
+		        success: function(result) {
+		        	if((result == 'success')){
+		        		loadRegisteredOrgs();
+			        } 
+		        },
+		 });  
+		  
+	}
+
 </script>
 
 
@@ -1466,6 +1545,7 @@ function createOrg(){
 	$("#locationOrgsName").html("Add New Location");
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
+	$("#editPrimaryUserContactDiv").empty();
 	 
 	var result = '';
 	
@@ -1523,7 +1603,7 @@ function createOrg(){
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Address</label>';
 	            result = result +'<div class="col-md-9">';
-	            result = result +'<textarea name="address" rows="5" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"></textarea>';
+	            result = result +'<input type="text" name="address" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"/>';
 	            result = result +'</div>';
 	            result = result +'</div>';
      
@@ -1990,6 +2070,141 @@ function getUserDetails(){
 
 
 
+<script>
+function editPrimaryUser(orgLocationId){
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#registeredOrgLocationSummary").empty();
+	$("#editPrimaryUserContactDiv").empty();
+	$("#locationOrgsName").html("Edit Contact Details");
+	
+	$.ajax({
+    	type: "GET",
+    	url : sourceleadUrl+"/getPrimaryUserContactDetailsByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+        	if(data != null && data != ''){
+        		var json = JSON.parse(data);
+        		
+        		var result = '';
+        				
+        		result = result + '<div class="user_summary_edit_cta">';
+        		result = result + '<label>First Name<span class="text-danger">&nbsp; *</span></label>';
+        		result = result + '<input type="text" value="'+json['orgLocationUserFirstName']+'"  id="primaryUserFirstName" name="primaryUserFirstName" field-name="First Name" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100" class="form-control">';
+        		result = result + '</div>';
+        				
+        		result = result + '<div class="user_summary_edit_cta">';
+        		result = result + '<label>Last Name</label>';
+        		result = result + '<input type="text"value="'+json['orgLocationUserLastName']+'" id="primaryUserLastName"  name="primaryUserLastName" field-name="Last Name" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" class="form-control" data-validation-optional="true">';
+        		result = result + '</div>';
+        				
+        		result = result + '<div class="user_summary_edit_cta" id="primaryUserEmailDiv">';
+        		result = result + '<label>Email<span class="text-danger">&nbsp; *</span></label>';
+        		result = result + '<input type="text" value="'+json['orglocationUserEmail']+'" name="primaryUserEmail" id="primaryUserEmail" field-name="Email" onblur="validatePrimaryUserEmail()" data-validation="required validate_Space validate_email validate_length length2-100"  class="form-control">';
+        		result = result + '</div>';
+        				
+        		result = result + '<div class="user_summary_edit_cta" id="phoneNumberDiv">';
+        		result = result + '<label>Phone Number</span></label>';
+        		result = result + '<input type="text" value="'+json['orglocationUserPhone']+'" name="mobilePhone" id="mobilePhone" field-name="Phone Number"  data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" class="form-control">';
+        		result = result + '</div>';
+        				
+        				 
+        		result = result + '<div class="clearfix"></div>';
+        		result = result + '<div class="user_summary_edit_cta pull-right">';
+        		result = result + '<input class="us-btn" value="Save" id="update_primaryuser" onclick="validatePrimaryUserEmail();savePrimaryUserDetails('+orgLocationId+','+json['orglocationUserId']+');" type="button" > <input class="us-btn us-btn_a" value="Cancel" onClick="getOrgLocationDetails('+orgLocationId+');" type="button">';
+        		result = result + '</div>';
+        		
+        		$("#editPrimaryUserContactDiv").append(result);
+        		
+        	}
+		 }
+    });
+	
+	
+}
+</script>
+
+<script>
+function validatePrimaryUserEmail(){
+	var email = document.getElementById("primaryUserEmail").value;
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId = '${registeredOrgLocationId}';
+	if(null != email  && '' != email){
+		$("#update_primaryuser").attr("disabled", "disabled");
+		$.ajax({
+		   	type: "GET",
+		    url: sourceleadUrl+"/validateOrgPrimaryUserEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&orgLocationId="+orgLocationId,
+		       success: function(data) {
+		    		if(data != null && data != ''){
+		    			if(data == 'Existed Email'){
+			        		  $('#primaryUserEmailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#primaryUserEmail").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("primaryUserEmail").setAttribute('record-exist','yes');
+							  document.getElementById("primaryUserEmail").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#primaryUserEmail').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#primaryUserEmailDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#update_primaryuser").removeAttr("disabled");
+			        	}
+					     
+		    			
+			       	}
+		    	   
+		      },
+		       
+		}); 
+	}
+	
+}
+</script>
+
+<script type="text/javascript">
+ function savePrimaryUserDetails(orgLocationId,userId) {
+	 var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+		   }; 
+	 if ($('#editPrimaryUser_form').validate(false, validationSettings)){ 
+		 
+		 var frm = $('#editPrimaryUser_form').serializeFormJSON();
+         var con = JSON.stringify(frm);
+         con = con.replace(/[{}]/g, "");
+         var jsonData = encodeURIComponent(con);
+         var sourceleadUrl ='${sourceleadUrl}';
+         
+         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+          
+          $.ajax({
+             type: "POST",
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
+             success: function(data) {
+                 if(data == "success"){
+                	 $("#editPrimaryUserLoading").removeAttr("style");
+                	 getOrgLocationDetails(orgLocationId);
+                 }
+                 
+             }
+             });  
+         
+		 
+		 return true;
+	 }else{
+		 return false;
+	 }
+    }
+ 
+ $('body').on('blur', '#editPrimaryUser_form', function() {
+		$("#editPrimaryUser_form").showHelpOnFocus();;
+		$("#editPrimaryUser_form").validateOnBlur(false, validationSettings);  
+	});
+</script>
+
+
+
 <script type="text/javascript">
 var validationSettings = {
         errorMessagePosition : 'element',
@@ -2062,6 +2277,7 @@ function cancelBtn(){
 }
 
 </script>
+
 
 <script type="text/javascript">
         var validationSettings = {

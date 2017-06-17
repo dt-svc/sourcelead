@@ -583,6 +583,31 @@ public class OrgSettingsRestController {
 			return resultJson;
 
 	}
+    
+    
+    
+    @RequestMapping(value = "/getPrimaryUserContactDetailsByOrgLocationId", method = RequestMethod.GET)
+	public String getPrimaryUserContactDetailsByOrgLocationId(HttpServletRequest request,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+    	    
+    	    String resultJson = null;
+    	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");		
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			
+			if(null != orgLocations && null != orgLocations.getUser()){
+				
+				orgLocations.setOrgLocationUserFirstName(orgLocations.getUser().getFirstName());
+				orgLocations.setOrgLocationUserLastName(orgLocations.getUser().getLastName());
+				orgLocations.setOrglocationUserEmail(orgLocations.getUser().getEmail());
+				orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
+				orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
+			}
+			
+			resultJson = toJSON(orgLocations);
+			return resultJson;
+
+	}
+    
    
    private String toJSON(Object obj){
        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

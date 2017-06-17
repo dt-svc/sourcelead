@@ -212,4 +212,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception{
 		return orgLocationsDao.getAllRegisteredOrgLocationsByOrgId(orgId,orgLocationId);
 	}
+
+	@Override
+	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception
+	{
+		return orgLocationsDao.getPrimaryOrgLocationByOrgId(orgId);
+	}
 }

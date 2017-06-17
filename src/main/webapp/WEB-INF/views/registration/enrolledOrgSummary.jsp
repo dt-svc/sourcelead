@@ -506,11 +506,13 @@ function removeAddUserPopUp(){
          var userId = '${orgloc.user.id}';
          var orgId = '${orgId}';
          
+         var orgLocationId = '${registeredOrgLocationId}'
+         
         $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
           
           $.ajax({
              type: "POST",
-             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&json="+jsonData,
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
              success: function(data) {
                  if(data == "success"){
                 	 location.replace(sourceleadUrl+"/enrolledOrgSummary?orgId="+orgId);
@@ -855,6 +857,7 @@ function pagination(){
 		var sourceleadUrl = '${sourceleadUrl}';
 			var sourceleadUrl ='${sourceleadUrl}'; 
 			var orgId = '${orgId}';
+			var orgLocationId = '${registeredOrgLocationId}';
 			
 			 var modulesList = [];
 			 $("input[name='modulesList[]']:checked").each( function (i) {
@@ -871,7 +874,7 @@ function pagination(){
 			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgId="+orgId,
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
 		        success: function(result) {
 		        	if((result == 'success')){
 		        		location.replace(sourceleadUrl+"/enrolledOrgSummary?orgId="+orgId);
