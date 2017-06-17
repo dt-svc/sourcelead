@@ -707,7 +707,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	{
 		String submissionStatus = null;
 		if ("submitted".equalsIgnoreCase(expenseStatus)) {
-			submissionStatus = "SUBMITTEDFORAPPROVAL";
+			submissionStatus = "SUBMITTED";
 		}
 		if ("approved".equalsIgnoreCase(expenseStatus)) {
 			submissionStatus = "APPROVED";
