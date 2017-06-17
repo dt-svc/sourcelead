@@ -133,9 +133,13 @@ public class Contracts {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
 	private RequirementSubmission requirementSubmission;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="CANDIDATE_ID")     
+	private Candidate candidate;
 	
 	@Column(name = "HOURS_PER_WEEK")
 	private String hoursPerWeek;
@@ -285,7 +289,25 @@ public class Contracts {
 	@Transient
 	private String empName;
 	
+	@Transient
+	private String tempUUID;
 	
+	@Transient
+	private Long approverUserId;
+	
+	@Transient
+	private Long ownerUser;
+	
+	public String getTempUUID()
+	{
+		return tempUUID;
+	}
+
+	public void setTempUUID(String tempUUID)
+	{
+		this.tempUUID = tempUUID;
+	}
+
 	public String getEmpName()
 	{
 		return empName;
@@ -965,4 +987,35 @@ public class Contracts {
 	public void setContractWith(String contractWith) {
 		this.contractWith = contractWith;
 	}
+
+	public Long getApproverUserId()
+	{
+		return approverUserId;
+	}
+
+	public void setApproverUserId(Long approverUserId)
+	{
+		this.approverUserId = approverUserId;
+	}
+
+	public Long getOwnerUser()
+	{
+		return ownerUser;
+	}
+
+	public void setOwnerUser(Long ownerUser)
+	{
+		this.ownerUser = ownerUser;
+	}
+
+	public Candidate getCandidate()
+	{
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
+	}
+
 }

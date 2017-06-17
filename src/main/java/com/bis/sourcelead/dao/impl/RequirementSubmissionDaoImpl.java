@@ -2384,11 +2384,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
+		public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType,OrgLocations loginOrgLocation) {
 			 Session session = this.sessionFactory.getCurrentSession();
 			 String subQuery = "";
 			 if(sowType.equalsIgnoreCase("Client SOW")){
-		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}else if(sowType.equalsIgnoreCase("Vendor SOW")){
 		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
 		 		}
@@ -2434,6 +2434,23 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:vendorLocationID and rs.requirement.id = :requirementId and rs.sourceSubmission <> NULL";
 			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("requirementId", requirementId).setLong("vendorLocationID", vendorLocationID).setCacheable(true).list();
 		    return subList;
+		}
+
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation)
+		{
+			 Session session = this.sessionFactory.getCurrentSession();
+			 String subQuery = "";
+			 if(sowType.equalsIgnoreCase("Client SOW")){
+		 			subQuery = "and (rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 		}else if(sowType.equalsIgnoreCase("Vendor SOW") || sowType.equalsIgnoreCase("Full time offer")){
+		 			subQuery = "and (rs.vendorLocationId <> null or ((rs.candidate.designationType = 'C2C' or rs.candidate.designationType = 'C2C-1099') and (rs.candidate.orgRelationId <> null ))) and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'OFFERACCEPTED') ";
+		 		}
+			 String leftJoins = "left join fetch rs.requirement req left join fetch rs.candidate left join fetch rs.candidate.orgRelationId left join fetch rs.sourceSubmission left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId left join fetch rs.recruiterUserId ";
+			 String query = "from RequirementSubmission rs "+leftJoins+" where rs.orgLocations.id = :loginOrgLocationId "+subQuery+" ORDER BY rs.id DESC";
+			 List<RequirementSubmission>  offerAcceptedCandidatesList = session.createQuery(query).setLong("loginOrgLocationId", loginOrgLocation.getId()).setCacheable(true).list();
+		     return offerAcceptedCandidatesList;
 		}
 		
   }

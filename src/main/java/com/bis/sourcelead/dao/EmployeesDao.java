@@ -40,5 +40,7 @@ public interface EmployeesDao {
 	
 	public List<Employees> getEmployeesByLocationId(Long orgLocationsId) throws Exception;
 
+	public Employees getEmployeByUserIdAndOrgRelationId(Long userId, Long orgRelationId)throws Exception;
+
 	
 }

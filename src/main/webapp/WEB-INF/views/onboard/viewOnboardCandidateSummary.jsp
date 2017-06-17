@@ -384,23 +384,35 @@ function getTemplateContractsDocumentsDetails(){
 		        	var json = JSON.parse(data);
 		        	var result = "";
 		        	result = result +'	 <div class="row">                                                       ';
-		        	for (var i = 0; i < json.length; i++) { 
-               		 var report = json[i]; 
-               		 
-               		
-						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						if(report.documentStatus == 'NEW'){
-							result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
-						}
-						else if(report.documentStatus == 'PENDING'){
-							result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
-						}else if(report.documentStatus == 'ACCEPTED'){
-							result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+		        	if(json.length > 0){
+			        	for (var i = 0; i < json.length; i++) { 
+	               		 var report = json[i]; 
+							result = result +'    <div class="col-md-2 text-center mb10">                                ';
+							result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							
-						}
-						result = result +'    </div>                                                                 ';
+							if(report.documentStatus != 'ACCEPTED'){
+								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>';
+							}else if(report.documentStatus == 'ACCEPTED'){
+								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedDocFileName+'">'+report.uploadedDocFileName+'</p>';
+								
+							}
+							
+							
+							if(report.documentStatus == 'NEW'){
+								result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+							}
+							else if(report.documentStatus == 'PENDING'){
+								result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+							}else if(report.documentStatus == 'ACCEPTED'){
+								result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+								
+							}
+							result = result +'    </div>                                                                 ';
+			        	}
+		        	}else{
+		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+		        		result = result +'<p>No Documents Found</p>';
+		        		result = result +'    </div> ';
 		        	}
 					result = result +'    </div>                                                                 ';
 					 $("#onboardTasksListViewId").empty();
@@ -426,26 +438,36 @@ function getTemplateFormsDocumentsDetails(){
 		        	var json = JSON.parse(data);
 		        	var result = "";
 		        	result = result +'	 <div class="row">';
-		        	for (var i = 0; i < json.length; i++) { 
-               		 var report = json[i]; 
-               		 
-               		
-						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						
-						if(report.documentStatus == 'NEW'){
-							result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
-						}
-						else if(report.documentStatus == 'PENDING'){
-							result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
-						}else if(report.documentStatus == 'ACCEPTED'){
-							result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+		        	
+		        	if(json.length > 0){
+			        	for (var i = 0; i < json.length; i++) { 
+	               		 var report = json[i]; 
+							result = result +'    <div class="col-md-2 text-center mb10">                                ';
+							result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
 							
-						}
-						
-						
-						result = result +'    </div>';
+							
+							if(report.documentStatus != 'ACCEPTED'){
+								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>';
+							}else if(report.documentStatus == 'ACCEPTED'){
+								result = result +'<p class="small mt tbldata-dotdot-100" title="'+report.uploadedDocFileName+'">'+report.uploadedDocFileName+'</p>';
+								
+							}
+							
+							if(report.documentStatus == 'NEW'){
+								result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+							}
+							else if(report.documentStatus == 'PENDING'){
+								result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+							}else if(report.documentStatus == 'ACCEPTED'){
+								result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+								
+							}
+							result = result +'    </div>';
+			        	}
+		        	}else{
+		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+		        		result = result +'<p>No Documents Found</p>';
+		        		result = result +'    </div> ';
 		        	}
 					result = result +'    </div>';
 					 $("#onboardTasksListViewId").empty();
@@ -470,24 +492,31 @@ function getTemplatePolicyDocumentsDetails(){
 		        	var json = JSON.parse(data);
 		        	var result = "";
 		        	result = result +'	 <div class="row">                                                       ';
-		        	for (var i = 0; i < json.length; i++) { 
-               		 var report = json[i]; 
-               		 
-               		
-						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						if(report.documentStatus == 'NEW'){
-							result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
-						}
-						else if(report.documentStatus == 'PENDING'){
-							result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
-						}else if(report.documentStatus == 'ACCEPTED'){
-							result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
-							
-						}
-						result = result +'    </div>                                                                 ';
+		        	if(json.length > 0){
+		        		for (var i = 0; i < json.length; i++) { 
+		               		 var report = json[i]; 
+		               		 
+		               		
+								result = result +'    <div class="col-md-2 text-center mb10">                                ';
+								result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+								result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+								if(report.documentStatus == 'NEW'){
+									result = result +'<i class="fa fa-arrow-right text-info permission"></i> </div></a>';
+								}
+								else if(report.documentStatus == 'PENDING'){
+									result = result +'<i class="fa fa-clock-o text-info permission"></i> </div></a>';
+								}else if(report.documentStatus == 'ACCEPTED'){
+									result = result +'<i class="fa fa-check text-success permission"></i> </div></a>';
+									
+								}
+								result = result +'    </div>                                                                 ';
+				        	}
+		        	}else{
+		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+		        		result = result +'<p>No Documents Found</p>';
+		        		result = result +'    </div> ';
 		        	}
+		        	
 					result = result +'    </div>                                                                 ';
 					 $("#onboardTasksListViewId").empty();
                 	 $("#policiesDivId").empty();
@@ -512,15 +541,21 @@ function getTemplateSupportingDocumentsDetails(){
 		        	var json = JSON.parse(data);
 		        	var result = "";
 		        	result = result +'	 <div class="row">                                                       ';
+		        	if(json.length > 0){
 		        	for (var i = 0; i < json.length; i++) { 
-               		 var report = json[i]; 
-               		 
-               		
-						result = result +'    <div class="col-md-2 text-center mb10">                                ';
-						result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
-						result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
-						result = result +'        <i class="fa fa-info-circle text-info permission"></i> </div></a>         ';
-						result = result +'    </div>                                                                 ';
+	               		 var report = json[i]; 
+	               		 
+	               		
+							result = result +'    <div class="col-md-2 text-center mb10">                                ';
+							result = result +'      <a href=\"'+sourceleadUrl+'/downloadTemplateDocument?documentUUID='+report.documentUUID+'\"><div class="uploaded_file"> <i class="fa fa-file-text-o fa-4x"></i>  ';
+							result = result +'        <p class="small mt tbldata-dotdot-100" title="'+report.fileName+'">'+report.fileName+'</p>                        ';
+							result = result +'        <i class="fa fa-info-circle text-info permission"></i> </div></a>         ';
+							result = result +'    </div>                                                                 ';
+			        	}
+		        	}else{
+		        		result = result +'    <div class="col-md-2 text-center mb10">  ';
+		        		result = result +'<p>No Documents Found</p>';
+		        		result = result +'    </div> ';
 		        	}
 					result = result +'    </div>                                                                 ';
 					 $("#onboardTasksListViewId").empty();

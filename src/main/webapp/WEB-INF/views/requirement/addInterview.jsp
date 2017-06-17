@@ -18,7 +18,9 @@ padding:0!important;
 .fullCount, .particalCount {
 	display: none;
 }
-
+ul.tagit li.tagit-choice-editable {
+z-index: 9 !important;
+}
 
 </style>
 <!-- For add New Interview -->
@@ -119,7 +121,7 @@ function addInterview(requirementId){
 	result = result + '<div class="mb10 mt clearfix" id="notifyOthersDiv" style="display: none;">';
 	result = result + '<div class="col-md-6">';
 	result = result + '<input type="hidden" class="form-control input-sm mt10" value="" id="notificationToOthersEmails" name="notificationToOthersEmails">';
-	result = result + '<ul id="mails" class="form-control" ></ul>';
+	result = result + '<ul id="mails" class="form-control"></ul>';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -600,7 +602,8 @@ function getNotifyToOtersVal(){
         
         var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
         
-        if(selectedInterviewApplicants <= 50){
+        
+        if(selectedInterviewApplicants <= 50 && selectedInterviewApplicants != 0){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
 	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -616,7 +619,11 @@ function getNotifyToOtersVal(){
 			    		pipelineList(requirementId);
 		        },
 		    });     
-        }else{
+        }
+        else if(selectedInterviewApplicants == 0){
+        	alertInterviewMessage("<b>Select an applicant before submission</b>");
+        }
+        else{
         	alertInterviewMessage("<b>Selected Applicants should not more than 50</b>");
         }
    	    
@@ -636,7 +643,7 @@ function getNotifyToOtersVal(){
   <script type="text/javascript">
 function alertInterviewMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='project_inn_mask' id='IntePop'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -644,7 +651,7 @@ function alertInterviewMessage(message){
 	result = result +"	</div>";
 	$("#interviewPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$("#IntePop").fadeIn(200);
 
 }
 </script>
@@ -652,7 +659,7 @@ function alertInterviewMessage(message){
 <script type="text/javascript">
 function cancelInterviewPopup(){
 	$("#interviewPopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$("#IntePop").fadeOut(200);
 }
 </script>
   

@@ -501,7 +501,10 @@ public class ContractRestController {
 	@RequestMapping(value = "/getSubmissionsForSOWByRequirementId", method = RequestMethod.GET)
 	public @ResponseBody String getSubmissionsForSOWByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, @RequestParam(value = "sowType", required = false) String sowType, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
-		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType);
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
+		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
 		if(requirementSubmissionsList.size() > 0){
 			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 				StringBuffer candidateName = new StringBuffer(); 
@@ -718,6 +721,7 @@ public class ContractRestController {
 		 	
 		 	if(null != contract.getContractsTemplate()){
 				contract.setTemplateName(contract.getContractsTemplate().getTemplateName());
+				contract.setTempUUID(contract.getContractsTemplate().getTemplateUUID());
 		 	}
 		 	
 		 	if(null != contract.getRequirementSubmission()){
@@ -744,6 +748,14 @@ public class ContractRestController {
 				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
 				endDateInTimezone = standardFormat.format(endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
+			}
+			
+			if (null != contract && null != contract.getJoinDate()) {
+				String endTimeStr = Constants.TZ_DF.format(contract.getJoinDate());  
+				String endDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), endTimeStr);
+				Date endconverteDate = TZ_DF_TS.parse(endDateInTimezone);
+				endDateInTimezone = standardFormat.format(endconverteDate);
+				contract.setJoinedDateStr(endDateInTimezone);
 			}
 			
 			if(null != contract && null != contract.getCreatedDate()){
@@ -907,20 +919,24 @@ public class ContractRestController {
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
 		 	// updating parent contract end date if get the contract i is child contract
-		 	if(null != contracts.getParentContractId().getId()){
-		 		Contracts parentContracts = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
-		 		parentContracts.setEndDate(convertedEndDate);
-		 		parentContracts.setUpdatedDate(new Date());
-		 		parentContracts.setUpdatedBy(user.getUserCode());
-				contractsTemplateDao.saveNewContract(parentContracts);
-		 	}
+			if(contracts.getParentContractId()!=null){
+			 	if(null != contracts.getParentContractId().getId()){
+			 		Contracts parentContracts = contractsTemplateService.getContractById(contracts.getParentContractId().getId());
+			 		parentContracts.setEndDate(convertedEndDate);
+			 		parentContracts.setUpdatedDate(new Date());
+			 		parentContracts.setUpdatedBy(user.getUserCode());
+					contractsTemplateDao.saveNewContract(parentContracts);
+			 	}
+			}
 		 // updating child contract end date if get the parent contract
-		 	if(null == contracts.getParentContractId().getId()){
+		 	if(null == contracts.getParentContractId()){
 		 		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-		 		childContarct.setEndDate(convertedEndDate);
-		 		childContarct.setUpdatedDate(new Date());
-		 		childContarct.setUpdatedBy(user.getUserCode());
-				contractsTemplateDao.saveNewContract(childContarct);
+		 		if(null != childContarct){
+			 		childContarct.setEndDate(convertedEndDate);
+			 		childContarct.setUpdatedDate(new Date());
+			 		childContarct.setUpdatedBy(user.getUserCode());
+					contractsTemplateDao.saveNewContract(childContarct);
+		 		}
 		 	}
 		 // updating contract end date 
 		 	contracts.setEndDate(convertedEndDate);

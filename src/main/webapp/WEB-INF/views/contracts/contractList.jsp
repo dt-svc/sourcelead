@@ -156,7 +156,7 @@ padding: 2px 300px 2px 0px;
             
 	</div>
 	<div id="loading"></div>
-    <div class="clients_wrap_table repoPositiNoCount datatable_filter">
+    <div class="clients_wrap_table repoPositiNoCount">
     <div id="vendorContractsList"  class=" overflow-data" ></div>
      <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
      <div id="applicantsContractsList"  class=" overflow-data" style="display: none"></div>
@@ -287,37 +287,63 @@ function PopUp(contractUUID){
 			if(json.templateName != null && 'Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i  title="View Template" class="fa fa-eye" onclick="previewTemplatePDF(\''+json.contractsTemplate.templateUUID+'\', \''+json.contractsTemplate.templateName+'\')"></i></a></div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i  title="View Template" class="fa fa-eye" onclick="previewTemplatePDF(\''+json.tempUUID+'\', \''+json.templateName+'\')"></i></a></div>';
 				result = result +	'	</div>';
 			}
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
-			result = result +	'	</div>';
-			
-			if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
+			if(null != json.startDateStr && "" != json.startDateStr && 'undefined' != json.startDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-				result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-				result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
-				result = result +	'	</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
 				result = result +	'	</div>';
 			}
-			else{
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-				result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
-				result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
-				result = result +	'	</div>';
-				result = result +	'	</div>';
-			}
-	
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
-			result = result +	'	</div>';
+			if(null != json.joinedDateStr && "" != json.joinedDateStr && 'undefined' != json.joinedDateStr){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Join Date</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.joinedDateStr+'</div>';
+				result = result +	'	</div>';
+			}
+			if(null != json.workLocation && "" != json.workLocation && 'undefined' != json.workLocation){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Work Location</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.workLocation+'</div>';
+				result = result +	'	</div>';
+			}
+			
+			if(json.contractType!="Full time offer"){
+				if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
+					result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
+					result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+					result = result +	'	</div>';
+					result = result +	'	</div>';
+				}
+				else{
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
+					result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
+					result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+');"></i></div>';
+					result = result +	'	</div>';
+					result = result +	'	</div>';
+				}
+				
+			}
+			if(json.contractType =="Full time offer"){
+				if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
+					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+					result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
+					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingRateType+' '+json.billingAmount+' / '+json.billingRatePer+'</div>';
+					result = result +	'	</div>';
+				}
+			}
+			
+			if(null != json.ownerName && "" != json.ownerName && 'undefined' != json.ownerName){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
+				result = result +	'	</div>';
+			}
 			
 			if(null != json.approverUserName && "" != json.approverUserName && 'undefined' != json.approverUserName){
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
@@ -326,14 +352,14 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			}
 			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
+			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Applicant Name</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.applicantName+'</div>';
@@ -358,24 +384,25 @@ function PopUp(contractUUID){
 				}
 			}
 			
-			if(null != json.initiatorType && "Client" == json.initiatorType){
+			if(null != json.initiatorType && "Client" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.initiatorType && "Vendor" == json.initiatorType){
+			if(null != json.initiatorType && "Vendor" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
 				result = result +	'	</div>';
 			}
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
-			result = result +	'	</div>';
+			if(json.contractType!="Full time offer"){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
+				result = result +	'	</div>';
+			}
 			
 			if(null != json.stateJurisdiction && "" != json.stateJurisdiction && 'undefined' != json.stateJurisdiction){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
@@ -384,7 +411,7 @@ function PopUp(contractUUID){
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.description && "" != json.description && 'undefined' != json.description){
+			if(null != json.description && "" != json.description && 'undefined' != json.description && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8"><i style="display: inline-block; font-style:normal; float:left;">:</i><span style=" padding: 0px 0px 0px 3px; display: inline-block; width:90%; float:left;">'+json.description+'</span></div>';
@@ -393,7 +420,7 @@ function PopUp(contractUUID){
 			
 			result = result +	'<div class="clearfix"/>';
 			
-		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA"){
+		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA" && json.contractType!="Full time offer"){
 			result = result +	'<h4>Billing Details</h4>';
 			
 			if(null != json.typeOfContract && json.contractType.includes("SOW")){
@@ -914,7 +941,6 @@ function listContractsPagination(){
 		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
-    	"pageLength":true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -939,7 +965,7 @@ function vendorListContractsPagination(){
             }
         ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -955,7 +981,7 @@ function appListContractsPagination(){
     $('#contractListTableDraft2').DataTable( { 
     	
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1048,7 +1074,7 @@ function preparedContractListWFA(data){
 		         result = result + '<div class="tbldata-dotdot-vsm">';
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		  
-	        		  if('${SourceLeadWeb_user.id}' == report.approverUser.id){
+	        		  if('${SourceLeadWeb_user.id}' == report.approverUserId){
 	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
 	      	         }
 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -1083,8 +1109,8 @@ function preparedContractListWFA(data){
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
 	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '     <th>Req Docs</th>'; 
 // 	opt = opt + '    <th>Contract Type</th>';
 	opt = opt + '    <th>Approver</th>';
 	opt = opt + '    <th>Action</th>';
@@ -1151,7 +1177,7 @@ function preparedContractListWFA(data){
 	         
 	         
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-        		  if('${SourceLeadWeb_user.id}' == output.approverUser.id){
+        		  if('${SourceLeadWeb_user.id}' == output.approverUserId){
      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
      	         }
      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -1245,7 +1271,7 @@ function preparedContractListWFA(data){
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-					if('${SourceLeadWeb_user.id}' == output.approverUser.id){
+					if('${SourceLeadWeb_user.id}' == appReport.approverUserId){
 					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+appReport.id+',\'REJECTED\');"></i></div></div>';
 					}
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1337,7 +1363,7 @@ function vendorListContractsPaginationWFA(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1365,7 +1391,7 @@ function appListContractsPaginationWFA(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1680,7 +1706,7 @@ function vendorListContractsPaginationWTS(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1789,10 +1815,9 @@ function preparedContractListWTV(data){
 		         result = result + '<td>';
 		         result = result + '<div><span>'+report.invoiceFrequency+'</span></div>';
 		         result = result + '</td>';
-		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
-		         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+ 		         if('${SourceLeadWeb_user.id}' == report.ownerUser){
 		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	            	 }
@@ -1866,11 +1891,11 @@ function preparedContractListWTV(data){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+ 	         if('${SourceLeadWeb_user.id}' == output.ownerUser){
 	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		     		}
-	         }
+ 	         }
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
      		'</sec:authorize>';
@@ -1951,7 +1976,7 @@ function preparedContractListWTV(data){
 		         
 		         res = res + '<td>';//Waiting to be signed
 		         res = res + '<div class="tbldata-dotdot_80">';
-		         if('${SourceLeadWeb_user.id}' == report.ownerUserId.id){
+ 		         if('${SourceLeadWeb_user.id}' == appReport.ownerUser){
 		        	 if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
 			        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 			     		}
@@ -2033,7 +2058,7 @@ function vendorListContractsPaginationWTV(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2060,7 +2085,7 @@ function applicantsContractsPaginationWTV(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2361,7 +2386,7 @@ function vendorListContractsPaginationFinalize(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2660,7 +2685,7 @@ function vendorListContractsPaginationEXP(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -2993,7 +3018,7 @@ function vendorListContractsPaginationREJ(){
 	            }
 	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -3333,16 +3358,13 @@ function CountClick(contractUUID,parentId){
 							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
-						  }else{
-							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
-							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
-							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
-							  result = result +'	             </span> </label>                                                                                                                 ';
-							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
-							  result = result +'				</div>                                                                                                                            ';
+						  }
+						  else{
+							  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
+							  result = result +'	       <label class="text-center">--</label>                                                 ';
 							  result = result +'	       </div>			                                                                                                                  ';
-					  }
+							  $("#saveAction").empty(); 
+						  }
 				  }
 				  else{
 					  $("#saveAction").empty(); 
@@ -3432,7 +3454,7 @@ function editClo(contractId){
      url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
      success :function(data) {
     	 $("#endVal").empty();
-		  $("#endVal").append(endDate);
+		  $("#endVal").append(": "+endDate);
      	 //   $("#tr"+id).empty();
     },
 });  

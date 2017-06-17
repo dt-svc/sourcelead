@@ -12,7 +12,10 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +68,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -933,6 +939,43 @@ public class UserRestController {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
 		}
 		
+		 
+		 @RequestMapping(value = "/rest/", method = RequestMethod.GET)
+		 public void authenticate() {
+		 }
+		 
+		 @RequestMapping(value = "/restAuthenticate", method = RequestMethod.POST)
+		 public @ResponseBody String restAuthenticate(HttpServletRequest request) throws Exception {
+		 
+			 String json = IOUtils.toString(request.getInputStream());
+			 if(StringUtils.isNotEmpty(json)){
+				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
+				 JSONObject jsonObject = new JSONObject(json);
+				 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
+				    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))
+				 { 		
+					 Client client = Client.create();
+					 WebResource webResource = client.resource(sourceleadUrl+"/rest/");
+					 ClientResponse response = webResource.header("X-Username", jsonObject.getString("username")).header("X-Password", jsonObject.getString("password")).accept("application/json").get(ClientResponse.class);
+					 int status = response.getStatus();
+					 if(status == HttpServletResponse.SC_OK){
+						 return "Valid User";
+					 }
+					 else if(status == HttpServletResponse.SC_NOT_FOUND){
+						 return "User Not Registered";
+					 }
+					 else if(status == HttpServletResponse.SC_MOVED_TEMPORARILY){
+						 return "In-Active User";
+					 }
+					 else if(status == HttpServletResponse.SC_UNAUTHORIZED){
+						 return  "Invalid UserName Or Password";
+					 }
+				 }
+			 }
+			 return "Invalid Json String";
+		 }
+		 
+		 
 		/**
 		 * to assign the project to the particular user
 		 * @param json
