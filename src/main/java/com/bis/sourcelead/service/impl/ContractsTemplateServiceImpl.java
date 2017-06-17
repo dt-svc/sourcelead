@@ -247,6 +247,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
 			contracts.setRequirementSubmission(rs);
+			contracts.setCandidate(rs.getCandidate());			
 		}
 		
 		if("Client SOW".equals(jsonObj.getString("contractType")) || "Vendor SOW".equals(jsonObj.getString("contractType"))){
@@ -688,10 +689,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-				}else if(null != contracts.getOwnerUserId().getLastName()){
-					ownerName.append(contracts.getOwnerUserId().getFirstName());	
 				}else{
-					ownerName.append("---");
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
 			}else{
 				ownerName.append("---");
@@ -768,10 +767,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-				}else if(null != contracts.getOwnerUserId().getLastName()){
-					ownerName.append(contracts.getOwnerUserId().getFirstName());	
 				}else{
-					ownerName.append("---");
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
 			}else{
 				ownerName.append("---");
@@ -780,8 +777,6 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
 					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
-				}else if(null != contracts.getContactUser().getLastName()){
-					vendorName.append(contracts.getContactUser().getFirstName());	
 				}else{
 					vendorName.append("---");
 				}
@@ -845,10 +840,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
 					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
-				}else if(null != contracts.getOwnerUserId().getLastName()){
-					ownerName.append(contracts.getOwnerUserId().getFirstName());	
 				}else{
-					ownerName.append("---");
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
 			}else{
 				ownerName.append("---");
@@ -1545,6 +1538,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(jsonObj.has("submissionOffersList") && null != jsonObj.getString("submissionOffersList") && !"".equals(jsonObj.getString("submissionOffersList"))){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(jsonObj.getString("submissionOffersList")));
 			contracts.setRequirementSubmission(rs);
+			contracts.setCandidate(rs.getCandidate());	
 		}
 		
 		if(jsonObj.has("hoursPerWeek") && null != jsonObj.getString("hoursPerWeek") && !"".equals(jsonObj.getString("hoursPerWeek"))){
@@ -1911,6 +1905,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				if (null != contracts.getOwnerUserId()) {
+					contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 					if (null != contracts.getOwnerUserId().getFirstName()
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
@@ -1969,6 +1964,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setParentId("--");
 				}
 				if (null != contracts.getApproverUser()) {
+					contracts.setApproverUserId(contracts.getApproverUser().getId());
 					if (null != contracts.getApproverUser().getFirstName()
 							&& null != contracts.getApproverUser().getLastName()) {
 						StringBuilder sb = new StringBuilder();
@@ -1995,6 +1991,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
 				if (null != contracts.getOwnerUserId()) {
+					contracts.setOwnerUser(contracts.getOwnerUserId().getId());
 					if (null != contracts.getOwnerUserId().getFirstName()
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
@@ -2056,6 +2053,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					contracts.setParentId("");
 				}
 				if (null != contracts.getApproverUser()) {
+					contracts.setApproverUserId(contracts.getApproverUser().getId());
 					if (null != contracts.getApproverUser().getFirstName()
 							&& null != contracts.getApproverUser().getLastName()) {
 						StringBuilder sb = new StringBuilder();
