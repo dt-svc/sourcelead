@@ -278,4 +278,16 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return orgLocationsList;
 	}
 
+	@Override
+	@Transactional
+	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from OrgLocations orgLocations left join fetch orgLocations.user where orgLocations.org.id = :orgId and orgLocations.id <> :orgLocationId ";
+		
+		List orgList = session.createQuery(query).setLong("orgId", orgId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return orgList;
+	}
+
 }

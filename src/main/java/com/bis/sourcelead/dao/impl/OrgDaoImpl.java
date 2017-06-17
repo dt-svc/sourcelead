@@ -310,5 +310,28 @@ public class OrgDaoImpl implements OrgDao {
 		         return org1;
 	}
 
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isLoginUserIsSuperAdmin(Long userId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean isSuperAdmin = false;
+		List<Org> org = new ArrayList<Org>();
+		try{
+			String query = ("from Org org where org.user.id = :userId");
+			org = session.createQuery(query.toString()).setLong("userId", userId).list();
+			if (null != org && !org.isEmpty() && org.size() > 0) {
+				isSuperAdmin = true;
+			} 
+		}catch(Exception e){
+			StringBuilder message= new StringBuilder(MessageFormat.format(statusDelete,"ORG"));
+			throw new SourceLeadObjectNotFoundException(message.toString());	
+		}
+		
+		return isSuperAdmin;
+	}
+
 }
 

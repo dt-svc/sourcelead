@@ -50,7 +50,7 @@
              <div class="form-group">
 	            <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9 dropdown-select">
-	              <select class="form-control" name="country" id="countryListId" field-name="Country" data-validation="required" value="${country}" onchange="getTimezonesList();" >
+	              <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country" data-validation="required" value="${country}"  >
 	                <option value="" >Select Location</option>
 	                <option value="Australia">Australia</option>
 	                <option value="France">France</option>
@@ -62,6 +62,27 @@
 	               <span class="hidden">Country</span>
 	            </div>
             </div>
+            
+            <div class="form-group">
+				<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9">
+				     <select  class="chosen-select form-control" name="state" id="state" field-name="State" data-validation="required" > </select>
+				</div>
+			 </div>
+							
+			<div class="form-group">
+				<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9">
+				     <select  class="chosen-select form-control" name="city" id="city" field-name="City" data-validation="required" ></select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+			  <label class="col-md-3">Address</label>
+				<div class="col-md-9">
+				   <textarea name="address" rows="5" id="address" field-name="Address" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control"></textarea>
+				</div>
+			 </div>
        
                <div class="form-group">
 	            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
@@ -71,36 +92,6 @@
                      <span class="hidden">Time Zone</span>
 				</div>
 				</div>
-       
-          <div class="form-group">
-            <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
-            <div class="col-md-9 checkBox">
-            <div class="clearfix reMar">
-	            <c:forEach var="module" items="${modulesList}">
-	            <ul class="list-unstyled pull-left">
-	                <li>
-	                 <label class="mr pull-left">
-						<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}
-					  </label>
-					   <ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">
-                    	<li>
-                    	 <c:forEach var="submodules" items="${requirementSubModulesList}">
-                    	  <label>
-                    		 <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >
-                              ${submodules.moduleName}
-                         </label><br/>
-                    	 </c:forEach>
-		                </li>
-                    </ul> 
-					 </li>
-				</ul>
-			    </c:forEach>
-			    </div>
-            <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 			    
-            </div>
-          </div> 
-          
           
           </div>
           
@@ -139,6 +130,34 @@
 	            </div>
             </div>
             
+            <div class="form-group">
+            <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
+            <div class="col-md-9 checkBox">
+            <div class="clearfix reMar">
+	            <c:forEach var="module" items="${modulesList}">
+	            <ul class="list-unstyled pull-left">
+	                <li>
+	                 <label class="mr pull-left">
+						<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}
+					  </label>
+					   <ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">
+                    	<li>
+                    	 <c:forEach var="submodules" items="${requirementSubModulesList}">
+                    	  <label>
+                    		 <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >
+                              ${submodules.moduleName}
+                         </label><br/>
+                    	 </c:forEach>
+		                </li>
+                    </ul> 
+					 </li>
+				</ul>
+			    </c:forEach>
+			    </div>
+            <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
+            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 			    
+            </div>
+          </div> 
           
           
 </div>
@@ -160,8 +179,74 @@
 </section>
       <!-- Content Area Ends--> 
 
-      <jsp:include page="../masterFooter.jsp" />
-      
+<jsp:include page="../masterFooter.jsp" />
+
+
+<script>
+function getStates(){
+	var countryName = $("#country").val();
+	
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---Select State---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            getCities();
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---Select State---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#city').empty();
+    	$('#city').append('<option value="">---Select City---</option>');
+        $('#city').trigger("chosen:updated");
+	}
+}
+</script> 
+
+
+<script>
+function getCities(){
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	
+	
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#city').empty();
+	        	$('#city').append('<option value="">---Select City---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#city').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#city').empty();
+    	$('#city').append('<option value="">---Select City---</option>');
+    	$('#city').trigger("chosen:updated");
+	}
+}
+</script>
+
       
       
   <script type="text/javascript">
@@ -496,7 +581,7 @@ function validateCompanyEmail(){
 <script>
 function getTimezonesList(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var country = $('#countryListId').val();
+	var country = $('#country').val();
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
@@ -538,7 +623,17 @@ $(function(){
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
+	       $("#country").chosen();
+	       $("#state").chosen();
+	       $("#city").chosen();
 	       
+	       $("#country").on('change', function (e) {
+	    	   getStates();
+	    	   getTimezonesList();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
 	      
 	       $('.chosen-select').each(function() {
 				var $this = $(this);

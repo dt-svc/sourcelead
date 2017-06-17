@@ -211,6 +211,22 @@ public class ClientServiceImpl implements ClientService{
 				
 				orgRelationsList =  orgRelationsService.orgRelationsListByJson(jsonObj, clientOrgLocations, orgLocations, user.getUserCode(),responderType);
 				clientOrgLocations.setOrgRelationsList(orgRelationsList);
+				
+				if(jsonObj.has("orgName")){
+					clientOrgLocations.setOrgLocationName(jsonObj.getString("orgName"));
+				}
+				if(responderType.equalsIgnoreCase("Client")){
+					clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
+				}
+				else if(responderType.equalsIgnoreCase("Vendor")){
+					clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_ATS));
+				}
+				if(jsonObj.has("companyWebsite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("companyWebsite")));
+				}
+				if(jsonObj.has("webSite")){
+					org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
+				}
 				orgLocationsList.add(clientOrgLocations);
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);
@@ -428,12 +444,12 @@ public class ClientServiceImpl implements ClientService{
 			}
 			org.setOrgType("Guest");
 			
-			if(responderType.equalsIgnoreCase("Client")){
+			/*if(responderType.equalsIgnoreCase("Client")){
 				org.setModulesId(Integer.toString(Constants.MODULE_VMS));
 			}
 			else if(responderType.equalsIgnoreCase("Vendor")){
 				org.setModulesId(Integer.toString(Constants.MODULE_ATS));
-			}
+			}*/
 			
 			org.setOrgCode(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			org.setCreatedDate(commonUtil.currentDate());
@@ -485,7 +501,7 @@ public class ClientServiceImpl implements ClientService{
 						 }
 					}
 					
-					List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActions(org);
+					List<SourceleadActions> sourceLeadActionsList =  sourceleadActionsService.getAllSourceleadActionsByOrgLocationId(orgLocations);
 					for(SourceleadActions actions : sourceLeadActionsList){
 						if(roleActonsList.contains(actions.getId())){
 							 strbul.append(actions.getId()).append(",");

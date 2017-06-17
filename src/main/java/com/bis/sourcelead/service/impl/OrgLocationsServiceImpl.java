@@ -92,7 +92,11 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		orgLocations.setPhone(orgSettings.getPhone());
 		orgLocations.setFax(orgSettings.getFax());
 		orgLocations.setTimezone(timezone);
+	    orgLocations.setOrgLocationName(orgSettings.getCompanyName());
+        orgLocations.setOrgLocationAddress(orgSettings.getAddress());
+        orgLocations.setOrgDescription(orgSettings.getAboutCompany());
 		orgLocationsDao.updateOrgLocations(orgLocations);
+		
 		
 		return orgLocations;
 	}
@@ -202,5 +206,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception
 	{
 		return orgLocationsDao.getAllRegisteredOrgLocations();
+	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception{
+		return orgLocationsDao.getAllRegisteredOrgLocationsByOrgId(orgId,orgLocationId);
 	}
 }
