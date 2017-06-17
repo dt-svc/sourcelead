@@ -39,10 +39,13 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -54,7 +57,9 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
@@ -92,6 +97,9 @@ public class ClientRestController {
 
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 
 	@Autowired
 	HttpServletRequest request;
@@ -135,6 +143,9 @@ public class ClientRestController {
   
 	@Autowired
 	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	RequirementReportService requirementReportService;
 	
 	/**
 	 * Handles to get Orgs
@@ -743,6 +754,9 @@ public class ClientRestController {
 		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
 		for (Requirement req : reqList) {
 			req.setPostedDateStr(Constants.DF_DMY.format(req.getCreatedDate()));
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int submitToClient = 0;
 			if (req.getManagerUserId() != null) {
 				String managerFirstName = "";
 				if (StringUtils.isNotEmpty(req.getManagerUserId().getFirstName())) {
@@ -754,13 +768,59 @@ public class ClientRestController {
 				}
 				StringBuilder name = new StringBuilder();
 				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
-				int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "INTERVIEWED");
-				int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), "OFFERED");
-				int bacOutCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(orgLocations.getId(), req.getId(), Constants.BACKOUT_STATUS);
-
-				req.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
-				req.setNoOfOfferedApplicants(String.valueOf(offeredCount));
-				req.setNoOfBackOutApplicants(String.valueOf(bacOutCount));
+				
+				List<RequirementSubmission> subList = requirementSubmissionService.getSubmissionsByRequirementId(req.getId(), loginUser, orgLocations);
+				for(RequirementSubmission reqsub : subList){
+					RequirementSubmission sourceSub = requirementSubmissionService.getClientRequierementSubmission(reqsub.getId());
+					int vendorInterviewsCount = 0;
+					int vendorOfferedCount = 0;
+					int vendorSubmittoClientCount = 0;
+					if(sourceSub != null && sourceSub.getRequirement() != null ){
+						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(sourceSub.getId(),null,null);
+						for(RequirementSubmissionHistory subhistory : requirementSubmissionHistoryList){
+							// iterate here for interview and offer stages and get the counts
+							
+							if (ApplicantSubmissionStatus.INTERVIEW.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorInterviewsCount++;
+							}
+							else if (ApplicantSubmissionStatus.OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorOfferedCount++;
+							}else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(subhistory.getToStage())){
+								vendorSubmittoClientCount++;
+							}
+							
+						}
+						interviewsSum = interviewsSum + vendorInterviewsCount;
+						offeredSum = offeredSum + vendorOfferedCount;
+						submitToClient = submitToClient + vendorSubmittoClientCount;
+						
+					}else{
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(reqsub.getId());
+						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(submission.getId(),null,null);
+						for(RequirementSubmissionHistory subhistory : requirementSubmissionHistoryList){
+							// iterate here for client interview and client offer and get the counts
+							
+							if (ApplicantSubmissionStatus.INTERVIEW.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorInterviewsCount++;
+							}
+							else if (ApplicantSubmissionStatus.OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorOfferedCount++;
+							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equalsIgnoreCase(subhistory.getToStage())){
+								vendorSubmittoClientCount++;
+							}
+							
+						}
+						interviewsSum = interviewsSum + vendorInterviewsCount;
+						offeredSum = offeredSum + vendorOfferedCount;
+						submitToClient = submitToClient + vendorSubmittoClientCount;
+					}
+				}
+				
+				req.setNoOfInterviewedApplicants(String.valueOf(interviewsSum));
+				req.setNoOfOfferedApplicants(String.valueOf(offeredSum));
+				req.setNoOfSubmittedApplicants(String.valueOf(submitToClient));
+			   /*RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndUserId(req.getId(), loginUser.getId());
+				requirementSubmissionHistoryService.getCandidatesCountBySubmissionIdandRequirementId(rs.getId(), rs.getSubmissionStatus().toString());*/
 			}
 		}
 		resultJson = commonUtil.toJSON(reqList);
