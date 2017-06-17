@@ -17,6 +17,16 @@
 	       		expensesPagination();
 	       		/* localStorage.removeItem("myExpensesListGrid"); */
 	       		localStorage.setItem("myExpensesListGrid","");
+	       		$(":checkbox[value=ALL]").prop("checked",false);
+	       		if("draft" == $("#countType").val()){
+	       			$(":checkbox[value=DRAFT]").prop("checked",true);
+	       		}else if("submitted" == $("#countType").val()){
+	       			$(":checkbox[value=SUBMITTED]").prop("checked",true);
+	       		}else if("approved" == $("#countType").val()){
+	       			$(":checkbox[value=APPROVED]").prop("checked",true);
+	       		}else if("rejected" == $("#countType").val()){
+	       			$(":checkbox[value=REJECTED]").prop("checked",true);
+	       		}
 			}else{
 				getExpensesList();
 			}
