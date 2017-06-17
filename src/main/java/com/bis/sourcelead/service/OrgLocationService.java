@@ -44,5 +44,7 @@ public interface OrgLocationService {
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
 	
 	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception;
+	
+	public OrgLocations getPrimaryOrgLocationByOrgId(Long orgId) throws Exception;
 
 }

@@ -227,6 +227,7 @@ public class ClientServiceImpl implements ClientService{
 				if(jsonObj.has("webSite")){
 					org.setWebSite(convertWebsite(jsonObj.getString("webSite")));
 				}
+				clientOrgLocations.setIsPrimary(Constants.YES);
 				orgLocationsList.add(clientOrgLocations);
 				org.setOrgLocationsList(orgLocationsList);
 				orgService.addOrganization(org);

@@ -129,7 +129,9 @@ public class OrgLocations implements Serializable{
     @Column(name = "ABOUT_COMPANY")
 	@Type(type="text")
 	private String orgDescription;
-       
+    
+    @Column(name = "IS_PRIMARY")
+	private String isPrimary;
     
     @Transient
     private String orgName;
@@ -492,6 +494,16 @@ public class OrgLocations implements Serializable{
 	public void setCreatedDateStr(String createdDateStr)
 	{
 		this.createdDateStr = createdDateStr;
+	}
+
+	public String getIsPrimary()
+	{
+		return isPrimary;
+	}
+
+	public void setIsPrimary(String isPrimary)
+	{
+		this.isPrimary = isPrimary;
 	}
 
 	
