@@ -175,10 +175,10 @@ $.ajax({
 	 var data = json[i];
 	result = result+' <tr id = "row'+data.expenseId.id+'">';
 	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+data.expensesUserid+'" alt="Profile Image" class="img-circle img-responsive">';
-	result = result+' <span>';
+	result = result+' <span title="'+data.expenseEmpUserFirstNameLastName+'">';
 	result = result+' <b>'+data.expenseEmpUserFirstNameLastName+'</b>';
-	result = result+' <b>'+data.expenseEmpUserEmail+'</b>';
-	result = result+' <b>'+data.expensesEmployeeUserId+'</b>';
+	result = result+' <b title="'+data.expenseEmpUserEmail+'">'+data.expenseEmpUserEmail+'</b>';
+	result = result+' <b title="'+data.expensesEmployeeUserId+'">'+data.expensesEmployeeUserId+'</b>';
 	result = result+' </span></div>';
 	result = result+' </td>';
 	if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
@@ -188,7 +188,7 @@ $.ajax({
 	}
 	
 	if(data.expenseId.clientName != null && data.expenseId.clientName != '' && data.expenseId.clientName !='undefined'){
-		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span><br><span>'+data.expenseId.clientName+'</span></div></td>';	
+		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span><br><span title="'+data.expenseId.clientName+'">'+data.expenseId.clientName+'</span></div></td>';	
 	}else{
 		result = result+' <td><div><span>'+data.expensesProjectName+'</span></div></td>';	
 	}
@@ -237,7 +237,7 @@ $.ajax({
 	 	 result = result+" </div>";
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
-         result = result+" <div class='sm text-center'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
+         result = result+" <div class='sm text-center' title='"+data.actionPerformedBy+"'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){
     	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
