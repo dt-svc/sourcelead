@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -150,6 +151,18 @@ public class OrgLocations implements Serializable{
     
     @Transient
     private String orgCode;
+    
+    @Transient
+    private List<Modules> modulesList;
+    
+    @Transient
+    private List<Modules> subModulesList;
+    
+    @Transient
+    private String timeZoneName;
+    
+    @Transient
+    private String createdDateStr;
     
 
 	public Timezone getTimezone() {
@@ -440,5 +453,47 @@ public class OrgLocations implements Serializable{
 	{
 		this.orgCode = orgCode;
 	}
+
+	public List<Modules> getModulesList()
+	{
+		return modulesList;
+	}
+
+	public void setModulesList(List<Modules> modulesList)
+	{
+		this.modulesList = modulesList;
+	}
+
+	public List<Modules> getSubModulesList()
+	{
+		return subModulesList;
+	}
+
+	public void setSubModulesList(List<Modules> subModulesList)
+	{
+		this.subModulesList = subModulesList;
+	}
+
+	public String getTimeZoneName()
+	{
+		return timeZoneName;
+	}
+
+	public void setTimeZoneName(String timeZoneName)
+	{
+		this.timeZoneName = timeZoneName;
+	}
+
+	public String getCreatedDateStr()
+	{
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr)
+	{
+		this.createdDateStr = createdDateStr;
+	}
+
+	
 	
 }
