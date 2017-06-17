@@ -11,6 +11,16 @@
 	       		pagination();
 	       		/* localStorage.removeItem("empExpensesListGrid"); */
 	       		localStorage.setItem("empExpensesListGrid","");
+	       		$(":checkbox[value=ALL]").prop("checked",false);
+	       		if("reopen" == $("#countType").val()){
+	       			$(":checkbox[value=REOPENED]").prop("checked",true);
+	       		}else if("submitted" == $("#countType").val()){
+	       			$(":checkbox[value=SUBMITTEDFORAPPROVAL]").prop("checked",true);
+	       		}else if("approved" == $("#countType").val()){
+	       			$(":checkbox[value=APPROVED]").prop("checked",true);
+	       		}else if("rejected" == $("#countType").val()){
+	       			$(":checkbox[value=REJECTED]").prop("checked",true);
+	       		}
 			}else{
 				getExpensesApprovalDataList();
 			}

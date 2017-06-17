@@ -136,7 +136,7 @@ public class ExpencesController {
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
-		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
+		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
 	    model.addObject("expensesCategoryList", expensesCategoryList);
 		
 	    
@@ -235,7 +235,7 @@ public class ExpencesController {
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
-		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
+		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
 	    model.addObject("expensesCategoryList", expensesCategoryList);
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);

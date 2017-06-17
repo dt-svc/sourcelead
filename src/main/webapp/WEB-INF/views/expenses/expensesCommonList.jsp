@@ -27,6 +27,7 @@ function myExpensesListByStage(expenseStatus){
 				result = result +"</tr>";
 				result = result +"</thead>";
 				result = result +"<tbody>";
+				result = result+' <input type="text" hidden value="'+expenseStatus+'" id="countType" readonly="readonly">';
 				 if(data !=''){
 					 var json = JSON.parse(data);
 		        	  for (var i = 0; i < json.length; i++) { 
@@ -123,6 +124,7 @@ function employeeExpensesListByStage(expenseStatus){
 	    		result = result+' </tr>';
 	    		result = result+' </thead>';
 	    		result = result+' <tbody>';
+	    		result = result+' <input type="text" hidden value="'+expenseStatus+'" id="countType" readonly="readonly">';
 	    		if(data !=''){
 	    		var json = JSON.parse(data);
 	    		 for (var i = 0; i < json.length; i++) { 

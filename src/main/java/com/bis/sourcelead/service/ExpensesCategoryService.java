@@ -11,6 +11,8 @@ public interface ExpensesCategoryService {
 
 	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndCategoryId(Long orgLocationId);
 	
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status);
+	
 	/**
 	 * @param jsonObject
 	 * @param orgLocationId
