@@ -730,12 +730,14 @@ public class RegistrationRestController {
 
 		String resultJson;
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgLocations> orgLocationsList = new ArrayList<>();
 
 		ArrayList<OrgLocations> regOrgsLocationsList = new ArrayList<OrgLocations>();
 
 		try {
-			orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsByOrgId(org.getId());
+			orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsByOrgId(org.getId(),loginOrgLocation.getId());
+			if(null != orgLocationsList && orgLocationsList.size() > 0){
 			for(OrgLocations orgLocations : orgLocationsList){
 				if(null != orgLocations.getUser()){
 					
@@ -758,6 +760,7 @@ public class RegistrationRestController {
 				
 				regOrgsLocationsList.add(orgLocations);
 			}
+		  }
 		} catch (Exception e) {
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}

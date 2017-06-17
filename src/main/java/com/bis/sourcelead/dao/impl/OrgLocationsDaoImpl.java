@@ -280,13 +280,13 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 
 	@Override
 	@Transactional
-	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId) throws Exception
+	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "from OrgLocations orgLocations left join fetch orgLocations.user where orgLocations.org.id = :orgId ";
+		String query = "from OrgLocations orgLocations left join fetch orgLocations.user where orgLocations.org.id = :orgId and orgLocations.id <> :orgLocationId ";
 		
-		List orgList = session.createQuery(query).setLong("orgId", orgId).setCacheable(true).list();
+		List orgList = session.createQuery(query).setLong("orgId", orgId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return orgList;
 	}
 

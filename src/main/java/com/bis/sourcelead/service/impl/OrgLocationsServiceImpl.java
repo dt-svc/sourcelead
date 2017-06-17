@@ -209,7 +209,7 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	}
 
 	@Override
-	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId) throws Exception{
-		return orgLocationsDao.getAllRegisteredOrgLocationsByOrgId(orgId);
+	public List<OrgLocations> getAllRegisteredOrgLocationsByOrgId(Long orgId,Long orgLocationId) throws Exception{
+		return orgLocationsDao.getAllRegisteredOrgLocationsByOrgId(orgId,orgLocationId);
 	}
 }

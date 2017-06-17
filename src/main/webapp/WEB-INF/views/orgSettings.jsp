@@ -334,7 +334,7 @@ function cancelOrgImg(){
                                 <button class="btn btn-default btm-sm" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-building"></i>
 	                                         &nbsp;&nbsp;Orgs List</button>
                                 <button class="btn btn-default btm-sm" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-building"></i>
-                                    &nbsp;&nbsp;Enroll Org</button>
+                                    &nbsp;&nbsp;Add Location</button>
                                </div>
 	                            </div>
 	                			<div class="clearfix form-area form-horizontal mt">
@@ -1249,7 +1249,7 @@ function loadRegisteredOrgs(){
 				   }
 	   		    }
 	    	else{
-	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Orgs List is Empty</h3></div>";
+	    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-building'></i><h3>Orgs List is Empty</h3></div>";
 	    		$("#loading").removeAttr("style");
 	    		$('#registeredOrgs').append(result);
 	    	} 
@@ -1849,7 +1849,8 @@ var validationSettings = {
                 			  
                   	success: function(result) {
 			        	if((result == 'orgList')){
-			        		location.replace(sourceleadUrl+"/orgSettings");  
+			        		//location.replace(sourceleadUrl+"/orgSettings");  
+			        		loadRegisteredOrgs();
 			        	}
 			        	else if((result == 'Invalid Sub Modules')){
 			        		$("#loading").removeAttr("style");
