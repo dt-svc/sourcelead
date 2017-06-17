@@ -178,12 +178,7 @@ function vendorRequirementListInclude(orgRelationID){
 			                   }
 			                
 			            	//result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
- 							if(result.noOfSubmittedApplicants != null && result.noOfSubmittedApplicants != '' && result.noOfSubmittedApplicants != 'undefined'){
-			            	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
-			            	
- 							}else{
-	 						result = result + '</div>';
- 							}
+ 							result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorInterviewsCount+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorOfferedCount+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorBackoutCount+"</div></td>";
@@ -223,7 +218,9 @@ function vendorRequirementListInclude(orgRelationID){
             		$("#rejectedCountId").html(rejectedCount);
             		$("#closedCountId").html(closedCount);
 				    $("#vendorRequirmentListDiv").append(result); 
-				    contactRequirmentlistPagination();
+				    contactRequirmentlistPagination();                     
+				    
+				    
 			    	    
 	        
 	        },
