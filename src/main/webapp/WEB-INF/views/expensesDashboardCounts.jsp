@@ -2,6 +2,7 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <jsp:include page="../views/expenses/expensesCommonList.jsp" />
 
 <script> 
@@ -15,8 +16,15 @@ $(document).ready(function(){
           <h4 class="clearfix">Expenses &nbsp;&nbsp;</h4>
           <div class="clearfix dashboard-data mt">
             <ul class="nav nav-tabs">
+            
+            <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES')">
               <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" href="#today-myExpense">My Expenses</a></li>
+            </sec:authorize> 
+             
+             <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
               <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" href="#prev-employeeExpense">Employee Expenses</a></li>
+             </sec:authorize>
+              
             </ul>
             <div class="tab-content clearfix">
               <div id="today-req" class="tab-pane fade in active">
