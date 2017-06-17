@@ -31,8 +31,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -40,13 +42,16 @@ import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadSignature;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.OrgSettings;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadSignatureService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
@@ -85,6 +90,12 @@ public class OrgSettingsRestController {
 	
 	@Autowired
 	SourceleadSignatureService sourceleadSignatureService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	ModulesService modulesService;
 	
    @PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
    @RequestMapping(value = "/saveOrgSettings" , method = RequestMethod.POST)
@@ -495,6 +506,83 @@ public class OrgSettingsRestController {
 		return "success";
 	}
 	 
+    
+    
+    @RequestMapping(value = "/getOrgLocationDetails")
+	public String getOrgLocationDetails(HttpServletRequest request,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception {
+    	    
+    	    String resultJson = null;
+    	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");		
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			
+			if(null != orgLocations && null != orgLocations.getUser()){
+				
+				StringBuilder userName = new StringBuilder();
+				if(!isNullOrEmpty(orgLocations.getUser().getLastName())){
+					userName = userName.append(orgLocations.getUser().getFirstName()).append(" ").append(orgLocations.getUser().getLastName());
+				}else{
+					userName = userName.append(orgLocations.getUser().getFirstName());
+				}
+				orgLocations.setOrglocationUserName(userName.toString());
+				orgLocations.setOrglocationUserEmail(orgLocations.getUser().getEmail());
+				orgLocations.setOrglocationUserPhone(orgLocations.getUser().getMobilePhone());
+				orgLocations.setOrglocationUserId(orgLocations.getUser().getId());
+				orgLocations.setOrgCode(org.getOrgCode());
+				orgLocations.setTimeZoneName(orgLocations.getTimezone().getTimeZoneId());
+				
+				orgLocations.setCreatedDateStr(Constants.DMY.format(orgLocations.getCreatedDate()));
+				
+				UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(),orgLocations.getId());
+				if(null != userRole){
+					orgLocations.setOrglocationUserStatus(userRole.getUserState().toString());
+				}
+			}
+			
+
+			List<Modules> modulesList = null;
+			List<Modules> requirementSubModulesList = null;
+			
+			if(null != orgLocations.getModulesId()){
+				ArrayList<Modules> registeredModulesList = new ArrayList<Modules>();
+				ArrayList<Modules> registeredSubModulesList = new ArrayList<Modules>();
+				modulesList = modulesService.getSourceLeadModules();
+				requirementSubModulesList = modulesService.getRequirementSubModules();
+				
+				List<Long> orgModulesList = new ArrayList<Long>();
+				 for (String s : orgLocations.getModulesId().split(",")){
+					 orgModulesList.add(Long.parseLong(s));
+				 }
+				 
+				 for(Modules modules : modulesList){
+					 if((orgModulesList.contains(modules.getId()))){
+						 modules.setIsModuleConfigured(Constants.YES);
+					 }else{
+						 modules.setIsModuleConfigured(Constants.NO);
+					 }
+					 registeredModulesList.add(modules);
+				 }
+				 
+				 for(Modules modules : requirementSubModulesList){
+					 if(orgModulesList.contains(modules.getId())){
+						 modules.setIsModuleConfigured(Constants.YES);
+					 }else{
+						 modules.setIsModuleConfigured(Constants.NO);
+					 }
+					 registeredSubModulesList.add(modules);
+				 }
+				 
+				 
+				 orgLocations.setModulesList(registeredModulesList);
+				 orgLocations.setSubModulesList(requirementSubModulesList);
+			}
+			
+			
+		
+			resultJson = toJSON(orgLocations);
+			return resultJson;
+
+	}
    
    private String toJSON(Object obj){
        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

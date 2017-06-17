@@ -333,14 +333,20 @@ function cancelOrgImg(){
                                <div class="pull-right">
                                 <button class="btn btn-default btm-sm" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-building"></i>
 	                                         &nbsp;&nbsp;Locations List</button>
-                                <button class="btn btn-default btm-sm" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-building"></i>
+                                &nbsp;&nbsp;<button class="btn btn-default btm-sm" onclick="createOrg();" id="enrollNewOrgLocation"><i class="fa fa-building"></i>
                                     &nbsp;&nbsp;Add Location</button>
                                </div>
 	                            </div>
 	                			<div class="clearfix form-area form-horizontal mt">
+	                			
 	                			<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
 	                			<div id="registeredOrgs"></div>  
 	                			</form:form>
+	                			
+	                			<form:form class="login-form clearfix"  id="update_module_form"  name="update_module_form" method="post" >
+	                			<div id="registeredOrgLocationSummary"></div>  
+	                			</form:form>
+	                			
 	                			</div>
 	
 			</div>
@@ -1181,6 +1187,8 @@ function loadRegisteredOrgs(){
      
      $("#locationOrgsName").html("Locations List");
      $("#registeredOrgs").empty();
+     $("#registeredOrgLocationSummary").empty();
+     
      
      
      var sourceleadUrl = '${sourceleadUrl}';
@@ -1226,7 +1234,7 @@ function loadRegisteredOrgs(){
 	       	    	result = result +"</div>";
 	       	    	result = result +"</div>";
 	       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
-	       	    	result = result +"<h4 style='margin:0px 0px 5px 0px'><a href='#' title='"+orgLoc.orgLocationName+"'>"+orgLoc.orgLocationName+" </a> </h4>";
+	       	    	result = result +"<h4 style='margin:0px 0px 5px 0px'><a href='javascript:void(0)' title='"+orgLoc.orgLocationName+"' onClick='getOrgLocationDetails("+orgLoc.id+")'>"+orgLoc.orgLocationName+" </a> </h4>";
 	       	    	result = result +"<p><label><i class='fa fa-map-marker' aria-hidden='true'></i>&nbsp;&nbsp;&nbsp; "+orgLoc.country+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp; "+email+" </lable></p>";
 	       	    	result = result +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp; "+mobilePhone+" </label></p>";
@@ -1261,6 +1269,176 @@ function loadRegisteredOrgs(){
 }
 </script>
 
+<script>
+function getOrgLocationDetails(orgLocationId){
+	
+	$("#locationOrgsName").html("Location Details");
+    $("#registeredOrgs").empty();
+    $("#registeredOrgLocationSummary").empty();
+    document.getElementById("orgsList").style.display=""; 
+    
+    var sourceleadUrl = '${sourceleadUrl}';
+    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    
+     $.ajax({ 
+    	type: "POST",
+    	url: sourceleadUrl+"/getOrgLocationDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,
+    	 success: function(data) {
+    		 
+    		    var json = JSON.parse(data);
+    	        var result = '';
+    	        
+    	        result = result +'<div class="col-xs-12 col-sm-3 col-md-3">';
+    	        result = result +'<div class="well well-sm text-center">';
+    	        result = result +'<div class="profile-img-container" style="position:relative;">';
+    	        result = result +'<img id="orgImage" onerror="predefineOrgImage(this);" src="<c:url value="/displayOrgImage/${orgloc.org.orgCode}"/>" alt="Org Image" class="comp-image img-responsive">';
+    	        result = result +'</div>';
+    	        result = result +'</div>';
+    	        result = result +'</div>';
+    	        result = result +'<div class="col-xs-12 col-sm-9 col-md-9">';
+    	        result = result +'<div class="row mrng0">';
+    	        result = result +'<div class="col-md-6">';
+    								
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<div class="col-md-12 clearfix">';
+	    	        result = result +'<h5>Org Details</h5>';
+	    	        result = result +'</div>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Company :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationName']+'</p>';
+	    	        result = result +'</div>';
+	    								 
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Website :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['website']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Country :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['country']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">State :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['state']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">City :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['city']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        if(null != json['orgLocationAddress'] &&  json['orgLocationAddress'] != 'undefined' && json['orgLocationAddress'] != ''){
+	    	        	    result = result +'<div class="form-group">';
+	    	    	        result = result +'<label class="col-md-4">Address :</label>';
+	    	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orgLocationAddress']+'</p>';
+	    	    	        result = result +'</div>';	
+	    	        }
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Enrolled Date :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['createdDateStr']+'</p>';
+	    	        result = result +'</div>';
+	    								
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Time Zone :</label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['timeZoneName']+'</p>';
+	    	        result = result +'</div>';
+    	        
+    	        result = result +'</div>';
+    	        
+    	        
+    	        result = result +'<div class="col-md-6">';
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<div class="col-md-12 clearfix">';
+	    	        result = result +'<h5>Contact Details&nbsp;</h5>';
+	    	        result = result +'</div>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Contact User : </label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserName']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        result = result +'<div class="form-group">';
+	    	        result = result +'<label class="col-md-4">Email : </label>';
+	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserEmail']+'</p>';
+	    	        result = result +'</div>';
+	    	        
+	    	        if(null != json['orglocationUserPhone'] &&  json['orglocationUserPhone'] != 'undefined' && json['orglocationUserPhone'] != ''){
+	    	        	result = result +'<div class="form-group">';
+	 	    	        result = result +'<label class="col-md-4">Mobile : </label>';
+	 	    	        result = result +'<p class="tbldata-dotdot-me">'+json['orglocationUserPhone']+'</p>';
+	 	    	        result = result +'</div>';
+	    	        }
+	    	        
+    	            result = result +'</div>';
+    	            
+    	            /* result = result +'<div class="col-md-6">';
+	    	            
+    	            	result = result +'<div class="form-group">';
+		    	        result = result +'<div class="col-md-12 clearfix">';
+		    	        result = result +'<h5>Registered Modules</h5>';
+		    	        result = result +'</div>';
+		    	        result = result +'</div>';
+		    	        
+		    	        result = result +'<div class="form-group">';
+		    	        result = result +'<div class="col-md-12 checkbox">';
+		    	        
+		    	        if(json.modulesList != null && json.modulesList != "" && json.modulesList != 'undefined' && json.modulesList.length > 0){
+		    	        	
+		    	        	 for(var i=0; i<json.modulesList.length; i++){
+				    	        	var module = json.modulesList[i];
+				    	        	
+				    	       	 result = result +'<ul class="list-unstyled pull-left">';
+			    	        	 result = result +'<li>';
+			    	        	 
+			    	        	 	if(module.id == '1'){
+			    	        	 		result = result +'<label class="mr pull-left NoPad">';
+			    	        	        result = result +'<p>'+module.moduleName+'</p>';
+			    	        	        result = result +'</label>';
+			    	        	        
+			    	        	        result = result +'<ul class="list-unstyled pull-left tree-checkbox">';
+			    	        	        if(json.subModulesList != null && json.subModulesList != "" && json.subModulesList != 'undefined' && json.subModulesList.length > 0){
+			    	        	        	
+			    	        	        	for(var i=0; i<json.modulesList.length; i++){
+			    	        	        		
+			    	        	        	}
+			    	        	        }
+			    	        	        
+			    	        	        result = result +'</ul>';
+			    	        	 	}
+			    	        	 
+			    	        	 result = result +'</li>';
+			    	        	 result = result +'</ul>';
+				    	        	
+				    	        	
+				    	        }
+		    	        }
+		    	       
+		    	        
+		    	        
+		    	        
+		    	        result = result +'</div>';
+		    	        result = result +'</div>';
+		    	        
+		    	        
+    	            result = result +'</div>'; */
+    	       	
+    	       	    	
+    	    	$("#loading").removeAttr("style"); 
+    	 	    $('#registeredOrgLocationSummary').append(result);
+    	 }
+    }); 
+}
+</script>
+
+
+
+
+
 <script type="text/javascript">
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1287,6 +1465,7 @@ function createOrg(){
 	
 	$("#locationOrgsName").html("Add New Location");
 	$("#registeredOrgs").empty();
+	$("#registeredOrgLocationSummary").empty();
 	 
 	var result = '';
 	

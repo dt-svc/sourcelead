@@ -75,7 +75,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		return orgLocations;*/
 		   Session session = this.sessionFactory.getCurrentSession();
 	       String query = ("from OrgLocations orgLocations left join fetch orgLocations.org org "
-	       		+ " left join fetch org.user where orgLocations.id =:id ");
+	       		+ " left join fetch org.user left join fetch orgLocations.timezone where orgLocations.id =:id ");
 		  
 	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setLong("id", id).list();
 	       OrgLocations orgLocation = null;
