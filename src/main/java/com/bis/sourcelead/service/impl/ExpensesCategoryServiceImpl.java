@@ -39,6 +39,11 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndCategoryId(Long orgLocationId) {
 		return expensesCategoryDao.getAllExpensesCategoryByLocationId(orgLocationId);
 	}
+	
+	@Override
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status) {
+		return expensesCategoryDao.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, status);
+	}
 
 	@Override
 	public ExpensesCategory storeExpenseCategory(JSONObject jsonObject, Long orgLocationId,User user) throws Exception {
