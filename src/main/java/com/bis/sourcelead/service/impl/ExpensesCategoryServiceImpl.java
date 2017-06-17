@@ -69,8 +69,12 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 			expensesCategory.setAmountType("Percentage");
 		}
 			
+		//if we are not given any rate(Flat , Percentage) by default it will take Flat.
+		
 		if(jsonObject.has("taxFlatReward") && null != jsonObject.getString("taxFlatReward") && !"".equals(jsonObject.getString("taxFlatReward")) ){
 			expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("taxFlatReward")));
+			expensesCategory.setAmountType("Flat");
+		}else{
 			expensesCategory.setAmountType("Flat");
 		}
 		
