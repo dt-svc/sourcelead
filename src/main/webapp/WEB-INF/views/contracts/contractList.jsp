@@ -3474,7 +3474,3 @@ function editClo(contractId){
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
-
-
-

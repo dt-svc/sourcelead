@@ -498,7 +498,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
-		if(jsonObj.has("maxTaxRowNum")){		
+		if(jsonObj.has("maxTaxRowNum") && null != jsonObj.getString("maxTaxRowNum") && !"".equals(jsonObj.getString("maxTaxRowNum"))){		
 		int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
 		for (long c = 1; c < maxCount; c++) {
 			ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
