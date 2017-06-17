@@ -39,6 +39,9 @@
  .margnTop0 {
  margin-top: 0;
  }
+ #remove_user_pop {
+ z-index: 170000;
+ }
  </style>
  
  
@@ -1068,7 +1071,7 @@ function getOfferDetails(submissionId){
 	                	 
 	                    	 result = result + '<div class="clearfix">';
 	   					     result = result + '<div class="content clearfix" style="display: block;">';
-		                  
+	   					  	 result = result + '<div id="offerLoading"></div>';
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
 	                    	 result = result + '<h2  class="active">Offer: <span>'+report.offerSourceType+'</span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
@@ -1235,7 +1238,7 @@ function getOfferDetails(submissionId){
 
 <script type="text/javascript">
 function canceloffer(){ 
-	$("#remove_user_pop, .project_inn_mask").fadeOut(200);
+	$("#remove_user_pop, .sideMask").fadeOut(200);
 };
 </script>
 
@@ -1243,7 +1246,7 @@ function canceloffer(){
 function rejectOffer(offerStatus,submissionId,offerId){
 	
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='sideMask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -1251,7 +1254,7 @@ function rejectOffer(offerStatus,submissionId,offerId){
 	result = result +"	</div>";
 	$("#rejectOfferAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".sideMask").fadeIn(200);
 }
 </script>
 
@@ -1304,6 +1307,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
+	$("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({  
         type : "POST",
         url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
@@ -1316,6 +1320,7 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 		    	else{
 		    		 $("#"+(offerHistoryId)+"offerNotifiedDiv").html(existingVal+",Applicant");
 		    	}
+		    	$("#offerLoading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
       },
         
    });  

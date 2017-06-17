@@ -1157,7 +1157,7 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		List<Contracts> clientcontractsList = contractsTemplateService.getAllClientOrVendorContractsBasedOnLocationId(orgLocations,responderType,user,userRoleName,contractStatus);
+		List<Contracts> clientcontractsList = contractsTemplateService.getAllClientOrVendorContractsBasedOnLocationId(orgLocations,responderType,user,userRoleName,contractStatus,orgRelationId);
 		return commonUtil.toJSON(clientcontractsList);
 	 }
 

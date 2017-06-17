@@ -30,16 +30,8 @@
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getAllApplicantReports();
-	}
-</script>
-
-<script type="text/javascript">
-function getAllApplicantReports(){
 	getDayWiseReports();
-}
-
-
+	}
 </script>
 
 
@@ -203,8 +195,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
-	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Export to Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
 
 </script>
