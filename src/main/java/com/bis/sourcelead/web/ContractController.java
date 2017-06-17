@@ -220,7 +220,8 @@ public class ContractController {
 						}
 					}
 					
-					requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType());
+					//requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType(),orgLocation);
+					 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(contract.getContractType(),orgLocation);
 					if(requirementSubmissionsList.size() > 0){
 						for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 							StringBuffer candidateName = new StringBuffer(); 
@@ -431,7 +432,8 @@ public class ContractController {
 						}
 					}
 					
-					requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType());
+					//requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(contract.getRequirementSubmission().getRequirement().getId(), contract.getContractType(),orgLocation);
+					requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(contract.getContractType(),orgLocation);
 					if(requirementSubmissionsList.size() > 0){
 						for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 							StringBuffer candidateName = new StringBuffer(); 

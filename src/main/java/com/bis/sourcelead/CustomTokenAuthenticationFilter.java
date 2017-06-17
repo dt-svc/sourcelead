@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -62,12 +63,22 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 		}
 	}
 	private void checkUsernameAndPassword(String username, String password,HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
-		TokenInfo tokenInfo = authenticationService.authenticate(username, password);
-		if (tokenInfo != null) {
-			httpResponse.setHeader(HEADER_TOKEN, tokenInfo.getToken());
-			// TODO set other token information possible: IP, ...
-		} else {
-			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		try{
+			TokenInfo tokenInfo = authenticationService.authenticate(username, password);
+			if (tokenInfo != null) {
+				httpResponse.setHeader(HEADER_TOKEN, tokenInfo.getToken());
+			}
+			else {
+				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			}
+		}
+		catch (AuthenticationException ae) {
+			if(ae.getMessage().equalsIgnoreCase("login_unRegistered_error")){
+				httpResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+			}
+			else if(ae.getMessage().equalsIgnoreCase("login_inActive_error")){
+				httpResponse.sendError(HttpServletResponse.SC_MOVED_TEMPORARILY);
+			}
 		}
 	}
 
@@ -81,11 +92,8 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 		}
 
 		if (authenticationService.checkToken(token)) {
-			System.out.println(" *** " + HEADER_TOKEN + " valid for: " +
-				SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 			return true;
 		} else {
-			System.out.println(" *** Invalid " + HEADER_TOKEN + ' ' + token);
 			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			doNotContinueWithRequestProcessing(httpRequest);
 		}
@@ -95,7 +103,6 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
    private void checkLogout(HttpServletRequest httpRequest) {
 		if (currentLink(httpRequest).equals(logoutLink)) {
 			String token = httpRequest.getHeader(HEADER_TOKEN);
-			// we go here only authenticated, token must not be null
 			authenticationService.logout(token);
 			doNotContinueWithRequestProcessing(httpRequest);
 		}
@@ -113,7 +120,6 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	}
 
 	private boolean canRequestProcessingContinue(HttpServletRequest httpRequest) {
-		System.out.println(httpRequest.getAttribute(REQUEST_ATTR_DO_NOT_CONTINUE) );
 		return httpRequest.getAttribute(REQUEST_ATTR_DO_NOT_CONTINUE) == null;
 	}
  
