@@ -626,6 +626,9 @@ function getPayableInvoiceList(){
 				result = result +'         </td>';
 				result = result +'         <td> ';
 				result = result +'           <div class="tbldata-dotdot_100">'+invoiceStatus+'</div>';
+				if(report.invoiceStatus == "Rejected"){
+			 		result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
+					}
 				result = result +'         </td>';
 				
 				result = result +'         <td> ';

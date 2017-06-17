@@ -277,11 +277,18 @@ public class SubmissionsRateController {
 			
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 			}
 			
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-			requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
-			
+			if(null != requirementSubmissionTemplateFields.getLastName()){
+			requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName() +" "+requirementSubmissionTemplateFields.getLastName());
+			requirementSubmission.setSubmissionRequestUser(requirementSubmissionTemplateFields.getFirstName() +" "+requirementSubmissionTemplateFields.getLastName());
+			}else{
+				requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName() );
+				requirementSubmission.setSubmissionRequestUser(requirementSubmissionTemplateFields.getFirstName());
+				
+			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
