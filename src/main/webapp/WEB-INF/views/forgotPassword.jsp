@@ -76,16 +76,15 @@ function applyInputSlide() {
            .submit(function(e) {
         	    e.preventDefault(); 
         		var form = $('#forgetPassword_form').serializeFormJSON();
-            	var con = JSON.stringify(form);
-			    con = con.replace(/[{}]/g, ""); 
         		var sourceleadUrl ='${sourceleadUrl}';
         		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
         		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;'); 
                 $.ajax({
-            	      type: "GET",
+            	      type: "POST",
+            	      data :JSON.stringify(form),
             	      contentType : 'application/json; charset=utf-8',
             	      dataType : 'json',
-                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}&json="+con,
+                  	  url: sourceleadUrl+"/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
                     	success: function(result) {
                     		if((result == 'Invalid')){
 	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();

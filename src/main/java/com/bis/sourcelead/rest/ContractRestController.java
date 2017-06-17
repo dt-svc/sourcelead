@@ -501,7 +501,10 @@ public class ContractRestController {
 	@RequestMapping(value = "/getSubmissionsForSOWByRequirementId", method = RequestMethod.GET)
 	public @ResponseBody String getSubmissionsForSOWByRequirementId(@RequestParam(value = "requirementId", required = false) String requirementId, @RequestParam(value = "sowType", required = false) String sowType, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
-		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType);
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
+		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
 		if(requirementSubmissionsList.size() > 0){
 			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 				StringBuffer candidateName = new StringBuffer(); 
