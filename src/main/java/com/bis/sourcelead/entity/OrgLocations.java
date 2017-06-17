@@ -166,6 +166,12 @@ public class OrgLocations implements Serializable{
     @Transient
     private String createdDateStr;
     
+    @Transient
+    private String orgLocationUserFirstName;
+    
+    @Transient
+    private String orgLocationUserLastName;
+    
 
 	public Timezone getTimezone() {
 		return timezone;
@@ -504,6 +510,26 @@ public class OrgLocations implements Serializable{
 	public void setIsPrimary(String isPrimary)
 	{
 		this.isPrimary = isPrimary;
+	}
+
+	public String getOrgLocationUserFirstName()
+	{
+		return orgLocationUserFirstName;
+	}
+
+	public void setOrgLocationUserFirstName(String orgLocationUserFirstName)
+	{
+		this.orgLocationUserFirstName = orgLocationUserFirstName;
+	}
+
+	public String getOrgLocationUserLastName()
+	{
+		return orgLocationUserLastName;
+	}
+
+	public void setOrgLocationUserLastName(String orgLocationUserLastName)
+	{
+		this.orgLocationUserLastName = orgLocationUserLastName;
 	}
 
 	

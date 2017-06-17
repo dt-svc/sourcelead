@@ -206,17 +206,18 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
 	 public  String editOrgPrimaryUser(@RequestParam(value="json", required=false) String json, 
-			 @RequestParam(value="userId", required=false) Long userId ,HttpServletRequest request) throws Exception {
+			 @RequestParam(value="userId", required=false) Long userId ,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId ,HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
 		 JSONObject jsonObj = new JSONObject(json);
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 	 OrgLocations orgLocations= (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 	 	 
 	 	 User primaryUser = userService.getUserById(userId);
 	 	 if(null != primaryUser){
