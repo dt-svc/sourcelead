@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,7 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @Repository
 public class AddExpensesDaoImpl implements AddExpensesDao {
@@ -52,6 +54,18 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 		
 		
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Expenses checkExpensIdNumberInDatebase(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Expenses expenses left join fetch expenses.orgLocationId  where  expenses.id =(SELECT MAX(exp.id)  FROM Expenses exp where exp.orgLocationId.id =:orgLocationId)";  
+		List<Expenses> expenses  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		if(expenses.isEmpty()){
+			return null;
+		}
+		return expenses.iterator().next();		
 	}
 
 	
