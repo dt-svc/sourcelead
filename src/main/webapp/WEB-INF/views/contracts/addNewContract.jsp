@@ -18,6 +18,12 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
+<script>
+ window.onload = function() {
+	 changeSaveButton();
+};
+</script>
+
 <!-- Content Area -->
  <section class="content-wraper">
     <section class="content-header clearfix">
@@ -44,7 +50,7 @@
 				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
 				    </c:when>
 				    <c:otherwise>
-				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				        <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels(); submissionOffers(); " data-validation="required" field-name="Contract Type">
 		                    <option value=''>Contract Type</option>
 		                    <option>Client MSA</option>
 		                    <option>Vendor MSA</option>
@@ -128,7 +134,7 @@
               <div class="col-md-8">
               	<c:choose>
               		<c:when test="${fn:length(requirementList) gt 0}">
-	              		<select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement">
+	              		<select class="chosen-select form-control" id="requirementsList" name="requirementsList"  field-name="Requirement">
 						    <c:forEach var="element" items="${requirementList}" >
 						    	<c:if test = "${element.id == contract.requirementSubmission.requirement.id}">
 							         <option value="${element.id}">${element.jobTitle}${element.spocName}</option>
@@ -140,7 +146,7 @@
 						</select>
 				    </c:when>
 				    <c:otherwise>
-				        <select class="form-control" id="requirementsList" name="requirementsList" onchange="submissionOffers();" field-name="Requirement"></select>
+				        <select class="form-control" id="requirementsList" name="requirementsList" field-name="Requirement"></select>
 				    </c:otherwise>
 				 </c:choose>
               </div>
@@ -151,13 +157,13 @@
               <div class="col-md-8" id="submissionOffersListDiv">
 	              <c:choose>
 	              		<c:when test="${fn:length(requirementSubmissionsList) gt 0}">
-		              		<select class="form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
+		              		<select class="chosen-select form-control" id="submissionOffersList" name="submissionOffersList" onchange="getOfferRate(); getVendor();" field-name="Applicant">
 							    <c:forEach var="element" items="${requirementSubmissionsList}" >
 							    	<c:if test = "${element.id == contract.requirementSubmission.id}">
-								         <option value="${element.id}">${element.candidateName}</option>
+								         <option selected="selected" value="${element.id}">${element.candidateName}(${element.createdUser})</option>
 								    </c:if>
 								    <c:if test = "${element.id != contract.requirementSubmission.id}">
-								         <option value="${element.id}">${element.candidateName}</option>
+								         <option value="${element.id}">${element.candidateName}(${element.createdUser})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -176,7 +182,12 @@
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
                   <option value=''>Select Owner</option>
                   <c:forEach var="user" items="${userList}">
-	                     <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  <c:if test = "${!empty contract.ownerUserId.id}">
+	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.ownerUserId.id}">
+	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
                   </c:forEach>
                   </select>
               </div>
@@ -311,10 +322,10 @@
 				                </select>
 			                </div>
 							  	
-							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
+							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" disabled value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
 			                
 			                <div class="input-group-btn tblminwidth-75 ratetype">
-			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer"  field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
 			                      <option>Rate per</option>
 			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -956,6 +967,7 @@ function getContractTemplates(){
 		document.getElementById("offerRateDiv").style.display="none";
 		document.getElementById("joinDateDiv").style.display="none";
 		document.getElementById("workLocationDiv").style.display="none";
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
  	if(contractType == "Client MSA"){
  		document.getElementById("billingDiv").style.display="block";
@@ -967,7 +979,8 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
-		  document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("offeredSubmissionDiv").style.display="none";
  	}
 	if(contractType == "Vendor MSA"){
 		document.getElementById("billingDiv").style.display="block";
@@ -980,6 +993,7 @@ function getContractTemplates(){
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
 		  document.getElementById("offerRateDiv").style.display="none";
+		  document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Client SOW"){
 		document.getElementById("billingDiv").style.display="block";
@@ -991,7 +1005,7 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
-		  document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "Vendor SOW"){
 		document.getElementById("clientDiv").style.display="none";
@@ -1003,7 +1017,8 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
-		  document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
 	if(contractType == "NDA" || contractType == "NSA"){
 		document.getElementById("clientDiv").style.display="none";
@@ -1015,7 +1030,8 @@ function getContractTemplates(){
 		document.getElementById("workLocationDiv").style.display="none";
 		document.getElementById("dateDiv").style.display="block";
 		document.getElementById("descriptionDiv").style.display="block";
-		  document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("offerRateDiv").style.display="none";
+		document.getElementById("offeredSubmissionDiv").style.display="none";
 	}
 	if(contractType == "Full time offer"){
 		document.getElementById("clientDiv").style.display="none";
@@ -1028,6 +1044,7 @@ function getContractTemplates(){
 		document.getElementById("joinDateDiv").style.display="block";
 		document.getElementById("workLocationDiv").style.display="block";
 		  document.getElementById("offerRateDiv").style.display="none";
+		  document.getElementById("offeredSubmissionDiv").style.display="block";
 	}
  	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
@@ -1496,9 +1513,9 @@ function hideCommonSOWFields(){
 		
 	function submissionOffers(){
 		var sourceleadUrl ='${sourceleadUrl}';
-		var requirementId = $("#requirementsList").val();
+		var requirementId = "";
 		var sowType = $("#contractType").val();
-		
+		if(sowType == 'Client SOW' || sowType == 'Vendor SOW' || sowType == 'Full time offer'){
 		$("#flatReward").val("");
 	    $("#billingRateType").val('${currencyCode}').trigger('change');
 	    $("#billingRatePer").val("").trigger('change');
@@ -1512,7 +1529,7 @@ function hideCommonSOWFields(){
 	            	  result = result + '<option value="">Select Candidate</option>';
 	                  for (var i = 0; i < json.length; i++) {
 	                 	 var opt = json[i]; 
-	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'</option>';
+	                 	 result = result +  '<option value="'+opt.id+'"> '+opt.candidateName+'('+opt.createdUser+')</option>';
 	                  }
 	                  $('#submissionOffersListDiv').find('p.text-primary').remove();
 	                  $("#submissionOffersList").empty();
@@ -1538,7 +1555,7 @@ function hideCommonSOWFields(){
 	  			  $('#submissionOffersList').attr("data-validation","required");
 	       },
 	    });
-
+		}
 	}
 	
 	function getOfferRate(){
@@ -1584,8 +1601,10 @@ function hideCommonSOWFields(){
 		            		  $("#joinDate").val(json.dateOfJoiningStr); 
 		            		  
 		            		  $('#candiFlatReward').removeAttr("disabled");
-		            		  $('#candiRateType').removeAttr("disabled");
+		            		   $('#candiRateType').removeAttr("disabled");
 		            		  $('#candiRatePer').removeAttr("disabled");
+		            		  $('#candiRateType').attr("disabled","false");
+			            	  $('#candiRatePer').attr("disabled","false");
 		            		  
 			            	//  $('#candiRateType').attr("disabled","false");
 			            	 // $('#candiRatePer').attr("disabled","false");
@@ -1723,7 +1742,6 @@ function getPercentageValue(){
 
 <script type="text/javascript">
 function getTaxRewardType(rewardType){
-	
 	 $("#taxRewardType").val(rewardType);
 	 
 	 $("#taxPercentageRewardValue").val('');
@@ -1737,8 +1755,11 @@ function getTaxRewardType(rewardType){
 		document.getElementById("taxFlatReward").style.display="none";
 		document.getElementById("taxFlatRateType").style.display="none";
 		
-		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
-	    document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
+		$("#taxPercentageBtn").addClass('btn btn-sm btn-primary active');
+		$("#taxFlatBtn").addClass('btn btn-sm btn-primary ');
+		
+		//document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary active'
+	  //  document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary'
     	$('#taxPercentageRewardValue').attr("data-validation","required validate_float");  
 		$('#taxPercentageRewardValue').removeAttr('data-validation-optional');
 	    $('#taxFlatRewardValue').removeAttr('data-validation');
@@ -1753,8 +1774,11 @@ function getTaxRewardType(rewardType){
 		document.getElementById("taxFlatRateType").style.display="";
 		document.getElementById("taxPercentageReward").style.display="none";
 		
-		document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
-		document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
+		$("#taxPercentageBtn").addClass('btn btn-sm btn-primary');
+		$("#taxFlatBtn").addClass('btn btn-sm btn-primary active');
+		
+		//document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
+		//document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
 		$('#taxFlatRewardValue').attr("data-validation","required validate_float");
 		$('#taxFlatRewardValue').removeAttr('data-validation-optional');
 		$('#taxPercentageRewardValue').removeAttr('data-validation');
@@ -1803,7 +1827,7 @@ function changeSaveButton(){
 	 var approverId = $("#approver").val();
 	if(approverId !='' && approverId != null){
 		if(approverId == userId){
-			document.getElementById("save_approver_template").value="Approve";
+			document.getElementById("save_approver_template").value="Save";
 		}else{
 			document.getElementById("save_approver_template").value="Send For Approve";
 		}

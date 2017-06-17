@@ -76,9 +76,9 @@
         
         
         <div class="form-group">
-				<label class="col-md-3">Country</label>
+				<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="country" id="country" field-name="Country"  >
+				 <select class="chosen-select form-control select-bg" name="country" id="country" data-validation="required" field-name="Country"  >
                  </select>
 				</div>
 			</div>
