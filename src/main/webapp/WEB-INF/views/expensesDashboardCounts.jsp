@@ -2,6 +2,8 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 
+<jsp:include page="../views/expenses/expensesCommonList.jsp" />
+
 <script> 
 $(document).ready(function(){
 		expensesCount("myExpenses");
@@ -89,31 +91,31 @@ function expensesCount(expenseType){
 		        	 var  empExpensesReopenCount = json.empExpensesReopenCount;
 		        	 
 		        	 if(expensesDraftCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial1txt").html("<a href='/sourcelead/expenses'>Draft</a>");
+		        		  $("#dial1txt").html("<a onclick='myExpensesListByStage(\"draft\");'>Draft</a>");
 		        		  $("#expensesDraftCount").html(expensesDraftCount);
 	                  }else{
-	                	  $("#dial1txt").html("<a href='/sourcelead/expensesApprovalList'>Submitted</a>");
+	                	  $("#dial1txt").html("<a onclick='employeeExpensesListByStage(\"submitted\");'>Submitted</a>");
 	                	  $("#expensesDraftCount").html(empExpensesSubmittedForApprovalCount);
 	                  }
 		        	if(expensesSubmittedForApprovalCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial2txt").html("<a href='/sourcelead/expenses'>Submitted</a>");
+		        		  $("#dial2txt").html("<a onclick='myExpensesListByStage(\"submitted\");'>Submitted</a>");
 		        		  $("#expensesSubmittedForApprovalCount").html(expensesSubmittedForApprovalCount);
 	                  }else{
-	                	  $("#dial2txt").html("<a href='/sourcelead/expensesApprovalList'>Approved</a>");
+	                	  $("#dial2txt").html("<a onclick='employeeExpensesListByStage(\"approved\");'>Approved</a>");
 	                	  $("#expensesSubmittedForApprovalCount").html(empExpensesApprovedCount);
 	                  }
 		        	if(expensesApprovedCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial3txt").html("<a href='/sourcelead/expenses'>Approved</a>");
+		        		  $("#dial3txt").html("<a onclick='myExpensesListByStage(\"approved\");'>Approved</a>");
 		        		  $("#expensesApprovedCount").html(expensesApprovedCount);
 	                }else{
-	                	  $("#dial3txt").html("<a href='/sourcelead/expensesApprovalList'>Rejected</a>");
+	                	  $("#dial3txt").html("<a onclick='employeeExpensesListByStage(\"rejected\");'>Rejected</a>");
 	                	  $("#expensesApprovedCount").html(empExpensesRejectedCount);
 	                  }
 		        	if(expensesRejectCount<1 || expenseType == "myExpenses"){
-		        		  $("#dial4txt").html("<a href='/sourcelead/expenses'>Rejected</a>");
+		        		  $("#dial4txt").html("<a onclick='myExpensesListByStage(\"rejected\");'>Rejected</a>");
 		        		  $("#expensesRejectCount").html(expensesRejectCount);
 	                 }else{
-	                	 $("#dial4txt").html("<a href='/sourcelead/expensesApprovalList'>Reopen</a>");
+	                	 $("#dial4txt").html("<a onclick='employeeExpensesListByStage(\"reopen\");'>Reopen</a>");
 	                	 $("#expensesRejectCount").html(empExpensesReopenCount);
 	                  }
 		        	

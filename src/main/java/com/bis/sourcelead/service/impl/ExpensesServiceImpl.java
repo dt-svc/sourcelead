@@ -25,8 +25,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -74,6 +76,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
 	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	private ExpensesApproverHierarchyDao expensesApproverHierarchyDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
@@ -676,6 +681,45 @@ public class ExpensesServiceImpl implements ExpensesService{
 		}
 	return createExcelsheet;
 }
+
+	@Override
+	public List<ExpensesApproverHierarchy> getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId, Long orgLocationId, String expenseStatus) throws Exception
+	{
+		String submissionStatus = null;
+		if ("submitted".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "SUBMITTEDFORAPPROVAL";
+		}
+		if ("approved".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "APPROVED";
+		}
+		if ("rejected".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "REJECTED";
+		}
+		if ("reopen".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "REOPENED";
+		}
+		
+		return expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, submissionStatus);
+	}
+
+	@Override
+	public List<Expenses> getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId, Long orgLocationId, String expenseStatus) throws Exception
+	{
+		String submissionStatus = null;
+		if ("submitted".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "SUBMITTEDFORAPPROVAL";
+		}
+		if ("approved".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "APPROVED";
+		}
+		if ("rejected".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "REJECTED";
+		}
+		if ("draft".equalsIgnoreCase(expenseStatus)) {
+			submissionStatus = "DRAFT";
+		}
+		return expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, submissionStatus);
+	}
 	
 		
 }

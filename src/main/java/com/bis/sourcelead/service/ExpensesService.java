@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -27,4 +28,8 @@ public interface ExpensesService {
 	public File exportAllMyExpensesToPdf(List<Expenses> expensesList, OrgLocations orgLoc, User loginUser) throws Exception;
 
 	public File exportAllMyExpensesToExcel(List<Expenses> expensesList, OrgLocations orgLoc) throws Exception;
+	
+	public  List<ExpensesApproverHierarchy>  getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
+	
+	public List<Expenses>  getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
 }
