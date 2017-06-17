@@ -222,6 +222,9 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirementTemplate(jsonObj,orgLocation,user);
 		
+		
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", "Successfully created a template");
+		
 		return "success";
 		
 	}

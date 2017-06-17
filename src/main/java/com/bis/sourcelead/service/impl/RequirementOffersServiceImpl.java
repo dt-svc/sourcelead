@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +39,7 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
@@ -48,6 +51,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -67,6 +71,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
 
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Autowired
 	private RequirementOffersDao requirementOffersDao;
@@ -776,7 +782,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		      	  if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
 		      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
 		      		
-		      		JSONObject jsonObj = populateJsonObject(requirementOffers,loginUser);
+		      		JSONObject jsonObj = populateJsonObject(requirementOffers,loginUser,orgLocations);
 		      		contractsTemplateService.saveNewContract(jsonObj, orgLocations, "DRAFT", loginUser, orgLocations.getOrg(), "NEW", null);
 			      }
 			      
@@ -907,7 +913,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	}*/
 
 
-	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser) throws JSONException
+	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
 	{
 		JSONObject jsonObj = new JSONObject(); 
 		
@@ -940,7 +946,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		
 		jsonObj.put("billingRateType", requirementOffers.getPaymentType());
 		
-		jsonObj.put("startDate", requirementOffers.getDateOfJoining());
+		
+		//Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
+		String currentTimeStr = Constants.DF_DMY.format(requirementOffers.getDateOfJoining());  
+		
+		jsonObj.put("startDate", currentTimeStr);
 		}
 		return jsonObj;
 	}

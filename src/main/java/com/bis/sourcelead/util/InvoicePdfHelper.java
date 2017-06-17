@@ -169,7 +169,7 @@ public class InvoicePdfHelper {
 			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-				if(invoiceLineItems.getCandidate() !=null){
+				if(invoiceLineItems.getCandidate() !=null &&  null !=invoiceLineItems.getCandidate().getConsultantUser()){
 					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
 					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
@@ -366,7 +366,7 @@ public class InvoicePdfHelper {
 				Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
-					if(invoiceLineItems.getCandidate() !=null){
+					if(invoiceLineItems.getCandidate() !=null && null !=invoiceLineItems.getCandidate().getConsultantUser()){
 							Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
 							if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 								table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));

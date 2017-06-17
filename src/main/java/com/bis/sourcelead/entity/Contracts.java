@@ -137,6 +137,10 @@ public class Contracts {
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
 	private RequirementSubmission requirementSubmission;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="CANDIDATE_ID")     
+	private Candidate candidate;
+	
 	@Column(name = "HOURS_PER_WEEK")
 	private String hoursPerWeek;
 	
@@ -1002,6 +1006,16 @@ public class Contracts {
 	public void setOwnerUser(Long ownerUser)
 	{
 		this.ownerUser = ownerUser;
+	}
+
+	public Candidate getCandidate()
+	{
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
 	}
 
 }
