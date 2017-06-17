@@ -6,10 +6,20 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+ <jsp:include page="expensesCommonList.jsp"></jsp:include>
 
  <script type="text/javascript">
 		window.onload = function () {
-			getExpensesList();
+			if("" != localStorage.getItem("myExpensesListGrid")){
+				$("#expensesListDiv").empty();
+	       		$("#expensesListDiv").append(localStorage.getItem("myExpensesListGrid"));
+	       		expensesPagination();
+	       		/* localStorage.removeItem("myExpensesListGrid"); */
+	       		localStorage.setItem("myExpensesListGrid","");
+			}else{
+				getExpensesList();
+			}
 		 };
 </script>
 	
@@ -42,7 +52,7 @@
 					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList();" /></span>
 					</div>
 					
-					<li class="ml"><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+					<li class="ml"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
@@ -218,7 +228,7 @@ function getExpensesList(){
 function expensesPagination(){ 
     $('#expensesPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0

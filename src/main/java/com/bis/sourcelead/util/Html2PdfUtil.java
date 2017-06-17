@@ -216,7 +216,7 @@ public class Html2PdfUtil {
 	                   matchPattern.appendReplacement(sb, contracts.getBillingRateType());
 	                }
 	                
-		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")){
+		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")||matchPattern.group().equalsIgnoreCase("[Rate]")){
 		            	if(null !=contracts.getBillingAmount()){
 		            		matchPattern.appendReplacement(sb, contracts.getBillingAmount());
 		            	}

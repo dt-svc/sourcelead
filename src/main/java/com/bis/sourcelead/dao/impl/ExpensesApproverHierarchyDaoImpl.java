@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 
 /**
@@ -56,7 +57,7 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ExpensesApproverHierarchy> getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+	public List<Expenses> getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
 			Long orgLocationId, String submissionStatus) throws Exception {
 		Map<String, Object> params = new HashMap<String,Object>();
 			String subQuery2 = "";

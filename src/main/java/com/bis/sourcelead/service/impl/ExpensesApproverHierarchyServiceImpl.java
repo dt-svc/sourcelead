@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
@@ -61,17 +62,17 @@ public class ExpensesApproverHierarchyServiceImpl implements ExpensesApproverHie
 		    
 		    ExpensesCount expCount = new ExpensesCount();
 		 
-			Collection<ExpensesApproverHierarchy> draftMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "DRAFT");
+			Collection<Expenses> draftMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "DRAFT");
 			Integer expensesDraftCount = draftMyexpensesList.size();
 			expCount.setExpensesDraftCount(expensesDraftCount);
 			
-			Collection<ExpensesApproverHierarchy> submittedMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "SUBMITTED");
+			Collection<Expenses> submittedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "SUBMITTED");
 			expCount.setExpensesSubmittedForApprovalCount(submittedMyexpensesList.size());
 			
-			Collection<ExpensesApproverHierarchy> approvedMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "APPROVED");
+			Collection<Expenses> approvedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "APPROVED");
 			expCount.setExpensesApprovedCount(approvedMyexpensesList.size());
 			
-			Collection<ExpensesApproverHierarchy> rejectedMyexpensesList = expensesApproverHierarchyDao.getTotalDraftListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "REJECTED");
+			Collection<Expenses> rejectedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "REJECTED");
 			expCount.setExpensesRejectCount(rejectedMyexpensesList.size());
 			
 			return expCount;

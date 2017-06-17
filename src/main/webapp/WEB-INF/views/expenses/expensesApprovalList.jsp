@@ -5,7 +5,15 @@
  <script src="js/masterHeaderAction.js"></script>
 <script type="text/javascript">
 		window.onload = function () {
-			getExpensesApprovalDataList();
+			if("" != localStorage.getItem("empExpensesListGrid")){
+				$("#approverDataExpensesDiv").empty();
+	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
+	       		pagination();
+	       		/* localStorage.removeItem("empExpensesListGrid"); */
+	       		localStorage.setItem("empExpensesListGrid","");
+			}else{
+				getExpensesApprovalDataList();
+			}
 		 };
 </script>
 <style type="text/css">
@@ -78,7 +86,7 @@ margin-top: 3px;
 					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
 					</div>
 					
-					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>
@@ -522,7 +530,7 @@ $(document).ready(function() {
 function pagination(){ 
     $('#example').DataTable({ 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
