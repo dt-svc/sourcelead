@@ -198,105 +198,105 @@ function clientContractsList(orgRelationId){
 	                		if(json.length>0){
 	                		    for (var i = 0; i < json.length; i++) {
 	                		    	var output= json[i];
-	                		    	opt = opt + '<tr id="row'+output.id+'">';
-	                		        opt = opt + '<td>';
-// 	                		        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	                		        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
-	                		        /* }else{
-	                		        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
-	                		        } */
-	                		         opt = opt + '</td>';
-	                		         opt = opt + '<td>';
-	                	       			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
-	                	       		 opt = opt + '</td>';
-	                		    	 opt = opt + '<td>';
-	                		       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
-	                		         opt = opt + '</td>';
-	                		         
-	                		         opt = opt + '<td>';
-	                		         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
-	                		         opt = opt + '</td>';
-	                		         
-	                		         opt = opt + '<td>';
-	                		         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr;
-	                		         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	                		        	 opt = opt + ' | '+output.endDateStr+'</div>';
-	                		         }else{
-	                		        	 opt = opt + '</div>';
-	                		         }
-	                		         opt = opt + '</td>';
-	                		         
-	                		         opt = opt + '<td>';
-	                		         if(output.reqDocCount!="0"){
-	                			         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
-	                			         }
-	                			         else{
-	                			        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
-	                			         }
-	                			         opt = opt + '</td>';
-	                		         
-	                		         opt = opt + '<td>';
-	                		         if(output.templateSubmissionStatus !=null && output.templateSubmissionStatus != '' && output.templateSubmissionStatus != 'undefined'){
-	                		        	 if(output.templateSubmissionStatus == "DRAFT"){
-	                		        		 draftCount = draftCount+1;       
-	                		        	 }else if(output.templateSubmissionStatus == "WAITING_FOR_APPROVAL"){
-	                		        		 waitingForApprovalCount = waitingForApprovalCount +1;    
-	                		        	 }else if(output.templateSubmissionStatus == "WAITING_TO_BE_SIGNED"){
-	                		        		 waitingToBeSignedCount = waitingToBeSignedCount +1; 
-	                		        	 }else if(output.templateSubmissionStatus == "PENDING"){
-	                		        		 pendingCount = pendingCount +1;   
-	                		        	 }else if(output.templateSubmissionStatus == "SEND_FOR_VERIFICATION"){
-	                		        		 sendForVerificationCount = sendForVerificationCount +1;   
-	                		        	 }else if(output.templateSubmissionStatus == "Finalized"){
-	                		        		 finalizedCount = finalizedCount +1;   
-	                		        	 }else if(output.templateSubmissionStatus == "REJECTED"){
-	                		        		 rejectedCount = rejectedCount +1;   
-	                		        	 }else if(output.templateSubmissionStatus == "EXPIRED"){
-	                		        		 expiredCount = expiredCount +1;     
-	                		        	 }
-	                		        	 opt = opt + '<div class="tblminwidth-75">'+output.templateSubmissionStatus+'</div>';
-	                		         }
-	                		         else{
-	                		        	 opt = opt + '<div class="tblminwidth-75 ">---</div>';
-	                		         }
-	                		         opt = opt + '</td>';
-	                		         
-	                		         
-	                		         opt = opt + '<td>';
-	                		         opt = opt + '<div class="tbldata-dotdot_80">';
-	                		     	  if(output.templateSubmissionStatus == "DRAFT" ){
-	                		     		  
-	                		     		 if('${SourceLeadWeb_user.id}' == output.approverUserId){
-	                	     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
-	                	     	         }
-	                	     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-	                	     	     		if(output.typeOfContract == "New"){
-	                	     	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-	                	     	     		}
-	                	     	     		if(output.typeOfContract == "Custom"){
-	                	     	     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-	                	     	     		}
-	                	       			'</sec:authorize>';
-	                	       			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	                	       			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
-	                	       			'</sec:authorize>';
-	                		     		
-	                	       			if('${SourceLeadWeb_user.id}' == report.ownerUser){
-	                	   	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
-	                	   		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
-	                	   		     		}
-	                	   	         }
-	                		     		
-	                		     	  }
-	                		     	  else{
-	                		     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
-	                		     	  }
-	                		     		opt = opt + '</div></td>';
-	                		     	
-	                		     	opt = opt + '</tr>';
+	                		    	
+	                		    		opt = opt + '<tr id="row'+output.id+'">';
+		                		        opt = opt + '<td>';
+//	 	                		        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
+		                		        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		                		        /* }else{
+		                		        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
+		                		        } */
+		                		         opt = opt + '</td>';
+		                		         opt = opt + '<td>';
+		                	       			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
+		                	       		 opt = opt + '</td>';
+		                		    	 opt = opt + '<td>';
+		                		       	 opt = opt + '<div><span title="'+output.ownerName+'">'+output.ownerName+'</span></div>';
+		                		         opt = opt + '</td>';
+		                		         
+		                		         opt = opt + '<td>';
+		                		         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+		                		         opt = opt + '</td>';
+		                		         
+		                		         opt = opt + '<td>';
+		                		         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr;
+		                		         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+		                		        	 opt = opt + ' | '+output.endDateStr+'</div>';
+		                		         }else{
+		                		        	 opt = opt + '</div>';
+		                		         }
+		                		         opt = opt + '</td>';
+		                		         
+		                		         opt = opt + '<td>';
+		                		         if(output.reqDocCount!="0"){
+		                			         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+		                			         }
+		                			         else{
+		                			        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+		                			         }
+		                			         opt = opt + '</td>';
+		                		         
+		                		         opt = opt + '<td>';
+		                		         if(output.templateSubmissionStatus !=null && output.templateSubmissionStatus != '' && output.templateSubmissionStatus != 'undefined'){
+		                		        	 if(output.templateSubmissionStatus == "DRAFT"){
+		                		        		 draftCount = draftCount+1;       
+		                		        	 }else if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+		                		        		 waitingForApprovalCount = waitingForApprovalCount +1;    
+		                		        	 }else if(output.templateSubmissionStatus == "WAITING_TO_BE_SIGNED"){
+		                		        		 waitingToBeSignedCount = waitingToBeSignedCount +1; 
+		                		        	 }else if(output.templateSubmissionStatus == "PENDING"){
+		                		        		 pendingCount = pendingCount +1;   
+		                		        	 }else if(output.templateSubmissionStatus == "SEND_FOR_VERIFICATION"){
+		                		        		 sendForVerificationCount = sendForVerificationCount +1;   
+		                		        	 }else if(output.templateSubmissionStatus == "Finalized"){
+		                		        		 finalizedCount = finalizedCount +1;   
+		                		        	 }else if(output.templateSubmissionStatus == "REJECTED"){
+		                		        		 rejectedCount = rejectedCount +1;   
+		                		        	 }else if(output.templateSubmissionStatus == "EXPIRED"){
+		                		        		 expiredCount = expiredCount +1;     
+		                		        	 }
+		                		        	 opt = opt + '<div class="tblminwidth-75">'+output.templateSubmissionStatus+'</div>';
+		                		         }
+		                		         else{
+		                		        	 opt = opt + '<div class="tblminwidth-75 ">---</div>';
+		                		         }
+		                		         opt = opt + '</td>';
+		                		         
+		                		         
+		                		         opt = opt + '<td class="noPad">';
+		                		         opt = opt + '<div>';
+		                		     		  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+		                		     			 if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
+			                	     	        	 opt = opt +'<a class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i> | </a>';
+			                	     	         }
+		                		     		  }
+		                		     		 
+	                	     	        	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		                	       				opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i> | </a>';
+		                	       			'</sec:authorize>';
+		                	       			
+		                	       			if(output.templateSubmissionStatus != "EXPIRED"){
+		                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		                	     	     		if(output.typeOfContract == "New"){
+		                	     	     			opt = opt + '<a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i> | </a>';
+		                	     	     		}else if(output.typeOfContract == "Custom"){
+		                	     	     			opt = opt + '<a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"> | </i></a>';
+		                	     	     		}
+		                	       			'</sec:authorize>';
+		                	       			}
+		                	     	         
+		                	       			if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
+			                	   	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
+			                	   		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
+			                	   		     		}
+		                	   	         	}
+		                		     		
+		                		     		opt = opt + '</div></td>';
+		                		     	
+		                		     	opt = opt + '</tr>';
 	                		    }
+                		    }
 	                		
-	                		}
 	                		opt = opt + '	</tbody>';
 	                		opt = opt + '</table>';
 	                    
@@ -311,9 +311,8 @@ function clientContractsList(orgRelationId){
 	                		
 	                     $("#clientContractsList").append(opt); 
 	                     contractpagination(); 
-        },
-          
-     }); 
+	 },  
+	 }); 
 }
 </script>
 
