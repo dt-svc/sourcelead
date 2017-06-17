@@ -1146,10 +1146,10 @@ public class UserRestController {
 			String resultJson = null;
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			for(OrgRelations vendors:vendorList){
-				if(vendors.getLocationId().getId() == orgLocations.getId()){
+				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
 				}
-				if(vendors.getResponderLocationId().getId() == orgLocations.getId()){
+				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
 				}
 				
