@@ -51,6 +51,18 @@ function vendorRequirementListInclude(orgRelationID){
         result = result + '<input type="checkbox" value="onhold" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">ON HOLD</label>';
         result = result + '</li>';
+        result = result + '<li>';
+        result = result + '<input type="checkbox" value="cancel" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
+        result = result + '<label class="paddingLeft">CANCEL</label>';
+        result = result + '</li>';
+        result = result + '<li>';
+        result = result + '<input type="checkbox" value="Rejected" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
+        result = result + '<label class="paddingLeft">REJECTED</label>';
+        result = result + '</li>';
+        result = result + '<li>';
+        result = result + '<input type="checkbox" value="Closed" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
+        result = result + '<label class="paddingLeft">CLOSED</label>';
+        result = result + '</li>';
        /*  result = result + '<li>';
         result = result + '<input type="checkbox" value="unfilledClose" name="requirementStatus" id="requirementStatus" onclick="test('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">On Hold</label>';
@@ -158,7 +170,7 @@ function vendorRequirementListInclude(orgRelationID){
 			                
 			            	//result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
  
-			            	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+			            	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorInterviewsCount+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorOfferedCount+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorBackoutCount+"</div></td>";
