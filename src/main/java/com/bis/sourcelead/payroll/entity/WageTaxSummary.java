@@ -82,6 +82,10 @@ public class WageTaxSummary implements Serializable {
 
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "SSN_NUMBER")
+	private String ssnNumber;
+	
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -281,6 +285,14 @@ public class WageTaxSummary implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
 	}
 
 	

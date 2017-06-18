@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -40,6 +42,9 @@ public class EmployeePayrollRestController {
 	
 	@Autowired
 	private WageTaxSummaryService wageTaxSummaryService;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
 	
 	@RequestMapping(value = "/uploadPayrollDocument", method = RequestMethod.POST)
 	@ResponseBody 
@@ -60,6 +65,22 @@ public class EmployeePayrollRestController {
 			String isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 		}
 		return commonUtil.toJSON("success");
+	}
+	
+	@RequestMapping(value = "/loadEmployerPayrollCostByOrgLocationId", method = RequestMethod.GET)
+	public @ResponseBody String loadEmployerPayrollCostByOrgLocationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		String resultJson = "";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<EmployerPayrollCost>  employerPayrollCostList = employerPayrollCostService.loadEmployerPayrollCostByOrgLocationId(orgLocation);
+		if(employerPayrollCostList != null){
+			for(EmployerPayrollCost employerPayrollCost:employerPayrollCostList){
+				employerPayrollCost.setFromDateStr(conversionUtil.getDateAsString(employerPayrollCost.getFromDate()));
+				employerPayrollCost.setToDateStr(conversionUtil.getDateAsString(employerPayrollCost.getToDate()));
+			}
+			resultJson = commonUtil.toJSON(employerPayrollCostList);
+		}
+		return resultJson;
 	}
 	
 }

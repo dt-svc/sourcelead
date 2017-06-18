@@ -207,4 +207,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			}
 			return cellValue;
 		}
+
+	@Override
+	public List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation) throws Exception {
+		return employerPayrollCostDao.loadEmployerPayrollCostByOrgLocationId(orgLocation);
+	}
 }

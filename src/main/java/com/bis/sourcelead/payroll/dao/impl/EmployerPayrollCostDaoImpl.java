@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.List;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 
@@ -29,6 +33,20 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
 		return employerPayrollCost;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<EmployerPayrollCost> empCostList = null;
+		String query = "from EmployerPayrollCost empPayroll  left join fetch empPayroll.orgLocationId where empPayroll.orgLocationId.id =:orgLocationId";
+	    empCostList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		if(empCostList != null && empCostList.size() >0)
+		{
+			return empCostList;
+		}
+		return empCostList;
 	}
 
 }

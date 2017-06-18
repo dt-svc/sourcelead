@@ -19,14 +19,14 @@
 </section>
 
 <section class="contrHead">
-<ul>
-<li title=""><a href="#" class="wVer">Tab 1</a></li>
-<li title=""><a href="#">Tab 2</a></li>
-<li title=""><a href="#">Tab 3</a></li>
-<li title=""><a href="#">Tab 4</a></li>
-<div class="clearfix"></div>
-</ul>
-</section>
+		<ul>
+			<li title=""><a href="#" class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
+			<li title=""><a href="#">Tab 2</a></li>
+			<li title=""><a href="#">Tab 3</a></li>
+			<li title=""><a href="#">Tab 4</a></li>
+			<div class="clearfix"></div>
+		</ul>
+	</section>
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
@@ -78,90 +78,8 @@
                   </form:form>
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
-    	<table>
-        	<tbody>
-			</tbody><thead>
-            	<tr>
-                	<th>From Date</th>
-                    <th>To Date</th>
-                    <th>Batch Name</th>
-                    <th>Type</th>
-                    <th>Attachment</th>
-                </tr>
-			</thead>	
-                <tbody>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>
-                <tr>
-                	<td><div>16/06/2017</div></td>
-                    <td><div>16/06/2017</div></td>
-                    <td><div>Batch One</div></td>
-                    <td><div>Batch Type</div></td>
-                    <td><div>Attachment.doc</div></td>
-                </tr>                                  		
-            </tbody>
-        </table>
+    	<div id="employerCostDiv"></div>
+       
 	</div>
 	
 <nav>
@@ -176,59 +94,129 @@
 	</ul>
 	<div class="clearfix"></div>
 </nav>	
-
-
-
-
-                 
-                  
-                  
  </div>
-
 </div>
 </section>
 
+
 <script>
-$(function() {
-$('#fromDate').datepicker({
-changeMonth: true,
-changeYear: true, 
-dateFormat : 'dd-mm-yy',
-onSelect : function(selected) {
-$("#toDate").datepicker("option", "minDate", selected);
+function loadEmployeePayrollCost(){
+		  var sourceleadUrl ='${sourceleadUrl}';
+				  $.ajax({
+				    	type: "GET",
+				        url: sourceleadUrl+"/loadEmployerPayrollCostByOrgLocationId?${_csrf.parameterName}=${_csrf.token}",
+				        success: function(data) {
+						var result = "";				        	
+						result = result + '<table>';
+						result = result + '<tbody>';
+						result = result + '</tbody><thead>';
+						result = result + '<tr>';
+						//Employee	Emp ID	SSN	Total Hrs	Gross Wages	FICA	FUTA	SUI	ER Locals	WC Cost	Admin Fee	Total ER Cost	
+						result = result + '<th>From Date</th>';
+						result = result + '<th>To Date</th>';
+						result = result + '<th>Employee Id</th>';
+						result = result + '<th>Employee Name</th>';
+						result = result + '<th>SSN</th>';
+						result = result + '<th>Total Hrs</th>';
+						result = result + '<th>Gross Wages</th>';
+						result = result + '<th>FICA</th>';
+						result = result + '<th>FUTA</th>';
+						result = result + '<th>SUI</th>';
+						result = result + '<th>ER Locals</th>';
+						result = result + '<th>WC Cost</th>';
+						result = result + '<th>Admin Fee</th>';
+						result = result + '<th>Total ER Cost</th>';
+						result = result + '</tr>';
+						result = result + '</thead>	';
+						result = result + '<tbody>';
+						 var json = JSON.parse(data);
+			        	 for (var i=0; i<json.length; i++)
+						{
+			        		 var opt = json[i];
+			        		    result = result + ' <tr>';
+								result = result + '<td><div>'+opt.fromDateStr+'</div></td>';
+								result = result + ' <td><div>'+opt.toDateStr+'</div></td>';
+								result = result + '<td><div>'+opt.employeeId+'</div></td>';
+								result = result + '<td><div>'+opt.employeeName+'</div></td>';
+								if(opt.ssn !=null && opt.ssn !='' && opt.ssn !='undefined'){
+									result = result + ' <td><div>'+opt.ssn+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+								if(opt.totalHrs !=null && opt.totalHrs !='' && opt.totalHrs !='undefined'){
+									result = result + '<td><div>'+opt.totalHrs+'</div></td>';
+								}else{
+									result = result + ' <td><div>--</div></td>';
+								}
+								result = result + ' <td><div>'+opt.grossWages+'</div></td>';
+								result = result + '<td><div>'+opt.fica+'</div></td>';
+								result = result + '<td><div>'+opt.futa+'</div></td>';
+								result = result + ' <td><div>'+opt.sui+'</div></td>';
+								result = result + '<td><div>'+opt.erLocals+'</div></td>';
+								result = result + ' <td><div>'+opt.wcCost+'</div></td>';
+								result = result + '<td><div>'+opt.adminFee+'</div></td>';
+								result = result + '<td><div>'+opt.totalErCost+'</div></td>';
+								result = result + ' </tr>';
+						}
+						
+						
+						
+						
+				                                          
+						result = result + '  </table>';
+						result = result + ' </tbody>';
+						$("#employerCostDiv").empty();
+						$("#employerCostDiv").append(result);
+						
+				        	
+				        },
+				        
+				    });
+		 
 }
+</script>
 
-});
 
-$('#toDate').datepicker({
-changeMonth: true,
-changeYear: true, 
-dateFormat : 'dd-mm-yy',
-onSelect : function(selected) {
-$("#fromDate").datepicker("option", "maxDate", selected);
-}
-});
+<script>
+	$(function() {
+		$('#fromDate').datepicker({
+			changeMonth : true,
+			changeYear : true,
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#toDate").datepicker("option", "minDate", selected);
+			}
 
-});
+		});
+
+		$('#toDate').datepicker({
+			changeMonth : true,
+			changeYear : true,
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#fromDate").datepicker("option", "maxDate", selected);
+			}
+		});
+
+	});
 </script>
 
 <script>
-$(".addcon-pop").click(function(){
-	 $(".collapse-div-adduser").toggleClass("show-div");
-	 $(".collapse-div").removeClass("show-div");
-});
-$(".close-div").click(function(){
-	 $(this).parent().removeClass("show-div");
-	 });
-$(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
-	 e.stopPropagation();
-});
-$('html').click(function(){
-   $(".collapse-div-adduser").removeClass("show-div");
-	$(".collapse-div").removeClass("show-div");
-  });	
-		
-  
+	$(".addcon-pop").click(function() {
+		$(".collapse-div-adduser").toggleClass("show-div");
+		$(".collapse-div").removeClass("show-div");
+	});
+	$(".close-div").click(function() {
+		$(this).parent().removeClass("show-div");
+	});
+	$(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(
+			function(e) {
+				e.stopPropagation();
+			});
+	$('html').click(function() {
+		$(".collapse-div-adduser").removeClass("show-div");
+		$(".collapse-div").removeClass("show-div");
+	});
 </script>
 
 <!-- Added By Rajashekar  -->
@@ -236,30 +224,32 @@ $('html').click(function(){
 	function uploadPayrollDocument() {
 		alert("hiii")
 		/* if ($('#upload_payroll_form').validate(false, validationSettings)) { */
-			
-			
-			var frm = $('#upload_payroll_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-	        var form = $('#upload_payroll_form')[0];
-      		var formData = new FormData(form); 
-			
-			var sourceleadUrl = '${sourceleadUrl}';
-	 		$.ajax({
-	 			type : "POST",
-        	    data: formData,
-        	    contentType : 'application/json; charset=utf-8',
-        	    enctype: 'multipart/form-data',
-    	        processData: false,
-    	        contentType:false,
-        	    dataType : 'json',
-					url : sourceleadUrl+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+
+		var frm = $('#upload_payroll_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var form = $('#upload_payroll_form')[0];
+		var formData = new FormData(form);
+
+		var sourceleadUrl = '${sourceleadUrl}';
+		$
+				.ajax({
+					type : "POST",
+					data : formData,
+					contentType : 'application/json; charset=utf-8',
+					enctype : 'multipart/form-data',
+					processData : false,
+					contentType : false,
+					dataType : 'json',
+					url : sourceleadUrl
+							+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="
+							+ jsonData,
 					success : function(result) {
-						location.replace(sourceleadUrl+"/payrollList");
+						location.replace(sourceleadUrl + "/payrollList");
 					},
-					}); 
-			/* return true; */
+				});
+		/* return true; */
 		/* } else {
 			return false;
 		} */
@@ -271,26 +261,40 @@ $('html').click(function(){
 </script>
 <!-- End By Rajashekar -->
 
-<<script type="text/javascript">
-$(document.body).on('change', '#uploadBtn' ,function(){
-	 $('#uploadFile').val(this.value.split( '\\' ).pop());
-	 $("#uploadFile").focus();
-	 if(validate_fileupload(this.value)){
-	 var docFileSize = $('#uploadFile');
-		 var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
-			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
-	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-  		     $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	      }
-	 }
-});
+<
+<script type="text/javascript">
+	$(document.body)
+			.on(
+					'change',
+					'#uploadBtn',
+					function() {
+						$('#uploadFile').val(this.value.split('\\').pop());
+						$("#uploadFile").focus();
+						if (validate_fileupload(this.value)) {
+							var docFileSize = $('#uploadFile');
+							var docSize = this.files[0].size;
+							$("#uploadFileGroup").find(
+									'p.jquery_form_error_message').remove();
+							if (docSize > 2097152) {
+								document.getElementById("uploadFile").value = '';
+								$('#uploadFileGroup').find(
+										'p.jquery_form_error_message').remove();
+								$("input#uploadFile")
+										.after(
+												"<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+								document.getElementById("uploadFile")
+										.setAttribute('record-exist', 'yes');
+								document.getElementById("uploadFile")
+										.setAttribute('record-exist-errorMsg',
+												'Limit is exceeded than 2MB');
+							} else {
+								$('input#uploadFile').removeAttr(
+										"record-exist record-exist-errormsg");
+								$('#uploadFileGroup').find(
+										'p.jquery_form_error_message').remove();
+							}
+						}
+					});
 </script>
 
 
