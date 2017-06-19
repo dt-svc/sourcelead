@@ -93,7 +93,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 			if(null != orgClientList && orgClientList.size() > 0){
 				for(OrgRelations ocl :orgClientList){
-					ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 				 }
 			    model.addObject("add_clientList", orgClientList);

@@ -963,8 +963,8 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 			 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
 	 
-	 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+	 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrgLocationName() );
 		 } else {
 			 globalVarsMap.put("LoginOrgName", "--");
 		}
@@ -1089,9 +1089,9 @@ private void updatedRequirementMailToAssignedMembers(User loginUser, User assUse
 		else {
 			globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
-		if (loginOrgLocation.getOrg().getOrgName() != null
-				&& !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName())) {
-			globalVarsMap.put("LoginOrgName", loginOrgLocation.getOrg().getOrgName());
+		if (loginOrgLocation.getOrgLocationName() != null
+				&& !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName())) {
+			globalVarsMap.put("LoginOrgName", loginOrgLocation.getOrgLocationName());
 		}
 		else {
 			globalVarsMap.put("LoginOrgName", "--");
@@ -1192,8 +1192,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
 	 
-	 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+	 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrgLocationName() );
 		 } else {
 			 globalVarsMap.put("LoginOrgName", "--");
 		}
@@ -1387,7 +1387,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		if(requirement.getClientId()!=null){
 			OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(requirement.getClientId().getId());
 			if(orgRelations != null){
-				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrg().getOrgName());
+				globalVarsMap.put("client", orgRelations.getResponderLocationId().getOrgLocationName());
 			}
 		}else{
 			globalVarsMap.put("client","--");
@@ -1427,8 +1427,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 }else{
 				 globalVarsMap.put("loginUserName",loginUser.getFirstName());
 			}
-		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-			 globalVarsMap.put("role",loginOrgLocation.getOrg().getOrgName() );
+		 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+			 globalVarsMap.put("role",loginOrgLocation.getOrgLocationName() );
 			 } else {
 				 globalVarsMap.put("role", "--");
 			}
@@ -1508,7 +1508,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 globalVarsMap.put("requirementRate","--");
 		 }
 		 if(requirement.getClientId()!= null){
-		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrgLocationName());
 		 }else{
 		 globalVarsMap.put("client","--");
 		 }
@@ -1616,7 +1616,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				 globalVarsMap.put("requirementRate","--");
 				 }
 				 if(requirement.getClientId()!= null){
-				 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrgLocationName());
 				 }else{
 				 globalVarsMap.put("client","--");
 				 }
@@ -1899,8 +1899,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 }else{
 				 globalVarsMap.put("Role","--"); 
 			 }
-		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-			 globalVarsMap.put("Role",loginOrgLocation.getOrg().getOrgName() );
+		 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+			 globalVarsMap.put("Role",loginOrgLocation.getOrgLocationName() );
 			 } else {
 				 globalVarsMap.put("Role", "--");
 			}
@@ -2205,7 +2205,7 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				 globalVarsMap.put("RequirementRate", "--");
 			}
 		 if (requirement.getClientId() != null) {
-			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrg().getOrgName());
+			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrgLocationName());
 			 } else {
 				 globalVarsMap.put("clientname", "--");
 			}
@@ -2235,8 +2235,8 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 				 globalVarsMap.put("LoginUser", loginUser.getFirstName());
 			}
 		 
-		 if (loginOrgLocation.getOrg().getOrgName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrg().getOrgName() )) {
-			 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrg().getOrgName() );
+		 if (loginOrgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName() )) {
+			 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrgLocationName() );
 			 } else {
 				 globalVarsMap.put("LoginOrgName", "--");
 			}

@@ -587,7 +587,7 @@ public class OpenJobsRestController {
 	 public @ResponseBody  String openRequirementsSummary(@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception{
 		 Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
 		 Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
-		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrg().getOrgName());
+		 requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
 		 requirementDeatilsSummary.setRequirementCreatedDateToString(Constants.DMY.format(requirementDeatilsSummary.getCreatedDate()));
 		 return commonUtil.toJSON(requirementDeatilsSummary);
 		 
@@ -605,10 +605,10 @@ public class OpenJobsRestController {
 		 List<OrgLocations> countryfiltered = new ArrayList<>();
 		 for(OrgLocations loc : locationsList){
 			 if(null != country && country.equalsIgnoreCase(loc.getCountry())){
-				 loc.setOrgName(loc.getOrg().getOrgName());
+				 loc.setOrgName(loc.getOrgLocationName());
 				 countryfiltered.add(loc);
 			 }else{
-				 loc.setOrgName(loc.getOrg().getOrgName());
+				 loc.setOrgName(loc.getOrgLocationName());
 			 }
 		 }
 		

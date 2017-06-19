@@ -749,10 +749,10 @@ public class CandidateListRestController {
 			if(null != can.getOrgRelationId()){
 				can.setVendorOrgRelationId(can.getOrgRelationId().getId().toString());
 				if(can.getOrgRelationId().getResponderLocationId().getId() == loginOrgLocation.getId()){
-					can.setVendorName(can.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+					can.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
 				if(can.getOrgRelationId().getLocationId().getId() == loginOrgLocation.getId()){
-					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+					can.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				
 			}

@@ -248,7 +248,7 @@ public class VendorRestController {
 				if(orgRelation.getLocationId()!= null && orgRelation.getLocationId().getId()!=null &&orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getResponderLocationId() !=null){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -274,7 +274,7 @@ public class VendorRestController {
 				if(orgRelation.getResponderLocationId()!= null && orgRelation.getResponderLocationId().getId()!=null &&orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getLocationId() !=null){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setState(orgRelation.getLocationId().getState());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
@@ -333,7 +333,7 @@ public class VendorRestController {
 				if(orgRelation.getLocationId()!= null && orgRelation.getLocationId().getId()!=null &&orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getResponderLocationId()!=null){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -353,7 +353,7 @@ public class VendorRestController {
 				if(orgRelation.getResponderLocationId()!= null && orgRelation.getResponderLocationId().getId()!=null &&orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					if(orgRelation.getResponderLocationId()!=null){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setState(orgRelation.getLocationId().getState());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
@@ -449,7 +449,7 @@ public class VendorRestController {
 					
 					if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setState(orgRelation.getResponderLocationId().getState());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
@@ -471,7 +471,7 @@ public class VendorRestController {
 					
 					if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
-						orgRelation.setOrgName(orgRelation.getLocationId().getOrg().getOrgName());
+						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setState(orgRelation.getLocationId().getState());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());

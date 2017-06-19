@@ -197,10 +197,10 @@ public class AssociatesRestController {
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			for(OrgRelations vendors:vendorList){
 				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
+					vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
 				}
 				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
+					vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
 				}
 				
 			}
@@ -220,10 +220,10 @@ public class AssociatesRestController {
 			if(null != candidate.getOrgRelationId()){
 				candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
 				if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
-					candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+					candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrgLocationName());	
 				}
 				if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
-					candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+					candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 				}
 				
 			}

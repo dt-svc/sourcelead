@@ -364,7 +364,7 @@ public class RequirementController {
 		
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 		for(OrgRelations ocl :orgClientList){
-			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+			ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 		 }
 	    model.addObject("add_clientList", orgClientList);
@@ -373,7 +373,7 @@ public class RequirementController {
 	    if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
 	    	OrgRelations orgClient =orgRelationsService.getOrRelationsById(requirement.getClientId().getId()); 
 			if(null != orgClient){
-				orgClient.setOrgName(orgClient.getResponderLocationId().getOrg().getOrgName());
+				orgClient.setOrgName(orgClient.getResponderLocationId().getOrgLocationName());
 				orgClient.setOrgid(orgClient.getResponderLocationId().getOrg().getId());
 			 }
 		    model.addObject("orgClient", orgClient);

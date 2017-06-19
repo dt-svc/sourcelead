@@ -391,7 +391,7 @@ public class CandidateServiceImpl implements CandidateService {
              globalVarsMap.put("candidate", candidate.getFirstName());
          }
         
-         globalVarsMap.put("loginOrg",orgLocations.getOrg().getOrgName());
+         globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
          StringBuilder loginBuilder = new StringBuilder();
          globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
@@ -647,8 +647,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	if(null != candidate.getOrgRelationId()){
 		if(null != candidate.getOrgRelationId().getResponderLocationId()){
-			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
-				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+			if(null != candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName()  && !"".equalsIgnoreCase(candidate.getOrgRelationId().getResponderLocationId().getOrgName())){
+				writeRow.createCell(10).setCellValue(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 			}
 		}
 	}else{

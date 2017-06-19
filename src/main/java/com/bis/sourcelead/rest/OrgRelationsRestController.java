@@ -78,7 +78,7 @@ public class OrgRelationsRestController {
 		
 		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId()); 
 		for(OrgRelations ocl :orgClientList){
-			ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+			ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 			ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
 		 }
 		

@@ -206,10 +206,10 @@ public class UserRestController {
 		if(null != candidate.getOrgRelationId()){
 			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
 			if(candidate.getOrgRelationId().getResponderLocationId().getId() == orgLocations.getId()){
-				candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrg().getOrgName());	
+				candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrgLocationName());	
 			}
 			if(candidate.getOrgRelationId().getLocationId().getId() == orgLocations.getId()){
-				candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());	
+				candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
 			}
 			
 		}
@@ -761,8 +761,8 @@ public class UserRestController {
 				}
 			
 			 if (null != orgLocations.getOrg()) {
-				 if(null != orgLocations.getOrg().getOrgName() && !"".equalsIgnoreCase(orgLocations.getOrg().getOrgName())){
-					 globalVarsMap.put("LoginOrg", orgLocations.getOrg().getOrgName());
+				 if(null != orgLocations.getOrgLocationName() && !"".equalsIgnoreCase(orgLocations.getOrgLocationName())){
+					 globalVarsMap.put("LoginOrg", orgLocations.getOrgLocationName());
 				 } else {
 					 globalVarsMap.put("LoginOrg", "--");
 				}
@@ -906,7 +906,7 @@ public class UserRestController {
 					 globalVarsMap.put("employeeName",emailMessage.getFirstName());
 				}
 			 globalVarsMap.put("projectName", projects.getProjectName());
-			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
 			 
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1108,7 +1108,7 @@ public class UserRestController {
 				}
 			
 			 /*if (null != orgLocations.getOrg()) {
-				 globalVarsMap.put("LoginOrg", orgLocations.getOrg().getOrgName());
+				 globalVarsMap.put("LoginOrg", orgLocations.getOrgLocationName());
 				 } else {
 					 globalVarsMap.put("LoginOrg", "--");
 				}*/
@@ -1190,10 +1190,10 @@ public class UserRestController {
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			for(OrgRelations vendors:vendorList){
 				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
+					vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
 				}
 				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
-					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
+					vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
 				}
 				
 			}

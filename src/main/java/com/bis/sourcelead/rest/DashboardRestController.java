@@ -285,15 +285,15 @@ public class DashboardRestController {
 		//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
 		for(Requirement requirement : requirementList){
 			/*if(requirement.getClientId() != null){
-				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+				requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 			}*/
 			//changed ny prasad salina
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 				}
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 				}
 			}
 			

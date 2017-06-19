@@ -961,7 +961,7 @@ public class ClientServiceImpl implements ClientService{
 			//setting the class filed values
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 				 globalVarsMap.put("orgContactName", orgSpocLocation.getClientUser().getFullName());
-				 globalVarsMap.put("clientOrgName",orgSpocLocation.getClientLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("clientOrgName",orgSpocLocation.getClientLocationId().getOrgLocationName());
 				 globalVarsMap.put("ownerName", loginUser.getFullName());
 				 globalVarsMap.put("changedOwnerName", changedUser.getFullName());
 				 globalVarsMap.put("loginUser", loginUser.getFirstName());
@@ -1014,7 +1014,7 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
 				 globalVarsMap.put("clientLastName",emailMessage.getLastName());
 				 globalVarsMap.put("loginUser", emailMessage.getFromName());
-				 globalVarsMap.put("loginOrgName",orgLocation.getOrg().getOrgName());
+				 globalVarsMap.put("loginOrgName",orgLocation.getOrgLocationName());
 				 globalVarsMap.put("ownerName", user.getFirstName());
 				 globalVarsMap.put("ownerEmail",user.getEmail());
 				 
@@ -1096,7 +1096,7 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
 				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
 				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
-				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 				 globalVarsMap.put("signature","Sourcelead Team");
 				 StringBuilder loginBuilder = new StringBuilder();
 				 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1106,7 +1106,7 @@ public class ClientServiceImpl implements ClientService{
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
 					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
-					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 					 globalVarsMap.put("signature","Sourcelead Team"); 
 					 StringBuilder loginBuilder = new StringBuilder();
 					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -1164,14 +1164,14 @@ public class ClientServiceImpl implements ClientService{
 				 globalVarsMap.put("lastName",emailMessage.getLastName());
 				 globalVarsMap.put("vendorFirstName",orgSpoc.getClientUser().getFirstName());
 				 globalVarsMap.put("vendorLastName",orgSpoc.getClientUser().getLastName());
-				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+				 globalVarsMap.put("vendorOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 				 globalVarsMap.put("signature","Sourcelead Team");
 			 }else if( Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())){
 					 globalVarsMap.put("firstName", emailMessage.getFirstName());
 					 globalVarsMap.put("lastName",emailMessage.getLastName());
 					 globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 					 globalVarsMap.put("clientLastName",orgSpoc.getVendorUser().getLastName());
-					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrg().getOrgName());
+					 globalVarsMap.put("clientOrgName",orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 					 globalVarsMap.put("signature","Sourcelead Team");
 				}
 

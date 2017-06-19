@@ -499,9 +499,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    
 			    if(null != projects.getOrgRelationId()){
 					if(null != projects.getOrgRelationId().getLocationId() && projects.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
-						projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+						projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrgLocationName());
 					}if(null != projects.getOrgRelationId().getResponderLocationId() && projects.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
-						projects.setClient(projects.getOrgRelationId().getLocationId().getOrg().getOrgName());
+						projects.setClient(projects.getOrgRelationId().getLocationId().getOrgLocationName());
 					}
 				}
 			    
@@ -807,23 +807,23 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(null != projects.getOrgRelationId()){
 				if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 					projects.setRelationId(ocl.getId());
-					projects.setClient(ocl.getResponderLocationId().getOrg().getOrgName());
+					projects.setClient(ocl.getResponderLocationId().getOrgLocationName());
 				}if(projects.getOrgRelationId().getId().equals(ocl.getId()) && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 					projects.setRelationId(ocl.getId());
-					projects.setClient(ocl.getLocationId().getOrg().getOrgName());
+					projects.setClient(ocl.getLocationId().getOrgLocationName());
 				}
 			}
 			
 			if(null != ocl.getLocationId() && null != ocl.getLocationId().getId() && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 				if(null != ocl.getResponderLocationId()){
 					StringBuilder approverHierarchiesSB=new StringBuilder();
-					clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrg().getOrgName()).append(",").append(ocl.getId()).toString();
+					clientList[j] = approverHierarchiesSB.append(ocl.getResponderLocationId().getOrgLocationName()).append(",").append(ocl.getId()).toString();
 				}
 			}
 			if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 				if(null != ocl.getLocationId()){
 					StringBuilder approverHierarchiesSB=new StringBuilder();
-					clientList[j] = approverHierarchiesSB.append(ocl.getLocationId().getOrg().getOrgName()).append(",").append(ocl.getId()).toString();
+					clientList[j] = approverHierarchiesSB.append(ocl.getLocationId().getOrgLocationName()).append(",").append(ocl.getId()).toString();
 				}
 			}
 			j++;
@@ -892,7 +892,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 globalVarsMap.put("managerName",projectManager.getFirstName());
 			}
 		 globalVarsMap.put("projectName", projects.getProjectName());
-		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
 		  
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -964,7 +964,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 globalVarsMap.put("employeeName",emailMessage.getFirstName());
 			}
 		 globalVarsMap.put("projectName", projects.getProjectName());
-		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
 		 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -1898,7 +1898,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 globalVarsMap.put("managerLastName",projectManager.getLastName());
 				 globalVarsMap.put("teamMembers",teamMembersList);
 				 globalVarsMap.put("projectName", projects.getProjectName());
-				 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+				 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 				 StringBuilder loginURLBuilder=new StringBuilder();
 				 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				 
@@ -1963,7 +1963,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 globalVarsMap.put("employeeFirstName",emailMessage.getFirstName());
 					 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
 					 globalVarsMap.put("projectName", projects.getProjectName());
-					 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+					 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 					 StringBuilder loginURLBuilder=new StringBuilder();
 					 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 					 
