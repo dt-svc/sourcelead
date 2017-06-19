@@ -51,6 +51,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
@@ -1461,13 +1462,14 @@ public class VendorRestController {
 			int interviewsSum = 0;
 			int offeredSum = 0;
 			int backoutSum = 0;
+			int submitToclient = 0;
 			List<RequirementSubmission> requirementSubmissionList1 = requirementSubmissionService.getApplicantRequirmentCountSubmittedByVendor(orgLocations.getId(), requirement.getParentRequirement().getId(), vendorLocationId);
 			if (null != requirementSubmissionList1 && requirementSubmissionList1.size() > 0) {
 				for (RequirementSubmission reqSub : requirementSubmissionList1) {
 					int vendorInterviewsCount = 0;
 					int vendorOfferedCount = 0;
-					int rejectedCount = 0;
 					int vendorBackoutCount = 0;
+					int vendorSubmittoClientCount = 0;
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(), null, null);
 					if (null != requirementSubmissionHistoryList
 							&& requirementSubmissionHistoryList.size() > 0) {
@@ -1478,22 +1480,25 @@ public class VendorRestController {
 							else if ("offermade".equalsIgnoreCase(rsh.getToStage())) {
 								vendorOfferedCount++;
 							}
-							else if ("rejected".equalsIgnoreCase(rsh.getToStage())) {
-								rejectedCount++;
-							}
+							
 							else if ("backout".equalsIgnoreCase(rsh.getToStage())) {
 								vendorBackoutCount++;
+							}
+							else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(rsh.getToStage())){
+								vendorSubmittoClientCount++;
 							}
 						}
 						interviewsSum = interviewsSum + vendorInterviewsCount;
 						offeredSum = offeredSum + vendorOfferedCount;
 						backoutSum = backoutSum + vendorBackoutCount;
+						submitToclient = submitToclient + vendorSubmittoClientCount;
 					}
 				}
 			}
 			requirement.setVendorInterviewsCount(interviewsSum);
 			requirement.setVendorOfferedCount(offeredSum);
 			requirement.setVendorBackoutCount(backoutSum);
+			requirement.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
 			requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
 			if (requirement.getManagerUserId() != null) {
 				String managerFirstName = "";
