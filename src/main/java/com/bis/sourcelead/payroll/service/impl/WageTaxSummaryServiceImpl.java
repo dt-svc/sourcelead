@@ -251,5 +251,11 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			return cellValue;
 		}
 
+	@Override
+	public List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)
+	{
+		return wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation);
+	}
+
 
 }
