@@ -662,14 +662,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	 public EmailAttachment zipFiles(List<TimesheetSubmissionsDocuments> docusList) throws MessagingException{
-         EmailAttachment ema = null;;
+
+         EmailAttachment ema = null;
 	        FileOutputStream fos = null;
 	        ZipOutputStream zipOut = null;
 	        FileInputStream fis = null;
 	        try {
 	           ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 		    	 if(docusList != null && !docusList.isEmpty()){
-		    		 ema = new EmailAttachment();
+		    		    ema=new EmailAttachment();
 		    	         ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 		    	         
 				    	 int i= 0;
@@ -822,6 +823,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
+
 		 if(null != attachmentZip){
 			 attachmentList.add(attachmentZip);
 		 }
@@ -1107,15 +1109,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
 			for(String id :submissionApproverHierarchyIds){
 				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
-					SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
-					if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
-						submissionApproverHierarchy.setBillingStatus(Constants.SENT);
-					}else{
-						submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
-					}
-					submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
 				}
-				
 			}
 		}
 	}
@@ -1510,7 +1505,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
 			if (null != rate && null != projectMember.getTotalHours()) {
-				invoiceLineItems.setRate(rate);
+				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
 				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
