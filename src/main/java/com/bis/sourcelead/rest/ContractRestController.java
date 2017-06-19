@@ -918,6 +918,22 @@ public class ContractRestController {
 			String endTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", endDateStr);
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Date convertedEndDate = TZ_DF_TS.parse(endTimeUTC);
+			
+			String fromStage = "";
+			
+			if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("EXPIRED"))
+			{
+				ContractsHistory contractsHistory = contractsTemplateService.getAllContractsHistoryByContractId(contracts.getId());
+				fromStage = contractsHistory.getFromStage();
+        		Date date = new Date();
+        		String currentTimeStr = TZ_DF_TS.format(date);
+				Date curDate = TZ_DF_TS.parse(currentTimeStr);
+        		if(convertedEndDate.after(curDate)|| convertedEndDate.equals(curDate)){
+        			contracts.setTemplateSubmissionStatus(fromStage);
+        		}
+			}
+			
+			
 		 	// updating parent contract end date if get the contract i is child contract
 			if(contracts.getParentContractId()!=null){
 			 	if(null != contracts.getParentContractId().getId()){
@@ -928,6 +944,7 @@ public class ContractRestController {
 					contractsTemplateDao.saveNewContract(parentContracts);
 			 	}
 			}
+			
 		 // updating child contract end date if get the parent contract
 		 	if(null == contracts.getParentContractId()){
 		 		Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
@@ -938,6 +955,7 @@ public class ContractRestController {
 					contractsTemplateDao.saveNewContract(childContarct);
 		 		}
 		 	}
+		 	
 		 // updating contract end date 
 		 	contracts.setEndDate(convertedEndDate);
 		 	contracts.setUpdatedDate(new Date());
