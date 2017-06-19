@@ -6,4 +6,6 @@ public interface AddExpensesDao {
 
 	public Expenses storeAddExpensesData(Expenses expenses) throws Exception;
 
+	public Expenses checkExpensIdNumberInDatebase(Long orgLocId);
+
 }
