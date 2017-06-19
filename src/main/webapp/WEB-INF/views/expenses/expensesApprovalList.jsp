@@ -84,6 +84,7 @@ margin-top: 3px;
 							
 				<ul>
 				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
+
 					<div class="pull-left mt5 mr">   		
 				     <span class="dashboard-datepkr pull-left">
 					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
@@ -95,7 +96,7 @@ margin-top: 3px;
 					 </span>
 					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
 					</div>
-					
+
 					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
@@ -185,34 +186,35 @@ $.ajax({
 	 var data = json[i];
 	result = result+' <tr id = "row'+data.expenseId.id+'">';
 	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+data.expensesUserid+'" alt="Profile Image" class="img-circle img-responsive">';
-	result = result+' <span title="'+data.expenseEmpUserFirstNameLastName+'">';
-	result = result+' <b>'+data.expenseEmpUserFirstNameLastName+'</b>';
+	result = result+' <span>';
+	result = result+' <b title="'+data.expenseEmpUserFirstNameLastName+'">'+data.expenseEmpUserFirstNameLastName+'</b>';
 	result = result+' <b title="'+data.expenseEmpUserEmail+'">'+data.expenseEmpUserEmail+'</b>';
 	result = result+' <b title="'+data.expensesEmployeeUserId+'">'+data.expensesEmployeeUserId+'</b>';
 	result = result+' </span></div>';
 	result = result+' </td>';
 	if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
-		result = result+' <td><div><span>'+data.expenseEmpUserType+'</span><br><span>'+data.userTypeVendorName+'</span></div></td>';	
+		result = result+' <td><div><span title="'+data.expenseEmpUserType+'">'+data.expenseEmpUserType+'</span><br><span title="'+data.userTypeVendorName+'">'+data.userTypeVendorName+'</span></div></td>';	
 	}else{
-		result = result+' <td><div><span>'+data.expenseEmpUserType+'</span></div></td>';	
+		result = result+' <td><div><span title="'+data.expenseEmpUserType+'">'+data.expenseEmpUserType+'</span></div></td>';	
 	}
 	
 	if(data.expenseId.clientName != null && data.expenseId.clientName != '' && data.expenseId.clientName !='undefined'){
 		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span><br><span title="'+data.expenseId.clientName+'">'+data.expenseId.clientName+'</span></div></td>';	
 	}else{
-		result = result+' <td><div><span>'+data.expensesProjectName+'</span></div></td>';	
+		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span></div></td>';	
 	}
-	result = result+' <td><div class="sm">'+data.expenseStartDateString+'</div></td>';
+	result = result+' <td><div class="sm" title="'+data.expenseStartDateString+'">'+data.expenseStartDateString+'</div></td>';
 	
 	if(data.expenseEndDateString != null && data.expenseEndDateString != '' && data.expenseEndDateString !='undefined'){
-		result = result+' <td><div class="sm">'+data.expenseEndDateString+'</div></td>';	
+		result = result+' <td><div class="sm" title="'+data.expenseEndDateString+'">'+data.expenseEndDateString+'</div></td>';	
 	}else{
-		result = result+' <td><div class="sm">--</div></td>';
+		result = result+' <td><div class="sm" title="--">--</div></td>';
 	}
 	
-	
+
 	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
-	result = result+' <td><div class="sm">';
+
+	result = result+' <td><div class="sm" title="'+data.expenseId.totalAmount+'">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
 	'</sec:authorize>';
@@ -223,7 +225,7 @@ $.ajax({
 	result = result+'</a>';
 	'</sec:authorize>';
 	result = result+'</div></td>';
-	result = result+' <td><div id="status'+data.expenseId.id+'">'+data.expenseApprovalStatus+'</div></td>';
+	result = result+' <td><div id="status'+data.expenseId.id+'" title="'+data.expenseApprovalStatus+'">'+data.expenseApprovalStatus+'</div></td>';
 	
 	result = result+' <td>';
 	var tdSpanLength = 9;
@@ -254,6 +256,7 @@ $.ajax({
     	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
     	'</sec:authorize>'; 
    }
+
      result = result+' </td>'; 
 /* 	 result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';       */        
 	 result = result+' </tr>';
