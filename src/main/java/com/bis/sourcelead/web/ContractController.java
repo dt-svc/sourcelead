@@ -284,18 +284,18 @@ public class ContractController {
 		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
 		for (OrgRelations orgRelations : clientList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
@@ -333,18 +333,18 @@ public class ContractController {
 		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
 		for (OrgRelations orgRelations : clientList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
@@ -489,18 +489,18 @@ public class ContractController {
 		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}
 		for (OrgRelations orgRelations : clientList) {
 			String orgName = "";
 			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getLocationId().getOrgLocationName();
 			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
-				orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
 		}

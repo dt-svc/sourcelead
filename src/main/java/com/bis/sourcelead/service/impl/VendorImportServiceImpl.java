@@ -502,10 +502,10 @@ public class VendorImportServiceImpl implements VendorImportService {
 			jsonObj.put("roleTypeId", roleTypeId);
 			OrgRelations orgRelation = null;
 			for (OrgRelations org : orgList) {
-				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrg().getOrgName())) {
+				if (orgName.equalsIgnoreCase(org.getResponderLocationId().getOrgLocationName())) {
 					orgRelation = org;
 				}
-				else if (orgName.equalsIgnoreCase(org.getLocationId().getOrg().getOrgName())) {
+				else if (orgName.equalsIgnoreCase(org.getLocationId().getOrgLocationName())) {
 					orgRelation = org;
 				}
 			}

@@ -124,7 +124,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		        document.open();
 
 		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-			    Paragraph para = new Paragraph(hedderLineString.append(orgLoc.getOrg().getOrgName()).append(" Expenses.").toString(),boldFont);
+			    Paragraph para = new Paragraph(hedderLineString.append(orgLoc.getOrgLocationName()).append(" Expenses.").toString(),boldFont);
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            document.add(para);
 		        
@@ -133,7 +133,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		        BaseColor myColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myColor);
 		        StringBuilder userStyle = new StringBuilder();
-		        userStyle.append("MY EXPENSES").append("-").append(orgLoc.getOrg().getOrgName()).append(" ");
+		        userStyle.append("MY EXPENSES").append("-").append(orgLoc.getOrgLocationName()).append(" ");
 	            PdfPTable table = new PdfPTable(myExpensesHeaders.length);
 		        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
@@ -255,7 +255,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName() + "_" + dateFormat.format(new Date()));
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName() + "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
 		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails);
 		int column = 0;
@@ -267,8 +267,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries);
 			column++;
 		}
-		 //file = new File(orgLoc.getOrg().getOrgName() + "_Expenses_" + dateFormat.format(new Date()) + ".xls");
-		 file = File.createTempFile(orgLoc.getOrg().getOrgName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
+		 //file = new File(orgLoc.getOrgLocationName() + "_Expenses_" + dateFormat.format(new Date()) + ".xls");
+		 file = File.createTempFile(orgLoc.getOrgLocationName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
 		 file.setReadable(true);
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
@@ -435,7 +435,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("- My Expenses");
+	        userStyle.append(orgLoc.getOrgLocationName()).append(" ").append("- My Expenses");
 	       
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
@@ -562,7 +562,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrg().getOrgName()+ "_" + dateFormat.format(new Date()));
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName()+ "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
 		TimeSheetSubmissionCount requirementSubCount=null;
 		createExcelsheet = getAllExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
@@ -573,7 +573,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			column++;
 		}
 		 try {
-			file = File.createTempFile(orgLoc.getOrg().getOrgName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
+			file = File.createTempFile(orgLoc.getOrgLocationName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

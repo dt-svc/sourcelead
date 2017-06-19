@@ -218,10 +218,10 @@ public class RequirementListRestController {
 				
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 				if(requirement.getManagerUserId() != null){
@@ -275,10 +275,10 @@ public class RequirementListRestController {
 						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 							if(requirement.getClientId() != null){
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 								}
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+									requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 								}
 							}
 							if(requirement.getManagerUserId() != null){
@@ -315,10 +315,10 @@ public class RequirementListRestController {
 			for(Requirement requirement : requirementList){
 				if(requirement.getClientId() != null){
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+						requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 					}
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 					}
 				}
 				if(requirement.getManagerUserId() != null){
@@ -342,10 +342,10 @@ public class RequirementListRestController {
 						if(stat.equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
 							if(requirement.getClientId() != null){
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 								}
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+									requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 								}
 							}
 							if(requirement.getManagerUserId() != null){
@@ -414,10 +414,10 @@ public class RequirementListRestController {
 					if(requirement.getSpocId() !=null){
 						if(requirement.getClientId() !=null ){
 							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Client")){
-								requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+								requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 							}
 							if(requirement.getClientId().getInitiatorType().equalsIgnoreCase("Vendor")){
-								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+								requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 							}
 						}
 						
@@ -667,7 +667,7 @@ public class RequirementListRestController {
 									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									
 									if(null != requirementSubmission.getVendorLocationId()){
-										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 									}else{
 										if(null == requirementSubmission.getRecruiterUserId() &&  requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")){
 											requirementSubmission.setCandidateSource(requirementSubmission.getCandidate().getCandidateType());
@@ -680,7 +680,7 @@ public class RequirementListRestController {
 									
 									if(null != submissionType && submissionType.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 										/*if(requirementSubmission.getVendorLocationId() != null){
-											requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrg().getOrgName());
+											requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 										}*/
 										
 										RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
@@ -850,7 +850,7 @@ public class RequirementListRestController {
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 						if(requirement.getClientId().getResponderLocationId() != null){
 							StringBuilder sb = new StringBuilder();
-							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+							requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 							if(requirement.getSpocId().getClientUser().getFirstName() !=null && requirement.getSpocId().getClientUser().getLastName() !=null){
 								sb.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName());
 							}else{
@@ -862,11 +862,11 @@ public class RequirementListRestController {
 						}
 					}
 					/*if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 					}*/
 					if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 						StringBuilder sb1 = new StringBuilder();
-						requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+						requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 						
 						if(requirement.getSpocId().getVendorUser().getFirstName() !=null && requirement.getSpocId().getVendorUser().getLastName() !=null){
 							sb1.append(requirement.getSpocId().getVendorUser().getFirstName()).append(" ").append(requirement.getSpocId().getVendorUser().getLastName());
@@ -900,7 +900,7 @@ public class RequirementListRestController {
 							if(requirement.getClientId() != null){
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 									StringBuilder sb3 = new StringBuilder();
-									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
+									requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
 									if(requirement.getSpocId().getClientUser().getFirstName() !=null && requirement.getSpocId().getClientUser().getLastName() !=null){
 										sb3.append(requirement.getSpocId().getClientUser().getFirstName()).append(" ").append(requirement.getSpocId().getClientUser().getLastName());
 									}else{
@@ -912,7 +912,7 @@ public class RequirementListRestController {
 								}
 								if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
 									StringBuilder sb4 = new StringBuilder();
-									requirement.setClientName(requirement.getClientId().getLocationId().getOrg().getOrgName());
+									requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
 									if(requirement.getSpocId().getVendorUser().getFirstName() !=null && requirement.getSpocId().getVendorUser().getLastName() !=null){
 										sb4.append(requirement.getSpocId().getVendorUser().getFirstName()).append(" ").append(requirement.getSpocId().getVendorUser().getLastName());
 									}else{
@@ -1398,7 +1398,7 @@ public class RequirementListRestController {
 							}
 
 					}
-					//file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrg().getOrgName(),exportType,requirementId,submissionType, requirementSubmissionCounts);
+					//file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrgLocationName(),exportType,requirementId,submissionType, requirementSubmissionCounts);
 				}
 					 file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation,exportType,requirementId,submissionType,requirementSubmissionCounts);
 				
@@ -1545,8 +1545,8 @@ private RequirementSubmissionCounts getRequirementSubmissionsCount(Long requirem
 		    		 
 		    		 globalVarsMap.put("requirementTitle",releasedRequirement.getJobTitle());
 		    		 globalVarsMap.put("requirementStatus",requirement.getRequirementSubmissionStatus().toString());
-		    		 globalVarsMap.put("logInOrgName", loginOrgLocation.getOrg().getOrgName());
-		    		 globalVarsMap.put("requirementClientName",loginOrgLocation.getOrg().getOrgName());
+		    		 globalVarsMap.put("logInOrgName", loginOrgLocation.getOrgLocationName());
+		    		 globalVarsMap.put("requirementClientName",loginOrgLocation.getOrgLocationName());
 		    		 
 		    		 String reqLocation="";
 		    		 if(null != requirement.getCountry() && "" != requirement.getCountry() && "undefined" != requirement.getCountry()){

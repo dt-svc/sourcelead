@@ -75,13 +75,13 @@ public class ProjectsController {
 				for(OrgRelations ocl :orgClientList){
 					if(null != ocl.getLocationId() && ocl.getLocationId().getId() != null && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 						if(ocl.getResponderLocationId() != null){
-							ocl.setOrgName(ocl.getResponderLocationId().getOrg().getOrgName());
+							ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 							ocl.setOrgLocationId(ocl.getResponderLocationId().getId());
 						}
 					}
 					if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 						if(ocl.getLocationId() != null){
-							ocl.setOrgName(ocl.getLocationId().getOrg().getOrgName());
+							ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
 							ocl.setOrgLocationId(ocl.getLocationId().getId());
 						}
 					}

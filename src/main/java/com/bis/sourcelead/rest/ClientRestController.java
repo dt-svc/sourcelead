@@ -646,12 +646,12 @@ public class ClientRestController {
 			List<OrgRelations> relationsList = orgRelationsService.getClientOrVendorListByOrgLocationId(orgLocation.getId(), responderType);
 			for(OrgRelations orgRelations : relationsList){
 				if(orgRelations.getLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrg().getOrgName())){
+					if(clientName.equalsIgnoreCase(orgRelations.getResponderLocationId().getOrgLocationName())){
 						flag = true;
 					}
 				}	
 				else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
-					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrg().getOrgName())){
+					if(clientName.equalsIgnoreCase(orgRelations.getLocationId().getOrgLocationName())){
 						flag = true;
 					}
 					

@@ -84,15 +84,15 @@ public class ProjectsDashboardController {
         
         List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
-        	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+        	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
         	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 				if(orgRelations.getResponderLocationId() != null){
-					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrg().getOrgName());
+					orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
 				}
 			}
 			if(null != orgRelations.getResponderLocationId() && null != orgRelations.getResponderLocationId().getId() && orgRelations.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 				if(orgRelations.getLocationId() != null){
-					orgRelations.setClientName(orgRelations.getLocationId().getOrg().getOrgName());
+					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
 				}
 			}
         }
@@ -153,7 +153,7 @@ public class ProjectsDashboardController {
         List<Projects> projectsList = projectsService.getAllLoginUserProjectsList(projectIds, loginOrgLocations.getId());
         for(Projects projects: projectsList){
             if(projects.getOrgRelationId()!=null) {
-                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrg().getOrgName());
+                projects.setClient(projects.getOrgRelationId().getResponderLocationId().getOrgLocationName());
                 
             }
         }

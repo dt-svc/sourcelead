@@ -204,7 +204,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());
 					}
 					 orgSpoc.setSpocLocationId(orgSpoc.getClientLocationId().getId());
-					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 					 
 					 orgSpoc.setSpocUserId(orgSpoc.getClientUser().getId());
 				 }
@@ -224,7 +224,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 					 orgSpoc.setUserId(orgSpoc.getClientUser().getId());
 					
 					 orgSpoc.setSpocLocationId(orgSpoc.getVendorLocationId().getId());
-					 orgSpoc.setOrgName(orgSpoc.getVendorLocationId().getOrg().getOrgName());
+					 orgSpoc.setOrgName(orgSpoc.getVendorLocationId().getOrgLocationName());
 					 
 					 orgSpoc.setSpocUserId(orgSpoc.getVendorUser().getId());
 				 }
@@ -372,7 +372,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				orgspoc.setSpocName(contactsListStringBuilder.append(orgspoc.getClientUser().getFirstName()).append(" ").append(orgspoc.getClientUser().getLastName()).toString());
 				orgspoc.setSpocEmail(orgspoc.getClientUser().getEmail());
 				orgspoc.setSpocMobilePhone(orgspoc.getClientUser().getMobilePhone());
-				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrg().getOrgName());
+				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrgLocationName());
 				orgspoc.setStatus(orgspoc.getStatus());
 				
 			}
@@ -390,7 +390,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				orgspoc.setSpocName(contactsStringBuilder.append(orgspoc.getClientUser().getFirstName()).append("").append(orgspoc.getClientUser().getLastName()).toString());
 				orgspoc.setSpocEmail(orgspoc.getClientUser().getEmail());
 				orgspoc.setSpocMobilePhone(orgspoc.getClientUser().getMobilePhone());
-				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrg().getOrgName());
+				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrgLocationName());
 				orgspoc.setStatus(orgspoc.getStatus());
 				
 			}
@@ -409,7 +409,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				orgspoc.setSpocName(contactListStringBuilder.append(orgspoc.getClientUser().getFirstName()).append("").append(orgspoc.getClientUser().getLastName()).toString());
 				orgspoc.setSpocEmail(orgspoc.getClientUser().getEmail());
 				orgspoc.setSpocMobilePhone(orgspoc.getClientUser().getMobilePhone());
-				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrg().getOrgName());
+				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrgLocationName());
 				orgspoc.setStatus(orgspoc.getStatus());
 				
 			}
@@ -428,7 +428,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				orgspoc.setSpocName(contactStringBuilder.append(orgspoc.getClientUser().getFirstName()).append("").append(orgspoc.getClientUser().getLastName()).toString());
 				orgspoc.setSpocEmail(orgspoc.getClientUser().getEmail());
 				orgspoc.setSpocMobilePhone(orgspoc.getClientUser().getMobilePhone());
-				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrg().getOrgName());
+				orgspoc.setOrgName(orgspoc.getClientLocationId().getOrgLocationName());
 				orgspoc.setStatus(orgspoc.getStatus());
 				
 			}
@@ -462,7 +462,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				     }
 					
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
-					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 					 contactsList.add(orgSpoc);
 				}
 		   }

@@ -220,7 +220,7 @@ public class ExpensesApprovalRestController {
 			// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
 			
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
 			 
 			 
 			 StringBuilder timeFrequencySB = new StringBuilder();

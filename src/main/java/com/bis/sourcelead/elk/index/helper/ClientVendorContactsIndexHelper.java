@@ -26,7 +26,7 @@ public class ClientVendorContactsIndexHelper {
 			clientVendorContactsIndex.setId(orgSpoc.getId());
 			clientVendorContactsIndex.setVendorLocationId(orgSpoc.getVendorLocationId().getId());
 			clientVendorContactsIndex.setOrgRelationId(orgSpoc.getOrgRelations().getId());
-			clientVendorContactsIndex.setOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+			clientVendorContactsIndex.setOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 			//clientVendorContactsIndex.setSpocEmail(orgSpoc.getSpocUser().getEmail());
 			//clientVendorContactsIndex.setSpocMobilePhone(orgSpoc.getSpocUser().getMobilePhone());
 			clientVendorContactsIndex.setInvitationStatus(orgSpoc.getInvitationStatus());
@@ -69,8 +69,8 @@ public class ClientVendorContactsIndexHelper {
             	
             }
             clientVendorContactsIndex.setOwnerUserId(orgSpoc.getOwnerUser().getId());
-			clientVendorContactsIndex.setVendorOrgName(orgSpoc.getVendorLocationId().getOrg().getOrgName());
-			clientVendorContactsIndex.setClientOrgName(orgSpoc.getClientLocationId().getOrg().getOrgName());
+			clientVendorContactsIndex.setVendorOrgName(orgSpoc.getVendorLocationId().getOrgLocationName());
+			clientVendorContactsIndex.setClientOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 		
 		}
 		return clientVendorContactsIndex;
