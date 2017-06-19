@@ -1842,6 +1842,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 					 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 					 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
+					 clientSubmission.setRejectedCategoryType("Other");
+					 clientSubmission.setRejectedCategoryOther("Under cooling off period");
 				 }
 			 }else{
 				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
