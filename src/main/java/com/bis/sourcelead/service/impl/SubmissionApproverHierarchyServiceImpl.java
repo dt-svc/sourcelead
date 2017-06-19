@@ -441,6 +441,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return submissionApproverHierarchyDao.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId,frequencyStartDate,frequencyEndDate,invoiceType);
 	}
 
+	@Override
+	public void updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long submissionHierarchyId,String invoiceType,String status) throws Exception {
+		 submissionApproverHierarchyDao.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(submissionHierarchyId,invoiceType,status);
+	}
+
 	
 	
 	
