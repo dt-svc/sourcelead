@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -59,6 +60,8 @@ public interface ContractsTemplateService {
 	void documentsReceivedMailToOwner(Contracts contractId, User user, Org org) throws Exception;
 
 	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus)throws Exception;
+
+	ContractsHistory getAllContractsHistoryByContractId(Long contractId);
 
 	
 }

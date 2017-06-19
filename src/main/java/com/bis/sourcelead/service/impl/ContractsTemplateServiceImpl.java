@@ -1567,12 +1567,39 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-		Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
-		String currentTimeStr = Constants.TZ_DF.format(startTime);  
-		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+		
+		
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-		contracts.setStartDate(convertedDate);
+		if(jsonObj.has("startDate") && null != jsonObj.getString("startDate") && !"".equals(jsonObj.getString("startDate"))){
+			Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
+			String currentTimeStr = Constants.TZ_DF.format(startTime);  
+			String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+			contracts.setStartDate(convertedDate);
+			if(null != vendorContracts){
+				vendorContracts.setStartDate(convertedDate);
+			}
+		}
+		if (jsonObj.has("workLocation") && null != jsonObj.getString("workLocation")
+				&& !"".equals(jsonObj.getString("workLocation"))) {
+			contracts.setWorkLocation(jsonObj.getString("workLocation"));
+			if(null != vendorContracts){
+				vendorContracts.setWorkLocation(jsonObj.getString("workLocation"));
+			}
+		}
+		
+		if (jsonObj.has("joinDate") && null != jsonObj.getString("joinDate")
+				&& !"".equals(jsonObj.getString("joinDate"))) {
+			Date joinTime = commonUtil.getDateFormat(jsonObj.getString("joinDate"));
+			String currentTimeStr = Constants.TZ_DF.format(joinTime);
+			String startTimeUTC = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+			contracts.setJoinDate(convertedDate);
+			if(null != vendorContracts){
+				vendorContracts.setJoinDate(convertedDate);
+			}
+		}
+		
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
 				Date endTimeStr = commonUtil.getDateFormat(jsonObj.getString("endDate"));  
@@ -2076,6 +2103,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		return contractList;
+	}
+
+	@Override
+	public ContractsHistory getAllContractsHistoryByContractId(Long contractId)
+	{
+		return contractsTemplateDao.getAllContractsHistoryByContractId(contractId);
 	}
 	
 }
