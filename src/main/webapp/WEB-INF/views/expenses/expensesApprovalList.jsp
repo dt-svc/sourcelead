@@ -5,7 +5,25 @@
  <script src="js/masterHeaderAction.js"></script>
 <script type="text/javascript">
 		window.onload = function () {
-			getExpensesApprovalDataList();
+			if("" != localStorage.getItem("empExpensesListGrid")){
+				$("#approverDataExpensesDiv").empty();
+	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
+	       		pagination();
+	       		/* localStorage.removeItem("empExpensesListGrid"); */
+	       		localStorage.setItem("empExpensesListGrid","");
+	       		$(":checkbox[value=ALL]").prop("checked",false);
+	       		if("reopen" == $("#countType").val()){
+	       			$(":checkbox[value=REOPENED]").prop("checked",true);
+	       		}else if("submitted" == $("#countType").val()){
+	       			$(":checkbox[value=SUBMITTEDFORAPPROVAL]").prop("checked",true);
+	       		}else if("approved" == $("#countType").val()){
+	       			$(":checkbox[value=APPROVED]").prop("checked",true);
+	       		}else if("rejected" == $("#countType").val()){
+	       			$(":checkbox[value=REJECTED]").prop("checked",true);
+	       		}
+			}else{
+				getExpensesApprovalDataList();
+			}
 		 };
 </script>
 <style type="text/css">
@@ -66,7 +84,19 @@ margin-top: 3px;
 							
 				<ul>
 				<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES')">
-					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+					<div class="pull-left mt5 mr">   		
+				     <span class="dashboard-datepkr pull-left">
+					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+					 <p id="reportStartDate" class="ReError"></p>
+					 </span>
+					 <span class="dashboard-datepkr pull-left">
+					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+					 <p id="reportEndDate" class="ReError"></p>
+					 </span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesApprovalDataList();" /></span>
+					</div>
+					
+					<li><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesApprovalDataList();"><label >All</label></li>
@@ -121,6 +151,8 @@ margin-top: 3px;
 <script type="text/javascript">
 function getExpensesApprovalDataList(){
 var sourceleadUrl = '${sourceleadUrl}';
+var startDate = $("#filterStartDate").val();
+var endDate = $("#filterEndDate").val();
 var expenseStatus = [];
 $('input:checkbox[name=expenseStatus]:checked').each(function() 
 {
@@ -128,7 +160,7 @@ $('input:checkbox[name=expenseStatus]:checked').each(function()
 });
 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus,       
+     url: sourceleadUrl+"/getExpensesApprovalList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,      
      success :function(data) {
     var result = "";
 	result = result+' <table id="example">';
@@ -153,10 +185,10 @@ $.ajax({
 	 var data = json[i];
 	result = result+' <tr id = "row'+data.expenseId.id+'">';
 	result = result+' <td><div class="time_appr_user"><img  id="userImage" onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+data.expensesUserid+'" alt="Profile Image" class="img-circle img-responsive">';
-	result = result+' <span>';
+	result = result+' <span title="'+data.expenseEmpUserFirstNameLastName+'">';
 	result = result+' <b>'+data.expenseEmpUserFirstNameLastName+'</b>';
-	result = result+' <b>'+data.expenseEmpUserEmail+'</b>';
-	result = result+' <b>'+data.expensesEmployeeUserId+'</b>';
+	result = result+' <b title="'+data.expenseEmpUserEmail+'">'+data.expenseEmpUserEmail+'</b>';
+	result = result+' <b title="'+data.expensesEmployeeUserId+'">'+data.expensesEmployeeUserId+'</b>';
 	result = result+' </span></div>';
 	result = result+' </td>';
 	if(data.userTypeVendorName != null && data.userTypeVendorName != '' && data.userTypeVendorName !='undefined'){
@@ -166,7 +198,7 @@ $.ajax({
 	}
 	
 	if(data.expenseId.clientName != null && data.expenseId.clientName != '' && data.expenseId.clientName !='undefined'){
-		result = result+' <td><div><span>'+data.expensesProjectName+'</span><br><span>'+data.expenseId.clientName+'</span></div></td>';	
+		result = result+' <td><div><span title="'+data.expensesProjectName+'">'+data.expensesProjectName+'</span><br><span title="'+data.expenseId.clientName+'">'+data.expenseId.clientName+'</span></div></td>';	
 	}else{
 		result = result+' <td><div><span>'+data.expensesProjectName+'</span></div></td>';	
 	}
@@ -179,7 +211,7 @@ $.ajax({
 	}
 	
 	
-	result = result+' <td><div class="sm">'+data.expenseId.totalAmount+'</div></td>';
+	result = result+' <td><div class="sm">'+data.expenseId.noOfExpenses+'</div></td>';
 	result = result+' <td><div class="sm">';
 	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
 	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
@@ -215,15 +247,19 @@ $.ajax({
 	 	 result = result+" </div>";
     }
     if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'APPROVED'){
-         result = result+" <div class='sm text-center'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
-    }  
+         result = result+" <div class='sm text-center' title='"+data.actionPerformedBy+"'> <h3>Approved</h3><br>By : "+data.actionPerformedBy+"</div>"; 
+    }
+    if(data.expenseApprovalStatus !=null && data.expenseApprovalStatus  == 'REOPEN'){
+    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">'
+    	result = result+'<a  href="'+sourceleadUrl+'/addApprovalExpense?expenseId='+data.expenseId.expenseId+'&type=view" class="ExpAmount">';
+    	'</sec:authorize>'; 
+   }
      result = result+' </td>'; 
 /* 	 result = result+' <td><div class="sm"><i class="fa fa-check" alt="Approve"></i>|<i class="fa fa-times" alt="Rejected"></i></div></td>';       */        
 	 result = result+' </tr>';
 	 }
 	 $("#temp").val("temp");
 	  }else{
-		  alert("empty");
 	  }
 	result = result+' </tbody>';
 	result = result+' </table>';
@@ -313,7 +349,7 @@ function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
 	    result = result +'<div class="time_appr_rejct_pop" id="reject'+expenseId+'panel" style="top:25%">';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" ></textarea>';
 		result = result + ' <div id="rejectReasonDiv"/>';
-		result = result +'<a href="#" onClick="saveRejectExpenseByExpenseId(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
+		result = result +'<a href="#" onClick="acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
 		result = result +'</div>';
 		result = result +'</div>';
 		$("#rejectedPopup").append(result);
@@ -529,7 +565,6 @@ function exportToPdf(type){
 		});
 		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
 	}else{
-		alert("test");
 	}
 	var sourceleadUrl = '${sourceleadUrl}';
 	var expenseStatus = [];
@@ -537,7 +572,9 @@ function exportToPdf(type){
 	{
 		expenseStatus.push($(this).val());
 	});
-	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus;
+	var startDate = $("#filterStartDate").val();
+	var endDate = $("#filterEndDate").val();
+	window.location.href = sourceleadUrl + "/getExpensesApprovalListForExports?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 }
 </script>
 <script>
@@ -553,5 +590,29 @@ function exportToPdf(type){
 	       e.stopPropagation();
 	   });        
 </script> 
+
+<script>
+	$(function() {
+		$('#filterStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterEndDate").datepicker("option", "minDate", selected);
+			}
+		
+		});
+		
+		$('#filterEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterStartDate").datepicker("option", "maxDate", selected);
+			}
+		});
+		
+	});
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -11,7 +12,7 @@ import com.bis.sourcelead.entity.ExpensesEntries;
  */
 public interface ExpensesDao<Expenses> {
 	
-	public List<Expenses> getAllExpenses(Long orgLocId, Long loginUserId, String expenseStatus);
+	public List<Expenses> getAllExpenses(Long orgLocId, Long loginUserId, String expenseStatus, Date startDateUTC, Date endDateUTC);
 	public List<Expenses> getIndividualExpense(Long orgLocId,Long loginUserId,String expenseId);
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 	public Expenses getExpenseByExpenseId(long expenseId);

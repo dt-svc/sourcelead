@@ -54,13 +54,14 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}">
+                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9">
-						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectMemberId" name="projectMemberId">
+						<select class="chosen-select form-control" onchange="getClientBasedOnSelectedProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
+							<option value="">Select Project</option>
 							<c:forEach var="projMembers" items="${projectMembersList}">
 							       <option  ${expenses.projectMembers.id == projMembers.id ? 'selected' : '' } value="${projMembers.id}">${projMembers.projects.projectName}</option>
 							</c:forEach>
@@ -68,7 +69,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
+					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
 	                    <input type="text" class="form-control" name="clientNameExpense" value="" id="clientNameId" readonly="readonly">
 	                  </div>
@@ -118,7 +119,7 @@
 			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
-			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
+					   <td><div id="hideAndShowDetailsDiv${entryCount.count}">
 			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
 			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
@@ -166,7 +167,7 @@
 												  	<option value="AUD" ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
 												  	<option value="USD" ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
 												  	<option value="GBP" ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
-												  	<option value="SGD" ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</opton>
+												  	<option value="SGD" ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
 												  	<option value="EUR" ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
 										 </div>
@@ -188,7 +189,7 @@
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
 			                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
 			                                 <i class='glyphicon glyphicon-save'></i>
-								             <input type='button' value='${entryDoc.fileName}'/>
+											 <input type='button' value='${entryDoc.fileName}'/>
 								        </a>
 								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${entryCount.count})" />
 			                         </strong>
