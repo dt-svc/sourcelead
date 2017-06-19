@@ -23,6 +23,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -81,6 +82,32 @@ public class EmployeePayrollRestController {
 			resultJson = commonUtil.toJSON(employerPayrollCostList);
 		}
 		return resultJson;
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getWagesAndTaxList", method = RequestMethod.GET)
+	public @ResponseBody String getWagesAndTaxList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<WageTaxSummary>  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
+		if(wagesAndTaxList != null){
+			for(WageTaxSummary wts : wagesAndTaxList){
+				if(null !=  wts.getFromDate()){
+					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+				}
+				if(null != wts.getToDate()){
+					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+				}
+				if(wts.getCheckNo() != null){
+					wts.setCheckNo(wts.getCheckNo());
+				}
+			}
+		}
+		return commonUtil.toJSON(wagesAndTaxList);
 	}
 	
 }

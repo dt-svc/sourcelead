@@ -10,6 +10,12 @@
 <script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
+<script>
+window.onload = function () {
+	loadEmployeePayrollCost();
+}
+</script>
+
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
@@ -20,21 +26,21 @@
 
 <section class="contrHead">
 		<ul>
-			<li title=""><a href="#" class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
-			<li title=""><a href="#">Tab 2</a></li>
-			<li title=""><a href="#">Tab 3</a></li>
-			<li title=""><a href="#">Tab 4</a></li>
-			<div class="clearfix"></div>
+			<li title="Employer Payroll Cost"><a class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
+			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
+			<li title="AccountDeductions"><a>Account Deductions</a></li>
+			<li title=""><a>Tab 4</a></li>
 		</ul>
+		<div class="clearfix"></div>
 	</section>
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
-	<div class="project_tabs_inn_head">
+	<div class="clearfix">
 	<form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
-                  <input class="vendorfild" type="text">
-                   <i class="fa fa-search"></i> | <a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a>
-                  
+<div class="timesheet_head clearfix">
+
+     <ul><li><a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a></li></ul>
                   <!-- Popup Div -->
                   <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
@@ -51,11 +57,11 @@
                       </div>
                       <div class="clearfix mb10">
                         <div class="col-md-12">
-                          <select class="chosen-select" id="payrollType" name="payrollType">
+                          <select id="payrollType" name="payrollType">
                             <option value="">Select Type</option>
                             <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
-                            <option value="WAGE_TAX">Wage & Tax Summary</option>EMPLOYEE_PAYROLL WAGE_TAX
-                            <option value="March">Type 3</option>
+                            <option value="WAGE_TAX">Wage & Tax Summary</option>
+                            <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
                             <option value="April">Type 4</option>
                           </select>
                         </div>
@@ -74,26 +80,17 @@
                       </div>
                     </div>
                   </div>
+                  </div>
+                  
                   <!-- Popup Div --> 
                   </form:form>
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
     	<div id="employerCostDiv"></div>
+    	<div id="wagesAndTaxListDiv"></div>
        
 	</div>
 	
-<nav>
-<ul id="paging" class="pagination">
-	<li><a href="#">Previous</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li class="disabled"><a href="#">6</a></li>
-	<li data-page="last"><a href="#">Next</a></li>
-	</ul>
-	<div class="clearfix"></div>
-</nav>	
  </div>
 </div>
 </section>
@@ -107,9 +104,8 @@ function loadEmployeePayrollCost(){
 				        url: sourceleadUrl+"/loadEmployerPayrollCostByOrgLocationId?${_csrf.parameterName}=${_csrf.token}",
 				        success: function(data) {
 						var result = "";				        	
-						result = result + '<table>';
-						result = result + '<tbody>';
-						result = result + '</tbody><thead>';
+						result = result + '<table id="EmployeePayrollCostTable" class="display" cellspacing="0" width="100%" >';
+						result = result + '<thead>';
 						result = result + '<tr>';
 						//Employee	Emp ID	SSN	Total Hrs	Gross Wages	FICA	FUTA	SUI	ER Locals	WC Cost	Admin Fee	Total ER Cost	
 						result = result + '<th>From Date</th>';
@@ -158,21 +154,34 @@ function loadEmployeePayrollCost(){
 								result = result + '<td><div>'+opt.totalErCost+'</div></td>';
 								result = result + ' </tr>';
 						}
-						
-						
-						
-						
-				                                          
 						result = result + '  </table>';
 						result = result + ' </tbody>';
 						$("#employerCostDiv").empty();
+						$("#wagesAndTaxListDiv").empty();
 						$("#employerCostDiv").append(result);
-						
+						employeePayrollCostPagination();
 				        	
 				        },
 				        
 				    });
 		 
+}
+</script>
+
+<script>
+function employeePayrollCostPagination(){ 
+    $('#EmployeePayrollCostTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#EmployeePayrollCostTable").wrap("<div class='overflow_Auto'></div>")
 }
 </script>
 
@@ -203,7 +212,7 @@ function loadEmployeePayrollCost(){
 
 <script>
 	$(".addcon-pop").click(function() {
-		$(".collapse-div-adduser").toggleClass("show-div");
+		$(".collapse-div-adduser").toggleClass("show-div").css({"right":" 275px","top":"35px" });
 		$(".collapse-div").removeClass("show-div");
 	});
 	$(".close-div").click(function() {
@@ -213,16 +222,15 @@ function loadEmployeePayrollCost(){
 			function(e) {
 				e.stopPropagation();
 			});
-	$('html').click(function() {
+	/* $('html').click(function() {
 		$(".collapse-div-adduser").removeClass("show-div");
 		$(".collapse-div").removeClass("show-div");
-	});
+	}); */
 </script>
 
 <!-- Added By Rajashekar  -->
 <script type="text/javascript">
 	function uploadPayrollDocument() {
-		alert("hiii")
 		/* if ($('#upload_payroll_form').validate(false, validationSettings)) { */
 
 		var frm = $('#upload_payroll_form').serializeFormJSON();
@@ -246,7 +254,7 @@ function loadEmployeePayrollCost(){
 							+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="
 							+ jsonData,
 					success : function(result) {
-						location.replace(sourceleadUrl + "/payrollList");
+						loadEmployeePayrollCost();
 					},
 				});
 		/* return true; */
@@ -297,5 +305,6 @@ function loadEmployeePayrollCost(){
 					});
 </script>
 
+<jsp:include page="wagesAndTaxlist.jsp" />
 
 <jsp:include page="../masterFooter.jsp" />
