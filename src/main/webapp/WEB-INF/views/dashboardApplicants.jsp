@@ -1,7 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-
  <!-- Applicant Authorization -->
       <div class="col-md-6">
         <div class="dashboard-widget">
@@ -96,7 +95,7 @@ function ApplicantAuthorization(status){
                                     	  resultToday  = resultToday + '           <td><div><span title="'+report.submittedOn+'">'+report.submittedOn+'</span></div></td>';
                                       }
                                       if(status == 'requestSent'){ 
-                                    	    resultToday  = resultToday + '<td><div>'+report.submissionRateStatus+'</div></td>';
+                                    	    resultToday  = resultToday + '<td><div>Received</div></td>';
                                     	    resultToday = resultToday +"<td>";
                                     	    if(report.submissionRateStatus == 'REQUEST'){
                                     	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
@@ -147,9 +146,10 @@ function rejectApplicantAlertMessage(submissionId, status){
 	var result = "";
 	result = result +"	<div class='vendor_wrap_mask'></div>";
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	 result = result +"<form id='rejected_from_dashboard' name='rejected_from_dashboard'>";
 	 result = result +"    <div class='col-md-12 inputOther mt10 inputOther'>";
      result = result +"    <div class='dropdown-select mb10' id='rejectedCategorytDiv'>";
-     result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='true'>";
+     result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='required' field-name='Category'>";
      result = result +"<option selected value=''>--Select Category--</option>";
      result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
      result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
@@ -162,16 +162,19 @@ function rejectApplicantAlertMessage(submissionId, status){
     
      
      result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mb10'>";
-     result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' >";
+     result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other' >";
      result = result +" </div>";
      
-     result = result +" </div>";
      
      //result = result +"        <p>Applicant reject message here</p>";
-     result = result +"        <textarea  id='reasonForReject' class='form-control' name='reasonForReject'  placeholder='Comments here'></textarea>";
+     result = result +"    <div class='clearfix'>";
+     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'></textarea>";
+     result = result +" </div>";
+     result = result +" </div>";
      result = result + ' <div id="reasonForApplicantDiv"/>';
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptRejectCandidateFromDashboard(\" "+submissionId+"\", \"rejected\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	  result = result +"</form>";
 	result = result +"	</div>";
 	$("#rejectApplicantAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -182,43 +185,38 @@ function rejectApplicantAlertMessage(submissionId, status){
 
 <script type="text/javascript">
     function acceptCandidateFromDashboard(submissionId, status){
-             var sourceleadUrl = '${sourceleadUrl}';
-             var reason;
-             if ($('#rejectReason').length)
-             {
-                 reason = document.getElementById("rejectReason").value;
-             }
-             else
-             {
-                 reason = '';
-             }
-             $.ajax({
-                     type : "POST",
-                     url : sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status+"&reason="+reason,
-                     success : function(result) {
-                                 if( result.indexOf('Sign In') >= 0){
-                                    location.replace(sourceleadUrl);
-                                 }
-                                 else if (result.indexOf('exception') >= 0) {
-                                     location.replace(sourceleadUrl+"/errorPage");
-                                 }
-                                 else{
-                                     ApplicantAuthorization('requestSent');
-                                    /*  $('#accpet-div').fadeOut();
-                                     $('#reject').fadeOut(); */
-								 if(status=='accept'){
-			            				 
-			            				 $("#selector4").removeAttr("style");
-					            			$("#selector4").css({ display: "block" });
-				            				$("#eduMsgDiv").html("Accepted");
-					               			eduMsgFadeinFunction();
-					               				 
-			            				 
-			            				 
-			            			 }
-                                 }
+		var sourceleadUrl = '${sourceleadUrl}';
+		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
+			
+			var frm = $('#rejected_from_dashboard').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			var form = $('#rejected_from_dashboard')[0];
+	  		var formData = new FormData(form); 
+			var jsonData = encodeURIComponent(con);
+			$.ajax({
+				type : "POST",
+	    	    data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+	    	    enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+	    	    dataType : 'json',
+			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&status="+status,	    	   
+			    success: function(data) {
+                                	 ApplicantAuthorization('requestSent');
+                                	 $("#selector4").removeAttr("style");
+				            			$("#selector4").css({ display: "block" });
+			            				$("#eduMsgDiv").html("Accepted");
+                                    
+                                 	eduMsgFadeinFunction();
+                                   
+								 
                      },
-                });
+                });return true;
+		}else{
+			return false;
+		}
     }
 </script>
 
@@ -228,7 +226,7 @@ function getRejectedCategory(){
 	if(rejectedCategory == 'Other'){
 		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
 	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
-		$('#rejectedCategoryOther').attr("data-validation","required"); 
+		$('#rejectedCategoryOther').attr("data-validation","required validate_Space validate_length length2-100 "); 
 		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
 	}else{
 		$("#rejectedCategoryOther").attr("data-validation-optional","true");
@@ -258,76 +256,62 @@ function cancelAlert(){
 	$(".vendor_wrap_mask").fadeOut(200);
 }
 </script>
+
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 <script type="text/javascript">
 	function acceptRejectCandidateFromDashboard(submissionId, status){
-		 var sourceleadUrl = '${sourceleadUrl}';
-		 var reason= document.getElementById("reasonForReject").value;
-		 var rejectedCategoryType= document.getElementById("rejectedCategory").value; 
-		 var rejectedCategoryOther= document.getElementById("rejectedCategoryOther").value;
-		 if((reason == null || reason == '' || reason == 'undefined') 
-				 || (rejectedCategoryType == null || rejectedCategoryType == '' || rejectedCategoryType == 'undefined') 
-				 || ( (rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined' && rejectedCategoryType == 'Other') 
-						  &&  (rejectedCategoryOther == null || rejectedCategoryOther == '' || rejectedCategoryOther == 'undefined')
-					 )
-		     ){
-			 if(reason != null && reason != '' && reason != 'undefined'){
-				 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
-			 }else{
-					 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
-			  	    $("#reasonForApplicantDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-			 }
-			 if(rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined'){
-				 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
-			 }else{
-					 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
-			  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
-			 }
-			 if(rejectedCategoryOther.match(/^[^\s-](.*)*$/) != null && rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
-				 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
-			 }
-			 else{
-				 
-				 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
-				 $("#rejectOtherCategoryDiv").append("<p class='jquery_form_error_message'>Other Type Is Required</p>");
-		  	 
-		      }
-			}
-			
-		 else{
-				$("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
-			  $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
-			 $.ajax({
-					 type : "POST",
-					 url : sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status+"&reason="+reason+"&rejectedCategoryType="+rejectedCategoryType+"&rejectedCateoryOther="+rejectedCategoryOther,
-					 success : function(result) {
-								 if( result.indexOf('Sign In') >= 0){
-						    		location.replace(sourceleadUrl);
-						    	 }
-			            		 else if (result.indexOf('exception') >= 0) {
-			            			 location.replace(sourceleadUrl+"/errorPage");
-			            		 }
-			            		 else{
-			            			 ApplicantAuthorization('requestSent');
-			            			/*  $('#accpet-div').fadeOut();
-			            			 $('#reject').fadeOut(); */
-			            			 if(status=='rejected'){
-			            			 
-				            			$("#selector4").removeAttr("style");
-				            			$("#selector4").css({ display: "block" });
-			            				$("#eduMsgDiv").html("Rejected");
-				               			eduMsgFadeinFunction();
-				               			
-			            			 }
-			            			 
-			            			
-			            		 }
-								 
-								 
-								 
-					 },
-				}); 
-		 }
+		
+		if ($('#rejected_from_dashboard').validate(false, validationSettings)) {
+			var sourceleadUrl = '${sourceleadUrl}';
+			var frm = $('#rejected_from_dashboard').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+			var form = $('#rejected_from_dashboard')[0];
+	  		var formData = new FormData(form); 
+			var jsonData = encodeURIComponent(con);
+			$.ajax({
+				type : "POST",
+	    	    data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+	    	    enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+	    	    dataType : 'json',
+			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&status="+status,	    	   
+			    success: function(data) {
+			    	$("#popUp").empty();
+			    	$("#rejectApplicantAlert").empty();
+			    	$(".vendor_wrap_mask").fadeOut(200);
+			    	ApplicantAuthorization('requestSent');
+			    	 $("#selector4").removeAttr("style");
+         			$("#selector4").css({ display: "block" });
+     				$("#eduMsgDiv").html("Rejected");
+                 
+              	eduMsgFadeinFunction();
+			    	
+			    }
+		   });
+			return true;
+		}else{
+			return false;
+		}
 	}
+	$('body').on('blur', '#rejected_from_dashboard', function() {
+		$("#rejected_from_dashboard").showHelpOnFocus();
+		$("#rejected_from_dashboard").validateOnBlur(false, validationSettings);
+	});
+		
+		
+		
+	
+		
 </script>
 
 <script>

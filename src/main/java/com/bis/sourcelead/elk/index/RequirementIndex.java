@@ -70,6 +70,10 @@ public class RequirementIndex {
     private String createdDate;
 
 	private String reqCreatedBy;
+	
+	private String reqCreatedDate;
+	
+	private String reqUpdatedDate;
 
 	private String updatedDate;
 
@@ -206,7 +210,21 @@ public class RequirementIndex {
 		this.teamOwnerUserId = teamOwnerUserId;
 	}
 
-	
+	public String getReqCreatedDate() {
+		return reqCreatedDate;
+	}
+
+	public void setReqCreatedDate(String reqCreatedDate) {
+		this.reqCreatedDate = reqCreatedDate;
+	}
+
+	public String getReqUpdatedDate() {
+		return reqUpdatedDate;
+	}
+
+	public void setReqUpdatedDate(String reqUpdatedDate) {
+		this.reqUpdatedDate = reqUpdatedDate;
+	}
 
 	public String getReqCreatedBy() {
 		return reqCreatedBy;

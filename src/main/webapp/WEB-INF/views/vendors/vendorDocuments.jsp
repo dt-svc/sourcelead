@@ -230,7 +230,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="document_form" name="document_form" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	
@@ -391,7 +391,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 </script>
 
 <script>
-function closePopup(){
+function closeDocPopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
