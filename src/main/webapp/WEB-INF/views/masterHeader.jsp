@@ -327,7 +327,7 @@ document.onkeydown=function(e){
 						                     </div>
 						                   </div>
 						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgName}</p>
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
 						                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
 						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
 						                   </div>
@@ -344,7 +344,7 @@ document.onkeydown=function(e){
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocation.orgName}</p>
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocation.orgLocationName}</p>
 						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
 						                   </div>
 						                </div>
@@ -360,7 +360,7 @@ document.onkeydown=function(e){
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
 						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
 						                   </div>
 						                </div>
@@ -378,7 +378,7 @@ document.onkeydown=function(e){
 					                     </div>
 					                   </div>
 					                   <div class="pull-left">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.org.orgName}</p>
+					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocationName}</p>
 					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.city ? links.city : ""} ${links.country}</p>
 					                   </div>
 					                </div>
