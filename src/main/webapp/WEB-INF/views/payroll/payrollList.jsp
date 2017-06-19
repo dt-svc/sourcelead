@@ -55,7 +55,7 @@
                             <option value="">Select Type</option>
                             <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
                             <option value="WAGE_TAX">Wage & Tax Summary</option>EMPLOYEE_PAYROLL WAGE_TAX
-                            <option value="March">Type 3</option>
+                            <option value="PAYCYCLE">Pay Cycle</option>
                             <option value="April">Type 4</option>
                           </select>
                         </div>
