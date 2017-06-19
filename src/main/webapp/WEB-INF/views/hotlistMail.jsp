@@ -417,9 +417,7 @@ function getClientContacts(){
                		
 	                	   
                			    var result = '';
-	                	    result = result +'<div class="modal-body clearfix">';
-	                		result = result +'     </div>';
-	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter">'; 
+	                		result = result +'     <div class="modal-bodyCustom mt40 clearfix popupFilter hdrAlign">'; 
 	                	    result = result +'       <table id="example" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -616,12 +614,18 @@ function pagination(){
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"aaSorting": [[1,'desc']],
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $("#example").wrap("<div class='overflow_inherint'></div>");
 }
 </script>
 
@@ -644,7 +648,7 @@ function getCandidates(candidatesListType){
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	                	   
                			    var result = '';
-	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter">'; 
+	                		result = result +'     <div class="modal-bodyCustom clearfix popupFilter hdrAlign">'; 
 	                	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	                		result = result +'           <thead>';
 	                		result = result +'           <tr>';
@@ -731,7 +735,7 @@ function getCandidates(candidatesListType){
                  }else{
   	    	         
                  	var result ="";
- 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter">'; 
+ 	           		result = result +'     <div class="modal-bodyCustom clearfix popupFilter hdrAlign">'; 
  	           	    result = result +'       <table id="candidates" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
  	           		result = result +'           <thead>';
  	           		result = result +'           <tr>';
@@ -770,7 +774,12 @@ function candidatePagenation(){
     	"lengthMenu": [[5, 15, 20, -1], [2, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"aaSorting": [[1,'desc']],
+    	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""

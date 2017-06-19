@@ -37,7 +37,7 @@ function vendorAssociatesList(orgRelationId){
 		result = result + '   </li>';
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table mt">';
 		result  = result + '   <div id="vendorAssociatesListTab" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';

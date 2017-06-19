@@ -671,7 +671,8 @@ function preparedContractListDraft(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Action</th>';
@@ -698,6 +699,12 @@ function preparedContractListDraft(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -749,7 +756,8 @@ function preparedContractListDraft(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -776,6 +784,12 @@ function preparedContractListDraft(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1006,13 +1020,12 @@ function preparedContractListWFA(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
-// 		result = result + '    <th>Contract Type</th>';
 		result = result + '    <th>Approver</th>';
 		result = result + '    <th>Action</th>';
-// 		result = result + '    <th>Doc View</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
 		result = result + '	<tbody>';
@@ -1036,6 +1049,12 @@ function preparedContractListWFA(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1074,7 +1093,7 @@ function preparedContractListWFA(data){
 		         result = result + '<div class="tbldata-dotdot-vsm">';
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	        		  
-	        		  if('${SourceLeadWeb_user.id}' == report.approverUserId){
+	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
 	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
 	      	         }
 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -1108,13 +1127,12 @@ function preparedContractListWFA(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '     <th>Req Docs</th>'; 
-// 	opt = opt + '    <th>Contract Type</th>';
 	opt = opt + '    <th>Approver</th>';
 	opt = opt + '    <th>Action</th>';
-// 	opt = opt + '    <th>Doc View</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
 	opt = opt + '	<tbody>';
@@ -1138,6 +1156,12 @@ function preparedContractListWFA(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1177,7 +1201,7 @@ function preparedContractListWFA(data){
 	         
 	         
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-        		  if('${SourceLeadWeb_user.id}' == output.approverUserId){
+        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
      	         }
      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -1271,7 +1295,7 @@ function preparedContractListWFA(data){
 		         res = res + '<td>';
 		         res = res + '<div class="tbldata-dotdot_80">';
 		     	if(appReport.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-					if('${SourceLeadWeb_user.id}' == appReport.approverUserId){
+					if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.approverUserId){
 					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+appReport.id+',\'REJECTED\');"></i></div></div>';
 					}
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1419,10 +1443,10 @@ function preparedContractListWTS(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
-// 		result = result + '    <th>Received On</th>';
 		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -1448,6 +1472,12 @@ function preparedContractListWTS(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1493,10 +1523,10 @@ function preparedContractListWTS(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>';
-// 	opt = opt + '    <th>Received On</th>';
 	opt = opt + '    <th>Status</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -1522,6 +1552,12 @@ function preparedContractListWTS(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1759,11 +1795,12 @@ function preparedContractListWTV(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-// 		result = result + '    <th>Signed On</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Billing Cycle</th>';
+		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -1790,6 +1827,12 @@ function preparedContractListWTV(data){
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
+		         result = result + '</td>';
+		         
 		         //need to change for signed on
 		         /* result = result + '<td>';
 		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
@@ -1813,11 +1856,20 @@ function preparedContractListWTV(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.invoiceFrequency+'</span></div>';
+		         if(report.invoiceFrequency != null && report.invoiceFrequency != '' && report.invoiceFrequency != 'undefined'){
+			         result = result + '<div><span>'+report.invoiceFrequency+'</span></div>';
+		         }else{
+		        	 result = result + '<div><span>---</span></div>';
+		         }
 		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         result = result + '<div><span>'+report.templateSubmissionStatus+'</span></div>';
+		         result = result + '</td>';
+		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
- 		         if('${SourceLeadWeb_user.id}' == report.ownerUser){
+ 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
 		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	            	 }
@@ -1839,11 +1891,12 @@ function preparedContractListWTV(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-// 	opt = opt + '    <th>Signed On</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Billing Cycle</th>';
+	opt = opt + '    <th>Status</th>';
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
@@ -1871,6 +1924,12 @@ function preparedContractListWTV(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
 	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
 	        	 opt = opt +' | '+output.endDateStr+'</div>';
@@ -1885,13 +1944,21 @@ function preparedContractListWTV(data){
 		         }
 	         opt = opt + '</td>';
 
-	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.invoiceFrequency+'</span></div>';
-	         opt = opt + '</td>';
+	         result = result + '<td>';
+	         if(output.invoiceFrequency != null && output.invoiceFrequency != '' && output.invoiceFrequency != 'undefined'){
+		         result = result + '<div><span>'+output.invoiceFrequency+'</span></div>';
+	         }else{
+	        	 result = result + '<div><span>---</span></div>';
+	         }
+	         result = result + '</td>';
+	         
+	         result = result + '<td>';
+	         result = result + '<div><span>'+output.templateSubmissionStatus+'</span></div>';
+	         result = result + '</td>';
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
- 	         if('${SourceLeadWeb_user.id}' == output.ownerUser){
+ 	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
 	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		     		}
@@ -1976,7 +2043,7 @@ function preparedContractListWTV(data){
 		         
 		         res = res + '<td>';//Waiting to be signed
 		         res = res + '<div class="tbldata-dotdot_80">';
- 		         if('${SourceLeadWeb_user.id}' == appReport.ownerUser){
+ 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.ownerUser){
 		        	 if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
 			        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 			     		}
@@ -2112,10 +2179,10 @@ function preparedContractListFinalize(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
-// 		result = result + '    <th>Finalized On</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -2140,6 +2207,12 @@ function preparedContractListFinalize(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -2181,7 +2254,8 @@ function preparedContractListFinalize(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 // 	opt = opt + '    <th>Finalized On</th>'; 
@@ -2209,6 +2283,12 @@ function preparedContractListFinalize(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	        /*  opt = opt + '<td>';
@@ -2439,7 +2519,8 @@ function preparedContractListExpired(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>';  
 		result = result + '    <th>Action</th>';
@@ -2466,6 +2547,12 @@ function preparedContractListExpired(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -2499,7 +2586,8 @@ function preparedContractListExpired(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -2526,6 +2614,12 @@ function preparedContractListExpired(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -2739,6 +2833,7 @@ function preparedContractListRejected(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
 // 		result = result + '    <th>Rejected By</th>'; 
@@ -2769,6 +2864,12 @@ function preparedContractListRejected(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
 		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
 		        	 result = result +' | '+ report.endDateStr+'</div>';
@@ -2786,7 +2887,7 @@ function preparedContractListRejected(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
-		         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 	     		 '</sec:authorize>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -2812,7 +2913,8 @@ function preparedContractListRejected(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '   <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>';
 // 	opt = opt + '    <th>Rejected By</th>'; 
@@ -2840,6 +2942,12 @@ function preparedContractListRejected(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -3360,11 +3468,15 @@ function CountClick(contractUUID,parentId){
 							  result = result +'	       </div>			                                                                                                                  ';
 						  }
 						  else{
-							  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
-							  result = result +'	       <label class="text-center">--</label>                                                 ';
+							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+							  result = result +'	             </span> </label>                                                                                                                 ';
+							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
-							  $("#saveAction").empty(); 
-						  }
+					  }
 				  }
 				  else{
 					  $("#saveAction").empty(); 
@@ -3465,7 +3577,3 @@ function editClo(contractId){
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
-
-
-
