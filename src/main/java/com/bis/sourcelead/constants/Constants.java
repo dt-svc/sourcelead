@@ -620,5 +620,7 @@ public class Constants {
 	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
 	public static final String JOB_ALERTS = "JobAlerts";
     public static final String UNDEFINED = "undefined";
-
+    public static final String EMPLOYEE_PAYROLL = "EMPLOYEE_PAYROLL";
+    public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
+     
 }

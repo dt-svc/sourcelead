@@ -69,9 +69,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private String sourceleadUrl;	
 	
 	@Autowired
-	private OrgRelationsService orgRelationsService;
-	
-	@Autowired
 	private CommonUtil commonUtil;
 	
 	@Autowired
@@ -413,7 +410,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell9.setCellStyle(style);
 
 		Cell cell10 = writeRow.createCell(1);
-		String EndDate = Constants.DMY.format(exp.getEndDate());
+		
+		String EndDate = null;
+		if(null != exp.getEndDate() && !"".equalsIgnoreCase(exp.getEndDate().toString())){
+			EndDate = Constants.DMY.format(exp.getEndDate());	
+		}else{
+			EndDate  = ("--");	
+		}
 		cell10.setCellValue(EndDate);
 		cell10.setCellStyle(style);
 		

@@ -12,7 +12,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface AddExpensesService {
 
-	public String getExpenseId();
+	public String getExpenseId(OrgLocations orgLoc);
 
 	public List<ProjectMembers> getAllProjectsForExpenses( OrgLocations orgLoc, User loginUser);
 

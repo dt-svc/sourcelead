@@ -718,6 +718,7 @@ function getCustomReports(){
 		$(".oneA").addClass("actRE");
 		$(".repTab2").hide();
 		$(".repTab1").show();
+		$("#statusDiv").css("display", "block");
 	});		
 	</script>
 	

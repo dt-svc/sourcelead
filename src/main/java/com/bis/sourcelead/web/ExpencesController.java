@@ -123,7 +123,7 @@ public class ExpencesController {
 		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);
 		}else if(expenses == null){
-			expenseId = addExpensesService.getExpenseId();
+			expenseId = addExpensesService.getExpenseId(orgLoc);
 			model.addObject("ExpensesId", expenseId);
 		}
 		
@@ -221,7 +221,7 @@ public class ExpencesController {
 		   Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(expenses.getProjectMembers().getProjects().getId());
 		   model.addObject("projectMembers", projectMembers);
 		}else if(expenses == null){
-			expenseId = addExpensesService.getExpenseId();
+			expenseId = addExpensesService.getExpenseId(orgLoc);
 			model.addObject("ExpensesId", expenseId);
 		}
 		
