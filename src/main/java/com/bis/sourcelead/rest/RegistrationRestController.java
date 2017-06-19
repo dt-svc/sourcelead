@@ -563,6 +563,7 @@ public class RegistrationRestController {
 	
 	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.POST)
 	public String resetPasswordWithUserName(HttpServletRequest request) throws Exception {
+		JSONObject obj = new JSONObject();
 		String json1 = IOUtils.toString(request.getInputStream());
 		if(StringUtils.isNotEmpty(json1)){
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -589,12 +590,15 @@ public class RegistrationRestController {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
 				}
-				return "valid";
+				obj.put("status", "valid");
+				return obj.toString();
 			} else {
-				return "Invalid";
+				obj.put("status", "Invalid");
+				return obj.toString();
 			}
 		}
-		return "Invalid";
+		obj.put("status", "Invalid");
+		return obj.toString();
 	}
 	
 

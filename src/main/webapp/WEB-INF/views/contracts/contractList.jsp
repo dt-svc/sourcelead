@@ -671,7 +671,8 @@ function preparedContractListDraft(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Action</th>';
@@ -698,6 +699,12 @@ function preparedContractListDraft(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -749,7 +756,8 @@ function preparedContractListDraft(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -776,6 +784,12 @@ function preparedContractListDraft(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1006,13 +1020,12 @@ function preparedContractListWFA(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
-// 		result = result + '    <th>Contract Type</th>';
 		result = result + '    <th>Approver</th>';
 		result = result + '    <th>Action</th>';
-// 		result = result + '    <th>Doc View</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
 		result = result + '	<tbody>';
@@ -1036,6 +1049,12 @@ function preparedContractListWFA(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1108,13 +1127,12 @@ function preparedContractListWFA(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '     <th>Req Docs</th>'; 
-// 	opt = opt + '    <th>Contract Type</th>';
 	opt = opt + '    <th>Approver</th>';
 	opt = opt + '    <th>Action</th>';
-// 	opt = opt + '    <th>Doc View</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
 	opt = opt + '	<tbody>';
@@ -1138,6 +1156,12 @@ function preparedContractListWFA(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1419,10 +1443,10 @@ function preparedContractListWTS(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
-// 		result = result + '    <th>Received On</th>';
 		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -1448,6 +1472,12 @@ function preparedContractListWTS(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -1493,10 +1523,10 @@ function preparedContractListWTS(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>';
-// 	opt = opt + '    <th>Received On</th>';
 	opt = opt + '    <th>Status</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -1522,6 +1552,12 @@ function preparedContractListWTS(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -1759,11 +1795,12 @@ function preparedContractListWTV(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-// 		result = result + '    <th>Signed On</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Billing Cycle</th>';
+		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -1788,6 +1825,12 @@ function preparedContractListWTV(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         //need to change for signed on
@@ -1820,6 +1863,10 @@ function preparedContractListWTV(data){
 		         }
 		         result = result + '</td>';
 		         
+		         result = result + '<td>';
+		         result = result + '<div><span>'+report.templateSubmissionStatus+'</span></div>';
+		         result = result + '</td>';
+		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
  		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
@@ -1844,11 +1891,12 @@ function preparedContractListWTV(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-// 	opt = opt + '    <th>Signed On</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Billing Cycle</th>';
+	opt = opt + '    <th>Status</th>';
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
@@ -1876,6 +1924,12 @@ function preparedContractListWTV(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
 	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
 	        	 opt = opt +' | '+output.endDateStr+'</div>';
@@ -1890,9 +1944,17 @@ function preparedContractListWTV(data){
 		         }
 	         opt = opt + '</td>';
 
-	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.invoiceFrequency+'</span></div>';
-	         opt = opt + '</td>';
+	         result = result + '<td>';
+	         if(output.invoiceFrequency != null && output.invoiceFrequency != '' && output.invoiceFrequency != 'undefined'){
+		         result = result + '<div><span>'+output.invoiceFrequency+'</span></div>';
+	         }else{
+	        	 result = result + '<div><span>---</span></div>';
+	         }
+	         result = result + '</td>';
+	         
+	         result = result + '<td>';
+	         result = result + '<div><span>'+output.templateSubmissionStatus+'</span></div>';
+	         result = result + '</td>';
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
@@ -2117,10 +2179,10 @@ function preparedContractListFinalize(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
-// 		result = result + '    <th>Finalized On</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -2145,6 +2207,12 @@ function preparedContractListFinalize(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -2186,7 +2254,8 @@ function preparedContractListFinalize(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 // 	opt = opt + '    <th>Finalized On</th>'; 
@@ -2214,6 +2283,12 @@ function preparedContractListFinalize(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	        /*  opt = opt + '<td>';
@@ -2444,7 +2519,8 @@ function preparedContractListExpired(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>';  
 		result = result + '    <th>Action</th>';
@@ -2471,6 +2547,12 @@ function preparedContractListExpired(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -2504,7 +2586,8 @@ function preparedContractListExpired(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '    <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
@@ -2531,6 +2614,12 @@ function preparedContractListExpired(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
@@ -2744,6 +2833,7 @@ function preparedContractListRejected(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
 		result = result + '    <th>Start | End date</th>';
 		result = result + '    <th>Req Docs</th>'; 
 // 		result = result + '    <th>Rejected By</th>'; 
@@ -2771,6 +2861,12 @@ function preparedContractListRejected(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
@@ -2817,7 +2913,8 @@ function preparedContractListRejected(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
 	opt = opt + '   <th>Start | End date</th>';
 	opt = opt + '    <th>Req Docs</th>';
 // 	opt = opt + '    <th>Rejected By</th>'; 
@@ -2845,6 +2942,12 @@ function preparedContractListRejected(data){
 	         
 	         opt = opt + '<td>';
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
