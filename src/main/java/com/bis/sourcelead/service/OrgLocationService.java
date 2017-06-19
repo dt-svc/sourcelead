@@ -25,8 +25,6 @@ public interface OrgLocationService {
 
 	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
 
-	public OrgLocations getOrgLocationsByOrgCode(String orgCode) throws Exception;
-
 	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception;
 
 	public OrgLocations findByEmail(String email,Long orgLocationId) throws Exception;
@@ -37,8 +35,6 @@ public interface OrgLocationService {
 	
 	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception;
 	
-	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception;
-
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
 	
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;

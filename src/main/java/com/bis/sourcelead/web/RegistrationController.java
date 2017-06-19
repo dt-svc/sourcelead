@@ -331,11 +331,11 @@ public class RegistrationController {
 	 
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 		@RequestMapping(value = "/getOrgRegisteredUsers")
-		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "orgId", required = false) Long orgId,
+		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
 				HttpServletRequest request) throws Exception {
 
 		    String resultJson;
-		    OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(orgId);
+		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
 
 			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
 			List<User> orgUsersList = new ArrayList<User>(); 

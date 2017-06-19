@@ -185,6 +185,9 @@ public class OrgRelations implements Serializable{
 	@Transient
 	private String stringDate;
 	
+	@Transient
+    private Long orgLocationId;
+	
 	public String getStringDate()
 	{
 		return stringDate;
@@ -614,6 +617,16 @@ public class OrgRelations implements Serializable{
 
 	public void setPaymentTerms(String paymentTerms) {
 		this.paymentTerms = paymentTerms;
+	}
+
+	public Long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	}
 
 }
