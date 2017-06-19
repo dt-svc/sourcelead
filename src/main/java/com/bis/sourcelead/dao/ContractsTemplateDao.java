@@ -45,5 +45,5 @@ public interface ContractsTemplateDao {
 
 	List<Contracts> getAllContractsBasedOnTimeFrequency(Date startDateUTC, Date endDateUTC);
 
-	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus) throws Exception;
+	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus, Long orgRelationId) throws Exception;
 }
