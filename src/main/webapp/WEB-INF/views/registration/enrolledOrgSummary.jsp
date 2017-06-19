@@ -619,11 +619,12 @@ function getUserList(){
 	 removeAddUserPopUp();
 	  var sourceleadUrl ='${sourceleadUrl}';
       var orgId = '${orgId}';
+      var registeredOrgLocationId = '${registeredOrgLocationId}';
 	  
 	  $("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	  $.ajax({
 		  type : "POST",
-		  url: sourceleadUrl+"/getOrgRegisteredUsers?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId,      
+		  url: sourceleadUrl+"/getOrgRegisteredUsers?${_csrf.parameterName}=${_csrf.token}&registeredOrgLocationId="+registeredOrgLocationId,      
             success :function(data) {
                  if(data != null && data != 'undefined' && data != "" && data != '[]'){
 			    	     $("#userList").removeAttr("style");
@@ -834,7 +835,7 @@ function pagination(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option value=''>-- Select Role* --</option>"; 
+		        	output = output + "<option value=''>-- Select Role --</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];

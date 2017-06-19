@@ -71,11 +71,6 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	}
 	
 
-	@Override
-	public OrgLocations getOrgLocationsByOrgCode(String  orgCode) throws Exception {
-		return orgLocationsDao.getOrgLocationsByOrgCode(orgCode);
-	}
-	
 	
 	@Override
 	public OrgLocations findByEmail(String email, Long orgLocationId) throws Exception {
@@ -192,10 +187,6 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		return orgLocationsDao.getAllOrgLocationsByOrgId(orgId);
 	}
 
-	@Override
-	public OrgLocations getOrgLocationByOrgId(Long orgId) throws Exception {
-		return orgLocationsDao.getOrgLocationByOrgId(orgId);
-	}
 
 	@Override
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet) {

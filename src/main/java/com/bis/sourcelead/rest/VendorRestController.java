@@ -406,6 +406,7 @@ public class VendorRestController {
 			    
 			    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			    Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			    OrgRelations orgRelations = orgRelationsService.getRespondingPartyDetailsById(orgRelationID);
 			    //get user by userId
 			    User user = userService.getUserById(Long.parseLong(spocUserId));
@@ -421,7 +422,7 @@ public class VendorRestController {
 		 			spoc.setInvitationStatus(Constants.MAIL_SENT);
 		 			orgSpocService.addOrgSpoc(spoc);
 		 			
-		 			userService.sendEmailToClientOrVendor(spoc.getUUID(),user, null,loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId());
+		 			userService.sendEmailToClientOrVendor(spoc.getUUID(),user, null,loginUser, password, responderType, loginOrg,orgRelations.getResponderLocationId().getOrg(),orgRelations.getResponderLocationId(),loginOrgLocation);
 		 		}
 			
 		 	  return "success";

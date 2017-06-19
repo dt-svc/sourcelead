@@ -321,7 +321,7 @@ public class ClientServiceImpl implements ClientService{
 					if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
 							&& jsonObj.has("isMailSent") && !isNullOrEmpty(jsonObj.getString("isMailSent"))) 
 							&& ("Y".equals(jsonObj.getString("isMailSent")))){
-						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,clientOrgLocations.getOrg(),clientOrgLocations);
+						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,clientOrgLocations.getOrg(),clientOrgLocations,orgLocations);
 					}
 				}
 			}

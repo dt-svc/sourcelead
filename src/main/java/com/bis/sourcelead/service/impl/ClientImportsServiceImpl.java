@@ -533,15 +533,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 						client.setReason("Invalid Email");
 						return false;
 					}else if(row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())){
-						Org org = null;
+						OrgLocations orgLoc = null;
 						  for(OrgRelations orgRelation : orgList){
 			                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())){
-			                	  org = orgRelation.getResponderLocationId().getOrg();
+			                	  orgLoc = orgRelation.getResponderLocationId();
 			                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())){
-			                	  org = orgRelation.getLocationId().getOrg();
+			                	  orgLoc = orgRelation.getLocationId();
 			                  }
 			              }
-						 OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(org.getId());
+						 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLoc.getId());
 						 UserRole userRole = null;
 						 userRole = userRoleService.getUserDetailsByEmailAndLocationId(row.getCell(8).toString(), orgLocation.getId());
 						 if(userRole == null){
@@ -1335,9 +1335,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 											//Org Duplicate 
 											String orgName = "";
 											if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-												orgName = orgRelations.getLocationId().getOrg().getOrgName();
+												orgName = orgRelations.getLocationId().getOrgLocationName();
 											}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-												orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+												orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 											}
 											
 											
@@ -1351,15 +1351,15 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 														}else{
 															orgList = orgRelationsService.getAllVendorsListByOrgName(clientOrVendor.getOrgName(), orgLocations.getId());
 														}
-														 Org org1 = null;
+														 OrgLocations orgLoc = null;
 														  for(OrgRelations orgRelation : orgList){
-											                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrg().getOrgName())){
-											                	  org1 = orgRelation.getResponderLocationId().getOrg();
+											                  if(orgName.equalsIgnoreCase(orgRelation.getResponderLocationId().getOrgLocationName())){
+											                	  orgLoc = orgRelation.getResponderLocationId();
 											                  }else if(orgName.equalsIgnoreCase(orgRelation.getLocationId().getOrg().getOrgName())){
-											                	  org1 = orgRelation.getLocationId().getOrg();
+											                	  orgLoc = orgRelation.getLocationId();
 											                  }
 											              }
-														 OrgLocations vendorLocations = orgLocationService.getOrgLocationByOrgId(org1.getId());
+														 OrgLocations vendorLocations = orgLocationService.getOrgLocations(orgLoc.getId());
 														 OrgSpoc existedOrgSpoc = orgSpocService.getValidateOwnersBySpocUserIdAndSpocOwnerUserId(spocUser.getId(), spocOwnerUser.getId(),vendorLocations.getId(),responderType);
 															if(existedOrgSpoc != null){
 																clientOrVendor.setReason("Spoc existed");
@@ -1429,9 +1429,9 @@ public class ClientImportsServiceImpl implements ClientImportsService{
 												for (OrgRelations orgRelations2 : orgRelationsList2) {
 													String orgName1 = "";
 													if(orgRelations2.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-														orgName1 = orgRelations2.getLocationId().getOrg().getOrgName();
+														orgName1 = orgRelations2.getLocationId().getOrgLocationName();
 													}if(orgRelations2.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-														orgName1 = orgRelations2.getResponderLocationId().getOrg().getOrgName();
+														orgName1 = orgRelations2.getResponderLocationId().getOrgLocationName();
 													}
 													
 													list.add(orgName1.toLowerCase());

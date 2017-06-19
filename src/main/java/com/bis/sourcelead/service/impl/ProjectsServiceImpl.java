@@ -333,9 +333,9 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
     	// Saving of Client by bringing OrgRelation id based on Client OrgId
     	if((jsonObj.has("selectClient"))){
-	    String clientOrgCode = jsonObj.getString("selectClient");	
-	    if(!clientOrgCode.isEmpty() && clientOrgCode!=null){
-	    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocationsByOrgCode(clientOrgCode);
+	    String clientOrgLocationId = jsonObj.getString("selectClient");	
+	    if(!clientOrgLocationId.isEmpty() && clientOrgLocationId !=null){
+	    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(clientOrgLocationId));
 	    	  if(clientOrgLocations!=null){
 	    		  OrgRelations  orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(loginOrgLocation.getId(), clientOrgLocations.getId());
 		    		  if(orgRelations!=null){
@@ -557,7 +557,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
-		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgId(locationsId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 		
 		Set<Projects> projectsSet = new HashSet<>();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1680,9 +1680,9 @@ public class ProjectsServiceImpl implements ProjectsService{
     	projects.setOrgLocationsId(loginOrgLocation);
     	
     	// Saving of Client by bringing OrgRelation id based on Client OrgId
-	    String clientOrgCode = jsonObj.getString("selectClient");	
-	    if(!clientOrgCode.isEmpty() && clientOrgCode!=null){
-	    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocationsByOrgCode(clientOrgCode);
+	    String clientLocationCode = jsonObj.getString("selectClient");	
+	    if(!clientLocationCode.isEmpty() && clientLocationCode!=null){
+	    	  OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(Long.valueOf(clientLocationCode));
 	    	  if(clientOrgLocations!=null){
 	    		  OrgRelations  orgRelations = orgRelationsService.getOrgRelationIdByOrgLocationIdAndClientLocationId(loginOrgLocation.getId(), clientOrgLocations.getId());
 		    		  if(orgRelations!=null){

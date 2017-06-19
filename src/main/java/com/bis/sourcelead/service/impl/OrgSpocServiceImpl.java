@@ -161,7 +161,7 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				  if((("Client".equals(responderType) || "Vendor".equals(responderType)) 
 							&& jsonObj.has("isMailSent") && null != jsonObj.getString("isMailSent") ) 
 							&& ("Y".equals(jsonObj.getString("isMailSent")))){
-						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation);
+						userService.sendEmailToClientOrVendor(orgSpoc.getUUID(),spocUser,ownerUser,user,spocUser.getTempPwd(),responderType,loginOrg,respondingOrgLocation.getOrg(),respondingOrgLocation,orgLocations);
 					}
 				  
 				logger.debug("Vendor Contac is added successfully");
