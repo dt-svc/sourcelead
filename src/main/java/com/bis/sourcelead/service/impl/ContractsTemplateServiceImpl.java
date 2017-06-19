@@ -498,7 +498,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
-		if(jsonObj.has("maxTaxRowNum")){		
+		if(jsonObj.has("maxTaxRowNum") && null != jsonObj.getString("maxTaxRowNum") && !"".equals(jsonObj.getString("maxTaxRowNum"))){		
 		int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
 		for (long c = 1; c < maxCount; c++) {
 			ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
@@ -1897,9 +1897,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName,String contractStatus) throws Exception
+	public List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName,String contractStatus,Long orgRelationId) throws Exception
 	{
-		List<Contracts> contractList = contractsTemplateDao.getAllClientOrVendorContractsBasedOnLocationId(orgLocations, responderType, user, userRoleName, contractStatus);
+		List<Contracts> contractList = contractsTemplateDao.getAllClientOrVendorContractsBasedOnLocationId(orgLocations, responderType, user, userRoleName, contractStatus,orgRelationId);
 		for (Contracts contracts : contractList) {
 			if (Constants.VENDOR.equalsIgnoreCase(responderType)) {
 				StringBuilder ownerName = new StringBuilder();
@@ -1910,7 +1910,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 					}
-					else if (null != contracts.getOwnerUserId().getLastName()) {
+					else if (null != contracts.getOwnerUserId().getFirstName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName());
 					}
 					else {
@@ -1996,7 +1996,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 					}
-					else if (null != contracts.getOwnerUserId().getLastName()) {
+					else if (null != contracts.getOwnerUserId().getFirstName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName());
 					}
 					else {
@@ -2012,7 +2012,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							&& null != contracts.getContactUser().getLastName()) {
 						vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
 					}
-					else if (null != contracts.getContactUser().getLastName()) {
+					else if (null != contracts.getContactUser().getFirstName()) {
 						vendorName.append(contracts.getContactUser().getFirstName());
 					}
 					else {
