@@ -25,7 +25,7 @@ window.onload = function () {
 </section>
 
 <section class="contrHead">
-		<ul>
+		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
 			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
 			<li title="AccountDeductions"><a>Account Deductions</a></li>
@@ -42,22 +42,22 @@ window.onload = function () {
 
      <ul><li><a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a></li></ul>
                   <!-- Popup Div -->
-                  <div class="collapse-div-adduser col-md-4"> <i class="fa fa-close close-div"></i>
+                  <div class="collapse-div-adduser col-md-4" id="adddocDiv"> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                      
                       <div class="clearfix mb10">
-                        <div class="col-md-6"><input type="text" class="form-control calendar" id="fromDate" name="fromDate" value="" placeholder="From Date*"></div>
-                        <div class="col-md-6"><input type="text" class="form-control calendar" id="toDate" name="toDate" value="" placeholder="To Date*"></div>
+                        <div class="col-md-6"><input type="text" class="form-control calendar input-sm" id="fromDate" name="fromDate" value="" placeholder="From Date*" field-name="From Date" data-validation="required"></div>
+                        <div class="col-md-6"><input type="text" class="form-control calendar input-sm" id="toDate" name="toDate" value="" placeholder="To Date*" field-name="To Date" data-validation="required"></div>
                       </div>                     
                      
                       <div class="clearfix mb10">
                         <div class="col-md-12">
-                          <input type="text" class="form-control" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber">
+                          <input type="text" class="form-control input-sm" value="" placeholder="Batch Name" id="batchNumber" name="batchNumber" field-name="Batch name" data-validation="required">
                         </div>
                       </div>
                       <div class="clearfix mb10">
-                        <div class="col-md-12">
-                          <select id="payrollType" name="payrollType">
+                        <div class="col-md-12 chosenSelect_li">
+                          <select id="payrollType" name="payrollType" class="chosen-select" field-name="PayRoll Type" data-validation="required">
                             <option value="">Select Type</option>
                             <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
@@ -66,11 +66,11 @@ window.onload = function () {
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
-                          <div class="input-group" id="uploadFileGroup">
+                          <div class="input-group ratetype" id="uploadFileGroup">
 	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
-		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload .pdf File." field-name="Attachment" data-validation="required validate_Space validatepdf">
+		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_importFile">
 	                        </div>
                           
                         </div>
@@ -231,8 +231,8 @@ function employeePayrollCostPagination(){
 <!-- Added By Rajashekar  -->
 <script type="text/javascript">
 	function uploadPayrollDocument() {
-		/* if ($('#upload_payroll_form').validate(false, validationSettings)) { */
-
+		if ($('#upload_payroll_form').validate(false, validationSettings)) { 
+			$('#adddocDiv').removeClass("show-div");
 		var frm = $('#upload_payroll_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, "");
@@ -258,7 +258,7 @@ function employeePayrollCostPagination(){
 					},
 				});
 		/* return true; */
-		/* } else {
+		} /* else {
 			return false;
 		} */
 	}
@@ -303,6 +303,13 @@ function employeePayrollCostPagination(){
 							}
 						}
 					});
+</script>
+
+<script>
+$("ul#parentUl").on("click","li", function(){
+	$(this).find('a').addClass("wVer");
+	$(this).siblings('li').find('a').removeClass("wVer");
+});
 </script>
 
 <jsp:include page="wagesAndTaxlist.jsp" />

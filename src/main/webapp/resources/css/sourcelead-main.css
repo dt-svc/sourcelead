@@ -5523,7 +5523,13 @@ margin-left: 10px;
 .width110px{
     width: 110px; display: inline-block;
 }
-
+.chosenSelect_li ul li {
+float: none !important; font-weight: none !important; color:#101010 !important;
+font-weight: 400 !important;
+}
+.chosenSelect_li ul li:hover{
+color:#fff !important;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
