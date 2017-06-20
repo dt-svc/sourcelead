@@ -1934,7 +1934,6 @@ function setTemplateValues(){
 		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
 		    			$("#templateId").val(json.id);
 		    		}
-		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
 			    	
@@ -2027,7 +2026,6 @@ function setTemplateValues(){
 			   
 			    	 //$( ".jobTypeDiv" ).hide();
 		    	}else{
-		    		
 		    		$("#jobTitle").val('');
 			    	$("#jobType").val('');
 			    	$("#travelAllowance").val('');
@@ -2048,7 +2046,7 @@ function setTemplateValues(){
 					
 		            $("#skills").val('');
 		            $("#education").val('');
-			    	$("#description").val('');
+		            $(".Editor-editor").text('');
 			    	$("#rate").val('');
 			     	$("#currencyCode").val('');
 			    	$("#rateType").val('');
@@ -2064,16 +2062,14 @@ function setTemplateValues(){
      });
 	}else{
 		 document.getElementById("requirement_form").reset();
+		 $(".Editor-editor").text('');
 		 $("#skills").trigger("chosen:updated");
 		 $("#education").trigger("chosen:updated");
 		 $("#existingCountry").val('');
 		 $("#existingState").val('');
 		 $("#existingCity").val('');
-		/*  $("#state").trigger("chosen:updated");
-		 $("#city").trigger("chosen:updated"); */
 		 getAllCountries(); 		
 		 $("#rate").val('');
-		 $("#description").val('');
 		
 		 
 	}
