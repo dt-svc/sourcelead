@@ -1482,16 +1482,28 @@ function validate_fileupload(fileName)
   		 if(rateType != null && rateType != ""){
   			 $('#rate').removeAttr('data-validation-optional');
   			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+
   		 }else{
   			 $('#rate').removeAttr('data-validation');
   			 $('#rate').attr("data-validation-optional","true"); 
   		 }
   		 
+  		  var maxRate = document.getElementById("maxRate").value;
+  		 if(maxRate != null && maxRate != ""){
+  			 $('#rate').removeAttr('data-validation-optional');
+  			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 	 
+  		 }else{
+  			$('#rate').removeAttr('data-validation');
+ 			 $('#rate').attr("data-validation-optional","true"); 
+  		 } 
+  		 
  		 var rate = document.getElementById("rate").value; 
- 		 if(rate != null && rate != ""){
+ 		 if((rate != null && rate != "") || (maxRate != null && maxRate != "")){
  			 $('#rateType').removeAttr('data-validation-optional');
  			 $('#rateType').attr("data-validation","required");
  			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
+ 			 $('#maxRate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
+
  		 }else{
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
