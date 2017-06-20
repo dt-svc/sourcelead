@@ -290,7 +290,7 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
 			}
 			
-			if(Constants.ADMIN.equalsIgnoreCase(userType)){
+	/*		if(Constants.ADMIN.equalsIgnoreCase(userType)){
 				List<RequirementInterviewer> reqiremList = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
 				List<RequirementInterviewer> intrlist = new ArrayList<RequirementInterviewer>();
 				for(RequirementInterviewer er:reqiremList){
@@ -304,12 +304,12 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 					}
 				}
 				interviewHistory.setRequirementInterviewerList(intrlist);
-			}else{
+			}else{*/
 				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
 				if(null != requirementInterviewer){
 					interviewHistory.setInterviewerId(requirementInterviewer.getId());
 				} 
-			}
+			/*}*/
 			
 			interviewHistory.setRequirementIntervieweId(interviewHistory.getInterviewId().getId());
 			interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
