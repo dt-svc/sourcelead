@@ -25,7 +25,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public AccountDeductions savePayCycle(AccountDeductions payCycle)
+	public AccountDeductions saveAccountDeductions(AccountDeductions payCycle)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {

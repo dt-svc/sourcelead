@@ -9,6 +9,6 @@ import com.bis.sourcelead.payroll.entity.AccountDeductions;
 
 public interface AccountDeductionsDao {
 
-	AccountDeductions savePayCycle(AccountDeductions payCycle)throws Exception;
+	AccountDeductions saveAccountDeductions(AccountDeductions payCycle)throws Exception;
 
 }

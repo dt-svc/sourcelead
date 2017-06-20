@@ -8,6 +8,6 @@ import com.bis.sourcelead.entity.User;
 
 public interface AccountDeductionsService {
 
-	String savePayCycle(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
+	String saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 
 }

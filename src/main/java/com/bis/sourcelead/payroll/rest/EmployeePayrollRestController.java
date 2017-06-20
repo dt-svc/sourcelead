@@ -50,7 +50,7 @@ public class EmployeePayrollRestController {
 	private ConversionUtil conversionUtil;
 	
 	@Autowired
-	private AccountDeductionsService payCycleService;
+	private AccountDeductionsService accountDeductionsService;
 	
 	@RequestMapping(value = "/uploadPayrollDocument", method = RequestMethod.POST)
 	@ResponseBody 
@@ -69,8 +69,8 @@ public class EmployeePayrollRestController {
 			String isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 		}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
 			String isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
-		}else if(Constants.PAY_CYCLE.equalsIgnoreCase(payrollType)){
-			String isInserted = payCycleService.savePayCycle(multipartFile,orgLocation,user,jsonObj);
+		}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
+			String isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
 		}
 		return commonUtil.toJSON("success");
 	}
