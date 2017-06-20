@@ -905,7 +905,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 				user.setProfessionalRegisterCountry(jsonObj.getString("location"));
 			}
 			
-			user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
+			user.setUserName(jsonObj.getString("email"));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			
 			user.setUserType(Constants.PROFESSIONAL);
@@ -1089,7 +1089,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			
 			//prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 					
-			user.setUserName(SourceLeadRandomCodeHelper.generateRandomUniquUserName());
+			user.setUserName(jsonObj.getString("email"));
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserType(Constants.INDIVIDUAL_RECRUITER);
 			user.setCreatedBy("sladmin");
@@ -1207,6 +1207,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail("sourceleadadmin@sourcelead.com");
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		//setting the class filed values

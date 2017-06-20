@@ -1,8 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jadira.usertype.spi.utils.lang.StringUtils;
@@ -36,7 +40,8 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId, String expenseStatus){
+	public List<Expenses> getAllExpenses(Long orgLocId,Long loginUserId, String expenseStatus, Date startDateUTC, Date endDateUTC){
+		Map<String, Object> params = new HashMap<String,Object>();
 		String[] expStatus = expenseStatus.split(",");
 		String subQuery2 = "";
 		if (Arrays.asList(expStatus).contains("ALL") || StringUtils.isEmpty(expenseStatus)) {
@@ -67,6 +72,17 @@ public class ExpensesDaoImpl implements ExpensesDao {
 			}
 		}
 		
+		String startDateSubQuery = "";
+		if(null != startDateUTC){
+			startDateSubQuery = "and (expenses.startDate >= :startDateUTC)";
+			  params.put("startDateUTC",startDateUTC);
+		}
+		
+		String endDateSubQuery = "";
+		if(null != endDateUTC){
+			endDateSubQuery = "and (expenses.endDate <= :endDateUTC)";
+			  params.put("endDateUTC",endDateUTC);
+		}
 
 		/*if (expStatus[0] != null && expStatus[0].length() > 0) {
 			subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
@@ -74,10 +90,31 @@ public class ExpensesDaoImpl implements ExpensesDao {
 			subQuery2 = " (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
 		}
 		*/
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId and ( " + subQuery2 +" )";
-		List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();
-		return expensesList;
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocId and user.id =:loginUserId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" ";
+		params.put("loginUserId",loginUserId);
+		params.put("orgLocId",orgLocId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("loginUserId")){
+				query.setParameter(str, (long) params.get(str));
+			}if(str.equalsIgnoreCase("startDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			if(str.equalsIgnoreCase("endDateUTC")){
+				query.setParameter( str, (Date) params.get(str) );
+			}
+			if(str.equalsIgnoreCase("orgLocId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+			
+        }
+		return query.setCacheable(true).list();
+		/*List<Expenses> expensesList =session.createQuery(query).setLong("orgLocId", orgLocId).setLong("loginUserId", loginUserId).setCacheable(true).list();
+		return expensesList;*/
 	}
 	
 	@SuppressWarnings("unchecked")
