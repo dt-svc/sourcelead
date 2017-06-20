@@ -98,8 +98,8 @@ function ApplicantAuthorization(status){
                                     	    resultToday  = resultToday + '<td><div>Received</div></td>';
                                     	    resultToday = resultToday +"<td>";
                                     	    if(report.submissionRateStatus == 'REQUEST'){
-                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
-                                    	    	resultToday = resultToday + '<a  href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
+                                    	    	resultToday = resultToday + '<a  class="paddingRight"  href="javascript:void(0)" title="Accept"  onClick="acceptCandidateFromDashboard(\''+report.id+'\', \'accept\');"><i class="fa fa-check text-success"></i></a>';
+                                    	    	resultToday = resultToday + '<a class="paddingLeft" href="javascript:void(0)" title="Reject"   onClick="rejectApplicantAlertMessage(\''+report.id+'\', \'rejected\');"><i class="fa fa-close text-danger"></i></a>';
                                     	    }
                                     	    resultToday = resultToday +"</td>";
                                       }
@@ -168,7 +168,7 @@ function rejectApplicantAlertMessage(submissionId, status){
      
      //result = result +"        <p>Applicant reject message here</p>";
      result = result +"    <div class='clearfix'>";
-     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'></textarea>";
+     result = result +"        <textarea  id='reasonForReject' class='form-control txtarea_action' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-500' field-name='Reason'></textarea>";
      result = result +" </div>";
      result = result +" </div>";
      result = result + ' <div id="reasonForApplicantDiv"/>';
