@@ -1246,7 +1246,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
 			 StringBuilder ratebuild = new StringBuilder();
-			 globalVarsMap.put("requirementRate", ratebuild.append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
+			 globalVarsMap.put("requirementRate", ratebuild.append(requirementSubmissionTemplateFields.getExpectedRateType()).append(" ").append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
 			 }else{
 				 globalVarsMap.put("requirementRate","--");
 			 }
@@ -1278,9 +1278,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	        
 	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectRequirement?rateStatus=RejectedApplicant&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 
+	     
+	     if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
+	     
 	     globalVarsMap.put("negotiateRateLink",negotiateBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptOrRejectOrRateNegotiateApplicantRates?rateStatus=Negotiate&submissionId=").append(submissionId).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style='width:220px; border-radius:30px; background-color:#f0ad4e;; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Negotiate Rate</div></a>").toString());
 
-
+	     }
 	        
 	        
 //	        if( !requirementOffers.getFileName().isEmpty() ){
@@ -1968,9 +1971,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
-   		 
    		
    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+   		 
+   		 // for store candidate submit to client with child record in submission history. 
+   		RequirementSubmissionHistory clientSubmissionHistory = new RequirementSubmissionHistory();
+   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
+		requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory);
    		 
    		 
    		 if(requirementSubmissionHistoryForCoolingOff != null){
@@ -2647,11 +2654,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }else{
 			 globalVarsMap.put("EmploymentType","--");
 		 }
-		 
+		 StringBuilder sb1 = new StringBuilder();
 		 if( reqRateNegotiation !=null && reqRateNegotiation.getExpectedRate() != null && !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())){
-			 globalVarsMap.put("Rate", reqRateNegotiation.getExpectedRate());
+			
+			 globalVarsMap.put("Rate", sb1.append(reqRateNegotiation.getExpectedRate()).append("/").append(reqRateNegotiation.getExpectedRateType()).toString());
 		 }else if(requirementSubmission.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementSubmission.getCandidate().getExpectedRate())){
-			 globalVarsMap.put("Rate", requirementSubmission.getCandidate().getExpectedRate());
+			 
+			 globalVarsMap.put("Rate", sb1.append(requirementSubmission.getCandidate().getExpectedRateCurrencey()).append(" ").append(requirementSubmission.getCandidate().getExpectedRate()).append("/").append(requirementSubmission.getCandidate().getRateType()).toString());
 		 }else{
 			 globalVarsMap.put("Rate","--");
 		 }
@@ -2685,6 +2694,99 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		// emailScenerioUtil.sendNotification(actionLink, loginUser, requirementSubmission.getCandidate(), loginOrgLocation, notificationScenario);
 		 
 	}
+	
+	
+	
+	
+	public void sendEmailtoAssignedMemberApplicantAuthorization(Org loginOrg, User loginUser, RequirementSubmission requirementSubmission, OrgLocations loginOrgLocation) throws Exception
+	{
+		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
+		User assignedUser = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(assignedUser.getFirstName());
+		emailMessage.setLastName(assignedUser.getLastName());
+		emailMessage.setToEmail(assignedUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		if (null != loginUser.getLastName()) {
+			StringBuilder loginUserName = new StringBuilder();
+			emailMessage.setFromName(loginUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			emailMessage.setFromName(loginUser.getFirstName());
+		}
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// To get the RateNegatiotion of RequirementSubmission based on
+		// Submission Id
+		RequirementRateSubmissionNegotiation reqRateNegotiation = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (requirementSubmission.getRequirement().getJobTitle() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobTitle())) {
+			globalVarsMap.put("requirmentName", requirementSubmission.getRequirement().getJobTitle());
+		}
+		else {
+			globalVarsMap.put("requirmentName", "--");
+		}
+		if (requirementSubmissionTemplateFields.getLastName() != null
+				&& !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())) {
+			StringBuilder candName = new StringBuilder();
+			globalVarsMap.put("applicantName", candName.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("applicantName", requirementSubmissionTemplateFields.getFirstName());
+		}
+		StringBuilder location = new StringBuilder();
+		if (requirementSubmission.getRequirement().getState() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState())) {
+			globalVarsMap.put("requirmentLocation", location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).toString());
+		}
+		else if (loginOrgLocation.getCity() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCity())) {
+			globalVarsMap.put("requirmentLocation", location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).append(",").append(requirementSubmission.getRequirement().getCity()).toString());
+		}
+		else {
+			globalVarsMap.put("requirmentLocation", requirementSubmission.getRequirement().getCountry());
+		}
+		if (reqRateNegotiation != null && reqRateNegotiation.getExpectedRate() != null
+				&& !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())) {
+			globalVarsMap.put("applicantRate", reqRateNegotiation.getExpectedRate());
+		}
+		else if (requirementSubmission.getCandidate().getExpectedRate() != null
+				&& !"".equalsIgnoreCase(requirementSubmission.getCandidate().getExpectedRate())) {
+			globalVarsMap.put("applicantRate", requirementSubmission.getCandidate().getExpectedRate());
+		}
+		else {
+			globalVarsMap.put("applicantRate", "--");
+		}
+		if (assignedUser.getFirstName() != null && !"".equalsIgnoreCase(assignedUser.getFirstName())
+				&& assignedUser.getLastName() != null
+				&& !"".equalsIgnoreCase(assignedUser.getLastName())) {
+			StringBuilder assUser = new StringBuilder();
+			globalVarsMap.put("assignedUser", assUser.append(assignedUser.getFirstName()).append(" ").append(assignedUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("assignedUser", assignedUser.getFirstName());
+		}
+		globalVarsMap.put("loginOrg", loginOrgLocation.getOrg().getOrgName());
+		globalVarsMap.put("loginUser", loginUser.getFirstName());
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Authorization_Manager_Acceptence_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Authorization_Manager_Acceptence_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager, Constants.ENTITY_TYPE_NOTIFICATION);
+		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
+		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
+		String url = sourceleadUrl;
+		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		notificationScenario.setBody(notificationbody);
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrg);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, assignedUser, loginOrgLocation, notificationScenario);
+	}
+	
+	
 	
 	private void sendEmailToAssignedMember(Org loginOrg, User loginUser, RequirementSubmission requirementSubmission,
 			OrgLocations loginOrgLocation) throws Exception {
@@ -4229,8 +4331,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType) {
-		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType);
+	public List<RequirementSubmission> getSubmissionsForSOWByRequirementId(Long requirementId, String sowType,OrgLocations loginOrgLocation) {
+		return requirementSubmissionDao.getSubmissionsForSOWByRequirementId(requirementId, sowType,loginOrgLocation);
 	}
 
 	@Override
@@ -4243,6 +4345,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public RequirementSubmission getRequirementSubmissionByCandidateIdAndRequirementId(Long candidateId, Long requirementId) throws Exception
 	{
 		return requirementSubmissionDao.getRequirementSubmissionByCandidateIdAndRequirementId(candidateId, requirementId);
+	}
+
+	@Override
+	public List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation)
+	{
+		return requirementSubmissionDao.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
 	}
 
 }

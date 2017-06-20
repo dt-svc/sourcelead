@@ -33,23 +33,35 @@ function vendorRequirementListInclude(orgRelationID){
 	    result = result + '<ul>';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="open" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
-        result = result + '<label class="paddingLeft">OPEN</label>';
+        result = result + '<label class="paddingLeft">Open <b class="badge" id="openCountId">0</b></label>';
         result = result + '</li>';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="new" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
-        result = result + '<label class="paddingLeft">NEW</label>';
+        result = result + '<label class="paddingLeft">New <b class="badge" id="newCountId">0</b></label>';
         result = result + '</li>';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="filledClose" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
-        result = result + '<label class="paddingLeft">FILLED CLOSED</label>';
+        result = result + '<label class="paddingLeft">Filled Closed <b class="badge" id="filledClosedCountId">0</b></label>';
         result = result + '</li>';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="unfilledClose" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
-        result = result + '<label class="paddingLeft">UNFILLED CLOSED</label>';
+        result = result + '<label class="paddingLeft">Unfilled Closed <b class="badge" id="unfilledCountId">0</b></label>';
         result = result + '</li>';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="onhold" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
-        result = result + '<label class="paddingLeft">ON HOLD</label>';
+        result = result + '<label class="paddingLeft">On Hold <b class="badge" id="onHoldCountId">0</b></label>';
+        result = result + '</li>';
+        result = result + '<li>';
+        result = result + '<input type="checkbox" value="cancel" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
+        result = result + '<label class="paddingLeft">Cancel <b class="badge" id="cancelCountId">0</b></label>';
+        result = result + '</li>';
+        result = result + '<li>';
+        result = result + '<input type="checkbox" value="Rejected" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
+        result = result + '<label class="paddingLeft">Rejected <b class="badge" id="rejectedCountId">0</b></label>';
+        result = result + '</li>';
+        result = result + '<li>';
+        result = result + '<input type="checkbox" value="Closed" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
+        result = result + '<label class="paddingLeft">Closed <b class="badge" id="closedCountId">0</b></label>';
         result = result + '</li>';
        /*  result = result + '<li>';
         result = result + '<input type="checkbox" value="unfilledClose" name="requirementStatus" id="requirementStatus" onclick="test('+orgRelationID+');" >';
@@ -96,7 +108,16 @@ function vendorRequirementListInclude(orgRelationID){
 	        	var json = JSON.parse(data);
 	        
 	        	$("#vendorRequirmentListDiv").empty();
-	    		
+	        	
+	       	 var openCount = 0;
+        	 var newCount = 0;
+        	 var filledClosedCount = 0;
+        	 var unfilledCount = 0;
+        	 var onHoldCount = 0;
+        	 var cancelCount = 0;
+        	 var rejectedCount = 0;
+        	 var closedCount = 0;
+	        	
 	    			var result = "";
 	    			result = result +"<table id='vendorRequirmentPagination' class='display' cellspacing='0' width='100%' >"; 
 		    	    result = result +'<thead>';
@@ -157,20 +178,49 @@ function vendorRequirementListInclude(orgRelationID){
 			                   }
 			                
 			            	//result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
- 
-			            	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+ 							result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorInterviewsCount+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorOfferedCount+"</div></td>";
 			            	result = result +"<td><div>"+opt.vendorBackoutCount+"</div></td>";
+			            	
 			            	result = result +"<td><div>"+opt.requirementSubmissionStatus+"</div></td>";
+			            	
 			            	result = result +"</div></td>";
+			            	if(opt.requirementSubmissionStatus == "OPEN"){
+			            		openCount = openCount+1;       
+       		        	 }else if(opt.requirementSubmissionStatus == "NEW"){
+       		        		newCount = newCount +1;    
+       		        	 }else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
+       		        		filledClosedCount = filledClosedCount +1; 
+       		        	 }else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
+       		        		unfilledCount = unfilledCount +1;   
+       		        	 }else if(opt.requirementSubmissionStatus == "ONHOLD"){
+       		        		onHoldCount = onHoldCount +1;   
+       		        	 }else if(opt.requirementSubmissionStatus == "CANCEL"){
+       		        		cancelCount = cancelCount +1;   
+       		        	 }else if(opt.requirementSubmissionStatus == "REJECTED"){
+       		        		rejectedCount = rejectedCount +1;   
+       		        	 }else if(opt.requirementSubmissionStatus == "CLOSED"){
+       		        		closedCount = closedCount +1;     
+       		        	 }
+			            	
 			            	result = result +"</tr>";
 					  }
 			        result = result + '</tbody>';
 			        result = result +"</table>";
 			        $("#vendorRequirmentListDiv").empty();
+			        $("#openCountId").html(openCount);
+            		$("#newCountId").html(newCount);
+            		$("#filledClosedCountId").html(filledClosedCount);
+            		$("#unfilledCountId").html(unfilledCount);
+            		$("#onHoldCountId").html(onHoldCount);
+            		$("#cancelCountId").html(cancelCount);
+            		$("#rejectedCountId").html(rejectedCount);
+            		$("#closedCountId").html(closedCount);
 				    $("#vendorRequirmentListDiv").append(result); 
-				    contactRequirmentlistPagination();
+				    contactRequirmentlistPagination();                     
+				    
+				    
 			    	    
 	        
 	        },

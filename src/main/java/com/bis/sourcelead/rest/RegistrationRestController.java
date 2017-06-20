@@ -7,7 +7,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -558,77 +560,82 @@ public class RegistrationRestController {
 	
 	
 	
-	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.GET)
-	public String resetPasswordWithUserName(@RequestParam(value = "json", required = false) String json,
-			HttpServletRequest request) throws Exception {
-		String json1 = "{"+json+"}";
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		Registration registration = gson.fromJson(json1, Registration.class);
-		User user = userService.findByUserName(registration.getEmail());
-		if (null != user) {
-			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-			if (null != userRole) {
-				try {
-					PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
-					if (null == passwordResets) {
-						String verificationCode = registrationService.addPasswordResets(user);
-						registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), verificationCode);
-					} else {
-						passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
-						passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
-						// email to user
-						registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), passwordResets.getVerificationCode());
+	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.POST)
+	public String resetPasswordWithUserName(HttpServletRequest request) throws Exception {
+		JSONObject obj = new JSONObject();
+		String json1 = IOUtils.toString(request.getInputStream());
+		if(StringUtils.isNotEmpty(json1)){
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			Registration registration = gson.fromJson(json1, Registration.class);
+			User user = userService.findByUserName(registration.getEmail());
+			if (null != user) {
+				UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				if (null != userRole) {
+					try {
+						PasswordResets passwordResets = passwordResetsSevice.getPasswordResetsByUserId(user.getId());
+						if (null == passwordResets) {
+							String verificationCode = registrationService.addPasswordResets(user);
+							registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), verificationCode);
+						} else {
+							passwordResets.setVerificationCode(SourceLeadRandomCodeHelper.generateRandomVerificationCode());
+							passwordResets = passwordResetsSevice.savePasswordResets(passwordResets);
+							// email to user
+							registrationService.sendResetPasswordEmail(user,userRole.getOrgLocations().getId(), passwordResets.getVerificationCode());
+						}
+		
+						SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg",
+								"Verification Code sent to your mail.");
+					} catch (Exception e) {
+						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
+				}
+				obj.put("status", "valid");
+				return obj.toString();
+			} else {
+				obj.put("status", "Invalid");
+				return obj.toString();
+			}
+		}
+		obj.put("status", "Invalid");
+		return obj.toString();
+	}
 	
-					SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordMsg",
-							"Verification Code sent to your mail.");
+
+	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
+	   public String verifyResetPassword(HttpServletRequest request) throws Exception {
+		String json1 = IOUtils.toString(request.getInputStream());
+		if(StringUtils.isNotEmpty(json1)){
+			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			Registration registration =  gson.fromJson(json1,Registration.class);
+			
+			//FetchType for User in PasswordResets is declared with Eager. So, User also loaded along with PasswordResets
+			PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByVerificationCode(registration.getVerificationCode());
+			
+			if(null != passwordResets){
+				try {
+					registrationService.resetPassword(passwordResets, registration.getPassword());
+					registrationService.deletePasswordResets(passwordResets);
+					
+					//email to user
+					User user = userService.findByUserName(passwordResets.getEmail());
+					if(null != user){
+						UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+						if (null != userRole) {
+							registrationService.sendUpdatePasswordEmail(user,userRole.getOrgLocations().getId());
+						}
+					}
+					 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
+					
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
+				return "login";
+			}else{
+				return "Invalid";
 			}
-			return "valid";
-		} else {
-			return "Invalid";
 		}
-
-	}
-	
-
-	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.GET)
-	   public String verifyResetPassword(@RequestParam(value="json", required=false) String json ,HttpServletRequest request) throws Exception {
-		
-		String json1 = "{"+json+"}";
-		Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-		Registration registration =  gson.fromJson(json1,Registration.class);
-		
-		//FetchType for User in PasswordResets is declared with Eager. So, User also loaded along with PasswordResets
-		PasswordResets passwordResets  = passwordResetsSevice.getPasswordResetsByVerificationCode(registration.getVerificationCode());
-		
-		if(null != passwordResets){
-			try {
-				registrationService.resetPassword(passwordResets, registration.getPassword());
-				registrationService.deletePasswordResets(passwordResets);
-				
-				//email to user
-				User user = userService.findByUserName(passwordResets.getEmail());
-				if(null != user){
-					UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-					if (null != userRole) {
-						registrationService.sendUpdatePasswordEmail(user,userRole.getOrgLocations().getId());
-					}
-				}
-				 SourceLeadSessionManager.setSessionAttribute(request, "resetPasswordSucessfulMsg", "Your password has reset sucessfully.");
-				
-			} catch (Exception e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			}
-			return "login";
-		}else{
-			return "Invalid";
-		}
-		
-	}
-	
+		return "Invalid";
+	 }
 	
 	   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
 	   public @ResponseBody String validateOrgWebsite(

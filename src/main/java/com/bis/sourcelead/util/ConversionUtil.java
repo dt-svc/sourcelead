@@ -169,6 +169,17 @@ public class ConversionUtil {
         return format.parse(dateStr);
 	}
 
+	/**
+	 * converts string date java.util Date
+	 * @param dateStr
+	 * @return Date
+	 * @throws ParseException
+	 */
+	public Date getDateFromMMDDYYY(String dateStr) throws ParseException{
+		String pattern = "MM/dd/yyyy";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.parse(dateStr);
+	}
 	/** 
 	 * Get Date as UTC Format
 	 * @param orgLocation
