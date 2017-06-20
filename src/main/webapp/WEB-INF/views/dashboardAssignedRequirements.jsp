@@ -201,7 +201,7 @@ function requirementList(){
   } 
 </script>   
 
-<!-- <script>
+ <script>
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
@@ -215,6 +215,6 @@ function pagination(){
        }
     } );
 }
-</script> -->
+</script> 
 
 <jsp:include page="addApplicantFromDashboard.jsp" />

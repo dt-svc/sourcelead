@@ -57,6 +57,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 @Component
 public class InvoicePdfHelper {
@@ -169,13 +170,24 @@ public class InvoicePdfHelper {
 			Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 
 			for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
-				if(invoiceLineItems.getCandidate() !=null &&  null !=invoiceLineItems.getCandidate().getConsultantUser()){
-					Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
-					if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
-						table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+				if(invoiceLineItems.getCandidate() !=null){
+					Employees employee = null;
+					if(invoiceLineItems.getCandidate() !=null){
+						if(invoiceLineItems.getCandidate().getConsultantUser() != null){
+							employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+						}
 					}else{
-						table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						employee=employeesService.getEmployeeByUserId(invoiceLineItems.getUser().getId());
 					}
+					 	
+					if(employee != null){
+						if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
+							table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
+						}else{
+							table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
+						}	
+					}
+					
 				}else{
 					if(invoiceLineItems.getUser() !=null){
 						table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
@@ -366,13 +378,22 @@ public class InvoicePdfHelper {
 				Set<InvoiceLineItems> invoiveAssociateData = invoice.getInvoiceLineItems();
 				for (InvoiceLineItems invoiceLineItems : invoiveAssociateData) {
 					//table.addCell(getCell(invoiceLineItems.getCandidate().getId().toString(), Element.ALIGN_CENTER, font10));
-					if(invoiceLineItems.getCandidate() !=null && null !=invoiceLineItems.getCandidate().getConsultantUser()){
-							Employees employee=employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());	
+					if(invoiceLineItems.getCandidate() !=null){
+						Employees employee = null;
+						if(invoiceLineItems.getCandidate() !=null){
+							if(invoiceLineItems.getCandidate().getConsultantUser() != null){
+							 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getCandidate().getConsultantUser().getId());
+							}
+						}else{
+							 employee = employeesService.getEmployeeByUserId(invoiceLineItems.getUser().getId());
+						}
+						if(employee != null){
 							if(null != employee.getEmployeeId()  &&  !"".equalsIgnoreCase(employee.getEmployeeId())){
 								table.addCell(getCell(employee.getEmployeeId(), Element.ALIGN_CENTER, font10));
 							}else{
 								table.addCell(getCell("--", Element.ALIGN_CENTER, font10));
 							}
+						}
 					}else{
 						if(invoiceLineItems.getUser() !=null){
 							table.addCell(getCell(invoiceLineItems.getUser().getId().toString(), Element.ALIGN_CENTER, font10));
@@ -657,14 +678,39 @@ public class InvoicePdfHelper {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header and
-            List orderedList = new List(List.ORDERED);
-	        orderedList.add(new ListItem("Company Name :" +orgName));
-	        orderedList.add(new ListItem("Duration  :" +exportStartDate+" - "+exportEndDate));
-	        orderedList.add(new ListItem("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount()));
-	        orderedList.add(new ListItem("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount()));
-	        orderedList.add(new ListItem("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount()));
-	        orderedList.add(new ListItem("Total Unbilled Amount  :"+totalStagesAmount.getTotalUnbilledAmount()));
-	        document.add(orderedList);
+//            List orderedList = new List(List.ORDERED);
+//	        orderedList.add(new ListItem("Company Name :" +orgName));
+//	        orderedList.add(new ListItem("Duration  :" +exportStartDate+" - "+exportEndDate));
+//	        orderedList.add(new ListItem("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount()));
+//	        orderedList.add(new ListItem("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount()));
+//	        orderedList.add(new ListItem("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount()));
+//	        orderedList.add(new ListItem("Total Unbilled Amount  :"+totalStagesAmount.getTotalUnbilledAmount()));
+//	        document.add(orderedList);
+            
+            Chunk glue = new Chunk(new VerticalPositionMark());
+	        Paragraph p = new Paragraph("Company Name :" +orgName);
+	        p.add(new Chunk(glue));
+	        p.setIndentationLeft(0);
+	        p.add("Duration  :" +exportStartDate+" - "+exportEndDate);
+	        p.setIndentationRight(223);
+	        document.add(p);  
+	        
+	        Chunk glue1 = new Chunk(new VerticalPositionMark());
+	        Paragraph p1 = new Paragraph("Total Unpaid Amount(Open) :"+totalStagesAmount.getTotalOpenUnpaidAmount());
+	        p1.add(new Chunk(glue1));
+	        p1.setIndentationLeft(0);
+	        p1.add("Total Unpaid Amount(OverDue) :"+totalStagesAmount.getTotalOverDueUnpaidAmount());
+	        p1.setIndentationRight(220);
+	        document.add(p1); 
+	        
+	        Chunk glue2 = new Chunk(new VerticalPositionMark());
+	        Paragraph p2 = new Paragraph("Total Paid Amount :"+totalStagesAmount.getTotalPaidAmount());
+	        p2.add(new Chunk(glue2));
+	        p2.setIndentationLeft(0);
+	        p2.add("Total Unbilled Amount  :"+totalStagesAmount.getTotalUnbilledAmount());
+	        p2.setIndentationRight(227);
+	        document.add(p2); 
+            
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
             PdfPCell cell1 = null;
