@@ -880,10 +880,10 @@ public class DashboardRestController {
 		}
 		
 		 /**
-		  * This method is used for getting all Submissions,Applicat's,Interviews,Offers counts and Show in Dashboard page.
+		  * This method is used for getting all Expenses Stages(Draft,Submitted,Approved,Rejected) counts and Show in Dashboard page.
 		  * 
 		  * @author prasad K
-		  * @param daterange
+		  * @param expenseType
 		  * @return String
 		  * @throws NullPointer
 		  */
@@ -896,9 +896,9 @@ public class DashboardRestController {
 			    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				ExpensesCount expensesCount = new ExpensesCount();
-				if("employees".equalsIgnoreCase(expenseType)){
+				if("employeeExpenses".equalsIgnoreCase(expenseType)){
 					expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
-				}else if("myexpenses".equalsIgnoreCase(expenseType)){
+				}else if("myExpenses".equalsIgnoreCase(expenseType)){
 					expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
 				}
 				resultJson = commonUtil.toJSON(expensesCount);

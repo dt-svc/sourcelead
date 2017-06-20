@@ -498,7 +498,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		Contracts savedContracts = contractsTemplateDao.saveNewContract(contracts);
 		
-		if(jsonObj.has("maxTaxRowNum")){		
+		if(jsonObj.has("maxTaxRowNum") && null != jsonObj.getString("maxTaxRowNum") && !"".equals(jsonObj.getString("maxTaxRowNum"))){		
 		int maxCount = Integer.parseInt(jsonObj.getString("maxTaxRowNum"));
 		for (long c = 1; c < maxCount; c++) {
 			ContractRequestDocuments contractRequestDocuments = new ContractRequestDocuments();
@@ -708,6 +708,17 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 			contracts.setVendorContactName(vendorName.toString());
 			
+			if(null != contracts.getOrgRelations()){
+			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
+			 	if(null != orgRelations){
+			 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
+			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+					}	
+					else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+						contracts.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					}
+			 	}
+			}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
@@ -784,6 +795,18 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				vendorName.append("---");
 			}
 			contracts.setVendorContactName(vendorName.toString());
+			
+			if(null != contracts.getOrgRelations()){
+			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
+			 	if(null != orgRelations){
+			 		if(orgRelations.getLocationId().getId().equals(orgLocation.getId())){
+			 			contracts.setContractWith(orgRelations.getResponderLocationId().getOrg().getOrgName());
+					}	
+					else if(orgRelations.getResponderLocationId().getId() == orgLocation.getId()){
+						contracts.setContractWith(orgRelations.getLocationId().getOrg().getOrgName());
+					}
+			 	}
+			}
 			
 			/*contracts.setStartDateStr(Constants.DF_DMY.format(contracts.getStartDate()));
 			if(null != contracts.getEndDate()){
@@ -1138,7 +1161,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(createdUser.getFirstName()!= null && !"".equalsIgnoreCase(createdUser.getFirstName()) && createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
 			StringBuilder creatorSb = new StringBuilder();
 			globalVarsMap.put("ContractCreator", creatorSb.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
-		}else if(createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
+		}else if(createdUser.getFirstName()!= null && !"".equalsIgnoreCase(createdUser.getFirstName())){
 			globalVarsMap.put("ContractCreator",createdUser.getFirstName());
 		}else{
 			globalVarsMap.put("ContractCreator","--");
@@ -1208,7 +1231,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(createdUser.getFirstName()!= null && !"".equalsIgnoreCase(createdUser.getFirstName()) && createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
 			StringBuilder creatorSb = new StringBuilder();
 			globalVarsMap.put("ContractCreator", creatorSb.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
-		}else if(createdUser.getLastName()!= null && !"".equalsIgnoreCase(createdUser.getLastName())){
+		}else if(createdUser.getFirstName()!= null && !"".equalsIgnoreCase(createdUser.getFirstName())){
 			globalVarsMap.put("ContractCreator",createdUser.getFirstName());
 		}else{
 			globalVarsMap.put("ContractCreator","--");
@@ -1440,17 +1463,27 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				 globalVarsMap.put("ContractType","--");
 			 }
 		
-		 if(contracts.getEndDate()!= null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
-			 globalVarsMap.put("EndDate", contracts.getEndDate().toString());
-			 }else{
+		 if(contracts.getEndDate() != null && !"".equalsIgnoreCase(contracts.getEndDate().toString())){
+			String currentTimeStr = Constants.TZ_DF.format(contracts.getEndDate());
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
+			Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
+			interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+			globalVarsMap.put("EndDate", interviewDateInTimezone);
+		    }else{
 				 globalVarsMap.put("EndDate","--");
 			 }
 		 
 		 if(contracts.getStartDate()!= null && !"".equalsIgnoreCase(contracts.getStartDate().toString())){
-			 globalVarsMap.put("StartDate", contracts.getStartDate().toString());
-			 }else{
-				 globalVarsMap.put("StartDate","--");
-			 }
+				String currentTimeStr = Constants.TZ_DF.format(contracts.getStartDate());
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				String interviewDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,orgLocation.getTimezone().getTimeZoneId(), currentTimeStr);
+				Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
+				interviewDateInTimezone = Constants.DMY.format(interviewConverteDate);
+				globalVarsMap.put("StartDate", interviewDateInTimezone);
+			    }else{
+					 globalVarsMap.put("StartDate","--");
+				 }
 		 
 		if(owner.getFirstName()!= null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
 			StringBuilder creatorSb = new StringBuilder();
@@ -1567,12 +1600,39 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		vendorContracts.setContractTitle(jsonObj.getString("contractTitle").trim());
 		User ownerUser = userService.getUserById(Long.parseLong(jsonObj.getString("owner")));
 		contracts.setOwnerUserId(ownerUser);
-		Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
-		String currentTimeStr = Constants.TZ_DF.format(startTime);  
-		String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+		
+		
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-		contracts.setStartDate(convertedDate);
+		if(jsonObj.has("startDate") && null != jsonObj.getString("startDate") && !"".equals(jsonObj.getString("startDate"))){
+			Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
+			String currentTimeStr = Constants.TZ_DF.format(startTime);  
+			String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+			contracts.setStartDate(convertedDate);
+			if(null != vendorContracts){
+				vendorContracts.setStartDate(convertedDate);
+			}
+		}
+		if (jsonObj.has("workLocation") && null != jsonObj.getString("workLocation")
+				&& !"".equals(jsonObj.getString("workLocation"))) {
+			contracts.setWorkLocation(jsonObj.getString("workLocation"));
+			if(null != vendorContracts){
+				vendorContracts.setWorkLocation(jsonObj.getString("workLocation"));
+			}
+		}
+		
+		if (jsonObj.has("joinDate") && null != jsonObj.getString("joinDate")
+				&& !"".equals(jsonObj.getString("joinDate"))) {
+			Date joinTime = commonUtil.getDateFormat(jsonObj.getString("joinDate"));
+			String currentTimeStr = Constants.TZ_DF.format(joinTime);
+			String startTimeUTC = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), "UTC", currentTimeStr);
+			Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+			contracts.setJoinDate(convertedDate);
+			if(null != vendorContracts){
+				vendorContracts.setJoinDate(convertedDate);
+			}
+		}
+		
 		if(jsonObj.has("endDate")){
 			if(null != jsonObj.getString("endDate") && !"".equals(jsonObj.getString("endDate"))){
 				Date endTimeStr = commonUtil.getDateFormat(jsonObj.getString("endDate"));  
@@ -1897,9 +1957,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName,String contractStatus) throws Exception
+	public List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName,String contractStatus,Long orgRelationId) throws Exception
 	{
-		List<Contracts> contractList = contractsTemplateDao.getAllClientOrVendorContractsBasedOnLocationId(orgLocations, responderType, user, userRoleName, contractStatus);
+		List<Contracts> contractList = contractsTemplateDao.getAllClientOrVendorContractsBasedOnLocationId(orgLocations, responderType, user, userRoleName, contractStatus,orgRelationId);
 		for (Contracts contracts : contractList) {
 			if (Constants.VENDOR.equalsIgnoreCase(responderType)) {
 				StringBuilder ownerName = new StringBuilder();
@@ -1910,7 +1970,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 					}
-					else if (null != contracts.getOwnerUserId().getLastName()) {
+					else if (null != contracts.getOwnerUserId().getFirstName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName());
 					}
 					else {
@@ -1996,7 +2056,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							&& null != contracts.getOwnerUserId().getLastName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
 					}
-					else if (null != contracts.getOwnerUserId().getLastName()) {
+					else if (null != contracts.getOwnerUserId().getFirstName()) {
 						ownerName.append(contracts.getOwnerUserId().getFirstName());
 					}
 					else {
@@ -2012,7 +2072,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							&& null != contracts.getContactUser().getLastName()) {
 						vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
 					}
-					else if (null != contracts.getContactUser().getLastName()) {
+					else if (null != contracts.getContactUser().getFirstName()) {
 						vendorName.append(contracts.getContactUser().getFirstName());
 					}
 					else {
@@ -2076,6 +2136,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		return contractList;
+	}
+
+	@Override
+	public ContractsHistory getAllContractsHistoryByContractId(Long contractId)
+	{
+		return contractsTemplateDao.getAllContractsHistoryByContractId(contractId);
 	}
 	
 }
