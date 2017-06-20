@@ -1925,7 +1925,7 @@ function createAlert(requirementUUID){
 					        	 result = result +'               </select>';
 					        	 result = result +'               </div>';
 					        	 
-					        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+json['rate']+'" class="form-control" placeholder="Rate">';
+					        	 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" onblur="getRate();" data-validation-optional="true" value="'+json['maxRate']+'" class="form-control" placeholder="Rate">';
 					        	 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
 					        	 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" field-name="Rate Type" data-validation-optional="true">';
 					        	 result = result +'                   <option value="">Rate Per</option>';
@@ -2009,7 +2009,7 @@ function createAlert(requirementUUID){
 					        	 result = result +'         <div class="form-group clearfix">';
 					        	 result = result +'         	<label class="col-md-3">Keywords / Skills<span class="text-danger paddingLeft">*</span></label>';
 					        	 result = result +'         	<div class="col-md-9">';
-					        	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" data-validation="required" multiple id="candidateSkills" name="skills">';
+					        	 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills" field-name="Keywords/Skills" data-validation="required" multiple id="candidateSkills" name="skills">';
 					        	 result = result +'         		<c:forEach var="skill" items="${skillsList}">';
 					        	 result = result +'  					<option value="${skill.name}">${skill.name}</option>';
 					        	 result = result +'						</c:forEach>;'
