@@ -464,15 +464,17 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			return count;
 			
         }else{
-        	
+        	List<Long> reqSubmsCount = null;
         	String query = "";
         	if(dateRange != null && "today".equals(dateRange)){
                 query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate >= :startDate and rs.updatedDate <= :endDate";
+                 reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setDate("startDate",startUTCDate).setDate("endDate",endUTCDate).setCacheable(true).list();
      		}else if(dateRange != null && "previous".equals(dateRange)){
      			query ="select count(*) from RequirementSubmission rs where rs.orgLocations = :orgLocationsId "+submissionStages+" and rs.status = 1  and rs.updatedDate < :startDate";
+     			 reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setDate("startDate",startUTCDate).setCacheable(true).list();
      		}
         	
-        	List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setDate("startDate",startUTCDate).setDate("endDate",endUTCDate).setCacheable(true).list();
+        	//List<Long> reqSubmsCount =   session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).setDate("startDate",startUTCDate).setDate("endDate",endUTCDate).setCacheable(true).list();
 			Integer count = 0;
 			if(reqSubmsCount != null && !reqSubmsCount.isEmpty()){
 					count = reqSubmsCount.get(0).intValue();
