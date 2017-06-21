@@ -62,7 +62,7 @@ window.onload = function () {
                             <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
-                            <option value="April">Type 4</option>
+                            <option value="HR_DEDUCTIONS">HR Deductions</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">

@@ -29,7 +29,7 @@ public class AccountDeductionsDaoImpl implements AccountDeductionsDao{
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(payCycle);
+			session.saveOrUpdate(payCycle);
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}

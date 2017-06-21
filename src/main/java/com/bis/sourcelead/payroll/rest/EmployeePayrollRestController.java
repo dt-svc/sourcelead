@@ -26,6 +26,7 @@ import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
+import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -52,6 +53,9 @@ public class EmployeePayrollRestController {
 	@Autowired
 	private AccountDeductionsService accountDeductionsService;
 	
+	@Autowired
+	private HrDeductionsService hrDeductionsService;
+	
 	@RequestMapping(value = "/uploadPayrollDocument", method = RequestMethod.POST)
 	@ResponseBody 
 	public String fileUploaded(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -71,6 +75,8 @@ public class EmployeePayrollRestController {
 			String isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 		}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 			String isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
+		}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
+			String isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
 		}
 		return commonUtil.toJSON("success");
 	}
@@ -108,6 +114,10 @@ public class EmployeePayrollRestController {
 				}
 				if(null != wts.getToDate()){
 					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+				}
+				
+				if(wts.getCheckDate() !=null   ){
+					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
 				}
 				if(wts.getCheckNo() != null){
 					wts.setCheckNo(wts.getCheckNo());
