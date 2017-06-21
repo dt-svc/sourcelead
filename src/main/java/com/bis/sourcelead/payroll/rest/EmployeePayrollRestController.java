@@ -23,6 +23,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.HrDeductions;
+import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
 import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
@@ -161,6 +163,41 @@ public class EmployeePayrollRestController {
 	{
 		List<AccountDeductionsDetails> accountDeductionsDetailsList = accountDeductionsService.getDeductionsDetailsbyId(Long.parseLong(deductionId));
 		return commonUtil.toJSON(accountDeductionsDetailsList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getHrDeductionsList", method = RequestMethod.GET)
+	public @ResponseBody String getHrDeductionsList(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<HrDeductions> hrDeductionsList = hrDeductionsService.getHrDeductionsListByOrgLocationid(orgLocation);
+		if(hrDeductionsList != null){
+			for(HrDeductions hd : hrDeductionsList){
+				if(null !=  hd.getFromDate()){
+					hd.setFromDateStr(conversionUtil.getDateAsString(hd.getFromDate()));
+				}
+				if(null != hd.getToDate()){
+					hd.setToDateStr(conversionUtil.getDateAsString(hd.getToDate()));
+				}
+			}
+		}
+		return commonUtil.toJSON(hrDeductionsList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getEmpHrDeductionsDetailsbyId", method = RequestMethod.GET)
+	public @ResponseBody String getEmpHrDeductionsDetailsbyId(@RequestParam(value = "hrDeductionId", required = false) String hrDeductionId, HttpServletRequest request) throws Exception
+	{
+		List<HrDeductionsDetails> hrDeductionsList = hrDeductionsService.getHrDeductionsDetailsbyId(Long.parseLong(hrDeductionId));
+		return commonUtil.toJSON(hrDeductionsList);
 	}
 	
 }

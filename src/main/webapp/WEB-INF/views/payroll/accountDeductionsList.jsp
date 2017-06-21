@@ -89,6 +89,7 @@ function accountDeductionsList(){
 						result = result + ' </table>';
 						$("#employerCostDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
+						$("#hrDeductionsListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
 						$("#accountDeductionsListDiv").append(result);
 						$("#loading").removeAttr("style");
@@ -212,7 +213,7 @@ function employeeDeductionsListTablePagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#AccountDeductionsListTable").wrap("<div class='overflow_Auto'></div>");
+    $("#employeeDeductionsListTable").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 
