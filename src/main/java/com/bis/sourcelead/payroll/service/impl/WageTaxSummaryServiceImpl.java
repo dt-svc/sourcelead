@@ -92,7 +92,6 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 									emppID = getCellValueAsString(row.getCell(0), fileName);
 								}
-								System.out.println("created");
 
 								float gross = 0f;
 								float fwt = 0f;
@@ -168,12 +167,20 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 									net = Float.parseFloat(getCellValueAsString(row.getCell(12), fileName));
 									wageTaxSummary.setNet(net);
 								} 
-								if(jsonObj.has("fromDate") && jsonObj.getString("fromDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("fromDate"))){
+								if(jsonObj.has("fromDate")){
+									if(jsonObj.getString("fromDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("fromDate"))){
+										wageTaxSummary.setFromDate(conversionUtil.getDateFromString(jsonObj.getString("fromDate")));
+									}
+									
 								}
-								if(jsonObj.has("toDate") && jsonObj.getString("toDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("toDate"))){
+								if(jsonObj.has("toDate")){
+									if(jsonObj.getString("toDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("toDate"))){
+										wageTaxSummary.setToDate(conversionUtil.getDateFromString(jsonObj.getString("toDate")));
+									}
 								}
 								if(jsonObj.has("batchNumber")){
 									if(jsonObj.getString("batchNumber") !=null && !"".equalsIgnoreCase(jsonObj.getString("batchNumber"))){
+										wageTaxSummary.setBatchNumber(jsonObj.getString("batchNumber"));
 									}
 								}
 								wageTaxSummary.setCreatedBy(user.getUserCode());
@@ -243,6 +250,12 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			}
 			return cellValue;
 		}
+
+	@Override
+	public List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)
+	{
+		return wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation);
+	}
 
 
 }

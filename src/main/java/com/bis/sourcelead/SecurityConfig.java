@@ -126,6 +126,7 @@ public class SecurityConfig  {
     			.antMatchers("/downloadOfferAttachment").permitAll()
     			.antMatchers("/downloadInvoiceAttachment").permitAll()
     			.antMatchers("/acceptOrRejectReopenTimeSheet").permitAll() 
+    			.antMatchers("/acceptOrRejectReopenExpenseBySuperUser").permitAll()
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
     			.antMatchers("/resources/**/**").permitAll() 
@@ -151,6 +152,10 @@ public class SecurityConfig  {
     			.antMatchers("/getJobDetailsForJobAlert").permitAll()
     			.antMatchers("/storeJobAlert").permitAll()
     			.antMatchers("/validateAlertUserEmail").permitAll()
+    			.antMatchers("/getInterviewrsViewFeedbackList").permitAll()
+    			.antMatchers("/savePublicInterviewFeddbackTemlateReason").permitAll()
+    			.antMatchers("/savePublicInterviewFeddbackTemlate").permitAll()
+    			.antMatchers("/getPublicInterviewFeedbackTemplate").permitAll()
     			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
     			
     			

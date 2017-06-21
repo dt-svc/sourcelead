@@ -10,7 +10,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalService {
 
-	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc, String expenseStatus) throws Exception;
+	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc, String expenseStatus, String startDate, String endDate) throws Exception;
 	
 	ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId) throws Exception;
 	
@@ -35,5 +35,7 @@ public interface ExpensesApprovalService {
 	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchy> expApperoverHierarchy, OrgLocations orgLoc) throws IOException;
 
 	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchy> expApperoverHierarchy,OrgLocations orgLoc)throws IOException;
+	
+	public void sendReopenExpenseAcceptOrRejectMail(Long expenseId,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser) throws Exception;
 
 }

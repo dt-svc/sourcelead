@@ -67,6 +67,12 @@ function editCandidate(candidateId){
 	            			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
 	            			 		designation = json.designation;            			 		
 	            			 	}
+	            			 	
+	            			 	var address = '';
+	            			 	if(json.address != null && json.address != '' && json.address != 'undefined'){
+	            			 		address = json.address;            			 		
+	            			 	}
+	            			 	
 	            			 	var currentRate = '';
 	            			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
 	            			 		currentRate = json.currentRate;            			 		
@@ -156,15 +162,20 @@ function editCandidate(candidateId){
 								
 								result = result + '</div>';
 								
-								
-								
 								result = result + '<div class="clearfix mb10">';
+								
+								result = result + '<div class="col-md-6">';
+								result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
+								result = result + '</div>';
+								
 								result = result + '<div class="col-md-6 custom-fields">';
 								result = result + '<select class="form-control" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
 								result = result + '</select>';
 								result = result + '</div>';
 								
-								 
+								result = result + '</div>';
+								
+								result = result + '<div class="clearfix mb10">';
 								result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
 								result = result + '<input type="hidden" name="updateCountry" id="updateCountry" value="'+json.country+'" />';
 								result = result + '<input type="hidden" name="updateCity" id="updateCity" value="'+json.city+'" />';
@@ -173,14 +184,15 @@ function editCandidate(candidateId){
 								result = result + '<select  class="form-control" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
 								result = result + '</select>';
 								result = result + '</div>';
-								result = result + '</div>';
-								
-								result = result + '<div class="clearfix mb10">';
 								
 								result = result + '<div class="col-md-6 custom-fields">';
 								result = result + '<select  class="form-control" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
 								result = result + '</select>';
 								result = result + '</div>';
+								
+								result = result + '</div>';
+								
+								result = result + '<div class="clearfix mb10">';
 								
 								result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 								result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
@@ -195,7 +207,6 @@ function editCandidate(candidateId){
 								
 								result = result + '</div>';
 
-								
 								result = result + '<div class="clearfix mb10">';
 								result = result + '<div class="col-md-6">';
 								result = result + '<div class="input-group er ratetype">';

@@ -1403,7 +1403,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Query query = null;
 		if (null != statusList && !statusList.isEmpty()) {
 			query = session.createQuery(from + " " + subQuery
-					+ " and requirement.requirementSubmissionStatus IN (:statusList) ORDER BY requirement.id DESC , requirement.parentRequirement.id");
+					+ " and requirement.parentRequirement.requirementSubmissionStatus IN (:statusList) ORDER BY requirement.id DESC , requirement.parentRequirement.id");
 			params.put("statusList", statusList);
 		}
 		else {
