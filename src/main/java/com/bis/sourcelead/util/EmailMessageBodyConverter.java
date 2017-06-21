@@ -91,7 +91,7 @@ public String convertTempBodyOfEmailTemplate(String body,Map<String, String> glo
 			for(String test : delimitStr) {
 				String flag = globalVarsMap.get(test);
 				if(!isNullOrEmpty(flag)){
-					sb.append(flag).append(" ");
+					sb.append(flag).append("");
 				}
 				if(matches.find()) {
 				String tests = matches.group();

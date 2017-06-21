@@ -1,13 +1,23 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.transaction.annotation.Transactional;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
+import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 
 /**
 *
@@ -38,12 +48,96 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	@Autowired
+	private UserDao userDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
-	
-	
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Expenses> getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,
+			Long orgLocationId, String submissionStatus) throws Exception {
+		Map<String, Object> params = new HashMap<String,Object>();
+			String subQuery2 = "";
+			if ("APPROVED".equalsIgnoreCase(submissionStatus)) {
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'APPROVED' ";
+			}
+			if ("SUBMITTED".equalsIgnoreCase(submissionStatus)) {
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'SUBMITTED' ";
+			}
+			if ("REJECTED".equalsIgnoreCase(submissionStatus)) {
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'REJECTED' ";
+			}
+			if ("DRAFT".equalsIgnoreCase(submissionStatus)) {
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'DRAFT' ";
+			}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where expenses.orgLocationId.id =:orgLocationId and user.id =:userId and ( " + subQuery2 +" ) ";
+		params.put("userId",userId);
+		params.put("orgLocationId",orgLocationId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("userId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+			
+        }
+		return query.setCacheable(true).list();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ExpensesApproverHierarchy> getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(
+			Long userId, Long orgLocationId, String submissionStatus) throws Exception {
+		Map<String, Object> params = new HashMap<String,Object>();
+		String subQuery2 = "";
+		if ("SUBMITTEDFORAPPROVAL".equalsIgnoreCase(submissionStatus)) {
+			subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'SUBMITTEDFORAPPROVAL' ";
+		}
+		if ("APPROVED".equalsIgnoreCase(submissionStatus)) {
+			subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'APPROVED' ";
+		}
+		if ("REJECTED".equalsIgnoreCase(submissionStatus)) {
+			subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'REJECTED' ";
+		}
+		if ("REOPENED".equalsIgnoreCase(submissionStatus)) {
+			subQuery2 = subQuery2 + " sah.expenseApprovalStatus = 'REOPENED' ";
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where exp.orgLocationId.id = :orgLocationId"
+				
+			+ " and ( ("
+			+ "      hierarchy.approverUserId.id = :userId and "
+			+ "       (     (hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2')) "
+			+ "          OR (hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id) ) "
+			+ "       )"
+			+ "      ) "
+				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where subsah.expenseId.id = sah.expenseId.id ) and "+Constants.loginUserAsAdminWithMaxHeirarchyLevel+") "
+				+ "   ) and ( " + subQuery2 +" )";
+		
+		
+		params.put("userId",userId);
+		params.put("orgLocationId",orgLocationId);
+		
+		Query query = session.createQuery(from);
+		for (String str : query.getNamedParameters())
+        {
+			if(str.equalsIgnoreCase("userId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+			if(str.equalsIgnoreCase("orgLocationId")){
+				query.setParameter(str, (long) params.get(str));
+			}
+        }
+		return query.setCacheable(true).list();
+	}
 }
-

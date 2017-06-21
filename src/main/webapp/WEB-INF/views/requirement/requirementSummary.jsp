@@ -118,8 +118,7 @@ height: 25px;
 color:#333 !important;
 }
 .remove_user_pop textarea {
-width: 92% !important;
-margin-top:10px;
+width: 100% !important; margin:10px 0 0 0;
 }
 #tab-2 {
 overflow-y:hidden;
@@ -1043,6 +1042,7 @@ function requirementDetails(requirementId){
 	  
 	  var isLoginUserAsTeamMember = '${isTeamMember}';
 	  var isLoginUserAsManager = '${isManager}';
+	  var isLoginUserAsAdmin = '${isAdmin}';
 	  var requirementUUID = '${requirementUUID}'
 	  
 	  $("#detailsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -1092,16 +1092,16 @@ function requirementDetails(requirementId){
 				             
 				            if( (json.requirementSubmissionStatus =='NEW'  || json.requirementSubmissionStatus =='DRAFT' || json.requirementSubmissionStatus =='SUBMITTED'  || json.requirementSubmissionStatus  == "APPROVED"  || json.requirementSubmissionStatus =='REJECTED'  ||  json.requirementSubmissionStatus  == "OPEN" ||  json.requirementSubmissionStatus  == "ONHOLD" ) && ( isLoginUserAsTeamMember == "false" || (isLoginUserAsTeamMember == "true" && json.isLoginUserAsApprover  == "true") || (isLoginUserAsTeamMember == "true" && isLoginUserAsManager  == "true") ) ){ 
 				            	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
-				            		result = result +' <a href="<c:url value="/requirement?requirementUUID='+requirementUUID+'"/>"><button  class="btn btn-primary" type="button">Edit</button></a>';
+				            		result = result +' <a href="<c:url value="/requirement?requirementUUID='+requirementUUID+'"/>"><button  class="btn btn-primary btn-sm" type="button">Edit</button></a>';
 				            	'</sec:authorize>';
 				            }
 				            var APPROVED = "APPROVED";     
 				            var REJECTED = "REJECTED";
 
-				             if(json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null ){
+				             if((isLoginUserAsAdmin == "true" && json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementSubmissionStatus !='APPROVED' &&  json.requirementSubmissionStatus != 'REJECTED'  &&  json.requirementSubmissionStatus != 'OPEN' )  || (json.requirementSubmissionStatus  !='DRAFT' && json.requirementSubmissionStatus != 'ONHOLD'  && json.requirementSubmissionStatus != 'CANCEL' &&  json.requirementApproverHierarchyStatus !='APPROVED' &&  json.requirementApproverHierarchyStatus != 'REJECTED'  &&  json.requirementApproverHierarchyStatus != 'OPEN'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null )){
                					 
-				            	 result = result +'<button  class="btn btn-success mr" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
-               		             result = result +'<button  class="btn btn-danger mr" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
+				            	 result = result +'<button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus(\''+ APPROVED+ '\');"  >Approve</button>';
+               		             result = result +'<button  class="btn btn-danger btn-sm" type="button" onClick ="rejectRequirementAlertMessage(\''+ REJECTED+ '\');">Reject</button>';
    				           	 }/* else if(json.requirementApproverHierarchyStatus == 'APPROVED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
       						              result = result +'<strong  id="requirementStatus" class="pull-right mr btn btn-success disabled">OPEN</strong>';
     				         }else if( json.requirementSubmissionStatus  !='DRAFT'  && json.requirementApproverHierarchyStatus == 'REJECTED'  && json.requirementApproverHierarchyStatus !='' && json.requirementApproverHierarchyStatus !='undefined' && json.requirementApproverHierarchyStatus !=null){
@@ -1436,7 +1436,9 @@ function updateReuqirementStatus(status){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
+	 var isLoginUserAsAdmin = '${isAdmin}';
 	 
+	 alert( isLoginUserAsAdmin);
 	 var reason;
 	 if ($('#rejectReason').length)
 	 {
@@ -1451,7 +1453,7 @@ function updateReuqirementStatus(status){
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
+      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
@@ -1513,13 +1515,14 @@ function updateReuqirementStatusReject(status){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementId = '${requirementId}';
+	var isLoginUserAsAdmin = '${isAdmin}';
 	 
 	 var reason = document.getElementById("rejectReason").value;
 	  if(reason.match(/^[^\s-](.*)*$/) != null){
 	$('#reasonDiv').empty();
  	$.ajax({
       type : "POST",
-      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason, 
+      url: sourceleadUrl+"/requirementAcceptOrReject?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
     		  success :function(data) {  
             if(data != null && data != 'undefined' && data != ""){  
           		 if( data.indexOf('Sign In') >= 0){
@@ -1801,7 +1804,7 @@ function requirementPipeline(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150">';
 							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
 							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
-							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        	   if(report.submissionStatus == 'OFFERACCEPTED' || report.submissionStatus == 'CLIENT_OFFERACCEPTED'){
 							        		   result = result + '<option value="backout">Back-Out</option>';
 							        	   }
 							        	   result = result + '</select>';
@@ -2085,7 +2088,7 @@ function requirementPipelineDA(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150">';
 							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
 							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
-							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        	   if(report.submissionStatus == 'OFFERACCEPTED' || report.submissionStatus == 'CLIENT_OFFERACCEPTED'){
 							        		   result = result + '<option value="backout">Back-Out</option>';
 							        	   }
 							        	   result = result + '</select>';
@@ -2362,7 +2365,7 @@ function requirementPipelineRS(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150">';
 							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
 							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
-							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        	   if(report.submissionStatus == 'OFFERACCEPTED' || report.submissionStatus == 'CLIENT_OFFERACCEPTED'){
 							        		   result = result + '<option value="backout">Back-Out</option>';
 							        	   }
 							        	   result = result + '</select>';
@@ -2650,7 +2653,7 @@ function requirementPipelineSL(requirementId,submissionType){
 								        	   result = result + '<td><div class="tblwidth-150">';
 								        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
 								        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
-								        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+								        	   if(report.submissionStatus == 'OFFERACCEPTED' || report.submissionStatus == 'CLIENT_OFFERACCEPTED'){
 								        		   result = result + '<option value="backout">Back-Out</option>';
 								        	   }
 								        	   result = result + '</select>';
@@ -2912,7 +2915,7 @@ function requirementPipelineSC(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150">';
 							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
 							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
-							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        	   if(report.submissionStatus == 'OFFERACCEPTED' || report.submissionStatus == 'CLIENT_OFFERACCEPTED'){
 							        		   result = result + '<option value="backout">Back-Out</option>';
 							        	   }
 							        	   result = result + '</select>';
@@ -3092,7 +3095,7 @@ function requirementPipelineIN(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150">';
 							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
 							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
-							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        	   if(report.submissionStatus == 'OFFERACCEPTED' || report.submissionStatus == 'CLIENT_OFFERACCEPTED'){
 							        		   result = result + '<option value="backout">Back-Out</option>';
 							        	   }
 							        	   result = result + '</select>';
@@ -3291,7 +3294,7 @@ function requirementPipelineOffer(requirementId,submissionType){
 							        	   result = result + '<td><div class="tblwidth-150">';
 							        	   result = result + '<select id="rejectApplicantSelectspocState'+report.id+'" onChange="rejectApplicant('+report.id+','+requirementId+',\''+submissionType+'\')";>';
 							        	   result = result + "<option value='Status'>"+report.submissionStatus+"</option><option value='Reject'>Reject</option>";
-							        	   if(report.submissionStatus == 'OFFERACCEPTED'){
+							        	   if(report.submissionStatus == 'OFFERACCEPTED' || report.submissionStatus == 'CLIENT_OFFERACCEPTED'){
 							        		   result = result + '<option value="backout">Back-Out</option>';
 							        	   }
 							        	   result = result + '</select>';
@@ -3909,11 +3912,10 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
         result = result +"       <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
-//         result = result +"<form id='myForm'>";
-        
-        result = result +"    <div class='col-md-12 inputOther mt10 inputOther'>";
+        result = result +"<form id='rejected_form' name='rejected_form'>";
+        result = result +"    <div class='col-md-12 inputOther mt10 inputOther mb'>";
         result = result +"    <div class='dropdown-select' id='rejectedCategorytDiv'>";
-        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='true'>";
+        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='required' field-name='Category' >";
         result = result +"<option selected value=''>--Select Category--</option>";
         result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
         result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
@@ -3926,16 +3928,19 @@ function rejectApplicant(submissionId,requirementId,submissionType){
        
         
         result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
-        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' >";
+        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
         result = result +" </div>";
         
-        result = result +" </div>";
+       
         
         //result = result +"        <p>Applicant reject message here</p>";
-        result = result +"        <textarea  id='reasonForReject' name='reasonForReject'  placeholder='Comments here'></textarea>";
+        result = result +"    <div class='clearfix'>";
+        result = result +"        <textarea class='form-control' id='reasonForReject' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'></textarea>";
+        result = result +"    </div>";
+        result = result +" </div>";
         result = result + ' <div id="reasonForApplicantDiv"/>';
         result = result +"        <input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
-//         result = result +"</form>";
+        result = result +"</form>";
         result = result +"    </div>";
         $("#popUp").append(result);
         $("#rejectApplicant"+submissionId).slideDown(200);
@@ -3951,7 +3956,7 @@ function getRejectedCategory(){
 	if(rejectedCategory == 'Other'){
 		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
 	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
-		$('#rejectedCategoryOther').attr("data-validation","required"); 
+		$('#rejectedCategoryOther').attr("data-validation","required validate_Space validate_length length2-100 "); 
 		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
 	}else{
 		$("#rejectedCategoryOther").attr("data-validation-optional","true");
@@ -3993,54 +3998,48 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 	
 };
 </script>
-
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
 <script>
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 var reason= document.getElementById("reasonForReject").value;
-	 var rejectedCategoryType= document.getElementById("rejectedCategory").value; 
-	 var rejectedCategoryOther= document.getElementById("rejectedCategoryOther").value;
-	 if((reason == null || reason == '' || reason == 'undefined') 
-			 || (rejectedCategoryType == null || rejectedCategoryType == '' || rejectedCategoryType == 'undefined') 
-			 || ( (rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined' && rejectedCategoryType == 'Other') 
-					  &&  (rejectedCategoryOther == null || rejectedCategoryOther == '' || rejectedCategoryOther == 'undefined')
-				 )
-	     ){
-		 if(reason != null && reason != '' && reason != 'undefined'){
-			 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
-		 }else{
-				 $("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
-		  	    $("#reasonForApplicantDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-		 }
-		 if(rejectedCategoryType != null && rejectedCategoryType != '' && rejectedCategoryType != 'undefined'){
-			 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
-		 }else{
-				 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
-		  	  $("#rejectedCategorytDiv").append("<p class='jquery_form_error_message'>Category Is Required</p>");
-		 }
-		 if(rejectedCategoryOther.match(/^[^\s-](.*)*$/) != null && rejectedCategoryType == 'Other' && rejectedCategoryOther != null && rejectedCategoryOther != '' && rejectedCategoryOther != 'undefined'){
-			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
-		 }
-		 else{
-			 
-			 $("#rejectOtherCategoryDiv").find('p.jquery_form_error_message').remove();
-			 $("#rejectOtherCategoryDiv").append("<p class='jquery_form_error_message'>Other Type Is Required</p>");
-	  	 
-	      }
-		}else{
-			$("#reasonForApplicantDiv").find('p.jquery_form_error_message').remove();
-		  $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
+	if ($('#rejected_form').validate(false, validationSettings)) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		var frm = $('#rejected_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var form = $('#rejected_form')[0];
+  		var formData = new FormData(form); 
+		var jsonData = encodeURIComponent(con);
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/rejectApplicant?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&submissionId="+submissionId+"&reason="+reason+"&rejectedCategoryType="+rejectedCategoryType+"&rejectedCateoryOther="+rejectedCategoryOther,	    	   
+			type : "POST",
+    	    data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+		    url: sourceleadUrl+"/rejectApplicant?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
    			    requirementPipeline(requirementId,submissionType);
 		    }
 	   });
-		}
+		return true;
+	}else{
+		return false;
+	}
 }
+$('body').on('blur', '#rejected_form', function() {
+	$("#rejected_form").showHelpOnFocus();
+	$("#rejected_form").validateOnBlur(false, validationSettings);
+});
 </script>
 <script>
 function backOutApplicant(submissionId,requirementId,submissionType){

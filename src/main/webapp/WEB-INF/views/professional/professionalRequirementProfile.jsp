@@ -28,7 +28,14 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Requirement Details</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Requirement List </a> » Requirement Details</div>
+    <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Requirement List </a> &raquo; Requirement Details</div>
+    </c:if>
+    
+    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Requirement List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Requirement List </a> &raquo; Requirement Details</div>
+    </c:if>
+  
   </section>
   
   <div class="side_mask"><div class="proj_close"></div></div>
@@ -72,6 +79,10 @@ function requirementProfile(requirementUUID){
 		    		rate = json.rate;
 		    	}else{
 		    		rate = "";
+		    	}if(json.maxRate != null && json.maxRate != '' && json.maxRate != 'undefined'){
+		    		maxRate = json.maxRate;
+		    	}else{
+		    		maxRate = "";
 		    	}
 		    	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
 		    		rateType = json.rateType;
@@ -84,7 +95,11 @@ function requirementProfile(requirementUUID){
 		    	}else{
 		    		currencyCode = "";
 		    	}
-		    	
+		    	if(json.industryName != null && json.industryName != '' && json.industryName != 'undefined'){
+		    		industryName = json.industryName;
+		    	}else{
+		    		industryName = "--";
+		    	}
 		    	if(json.city != null && json.city != '' && json.city != 'undefined'){
 		    		city = json.city +' , ';
 		    	}else{
@@ -121,7 +136,11 @@ function requirementProfile(requirementUUID){
 	    		}else{
 	    		   noticePeriod = "";
 	    		}
-
+		    	if(json.travelAllowance != null && json.travelAllowance != '' && json.travelAllowance != 'undefined'){
+		    		travelAllowance = json.travelAllowance;
+	    		}else{
+	    			travelAllowance = "";
+	    		}
 		    	
 				 result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
@@ -161,20 +180,22 @@ function requirementProfile(requirementUUID){
 				 result = result +'                  <div class="row">';
 				 result = result +'                    <div class="col-md-12">';
 				 result = result +'                      <ul class="list-unstyled can-perdt">';
+				 
 				 result = result +'                        <li><i class="fa fa-building" title="Company"></i><span>'+json.postedOrgName+'</span></li>';
-				 if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
-				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+'-'+json.maxExp+' years</span></li>';
-				 }else if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
-				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+' years</span></li>';
-				 }else if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'){
-				 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.maxExp+' years</span></li>';
-				 }else{
-					 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
-				 }
+				 if((json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && (json.minExp != null) && json.minExp != '' && json.minExp != 'undefined')){
+					 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+'-'+json.maxExp+' years</span></li>';
+					 }else if(json.minExp != null && json.minExp != '' && json.minExp != 'undefined'){
+					 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.minExp+' years</span></li>';
+					 }else if(json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined'){
+					 result = result +'                        <li><i class="fa fa-briefcase" title="Experience"></i><span>'+json.maxExp+' years</span></li>';
+					 }else{
+						 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
+					 }
 				 
 				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
+				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 				 result = result +'                      </ul>';
 				 result = result +'                    </div>';
 				 result = result +'                  </div>';
@@ -228,9 +249,7 @@ function requirementProfile(requirementUUID){
 				 
 			     result = result+'    <ul class="nav nav-tabs mt">';
 			     result = result+'      <li class="active"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementDetails(\''+requirementUUID+'\');" >Details</a></li>';
-			     if(json.isCrowdSourcing == 'Y'){
-			     	result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referrals</a></li>';
-			     }
+			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getReferalDetails(\''+requirementUUID+'\');" >Referrals</a></li>';
 			     '<sec:authorize access="hasRole(\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getSubmissionDetails(\''+requirementUUID+'\');">Submissions</a></li>';
 			     '</sec:authorize>';
@@ -274,6 +293,9 @@ function requirementDetails(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                <div class="require_wrap_details_cta"> <b>Education:</b> <span title="'+education+'">'+education+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+				 result = result +'                <div class="require_wrap_details_cta"> <b>Industry:</b> <span title="'+industryName+'">'+industryName+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){

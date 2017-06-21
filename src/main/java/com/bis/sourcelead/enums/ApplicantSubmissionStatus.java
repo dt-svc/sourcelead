@@ -20,7 +20,7 @@ public enum ApplicantSubmissionStatus {
     OFFERREJECTED("offer_rejected"),
     OFFERHIRED("hired"),
     FEEDBACK("feedback"),
-    
+    NEW("New"),
     ATTENDING("Attending"),
     NOT_ATTENDING("Not_Attending"),
     MAYBE("Maybe"),

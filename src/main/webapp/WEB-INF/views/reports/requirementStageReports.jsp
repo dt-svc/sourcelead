@@ -162,8 +162,8 @@ function requirementReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
-	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
+	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Export to Excel");
+	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
 
 </script>
@@ -718,6 +718,7 @@ function getCustomReports(){
 		$(".oneA").addClass("actRE");
 		$(".repTab2").hide();
 		$(".repTab1").show();
+		$("#statusDiv").css("display", "block");
 	});		
 	</script>
 	

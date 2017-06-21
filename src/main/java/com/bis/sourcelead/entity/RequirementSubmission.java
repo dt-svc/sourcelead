@@ -394,6 +394,10 @@ public class RequirementSubmission implements Serializable{
     
     @Column(name = "REASON_OTHER_TYPE")
     private String rejectedCategoryOther;
+    
+    @Transient
+   	private String referUUID;
+       
 	
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
@@ -1320,7 +1324,11 @@ public class RequirementSubmission implements Serializable{
 		this.rejectedCategoryOther = rejectedCategoryOther;
 	}
 
-	
-	
-	
+	public String getReferUUID() {
+		return referUUID;
+	}
+
+	public void setReferUUID(String referUUID) {
+		this.referUUID = referUUID;
+	}
 }

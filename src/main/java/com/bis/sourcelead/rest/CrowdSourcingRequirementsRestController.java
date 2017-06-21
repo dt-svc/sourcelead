@@ -160,7 +160,6 @@ public class CrowdSourcingRequirementsRestController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	@RequestMapping(value = "/getCrowdSourcingRequirements")
 	public @ResponseBody String getCrowdSourcingRequirements(@RequestParam(value = "requirementType", required = false) String requirementType,
 			@RequestParam(value = "offset", required = false) Integer offset,
@@ -185,6 +184,12 @@ public class CrowdSourcingRequirementsRestController {
 	     if(requirementType.equalsIgnoreCase("OpenJobs")){
 	    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isPublicJob", "Y"));
 	    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+	    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+	    	 if(null != referList && referList.size() > 0){
+	    		 for(RequirementRefer refer : referList){
+	    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+	    		 }
+	    	 }
 	     }
 	    
 	     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
@@ -198,18 +203,23 @@ public class CrowdSourcingRequirementsRestController {
 	     }
 	     
 	     else if(requirementType.equalsIgnoreCase("ReferredByMe")){
-    			 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
-    			 if(referedRequirementList.size() > 0){
-    				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();
-    				 for(int i=0; i<referedRequirementList.size(); i++){
-    					 subBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementId", referedRequirementList.get(i)));
-	    			 } 
-    				 
-    				 boolQueryBuilder.must(subBoolQueryBuilder);
-    				 
-    			 }else{
-    				 isELKSearchEnable = false;
-    			 }
+	    	 
+	    	  if(loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+	    	     boolQueryBuilder.mustNot(QueryBuilders.matchQuery("isPublicJob", "Y"));
+	    	  }
+			
+	    	 List<Long> referedRequirementList = requirementReferService.getReferByMeRequirementsByUserId(user.getId(), offset,Constants.MAX_RESULTS_TEN);
+			 if(referedRequirementList.size() > 0){
+				 BoolQueryBuilder subBoolQueryBuilder = new BoolQueryBuilder();
+				 for(int i=0; i<referedRequirementList.size(); i++){
+					 subBoolQueryBuilder.should(QueryBuilders.matchQuery("requirementId", referedRequirementList.get(i)));
+    			 } 
+				 
+				 boolQueryBuilder.must(subBoolQueryBuilder);
+				 
+			 }else{
+				 isELKSearchEnable = false;
+			 }
     			 
     	 }
 	     
@@ -275,7 +285,7 @@ public class CrowdSourcingRequirementsRestController {
 		 						userId.add(Long.parseLong(s));
 		 					 }
 		 					boolean flag = userId.contains(user.getId());
-		 					if(flag == true){
+		 					if(flag == true && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
 		 						requirementIndex.setIsJobApplied(Constants.YES);
 		 						 RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirementIndex.getRequirementId(), candidateId);
 		 		 	    		   if(null != submission){
@@ -1094,7 +1104,7 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 	 
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	 /*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/submitReferToJob", method = RequestMethod.POST)
 		public String submitReferToJob(@RequestParam(value = "json", required = false) String json,
 				HttpServletRequest request,HttpServletResponse response)
@@ -1115,7 +1125,7 @@ public class CrowdSourcingRequirementsRestController {
 	 
 	 
 
-	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	/* @PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/submitUserContactsToRequirement", method = RequestMethod.POST)
 		public String submitUserContactsToRequirement(@RequestParam(value = "json", required = false) String json,
 				HttpServletRequest request,HttpServletResponse response)
@@ -1818,6 +1828,11 @@ public class CrowdSourcingRequirementsRestController {
 						rr.setRequirementRateType(rr.getRequirementId().getRateType());
 						rr.setRequirementSubmissionStatus(rr.getRequirementId().getRequirementSubmissionStatus().toString());
 						
+						RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(rr.getRequirementId().getId(),candidateId);
+						if(null != rs){
+							rr.setSubmissionStatus(rs.getSubmissionStatus().toString());	
+						}
+						
 						StringBuilder referredUser = new StringBuilder();
 						if(null != rr.getReferFromUser().getLastName()){
 							rr.setReferredBy(referredUser.append(rr.getReferFromUser().getFirstName()).append(" ").append(rr.getReferFromUser().getLastName()).toString());	
@@ -1852,10 +1867,12 @@ public class CrowdSourcingRequirementsRestController {
 								rs.setReferredBy(referredUser.append(requirementRefer.getReferFromUser().getFirstName()).toString());
 							}
 							rs.setReferredOn(Constants.DF_DMY.format(requirementRefer.getCreatedDate()));
+							refer.setReferUUID(requirementRefer.getReferUUID());
 						}
 						
 					}
 					refer.setCrowdSourcingPortLetList(crowdSourcingPortLetList);
+					
 				}
 				
 			}catch (ParseException e) {
@@ -1868,7 +1885,7 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		
-		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		/*@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/getReferalListByRequirementId", method = RequestMethod.GET)
 		public String getReferalListByRequirementId(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 				HttpServletRequest request) throws Exception {
@@ -2173,7 +2190,7 @@ public class CrowdSourcingRequirementsRestController {
 		}
 		
 		
-		@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		/*@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")*/
 		@RequestMapping(value = "/getCrowdSourcingUserContacts")
 		public @ResponseBody String getCrowdSourcingUserContacts(@RequestParam(value="requirementId", required=false) Long requirementId,
 				                                              HttpServletRequest request) throws Exception {

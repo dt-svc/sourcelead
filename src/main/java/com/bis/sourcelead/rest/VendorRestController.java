@@ -51,6 +51,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
@@ -1456,18 +1457,29 @@ public class VendorRestController {
 		// List<Requirement> reqList =
 		// requirementService.getAllReleasedJobsForVendorBasedOnStartAndEndDates(orgLocations.getId(),
 		// orgRelationID,null,null);
+		List<Requirement> mainReqList = new ArrayList<>();
+		Requirement mainRequirement = null;
+		Long tempReqId =0l;
+		int interviewsSum = 0;
+		int offeredSum = 0;
+		int backoutSum = 0;
+		int submitToclient = 0;
 		List<Requirement> reqList = requirementService.getAllVendorJobsBasedonRelationId(orgLocations.getId(), orgRelationID, userRoleName, loginUser, status);
 		for (Requirement requirement : reqList) {
-			int interviewsSum = 0;
-			int offeredSum = 0;
-			int backoutSum = 0;
+			if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
+				mainRequirement = requirementService.getRequirementDetailsById(requirement.getParentRequirement().getId());
+				interviewsSum = 0;
+				offeredSum = 0;
+				backoutSum = 0;
+				submitToclient = 0;	
+//			}
 			List<RequirementSubmission> requirementSubmissionList1 = requirementSubmissionService.getApplicantRequirmentCountSubmittedByVendor(orgLocations.getId(), requirement.getParentRequirement().getId(), vendorLocationId);
 			if (null != requirementSubmissionList1 && requirementSubmissionList1.size() > 0) {
 				for (RequirementSubmission reqSub : requirementSubmissionList1) {
 					int vendorInterviewsCount = 0;
 					int vendorOfferedCount = 0;
-					int rejectedCount = 0;
 					int vendorBackoutCount = 0;
+					int vendorSubmittoClientCount = 0;
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(reqSub.getId(), null, null);
 					if (null != requirementSubmissionHistoryList
 							&& requirementSubmissionHistoryList.size() > 0) {
@@ -1478,37 +1490,45 @@ public class VendorRestController {
 							else if ("offermade".equalsIgnoreCase(rsh.getToStage())) {
 								vendorOfferedCount++;
 							}
-							else if ("rejected".equalsIgnoreCase(rsh.getToStage())) {
-								rejectedCount++;
-							}
+							
 							else if ("backout".equalsIgnoreCase(rsh.getToStage())) {
 								vendorBackoutCount++;
+							}
+							else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(rsh.getToStage())){
+								vendorSubmittoClientCount++;
 							}
 						}
 						interviewsSum = interviewsSum + vendorInterviewsCount;
 						offeredSum = offeredSum + vendorOfferedCount;
 						backoutSum = backoutSum + vendorBackoutCount;
+						submitToclient = submitToclient + vendorSubmittoClientCount;
 					}
 				}
 			}
-			requirement.setVendorInterviewsCount(interviewsSum);
-			requirement.setVendorOfferedCount(offeredSum);
-			requirement.setVendorBackoutCount(backoutSum);
-			requirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
-			if (requirement.getManagerUserId() != null) {
+			mainRequirement.setVendorInterviewsCount(interviewsSum);
+			mainRequirement.setVendorOfferedCount(offeredSum);
+			mainRequirement.setVendorBackoutCount(backoutSum);
+			mainRequirement.setNoOfSubmittedApplicants(String.valueOf(submitToclient));
+			mainRequirement.setPostedDateStr(Constants.DF_DMY.format(requirement.getCreatedDate()));
+			if (mainRequirement.getManagerUserId() != null) {
 				String managerFirstName = "";
-				if (StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())) {
-					managerFirstName = requirement.getManagerUserId().getFirstName();
+				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getFirstName())) {
+					managerFirstName = mainRequirement.getManagerUserId().getFirstName();
 				}
 				String managerLastName = "";
-				if (StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())) {
-					managerLastName = requirement.getManagerUserId().getLastName();
+				if (StringUtils.isNotEmpty(mainRequirement.getManagerUserId().getLastName())) {
+					managerLastName = mainRequirement.getManagerUserId().getLastName();
 				}
 				StringBuilder name = new StringBuilder();
-				requirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+				mainRequirement.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
 			}
+//			if(tempReqId.longValue() != requirement.getParentRequirement().getId().longValue()){
+				tempReqId = requirement.getParentRequirement().getId();
+				mainReqList.add(mainRequirement);
+			}
+			
 		}
-		return commonUtil.toJSON(reqList);
+		return commonUtil.toJSON(mainReqList);
 	}
 	
 	

@@ -90,6 +90,7 @@ public class SecurityConfig  {
     			.antMatchers("/login").permitAll() 
     			.antMatchers("/Inlogin").permitAll() 
     			.antMatchers("/register").permitAll() 
+    			.antMatchers("/restAuthenticate").permitAll() 
     			.antMatchers("/registerAsProfessional").permitAll() 
     			.antMatchers("/registerAsIndividualRecruiter").permitAll() 
     			.antMatchers("/registerAsProfessionalFromSocialInviter").permitAll() 
@@ -125,6 +126,7 @@ public class SecurityConfig  {
     			.antMatchers("/downloadOfferAttachment").permitAll()
     			.antMatchers("/downloadInvoiceAttachment").permitAll()
     			.antMatchers("/acceptOrRejectReopenTimeSheet").permitAll() 
+    			.antMatchers("/acceptOrRejectReopenExpenseBySuperUser").permitAll()
     			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
     			.antMatchers("/downloadRequirementAttachment").permitAll()
     			.antMatchers("/resources/**/**").permitAll() 
@@ -150,6 +152,7 @@ public class SecurityConfig  {
     			.antMatchers("/getJobDetailsForJobAlert").permitAll()
     			.antMatchers("/storeJobAlert").permitAll()
     			.antMatchers("/validateAlertUserEmail").permitAll()
+    			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
     			
     			
     			
@@ -164,8 +167,8 @@ public class SecurityConfig  {
     			.successHandler(sourceleadAuthenticationSuccessHandler)
     			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
-    			.and().csrf()
-    			.and().exceptionHandling().accessDeniedPage("/403");
+    			.and().exceptionHandling().accessDeniedPage("/403")
+    			.and().csrf().disable();
     			
     			
         }

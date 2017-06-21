@@ -535,4 +535,16 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.isUserisPrimaryForOrg(userId, orgLocationId);
 	}
 
+	@Override
+	public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId, Long locationId, String userType) throws Exception
+	{
+		return userRoleDao.getUserDetailsByUserIdAndLocationIdAndUserType(userId, locationId, userType);
+	}
+
+	@Override
+	public UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email, String userType) throws Exception
+	{
+		return userRoleDao.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, userType);
+	}
+
 }

@@ -128,6 +128,7 @@ public class Constants {
 	public static final String MAIL_TEAM_MEMBERS_REJECTED_TIMESHEET = "Timesheet Rejected By Approver";
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
+	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -330,6 +331,7 @@ public class Constants {
 	public static final String Applicant_Acceptance_By_Manager_Of_Requirement = "ApplicantAcceptanceByManagerOfRequirement";
 	public static final String Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
 	public static final String Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "RecruiterWillReceiveMailAboutTheAcceptanceOfRequirementByManager";
+	public static final String Applicant_Authorization_Manager_Acceptence_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager = "ApplicantAuthorizationManagerAcceptance";
 	public static final String[] RATEPER_LIST = { "Daily", "Hourly", "Weekly", "Bi-Weekly",
 			"Semi-Monthly", "Monthly", "Yearly" };
 	public static final String[] ROLE_LIST = { "Admin", "Employee", "Project Manager", "Team Lead" };
@@ -445,7 +447,7 @@ public class Constants {
 	public static final String MAIL_DELETE = "Deleted";
 	public static final String MAIL_REQUESTED = "Requested";
 	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name", "Emp Email", "Start Date",
-			"End Date", "Approved Hrs", "Rejected Hrs", "Wiating for Approval", "Saved Hrs" };
+			"End Date", "Approved Hrs", "Rejected Hrs", "Waiting for Approval", "Saved Hrs" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
@@ -618,5 +620,8 @@ public class Constants {
 	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
 	public static final String JOB_ALERTS = "JobAlerts";
     public static final String UNDEFINED = "undefined";
-
+    public static final String EMPLOYEE_PAYROLL = "EMPLOYEE_PAYROLL";
+    public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
+    public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
+     
 }

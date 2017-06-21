@@ -30,9 +30,11 @@ import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.DashboardCounts;
+import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -44,8 +46,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
@@ -120,7 +124,13 @@ public class DashboardRestController {
 	 TaskService taskService;
 	 
 	 @Autowired
+	 RequirementAssignToService requirementAssignToService;
+	 
+	 @Autowired
 	 RequirementOffersService requirementOffersService;
+	 
+	 @Autowired
+	 private ExpensesApproverHierarchyService expensesApproverHierarchyService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -181,6 +191,30 @@ public class DashboardRestController {
 				
 		     StringBuilder redirectUrl = new StringBuilder();
 		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).toString());
+			
+	}
+	
+	
+	@RequestMapping(value = "/dashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummaryWithUserType(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			
+		     //to update user state in user role based on location----> Prasad Salina
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
+		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
+  			    userRole.setUserState(Status.ACTIVE);
+  			   UserRole userRoleElk = userRoleService.addUserRole(userRole);
+  			   
+  			   
+  			   
+  			   //user update/save in user Elk
+  			  userService.saveOrUpdateUserElkDocument(userRoleElk,null,user.getUserCode());
+  		      }
+				
+		     StringBuilder redirectUrl = new StringBuilder();
+		     response.sendRedirect(redirectUrl.append("/sourcelead/dashboardLinks?orgLocationId=").append(orgLocationId).append("&switchUserType=").append(switchUserType).toString());
 			
 	}
 	
@@ -655,6 +689,20 @@ public class DashboardRestController {
 						} else if (status.equalsIgnoreCase("REJECTED")) {
 							requirementService.rejectedEmailScenario(loginUser, intiatorUser, requirement, location, reason,orgLocation);
 						}
+						
+						
+						 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
+						RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+				    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
+			    			if(null != hierarchy && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
+			    				for(RequirementAssignTo reqAssign:reqAssignTo ){
+										if(null != reqAssign.getAssignUserId() && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
+											requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+										}
+			    				}
+			    		}
+						
+						
 				}else{
 
 					    RequirementApproverHierarchy level1approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
@@ -830,5 +878,31 @@ public class DashboardRestController {
 			resultJson = commonUtil.toJSON(requirementList);
 			return resultJson;
 		}
+		
+		 /**
+		  * This method is used for getting all Expenses Stages(Draft,Submitted,Approved,Rejected) counts and Show in Dashboard page.
+		  * 
+		  * @author prasad K
+		  * @param expenseType
+		  * @return String
+		  * @throws NullPointer
+		  */
+		
+		 @RequestMapping(value = "/getExpensesCount" , method = RequestMethod.GET)
+		 public String  getExpensesCount(@RequestParam(value="expenseType", required=false) String expenseType,HttpServletRequest request) throws Exception {
+			
+			 String resultJson;
+
+			    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				ExpensesCount expensesCount = new ExpensesCount();
+				if("employeeExpenses".equalsIgnoreCase(expenseType)){
+					expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId());
+				}else if("myExpenses".equalsIgnoreCase(expenseType)){
+					expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationId(user.getId(), loginOrgLocations.getId());
+				}
+				resultJson = commonUtil.toJSON(expensesCount);
+				return resultJson;
+		   }
 		
 }

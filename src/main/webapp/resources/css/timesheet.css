@@ -169,7 +169,7 @@ a { cursor:pointer;}
     }
 .addtaskfield.removetaskfield {
     -moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg);
-    top: 8px; color: #FF3F42 !important; background-image:url(../images/addtask1.png);
+    top: 0px; color: #FF3F42 !important; background-image:url(../images/addtask1.png);
     }
 .timesheet_table table table select {
     appearance:none; -webkit-appearance:none; width:75%; padding:2px 18px 2px 3px; font-size:13px;
@@ -4609,6 +4609,9 @@ float: none !important; padding: 2px 5px; color: #333;
 .expDetails p {
     float: left; width: 60%; max-width: 60%; font-size: 14px; font-weight: 400; color: #454545;
 }
+.expDetails p.jquery_form_error_message {
+	font-size: 11px; font-weight: 400; color: #f12929; float: none; width: 100%; max-width: initial; margin-top:1px;
+}
 .expDetails div {
     position: static !important;
 }
@@ -4916,3 +4919,7 @@ width: 100% !important; margin: 0px !important;
 	position: absolute; right: 0px; top: 10px; color: #95ccff;
 }
 
+
+input[type="text"] {
+    margin: 0px; margin-bottom: 0px !important;
+}

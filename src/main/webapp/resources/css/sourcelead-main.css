@@ -303,7 +303,7 @@ color:#333 !important; text-shadow:none !important; display:block !important; pa
 }
 /* spoclinks more that 5 */
 .spoclinksMore {
-	min-width: 955px; padding: 0 0 0 10px;
+	min-width: 955px; padding: 0 0 0 10px;  height: 550px; overflow: auto;
 }
 .spoclinksMore ul li {
 	border-bottom: 1px solid #d2d2d2; line-height: normal !important; height: auto !important; padding: 10px !important;
@@ -4194,7 +4194,7 @@ margin-left: 15px;
 	color: #808080;
 }
 .mask_inner {
-	position:absolute; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); top: 0px; left: 0px;
+	position:absolute; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); top: 0px; left: 0px;
 	z-index: 9999; display: none;
 }
 .demo {
@@ -4234,7 +4234,10 @@ border: 1px solid #ededed; border-top:none; padding: 10px;
     background-color:#fff !important; color:#EF6C00; border-top:3px solid #FFB74D;
 }
 .eventCalendr_content {
-    overflow-y: auto; min-height: 150px; max-height: 350px;
+    overflow-y: auto; min-height: 150px; height: 270px;
+}
+.feedbackInner {
+height:200px; overflow: auto;
 }
 .personalInfo .userdetails {
     padding: 5px 10px 2px 10px; margin-top: 0px; width: 275px; background-color:#e3f2fd; border: 1px solid #90caf9; border-radius: 5px;
@@ -4539,7 +4542,13 @@ margin-bottom: 0;
 .timeicon {
     background-image:url("../images/time.png"); background-repeat:no-repeat; background-position:94% center; background-size:18px;
  }
- #accordion-sl h2 span{
+.indCurrency {
+    background-image:url("../images/indCurrency.png"); background-repeat:no-repeat; background-position:94% center; background-size:18px;
+ }
+.usCurrency {
+    background-image:url("../images/usCurrency.png"); background-repeat:no-repeat; background-position:94% center; background-size:18px;
+ }
+#accordion-sl h2 span{
  display: inline-block; width: 300px; white-space: nowrap; text-overflow:ellipsis; overflow: hidden;
  position: relative; top: 3px; left: 5px;
  }
@@ -5435,6 +5444,11 @@ margin-bottom: 10px; margin-left: 10px;
 .modal-Time {
     padding: 5px;border: 1px solid #ddd; margin: 10px; display: none;
 }
+.modal-comment {
+ padding: 5px; border: 1px solid #ddd; margin: 0px; display: none; position: absolute; top: 35px;
+ right: 15px; background: #fff; z-index: 999; width: 100%; box-shadow: 1px 1px 2px rgba(000,000,000,0.4);
+ border-radius:5px;
+}
 .taskComments .media {
     border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 5px;
 }
@@ -5475,6 +5489,95 @@ margin-bottom: 10px; margin-left: 10px;
 }
 .datatable_filter .dataTables_info {
     padding-left:165px !important;
+}
+.alert.alertInfo {
+    padding: 4px 5px 2px 5px; margin-bottom: 0;
+}
+.alert.alertInfo .btn-sm{
+    padding: 3px 5px;
+}
+.alert.alertInfo .mtop {
+    margin-top: 2px;
+}
+.reportBtns.reportcutom_Btns  {
+    width:52%; margin-bottom: 7px; padding-top: 2px
+}
+.reportBtns.reportcutom_Btns .dropdown-select select {
+height: 34px; margin-top: 2px;
+}
+.reportBtns.reportcutom_Btns .repoBtns a {
+    height: 33px; padding: 5px 8px 0px 8px;
+}
+.reportBtns.reportcutom_Btns .reportBtn {
+ width: 25%;
+}
+.reportBtns.reportcutom_Btns .repoBtns {
+margin-left: 10px;
+}
+.reportsCount.reportsCount7 ul li {
+    min-width: 148px; width: auto;
+}
+.reportsCount.reportsCount7 ul {
+    padding: 0 10px;
+}
+.reportsCount.reportsCount7 ul li:first-child + li + li + li + li + li + li span {
+    background-color: #ffa726;
+}
+.width110px{
+    width: 110px; display: inline-block;
+}
+.hdrAlign table tr th {
+vertical-align: middle;
+}
+.currencySymbol input {
+    padding-left: 60px;
+}
+.currencySymbol .currency_value {
+    background: #367fa9; width: 50px; position: absolute; text-align:center; min-height: 25px; color:#fff;
+    top: 24px; left: 16.5px; padding: 7px 5px;
+}
+.allow label {
+    width: 50%; float: left;
+}
+.allow input[type="checkbox"]{
+    margin-right: 5px !important;
+}
+.btnBlock .btn {
+    font-size: 13px;
+    padding: 4px 4px;
+}
+.txtarea_action {
+    width: 100% !important; margin: 0 !important;
+}
+.warning_color {
+    color: #f60 !important;
+}
+.assignTeam_modalpop .modal-dialog {
+    width: 900px;
+}
+.feedback_view {
+ position: absolute; z-index: 99999; top: -45px; width: 100%; display: block; background-color: #fff; padding: 10px; left: 5px;
+}
+a.color_white{
+  color:#fff;
+}
+.require_wrap_details_cta.require_details b {
+    width: 200px;
+}
+.editbutton {
+    cursor: pointer;
+}
+.changeRate_div {
+    width: 220px; clear:both; display: inline-block;
+}
+.changeRate_div input[type="text"] {
+    width: 100px; margin:3px 10px;
+}
+.changeRate_div .drpdownCurrency select {
+   width: 50px;
+}
+.changeRate_div .drpdownMonthly select {
+    width: 50px;
 }
 /* media 320px */
 @media (max-width: 320px) {

@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -151,6 +153,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 
 	@Autowired
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
+	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@Override
 
@@ -575,8 +580,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"candidate") && !"".equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
-						 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
-						 invoiceLineItems.setCandidate(candidate);
+						 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
+							 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
+							 invoiceLineItems.setCandidate(candidate);
+						 }
+						 if(jsonObj.has(i+"user")){
+							 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"user"))){
+								 User usr = userService.getUserById(Long.parseLong(jsonObj.getString(i+"user")));
+								 invoiceLineItems.setUser(usr);
+							 } 
+						 }
 					 }
 					 
 					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
@@ -649,14 +662,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	 public EmailAttachment zipFiles(List<TimesheetSubmissionsDocuments> docusList) throws MessagingException{
-         EmailAttachment ema = null;;
+
+         EmailAttachment ema = null;
 	        FileOutputStream fos = null;
 	        ZipOutputStream zipOut = null;
 	        FileInputStream fis = null;
 	        try {
 	           ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 		    	 if(docusList != null && !docusList.isEmpty()){
-		    		 ema = new EmailAttachment();
+		    		    ema=new EmailAttachment();
 		    	         ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 		    	         
 				    	 int i= 0;
@@ -809,6 +823,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
+
 		 if(null != attachmentZip){
 			 attachmentList.add(attachmentZip);
 		 }
@@ -1094,15 +1109,8 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
 			for(String id :submissionApproverHierarchyIds){
 				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
-					SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
-					if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
-						submissionApproverHierarchy.setBillingStatus(Constants.SENT);
-					}else{
-						submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
-					}
-					submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
 				}
-				
 			}
 		}
 	}
@@ -1469,27 +1477,35 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		List<String> submissionApproverHiearachyIds = new ArrayList<>();
 		float subTotal = 0;
 		for (ProjectMembers projectMember : projectMembersList) {
-			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
-			invoiceLineItems.setStartDate(conversionUtil.getDateFromString(projectMember.getStartDate()));
-			invoiceLineItems.setEndDate(conversionUtil.getDateFromString(projectMember.getEndDate()));
-			Candidate candidate = candidateService.getCandidateByCandidateId(projectMember.getCandidateId());
-			invoiceLineItems.setCandidate(candidate);
-			List<Contracts> contractsList = projectMember.getContractsList();
 			String rate = null;
 			String ratePer = null;
 			String rateCurrencyType = null;
-			if (null != contractsList && contractsList.size() > 0) {
-				Contracts contract = contractsList.get(0);
-				invoiceLineItems.setContract(contract);
-				rate = contract.getBillingAmount();
-				ratePer = contract.getBillingRatePer();
-				rateCurrencyType = contract.getBillingRateType();
+			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
+			invoiceLineItems.setStartDate(conversionUtil.getDateFromString(projectMember.getStartDate()));
+			invoiceLineItems.setEndDate(conversionUtil.getDateFromString(projectMember.getEndDate()));
+			if(projectMember.getCandidateId() !=null){
+				Candidate candidate = candidateService.getCandidateByCandidateId(projectMember.getCandidateId());
+				invoiceLineItems.setCandidate(candidate);
+				List<Contracts> contractsList = projectMember.getContractsList();
+				if (null != contractsList && contractsList.size() > 0) {
+					Contracts contract = contractsList.get(0);
+					invoiceLineItems.setContract(contract);
+					rate = contract.getBillingAmount();
+					ratePer = contract.getBillingRatePer();
+					rateCurrencyType = contract.getBillingRateType();
+				}
+			}else{
+				if (projectMember.getUserId() !=null) {
+					User usr = userService.getUserById(Long.parseLong(projectMember.getUserId()));
+					invoiceLineItems.setUser(usr);
+				}
 			}
+			
 			if (null != projectMember.getTotalHours()) {
 				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
 			}
 			if (null != rate && null != projectMember.getTotalHours()) {
-				invoiceLineItems.setRate(rate);
+				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
 				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
 				invoiceLineItems.setAmount(String.valueOf(totalAmount));
 				subTotal = subTotal + totalAmount;
@@ -1581,6 +1597,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
 				}
 				projectMember.setCandidateName(candidateName.toString());
+				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
 				if (null != projectMember.getEmployee().getUser().getId()) {
 					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
 					if (null != candidate) {
@@ -1654,8 +1671,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 				projectMember.setSubmissionApproverHierarchyId(sah.getId());
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
-				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
-				if (null != candidate) {
+				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
+//				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
+				if (null != employee) {
 					StringBuilder empName = new StringBuilder();
 					if (null != projectMember.getEmployee().getUser().getFirstName()
 							&& null != projectMember.getEmployee().getUser().getLastName()) {
@@ -1665,9 +1683,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						empName.append(projectMember.getEmployee().getUser().getFirstName());
 					}
 					projectMember.setCandidateName(empName.toString());
-					if (null != candidate) {
-						projectMember.setCandidateId(candidate.getId());
-					}
+					projectMember.setUserId(employee.getUser().getId().toString());
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
 					String billableHours = String.valueOf(sah.getBillableHours());;
@@ -1689,10 +1705,15 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						sb.append(":").append(arr[1]);
 					}
 					projectMember.setTotalHours(sb.toString());
-					List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
-					if (null != contractList && contractList.size() > 0) {
-						projectMember.setContractsList(contractList);
+					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
+					if (null != candidate) {
+						projectMember.setCandidateId(candidate.getId());
+						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
+						if (null != contractList && contractList.size() > 0) {
+							projectMember.setContractsList(contractList);
+						}
 					}
+				
 					filteredMembersList.add(projectMember);
 				}
 			}

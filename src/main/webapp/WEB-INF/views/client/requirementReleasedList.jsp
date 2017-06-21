@@ -35,15 +35,15 @@ function clientRequirementList(orgRelationId){
 	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
 		result = result + '       	<ul>';
-		result = result + '           	<li><input type="checkbox" value="OPEN"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Open</label></li>';
-		result = result + '           	<li><input type="checkbox" value="NEW"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>New</label></li>';
-		result = result + '           	<li><input type="checkbox" value="SUBMITTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Submitted</label></li>';
-		result = result + '           	<li><input type="checkbox" value="FILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Filled Closed</label></li>';
-		result = result + '           	<li><input type="checkbox" value="UNFILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Unfilled Closed</label></li>';
-		result = result + '           	<li><input type="checkbox" value="ONHOLD"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>On Hold</label></li>';
-		result = result + '           	<li><input type="checkbox" value="CLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Closed</label></li>';
-		result = result + '           	<li><input type="checkbox" value="REJECTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Rejected</label></li>';
-		result = result + '           	<li><input type="checkbox" value="CANCEL"  name="requirementStatusFilter" onclick="clientReqList(this)"><label>Cancel</label></li>';
+		result = result + '           	<li><input type="checkbox" value="OPEN"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Open  </label></li>';
+		result = result + '           	<li><input type="checkbox" value="NEW"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">New  </label></li>';
+		result = result + '           	<li><input type="checkbox" value="SUBMITTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Submitted </label></li>';
+		result = result + '           	<li><input type="checkbox" value="FILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Filled Closed </label></li>';
+		result = result + '           	<li><input type="checkbox" value="UNFILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Unfilled Closed </label></li>';
+		result = result + '           	<li><input type="checkbox" value="ONHOLD"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">On Hold </label></li>';
+		result = result + '           	<li><input type="checkbox" value="CLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Closed </label></li>';
+		result = result + '           	<li><input type="checkbox" value="REJECTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Rejected </label></li>';
+		result = result + '           	<li><input type="checkbox" value="CANCEL"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Cancel </label></li>';
 		
 		//result = result + '           	<li><input type="checkbox" name="rl"><label>Checkbox3</label></li>';
 		result = result + '           </ul>';
@@ -90,6 +90,18 @@ function clientRequirementList(orgRelationId){
 	        	
 	        var json = JSON.parse(data);
     			$("#clientSubmissionRequirementList").empty();
+    			
+    			
+    			 var newCount = 0;
+            	 var submittedCount = 0;
+            	 var closedCount = 0;
+            	 var filledClosedCount = 0;
+            	 var unfilledClosedCount = 0;
+            	 var openCount = 0;
+            	 var rejectedCount = 0;
+            	 var onholdCount = 0;
+            	 var cancelCount = 0;
+    			
 				var result = "";
 				result = result +'<table id="listReqPagination" class="display" cellspacing="0" width="100%" >'; 
 	        	result = result +'<thead>';
@@ -101,7 +113,7 @@ function clientRequirementList(orgRelationId){
 	            result = result + '<th>Owner</th>';
 	            result = result + '<th>Submissions</th>';
 	            result = result + '<th>Offer</th>';
-	            result = result + '<th>Back-out</th>';
+	            //result = result + '<th>Back-out</th>';
 	            result = result + '<th>Interview</th>';
 	            result = result + '<th>Status</th>';
 	        	result = result +'</tr>';
@@ -136,17 +148,53 @@ function clientRequirementList(orgRelationId){
 	           	 }
 	                result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
 	                result = result + '<td><div class="tbldata-dotdot-vsm"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
-	               	result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+	               	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 	                result = result + '<td><div>'+opt.noOfOfferedApplicants+'</div></td>';
-	                result = result + '<td><div>'+opt.noOfBackOutApplicants+'</div></td>';
+	               // result = result + '<td><div>'+opt.noOfBackOutApplicants+'</div></td>';
 	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
-	                result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
+	               // result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
+	                
+   		         if(opt.requirementSubmissionStatus !=null && opt.requirementSubmissionStatus != '' && opt.requirementSubmissionStatus != 'undefined'){
+   		        	 /* if(opt.requirementSubmissionStatus == "OPEN"){
+   		        		openCount = openCount+1;       
+   		        	 }else if(opt.requirementSubmissionStatus == "NEW"){
+   		        		newCount = newCount +1;    
+   		        	 }else if(opt.requirementSubmissionStatus == "SUBMITTED"){
+   		        		submittedCount = submittedCount +1; 
+   		        	 }else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
+   		        		filledClosedCount = filledClosedCount +1;   
+   		        	 }else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
+   		        		unfilledClosedCount = unfilledClosedCount +1;   
+   		        	 }else if(opt.requirementSubmissionStatus == "ONHOLD"){
+   		        		onholdCount = onholdCount +1;   
+   		        	 }else if(opt.requirementSubmissionStatus == "CLOSED"){
+   		        		closedCount = closedCount +1;   
+   		        	 }else if(opt.requirementSubmissionStatus == "REJECTED"){
+   		        		rejectedCount = rejectedCount +1;   
+   		        	 }else if(opt.requirementSubmissionStatus == "CANCEL"){
+   		        		cancelCount = cancelCount +1;   
+   		        	 } */
+ 	                result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
+   		         }
+   		         else{
+   		        	result = result + '<div class="tblminwidth-75 ">---</div>';
+   		         }
 	               
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				} 
 	        	result = result +'</tbody>';
 	        	result = result +"</table>";
+	        	
+	        	/* $("#openCount").html(openCount);
+        		$("#newCount").html(newCount);
+        		$("#unfilledClosedCount").html(unfilledClosedCount);
+        		$("#filledClosedCount").html(filledClosedCount);
+        		$("#onholdCount").html(onholdCount);
+        		$("#closedCount").html(closedCount);
+        		$("#rejectedCount").html(rejectedCount);
+        		$("#cancelCount").html(cancelCount);
+        		$("#submittedCount").html(submittedCount); */
 	        	
     	    $("#clientSubmissionRequirementList").append(result); 
     	    clientRequirementListpagination(); 

@@ -123,7 +123,7 @@ public class ExpencesController {
 		    model.addObject("isSahApproved", isSahApproved);	
 			model.addObject("expenses", expenses);
 		}else if(expenses == null){
-			expenseId = addExpensesService.getExpenseId();
+			expenseId = addExpensesService.getExpenseId(orgLoc);
 			model.addObject("ExpensesId", expenseId);
 		}
 		
@@ -136,7 +136,7 @@ public class ExpencesController {
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
-		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
+		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
 	    model.addObject("expensesCategoryList", expensesCategoryList);
 		
 	    
@@ -221,7 +221,7 @@ public class ExpencesController {
 		   Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(expenses.getProjectMembers().getProjects().getId());
 		   model.addObject("projectMembers", projectMembers);
 		}else if(expenses == null){
-			expenseId = addExpensesService.getExpenseId();
+			expenseId = addExpensesService.getExpenseId(orgLoc);
 			model.addObject("ExpensesId", expenseId);
 		}
 		
@@ -235,7 +235,7 @@ public class ExpencesController {
         model.addObject("currencyCode", countries.getCurrency());
 		}
 		
-		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLoc.getId());
+		List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLoc.getId(), "1");
 	    model.addObject("expensesCategoryList", expensesCategoryList);
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,9 +77,23 @@ public class AddExpensesServiceImpl implements AddExpensesService{
     private String sourceleadUrl;
 	
 	@Override
-	public String getExpenseId() {
-		String expensesId = SourceLeadRandomCodeHelper.generateRandomExpensesIdCode();
-		return expensesId;
+	public String getExpenseId(OrgLocations orgLoc) {
+		//String expensesId = SourceLeadRandomCodeHelper.generateRandomExpensesIdCode();
+		Long number = 000001L;
+		String expensesId = null;
+		Expenses checkNumber = addExpensesDao.checkExpensIdNumberInDatebase(orgLoc.getId());
+		if(checkNumber == null){
+			 expensesId = number.toString();
+		}else{
+		String expIdNumber = checkNumber.getExpenseId();
+		Long expId = Long.parseLong(expIdNumber)+1;
+			expensesId = expId.toString();
+		}
+		
+        final DecimalFormat decimalFormat = new DecimalFormat("0000");                
+        String ConvetredexpensesId = decimalFormat.format(Long.parseLong(expensesId));
+		
+		return ConvetredexpensesId;
 		
 	}
 	

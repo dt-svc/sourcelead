@@ -39,6 +39,11 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndCategoryId(Long orgLocationId) {
 		return expensesCategoryDao.getAllExpensesCategoryByLocationId(orgLocationId);
 	}
+	
+	@Override
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status) {
+		return expensesCategoryDao.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, status);
+	}
 
 	@Override
 	public ExpensesCategory storeExpenseCategory(JSONObject jsonObject, Long orgLocationId,User user) throws Exception {
@@ -69,8 +74,12 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 			expensesCategory.setAmountType("Percentage");
 		}
 			
+		//if we are not given any rate(Flat , Percentage) by default it will take Flat.
+		
 		if(jsonObject.has("taxFlatReward") && null != jsonObject.getString("taxFlatReward") && !"".equals(jsonObject.getString("taxFlatReward")) ){
 			expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("taxFlatReward")));
+			expensesCategory.setAmountType("Flat");
+		}else{
 			expensesCategory.setAmountType("Flat");
 		}
 		

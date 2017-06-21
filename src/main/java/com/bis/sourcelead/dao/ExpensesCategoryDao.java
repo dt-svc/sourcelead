@@ -11,6 +11,9 @@ import com.bis.sourcelead.entity.ExpensesCategory;
 public interface ExpensesCategoryDao {
 	
 	public List<ExpensesCategory> getAllExpensesCategoryByLocationId(Long orgLocationId);
+	
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status);
+	
 	public ExpensesCategory storeExpenseCategory(ExpensesCategory expensesCategory) throws Exception;
 	
 	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId) throws Exception;
