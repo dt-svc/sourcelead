@@ -152,6 +152,10 @@ public class SecurityConfig  {
     			.antMatchers("/getJobDetailsForJobAlert").permitAll()
     			.antMatchers("/storeJobAlert").permitAll()
     			.antMatchers("/validateAlertUserEmail").permitAll()
+    			.antMatchers("/getInterviewrsViewFeedbackList").permitAll()
+    			.antMatchers("/savePublicInterviewFeddbackTemlateReason").permitAll()
+    			.antMatchers("/savePublicInterviewFeddbackTemlate").permitAll()
+    			.antMatchers("/getPublicInterviewFeedbackTemplate").permitAll()
     			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
     			
     			
