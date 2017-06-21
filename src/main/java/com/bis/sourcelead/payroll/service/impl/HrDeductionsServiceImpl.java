@@ -151,6 +151,10 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 								HrDeductionsDetails hrDeductionsDetails = getAccountDeductionDetails(aug15thAmount,hrDeductions,orgLocation,user,row.getCell(13),13);
 								hrDeductionsDetailsSet.add(hrDeductionsDetails);
 							} 
+							if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+								String commnet = getCellValueAsString(row.getCell(14), fileName);
+								hrDeductions.setDescription(commnet);
+							} 
 							if(jsonObj.has("fromDate") && jsonObj.getString("fromDate") !=null && !"".equalsIgnoreCase(jsonObj.getString("fromDate"))){
 								hrDeductions.setFromDate(conversionUtil.getDateFromString(jsonObj.getString("fromDate")));
 							}
