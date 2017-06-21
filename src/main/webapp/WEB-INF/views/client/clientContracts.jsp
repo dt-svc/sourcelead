@@ -275,7 +275,7 @@ function clientContractsList(orgRelationId){
 		                	       				opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i> | </a>';
 		                	       			'</sec:authorize>';
 		                	       			
-		                	       			if(output.templateSubmissionStatus != "EXPIRED"){
+		                	       			if(output.templateSubmissionStatus == "DRAFT" || output.templateSubmissionStatus == "WAITING_FOR_APPROVER" || output.templateSubmissionStatus == "REJECTED" ){
 		                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		                	     	     		if(output.typeOfContract == "New"){
 		                	     	     			opt = opt + '<a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i> | </a>';
