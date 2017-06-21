@@ -117,7 +117,9 @@ public class InterviewFeedbackRestController {
 			   if(jsonObj.has("feedback") && !"".equalsIgnoreCase(jsonObj.getString("feedback"))  && null != jsonObj.getString("feedback")){
 				   ift.setInterviewStatus(jsonObj.getString("feedback"));
 			   }
-			   ift.setCreatedBy(user.getUserCode());
+			   if(null != user){
+				   ift.setCreatedBy(user.getUserCode());   
+			   }
 			   ift.setCreatedDate(new Date());
 			   interviewFeedbackTemplateService.addInterviewFeedbackTemplate(ift);
 			   
@@ -210,7 +212,9 @@ public class InterviewFeedbackRestController {
 			   ift.setSubmissionTemplateId(sub);
 			   ift.setStatus("Y");
 			   ift.setInterviewTemplateJsonString(jsonStringData);
-			   ift.setCreatedBy(user.getUserCode());
+			   if(null != user){
+				   ift.setCreatedBy(user.getUserCode());   
+			   }
 			   ift.setCreatedDate(new Date());
 			   interviewFeedbackTemplateService.addInterviewFeedbackTemplate(ift);
 			   
@@ -219,6 +223,7 @@ public class InterviewFeedbackRestController {
 		      requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
 			  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.FEEDBACK);
 			  requirementSubmissionHistory.setInterviewerId(rqr);
+
 			  requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 			  requirementInterviewerService.updatedFeedbackMailFromInterviewerToRequirementOwner(rqr,requirementSubmission,jsonObj,templateId);
 			   return "publicInterviewFeedBackTemplate";

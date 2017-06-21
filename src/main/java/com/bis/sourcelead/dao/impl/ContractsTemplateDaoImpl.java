@@ -530,4 +530,18 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return contractsHistory;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ContractsHistory getContractsHistoryByContractId(Long contractId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		ContractsHistory  contractsHistory =  null;
+		List<ContractsHistory>  contractsHistoryList = session.createQuery("from ContractsHistory ch where ch.id = (SELECT MAX(id) FROM ContractsHistory where ch.contractsId =:contractId)")
+				.setLong("contractId", contractId).setCacheable(true).list();
+		if(null != contractsHistoryList && contractsHistoryList.size() >0){
+			contractsHistory = contractsHistoryList.get(0);
+		}
+		return contractsHistory;
+	}
+
 }

@@ -215,7 +215,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobilePhone"));
 		}
 		if(jsonObj.has("email") && jsonObj.getString("email") !=null){
-		candidate.setEmail(jsonObj.getString("email"));
+		candidate.setEmail(jsonObj.getString("email").trim());
 		}
 		if(jsonObj.has("currentRate") && jsonObj.getString("currentRate") !=null){
 		candidate.setCurrentRate(jsonObj.getString("currentRate"));

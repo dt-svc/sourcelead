@@ -143,6 +143,11 @@ function editCandidate(candidateId){
             			 		summary = json.summary;            			 		
             			 	}
             			 	
+            			 	var address = '';
+            			 	if(json.address != null && json.address != '' && json.address != 'undefined'){
+            			 		address = json.address;            			 		
+            			 	}
+            			 	
             			 	var primarySkill = '';
             			 	if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
             			 		primarySkill = json.primarySkill;            			 		
@@ -202,12 +207,23 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							
-							
 							result = result + '<div class="clearfix mb10">';
+							
+							result = result + '<div class="col-md-6">';
+							result = result + '<input type="text" class="form-control input-sm" name="address"  value="'+address+'" placeholder="Address" field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">';
+							result = result + '</div>';
+							
 							result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<select class="chosen-select form-control select-bg" name="country" id="candidateCountry" value="'+json.country+'" field-name="Country">';
 							result = result + '</select>';
 							result = result + '</div>';
+							
+							result = result + '</div>';
+							
+							
+							
+							result = result + '<div class="clearfix mb10">';
+							
 							
 							 
 							result = result + '<input type="hidden" name="updateState" id="updateState" value="'+json.state+'" />'; 
@@ -218,14 +234,17 @@ function editCandidate(candidateId){
 							result = result + '<select  class="chosen-select form-control select-bg" name="state" value="'+json.state+'" id="candidateState" field-name="State">';
 							result = result + '</select>';
 							result = result + '</div>';
-							result = result + '</div>';
-							
-							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="city" id="candidateCity" value="'+json.city+'" field-name="City">';
 							result = result + '</select>';
 							result = result + '</div>';
+							
+							result = result + '</div>';
+							
+							result = result + '<div class="clearfix mb10">';
+							
+							
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
