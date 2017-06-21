@@ -184,7 +184,7 @@ function createAlert(){
 					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
 					 result = result +'         	<div class="col-md-9">';
-					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Skills">';
+					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Keywords/Skills">';
 					 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
 					 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
 					 result = result +'         			</c:forEach>';

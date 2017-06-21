@@ -300,6 +300,12 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 			
+			List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+			if(userSpocRolesList.size() > 1){
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+			}
+			
 			try {
 				Countries countries = countriesService.getCountriesByCountryName(user.getCountry());
 				if(null != countries){
@@ -532,6 +538,12 @@ public class LoginSessionController {
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
+				
+				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+				if(userSpocRolesList.size() > 1){
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+				}
 				
 				try {
 					Countries countries = countriesService.getCountriesByCountryName(user.getCountry());

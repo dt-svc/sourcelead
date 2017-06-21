@@ -189,6 +189,9 @@ public class RequirementRefer implements Serializable {
    	private String rejectedReason;
     
     @Transient
+   	private String submissionStatus;
+    
+    @Transient
    	private String userName;
 	
 		public Long getId() {
@@ -612,5 +615,13 @@ public class RequirementRefer implements Serializable {
 	public void setRejectedReason(String rejectedReason)
 	{
 		this.rejectedReason = rejectedReason;
+	}
+
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
 	}
 }

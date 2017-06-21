@@ -6,10 +6,30 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+ <jsp:include page="expensesCommonList.jsp"></jsp:include>
 
  <script type="text/javascript">
 		window.onload = function () {
-			getExpensesList();
+			if("" != localStorage.getItem("myExpensesListGrid")){
+				$("#expensesListDiv").empty();
+	       		$("#expensesListDiv").append(localStorage.getItem("myExpensesListGrid"));
+	       		expensesPagination();
+	       		/* localStorage.removeItem("myExpensesListGrid"); */
+	       		localStorage.setItem("myExpensesListGrid","");
+	       		$(":checkbox[value=ALL]").prop("checked",false);
+	       		if("draft" == $("#countType").val()){
+	       			$(":checkbox[value=DRAFT]").prop("checked",true);
+	       		}else if("submitted" == $("#countType").val()){
+	       			$(":checkbox[value=SUBMITTED]").prop("checked",true);
+	       		}else if("approved" == $("#countType").val()){
+	       			$(":checkbox[value=APPROVED]").prop("checked",true);
+	       		}else if("rejected" == $("#countType").val()){
+	       			$(":checkbox[value=REJECTED]").prop("checked",true);
+	       		}
+			}else{
+				getExpensesList();
+			}
 		 };
 </script>
 	
@@ -30,7 +50,19 @@
 	<div class="timesheet_head">
         	<ul>
         		<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_MY_EXPENSES')">
-					<li><i class="fa fa-filter"></i><span>Fliter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
+				    <div class="pull-left mt5 mr">   		
+				     <span class="dashboard-datepkr pull-left">
+					 <input type="text" class="form-control input-sm calendar" value="" id="filterStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+					 <p id="reportStartDate" class="ReError"></p>
+					 </span>
+					 <span class="dashboard-datepkr pull-left">
+					 <input type="text"  class="calendar form-control input-sm" value="" id="filterEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+					 <p id="reportEndDate" class="ReError"></p>
+					 </span>
+					 <span class="pull-left"><input type="button" value="Submit" class="btn-sm btn btn-primary" onclick="getExpensesList();" /></span>
+					</div>
+					
+					<li class="ml"><i class="fa fa-filter"></i><span>Filter</span><i class="glyphicon glyphicon-play" id="appro-pop"></i>|
 	                	<div class="approved_pop">
 	                    	<ul>
 	                        	<li><input id="expenseAll" type="checkbox" name="expenseStatus" value="ALL" checked onclick="getExpensesList();"><label >All</label></li>
@@ -86,6 +118,15 @@
 
 function getExpensesList(){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var startDate = $("#filterStartDate").val();
+	var endDate = $("#filterEndDate").val();
+	/* if(startDate == null || startDate == '' || startDate == 'undefined'){
+		$("#reportStartDate").empty().append("Start Date is Required") ; 
+	}
+	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		$("#reportEndDate").empty().append("End Date is Required") ; 
+	} */
+	
 	var expenseStatus = [];
 	$('input:checkbox[name=expenseStatus]:checked').each(function() 
     {
@@ -94,7 +135,7 @@ function getExpensesList(){
 	
 	 $.ajax({
          type : "POST",
-          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus,       
+          url: sourceleadUrl+"/getExpensesList?${_csrf.parameterName}=${_csrf.token}&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
         	  var result = "";
 					result = result +" <table id='expensesPagination'>";
@@ -164,8 +205,8 @@ function getExpensesList(){
 								 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_MY_EXPENSES\')">'
 								 result = result +"<td><div class='proj_show'><span>"+expenseId+"</span></div></td>";
 								 '</sec:authorize>';
-								 result = result +"<td><div>"+purpose+"</div></td>";
-								 result = result +"<td><div>"+projectMemberId+"</div></td>";
+								 result = result +"<td><div title="+purpose+">"+purpose+"</div></td>";
+								 result = result +"<td><div title="+projectMemberId+">"+projectMemberId+"</div></td>";
 								 result = result +"<td><div>"+clientName+"</div></td>";
 								 result = result +"<td><div>"+startDateStr+"</div></td>";
 								 result = result +"<td><div>"+endDateStr+"</div></td>";
@@ -195,10 +236,9 @@ function getExpensesList(){
 
 <script>
 function expensesPagination(){ 
-// 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#expensesPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0
@@ -215,6 +255,7 @@ function expensesPagination(){
     $("#expensesPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 }
 </script> 
+
 <script>
 
 function expenseView(expenseId){
@@ -341,14 +382,8 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	var amount= "";
 	        	
 	       for (var i = 0; i < reportExpenseEntries.length; i++) {	
-	    	   var raja = json[i];
 	    	   
-	        	/* if(reportExpenseEntries[i].expensesCategoryId != null && reportExpenseEntries[i].expensesCategoryId != '' && reportExpenseEntries[i].expensesCategoryId != 'undefined'){
-	        		expensesCategoryId = reportExpenseEntries[i].expensesCategoryId;
-      		  }else{
-      			expensesCategoryId = "--";
-      		  } */
-	        	if(reportExpenseEntries[i].paymentMode != null && reportExpenseEntries[i].paymentMode != '' && reportExpenseEntries[i].paymentMode != 'undefined'){
+	          if(reportExpenseEntries[i].paymentMode != null && reportExpenseEntries[i].paymentMode != '' && reportExpenseEntries[i].paymentMode != 'undefined'){
 	        		paymentMode = reportExpenseEntries[i].paymentMode;
       		  }else{
       			paymentMode = "--";
@@ -389,16 +424,6 @@ var sourceleadUrl = '${sourceleadUrl}';
 	        	result = result +'</div>';
 	        	result = result +'</div>';
 	        	
-// 	        	result = result +'				        <div id="tab-2" class="project_tabs_inn">		                                                                                                                                                           ';
-// 	        	result = result +'							<div class="hisWrap">                                                                                                                                                                                  ';
-// 	        	result = result +'							  <div class="hisWrapCta">                                                                                                                                                                             ';
-// 	        	result = result +'									<img src="images/23.jpg" alt="">                                                                                                                                                               ';
-// 	        	result = result +'									<p><a href="#">Muneendra</a> has uploaded a new attachment in <a href="#">#4134 Registration should proceed only when</a> professional accept/select terms and conditions.</p>                 ';                       
-// 	        	result = result +'									<span><i class="fa fa-clock-o"></i>2 min ago</span>                                                                                                                                            ';
-// 	        	result = result +'							  </div>                                                                                                                                                                                               ';
-// 	        	result = result +'							</div>                                                                                                                                                                                                 ';
-// 	        	result = result +'				        </div>                                                                                                                                                                                                     ';
-	        	
 	        	result = result +'</div>';
 	        	result = result +'</div>';
 
@@ -426,6 +451,31 @@ var sourceleadUrl = '${sourceleadUrl}';
                                                                                                                                                                                                                                                        
 </script>
 
+
+<script>
+	$(function() {
+		$('#filterStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterEndDate").datepicker("option", "minDate", selected);
+			}
+		
+		});
+		
+		$('#filterEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : 'dd-mm-yy',
+			onSelect : function(selected) {
+				$("#filterStartDate").datepicker("option", "maxDate", selected);
+			}
+		});
+		
+	});
+</script>
+
 <script>
 function activeTab(){
 	$(".project_side_wrap").removeClass("project_side_wrap_active");
@@ -437,9 +487,7 @@ function activeTab(){
 
 <script>
 function getEditExpense(eId){
-	alert("fgdfg");
 	window.location.replace(sourceleadUrl+'/addExpense?expenseId='+eId);
-	alert("fgdfg");
 }
 </script>
 <script>
@@ -452,10 +500,11 @@ function exportToPdf(type){
 		{
 			expenseStatus.push($(this).val());
 		});
-		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus;
+		var startDate = $("#filterStartDate").val();
+		var endDate = $("#filterEndDate").val();
+		window.location.href = sourceleadUrl + "/exportAllMyExpensesList?&type="+type+"&expenseStatus="+expenseStatus+"&startDate="+startDate+"&endDate="+endDate;
 	}else{
 		var result = "";
-		alert(">>>>>>>>>>>>>")
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Candidate List is Empty</p>";
