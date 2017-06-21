@@ -16,9 +16,15 @@
 }
 </style>
 
-
+<script>
+	function alertMsgFadeinFunction() {
+		$("#jobAlert1").fadeIn(200);
+        $('#jobAlert1').delay(50000).fadeOut('slow');
+	}
+</script> 
 <section class="content-wraper">
     <div id="offboardingLoading"></div>
+   
     <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Job Alert List</h2>
@@ -42,6 +48,7 @@
 	   </div>	
         
 </section>
+
     <div class="pop_mask"></div>
  <!-- Modal -->
   <div class="modal modal_createalert" id="myModal" role="dialog">
@@ -77,6 +84,9 @@ function createAlert(){
 					 result = "";
 					 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
 					 result = result +'	 <div class="modal-dialog modal-lg">';
+					 result = result +' <div class="success_pop" id="jobAlert1" style="display: none;">';
+					 result = result +'  <i class="fa fa-check-circle"></i><span id="jobAlertMsgDiv"></span>';
+					 result = result +' </div> ';
 					 result = result +'     <div class="modal-content">';
 					 result = result +'       <div class="modal-header">';
 					 result = result +'         <button type="button" class="close" data-dismiss="modal" onClick="alertClose();">&times;</button>';
@@ -184,7 +194,7 @@ function createAlert(){
 					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
 					 result = result +'         	<div class="col-md-9">';
-					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Skills">';
+					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Keywords/Skills">';
 					 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
 					 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
 					 result = result +'         			</c:forEach>';
@@ -326,6 +336,10 @@ function saveAlert(){
 					type : "POST",
 					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 					success : function(result) {
+						$("#jobAlert1").removeAttr("style");
+            			$("#jobAlert1").css({ display: "block" });
+        				$("#jobAlertMsgDiv").html("Success!! New Alert added");
+							alertMsgFadeinFunction();
 							location.replace(sourceleadUrl+"/jobAlertList");
 					},
 				});
@@ -536,7 +550,7 @@ function jobAlertList(){
 	                    	 }
 	                    	 
 	                    	 result = result +"<tr id='jobAlert"+report.jobAlertUUID+"'>";
-	                    		 result = result +"<td><div class='tbldata-dotdot-sm' title="+report.alertTitle+"><span >"+report.alertTitle+"</span></div></td>";
+	                    		 result = result +"<td><div class='tbldata-dotdot-sm' title='"+report.alertTitle+"'><span >"+report.alertTitle+"</span></div></td>";
 	                    		 result = result +"<td><div><span>"+experience+"</span></div></td>";
 	                    		 result = result +"<td><div  title="+rate+"><span>"+rate+"</span></div></td>";
 	                    		 result = result +"<td><div  title='"+industryName+"'><span>"+industryName+"</span></div></td>";
@@ -583,6 +597,9 @@ function editAlert(jobAlertUUID){
         	  
         	     result = "";
         		 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+        		 result = result +' <div class="success_pop" id="jobAlert1" style="display: none;">';
+				 result = result +'  <i class="fa fa-check-circle"></i><span id="jobAlertMsgDiv"></span>';
+				 result = result +' </div> ';
         		 result = result +'	 <div class="modal-dialog modal-lg">';
         		 result = result +'     <div class="modal-content">';
         		 result = result +'       <div class="modal-header">';

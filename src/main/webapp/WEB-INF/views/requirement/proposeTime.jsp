@@ -109,7 +109,7 @@ width: 8%;
 							<div class="propWrapRight">
 							  	<h2>Propose New Time</h2>	  
 							  <ul>
-								  <li><span>Requirement title:</span><b><i class="fa fa-briefcase"></i>${requirementInterview.submissionId.requirement.jobTitle}</b><div class="clearfix"></div></li>
+								  <li><span>Requirement Title:</span><b><i class="fa fa-briefcase"></i>${requirementInterview.submissionId.requirement.jobTitle}</b><div class="clearfix"></div></li>
 								  <li><span>Interview Date:</span><b><i class="fa fa-calendar"></i>${requirementInterviewDate}</b><div class="clearfix"></div></li>
 								  <c:if test="${! empty interviewStartTimeStr && ! empty interviewEndTimeStr}">
 								     <li><span>Interview Time:</span><b><i class="fa fa-clock-o"></i>${interviewStartTimeStr} - ${interviewEndTimeStr}</b><div class="clearfix"></div></li>
@@ -143,6 +143,7 @@ width: 8%;
 										<td>
 											<div>
 										  		<button type="button" class="btn btn-primary btn-sm" onClick="addProposeTime();"><i class="fa fa-plus"></i></button>
+										  		
 									  		</div>
 										</td>
 									</tr>
@@ -150,6 +151,7 @@ width: 8%;
 								</table>
 								  <div class="propBtn">
 								  	<input value="Submit" class="btn btn-success" type="button" onclick="saveProposeTime();">
+								  	<input value="Clear" class="btn btn-default" type="button" onclick="clearProposeTime();">
 								  </div>	
 								  </form>  	
 							  </c:if>
@@ -364,6 +366,11 @@ var validationSettings = {
 			return o;
 		};
 	})(jQuery);
+</script>
+<script>
+function clearProposeTime(){
+	location.reload();
+}
 </script>
 <script src="resources/js/formvalidator.js"></script>
   <!-- Footer Area -->

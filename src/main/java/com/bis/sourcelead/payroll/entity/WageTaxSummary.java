@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -98,6 +99,12 @@ public class WageTaxSummary implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String fromDateStr;
+	
+	@Transient
+	private String toDateStr;
 
 	public Long getId() {
 		return id;
@@ -295,6 +302,24 @@ public class WageTaxSummary implements Serializable {
 		this.ssnNumber = ssnNumber;
 	}
 
-	
+	public String getFromDateStr()
+	{
+		return fromDateStr;
+	}
+
+	public void setFromDateStr(String fromDateStr)
+	{
+		this.fromDateStr = fromDateStr;
+	}
+
+	public String getToDateStr()
+	{
+		return toDateStr;
+	}
+
+	public void setToDateStr(String toDateStr)
+	{
+		this.toDateStr = toDateStr;
+	}
 	
 }

@@ -1,4 +1,4 @@
-@@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
@@ -303,7 +303,7 @@ color:#333 !important; text-shadow:none !important; display:block !important; pa
 }
 /* spoclinks more that 5 */
 .spoclinksMore {
-	min-width: 955px; padding: 0 0 0 10px;
+	min-width: 955px; padding: 0 0 0 10px;  height: 550px; overflow: auto;
 }
 .spoclinksMore ul li {
 	border-bottom: 1px solid #d2d2d2; line-height: normal !important; height: auto !important; padding: 10px !important;
@@ -4194,7 +4194,7 @@ margin-left: 15px;
 	color: #808080;
 }
 .mask_inner {
-	position:absolute; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); top: 0px; left: 0px;
+	position:absolute; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); top: 0px; left: 0px;
 	z-index: 9999; display: none;
 }
 .demo {
@@ -4234,7 +4234,10 @@ border: 1px solid #ededed; border-top:none; padding: 10px;
     background-color:#fff !important; color:#EF6C00; border-top:3px solid #FFB74D;
 }
 .eventCalendr_content {
-    overflow-y: auto; min-height: 150px; max-height: 350px;
+    overflow-y: auto; min-height: 150px; height: 270px;
+}
+.feedbackInner {
+height:200px; overflow: auto;
 }
 .personalInfo .userdetails {
     padding: 5px 10px 2px 10px; margin-top: 0px; width: 275px; background-color:#e3f2fd; border: 1px solid #90caf9; border-radius: 5px;
@@ -5523,7 +5526,59 @@ margin-left: 10px;
 .width110px{
     width: 110px; display: inline-block;
 }
-
+.hdrAlign table tr th {
+vertical-align: middle;
+}
+.currencySymbol input {
+    padding-left: 60px;
+}
+.currencySymbol .currency_value {
+    background: #367fa9; width: 50px; position: absolute; text-align:center; min-height: 25px; color:#fff;
+    top: 24px; left: 16.5px; padding: 7px 5px;
+}
+.allow label {
+    width: 50%; float: left;
+}
+.allow input[type="checkbox"]{
+    margin-right: 5px !important;
+}
+.btnBlock .btn {
+    font-size: 13px;
+    padding: 4px 4px;
+}
+.txtarea_action {
+    width: 100% !important; margin: 0 !important;
+}
+.warning_color {
+    color: #f60 !important;
+}
+.assignTeam_modalpop .modal-dialog {
+    width: 900px;
+}
+.feedback_view {
+ position: absolute; z-index: 99999; top: -45px; width: 100%; display: block; background-color: #fff; padding: 10px; left: 5px;
+}
+a.color_white{
+  color:#fff;
+}
+.require_wrap_details_cta.require_details b {
+    width: 200px;
+}
+.editbutton {
+    cursor: pointer;
+}
+.changeRate_div {
+    width: 220px; clear:both; display: inline-block;
+}
+.changeRate_div input[type="text"] {
+    width: 100px; margin:3px 10px;
+}
+.changeRate_div .drpdownCurrency select {
+   width: 50px;
+}
+.changeRate_div .drpdownMonthly select {
+    width: 50px;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

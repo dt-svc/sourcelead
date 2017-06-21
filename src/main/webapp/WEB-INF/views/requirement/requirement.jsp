@@ -577,7 +577,7 @@ $(document).ready(function () {
                 </select>
                 </div>
                 <div class="pull-left input_minmax">
-                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" placeholder="Min Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
+                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Min Rate" placeholder="Min Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 <input type="text" class="form-control input-sm" id="maxRate" name="maxRate" field-name="Max Rate" placeholder="Max Rate" value="${requirement.maxRate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 </div>
                  <div class="row" id="rateValidateId">
@@ -1497,6 +1497,16 @@ function validate_fileupload(fileName)
  			 $('#rateType').attr("data-validation-optional","true"); 
  		 }
  		 
+ 		var maxRate = document.getElementById("maxRate").value; 
+		 if(maxRate != null && maxRate != ""){
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required");
+			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
+		 }else{
+			 $('#rateType').removeAttr('data-validation');
+			 $('#rateType').attr("data-validation-optional","true"); 
+		 }
+ 		 
  		 var clientRateType = document.getElementById("clientRateType").value; 
  		 if(clientRateType != null && clientRateType != ""){
  			 $('#clientRate').removeAttr('data-validation-optional');
@@ -1934,7 +1944,6 @@ function setTemplateValues(){
 		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
 		    			$("#templateId").val(json.id);
 		    		}
-		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
 			    	
@@ -2027,7 +2036,6 @@ function setTemplateValues(){
 			   
 			    	 //$( ".jobTypeDiv" ).hide();
 		    	}else{
-		    		
 		    		$("#jobTitle").val('');
 			    	$("#jobType").val('');
 			    	$("#travelAllowance").val('');
@@ -2048,7 +2056,7 @@ function setTemplateValues(){
 					
 		            $("#skills").val('');
 		            $("#education").val('');
-			    	$("#description").val('');
+		            $(".Editor-editor").text('');
 			    	$("#rate").val('');
 			     	$("#currencyCode").val('');
 			    	$("#rateType").val('');
@@ -2064,16 +2072,14 @@ function setTemplateValues(){
      });
 	}else{
 		 document.getElementById("requirement_form").reset();
+		 $(".Editor-editor").text('');
 		 $("#skills").trigger("chosen:updated");
 		 $("#education").trigger("chosen:updated");
 		 $("#existingCountry").val('');
 		 $("#existingState").val('');
 		 $("#existingCity").val('');
-		/*  $("#state").trigger("chosen:updated");
-		 $("#city").trigger("chosen:updated"); */
 		 getAllCountries(); 		
 		 $("#rate").val('');
-		 $("#description").val('');
 		
 		 
 	}
