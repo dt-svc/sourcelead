@@ -28,8 +28,8 @@ window.onload = function () {
 		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
 			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
-			<li title="AccountDeductions"><a onclick="accountDeductionsList();">Account Deductions</a></li>
-			<li title=""><a>Tab 4</a></li>
+			<li title="Account Deductions"><a onclick="accountDeductionsList();">Account Deductions</a></li>
+			<li title="HR Deductions"><a onclick="hrDeductionsList();">HR Deductions</a></li>
 		</ul>
 		<div class="clearfix"></div>
 	</section>
@@ -90,6 +90,7 @@ window.onload = function () {
     	<div id="employerCostDiv"></div>
     	<div id="wagesAndTaxListDiv"></div>
     	<div id="accountDeductionsListDiv"></div>
+    	<div id="hrDeductionsListDiv"></div>
        
 	</div>
 	
@@ -162,6 +163,7 @@ function loadEmployeePayrollCost(){
 						$("#employerCostDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
 						$("#accountDeductionsListDiv").empty();
+						$("#hrDeductionsListDiv").empty();
 						$("#employerCostDiv").append(result);
 						$("#loading").removeAttr("style");
 						employeePayrollCostPagination();
@@ -220,13 +222,23 @@ function employeePayrollCostPagination(){
 		$(".collapse-div-adduser").toggleClass("show-div").css({"right":" 275px","top":"35px" });
 		$(".collapse-div").removeClass("show-div");
 	});
-	$(".close-div").click(function() {
-		$(this).parent().removeClass("show-div");
-	});
+	
 	$(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(
 			function(e) {
 				e.stopPropagation();
 			});
+	
+	$(".close-div").click(function() {
+		$(this).parent().removeClass("show-div");
+		$("#fromDate").val("");
+		$("#toDate").val("");
+		$("#payrollType").val('').trigger("chosen:updated");
+		$("#batchNumber").val("");
+		$("#uploadFile").val("");
+	});
+	
+	
+	
 	/* $('html').click(function() {
 		$(".collapse-div-adduser").removeClass("show-div");
 		$(".collapse-div").removeClass("show-div");
@@ -319,5 +331,6 @@ $("ul#parentUl").on("click","li", function(){
 
 <jsp:include page="wagesAndTaxlist.jsp" />
 <jsp:include page="accountDeductionsList.jsp" />
+<jsp:include page="hrDeductionsList.jsp" />
 
 <jsp:include page="../masterFooter.jsp" />
