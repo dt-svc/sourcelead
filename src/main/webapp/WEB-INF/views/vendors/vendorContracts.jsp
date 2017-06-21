@@ -272,7 +272,7 @@ function vendorContractsList(orgRelationId){
 	                	     		 	result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 	                	     		'</sec:authorize>';
 	                	     		
-	                	     		if(report.templateSubmissionStatus != "EXPIRED"){
+	                	     		if(report.templateSubmissionStatus == "DRAFT" || report.templateSubmissionStatus == "WAITING_FOR_APPROVER" || report.templateSubmissionStatus == "REJECTED" ){
 	                	     			'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                		     		if(report.typeOfContract == "New"){
 	                		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
