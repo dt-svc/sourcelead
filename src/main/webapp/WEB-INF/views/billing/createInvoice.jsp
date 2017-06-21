@@ -184,7 +184,7 @@ function errRemoveClientContact(){
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
 			placeholder="Rate" id="REPLACEROWIDrate" name="REPLACEROWIDrate"
-			onblur="totalHoursCalculateAmount(REPLACEROWID);">
+			onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">
 	</div>
 </div>
 
