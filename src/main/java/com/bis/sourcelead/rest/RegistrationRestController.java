@@ -323,7 +323,6 @@ public class RegistrationRestController {
 		 JSONObject jsonObj = new JSONObject(json);
 		 User user = userService.getUserByUserName(jsonObj.getString("userName"));
 		 if(null != user){
-			 user.setUserName(jsonObj.getString("resetUserName"));
 			 user.setPassword(sourceleadPasswordEncoder.encode(jsonObj.getString("password")));
 			 prepareRegisterOptionalServicesToAllForms(jsonObj,user);
 			 userService.addUser(user);

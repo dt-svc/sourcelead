@@ -177,6 +177,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	
 	@Transient
 	private String proposeTimeStatus;
+
+	@Transient
+	private List<RequirementInterviewer> requirementInterviewerList;
+	
+	@Transient
+	private Long requirementIntervieweId;
 	
 	public String getCandidateEmail() {
 		return candidateEmail;
@@ -573,5 +579,21 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
+	}
+
+	public List<RequirementInterviewer> getRequirementInterviewerList() {
+		return requirementInterviewerList;
+	}
+
+	public void setRequirementInterviewerList(List<RequirementInterviewer> requirementInterviewerList) {
+		this.requirementInterviewerList = requirementInterviewerList;
+	}
+
+	public Long getRequirementIntervieweId() {
+		return requirementIntervieweId;
+	}
+
+	public void setRequirementIntervieweId(Long requirementIntervieweId) {
+		this.requirementIntervieweId = requirementIntervieweId;
 	}
 }

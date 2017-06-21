@@ -290,11 +290,28 @@ public class RequirementInterviewHistoryServiceImpl implements RequirementInterv
 				interviewHistory.setInterviewTemplateid(interviewHistory.getInterviewId().getInterviewTemplateId().getId());
 			}
 			
-			RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
-			if(null != requirementInterviewer){
-				interviewHistory.setInterviewerId(requirementInterviewer.getId());
-			}
+	/*		if(Constants.ADMIN.equalsIgnoreCase(userType)){
+				List<RequirementInterviewer> reqiremList = requirementInterviewerService.getInterviwersListByInterviewId(interviewHistory.getInterviewId().getId());
+				List<RequirementInterviewer> intrlist = new ArrayList<RequirementInterviewer>();
+				for(RequirementInterviewer er:reqiremList){
+					InterviewFeedbackTemplate ift = interviewFeedbackTemplateService.getInterviewFeedbackTemplateById(er.getId());
+					if(ift != null){
+						interviewHistory.setInterviewerId(ift.getRequirementInterviewerId().getId());
+						if(ift.getRequirementInterviewerId() != null){
+							intrlist.add(ift.getRequirementInterviewerId());	
+						}
+							
+					}
+				}
+				interviewHistory.setRequirementInterviewerList(intrlist);
+			}else{*/
+				RequirementInterviewer requirementInterviewer =  requirementInterviewerService.getInterviwerByInterviewIdAndUserId(interviewHistory.getInterviewId().getId(), user.getId());
+				if(null != requirementInterviewer){
+					interviewHistory.setInterviewerId(requirementInterviewer.getId());
+				} 
+			/*}*/
 			
+			interviewHistory.setRequirementIntervieweId(interviewHistory.getInterviewId().getId());
 			interviewHistory.setCandidateName(candidateName.append(candidateFirstName).append(" ").append(candidateLastName).toString());
 			
 			interviewHistory.setCandidateEmail(interviewHistory.getSubmissionId().getCandidate().getEmail());

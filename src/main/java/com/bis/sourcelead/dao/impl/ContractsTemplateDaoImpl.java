@@ -516,4 +516,18 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		return ContractsList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ContractsHistory getAllContractsHistoryByContractId(Long contractId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		ContractsHistory  contractsHistory =  null;
+		List<ContractsHistory>  contractsHistoryList = session.createQuery("from ContractsHistory ch where ch.contractsId =:contractId and ch.toStage ='EXPIRED' and ch.contractsId.templateSubmissionStatus='EXPIRED'")
+				.setLong("contractId", contractId).setCacheable(true).list();
+		if(null != contractsHistoryList && contractsHistoryList.size() >0){
+			contractsHistory = contractsHistoryList.get(0);
+		}
+		return contractsHistory;
+	}
+
 }
