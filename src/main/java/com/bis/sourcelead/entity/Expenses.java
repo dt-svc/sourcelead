@@ -2,8 +2,8 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -110,6 +109,21 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private List<User> projectManagerUserList;
   
+	@Transient
+	private String employementType;
+	
+	@Transient
+	private String userName;
+	
+	@Transient
+	private String userEmail;
+	
+	@Transient
+	private String projectName;
+	
+	@Transient
+	private Map<String,String> monthsStringFormat;
+    
 	
 	public Long getId() {
 		return id;
@@ -287,6 +301,47 @@ private static final long serialVersionUID = 1L;
 		this.projectManagerUserList = projectManagerUserList;
 
 	}
+
+	public String getEmployementType() {
+		return employementType;
+	}
+
+	public void setEmployementType(String employementType) {
+		this.employementType = employementType;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public Map<String, String> getMonthsStringFormat() {
+		return monthsStringFormat;
+	}
+
+	public void setMonthsStringFormat(Map<String, String> monthsStringFormat) {
+		this.monthsStringFormat = monthsStringFormat;
+	}
+
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {
 //		return expenseEntriesList;

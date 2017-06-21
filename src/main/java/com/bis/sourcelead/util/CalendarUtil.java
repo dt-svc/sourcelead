@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -167,7 +168,34 @@ public  class CalendarUtil {
 	}*/
 
 
-
+	public static Map<String, String> getStartAndEndDateForGivenFrequency(Date frequencyStartDate,Date frequencyEndDate) {
+	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
+	      Map<String, String> startEndDate = new LinkedHashMap<>();
+	      Calendar Q1StartDate=Calendar.getInstance();
+		    Calendar Q1EndDate =Calendar.getInstance();
+		    System.out.println(monthDiff);
+		    for(int i =0;i<=monthDiff;i++){
+		    if(i==0){
+		    	Q1StartDate.setTime(frequencyStartDate);
+		    	Q1EndDate.setTime(frequencyStartDate);
+		    }else{
+			    Q1StartDate.add(Calendar.MONTH,i);
+			    Q1EndDate.add(Calendar.MONTH,i);
+		    }
+		    Q1StartDate.set(Calendar.DATE,1);
+		    Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+		    System.out.println(Q1StartDate.getTime());
+		    System.out.println(Q1EndDate.getTime());
+		    String StartDate = Constants.DMY.format(Q1StartDate.getTime());
+		    String endDate = Constants.DMY.format(Q1EndDate.getTime());
+		    startEndDate.put(StartDate,endDate);
+	     }
+		return startEndDate;
+   }
+	
+	
+	
+	
 	protected static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
 		switch (day_Of_Week) {
@@ -205,6 +233,11 @@ public  class CalendarUtil {
 			c++;
 		}
 		return c - 1;
+	}
+	
+	
+	public static boolean isDateBetweenTwoDates(Date min,Date max,Date d){
+		return (d.after(min) || d.equals(min))&& (d.before(max)|| d.equals(max));
 	}
 
 	public static Date getNextWeekDay(String day_Of_Week) {
@@ -515,6 +548,26 @@ public  class CalendarUtil {
 		String dateStr = format.format(calendar.getTime());
 		return dateStr;
 	}
+	
+	
+	public static String getQuarterByDate(Date date){
+		int month = date.getMonth()+1;
+		String quarter = "";
+		float fraction = month/3f; 
+		if((0<fraction) && (fraction<=1)){
+			quarter ="Q1";
+		}
+		else if((1<fraction) && (fraction<=2)){
+			quarter ="Q2";
+		}
+		else if((2<fraction) && (fraction<=3)){
+			quarter ="Q3";
+		}
+		else{
+			quarter ="Q4";
+		}
+		return quarter;
+	}
 
 
 	public static LinkedHashMap<String,Date> getMonthStartDateAndEndDateFromGivenMonthString(String month){
@@ -722,7 +775,24 @@ public  class CalendarUtil {
 		return monthsList;
 	}
 	
+	public static Map<String, Date> getStartAndEndDateFromMonthAndYear(int i,String years) {
+	      Map<String, Date> dateList = new LinkedHashMap<>();
+		    
+	      Calendar Q1StartDate=Calendar.getInstance();
+		  Q1StartDate.set(Calendar.YEAR,Integer.parseInt(years));
+	      Q1StartDate.set(Calendar.MONTH,i);
+	      Q1StartDate.set(Calendar.DATE,1);
+		   
+		   
+		  Calendar Q1EndDate =Calendar.getInstance();
+		  Q1EndDate.set(Calendar.YEAR,Integer.parseInt(years));
+		  Q1EndDate.set(Calendar.MONTH, i);
+		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+		  dateList.put("STARTDATE",Q1StartDate.getTime());
+		  dateList.put("ENDDATE", Q1EndDate.getTime());
+	 	 return dateList;
 	
+    }
 	public static LinkedHashSet<String> getYearsListFromCurrentDate(int previousYears,int priorYears){
 		LinkedHashSet<String> YearsList = new LinkedHashSet<String>();
 

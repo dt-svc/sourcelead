@@ -143,6 +143,158 @@ public class ProjectMembers implements Serializable{
     
     @Transient
     private Long submissionInvoiceId;
+	
+    //For Expenses 
+    
+    @Transient
+    private Float janExpenseTotal;
+    
+    @Transient
+    private Float janExpenseApprovedTotal;
+    
+    @Transient
+    private Float janExpenseUnApprovedTotal;
+    
+    
+    @Transient
+    private Float febExpenseTotal;
+    
+    @Transient
+    private Float febExpenseApprovedTotal;
+    
+    @Transient
+    private Float febExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float marExpenseTotal;
+    
+    @Transient
+    private Float marExpenseApprovedTotal;
+    
+    @Transient
+    private Float marExpenseUnApprovedTotal;
+    
+    
+    @Transient
+    private Float aprExpenseTotal;
+    
+    @Transient
+    private Float aprExpenseApprovedTotal;
+    
+    @Transient
+    private Float aprExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float mayExpenseTotal;
+    
+    @Transient
+    private Float mayExpenseApprovedTotal;
+    
+    @Transient
+    private Float mayExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float junExpenseTotal;
+    
+    @Transient
+    private Float junExpenseApprovedTotal;
+    
+    @Transient
+    private Float junExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float julExpenseTotal;
+    
+    @Transient
+    private Float julExpenseApprovedTotal;
+    
+    @Transient
+    private Float julExpenseUnApprovedTotal;
+    
+    
+    @Transient
+    private Float augExpenseTotal;
+    
+    @Transient
+    private Float augExpenseApprovedTotal;
+    
+    @Transient
+    private Float augExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float sepExpenseTotal;
+    
+    @Transient
+    private Float sepExpenseApprovedTotal;
+    
+    @Transient
+    private Float sepExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float octExpenseTotal;
+    
+    @Transient
+    private Float octExpenseApprovedTotal;
+    
+    @Transient
+    private Float octExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float novExpenseTotal;
+    
+    @Transient
+    private Float novExpenseApprovedTotal;
+    
+    @Transient
+    private Float novExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float decExpenseTotal;
+    
+    @Transient
+    private Float decExpenseApprovedTotal;
+    
+    @Transient
+    private Float decExpenseUnApprovedTotal;
+    
+    
+    @Transient
+    private Float Q1ExpenseTotal;
+    
+    @Transient
+    private Float Q1ExpenseApprovedTotal;
+    
+    @Transient
+    private Float Q1ExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float Q2ExpenseTotal;
+    
+    @Transient
+    private Float Q2ExpenseApprovedTotal;
+    
+    @Transient
+    private Float Q2ExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float Q3ExpenseTotal;
+    
+    @Transient
+    private Float Q3ExpenseApprovedTotal;
+    
+    @Transient
+    private Float Q3ExpenseUnApprovedTotal;
+    
+    @Transient
+    private Float Q4ExpenseTotal;
+    
+    @Transient
+    private Float Q4ExpenseApprovedTotal;
+    
+    @Transient
+    private Float Q4ExpenseUnApprovedTotal;
+    
+    //For Expenses 
     
     public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -491,4 +643,389 @@ public class ProjectMembers implements Serializable{
 		this.contractsList = contractsList;
 	}
 
+	public Float getJanExpenseTotal() {
+		return janExpenseTotal;
+	}
+
+	public void setJanExpenseTotal(Float janExpenseTotal) {
+		this.janExpenseTotal = janExpenseTotal;
+	}
+
+	public Float getJanExpenseApprovedTotal() {
+		return janExpenseApprovedTotal;
+	}
+
+	public void setJanExpenseApprovedTotal(Float janExpenseApprovedTotal) {
+		this.janExpenseApprovedTotal = janExpenseApprovedTotal;
+	}
+
+	public Float getJanExpenseUnApprovedTotal() {
+		return janExpenseUnApprovedTotal;
+	}
+
+	public void setJanExpenseUnApprovedTotal(Float janExpenseUnApprovedTotal) {
+		this.janExpenseUnApprovedTotal = janExpenseUnApprovedTotal;
+	}
+
+	public Float getFebExpenseTotal() {
+		return febExpenseTotal;
+	}
+
+	public void setFebExpenseTotal(Float febExpenseTotal) {
+		this.febExpenseTotal = febExpenseTotal;
+	}
+
+	public Float getFebExpenseApprovedTotal() {
+		return febExpenseApprovedTotal;
+	}
+
+	public void setFebExpenseApprovedTotal(Float febExpenseApprovedTotal) {
+		this.febExpenseApprovedTotal = febExpenseApprovedTotal;
+	}
+
+	public Float getFebExpenseUnApprovedTotal() {
+		return febExpenseUnApprovedTotal;
+	}
+
+	public void setFebExpenseUnApprovedTotal(Float febExpenseUnApprovedTotal) {
+		this.febExpenseUnApprovedTotal = febExpenseUnApprovedTotal;
+	}
+
+	public Float getMarExpenseTotal() {
+		return marExpenseTotal;
+	}
+
+	public void setMarExpenseTotal(Float marExpenseTotal) {
+		this.marExpenseTotal = marExpenseTotal;
+	}
+
+	public Float getMarExpenseApprovedTotal() {
+		return marExpenseApprovedTotal;
+	}
+
+	public void setMarExpenseApprovedTotal(Float marExpenseApprovedTotal) {
+		this.marExpenseApprovedTotal = marExpenseApprovedTotal;
+	}
+
+	public Float getMarExpenseUnApprovedTotal() {
+		return marExpenseUnApprovedTotal;
+	}
+
+	public void setMarExpenseUnApprovedTotal(Float marExpenseUnApprovedTotal) {
+		this.marExpenseUnApprovedTotal = marExpenseUnApprovedTotal;
+	}
+
+	public Float getAprExpenseTotal() {
+		return aprExpenseTotal;
+	}
+
+	public void setAprExpenseTotal(Float aprExpenseTotal) {
+		this.aprExpenseTotal = aprExpenseTotal;
+	}
+
+	public Float getAprExpenseApprovedTotal() {
+		return aprExpenseApprovedTotal;
+	}
+
+	public void setAprExpenseApprovedTotal(Float aprExpenseApprovedTotal) {
+		this.aprExpenseApprovedTotal = aprExpenseApprovedTotal;
+	}
+
+	public Float getAprExpenseUnApprovedTotal() {
+		return aprExpenseUnApprovedTotal;
+	}
+
+	public void setAprExpenseUnApprovedTotal(Float aprExpenseUnApprovedTotal) {
+		this.aprExpenseUnApprovedTotal = aprExpenseUnApprovedTotal;
+	}
+
+	public Float getMayExpenseTotal() {
+		return mayExpenseTotal;
+	}
+
+	public void setMayExpenseTotal(Float mayExpenseTotal) {
+		this.mayExpenseTotal = mayExpenseTotal;
+	}
+
+	public Float getMayExpenseApprovedTotal() {
+		return mayExpenseApprovedTotal;
+	}
+
+	public void setMayExpenseApprovedTotal(Float mayExpenseApprovedTotal) {
+		this.mayExpenseApprovedTotal = mayExpenseApprovedTotal;
+	}
+
+	public Float getMayExpenseUnApprovedTotal() {
+		return mayExpenseUnApprovedTotal;
+	}
+
+	public void setMayExpenseUnApprovedTotal(Float mayExpenseUnApprovedTotal) {
+		this.mayExpenseUnApprovedTotal = mayExpenseUnApprovedTotal;
+	}
+
+	public Float getJunExpenseTotal() {
+		return junExpenseTotal;
+	}
+
+	public void setJunExpenseTotal(Float junExpenseTotal) {
+		this.junExpenseTotal = junExpenseTotal;
+	}
+
+	public Float getJunExpenseApprovedTotal() {
+		return junExpenseApprovedTotal;
+	}
+
+	public void setJunExpenseApprovedTotal(Float junExpenseApprovedTotal) {
+		this.junExpenseApprovedTotal = junExpenseApprovedTotal;
+	}
+
+	public Float getJunExpenseUnApprovedTotal() {
+		return junExpenseUnApprovedTotal;
+	}
+
+	public void setJunExpenseUnApprovedTotal(Float junExpenseUnApprovedTotal) {
+		this.junExpenseUnApprovedTotal = junExpenseUnApprovedTotal;
+	}
+
+	public Float getJulExpenseTotal() {
+		return julExpenseTotal;
+	}
+
+	public void setJulExpenseTotal(Float julExpenseTotal) {
+		this.julExpenseTotal = julExpenseTotal;
+	}
+
+	public Float getJulExpenseApprovedTotal() {
+		return julExpenseApprovedTotal;
+	}
+
+	public void setJulExpenseApprovedTotal(Float julExpenseApprovedTotal) {
+		this.julExpenseApprovedTotal = julExpenseApprovedTotal;
+	}
+
+	public Float getJulExpenseUnApprovedTotal() {
+		return julExpenseUnApprovedTotal;
+	}
+
+	public void setJulExpenseUnApprovedTotal(Float julExpenseUnApprovedTotal) {
+		this.julExpenseUnApprovedTotal = julExpenseUnApprovedTotal;
+	}
+
+	public Float getAugExpenseTotal() {
+		return augExpenseTotal;
+	}
+
+	public void setAugExpenseTotal(Float augExpenseTotal) {
+		this.augExpenseTotal = augExpenseTotal;
+	}
+
+	public Float getAugExpenseApprovedTotal() {
+		return augExpenseApprovedTotal;
+	}
+
+	public void setAugExpenseApprovedTotal(Float augExpenseApprovedTotal) {
+		this.augExpenseApprovedTotal = augExpenseApprovedTotal;
+	}
+
+	public Float getAugExpenseUnApprovedTotal() {
+		return augExpenseUnApprovedTotal;
+	}
+
+	public void setAugExpenseUnApprovedTotal(Float augExpenseUnApprovedTotal) {
+		this.augExpenseUnApprovedTotal = augExpenseUnApprovedTotal;
+	}
+
+	public Float getSepExpenseTotal() {
+		return sepExpenseTotal;
+	}
+
+	public void setSepExpenseTotal(Float sepExpenseTotal) {
+		this.sepExpenseTotal = sepExpenseTotal;
+	}
+
+	public Float getSepExpenseApprovedTotal() {
+		return sepExpenseApprovedTotal;
+	}
+
+	public void setSepExpenseApprovedTotal(Float sepExpenseApprovedTotal) {
+		this.sepExpenseApprovedTotal = sepExpenseApprovedTotal;
+	}
+
+	public Float getSepExpenseUnApprovedTotal() {
+		return sepExpenseUnApprovedTotal;
+	}
+
+	public void setSepExpenseUnApprovedTotal(Float sepExpenseUnApprovedTotal) {
+		this.sepExpenseUnApprovedTotal = sepExpenseUnApprovedTotal;
+	}
+
+	public Float getOctExpenseTotal() {
+		return octExpenseTotal;
+	}
+
+	public void setOctExpenseTotal(Float octExpenseTotal) {
+		this.octExpenseTotal = octExpenseTotal;
+	}
+
+	public Float getOctExpenseApprovedTotal() {
+		return octExpenseApprovedTotal;
+	}
+
+	public void setOctExpenseApprovedTotal(Float octExpenseApprovedTotal) {
+		this.octExpenseApprovedTotal = octExpenseApprovedTotal;
+	}
+
+	public Float getOctExpenseUnApprovedTotal() {
+		return octExpenseUnApprovedTotal;
+	}
+
+	public void setOctExpenseUnApprovedTotal(Float octExpenseUnApprovedTotal) {
+		this.octExpenseUnApprovedTotal = octExpenseUnApprovedTotal;
+	}
+
+	public Float getNovExpenseTotal() {
+		return novExpenseTotal;
+	}
+
+	public void setNovExpenseTotal(Float novExpenseTotal) {
+		this.novExpenseTotal = novExpenseTotal;
+	}
+
+	public Float getNovExpenseApprovedTotal() {
+		return novExpenseApprovedTotal;
+	}
+
+	public void setNovExpenseApprovedTotal(Float novExpenseApprovedTotal) {
+		this.novExpenseApprovedTotal = novExpenseApprovedTotal;
+	}
+
+	public Float getNovExpenseUnApprovedTotal() {
+		return novExpenseUnApprovedTotal;
+	}
+
+	public void setNovExpenseUnApprovedTotal(Float novExpenseUnApprovedTotal) {
+		this.novExpenseUnApprovedTotal = novExpenseUnApprovedTotal;
+	}
+
+	public Float getDecExpenseTotal() {
+		return decExpenseTotal;
+	}
+
+	public void setDecExpenseTotal(Float decExpenseTotal) {
+		this.decExpenseTotal = decExpenseTotal;
+	}
+
+	public Float getDecExpenseApprovedTotal() {
+		return decExpenseApprovedTotal;
+	}
+
+	public void setDecExpenseApprovedTotal(Float decExpenseApprovedTotal) {
+		this.decExpenseApprovedTotal = decExpenseApprovedTotal;
+	}
+
+	public Float getDecExpenseUnApprovedTotal() {
+		return decExpenseUnApprovedTotal;
+	}
+
+	public void setDecExpenseUnApprovedTotal(Float decExpenseUnApprovedTotal) {
+		this.decExpenseUnApprovedTotal = decExpenseUnApprovedTotal;
+	}
+
+	public Float getQ1ExpenseTotal() {
+		return Q1ExpenseTotal;
+	}
+
+	public void setQ1ExpenseTotal(Float q1ExpenseTotal) {
+		Q1ExpenseTotal = q1ExpenseTotal;
+	}
+
+	public Float getQ1ExpenseApprovedTotal() {
+		return Q1ExpenseApprovedTotal;
+	}
+
+	public void setQ1ExpenseApprovedTotal(Float q1ExpenseApprovedTotal) {
+		Q1ExpenseApprovedTotal = q1ExpenseApprovedTotal;
+	}
+
+	public Float getQ1ExpenseUnApprovedTotal() {
+		return Q1ExpenseUnApprovedTotal;
+	}
+
+	public void setQ1ExpenseUnApprovedTotal(Float q1ExpenseUnApprovedTotal) {
+		Q1ExpenseUnApprovedTotal = q1ExpenseUnApprovedTotal;
+	}
+
+	public Float getQ2ExpenseTotal() {
+		return Q2ExpenseTotal;
+	}
+
+	public void setQ2ExpenseTotal(Float q2ExpenseTotal) {
+		Q2ExpenseTotal = q2ExpenseTotal;
+	}
+
+	public Float getQ2ExpenseApprovedTotal() {
+		return Q2ExpenseApprovedTotal;
+	}
+
+	public void setQ2ExpenseApprovedTotal(Float q2ExpenseApprovedTotal) {
+		Q2ExpenseApprovedTotal = q2ExpenseApprovedTotal;
+	}
+
+	public Float getQ2ExpenseUnApprovedTotal() {
+		return Q2ExpenseUnApprovedTotal;
+	}
+
+	public void setQ2ExpenseUnApprovedTotal(Float q2ExpenseUnApprovedTotal) {
+		Q2ExpenseUnApprovedTotal = q2ExpenseUnApprovedTotal;
+	}
+
+	public Float getQ3ExpenseTotal() {
+		return Q3ExpenseTotal;
+	}
+
+	public void setQ3ExpenseTotal(Float q3ExpenseTotal) {
+		Q3ExpenseTotal = q3ExpenseTotal;
+	}
+
+	public Float getQ3ExpenseApprovedTotal() {
+		return Q3ExpenseApprovedTotal;
+	}
+
+	public void setQ3ExpenseApprovedTotal(Float q3ExpenseApprovedTotal) {
+		Q3ExpenseApprovedTotal = q3ExpenseApprovedTotal;
+	}
+
+	public Float getQ3ExpenseUnApprovedTotal() {
+		return Q3ExpenseUnApprovedTotal;
+	}
+
+	public void setQ3ExpenseUnApprovedTotal(Float q3ExpenseUnApprovedTotal) {
+		Q3ExpenseUnApprovedTotal = q3ExpenseUnApprovedTotal;
+	}
+
+	public Float getQ4ExpenseTotal() {
+		return Q4ExpenseTotal;
+	}
+
+	public void setQ4ExpenseTotal(Float q4ExpenseTotal) {
+		Q4ExpenseTotal = q4ExpenseTotal;
+	}
+
+	public Float getQ4ExpenseApprovedTotal() {
+		return Q4ExpenseApprovedTotal;
+	}
+
+	public void setQ4ExpenseApprovedTotal(Float q4ExpenseApprovedTotal) {
+		Q4ExpenseApprovedTotal = q4ExpenseApprovedTotal;
+	}
+
+	public Float getQ4ExpenseUnApprovedTotal() {
+		return Q4ExpenseUnApprovedTotal;
+	}
+
+	public void setQ4ExpenseUnApprovedTotal(Float q4ExpenseUnApprovedTotal) {
+		Q4ExpenseUnApprovedTotal = q4ExpenseUnApprovedTotal;
+	}
+
+	
 }
