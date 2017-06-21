@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
+import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
@@ -97,7 +98,7 @@ public class EmployeePayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getWagesAndTaxList", method = RequestMethod.GET)
-	public @ResponseBody String getWagesAndTaxList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody String getWagesAndTaxList(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<WageTaxSummary>  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
@@ -115,6 +116,41 @@ public class EmployeePayrollRestController {
 			}
 		}
 		return commonUtil.toJSON(wagesAndTaxList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAccountDeductionsList", method = RequestMethod.GET)
+	public @ResponseBody String getAccountDeductionsList(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<AccountDeductions> accountDeductionsList = accountDeductionsService.getAccountDeductionsListByOrgLocationId(orgLocation);
+		if(accountDeductionsList != null){
+			for(AccountDeductions ad : accountDeductionsList){
+				if(null !=  ad.getFromDate()){
+					ad.setFromDateStr(conversionUtil.getDateAsString(ad.getFromDate()));
+				}
+				if(null != ad.getToDate()){
+					ad.setToDateStr(conversionUtil.getDateAsString(ad.getToDate()));
+				}
+			}
+		}
+		return commonUtil.toJSON(accountDeductionsList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getDeductionsDetailsbyId", method = RequestMethod.GET)
+	public @ResponseBody String getDeductionsDetailsbyId(@RequestParam(value = "deductionId", required = false) String deductionId, HttpServletRequest request) throws Exception
+	{
+		List<AccountDeductionsDetails> accountDeductionsDetailsList = accountDeductionsService.getDeductionsDetailsbyId(Long.parseLong(deductionId));
+		return commonUtil.toJSON(accountDeductionsDetailsList);
 	}
 	
 }

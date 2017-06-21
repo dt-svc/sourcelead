@@ -1,13 +1,21 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.AccountDeductions;
+import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 
 public interface AccountDeductionsService {
 
 	String saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
+
+	List<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation) throws Exception;
+
+	List<AccountDeductionsDetails> getDeductionsDetailsbyId(Long deductionId);
 
 }
