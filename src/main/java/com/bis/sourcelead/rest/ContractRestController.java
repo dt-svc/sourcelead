@@ -921,6 +921,7 @@ public class ContractRestController {
 			
 			String fromStage = "";
 			
+			ContractsHistory childContractsHistory = new ContractsHistory();
 			if(contracts.getTemplateSubmissionStatus().equalsIgnoreCase("EXPIRED"))
 			{
 				ContractsHistory contractsHistory = contractsTemplateService.getAllContractsHistoryByContractId(contracts.getId());
@@ -929,7 +930,13 @@ public class ContractRestController {
         		String currentTimeStr = TZ_DF_TS.format(date);
 				Date curDate = TZ_DF_TS.parse(currentTimeStr);
         		if(convertedEndDate.after(curDate)|| convertedEndDate.equals(curDate)){
+        			childContractsHistory.setFromStage(contracts.getTemplateSubmissionStatus());
+        			childContractsHistory.setContractsId(contracts);
         			contracts.setTemplateSubmissionStatus(fromStage);
+        			childContractsHistory.setToStage(fromStage);
+        			childContractsHistory.setCreatedDate(new Date());
+        			childContractsHistory.setUpdatedDate(new Date());
+        			contractsTemplateDao.saveContractsHistory(childContractsHistory);
         		}
 			}
 			

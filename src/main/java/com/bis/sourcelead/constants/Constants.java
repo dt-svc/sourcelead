@@ -196,6 +196,8 @@ public class Constants {
 	public static final String TIMESHEET_EMAIL_NOTIFICATION = "Timesheet Scheduler";
 	public static final String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
+	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination";
+	
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
 	public static final String INVOICE_ACCEPT_MAIL_VENDOR_EMAIL = "InvoiceAcceptMailtoVendor";
 	public static final String INVOICE_REJECT_MAIL_VENDOR_EMAIL = "InvoiceRejectMailtoVendor";
@@ -623,5 +625,6 @@ public class Constants {
     public static final String EMPLOYEE_PAYROLL = "EMPLOYEE_PAYROLL";
     public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
+    public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
      
 }

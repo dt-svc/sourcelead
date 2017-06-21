@@ -54,8 +54,8 @@ function wagesAndTaxList(){
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
-								if(opt.checkDate !=null && opt.checkDate !='' && opt.checkDate !='undefined'){
-									result = result + '<td><div>'+opt.checkDate+'</div></td>';
+								if(opt.checkDateStr !=null && opt.checkDateStr !='' && opt.checkDateStr !='undefined'){
+									result = result + '<td><div>'+opt.checkDateStr+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
