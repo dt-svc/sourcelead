@@ -1,6 +1,7 @@
 
 <script>
 function wagesAndTaxList(){
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -48,8 +49,8 @@ function wagesAndTaxList(){
 								}
 								result = result + '<td><div>'+opt.employeeId+'</div></td>';
 								result = result + '<td><div>'+opt.employeeName+'</div></td>';
-								if(opt.ssn !=null && opt.ssn !='' && opt.ssn !='undefined'){
-									result = result + ' <td><div>'+opt.ssn+'</div></td>';
+								if(opt.ssnNumber !=null && opt.ssnNumber !='' && opt.ssnNumber !='undefined'){
+									result = result + ' <td><div>'+opt.ssnNumber+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
@@ -79,7 +80,9 @@ function wagesAndTaxList(){
 						result = result + ' </table>';
 						$("#employerCostDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
+						$("#accountDeductionsListDiv").empty();
 						$("#wagesAndTaxListDiv").append(result);
+						$("#loading").removeAttr("style");
 						wagesAndTaxListTablePagination();
 				        	
 				        },
