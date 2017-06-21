@@ -119,32 +119,7 @@ public class ProjectMembers implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private Status userState;
     
-    @Transient
-    private String projectStatus;
-    
-    @Column(name = "TERMINATE_REASON")
-    private String terminateReason;
-    
-    @Transient
-    private String totalHours;
-    
-    @Transient
-    private String candidateName;
-    
-    @Transient
-    private Long candidateId;
-    
-    @Transient
-    private String userRoleType;
-    
-    @Transient
-    private Long submissionApproverHierarchyId;
-    
-    
-    @Transient
-    private Long submissionInvoiceId;
-	
-    //For Expenses 
+     //For Expenses 
     
     @Transient
     private Float janExpenseTotal;
@@ -295,8 +270,6 @@ public class ProjectMembers implements Serializable {
     private Float Q4ExpenseUnApprovedTotal;
     
     //For Expenses 
-    @Transient
-    public Long getSubmissionInvoiceId() {
 
 	@Transient
 	private String projectStatus;
