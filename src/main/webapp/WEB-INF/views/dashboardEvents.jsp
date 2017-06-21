@@ -314,6 +314,7 @@ function dashboardAddInterview(){
 	result = result + '<div class="col-md-12 mt10">';
 	result = result + '<div class="ne-ch">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
+	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	result = result + '</div>';
 	
 	
