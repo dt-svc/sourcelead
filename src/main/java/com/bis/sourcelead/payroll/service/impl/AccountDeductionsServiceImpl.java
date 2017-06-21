@@ -247,12 +247,12 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 		accountDeductionsDetails.setAccountDeductions(accountDeductions);
 		accountDeductionsDetails.setOrgLocationId(orgLocation);
 		accountDeductionsDetails.setPayCycleName(cell.getSheet().getRow(0).getCell(cellNuber).getRichStringCellValue().toString());
-		accountDeductions.setCreatedBy(user.getUserCode());
-		accountDeductions.setCreatedDate(new Date());
-		accountDeductions.setUpdatedBy(user.getUserCode());
-		accountDeductions.setUpdatedDate(new Date());
-		accountDeductions.setOrgLocationId(orgLocation);
-		accountDeductions.setStatus(Constants.MEMBER_ACTIVE);
+		accountDeductionsDetails.setCreatedBy(user.getUserCode());
+		accountDeductionsDetails.setCreatedDate(new Date());
+		accountDeductionsDetails.setUpdatedBy(user.getUserCode());
+		accountDeductionsDetails.setUpdatedDate(new Date());
+		accountDeductionsDetails.setOrgLocationId(orgLocation);
+		accountDeductionsDetails.setStatus(Constants.MEMBER_ACTIVE);
 		return accountDeductionsDetails;
 	}
 
@@ -283,4 +283,16 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			}
 			return cellValue;
 		}
+
+	@Override
+	public List<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation) throws Exception
+	{
+		return accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
+	}
+
+	@Override
+	public List<AccountDeductionsDetails> getDeductionsDetailsbyId(Long deductionId)
+	{
+		return accountDeductionsDao.getDeductionsDetailsbyId(deductionId);
+	}
 }
