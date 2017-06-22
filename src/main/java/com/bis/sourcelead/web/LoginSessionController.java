@@ -175,7 +175,8 @@ public class LoginSessionController {
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
 		
-		if(!userRole.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !userRole.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER)){
+		if(!userRole.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && (!userRole.getRoles().getDisplayName().equalsIgnoreCase(Constants.INDEPENDENT_RECRUITER) 
+				&& userRole.getRoles().getOrgLocations().getId() != Constants.SOURCELEAD_ORG_LOCATION_ID)){
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			Org org = orgLocations.getOrg();
 			List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
@@ -434,7 +435,8 @@ public class LoginSessionController {
 		List<SourceleadActions> actionsList = null;
 		if(null != userRole){
 			
-			if(!userRole.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !userRole.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER)){
+			if(!userRole.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && (!userRole.getRoles().getDisplayName().equalsIgnoreCase(Constants.INDEPENDENT_RECRUITER) 
+					&& userRole.getRoles().getOrgLocations().getId() != Constants.SOURCELEAD_ORG_LOCATION_ID)){
 			
 			OrgLocations orgLocations = userRole.getOrgLocations();
 			Org org = orgLocations.getOrg();

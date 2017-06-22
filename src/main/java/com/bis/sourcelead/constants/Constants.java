@@ -78,6 +78,8 @@ public class Constants {
 	public static final DateFormat SHORT_DF_STD_DM = new SimpleDateFormat("ddMMM");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+	
+	public static final Long SOURCELEAD_ORG_LOCATION_ID = 1L;
 	/*
 	 * public static final DateFormat TZ_DF_TS = new SimpleDateFormat (
 	 * "yyyy-MM-dd HH:mm:ss");
@@ -224,6 +226,7 @@ public class Constants {
 	public static final String ROLE_NAME_INDEPENDENT_RECRUITER = "ROLE_CROWDSOURCING_RECRUITER";
 	public static final String PROFESSIONAL = "Professional";
 	public static final String INDIVIDUAL_RECRUITER = "Recruiter";
+	public static final String INDEPENDENT_RECRUITER = "Independent Recruiter";
 	public static final String INVITE_PROFESSIONAL = "Professional Invitation";
 	public static final String INVITE_INDIVIDUAL_RECRUITER = "Individual Recruiter Invitation";
 	public static final String USER_NEW_ACTION_ASSIGNED="UserNewActionAssigned";
