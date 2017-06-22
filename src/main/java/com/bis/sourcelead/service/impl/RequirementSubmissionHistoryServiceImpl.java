@@ -167,4 +167,10 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC);
 	}
 
+	@Override
+	public List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndSubId(Long orgLocationID, Long submissionId)
+	{
+		return requirementSubmissionHistoryDao.getRequirementHistoryByLocationIdAndSubId(orgLocationID, submissionId);
+	}
+
 }
