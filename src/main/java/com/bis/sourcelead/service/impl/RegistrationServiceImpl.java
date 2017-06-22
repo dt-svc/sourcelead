@@ -1108,6 +1108,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		String result = "";
 		
 		if(null == user){
+			user = new User();
 			if(jsonObj.has("firstName") && !isNullOrEmpty(jsonObj.getString("firstName"))){
 				user.setFirstName(jsonObj.getString("firstName"));
 			}

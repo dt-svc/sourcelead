@@ -344,7 +344,7 @@ document.onkeydown=function(e){
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocation.orgLocationName}</p>
+						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
 						                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
 						                   </div>
 						                </div>
