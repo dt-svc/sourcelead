@@ -71,10 +71,48 @@ function vendorNotesList(orgRelationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="vendorDocumentsList" ></div>';
+		result  = result + '   <div id="vendorNotesListDiv" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
+	
+	
+	
+	var data = "";
+	var output = "";
+    if(data != null && data != 'undefined' && data != "" && data != '[]'){
+    var json = JSON.parse(data);
+	
+	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+     for(var i=0;i<json.length;i++){
+       	var report = json[i];
+   	  	output = output+'<div class="comments-div comments-inner clearfix">';
+   	    output = output+'    <div class="commentsimg">';
+   	    output = output+'    <i class="fa fa-comments"></i>';
+   	    output = output+'        <div class="commentsimg-inner">';
+   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    output = output+'        </div>';
+   	    output = output+'    </div>';
+   	    output = output+'     <div class="comments-content">';
+   	    output = output+'         <div class="pull-left">';
+   	    output = output+'         <p class="comment-by">';
+   	    output = output+'            By <span class="text-danger">zzzzzzz</span>';
+   	    output = output+'            <span class="small">(456456)</span></p>';
+   	    output = output+'         <textarea class="commentText" readonly>cccccccccc</textarea>';
+   	    output = output+'         </div>';
+   	    output = output+'     </div>';
+   	    output = output+'</div>';
+     }
+}else{
+     var output ="";
+    output = output+"   <div class='dataTables_empty'>"; 
+	 output = output+"  </div> ";
+}
+output  = output + '              </div>';
+output  = output + '        </div>';
+	
+	
 
     $("#tab-1").empty();
     $("#tab-2").empty(); 
@@ -84,13 +122,14 @@ function vendorNotesList(orgRelationId){
     $("#tab-7").empty();  
     $("#tab-8").empty(); 
     $("#tab-8").append(result);  
+    $("#vendorNotesListDiv").append(output);
 	
-    vendorNotes(orgRelationId);
+   /*  vendorNotes(orgRelationId); */
     
 }
 </script>
 
-<!-- <script>
+ <script>
 function vendorNotes(orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
@@ -207,7 +246,7 @@ function vendorNotes(orgRelationId){
      }); 
 }
 </script>
- -->
+
 <script>
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
@@ -235,7 +274,7 @@ function addNotes(orgRelationId) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length2-500" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result  +'                  </div>';                                                                                                                            
@@ -322,7 +361,7 @@ var validationSettings = {
 
 <script type="text/javascript">
 	function storeVendorNotes(orgRelationId){
-			
+		if ($('#vendorNotes_form').validate(false, validationSettings)){ 
 				var frm = $('#vendorNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
@@ -342,24 +381,16 @@ var validationSettings = {
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							savedCommentAndCount(candidateId);
-							 /* if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
-						 		$("#popUpDivResume").removeClass("edit-details-active");
-						 		candidateResumesList(candidateId);
-		            		 } */
+							closeDocPopup();
+							
 						},
 					});
 					$('.add-comment').toggle(200);
 					return true;
-			 /* }else{ 
-					return false;
-			 } */
+			 
+		}else {
+			return false;	
+		}
 		}
 		$('body').on('blur', '#vendorNotes_form', function() {
 		$("#vendorNotes_form").showHelpOnFocus();
