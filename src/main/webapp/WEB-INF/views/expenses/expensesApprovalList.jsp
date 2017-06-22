@@ -5,7 +5,7 @@
  <script src="js/masterHeaderAction.js"></script>
 <script type="text/javascript">
 		window.onload = function () {
-			if("" != localStorage.getItem("empExpensesListGrid")){
+			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
 	       		pagination();
