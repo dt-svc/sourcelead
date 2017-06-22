@@ -1,5 +1,7 @@
 package com.bis.sourcelead.rest;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -32,8 +34,8 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
  * 
- * @author Rajashekar
- * Handers all Vendor actions
+ * @author Ajith
+ * Handers all Notes actions
  *
  */
 
@@ -64,44 +66,26 @@ public class SourceleadNotesRestController {
 	@Autowired
 	SourceleadNotesService sourceleadNotesService;
 	
-	@Autowired
-	RequirementSubmissionService requirementSubmissionService;
-	
-	@Autowired
-	private ClientVendorExport clientVendorExport;
-	
-	@Autowired
-	private UserRoleDao userRoleDao;
-
-	@Autowired
-	RequirementReportService requirementReportService;
-
-	@Autowired
-	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
-	
-	@Autowired
-	ClientService clientService;
-	
-		
 	
 	
 	@RequestMapping(value = "/storeNotes", method = RequestMethod.POST)
-	public @ResponseBody String storeNotes(@RequestParam(value = "json", required = false) String json,  HttpServletRequest request) throws Exception {
-
-		
+	public @ResponseBody String storeNotes(@RequestParam(value = "json", required = false) String json, HttpServletRequest request) throws Exception
+	{
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(jsonc);
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		SourceleadNotes cc =sourceleadNotesService.storeComments(jsonObj,user);
-			return "success";
-		
+		sourceleadNotesService.storeComments(jsonObj, user);
+		return "success";
 	}
 	
 	
-	
-	
-	
-	
+	@RequestMapping(value = "/getNotes", method = RequestMethod.POST)
+	public @ResponseBody String getNotes(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception
+	{
+		String notesList;
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByOrglocationIdAndType(orgRelationId);
+		notesList = commonUtil.toJSON(list);
+		return notesList;
+	}
 }

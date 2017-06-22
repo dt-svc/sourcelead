@@ -73,6 +73,16 @@ public class SourceleadNotes {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	private String userName;
+	
+	@Transient
+	private String createdDateString;
+	
+	@Transient
+	private String updatedDateString;
+	
 
 	public Long getId()
 	{
@@ -192,6 +202,36 @@ public class SourceleadNotes {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getUserName()
+	{
+		return userName;
+	}
+
+	public void setUserName(String userName)
+	{
+		this.userName = userName;
+	}
+
+	public String getCreatedDateString()
+	{
+		return createdDateString;
+	}
+
+	public void setCreatedDateString(String createdDateString)
+	{
+		this.createdDateString = createdDateString;
+	}
+
+	public String getUpdatedDateString()
+	{
+		return updatedDateString;
+	}
+
+	public void setUpdatedDateString(String updatedDateString)
+	{
+		this.updatedDateString = updatedDateString;
 	}
 	
 	
