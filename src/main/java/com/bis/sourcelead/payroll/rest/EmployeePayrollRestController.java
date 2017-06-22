@@ -73,13 +73,13 @@ public class EmployeePayrollRestController {
 		}
 		String payrollType = jsonObj.getString("payrollType");
 		if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
-			String isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
+			Integer isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 		}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-			String isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
+			Integer isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 		}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
-			String isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
+			Integer isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
 		}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
-			String isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
+			Integer isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
 		}
 		return commonUtil.toJSON("success");
 	}
@@ -110,29 +110,12 @@ public class EmployeePayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<WageTaxSummary>  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
-		if(wagesAndTaxList != null){
-			for(WageTaxSummary wts : wagesAndTaxList){
-				if(null !=  wts.getFromDate()){
-					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
-				}
-				if(null != wts.getToDate()){
-					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
-				}
-				
-				if(wts.getCheckDate() !=null   ){
-					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
-				}
-				if(wts.getCheckNo() != null){
-					wts.setCheckNo(wts.getCheckNo());
-				}
-			}
-		}
 		return commonUtil.toJSON(wagesAndTaxList);
 	}
 	
 	/**
 	 * @author : Pavan Jampana
-	 * @return
+	 * @return json
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAccountDeductionsList", method = RequestMethod.GET)
@@ -140,16 +123,6 @@ public class EmployeePayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<AccountDeductions> accountDeductionsList = accountDeductionsService.getAccountDeductionsListByOrgLocationId(orgLocation);
-		if(accountDeductionsList != null){
-			for(AccountDeductions ad : accountDeductionsList){
-				if(null !=  ad.getFromDate()){
-					ad.setFromDateStr(conversionUtil.getDateAsString(ad.getFromDate()));
-				}
-				if(null != ad.getToDate()){
-					ad.setToDateStr(conversionUtil.getDateAsString(ad.getToDate()));
-				}
-			}
-		}
 		return commonUtil.toJSON(accountDeductionsList);
 	}
 	
@@ -175,16 +148,6 @@ public class EmployeePayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<HrDeductions> hrDeductionsList = hrDeductionsService.getHrDeductionsListByOrgLocationid(orgLocation);
-		if(hrDeductionsList != null){
-			for(HrDeductions hd : hrDeductionsList){
-				if(null !=  hd.getFromDate()){
-					hd.setFromDateStr(conversionUtil.getDateAsString(hd.getFromDate()));
-				}
-				if(null != hd.getToDate()){
-					hd.setToDateStr(conversionUtil.getDateAsString(hd.getToDate()));
-				}
-			}
-		}
 		return commonUtil.toJSON(hrDeductionsList);
 	}
 	

@@ -12,7 +12,7 @@ import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 
 public interface AccountDeductionsService {
 
-	String saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
+	Integer saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 
 	List<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation) throws Exception;
 
