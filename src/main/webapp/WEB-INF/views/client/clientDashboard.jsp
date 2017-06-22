@@ -23,6 +23,7 @@
 <jsp:include page="clientContracts.jsp" />
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
+<jsp:include page="clientNotes.jsp" /> 
 
 <style type="text/css">
 clients_wrap {
@@ -977,6 +978,11 @@ function pagination(){
 		result = result + '<li><a href="#tab-7" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
 		'</sec:authorize>';
 		
+		// client notes
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		result = result + '<li><a href="#tab-8" onclick="clientNotes('+orgRelationId+');">Notes List</a></li>';	
+		'</sec:authorize>';
+		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -1008,6 +1014,10 @@ function pagination(){
 		 //for client contracts
 		result = result + '<div id="tab-7" class="project_tabs_inn">';
 		result = result + '</div>';
+		
+		//for notes tab
+		 result = result + '<div id="tab-8" class="project_tabs_inn">';
+		 result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';
