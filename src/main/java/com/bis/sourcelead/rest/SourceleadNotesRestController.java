@@ -94,7 +94,7 @@ public class SourceleadNotesRestController {
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		SourceleadNotes cc =sourceleadNotesService.storeComments(jsonObj);
+		SourceleadNotes cc =sourceleadNotesService.storeComments(jsonObj,user);
 			return "success";
 		
 	}

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.SourceleadNotesDao;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SourceleadNotes;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -28,7 +29,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	
 	
 	@Override
-	public SourceleadNotes storeComments(JSONObject jsonObj) throws JSONException, Exception
+	public SourceleadNotes storeComments(JSONObject jsonObj,User user) throws Exception
 	{
 		SourceleadNotes sourceleadNotes = new SourceleadNotes();
 		
@@ -48,9 +49,12 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	        	   sourceleadNotes.setOrgRelationID(null);
 	        }
 			
+			sourceleadNotes.setUserId(user);
 			
 			sourceleadNotes.setCreatedDate(CommonUtil.currentDate());
 			sourceleadNotes.setUpdatedDate(CommonUtil.currentDate());
+			sourceleadNotes.setCreatedBy(user.getUserCode());
+			sourceleadNotes.setUpdatedBy(user.getUserCode());
 			
 		
 		return sourceleadNotesDao.storeComments(sourceleadNotes);

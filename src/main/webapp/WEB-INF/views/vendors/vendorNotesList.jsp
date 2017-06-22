@@ -51,7 +51,6 @@ float:none;
 
 <script>
 function vendorNotesList(orgRelationId){
-	alert("vendor Req");
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
@@ -91,7 +90,7 @@ function vendorNotesList(orgRelationId){
 }
 </script>
 
-<script>
+<!-- <script>
 function vendorNotes(orgRelationId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
@@ -208,7 +207,7 @@ function vendorNotes(orgRelationId){
      }); 
 }
 </script>
-
+ -->
 <script>
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
@@ -227,7 +226,6 @@ function documentpagination(){
 
 <script>
 function addNotes(orgRelationId) {	
-	alert("storeVendorNotes(");
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="vendorNotes_form" name="vendorNotes_form" method="post" > ';
@@ -240,25 +238,15 @@ function addNotes(orgRelationId) {
 	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="validate_length length2-500" data-validation-optional="true" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
+	result = result  +'                  </div>';                                                                                                                            
 	
-	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv" style="display:none">';
-	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
-	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result+'	                            <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
-	result = result+'	                            </span> </label>';
-	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Document" data-validation="required validate_Space validatedoc">';
-	result = result+'	                        </div>';
-	result = result+'	                    </div>  ';  
-	result = result+'	                  </div>   ';
-	
-	result = result  +'                  <div class="clearfix mr mt" id="docAddButton">                                                                                                            ';
+	result = result  +'                  <div class="clearfix mr mt" id="docAddButton"> ';
     result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary pull-right" onClick ="storeVendorNotes('+orgRelationId+');" />'; 
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                </div>                                                                                                                                 ';
-	result = result  +'                </form>                                                                                                                                ';
+	result = result  +'                  </div> ';
+	result = result  +'                </div>';
+	
+	result = result  +'                </form>';
+	
 	$("#popUpDiv").empty();
 	$("#popUpDiv").append(result);
 	
@@ -289,22 +277,6 @@ function addNotes(orgRelationId) {
 	        }
 	  });
 	
-	  /* upload file script to show selected file name*/
-	    document.getElementById("uploadBtn").onchange = function () {
-	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
-	    };
-	    
-	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
-	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -346,77 +318,14 @@ var validationSettings = {
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 </script>
-<!-- <script type="text/javascript">
-	function storeVendorNotes(orgRelationId){
-			alert("save")
-			 if ($('#vendorNotes_form').validate(false, validationSettings)){
-				var frm = $('#vendorNotes_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				con = con.replace(/[{}]/g, "");
-				$("#save_note").attr("disabled", "disabled");
-				$("#save_note" ).addClass('button').val('Processing..');
-				var form = $('#vendorNotes_form')[0];
-	      		var formData = new FormData(form); 
-				var sourceleadUrl = '${sourceleadUrl}';
-				$("#vendorNotes_form").attr("disabled", "disabled");
-				
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				alert("jsonData "+jsonData);
-				$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-						success : function(result) {
-							 if( result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{
-		            			$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#vendorDocSelector").removeAttr("style");
-		            			$("#vendorDocSelector").css({ display: "block" });
-		            			if(docId != null){
-		            				$("#vendorDocMsgDiv").html("Success!! Document details updated");
-		            			}else{
-		            				$("#vendorDocMsgDiv").html("Success!! New document added");
-		            			}
-		            			vendorDocumentsList(orgRelationId);
-		            			vendorDocMsgFadein();
-		            		 }
-						},
-					});
-					return true;
-			 }else{ 
-					return false;
-			 } 
-		}
-		$('body').on('blur', '#vendorNotes_form', function() {
-		$("#vendorNotes_form").showHelpOnFocus();
-		$("#vendorNotes_form").validateOnBlur(false, validationSettings);
-	});
-</script>
- -->
+
 
 <script type="text/javascript">
 	function storeVendorNotes(orgRelationId){
-			var validationSettings = {
-			        errorMessagePosition : 'element',
-			        borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		         }; 
+			
 				var frm = $('#vendorNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
-				alert("con"+con);
 				var form = $('#vendorNotes_form')[0];
 	      		var formData = new FormData(form); 
 				var sourceleadUrl = '${sourceleadUrl}';
