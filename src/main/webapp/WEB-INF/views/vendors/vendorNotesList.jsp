@@ -68,17 +68,41 @@ function vendorNotesList(orgRelationId){
 		 '</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
-		result = result  +'  <div class="clearfix"></div> ';
+		
 		result = result + '</ul>';
+		result = result  +'  <div class="clearfix"></div> ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
 		result  = result + '   <div id="vendorNotesListDiv" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
 	
+    $("#tab-1").empty();
+    $("#tab-2").empty(); 
+    $("#tab-3").empty();  
+    $("#tab-4").empty();  
+    $("#tab-6").empty();  
+    $("#tab-7").empty();  
+    $("#tab-8").empty(); 
+    $("#tab-8").append(result);  
+    vendorNotes(orgRelationId);
 	
+   /*  vendorNotes(orgRelationId); */
+    
+}
+</script>
+
+ <script>
+function vendorNotes(orgRelationId){
+	var urlForm = "";
 	
-	var data = "";
+    	urlForm = "/getNotes?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId;
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+urlForm,        
+         success :function(data) {
 	var output = "";
     if(data != null && data != 'undefined' && data != "" && data != '[]'){
     var json = JSON.parse(data);
@@ -91,15 +115,15 @@ function vendorNotesList(orgRelationId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
+   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.userId+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
    	    output = output+'         <div class="pull-left">';
    	    output = output+'         <p class="comment-by">';
-   	    output = output+'            By <span class="text-danger">zzzzzzz</span>';
-   	    output = output+'            <span class="small">(456456)</span></p>';
-   	    output = output+'         <textarea class="commentText" readonly>cccccccccc</textarea>';
+   	    output = output+'            By <span class="text-danger">'+report.userName+'</span>';
+   	    output = output+'            <span class="small">'+report.createdDateString+'</span></p>';
+   	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
    	    output = output+'         </div>';
    	    output = output+'     </div>';
    	    output = output+'</div>';
@@ -111,139 +135,11 @@ function vendorNotesList(orgRelationId){
 }
 output  = output + '              </div>';
 output  = output + '        </div>';
-	
-	
-
-    $("#tab-1").empty();
-    $("#tab-2").empty(); 
-    $("#tab-3").empty();  
-    $("#tab-4").empty();  
-    $("#tab-6").empty();  
-    $("#tab-7").empty();  
-    $("#tab-8").empty(); 
-    $("#tab-8").append(result);  
+	$("#vendorNotesListDiv").empty(); 
     $("#vendorNotesListDiv").append(output);
-	
-   /*  vendorNotes(orgRelationId); */
-    
-}
-</script>
-
- <script>
-function vendorNotes(orgRelationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({  
-          type : "POST",
-          url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?${_csrf.parameterName}=${_csrf.token}&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
-          success :function(data) {
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-	                	 $("#vendorDocumentsList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result  = result + '           <th>Name</th>';
-	                 	 result  = result + '           <th>Type</th>';
-	                 	 result  = result + '           <th>Contact Person</th>';
-	                 	 result  = result + '           <th>Attachment</th>';
-	                 	 result  = result + '           <th>Start Date</th>';
-	                 	 result  = result + '           <th>End Date</th>';
-	                 	 result  = result + '           <th>Owner</th>';
-	                 	 result  = result + '           <th>Description</th>';
-	                 	 result  = result + '           <th>Action</th>';
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
-	                    	 result  = result + '         <tr>';
-	                    	 if(opt.docName != null && opt.docName != '' && opt.docName != 'undefined'){
-	                    	    result  = result + '<td><div><span title="'+opt.docName+'">'+opt.docName+'</span></div></td>';
-                    	     }else{
-                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
-                    	     }
-	                    	 
-	                    	 if(opt.contractType != null && opt.contractType != '' && opt.contractType != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.contractType+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 if(opt.spocName != null && opt.spocName != '' && opt.spocName != 'undefined'){
-		                    	 result  = result + '<td><div><span title="'+opt.spocName+'">'+opt.spocName+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>'; 
-	                    	 }
-	                    	 
-	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
-		                    	 result  = result + '<td><div><span title="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>';
-	                    	 }
-	                    	
-	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-	                    	     result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 
-	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-	                    	     result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 
-	                    	 if(opt.ownerName != null && opt.ownerName != '' && opt.ownerName != 'undefined'){
-	                    	      result  = result + ' <td><div><span title="'+opt.ownerName+'">'+opt.ownerName+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-	                    	      result  = result + ' <td><div><span title="'+opt.description+'">'+opt.description+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>--</span></div></td>';
-	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75">';
-	                    	 '<sec:authorize access="hasAnyRole(\"ROLE_DOWNLOAD_VENODR_DOCS\")">';
-	                    	 result = result+'<a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadOrgDocument?docId='+opt.id+'\"></a>';
-	                    	 '</sec:authorize>'; 
-	                    	  
-	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
-	                    		 
-	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_EDIT_VENDOR_DOCUMENT\")">';
-	                    				 result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addNotes('+orgRelationId+');"></a>';
-	                    		 '</sec:authorize>';
-	                    		 
-	                    		 '<sec:authorize access="hasAnyRole(\"ROLE_DELETE_VENDOR_DOCUMENT\")">';
-					           	 		result = result+'<i class="glyphicon glyphicon-trash" onclick="deleteVendorDocument('+vendorLocationId+','+orgRelationId+','+opt.id+',\''+opt.docName+'\');"></i>';
-					           	 '</sec:authorize>';
-	                    	 }
-	                    	 result = result+'	            </div></td>';
-	                    	 result  = result + '</tr>';
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                    
-	                     $("#vendorDocumentsList").append(result); 
-	                     documentpagination(); 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#vendorDocumentsList").empty();
-				    $("#vendorDocumentsList").append(result); 
-               } */
-        },
-          
-     }); 
+ },
+         
+      });
 }
 </script>
 
@@ -382,6 +278,7 @@ var validationSettings = {
 						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
 							closeDocPopup();
+							vendorNotes(orgRelationId);
 							
 						},
 					});
