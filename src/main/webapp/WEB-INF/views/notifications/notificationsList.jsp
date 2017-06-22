@@ -248,9 +248,12 @@ $("#selectall").change(function () {
 <script>
 function totalCheck1() {
 	if($("input[name='check[]']").is(':checked')){
-        $("#navbar1").addClass("fa-trash-o delete-icn");
-    } 
-	else{
+		
+		var checked = $("input[name='check[]']:checked"); 
+		var nbChecked = checked.size();
+		if($("input[name='check[]']").is(':checked') && nbChecked >= 2){
+	         $("#navbar1").addClass("fa-trash-o delete-icn");
+	     } else{
 		 $("#navbar1").removeClass("fa-trash-o delete-icn");
 		
 		
