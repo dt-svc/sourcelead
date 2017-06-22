@@ -326,7 +326,7 @@ $(document).ready(function () {
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
            <div class="form-group pras req-title" id="jobTitleDiv">
 	         <label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
-	         <div class="col-md-9">
+	        <div class="col-md-9 validLabel">
 	             <input type="text" id="jobTitle" name="jobTitle" value="${fn:escapeXml(requirement.jobTitle)}"  field-name="Job Title"  data-validation="required validate_Space validate_length length1-250"   value="" class="form-control" onblur="getTemplateVal();">
 	         </div>
 	       </div>
