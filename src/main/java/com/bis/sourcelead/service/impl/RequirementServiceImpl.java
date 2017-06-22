@@ -1502,11 +1502,16 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 		 }else{
 		 globalVarsMap.put("requirementLocation","--");
 		 }
-		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-		 globalVarsMap.put("requirementRate", requirement.getRate());
-		 }else{
-		 globalVarsMap.put("requirementRate","--");
-		 }
+		
+		 StringBuilder sb = new StringBuilder();
+         if((requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())) && (requirement.getMaxRate()!= null  && !"".equalsIgnoreCase(requirement.getMaxRate()))){
+             globalVarsMap.put("requirementRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" - ").append(requirement.getMaxRate()).append(" / ").append(requirement.getRateType()).toString());
+             }else if(requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())){
+                 globalVarsMap.put("requirementRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
+             }
+         else{
+                 globalVarsMap.put("requirementRate","--");
+             }
 		 if(requirement.getClientId()!= null){
 		 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 		 }else{
@@ -1610,11 +1615,16 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 }else{
 			 globalVarsMap.put("jobInitiatorName","--"); 
 			 }
-			 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
-				 globalVarsMap.put("requirementRate", requirement.getRate());
-				 }else{
-				 globalVarsMap.put("requirementRate","--");
-				 }
+			 
+			 StringBuilder sb = new StringBuilder();
+	         if((requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())) && (requirement.getMaxRate()!= null  && !"".equalsIgnoreCase(requirement.getMaxRate()))){
+	             globalVarsMap.put("requirementRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" - ").append(requirement.getMaxRate()).append(" / ").append(requirement.getRateType()).toString());
+	             }else if(requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())){
+	                 globalVarsMap.put("requirementRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
+	             }
+	         else{
+	                 globalVarsMap.put("requirementRate","--");
+	             }
 				 if(requirement.getClientId()!= null){
 				 globalVarsMap.put("client", requirement.getClientId().getResponderLocationId().getOrg().getOrgName());
 				 }else{
@@ -2199,11 +2209,16 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 			 globalVarsMap.put("RequirementLocation", "--");
 		 }
 		 
-		 if (requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()) ) {
-			 globalVarsMap.put("RequirementRate", requirement.getRate());
-			 } else {
-				 globalVarsMap.put("RequirementRate", "--");
-			}
+		 
+		 StringBuilder sb = new StringBuilder();
+         if((requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())) && (requirement.getMaxRate()!= null  && !"".equalsIgnoreCase(requirement.getMaxRate()))){
+             globalVarsMap.put("RequirementRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" - ").append(requirement.getMaxRate()).append(" / ").append(requirement.getRateType()).toString());
+             }else if(requirement.getRate()!= null  && !"".equalsIgnoreCase(requirement.getRate())){
+                 globalVarsMap.put("RequirementRate", sb.append(requirement.getCurrencyCode()).append(" ").append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
+             }
+         else{
+                 globalVarsMap.put("RequirementRate","--");
+             }
 		 if (requirement.getClientId() != null) {
 			 globalVarsMap.put("clientname", requirement.getClientId().getLocationId().getOrg().getOrgName());
 			 } else {

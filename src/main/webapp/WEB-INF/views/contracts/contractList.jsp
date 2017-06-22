@@ -2123,6 +2123,7 @@ function listContractsPaginationWTV(){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTV1").wrap("<div class='overflow_Auto'></div>");
 }
 function vendorListContractsPaginationWTV(){ 
     $('#contractListTableWTV').DataTable( { 
@@ -2149,6 +2150,7 @@ function vendorListContractsPaginationWTV(){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTV").wrap("<div class='overflow_Auto'></div>");
 }
 
 function applicantsContractsPaginationWTV(){ 
@@ -2176,6 +2178,7 @@ function applicantsContractsPaginationWTV(){
     });
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTV2").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 

@@ -106,9 +106,9 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationId(Long orgLocationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementOffers requirementOffer left join fetch requirementOffer.submissionId submission left join fetch submission.requirement "
-				+ " left join fetch submission.candidate where requirementOffer.submissionId.orgLocations.id = :orgLocationId "
-				+ " and requirementOffer.submissionId.submissionStatus = 'OFFERACCEPTED' and "
+		String query = "from RequirementOffers requirementOffer left join fetch requirementOffer.submissionId submission left join fetch submission.candidateResumes left join fetch submission.requirement "
+				+ " left join fetch submission.candidate candidate left join fetch candidate.consultantUser consultantUser where requirementOffer.submissionId.orgLocations.id = :orgLocationId "
+				+ " and requirementOffer.submissionId.submissionStatus = 'OFFERACCEPTED' and consultantUser.id IS NULL and "
 				+ " submission.candidate.id NOT IN (select onboarding.candidateId.id from CandidateOnBoarding onboarding where onboarding.orgLocationId.id = :orgLocationId) ";
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		
