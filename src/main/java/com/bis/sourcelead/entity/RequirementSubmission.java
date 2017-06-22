@@ -390,6 +390,9 @@ public class RequirementSubmission implements Serializable{
 	private String twitterUrl;
     
     @Transient
+  	private String ratePer;
+    
+    @Transient
 	private String vendorLocationCode;
     
     @Column(name = "REASON_OTHER_TYPE")
@@ -397,8 +400,18 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
    	private String referUUID;
-       
-	
+    
+    
+	public String getRatePer()
+	{
+		return ratePer;
+	}
+
+	public void setRatePer(String ratePer)
+	{
+		this.ratePer = ratePer;
+	}
+
 	public OrgLocations getVendorLocationId() {
 		return vendorLocationId;
 	}
