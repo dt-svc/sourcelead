@@ -587,7 +587,7 @@ function getEmails(){
 		    select = $("#emailsList");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup blur'), function(e)
+		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    { 
 		    	 
 		    	 var enterEmailArray = this.value.split(",");
