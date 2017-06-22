@@ -8,7 +8,7 @@ import com.bis.sourcelead.service.SourceleadNotesService;
 
 public interface SourceleadNotesDao {
 	
-	public SourceleadNotesService storeComments(SourceleadNotes sourceleadNotes) throws JSONException,Exception;
+	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws JSONException,Exception;
 
 	
 	

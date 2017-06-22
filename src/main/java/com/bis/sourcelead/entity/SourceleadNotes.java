@@ -56,7 +56,7 @@ public class SourceleadNotes {
     @JoinColumn(name="INVOICE_ID", nullable=false )     
 	private Invoice invoicdeId;
 	
-	@Column(name = "COMMENT")
+	@Column(name = "COMMENT",columnDefinition = "TEXT default NULL")
 	private String comment;
 	
 	@Column(name = "NOTE_TYPE")

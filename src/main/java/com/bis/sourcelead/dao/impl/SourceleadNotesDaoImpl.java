@@ -32,7 +32,7 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public SourceleadNotesService storeComments(SourceleadNotes sourceleadNotes) throws JSONException, Exception
+	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws JSONException, Exception
 	{
 		
 		logger.debug("Storing SourceleadNotes");
@@ -46,7 +46,7 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"SourceleadNotes"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
-		return (SourceleadNotesService) sourceleadNotes;
+		return  sourceleadNotes;
 
 	}
 }
