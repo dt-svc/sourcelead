@@ -51,7 +51,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	ConversionUtil conversionUtil;
 
 	@Override
-	public String saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
+	public Integer saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
 			throws Exception {
 
 		String fileName = multipartFile.getOriginalFilename();
@@ -166,7 +166,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 		}
 
-		return "";
+		return count;
 	}
 
 	/**

@@ -166,6 +166,7 @@ public class CrowdSourcingRequirementsRestController {
 			@RequestParam(value = "postedOn", required = false) String postedOn,
 			@RequestParam(value = "jobTitleSearch", required = false) String jobTitleSearch,
 			@RequestParam(value = "jobLocationSearch", required = false) String jobLocationSearch,
+			@RequestParam(value = "postedOrgName", required = false) String postedOrgName,
 			HttpServletRequest request) throws Exception {
 
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -256,6 +257,13 @@ public class CrowdSourcingRequirementsRestController {
 	    	 anyLocationBoolQueryBuilder.should(QueryBuilders.matchQuery("city", jobLocationSearch));
 	    	 boolQueryBuilder.must(anyLocationBoolQueryBuilder);
 	     }
+	     
+	   //for jobs filter when clicked on org name 
+		if(postedOrgName != null && !"".equalsIgnoreCase(postedOrgName) && !"undefined".equalsIgnoreCase(postedOrgName)){
+			BoolQueryBuilder postedOrgJobsBuilder = QueryBuilders.boolQuery();
+			postedOrgJobsBuilder.should(QueryBuilders.matchQuery("postedOrg", postedOrgName));
+			boolQueryBuilder.must(postedOrgJobsBuilder);
+		}
 		 
 	    
 	     BoolQueryBuilder anyStatusBoolQueryBuilder = QueryBuilders.boolQuery();

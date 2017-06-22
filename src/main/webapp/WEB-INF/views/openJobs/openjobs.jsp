@@ -767,11 +767,16 @@ function requirementsFilter(type){
 		offset = $("#openJobsOffset").val();
 	}
 	
+	var postedOrgName = "";
+	if(type == "postedOrg"){
+		postedOrgName = $("#postedOrg").val();
+	}
+	
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country,
+	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country+"&postedOrgName="+postedOrgName,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
@@ -876,7 +881,9 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 				
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
-				result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
+				result = result +'<input type="hidden" id="postedOrg" value=""/>';
+				result = result +'	<h4 onClick="getPostedOrgJobs(this);" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';	
+				result = result +'<div class="clearfix"></div>';
 				description =  description+'Posted By :'+requirements.postedOrg+";";
 				}else{
 				result = result +'	<h4>--</h4>';
@@ -961,6 +968,13 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 			}
 		}
     socialInviterScripts();
+}
+</script>
+
+<script>
+function getPostedOrgJobs(id){
+	$("#postedOrg").val(id.innerHTML);
+	requirementsFilter("postedOrg");
 }
 </script>
 

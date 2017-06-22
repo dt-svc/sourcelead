@@ -951,7 +951,7 @@ function getCheckedCandidates(){
 		    select = $("#otherEmails");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    {
 		    	 var otherEmailArray = this.value.split(",");
 		    	 if(otherEmailArray.length > 1){
@@ -963,13 +963,14 @@ function getCheckedCandidates(){
 	                 }
 		    	 }else{
 		    		 var newEmail = this.value.replace(","," ");
-				        if ((e.which == 13 || e.which == 32 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		    		   if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 				        {
-			        		var par = this.parent;
+		    			         preventTabkey(e); 
+			        		     var par = this.parent;
 				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
 				        		 select.append(option);
-						            select.find(option).prop('selected', true);
-					        		$("#otherEmails").trigger("chosen:updated");
+					             select.find(option).prop('selected', true);
+				        		 $("#otherEmails").trigger("chosen:updated");
 				        
 				           
 			        		
@@ -983,7 +984,7 @@ function getCheckedCandidates(){
 		    selectone = $("#emailsList");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e)
+		    chosenone.search_field.bind(('keydown keyup'), function(e)
 		    {
 		    	 var toEmailArray = this.value.split(",");
 		    	 if(toEmailArray.length > 1){
@@ -995,8 +996,9 @@ function getCheckedCandidates(){
 	                 }
 		    	 }else{
 		    			var newEmail = this.value.replace(","," ");
-				        if ((e.which == 13 || e.which == 32 || e.which == 188) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		    			if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
 				        {
+		    				preventTabkey(e); 
 				        	var par = this.parent;
 				        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
 				        		 selectone.append(option);
