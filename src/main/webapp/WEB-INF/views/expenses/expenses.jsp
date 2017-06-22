@@ -11,7 +11,7 @@
 
  <script type="text/javascript">
 		window.onload = function () {
-			if("" != localStorage.getItem("myExpensesListGrid")){
+			if("" != localStorage.getItem("myExpensesListGrid") && null != localStorage.getItem("myExpensesListGrid")){
 				$("#expensesListDiv").empty();
 	       		$("#expensesListDiv").append(localStorage.getItem("myExpensesListGrid"));
 	       		expensesPagination();

@@ -48,4 +48,6 @@ public interface ContractsTemplateDao {
 	List<Contracts> getAllClientOrVendorContractsBasedOnLocationId(OrgLocations orgLocations, String responderType, User user, String userRoleName, String contractStatus, Long orgRelationId) throws Exception;
 
 	ContractsHistory getAllContractsHistoryByContractId(Long contractId);
+
+	ContractsHistory getContractsHistoryByContractId(Long contractId);
 }

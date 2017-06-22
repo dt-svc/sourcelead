@@ -88,7 +88,6 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   </li>
                   <div class="clearfix"></div>
                 </ul>
-                <div class="clearfix"></div>
               </div>
               <!-- Contact Table -->
               
@@ -908,7 +907,6 @@ $(document).ready(function(){
 
 <script type="text/javascript">
  function listChange(sel) {
-	
     	if(sel.value=="releaseByVendors"){
     		document.getElementById("vendor").style.display="block";
 			document.getElementById("vendorContacts").style.display="none";

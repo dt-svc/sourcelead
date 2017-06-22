@@ -5,7 +5,7 @@
  <script src="js/masterHeaderAction.js"></script>
 <script type="text/javascript">
 		window.onload = function () {
-			if("" != localStorage.getItem("empExpensesListGrid")){
+			if("" != localStorage.getItem("empExpensesListGrid") && null != localStorage.getItem("empExpensesListGrid")){
 				$("#approverDataExpensesDiv").empty();
 	       		$("#approverDataExpensesDiv").append(localStorage.getItem("empExpensesListGrid"));
 	       		pagination();
@@ -73,7 +73,7 @@ margin-top: 3px;
 			<div class="pull-left">
 				<h2>Expenses Approval</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Approval Expenses</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
 		<!-- Project -->
 		<div class="timesheet_out">
