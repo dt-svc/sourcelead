@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -110,15 +111,16 @@ public class ProjectsRestController {
 	  */
 	 
 	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String storeProject(HttpServletRequest request) throws Exception {
+		public @ResponseBody String storeProject(@RequestParam("project_file") MultipartFile file, @RequestParam("json") String jsonPayload) throws Exception {
 		   
 		   /* String json1 = "{"+json+"}";*/
-		    JSONObject jsonObj = new JSONObject(request.getParameter("json"));
+		 JSONObject jsonObj = new JSONObject(jsonPayload);
+		 byte [] fileContents = file.getBytes();
 		    /*JSONObject jsonObj = new JSONObject(json1);*/
 		 	/*OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");*/
-		    String outPut =  projectsService.storeProject(jsonObj);
+		 String outPut = projectsService.storeProject(jsonObj, fileContents);
 /*		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");*/
 		    return outPut;		
 			 

@@ -84,7 +84,7 @@ public interface ProjectsService {
 		
 		String saveProjectByUserOrgLocationsJson(User user,OrgLocations loginOrgLocation,String loginOrgCode,JSONObject jsonObj) throws Exception ;
         
-		String  storeProject(JSONObject jsonObj) throws Exception;
+		String  storeProject(JSONObject jsonObj,byte [] projectFile) throws Exception;
 
 //		void userEmailNotificationForTimeSheetSubmissionToManagers(Map<UserRole, HashSet<TimesheetSubmissions>> timesheetSubmissionsMap, int level)throws Exception;
 //

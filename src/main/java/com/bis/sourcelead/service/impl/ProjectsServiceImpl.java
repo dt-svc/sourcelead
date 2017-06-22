@@ -287,7 +287,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String storeProject(JSONObject jsonObj) throws Exception {
+	public String storeProject(JSONObject jsonObj, byte [] fileContents) throws Exception {
 		    
 		  
 		String resultJson = null;
@@ -300,6 +300,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     	Projects projects = new Projects();
     	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
+    	projects.setProjectFile(fileContents);
     	
     	if((jsonObj.has("ProjectDescription"))){
     	projects.setDescription(jsonObj.getString("ProjectDescription"));
@@ -319,7 +320,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }else{
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
 	    }
-    	
+		if(jsonObj.has("timeSheetFrequency") && StringUtils.isNotEmpty(jsonObj.getString("timeSheetFrequency"))){
+			projects.setTimesheetFrequency(jsonObj.getString("timeSheetFrequency"));
+		}
+		
+		if(jsonObj.has("EstimatedHours") && StringUtils.isNotEmpty(jsonObj.getString("EstimatedHours"))){
+			projects.setEstimatedHours(jsonObj.getDouble("EstimatedHours"));
+		}
+		if(jsonObj.has("EstimatedBudget") && StringUtils.isNotEmpty(jsonObj.getString("EstimatedBudget"))){
+			projects.setEstimatedBudget(jsonObj.getDouble("EstimatedBudget"));
+		}
     	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));

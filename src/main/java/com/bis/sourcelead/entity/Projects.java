@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -61,6 +62,16 @@ public class Projects implements Serializable{
     
     @Column(name = "TIMESHEET_FREQUENCY")
     private String timesheetFrequency;
+    
+    @Column(name="ESTIMATED_HOURS")
+    private Double estimatedHours;
+    
+    @Column(name="ESTIMATED_BUDGET")
+    private Double estimatedBudget;
+    
+    @Lob
+    @Column(name="PROJECT_FILE",length=100000)
+    private byte [] projectFile;
     
     @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
@@ -589,6 +600,30 @@ public class Projects implements Serializable{
 
 	public void setExpensesClientName(String expensesClientName) {
 		this.expensesClientName = expensesClientName;
+	}
+	
+	public void setEstimatedHours(Double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public void setEstimatedBudget(Double estimatedBudget) {
+		this.estimatedBudget = estimatedBudget;
+	}
+
+	public Double getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public Double getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public byte[] getProjectFile() {
+		return projectFile;
+	}
+
+	public void setProjectFile(byte[] projectFile) {
+		this.projectFile = projectFile;
 	}
 	
 }

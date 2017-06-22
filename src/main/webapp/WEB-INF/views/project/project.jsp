@@ -11,6 +11,7 @@
 <!-- these files for autocomplete with tagit -->
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <script src="resources/js/formvalidator.js"></script>
+<script src="//cdn.ckeditor.com/4.7.0/basic/ckeditor.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -357,7 +358,72 @@ function validateTaskName(){
 							</div>
 						</div>
 					</div>
+					
+					<!-- Mohan  budget details start -->
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<h5>Budget Details</h5>
+						<div class="form-group" id="EstimatedHoursDiv">
+							<label class="col-md-3">Estimated hours</label>
+							<div class="col-md-9">
+								<input type="number" value="" id="EstimatedHours" min="1"
+									max="99999" name="EstimatedHours" class="form-control"
+									data-validation-optional="true" class="form-control" onblur="">
+							</div>
+						</div>
+
+
+						<div class="form-group" id="EstimatedBudgetDiv">
+							<label class="col-md-3">Estimated Budget</label>
+							<div class="col-md-9">
+								<div class="input-group">
+									<div class="input-group-btn selp-custom-min"
+										id="estimatedBudgetId">
+										<select class="form-control chosen-select">
+											<option value="c2c">INR</option>
+											<option value="w2">USD</option>
+										</select>
+									</div>
+									<input type="number" value="" id="EstimatedBudget"
+										name="EstimatedBudget" class="form-control"
+										data-validation="validate_Space validate_length length2-50"
+										data-validation-optional="true" class="form-control" onblur="">
+								</div>
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<label class="col-md-3">Budget Approver</label>
+							<div class="col-md-9" id="chosen-budgetapprover">
+								<select class="form-control chosen-select" id="budgetApprover"
+									name="budgetApprover" onchange="" field-name="Budget Approver">
+
+									<option value="">-- Budget Approver --</option>
+									<c:forEach var="option" items="${user_List}">
+										<option value="${option.id},${option.userType}">${option.firstName}
+											${option.lastName}</option>
+									</c:forEach>
+
+								</select>
+							</div>
+						</div>
+					</div>
+					<!-- budget details end -->
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<h5>Description</h5>
+						<textarea maxlength="5000" cols="80" rows="10"
+							id="ProjectDescription" name="ProjectDescription"></textarea>
+
+
+					</div>
+					<!--  Documents Section -->
+					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<h5>Documents</h5>
+						<input type="file" name="project_file" id="project_file"/>
+					</div>
+					
 				</div>
+				<!--  div row end -->
 				<div class="form-footer clearfix row">
 					<div class="col-lg-12">
 						<div class="pull-right">
@@ -366,6 +432,10 @@ function validateTaskName(){
 						</div>
 					</div>
 				</div>
+				<script type="text/javascript">
+        			CKEDITOR.replace( 'ProjectDescription' );
+        		
+      			</script>
 			</form:form>
 		</div>
 	</div>
@@ -707,12 +777,14 @@ function flushProjectTasks(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
+		var projDesc= CKEDITOR.instances['ProjectDescription'].getData();
+		//alert(projDesc);
 		$('#addTask').find('p.jquery_form_error_message').remove();
 		if ($('#project_form').validate(false, validationSettings)) {
 			var frm = $('#project_form').serializeFormJSON();
 			/* var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); */
-			
+			frm.ProjectDescription = projDesc;
 			var jsonData = JSON.stringify(frm);
 			
 		    var form = $('#project_form')[0];
