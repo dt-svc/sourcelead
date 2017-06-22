@@ -180,8 +180,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	{
 		Contracts contracts;
 		Contracts vendorContracts = null;
+		String contractId="";
 		
 		if(jsonObj.has("contrId") && null != jsonObj.getString("contrId") && !"".equals(jsonObj.getString("contrId"))){
+			contractId = jsonObj.getString("contrId");
 			contracts = contractsTemplateDao.getContractById(Long.parseLong(jsonObj.getString("contrId")));
 			if(null != contracts && null != contracts.getParentContractId()){
 				vendorContracts = contractsTemplateDao.getChildContractById(contracts.getParentContractId().getId());
@@ -526,18 +528,35 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}
 		}
 		
-		
-		ContractsHistory contractsHistory = new ContractsHistory();
-		contractsHistory.setContractsId(savedContracts);
-		contractsHistory.setFromStage("NEW");
-		contractsHistory.setToStage(savedContracts.getTemplateSubmissionStatus());
-		contractsHistory.setCreatedDate(new Date());
-		if(null != user){
-			contractsHistory.setCreatedBy(user.getUserCode());
-			contractsHistory.setUpdatedBy(user.getUserCode());
+		ContractsHistory contractsHistory = contractsTemplateDao.getContractsHistoryByContractId(contracts.getId());
+		if(contractsHistory !=null){
+			if(!contractsHistory.getToStage().equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+				ContractsHistory ch = new ContractsHistory();
+				ch.setContractsId(savedContracts);
+				ch.setFromStage(contractsHistory.getToStage());
+				ch.setToStage(savedContracts.getTemplateSubmissionStatus());
+				ch.setCreatedDate(new Date());
+				if(null != user){
+					ch.setCreatedBy(user.getUserCode());
+					ch.setUpdatedBy(user.getUserCode());
+				}
+				ch.setUpdatedDate(new Date());
+				contractsTemplateDao.saveContractsHistory(ch);
+			}
 		}
-		contractsHistory.setUpdatedDate(new Date());
-		contractsTemplateDao.saveContractsHistory(contractsHistory);
+		if("".equalsIgnoreCase(contractId)){
+				ContractsHistory ch = new ContractsHistory();
+				ch.setContractsId(savedContracts);
+				ch.setFromStage("NEW");
+				ch.setToStage(savedContracts.getTemplateSubmissionStatus());
+				ch.setCreatedDate(new Date());
+				if(null != user){
+					ch.setCreatedBy(user.getUserCode());
+					ch.setUpdatedBy(user.getUserCode());
+				}
+				ch.setUpdatedDate(new Date());
+				contractsTemplateDao.saveContractsHistory(ch);
+		}
 		
 		if(null != user && null != approverUser &&! "DRAFT".equalsIgnoreCase(saveType)){
 			if(!jsonObj.has("approver") && null != ownerUser && ownerUser.getId().longValue() != user.getId().longValue()){
@@ -621,17 +640,19 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if(null != vendorContracts){
 				vendorContracts.setContractUUID(contracts.getContractUUID());
 				Contracts savedChildContracts = contractsTemplateDao.saveNewContract(vendorContracts);
-				ContractsHistory childContractsHistory = new ContractsHistory();
-				childContractsHistory.setContractsId(savedChildContracts);
-				childContractsHistory.setFromStage("NEW");
-				childContractsHistory.setToStage(savedChildContracts.getTemplateSubmissionStatus());
-				childContractsHistory.setCreatedDate(new Date());
-				if(null != user){
-					childContractsHistory.setCreatedBy(user.getUserCode());
-					childContractsHistory.setUpdatedBy(user.getUserCode());
+				if("".equalsIgnoreCase(contractId)){
+					ContractsHistory childContractsHistory = new ContractsHistory();
+					childContractsHistory.setContractsId(savedChildContracts);
+					childContractsHistory.setFromStage("NEW");
+					childContractsHistory.setToStage(savedChildContracts.getTemplateSubmissionStatus());
+					childContractsHistory.setCreatedDate(new Date());
+					if(null != user){
+						childContractsHistory.setCreatedBy(user.getUserCode());
+						childContractsHistory.setUpdatedBy(user.getUserCode());
+					}
+					childContractsHistory.setUpdatedDate(new Date());
+					contractsTemplateDao.saveContractsHistory(childContractsHistory);
 				}
-				childContractsHistory.setUpdatedDate(new Date());
-				contractsTemplateDao.saveContractsHistory(childContractsHistory);
 			}
 			
 			
