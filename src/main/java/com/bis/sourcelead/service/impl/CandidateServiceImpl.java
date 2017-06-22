@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -69,6 +70,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -1139,6 +1141,26 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setVendorContactName(stringBuilder.append(candidate.getSpocId().getVendorUser().getFirstName()).append(" ").append(candidate.getSpocId().getVendorUser().getLastName()).toString());
 		}
 		return candidateList;
+	}
+	
+	@Override
+	public Candidate storeCandidateForUsers(JSONObject jsonObj,User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception
+	{
+		Candidate candidate = new Candidate();
+		candidate.setConsultantUser(user);
+		candidate.setMasterCandidateId(masterCandidate);
+		candidate.setOrgLocationId(orgLocations);
+		candidate.setCandidateType(Constants.CANDIDATE);
+		candidate.setFirstName(user.getFirstName());
+		candidate.setLastName(user.getLastName());
+		candidate.setCountry(orgLocations.getCountry());
+		candidate.setIsAssociate(Constants.NO);
+		candidate.setStatus(Constants.RECORD_ACTIVE);
+		candidate.setCreatedBy(user.getUserCode());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		candidate.setCreatedDate(commonUtil.currentDate());
+		candidateDao.storeCandidate(candidate);
+		return candidate;
 	}
 
 }

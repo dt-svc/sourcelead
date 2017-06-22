@@ -140,6 +140,7 @@ public class RegistrationRestController {
 		try {
 
 				String json1 = "{"+json+"}";
+				JSONObject jsonObj = new JSONObject(json1);
 				Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 				Registration registration =  gson.fromJson(json1,Registration.class);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -154,7 +155,7 @@ public class RegistrationRestController {
 			    	}
 			    }
 			   
-				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId() );
+				registrationService.addRegistration(registration,user,modulesList,submodulesList, orgLocations.getId(),jsonObj);
 				 StringBuilder orgCreateMsg = new StringBuilder();
 				SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
 			} catch (Exception e) {

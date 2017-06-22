@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -39,6 +37,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
@@ -62,6 +61,7 @@ import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
@@ -172,13 +172,16 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	OrgDao orgDao;
 	
+	@Autowired
+	MasterCandidateService masterCandidateService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
 	
 	@Override
-	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId) throws Exception {
+	public void addRegistration(Registration registration,User loginUser,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception {
 		
 		String[] registredModules =  modules.split(",");
 		
@@ -251,16 +254,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 			 moduleIds.add(Integer.parseInt(s));
 		 }
 		 
-	
+		 MasterCandidate masterCandidate = null; 
+		 masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+		 if(null == masterCandidate){
+			 masterCandidate = getMasterCandidateDetails(registration,user);
+		 }
 		
+		try {
+			masterCandidateService.saveMasterCandidate(masterCandidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
+		Candidate candidate = getCandidateDetails(user,orgLocations,masterCandidate);
+		try {
+			candidateService.addCandidate(candidate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
 		saveDefaultSubmissionTemplate(org,orgLocations,user);
 		saveDefaultInterviewFeedbackTemplate(org,orgLocations,user);
-		/*saveDefaultContractTemplate(org,orgLocations,user," Default Client MSA Template","Client MSA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor MSA Template","Vendor MSA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template","Client SOW");
-		saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template","Vendor SOW");
-		saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template","NDA");
-		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NCA");*/
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		
@@ -286,18 +300,35 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 	}
 
-	private Candidate getCandidateDetails(User user, OrgLocations orgLocations) {
+	private Candidate getCandidateDetails(User user, OrgLocations orgLocations,MasterCandidate masterCandidate) {
 		Candidate candidate = new Candidate();
+		candidate.setConsultantUser(user);
+		candidate.setMasterCandidateId(masterCandidate);
 		candidate.setOrgLocationId(orgLocations);
 		candidate.setCandidateType(Constants.CANDIDATE);
 		candidate.setFirstName(user.getFirstName());
 		candidate.setLastName(user.getLastName());
 		candidate.setCountry(orgLocations.getCountry());
-		candidate.setIsAssociate(Constants.YES);
+		candidate.setIsAssociate(Constants.NO);
 		candidate.setStatus(Constants.RECORD_ACTIVE);
 		candidate.setCreatedBy(user.getUserCode());
+		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidate.setCreatedDate(commonUtil.currentDate());
 		return candidate;
+	}
+	
+	private MasterCandidate getMasterCandidateDetails(Registration registration,User user) {
+		MasterCandidate masterCandidate = new MasterCandidate();
+		masterCandidate.setFirstName(registration.getFirstName());
+		masterCandidate.setLastName(registration.getLastName());
+		masterCandidate.setEmail(registration.getEmail());
+		masterCandidate.setPhoneNumber(registration.getMobilePhone());
+		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
+		masterCandidate.setCreatedBy(user.getUserCode());
+		masterCandidate.setCreatedDate(commonUtil.currentDate());
+		masterCandidate.setUpdatedBy(user.getUserCode());
+		masterCandidate.setUpdatedDate(commonUtil.currentDate());
+		return masterCandidate;
 	}
 
 	
