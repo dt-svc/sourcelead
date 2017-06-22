@@ -291,8 +291,12 @@ document.onkeydown=function(e){
             </c:if> --%>
             
             <li class="reportsH">
+					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
+	        </li>
+            
+            <li class="reportsH">
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
-	            </li>
+	        </li>
             
             <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	            <li class="reportsH">
@@ -1246,4 +1250,105 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
+<!--  Company Invite pop -->
+<div class="sideMask"></div>
+<div class="modal modalInvite" class="invite" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Invite Company</h4>
+        </div>
+        <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Company Name <span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Location</label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Location" name="location" id="location">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-user-o paddingRight text-info"></i>Name<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Name" id="name" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight">
+                    <i class="fa fa-envelope paddingRight text-info"></i>Email<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Email" id="email" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+                </div>
+            </div>
+                        <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-phone paddingRight text-info"></i>Phone</label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Phone" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                </div>
+            </div>
+        </div>
+        <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10">
+              <i class="fa fa-close paddingRight"></i>Cancel
+            </button>
+                </div>
+        </div>
+        </form:form>
+        
+      </div>
+      
+    </div>
+  </div> 
+  <script>
+  $("#invitePop").click(function(){
+  $(".modalInvite").fadeIn();
+  $(".sideMask").fadeIn();
+  });
+  $(".close").click(function(){
+	  $(".modalInvite").fadeOut();
+	  $(".sideMask").fadeOut();
+	  });
+  $(".btnClose").click(function(){
+	  $(".modalInvite").fadeOut();
+	  $(".sideMask").fadeOut();
+	  });
+  </script>
+<!--  Company invite pop ends -->
 
+
+<script>
+function saveInviteCompany() {
+	if ($('#inviteCompany_form').validate(false, validationSettings)) {
+		var frm = $('#inviteCompany_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.ajax({
+					type : "POST",
+					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
+					success : function(result) {
+						 $(".modalInvite").fadeOut();
+						  $(".sideMask").fadeOut();
+					},
+				});
+		return true;
+	} else {
+		return false;
+	}
+}
+$('body').on('blur', '#inviteCompany_form', function() {
+	$("#inviteCompany_form").showHelpOnFocus();
+	$("#inviteCompany_form").validateOnBlur(false, validationSettings);
+});
+</script>

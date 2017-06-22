@@ -5579,6 +5579,9 @@ a.color_white{
 .changeRate_div .drpdownMonthly select {
     width: 50px;
 }
+.modal.modalInvite {
+	display: none;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {
