@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SourceleadNotesDao;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.SourceleadNotes;
@@ -50,6 +51,12 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		}
 		else {
 			sourceleadNotes.setOrgRelationID(null);
+		}
+		if (jsonObj.has("allowAll")) {
+			sourceleadNotes.setCheckBox(jsonObj.getString("allowAll"));
+		}else{
+			sourceleadNotes.setCheckBox(Constants.NO);
+
 		}
 		sourceleadNotes.setUserId(user);
 		sourceleadNotes.setCreatedDate(commonUtil.currentDate());
