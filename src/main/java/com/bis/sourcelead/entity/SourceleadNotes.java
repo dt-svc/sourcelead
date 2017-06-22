@@ -62,6 +62,9 @@ public class SourceleadNotes {
 	@Column(name = "NOTE_TYPE")
 	private String noteType;
 	
+	@Column(name = "CHECK_BOX")
+	private String checkBox;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -232,6 +235,16 @@ public class SourceleadNotes {
 	public void setUpdatedDateString(String updatedDateString)
 	{
 		this.updatedDateString = updatedDateString;
+	}
+
+	public String getCheckBox()
+	{
+		return checkBox;
+	}
+
+	public void setCheckBox(String checkBox)
+	{
+		this.checkBox = checkBox;
 	}
 	
 	
