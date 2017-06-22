@@ -4,8 +4,6 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -173,19 +171,16 @@ public  class CalendarUtil {
 	      Map<String, String> startEndDate = new LinkedHashMap<>();
 	      Calendar Q1StartDate=Calendar.getInstance();
 		    Calendar Q1EndDate =Calendar.getInstance();
-		    System.out.println(monthDiff);
 		    for(int i =0;i<=monthDiff;i++){
 		    if(i==0){
 		    	Q1StartDate.setTime(frequencyStartDate);
 		    	Q1EndDate.setTime(frequencyStartDate);
 		    }else{
-			    Q1StartDate.add(Calendar.MONTH,i);
-			    Q1EndDate.add(Calendar.MONTH,i);
+			    Q1StartDate.add(Calendar.MONTH,1);
+			    Q1EndDate.add(Calendar.MONTH,1);
 		    }
 		    Q1StartDate.set(Calendar.DATE,1);
 		    Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
-		    System.out.println(Q1StartDate.getTime());
-		    System.out.println(Q1EndDate.getTime());
 		    String StartDate = Constants.DMY.format(Q1StartDate.getTime());
 		    String endDate = Constants.DMY.format(Q1EndDate.getTime());
 		    startEndDate.put(StartDate,endDate);
@@ -193,7 +188,22 @@ public  class CalendarUtil {
 		return startEndDate;
    }
 	
-	
+	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
+	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
+	      LinkedHashSet<String> monthString = new LinkedHashSet<>();
+	      Calendar Q1StartDate=Calendar.getInstance();
+		    for(int i =0;i<=monthDiff;i++){
+		    if(i==0){
+		    	Q1StartDate.setTime(frequencyStartDate);
+		    }else{
+			    Q1StartDate.add(Calendar.MONTH,1);
+		    }
+		    Q1StartDate.set(Calendar.DATE,1);
+		    String StartDate = Constants.M.format(Q1StartDate.getTime());
+		    monthString.add(StartDate);
+	     }
+		return monthString;
+  }
 	
 	
 	protected static int getDayOffset(String day_Of_Week){

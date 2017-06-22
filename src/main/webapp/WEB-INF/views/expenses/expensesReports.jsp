@@ -115,9 +115,9 @@ function getQuaters(){
 		    			 quarterResult=quarterResult+'<option value="'+value[1]+'">'+value[0]+'</option>';
 		    		 }
 		    	 }
+		    	 
 		    	 $("#YearQuartersDiv").empty();
 		    	 $("#YearQuartersDiv").append("<div id='"+currentYear+"YearQuartersDiv'>"+quarterResult+"</div>");
-		    	 
 		    	 quarterResult='<select class="chosen-select form-control" name="selectedQuarter" id="selectedQuarter">'+quarterResult+'</select>';
 		    	 $("#selectQuarterDropDownId").empty();
 				 $("#selectQuarterDropDownId").append(quarterResult); 
@@ -169,12 +169,14 @@ function getQuaters(){
 function expensesReportList(){
 var sourceleadUrl = '${sourceleadUrl}';
 var datequarterly = $("#selectedQuarter").val();
-alert(datequarterly);
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesReportList?${_csrf.parameterName}=${_csrf.token}&datequarterly="+datequarterly,       
      success :function(data) {
     	 	var json = JSON.parse(data);
+    	 	alert(json);
+    	 	
+    	 if(json != null && json != '' && json != 'undefined'){
     	 	var result = '';
     	 	var  dateresult="";
  			result = result +'<table>';
@@ -183,21 +185,22 @@ $.ajax({
  			result = result +'<th>Emp ID & Name</th>';
  			result = result +'<th>Emp Type</th>';
  			result = result +'<th>Project</th>';
- 			result = result +'<th>purpose</th>';
- 			for (var i = 0; i < json.length; i++) {
- 				var optMap = json[i];
-		    	 for (var key in optMap.monthsStringFormat) {
+ 			var months = [];
+ 			for (var i = 0; i < 1; i++) {
+ 				var opt = json[i].monthsStringFormat;
+ 				for (var j = 0; j < opt.length; j++) {
+ 					result=result+'<th>'+opt[j]+'</th>';
+ 					months.push(opt[j]);
+ 				}
+		    	 /* for (var key in optMap.monthsStringFormat) {
 		    		  if (optMap.monthsStringFormat.hasOwnProperty(key)) {
 		    			var value=optMap.monthsStringFormat[key];
 						result=result+'<th>'+value[0]+'</th>';
 						dateresult = dateresult +'<td><div class="week"><span class="subm">'+value[1]+'</span>'; 
 		    		  }
-		    	}
+		    	} */
  			
  			}
- 			//result = result +'<th>Start Date</th>';
- 			//result = result +'<th>End Date</th>';
- 			result = result +'<th>Raised Date</th>';
  			result = result +'<th>Amount</th>';
  			result = result +'<th>Status</th>';
  			result = result +'<th>Claimed Expenses</th>';
@@ -218,12 +221,321 @@ $.ajax({
  			result = result +'</td>';
  			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i><i title="client name">Client 1</i></div></td>';
  			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i><i title="client name">Client 1</i></div></td>';
- 			result = result +'<td><div  class="sm" title="Monthly">'+opt.purpose+'</div></td>';
- 	 			result = result + dateresult; 
- 			result = result +'</div></td>';
- 			result = result +'<td><div class="week"><span class="subm">'+opt.totalAmount+'</span>'; 
- 			result = result +'</div></td>';
- 			result = result +'<td><div class="sm"><b class="proj_active">'+opt.expenseStatus+'</b></div></td>';
+ 		
+ 			
+ 			if(months.indexOf("January") > -1){
+ 			result = result +'<td>';
+ 			if(opt.janExpenseTotal != null && opt.janExpenseTotal !='' && opt.janExpenseTotal!='Undefined'){
+ 			result = result +'<div class="week"><span class="appr">'+opt.janExpenseTotal+'</span>';
+ 			}else{
+ 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 			}
+ 			result = result +'<div class="progress">';
+ 			if(opt.janExpenseApprovedTotal != null && opt.janExpenseApprovedTotal !='' && opt.janExpenseApprovedTotal!='Undefined'){
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.janExpenseApprovedTotal+'</div>';
+ 			}else{
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 			}
+ 			if(opt.janExpenseUnApprovedTotal != null && opt.janExpenseUnApprovedTotal !='' && opt.janExpenseUnApprovedTotal!='Undefined'){
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.janExpenseUnApprovedTotal+'</div>';
+ 			}else{
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 			}
+ 			result = result +'</div>';                    
+ 			result = result +'</div>';
+ 			result = result +'</td>'; 
+ 			}
+ 			
+ 			
+ 			if(months.indexOf("February") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.febExpenseTotal != null && opt.febExpenseTotal !='' && opt.febExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.febExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.febExpenseApprovedTotal != null && opt.febExpenseApprovedTotal !='' && opt.febExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.febExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.febExpenseUnApprovedTotal != null && opt.febExpenseUnApprovedTotal !='' && opt.febExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.febExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}
+ 			
+ 			
+ 			if(months.indexOf("March") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.marExpenseTotal != null && opt.marExpenseTotal !='' && opt.marExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.marExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.marExpenseApprovedTotal != null && opt.marExpenseApprovedTotal !='' && opt.marExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.marExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.marExpenseUnApprovedTotal != null && opt.marExpenseUnApprovedTotal !='' && opt.marExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.marExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}
+ 			
+ 			
+ 			
+ 			if(months.indexOf("April") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.aprExpenseTotal != null && opt.aprExpenseTotal !='' && opt.aprExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.aprExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.aprExpenseApprovedTotal != null && opt.aprExpenseApprovedTotal !='' && opt.aprExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.aprExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.aprExpenseUnApprovedTotal != null && opt.aprExpenseUnApprovedTotal !='' && opt.aprExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.aprExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}
+ 			
+ 			
+ 			if(months.indexOf("May") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.mayExpenseTotal != null && opt.mayExpenseTotal !='' && opt.mayExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.mayExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.mayExpenseApprovedTotal != null && opt.mayExpenseApprovedTotal !='' && opt.mayExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.mayExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.mayExpenseUnApprovedTotal != null && opt.mayExpenseUnApprovedTotal !='' && opt.mayExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.mayExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}
+ 			
+ 			
+ 			
+ 			
+ 			if(months.indexOf("June") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.junExpenseTotal != null && opt.junExpenseTotal !='' && opt.junExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.junExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.junExpenseApprovedTotal != null && opt.junExpenseApprovedTotal !='' && opt.junExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.junExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.junExpenseUnApprovedTotal != null && opt.junExpenseUnApprovedTotal !='' && opt.junExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.junExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}
+ 			
+ 			
+ 			if(months.indexOf("July") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.julExpenseTotal != null && opt.julExpenseTotal !='' && opt.julExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.julExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.julExpenseApprovedTotal != null && opt.julExpenseApprovedTotal !='' && opt.julExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.julExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.julExpenseUnApprovedTotal != null && opt.julExpenseUnApprovedTotal !='' && opt.julExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.julExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}	
+ 			
+ 			
+ 			if(months.indexOf("August") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.augExpenseTotal != null && opt.augExpenseTotal !='' && opt.augExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.augExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.augExpenseApprovedTotal != null && opt.augExpenseApprovedTotal !='' && opt.augExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.augExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.augExpenseUnApprovedTotal != null && opt.augExpenseUnApprovedTotal !='' && opt.augExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.augExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}	
+ 			
+ 			if(months.indexOf("September") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.sepExpenseTotal != null && opt.sepExpenseTotal !='' && opt.sepExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.sepExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.sepExpenseApprovedTotal != null && opt.sepExpenseApprovedTotal !='' && opt.sepExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.sepExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.sepExpenseUnApprovedTotal != null && opt.sepExpenseUnApprovedTotal !='' && opt.sepExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.sepExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}	
+ 			
+ 			if(months.indexOf("October") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.octExpenseTotal != null && opt.octExpenseTotal !='' && opt.octExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.octExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.octExpenseApprovedTotal != null && opt.octExpenseApprovedTotal !='' && opt.octExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.octExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.octExpenseUnApprovedTotal != null && opt.octExpenseUnApprovedTotal !='' && opt.octExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.octExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}	
+ 			
+ 			if(months.indexOf("November") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.novExpenseTotal != null && opt.novExpenseTotal !='' && opt.novExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.novExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.novExpenseApprovedTotal != null && opt.novExpenseApprovedTotal !='' && opt.novExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.novExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.novExpenseUnApprovedTotal != null && opt.novExpenseUnApprovedTotal !='' && opt.novExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.novExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}	
+ 			
+ 			if(months.indexOf("December") > -1){
+ 	 			result = result +'<td>';
+ 	 			if(opt.decExpenseTotal != null && opt.decExpenseTotal !='' && opt.decExpenseTotal!='Undefined'){
+ 	 			result = result +'<div class="week"><span class="appr">'+opt.decExpenseTotal+'</span>';
+ 	 			}else{
+ 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			}
+ 	 			result = result +'<div class="progress">';
+ 	 			if(opt.decExpenseApprovedTotal != null && opt.decExpenseApprovedTotal !='' && opt.decExpenseApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.decExpenseApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 	 			}
+ 	 			if(opt.decExpenseUnApprovedTotal != null && opt.decExpenseUnApprovedTotal !='' && opt.decExpenseUnApprovedTotal!='Undefined'){
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.decExpenseUnApprovedTotal+'</div>';
+ 	 			}else{
+ 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 	 			}
+ 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';
+ 	 			result = result +'</td>'; 
+ 	 			}	
+ 			
+ 			
+ 			
+ 				result = result +'<td>';
+	 			if(opt.expenseTotal != null && opt.expenseTotal !='' && opt.expenseTotal!='Undefined'){
+	 			result = result +'<div class="week"><span class="appr">'+opt.expenseTotal+'</span>';
+	 			}else{
+	 				result = result +'<div class="week"><span class="appr">0</span>';	
+	 			}
+	 			result = result +'<div class="progress">';
+	 			if(opt.expenseApprovedTotal != null && opt.expenseApprovedTotal !='' && opt.expenseApprovedTotal!='Undefined'){
+	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.expenseApprovedTotal+'</div>';
+	 			}else{
+	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+	 			}
+	 			if(opt.expenseUnApprovedTotal != null && opt.expenseUnApprovedTotal !='' && opt.expenseUnApprovedTotal!='Undefined'){
+	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.expenseUnApprovedTotal+'</div>';
+	 			}else{
+	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+	 			}
+	 			result = result +'</div>';                    
+	 			result = result +'</div>';
+	 			result = result +'</td>'; 
+ 			
+ 			
+			
+
+			result = result +'<td><div class="sm"><b class="proj_active">'+opt.projectStatus+'</b></div></td>';
  			result = result +'<td><div class="sm"><b class="proj_active">'+opt.endDateStr+'</b></div></td>';
  			result = result +'</tr>';
  		}
@@ -231,6 +543,12 @@ $.ajax({
 			result = result +'</table>';
  			$("#expensesReportsListDiv").empty();
 			$("#expensesReportsListDiv").append(result);
+    	 }
+    	 else {
+    		 result = "<div class='dataTables_empty'></div>";
+    		 $("#expensesReportsListDiv").empty();
+ 			 $("#expensesReportsListDiv").append(result);
+    	 }
  		
      }
 });	

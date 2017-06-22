@@ -49,7 +49,7 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDate(Long projectMembersId,Date startDate, Date endtDate) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers where proMembers.id = :projectMembersId and expenses.startDate  >= :startDate and :endtDate <= expenses.endDate";
+		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers where proMembers.id = :projectMembersId and expenses.endDate  >= :startDate and expenses.endDate <= :endtDate";
 		List<Expenses> expenses =session.createQuery(query).setLong("projectMembersId", projectMembersId).setDate("startDate", startDate).setDate("endtDate", endtDate).setCacheable(true).list();
 		return expenses;
 	}

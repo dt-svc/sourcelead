@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +43,7 @@ private static final long serialVersionUID = 1L;
     @JoinColumn(name="LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	private ProjectMembers projectMembers;
 	

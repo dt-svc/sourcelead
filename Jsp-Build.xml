@@ -51,7 +51,7 @@
 					</fileset>
 	    </copy>
         <copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/resources/fonts" includeEmptyDirs="no">
-			      <fileset dir="sourcelead/src/main/webapp/resources/fonts">
+			      <fileset dir="EXPENSES_SHIVAYOGI/src/main/webapp/resources/fonts">
 						<patternset>
 							<include name="**/*.otf"/>
 							<include name="**/*.eot"/>

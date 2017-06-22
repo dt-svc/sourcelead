@@ -3,7 +3,9 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -269,6 +271,24 @@ public class ProjectMembers implements Serializable {
     @Transient
     private Float Q4ExpenseUnApprovedTotal;
     
+    @Transient
+    private Float expenseTotal;
+    
+    @Transient
+    private Float expenseApprovedTotal;
+    
+    @Transient
+    private Float expenseUnApprovedTotal;
+    
+    @Transient
+	private String employementType;
+	
+	@Transient
+	private String userName;
+	
+	@Transient
+	private String userEmail;
+	
     //For Expenses 
 
 	@Transient
@@ -295,6 +315,9 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	private Long submissionInvoiceId;
 
+	@Transient
+	private LinkedHashSet<String> monthsStringFormat;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -1008,8 +1031,64 @@ public class ProjectMembers implements Serializable {
 		return Q4ExpenseUnApprovedTotal;
 	}
 
+	public LinkedHashSet<String> getMonthsStringFormat() {
+		return monthsStringFormat;
+	}
+
+	public void setMonthsStringFormat(LinkedHashSet<String> monthsStringFormat) {
+		this.monthsStringFormat = monthsStringFormat;
+	}
+
 	public void setQ4ExpenseUnApprovedTotal(Float q4ExpenseUnApprovedTotal) {
 		Q4ExpenseUnApprovedTotal = q4ExpenseUnApprovedTotal;
+	}
+
+	public String getEmployementType() {
+		return employementType;
+	}
+
+	public void setEmployementType(String employementType) {
+		this.employementType = employementType;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public Float getExpenseTotal() {
+		return expenseTotal;
+	}
+
+	public void setExpenseTotal(Float expenseTotal) {
+		this.expenseTotal = expenseTotal;
+	}
+
+	public Float getExpenseApprovedTotal() {
+		return expenseApprovedTotal;
+	}
+
+	public void setExpenseApprovedTotal(Float expenseApprovedTotal) {
+		this.expenseApprovedTotal = expenseApprovedTotal;
+	}
+
+	public Float getExpenseUnApprovedTotal() {
+		return expenseUnApprovedTotal;
+	}
+
+	public void setExpenseUnApprovedTotal(Float expenseUnApprovedTotal) {
+		this.expenseUnApprovedTotal = expenseUnApprovedTotal;
 	}
 
 	
