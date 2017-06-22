@@ -1,14 +1,15 @@
 package com.bis.sourcelead.dao;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.List;
 
 import com.bis.sourcelead.entity.SourceleadNotes;
-import com.bis.sourcelead.service.SourceleadNotesService;
 
 public interface SourceleadNotesDao {
 	
-	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws JSONException,Exception;
+	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws Exception;
+	
+	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelationId) throws Exception;
+
 
 	
 	

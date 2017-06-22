@@ -1,10 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.SourceleadNotesDao;
+import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.bis.sourcelead.service.SourceleadNotesService;
 
 @Repository
 public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
@@ -32,7 +32,7 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws JSONException, Exception
+	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws Exception
 	{
 		
 		logger.debug("Storing SourceleadNotes");
@@ -48,5 +48,16 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 		}
 		return  sourceleadNotes;
 
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelation) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadNotes sn where  sn.orgRelationID.id =:orgrelation ORDER BY sn.id DESC";  
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("orgrelation", orgrelation).setCacheable(true).list();
+		return notesList;
 	}
 }
