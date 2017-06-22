@@ -306,6 +306,27 @@ public class RequirementController {
 		}
 		
 		
+		if(requirement != null && requirement.getId() != null){
+
+			List<String> allReqVisaList = requirementService.getAllRequirementVisaByRequirementI(requirement.getId());
+				List<String> visaList = lookUpDataService.getAllVisaByCategory();
+				String visa = allReqVisaList.get(0);
+				if(!"null".equalsIgnoreCase(visa) && null != visa){
+				String arr[] = visa.split(",");
+				for(String visaName : arr){
+					if(!visaList.contains(visaName)){
+						visaList.add(visaName);
+					}
+				}
+			      model.addObject("visaList", visaList);
+				}else{
+				  model.addObject("visaList", visaList);
+				} 
+		}else{
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);
+		}
+		
 		
 		
 		
