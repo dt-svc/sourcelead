@@ -714,6 +714,7 @@ $(document).ready(function () {
 					       <option  selected value="${visaList}">${visaList}</option>
 					    </c:if>
 					</c:forEach>
+					
 					<c:if test="${NUM == 0}">
 						<option  value="${visaList}">${visaList}</option>
 					</c:if>

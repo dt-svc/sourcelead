@@ -148,21 +148,21 @@ public class RequirementController {
 		
 		if(null != requirementUUID && !requirementUUID.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
-			
-			if(requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
-			
-			if(null != requirement.getEducation()){
+
+			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
+
+				if (null != requirement.getEducation()) {
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
 					requirement.setReqEducationListString(requirement.getEducation());
-			}
-			
-			if(null != requirement.getSkills()){		
+				}
+
+				if (null != requirement.getSkills()) {
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
 					requirement.setReqSkillsListString(requirement.getSkills());
-			}
-			
+				}
+
 			if(null != requirement.getIndustryName()){
 				String selectedIndustryName = requirement.getIndustryName();
 				requirement.setIndustrySavedName(selectedIndustryName);
