@@ -234,11 +234,81 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		 
 		 candidateOffBoarding.setOffBoardStatus("Finished");
 		 candidateOffBoarding.setOffboardSubmitted(Constants.NO);
-		 
+		 //mail for offboard candidates
+         mailToOffboardCandidate(candidateOffBoarding,loginUser,orgLocations);
 		 candidateOffBoardingDao.saveCandidateOffBoarding(candidateOffBoarding);
+		 
+		 
 		
 	}
-	
+public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, User loginUser,OrgLocations orgLocations) throws Exception{
+        
+        EmailMessage emailMessage = new EmailMessage();
+         emailMessage.setFirstName(loginUser.getFirstName());
+         emailMessage.setLastName(loginUser.getLastName());
+         emailMessage.setToEmail(candidateOffBoarding.getEmail());
+         emailMessage.setFromEmail(loginUser.getEmail());
+         emailMessage.setCreatedBy(loginUser.getUserCode());
+         StringBuilder msgBuild = new StringBuilder();
+         emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+        //setting the class filed values
+         Map<String, String> globalVarsMap = new HashMap<String, String>();
+        
+        String effectiveDate=Constants.DMY.format(candidateOffBoarding.getEffectiveDate());
+         globalVarsMap.put("effectiveDate", effectiveDate);
+         String endDate=Constants.DMY.format(candidateOffBoarding.getEndDate());
+         globalVarsMap.put("endDate", endDate);
+         globalVarsMap.put("offboardReason", candidateOffBoarding.getReason());
+         globalVarsMap.put("loginUser", emailMessage.getFromName());
+
+         StringBuilder name = new StringBuilder();
+         if(candidateOffBoarding.getLastName() != null && candidateOffBoarding.getLastName() != "" && candidateOffBoarding.getLastName() != "undefined"){
+        	  globalVarsMap.put("applicantName", name.append(candidateOffBoarding.getFirstName()).append(" ").append(candidateOffBoarding.getLastName()).toString());
+        
+         }
+         else{
+        	 globalVarsMap.put("applicantName", candidateOffBoarding.getFirstName());
+         }
+         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+        
+         StringBuilder linkBuild = new StringBuilder();
+         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+        
+                
+        
+         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+        
+         //getting the current EmailScenario by EmailScenario unique name and entity type
+         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_EMAIL);
+        // EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
+
+        
+         //covert subject,body and signature
+         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+         String url = sourceleadUrl;
+        
+         /*String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+         notificationScenario.setBody(notificationbody);*/
+
+        
+        // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
+
+        
+         //construct HTML template using required data
+         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
+         emailMessage.setSubject(subject);
+         emailMessage.setMessageBody(emailTemplate);
+        
+         //calling the sendEmail method of emailScenerioUtil
+         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+         String actionLink="";
+        //emailScenerioUtil.sendNotification(actionLink, loginUser, vendorUser, vendorOrgLoc, notificationScenario);
+
+
+    }
 	
 	public Tasks getTaskDetails(OffboardTasks offboardTasks,User user,User loginUser,OrgLocations orgLocations){
 		 

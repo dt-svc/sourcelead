@@ -214,9 +214,9 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row">';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft">Posted from<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<span class="col-md-3 paddingLeft mt10">Posted from<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list">';
-	result = result + '<select class="form-control mt10" id="requirementsTimeRange" onchange="getRequirements();">';
+	result = result + '<select class="form-control" id="requirementsTimeRange" onchange="getRequirements();">';
 	result = result + '		<option value="today">Today</option>';
     result = result + '		<option value="yesterday">Yesterday</option>';
     result = result + '		<option value="week" selected>1 week</option>';
@@ -229,9 +229,9 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row"></div>';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft">Requirement<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<span class="col-md-3 paddingLeft mt10">Requirement<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list" id="reqDiv">';
-	result = result + '<select class="form-control mt10" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Requirement" data-validation="required">';
+	result = result + '<select class="form-control" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Requirement" data-validation="required">';
 	
 	result = result + '</select>';
 	result = result + '</div>';
@@ -329,10 +329,6 @@ function dashboardAddInterview(){
 	
 	result = result + '</div>';
 	result = result + '</div>';
-	
-	
-	
-	
 	
 	result = result + '<div class="pull-right">';
 	result = result + '<button type="submit" id="add_interview" class="btn btn-sm btn-primary mr">Submit</button>';
@@ -583,6 +579,7 @@ function getRequirements(){
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
 	              	$("#reqDiv").find('p.jquery_form_error_message').remove();
+	              	$("#reqDiv").find('p.text-primary').empty();
 	              	$("#reqDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>Select Requirement</p>");
               }else{
             	  var result = "";
@@ -595,6 +592,7 @@ function getRequirements(){
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
 	             $("#reqDiv").find('p.jquery_form_error_message').remove();
+	             $("#reqDiv").find('p.text-primary').empty();
 	             $("#reqDiv").append("<p class='jquery_form_error_message'>No requirements found</span>");
               }
           	$("#1applicant").attr("data-placeholder", "Select Applicants");
@@ -771,7 +769,7 @@ function cancelAddInterviewDiv(){
    		if(isNofityToOthers == "Y"){
    			validateOtherMail();
    		} */
-   		
+   		$("#reqDiv").find('p.text-primary').empty();
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
