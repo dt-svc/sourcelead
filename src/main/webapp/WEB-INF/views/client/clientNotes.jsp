@@ -6,285 +6,145 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
-.collapse-div-adduser select{
-width: 100% !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    border:1px solid #ccc !important
+.edit-details {
+text-align:left;
 }
+.edit-details ul {
+float:none;
+}
+.edit-details ul li {
+float:none;
+}
+
+.addUser-org {
+    overflow-x: auto;
+}
+
+
+#uploadFileGroup p.jquery_form_error_message{
+	position: absolute;
+	left:0;
+	bottom:-16px;
+	}
+	.tblicons a{
+	font-size:13px;
+	}
+	.tblicons a:first-child{
+	margin-left: 0;
+	}
+	.tblicons .glyphicon-trash{
+	margin-left: 5px;
+	}
+	.tblicons a{
+	margin:0px 8px;
+	padding: 0 !important;
+	} 
+	.vendor_wrap_inn_table table tr th:last-child{
+	width:100px;
+	}
+	.removeIcon{
+	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
+	}
 </style>
 
-<script type="text/javascript">
-//On document ready
-$(function(){
-    //generateForm();
-});
-</script>
-
-
+<div id="deleteDocpopUp"></div>
 
 <script>
-function clientNotes(orgRelationId){
-	
+function clientNotesList(orgRelationId,clientLocationId){
 	var result = "";
-	result = result  +'<div class="timesheet_head top_filters">';
-	result = result  +'<input type="hidden" id="orgRelationId" value="'+orgRelationId+'">';
-	result = result  +'    <div> ';  
-	    result = result + '<ul>';
-		result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addEducation();" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
-
-	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
-	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
-
-		result = result + '       	<ul>';
-		result = result + '           	<li><input type="checkbox" value="OPEN"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Open  </label></li>';
-		result = result + '           	<li><input type="checkbox" value="NEW"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">New  </label></li>';
-		result = result + '           	<li><input type="checkbox" value="SUBMITTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Submitted </label></li>';
-		result = result + '           	<li><input type="checkbox" value="FILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Filled Closed </label></li>';
-		result = result + '           	<li><input type="checkbox" value="UNFILLEDCLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Unfilled Closed </label></li>';
-		result = result + '           	<li><input type="checkbox" value="ONHOLD"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">On Hold </label></li>';
-		result = result + '           	<li><input type="checkbox" value="CLOSED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Closed </label></li>';
-		result = result + '           	<li><input type="checkbox" value="REJECTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Rejected </label></li>';
-		result = result + '           	<li><input type="checkbox" value="CANCEL"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Cancel </label></li>';
-
-		//result = result + '           	<li><input type="checkbox" name="rl"><label>Checkbox3</label></li>';
-		result = result + '           </ul>';
-		result = result + '       </div>'; 
-		result = result + '   </li>';
+	result = result  +'<div class="timesheet_head">';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
+	result  = result + '<div class="success_pop" id="clientNotesSelector" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="clientNotesMsgDiv"></span>';
+    result  = result + '</div>';
+	    result = result + '<ul class="padding_right">';
+	    
+	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
+	        	result = result  +'    	<a href="javascript:void(0)" onClick="addClientNotes('+orgRelationId+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+		 '</sec:authorize>';
+		 
+		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
+		      result = result  +'    	<a href="javascript:void(0)" class="addUser-org" ><i class=""></i></a>                                                            ';
+		 '</sec:authorize>';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
+		result = result  +'  <div class="clearfix"></div> ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="clientNotesDivtList" ></div>';
+		result  = result + '   <div id="clientNotesListDiv" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
-
-    $("#tab-1").empty();
+	
+   $("#tab-1").empty();
     $("#tab-2").empty(); 
     $("#tab-3").empty();  
     $("#tab-4").empty();  
-    $("#tab-6").empty(); 
-    $("#tab-7").empty(); 
-    $("#tab-5").empty(); 
+    $("#tab-6").empty();  
+    $("#tab-7").empty();  
     $("#tab-8").empty(); 
-    $("#tab-8").append(result); 
-    
-    clientNotesList();
+    $("#tab-8").append(result);  
+	
+    clientNotes(orgRelationId);
+
     
 }
 </script>
-	
-	
-	
-	<script>
-function addEducation() {	
-	var result = "";
-	result = result  +'<!-- Popup Div -->';
-	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
-	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-	result = result  +'                <div class="form-horizontal clearfix"> ';
-	result = result  +'   ';
-	result = result  +'                  <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="specialization" field-name="specialization" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Specialization">                                          ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
-	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
-	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
-	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	
-	result  = result + '                 <div class="clearfix mb10">';
-	result = result  +'	                     <div class="col-md-5" positionRelative>';
-	result = result  +'	                     <select class="chosen-select"  name="gradeType" id="scoreType" onchange="selectScoreType();clearSearchKey();">';
-	result = result  +' 					   <option value="" selected="selected">Score Type</option>';
-	result = result  +'	                       <option value="Percentage">Percentage</option>';
-	result = result  +'	                       <option value="CGPA">CGPA</option>';
-	result = result  +'	                       <option value="GRADE">GRADE</option>';
-	result = result  +'	                      </select>';
-	result = result  +'	                   </div>';
-	result  = result + '                   <div class="col-md-7" positionRelative id="candidateScoreDiv">';
-	result  = result + '                     <input type="text" class="form-control" value="" name="grade" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();"';
-	result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
-	result  = result + '                 	 </div>';
-	result = result  +'	                   </div>';
-	
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" name="institute" field-name="institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Institute">                                               ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-12">                                                                                                            ';
-	result = result  +'                      <input type="text" field-name="Address" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true" name="address" class="form-control input-sm" value="" placeholder="Address">                                                 ';
-	result = result  +'                    </div>                                                                                                                             ';
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                                                                                                                                                       ';
-	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+');" />'; 
-	/* result = result  +'                  <input onClick ="candidateEmployersStore('+candidateId+');" type="submit" value="Add" class="btn btn-sm btn-primary pull-right"/>                                                       '; */
-	result = result  +'                  </div>                                                                                                                               ';
-	result = result  +'                </div>                                                                                                                                 ';
-	result = result  +'                </form>                                                                                                                                ';
-	$("#popUpDiv").empty();
-	$("#popUpDiv").append(result);
-	
-	
-	}
-</script>
-				
-
-<!-- client details View starts-->
-<script type="text/javascript">
-	function clientNotesList(orgRelationId) {
-		
-		var orgRelationId =$("#orgRelationId").val();
-		var sourceleadUrl = '${sourceleadUrl}';
-		var status = [];
-		$('input:checkbox[name=requirementStatusFilter]:checked').each(function() 
-	    {
-			status.push($(this).val());
-	    });
-		
-		$.ajax({
-	    	type: "POST",
-	    	url : sourceleadUrl+"/getClientReleasedRequirementList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&status="+status, 
-	        success: function(data) {
-	        	
-	        var json = JSON.parse(data);
-    			$("#clientNotesDivtList").empty();
-    			
-    			
-    			 var newCount = 0;
-            	 var submittedCount = 0;
-            	 var closedCount = 0;
-            	 var filledClosedCount = 0;
-            	 var unfilledClosedCount = 0;
-            	 var openCount = 0;
-            	 var rejectedCount = 0;
-            	 var onholdCount = 0;
-            	 var cancelCount = 0;
-    			
-				var result = "";
-				result = result +'<table id="clientNotesForPagination" class="display" cellspacing="0" width="100%" >'; 
-	        	result = result +'<thead>';
-	        	result = result +'<tr>';
-	        	result = result + '<th>Title</th>';
-	            result = result + '<th>Location</th>';
-	            result = result + '<th>Type</th>';
-	            result = result + '<th>Posted Date</th>';
-	            result = result + '<th>Owner</th>';
-	            result = result + '<th>Submissions</th>';
-	            result = result + '<th>Offer</th>';
-	            //result = result + '<th>Back-out</th>';
-	            result = result + '<th>Interview</th>';
-	            result = result + '<th>Status</th>';
-	        	result = result +'</tr>';
-	        	result = result +'</thead>';
-	        	result = result +'<tbody>';
-
-	        	for (var i=0; i<json.length; i++)
-				  {	        		
-	        		var opt = json[i];
-	        		
-	        		
-	        		result = result + '<tr>';
-               		result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
-	                
-	                if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
-	                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
-
-	                }else{
-	                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-	                }
-	                if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
-	           	 {
-	          	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
-	                 result = result +"  <td><div>"+opt.otherJobType+"</div></td>";
-	           	 }else{
-	           		result = result +"  <td><div class='tblminwidth-75'>"+opt.jobType+"</div></td>"; 
-	           	 }
-	           	 }else{
-	           		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
-	           	 }
-	                result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
-	                result = result + '<td><div class="tbldata-dotdot-vsm"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
-	               	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
-	                result = result + '<td><div>'+opt.noOfOfferedApplicants+'</div></td>';
-	               // result = result + '<td><div>'+opt.noOfBackOutApplicants+'</div></td>';
-	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
-	               // result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
-	                
-   		         if(opt.requirementSubmissionStatus !=null && opt.requirementSubmissionStatus != '' && opt.requirementSubmissionStatus != 'undefined'){
-   		        	 /* if(opt.requirementSubmissionStatus == "OPEN"){
-   		        		openCount = openCount+1;       
-   		        	 }else if(opt.requirementSubmissionStatus == "NEW"){
-   		        		newCount = newCount +1;    
-   		        	 }else if(opt.requirementSubmissionStatus == "SUBMITTED"){
-   		        		submittedCount = submittedCount +1; 
-   		        	 }else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-   		        		filledClosedCount = filledClosedCount +1;   
-   		        	 }else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-   		        		unfilledClosedCount = unfilledClosedCount +1;   
-   		        	 }else if(opt.requirementSubmissionStatus == "ONHOLD"){
-   		        		onholdCount = onholdCount +1;   
-   		        	 }else if(opt.requirementSubmissionStatus == "CLOSED"){
-   		        		closedCount = closedCount +1;   
-   		        	 }else if(opt.requirementSubmissionStatus == "REJECTED"){
-   		        		rejectedCount = rejectedCount +1;   
-   		        	 }else if(opt.requirementSubmissionStatus == "CANCEL"){
-   		        		cancelCount = cancelCount +1;   
-   		        	 } */
- 	                result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
-   		         }
-   		         else{
-   		        	result = result + '<div class="tblminwidth-75 ">---</div>';
-   		         }
-	               
-	                result = result +'</div></td>';
-	                result = result + '	 </tr>';
-				} 
-	        	result = result +'</tbody>';
-	        	result = result +"</table>";
-	        	
-	        	/* $("#openCount").html(openCount);
-        		$("#newCount").html(newCount);
-        		$("#unfilledClosedCount").html(unfilledClosedCount);
-        		$("#filledClosedCount").html(filledClosedCount);
-        		$("#onholdCount").html(onholdCount);
-        		$("#closedCount").html(closedCount);
-        		$("#rejectedCount").html(rejectedCount);
-        		$("#cancelCount").html(cancelCount);
-        		$("#submittedCount").html(submittedCount); */
-	        	
-    	    $("#clientNotesDivtList").append(result); 
-        		clientNotespagination(); 
-    	  
-	        },
-	    });
-	}
-</script>
-
 
  <script>
-function clientNotespagination(){  
-	$('#clientNotesForPagination').DataTable( { 
+function clientNotes(orgRelationId){
+	var urlForm = "";
+	
+    	urlForm = "/getNotes?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId;
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+urlForm,        
+         success :function(data) {
+	var output = "";
+    if(data != null && data != 'undefined' && data != "" && data != '[]'){
+    var json = JSON.parse(data);
+	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+     for(var i=0;i<json.length;i++){
+       	var report = json[i];
+   	  	output = output+'<div class="comments-div comments-inner clearfix">';
+   	    output = output+'    <div class="commentsimg">';
+   	    output = output+'    <i class="fa fa-comments"></i>';
+   	    output = output+'        <div class="commentsimg-inner">';
+   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.userId+'"/>';
+   	    output = output+'        </div>';
+   	    output = output+'    </div>';
+   	    output = output+'     <div class="comments-content">';
+   	    output = output+'         <div class="pull-left">';
+   	    output = output+'         <p class="comment-by">';
+   	    output = output+'            By <span class="text-danger">'+report.userName+'</span>';
+   	 output = output+'            By <span class="text-danger">'+report.requirementTitle+'</span>';
+   	    output = output+'            <span class="small">'+report.createdDateString+'</span></p>';
+   	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
+   	    output = output+'         </div>';
+   	    output = output+'     </div>';
+   	    output = output+'</div>';
+     }
+}else{
+     var output ="";
+    output = output+"   <div class='dataTables_empty'>"; 
+	 output = output+"  </div> ";
+}
+output  = output + '              </div>';
+output  = output + '        </div>';
+	$("#clientNotesListDiv").empty(); 
+    $("#clientNotesListDiv").append(output);
+ },
+         
+      });
+}
+</script>
+<script>
+function documentpagination(){  
+    $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
@@ -294,7 +154,300 @@ function clientNotespagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    });
-	$('#clientNotesForPagination').wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+    } );
 }
 </script>
+
+<script>
+function addClientNotes(orgRelationId,clientLocationId) {	
+	var result = "";
+	result = result  +'<!-- Popup Div -->';
+	result = result  +'          <form role="form"  id="clinetNotes_form" name="clinetNotes_form" method="post" > ';
+	result = result  +'          <input type="hidden" id="noteType" name="noteType" value="client"> ';
+	result = result  +'          <input type="hidden" id="orgRelationId" name="orgRelationId" value="'+orgRelationId+'"> ';
+	result = result  +'          <input type="hidden" id="clientLocationId" name="clientLocationId" value="'+clientLocationId+'"> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
+	
+	
+	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
+     result = result +" <div class='dropdown-select mb10' id='categoryTypeListDiv'>";
+     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange='getRejectedCategory(); selectCategory(this);' data-validation='required' field-name='Category'>";
+     result = result +"<option selected value=''>--Select Category--</option>";
+     result = result +"<option value='Jobs'>Jobs</option>";
+     result = result +"<option value='Contacts'>Contacts</option>";
+     result = result +"<option value='Contracts'>Contracts</option>";
+     result = result +"<option value='Billing'>Billing</option>";
+     result = result +"<option value='Project'>Project</option>";
+     result = result +"<option value='Other'>Other</option>";
+     result = result +"</select>";
+     result = result +"    </div>";
+	
+     result = result +"    <div class='mt10'>";
+     result = result +"    <div class='dropdown-select mb10' id='categoryContactTypeListDivDiv'>";
+//      result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+//      result = result +"</select>";
+     result = result +"    </div>";
+   
+     result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mb10'>";
+     result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other' >";
+     result = result +" </div>";
+     
+     
+     
+	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result+'	                  <div class="clearfix">';
+	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="required"  field-name="Description" class="form-control"></textarea>';
+	result = result+'	                  </div>';
+	result = result  +'                  </div>';     
+	
+	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
+	result = result  +'                  <div class="pull-right"> ';
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeClientNotes('+orgRelationId+');" />'; 
+  /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
+	result = result  +'                  </div> ';
+	result = result  +'                  </div> ';
+	result = result  +'                </div>';
+	
+	result = result  +'                </form>';
+	
+	$("#popUpDiv").empty();
+	$("#popUpDiv").append(result);
+	
+	 var config = {
+	  '.chosen-select'           : {},
+	  '.chosen-select-deselect'  : {allow_single_deselect:true},
+	  '.chosen-select-no-single' : {disable_search_threshold:10},
+	  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+	  '.chosen-select-width'     : {width:"95%"}
+	}
+	for (var selector in config) {
+	  $(selector).chosen(config[selector]);
+	}
+	$('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({'width': '100%'});
+		})
+	function educationStartDate(){
+	}
+	
+	$('#startDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	           // var dt = new Date(selected);
+	           var dt = toDate("#startDate");
+	           dt.setDate(dt.getDate() + 1);
+	           $("#endDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#endDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true, 
+	        onSelect: function (selected) {
+	           // var dt = new Date(selected);
+	            var dt = toDate("#endDate");
+	            dt.setDate(dt.getDate() - 1);
+	            $("#startDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+	
+	$(".edit-details").toggleClass("edit-details-active");
+	 $(".close-div").click(function(){ 
+		 $(this).parent("div.edit-details").removeClass("edit-details-active");
+		 });
+	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details, .ui-datepicker-prev, .ui-datepicker-next").click(function(e){
+		 e.stopPropagation();
+	 });
+	 /* $('html').click(function(){
+		$(".edit-details").removeClass("edit-details-active");
+	   }); */	
+	 
+
+	}
+</script>
+
+<script>
+function closeDocPopup(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
+<script>
+var validationSettings = {
+			        errorMessagePosition : 'element',
+			        borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+</script>
+
+
+<script type="text/javascript">
+	function storeClientNotes(orgRelationId){
+		alert("storeClientNotes");
+		if ($('#clinetNotes_form').validate(false, validationSettings)){
+			alert("validationSettings");
+				var frm = $('#clinetNotes_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#clinetNotes_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#submit_comment").attr("disabled", "disabled");
+         		$("#submit_comment" ).addClass('button').val('Processing..');
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+							savedCommentAndCount(candidateId);
+							
+						},
+					});
+					$('.add-comment').toggle(200);
+					return true;
+		}else {
+			return false;	
+		}
+		}
+		$('body').on('blur', '#clinetNotes_form', function() {
+		$("#clinetNotes_form").showHelpOnFocus();
+		$("#clinetNotes_form").validateOnBlur(false, validationSettings);
+		
+	});
+</script>
+
+<script>
+function getRejectedCategory(){
+	var rejectedCategory = document.getElementById("categoryType").value;
+	if(rejectedCategory == 'Other'){
+		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
+	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
+		$('#rejectedCategoryOther').attr("data-validation","required validate_Space validate_length length2-100 "); 
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#rejectedCategoryOther").attr("data-validation-optional","true");
+		$("#rejectedCategoryOther").removeAttr("data-validation");
+		$("#rejectedCategoryOther").val('');
+		document.getElementById("rejectOtherCategoryDiv").style.display="none";
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+	
+}
+</script>
+
+<script>
+function selectCategory(){
+	$('#categoryContactTypeListDivDiv').val('').trigger("chosen:updated");
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgRelationId = $('#orgRelationId').val(); 
+	var clientLocationId = $('#clientLocationId').val(); 
+	var categoryType = $('#categoryType').val(); 
+	if(categoryType != ''){
+		if(categoryType == "Jobs"){
+			var status = "OPEN";
+			$.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getClientReleasedRequirementList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&status="+status, 
+		        success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 var result ="";
+		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	 for(var i=0;i<json.length;i++){
+		        		 var opt = json[i];
+		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
+		             }
+		        	 result = result +"</select>";
+		        	 $("#categoryContactTypeListDivDiv").empty();
+				     $("#categoryContactTypeListDivDiv").append(result);
+				     $('#categoryContactTypeListDivDiv').trigger("chosen:updated");
+		        }
+			});
+		}
+		if(categoryType == "Contacts"){
+			$.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Client", 
+		        success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 var result ="";
+		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	 for(var i=0;i<json.length;i++){
+		        		 var opt = json[i];
+		        		 result = result +"<option value="+opt.id+">"+opt.spocName+"</option>";
+		             }
+		        	 result = result +"</select>";
+		        	 $("#categoryContactTypeListDivDiv").empty();
+				     $("#categoryContactTypeListDivDiv").append(result);
+				     $('#categoryContactTypeListDivDiv').trigger("chosen:updated");
+		        }
+			});
+		}
+		if(categoryType == "Contracts"){
+			var contractStatus = "Finalized";
+			 $.ajax({  
+		          type : "POST",
+		          url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
+		          success :function(data) {
+		        	  var json = JSON.parse(data);
+		        	  var result ="";
+		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	  if(json.length>0){
+              		    for (var i = 0; i < json.length; i++) {
+              		    	var opt= json[i];
+              		    	 result = result +"<option value="+opt.id+">"+opt.contractTitle+"</option>";
+              		    }
+              		  result = result +"</select>";
+ 		        	 $("#categoryContactTypeListDivDiv").empty();
+ 				     $("#categoryContactTypeListDivDiv").append(result);
+ 				     $('#categoryContactTypeListDivDiv').trigger("chosen:updated");
+		          }
+			 }
+		});
+	 }
+		
+		if(categoryType == "Billing"){
+			var dayWisetype = "month";
+			var endDate = "";
+			var startDate = "";
+			var invoice = "";
+			var payment ="";
+				$.ajax({
+			    	type: "POST",
+			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
+			        success: function(data) {
+		        	  var json = JSON.parse(data);
+		        	  var result ="";
+		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	  if(json.length>0){
+              		    for (var i = 0; i < json.length; i++) {
+              		    	var opt= json[i];
+              		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
+              		    }
+              		  result = result +"</select>";
+ 		        	 $("#categoryContactTypeListDivDiv").empty();
+ 				     $("#categoryContactTypeListDivDiv").append(result);
+ 				     $('#categoryContactTypeListDivDiv').trigger("chosen:updated");
+		          }
+			 }
+		});
+	 }
+		
+		
+	}else{
+		$("#categoryContactTypeListDivDiv").empty();
+		  $('#categoryContactTypeListDivDiv').trigger("chosen:updated");
+	}
+	
+}
+</script>
+
+ 

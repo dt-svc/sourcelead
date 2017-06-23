@@ -977,11 +977,11 @@ function pagination(){
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		result = result + '<li><a href="#tab-7" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
 		'</sec:authorize>';
-		
+	
 		// client notes
-		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		result = result + '<li><a href="#tab-8" onclick="clientNotes('+orgRelationId+');">Notes List</a></li>';	
-		'</sec:authorize>';
+		
+		result = result + '<li><a href="#tab-8" onclick="clientNotesList('+orgRelationId+','+clientLocationId+');">Notes List</a></li>';	
+	
 		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
