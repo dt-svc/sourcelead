@@ -59,6 +59,7 @@ import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -139,6 +140,9 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     EmailScenerioUtil emailScenerioUtil;
+    
+    @Autowired
+    MasterCandidateService masterCandidateService;
 	
 	/**
 	 * @author prasad k
@@ -188,6 +192,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			if(null == masterCandidate){
+				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+			}
+			candidate.setMasterCandidateId(masterCandidate);
 		}
         
 		if(orgLocations != null){

@@ -263,7 +263,7 @@ public class UserServiceImpl implements UserService {
 			MasterCandidate masterCandidate = null;
 			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
 			if(null == masterCandidate){
-				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user);
+				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginuser);
 			}
 			candidateService.storeCandidateForUsers(jsonObj, user, orgLocations, masterCandidate);
 		}

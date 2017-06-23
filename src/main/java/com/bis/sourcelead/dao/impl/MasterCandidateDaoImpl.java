@@ -59,7 +59,7 @@ private static final Logger logger = LoggerFactory.getLogger(MasterCandidateDaoI
 			if (masterCandidate != null) {
 				session.saveOrUpdate(masterCandidate);
 			}
-			logger.debug("Candidate Stored Successfully");
+			logger.debug("Master Candidate Stored Successfully");
 		} catch (Exception exception) {
 			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"MasterCandidate"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());

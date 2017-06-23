@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,6 +40,10 @@ public class CandidateDocuments implements Serializable{
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="REQUESTED_DOC_ID", nullable=false )        
+    private RequestedDocuments requestedDocumentsId;
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)

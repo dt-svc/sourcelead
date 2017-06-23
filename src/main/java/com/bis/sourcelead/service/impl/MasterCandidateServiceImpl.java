@@ -70,9 +70,23 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 			masterCandidate.setEmail(jsonObj.getString("email"));
 		}
 		
-		if(jsonObj.has("phoneNumber")){
+		if(jsonObj.has("phoneNumber") && !isNullOrEmpty(jsonObj.getString("phoneNumber"))){
 			masterCandidate.setPhoneNumber(jsonObj.getString("phoneNumber"));
 		}
+		
+		if(jsonObj.has("mobilePhone") && !isNullOrEmpty(jsonObj.getString("mobilePhone"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("mobilePhone"));
+		}
+		
+		if(jsonObj.has("mobilePhone") && !isNullOrEmpty(jsonObj.getString("mobilePhone"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("mobilePhone"));
+		}
+		
+		if(jsonObj.has("alternateMobilePhone") && !isNullOrEmpty(jsonObj.getString("alternateMobilePhone"))){
+			masterCandidate.setAlternatePhoneNumber(jsonObj.getString("alternateMobilePhone"));
+		}
+		
+		
 		
 		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
 		masterCandidate.setCreatedBy(user.getUserCode());
