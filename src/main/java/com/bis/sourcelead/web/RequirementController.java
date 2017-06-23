@@ -807,7 +807,46 @@ public class RequirementController {
 			} 
    }
 	
+	/**
+	* @author David Raju 
+	* 
+	* This method is used to download OfferAttachment
+	* 
+	* @param offerId
+	* @param request
+	* 
+	* @return resultJson
+	* 
+	* @throws Exception
+	*/
+	@RequestMapping(value = "/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
+    public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
+		
+		
+		   RequirementOffers requirementOffers  =requirementOffersService.getRequirementOfferId(offerId);
+		
+		    response.setContentType("application/octet-stream");
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(requirementOffers.getFileName()).append("\"").toString());
+		    
+			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
 
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+		}
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;
