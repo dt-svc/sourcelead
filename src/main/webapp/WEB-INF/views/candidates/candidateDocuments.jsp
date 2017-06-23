@@ -53,6 +53,7 @@ function candidateDocuments(candidateId){
 		var docUUID = '';
 		if(candidateType =="Candidates"){
 			'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="requestDoc();createDocsType();" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
 			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
 		}else{
@@ -229,6 +230,44 @@ function closePopup(){
 	 $("#popUpDiv").removeClass("edit-details-active");
 }
 </script>
+
+
+<div class="requestDocSideMask"></div>
+<div class="modal modalInvite requestDocuments">
+  <div class="modal-dialog modal-lg"> 
+    <div id="documentsTypeDiv"></div>
+    </div>
+  </div>
+  
+  <div id="divDocsTd1" style="display: none; float: left;">
+  <div class="dropdown-select paddingRight">
+              <select class="width100percnt form-control selectborder" id="REPLACEROWIDdocType" name="REPLACEROWIDdocType">
+                <option selected>- -Document Type * - -</option>
+                <option>Document Type-1</option>
+                <option>Document Type-2</option>
+                <option>Document Type-3</option>
+              </select>
+  </div>
+  </div>
+  
+  <div id="divDocsTd2" style="display: none; float: left;">
+  <div>
+              <textarea rows="2" placeholder="Description" class="form-control" id="REPLACEROWIDdescription" name="REPLACEROWIDdescription"></textarea>
+   </div>
+  </div>
+  
+  <div id="divDocsTd3" style="display: none; float: left;">
+  <div>
+     <label class="switch mt10 ml10 pull-left">
+       <input type="checkbox" checked id="REPLACEROWIDchecked" name="REPLACEROWIDchecked">
+       <div class="slider round"></div>
+       </label>
+         <div class="pull-right">
+       <button type="button" class="btn btm-sm pull-right mt5" onclick="removeDocType(REPLACEROWID)"><i class="fa fa-remove text-danger"></i></button>
+             </div>
+   </div>
+</div>       
+
 
 <%-- 
      @author : prasad K.
@@ -576,3 +615,131 @@ function refreshDocList(candidateId){
 }
 </script>
 
+<script>
+
+//Request Documents
+    function requestDoc(){
+    $(".modalInvite").fadeIn();
+    $(".requestDocSideMask").fadeIn();
+    }
+    function closeRD(){
+    $(".modalInvite").fadeOut();
+    $(".requestDocSideMask").fadeOut();
+    }
+</script>
+
+<script>
+function createDocsType(){
+	
+	$("#documentsTypeDiv").empty();
+	
+	var result = "";
+	result = result +'<div class="modal-content">';
+	result = result +'<div class="modal-header">';
+	result = result +'<button type="button" class="close" data-dismiss="modal" onClick="closeRD();">&times;</button>';
+	result = result +'<h4 class="modal-title">';
+	result = result +'Request Documents';
+	result = result +'</h4>';
+	result = result +'</div>';
+	result = result +'<div class="modal-body">';
+	result = result +'<div class="form-horizontal clearfix mb">';
+	result = result +'<div class="clearfix"></div>';
+        
+        
+	result = result +'<div class="clearfix mb10 mt5 requestdocmntTable">';
+	result = result +'<input type="hidden" name="docuemntMaxRowNumber"  id="docuemntMaxRowNumber" value="1" />';
+	result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="requestedDocumentsTable" border="0">';
+	result = result +'<tbody>';
+	result = result +'<tr id="requestedDocumentsTsRow0">';
+	result = result +'<div id="0requestedDocumentsFileGroup">';
+	result = result +'<td width="200px">';
+	result = result +'<div class="dropdown-select">';
+	result = result +'<select class="width100percnt form-control selectborder" id="0docType" name="0docType">';
+	result = result +'<option selected>- -Document Type  - -</option>';
+	result = result +'<option>Document Type-1</option>';
+	result = result +'<option>Document Type-2</option>';
+	result = result +'<option>Document Type-3</option>';
+	result = result +'</select>';
+	result = result +'<div class="clearfix mt5" id="0otherType" name="0otherType" style="display: none;">';
+	result = result +'<input type="text" class="form-control input-sm" placeholder="Other Type">';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</td>';
+	result = result +'<td width="auto">';
+	result = result +'<div class="">';
+	result = result +'<textarea rows="2" placeholder="Description" class="form-control" id="0description" name="0description"></textarea>';
+	result = result +'</div>';
+	result = result +'</td>';
+	result = result +'<td width="150px">';
+	result = result +'<div class="">';
+	result = result +'<label class="switch mt10 ml10 pull-left">';
+	result = result +'<input type="checkbox" checked id="0checked" name="0checked">';
+	result = result +'<div class="slider round"></div>';
+	result = result +'</label>';
+	result = result +'<div class="pull-right">';
+	result = result +'<button type="button" class="btn btm-sm pull-right mt5" onclick="addDocumentRow();"><i class="fa fa-plus text-primary"></i></button>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</td>';
+	result = result +'</div>';
+	result = result +'</tr>';
+	result = result +'</tbody>';
+	result = result +'</table>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+    
+	result = result +'<div class="modal-footer clearfix">';
+	result = result +'<button type="submit" class="btn btn-sm btn-primary mr10">Send</button>';
+	result = result +'<button type="submit" class="btn btn-sm btn-default" onclick="closeRD();">Cancel</button>';
+	result = result +' </div>';
+	result = result +'</div>';
+	
+	$("#documentsTypeDiv").append(result);
+	
+}
+</script>
+
+
+<script>
+function addDocumentRow(){
+	var checkMaxTsRowNum = $("#docuemntMaxRowNumber").val();
+	var tbl = document.getElementById("requestedDocumentsTable");
+	var maxRowNum = parseInt($("input[name = 'docuemntMaxRowNumber']").val());
+	$("input[name = 'docuemntMaxRowNumber']").val(maxRowNum + 1);
+	
+	
+	var row = tbl.insertRow(maxRowNum);
+	row.setAttribute("id", "divRequestedDocumentsRow" + maxRowNum);
+	
+	
+	var cell0 = row.insertCell(0);
+	var divDocTypeTdStr = document.getElementById("divDocsTd1").innerHTML;
+	divDocTypeTdStr = divDocTypeTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell0.innerHTML = divDocTypeTdStr;
+	
+	var cell1 = row.insertCell(1);
+	var divDocDescTdStr = document.getElementById("divDocsTd2").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell1.innerHTML = divDocDescTdStr; 
+	
+	var cell2 = row.insertCell(2);
+	var divDocDescTdStr = document.getElementById("divDocsTd3").innerHTML;
+	divDocDescTdStr = divDocDescTdStr.replace(/REPLACEROWID/g, (maxRowNum));
+	cell2.innerHTML = divDocDescTdStr; 
+}
+</script>
+
+<script type="text/javascript">
+	function removeDocType(rowId) {
+		 document.getElementById("divRequestedDocumentsRow"+rowId).style.display = 'none';
+		 document.getElementById("divRequestedDocumentsRow"+rowId).value= '';
+		 var  rId = "divRequestedDocumentsRow"+rowId;
+		  var r = document.getElementById("requestedDocumentsTable").rows[rId];
+          var count = 2*(r.cells.length);
+		    for(i=0;i<=count;i++){
+		        r.deleteCell(0);
+		    } 
+		 
+	}
+</script>
