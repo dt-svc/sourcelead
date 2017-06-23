@@ -45,7 +45,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
@@ -162,7 +162,7 @@
 							</div>	
 		                  <div class="col-md-4 mb10">
 			                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-								  <div class="input-group er ratetype">
+								  <div class="input-group er ">
 										<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
 												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="expenseRateType${entryCount.count}" field-name="Rate Type" field-name="Rate Type" data-validation="required">
 												  	<option value="INR" ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
