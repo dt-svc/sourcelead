@@ -148,21 +148,21 @@ public class RequirementController {
 		
 		if(null != requirementUUID && !requirementUUID.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
-			
-			if(requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
-			
-			if(null != requirement.getEducation()){
+
+			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
+
+				if (null != requirement.getEducation()) {
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
 					requirement.setReqEducationListString(requirement.getEducation());
-			}
-			
-			if(null != requirement.getSkills()){		
+				}
+
+				if (null != requirement.getSkills()) {
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
 					requirement.setReqSkillsListString(requirement.getSkills());
-			}
-			
+				}
+
 			if(null != requirement.getIndustryName()){
 				String selectedIndustryName = requirement.getIndustryName();
 				requirement.setIndustrySavedName(selectedIndustryName);
@@ -305,6 +305,27 @@ public class RequirementController {
 			model.addObject("skillsList", skillsList);
 		}
 		
+		
+		if(requirement != null && requirement.getId() != null){
+
+			List<String> allReqVisaList = requirementService.getAllRequirementVisaByRequirementI(requirement.getId());
+				List<String> visaList = lookUpDataService.getAllVisaByCategory();
+				String visa = allReqVisaList.get(0);
+				if(!"null".equalsIgnoreCase(visa) && null != visa){
+				String arr[] = visa.split(",");
+				for(String visaName : arr){
+					if(!visaList.contains(visaName)){
+						visaList.add(visaName);
+					}
+				}
+			      model.addObject("visaList", visaList);
+				}else{
+				  model.addObject("visaList", visaList);
+				} 
+		}else{
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);
+		}
 		
 		
 		
