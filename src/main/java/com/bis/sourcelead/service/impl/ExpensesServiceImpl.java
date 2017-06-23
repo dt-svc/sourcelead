@@ -131,8 +131,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	@Override
-	public Expenses getExpenseByExpenseUniqueId(String expenseId) throws Exception {
-		return expensesDao.getExpenseByExpenseUniqueId(expenseId);
+	public Expenses getExpenseByExpenseUniqueId(String expenseId,Long OrgLocationID) throws Exception {
+		return expensesDao.getExpenseByExpenseUniqueId(expenseId,OrgLocationID);
 	}
 	@Override
 	public File exportMyExpensesToPdf(Expenses expenseDetails, OrgLocations orgLoc, User loginUser) throws Exception {
