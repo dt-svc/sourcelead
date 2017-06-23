@@ -5579,6 +5579,15 @@ a.color_white{
 .changeRate_div .drpdownMonthly select {
     width: 50px;
 }
+.proposeNewRate .panel-group {
+	margin-bottom: 0;
+}
+.proposeNewRate .panel-title a{
+	color:#368ee0;
+}
+.proposeNewRate .panel-title a:hover{
+	color:#909090;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

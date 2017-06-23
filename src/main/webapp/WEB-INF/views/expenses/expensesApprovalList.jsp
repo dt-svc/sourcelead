@@ -275,7 +275,7 @@ $.ajax({
 </script>
 
 <script>
-function saveRejectExpenseByExpenseId(expenseId,tdSpanSize,from){
+function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 var msg = $("#reject"+expenseId+"message").val(); 
 		 var encodeMsg = msg;
 		 if(encodeMsg.match(/^[^\s-](.*)*$/) != null){
