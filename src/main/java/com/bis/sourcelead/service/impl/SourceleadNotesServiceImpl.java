@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.SourceleadNotesDao;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.ibm.icu.text.DateFormat;
@@ -30,6 +32,9 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	RequirementService requirementService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadNotesServiceImpl.class);
 	
@@ -49,15 +54,32 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("orgRelationId")));
 			sourceleadNotes.setOrgRelationID(orgRelation);
 		}
+	
 		else {
 			sourceleadNotes.setOrgRelationID(null);
 		}
-		if (jsonObj.has("allowAll")) {
+		
+		if (jsonObj.has("categoryType") && !"".equalsIgnoreCase(jsonObj.getString("categoryType"))) {
+			sourceleadNotes.setCategoryType(jsonObj.getString("categoryType"));
+		}
+		else{
+			sourceleadNotes.setCategoryType(null);
+
+		}
+		if (jsonObj.has("vendorcontact") && !"".equalsIgnoreCase(jsonObj.getString("vendorcontact"))) {
+			Requirement requirement=requirementService.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("vendorcontact")));
+			sourceleadNotes.setRequirementId(requirement);
+		}
+		else{
+			sourceleadNotes.setRequirementId(null);
+			
+		}
+		/*if (jsonObj.has("allowAll")) {
 			sourceleadNotes.setCheckBox(jsonObj.getString("allowAll"));
 		}else{
 			sourceleadNotes.setCheckBox(Constants.NO);
 
-		}
+		}*/
 		sourceleadNotes.setUserId(user);
 		sourceleadNotes.setCreatedDate(commonUtil.currentDate());
 		sourceleadNotes.setUpdatedDate(commonUtil.currentDate());
@@ -74,6 +96,18 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
 			notes.setUserName(notes.getUserId().getFirstName());
+			
+			if(notes.getRequirementId() !=null){
+				notes.setRequirementTitle(notes.getRequirementId().getJobTitle());
+				}
+				
+				if(notes.getContractId() !=null){
+					notes.setContactName(notes.getContractId().getContractTitle());
+					}
+				
+				if(notes.getInvoicdeId() !=null){
+					notes.setInvoiceId(notes.getInvoicdeId().getInvoiceId());
+					}
 			
 			// date time format conversion.
 			long diff = commonUtil.currentDate().getTime() - notes.getCreatedDate().getTime();
@@ -94,7 +128,10 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
 				String commonDateFormat = standardFormat.format(notes.getCreatedDate());
 				notes.setCreatedDateString(commonDateFormat.toString());
+				
 			}
+			
+			
 			
 		}
 		return notesList;

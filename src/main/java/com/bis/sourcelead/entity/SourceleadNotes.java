@@ -74,6 +74,9 @@ public class SourceleadNotes {
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@Column(name = "DROPDOWN_TYPE")
+	private String categoryType;
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
@@ -82,6 +85,19 @@ public class SourceleadNotes {
 	
 	@Transient
 	private String createdDateString;
+	
+	@Transient
+	private String requirementTitle;
+	
+	@Transient
+	private String contactName;
+	
+	@Transient
+	private String contract;
+	
+	@Transient
+	private String invoiceId;
+	
 	
 	@Transient
 	private String updatedDateString;
@@ -245,6 +261,56 @@ public class SourceleadNotes {
 	public void setCheckBox(String checkBox)
 	{
 		this.checkBox = checkBox;
+	}
+
+	public String getCategoryType()
+	{
+		return categoryType;
+	}
+
+	public void setCategoryType(String categoryType)
+	{
+		this.categoryType = categoryType;
+	}
+
+	public String getRequirementTitle()
+	{
+		return requirementTitle;
+	}
+
+	public void setRequirementTitle(String requirementTitle)
+	{
+		this.requirementTitle = requirementTitle;
+	}
+
+	public String getContactName()
+	{
+		return contactName;
+	}
+
+	public void setContactName(String contactName)
+	{
+		this.contactName = contactName;
+	}
+
+	public String getContract()
+	{
+		return contract;
+	}
+
+	public void setContract(String contract)
+	{
+		this.contract = contract;
+	}
+
+	public String getInvoiceId()
+	{
+		return invoiceId;
+	}
+
+	public void setInvoiceId(String invoiceId)
+	{
+		this.invoiceId = invoiceId;
 	}
 	
 	
