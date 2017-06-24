@@ -41,7 +41,7 @@ public class SourceleadDataBaseInstallation {
 		 * 'filesystem' keyword we can able set file path..
 		 * 
 		 */
-		flyway.setLocations("/migrations");
+		flyway.setLocations("com\\bis\\sourcelead\\db\\migrations");
 		try {
 			flyway.setValidateOnMigrate(false);
 			flyway.migrate();

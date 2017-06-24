@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -69,9 +70,7 @@ public class Projects implements Serializable{
     @Column(name="ESTIMATED_BUDGET")
     private Double estimatedBudget;
     
-    @Lob
-    @Column(name="PROJECT_FILE",length=100000)
-    private byte [] projectFile;
+
     
     @ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SUPERIOR_USER_ID")
@@ -135,7 +134,21 @@ public class Projects implements Serializable{
     @Fetch(FetchMode.SELECT)
     private Set<ProjectTasks> projectTasks;
     
-    @Transient
+  
+    @OneToMany(mappedBy="projects",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<ProjectDocuments> projectDocuments = new HashSet<>();
+    
+    
+    public Set<ProjectDocuments> getProjectDocuments() {
+		return projectDocuments;
+	}
+
+	public void setProjectDocuments(Set<ProjectDocuments> projectDocuments) {
+		this.projectDocuments = projectDocuments;
+	}
+
+	@Transient
     private String managerLevel1;
     
     @Transient
@@ -618,12 +631,6 @@ public class Projects implements Serializable{
 		return estimatedBudget;
 	}
 
-	public byte[] getProjectFile() {
-		return projectFile;
-	}
 
-	public void setProjectFile(byte[] projectFile) {
-		this.projectFile = projectFile;
-	}
 	
 }

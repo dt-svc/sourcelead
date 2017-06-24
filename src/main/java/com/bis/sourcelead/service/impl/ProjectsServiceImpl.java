@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -300,7 +301,7 @@ public class ProjectsServiceImpl implements ProjectsService{
     	Projects projects = new Projects();
     	projects.setProjectSequeneNumber(jsonObj.getString("ProjectSequeneNumber").trim());
     	projects.setProjectName(jsonObj.getString("ProjectName").trim());
-    	projects.setProjectFile(fileContents);
+    	
     	
     	if((jsonObj.has("ProjectDescription"))){
     	projects.setDescription(jsonObj.getString("ProjectDescription"));
@@ -330,6 +331,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 		if(jsonObj.has("EstimatedBudget") && StringUtils.isNotEmpty(jsonObj.getString("EstimatedBudget"))){
 			projects.setEstimatedBudget(jsonObj.getDouble("EstimatedBudget"));
 		}
+		
+		
+		ProjectDocuments projectDocument = new ProjectDocuments();
+		projectDocument.setFileName("File_1");
+		projectDocument.setFileContents(fileContents);
+		projectDocument.setProjects(projects);
+		projects.getProjectDocuments().add(projectDocument);
+		
+		
+		
     	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
