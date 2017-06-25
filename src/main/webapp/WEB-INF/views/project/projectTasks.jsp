@@ -185,6 +185,7 @@ function taskNameValidation(){
 						$("#tab-1").empty();
 						$("#tab-3").empty();
 						$("#tab-2").empty();
+						$("#tab-4").empty();
 						$("#tasksLoadingImg").empty();
 						$("#tab-3").append(result);
 						$("#tab-3").show();

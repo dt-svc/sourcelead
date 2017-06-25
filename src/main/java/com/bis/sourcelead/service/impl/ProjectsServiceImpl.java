@@ -58,6 +58,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -288,7 +289,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String storeProject(JSONObject jsonObj, byte [] fileContents) throws Exception {
+	public String storeProject(JSONObject jsonObj, ProjectDocumentBO projectDocumentBO) throws Exception {
 		    
 		  
 		String resultJson = null;
@@ -334,8 +335,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		
 		ProjectDocuments projectDocument = new ProjectDocuments();
-		projectDocument.setFileName("File_1");
-		projectDocument.setFileContents(fileContents);
+		projectDocument.setFileName(projectDocumentBO.getFileName());
+		projectDocument.setFileContents(projectDocumentBO.getFileContents());
+		projectDocument.setFileType(projectDocumentBO.getFileType());
 		projectDocument.setProjects(projects);
 		projects.getProjectDocuments().add(projectDocument);
 		

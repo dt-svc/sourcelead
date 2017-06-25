@@ -206,6 +206,7 @@
 		$("#tab-3").empty();  
 		$("#tab-2").empty();  
 	    $("#tab-1").empty();
+	    $("#tab-4").empty();
 	    $("#employeesLoadingImg").empty();
 	    $("#tab-2").append(result);  
 	    

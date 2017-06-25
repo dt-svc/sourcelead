@@ -30,6 +30,9 @@ public class ProjectDocuments implements Serializable {
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
+	@Column(name = "FILE_TYPE")
+	private String fileType;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projects;
@@ -52,6 +55,16 @@ public class ProjectDocuments implements Serializable {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+	
+	
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
 	public Projects getProjects() {

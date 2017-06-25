@@ -193,6 +193,7 @@
 						$("#tab-1").empty();
 						$("#tab-2").empty();
 						$("#tab-3").empty();
+						$("#tab-4").empty();
 						$("#tab-1").append(result);
 						$("#tab-1").show();
 						

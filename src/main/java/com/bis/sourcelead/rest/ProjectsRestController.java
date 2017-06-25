@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.model.ProjectDocumentBO;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -45,95 +46,96 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
-
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
 public class ProjectsRestController {
-	
-	
+
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
-	 @Autowired
-	 EmailScenarioService emailScenarioService;
-	
-	 @Autowired
-	 EmailScenerioUtil emailScenerioUtil;
-	
-	 @Autowired
-	 private ProjectsService projectsService; 
-	 
-	 @Autowired
-	 private OrgService orgService;
-	 
-	 @Autowired
-	 private OrgLocationService orgLocationService;
-	 
-	 @Autowired
-	 private ProjectTasksService tasksService;
-	 
-	 @Autowired
-	 public UserService userService;
-	
-	 @Autowired
-	 public EmployeesService employeesService;
-	 
-	 @Autowired
-	 public UserRoleService userRoleService;
 
-	 @Autowired
-	 public ProjectApproverHierarchyService projectApproverHierarchyService;
-	 
-	 @Autowired
-	 public ProjectMembersService projectMembersService;
-	
-	 @Autowired
-	 public RolesService rolesService;
-	 
-	 @Autowired
-	 CommonUtil commonUtil;
-	 
-	 @Autowired
-	 ProjectsIndexHelper projectsIndexHelper;
-	 
-	 @Autowired
-	 SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
-	 
-	 @Autowired
-	 ProjectTasksService projectTasksService;
-	 
-	 /**
-	  * This method for save the  project by json
-	  * @param json
-	  * @param request
-	  * @return value is Project pojo
-	  * @throws Exception
-	  */
-	 
-	 @RequestMapping(value = "/storeProject" , method = RequestMethod.POST)
-		public @ResponseBody String storeProject(@RequestParam("project_file") MultipartFile file, @RequestParam("json") String jsonPayload) throws Exception {
-		   
-		   /* String json1 = "{"+json+"}";*/
-		 JSONObject jsonObj = new JSONObject(jsonPayload);
-		 byte [] fileContents = file.getBytes();
-		    /*JSONObject jsonObj = new JSONObject(json1);*/
-		 	/*OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");*/
-		 String outPut = projectsService.storeProject(jsonObj, fileContents);
-/*		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Successfully you have created a project");*/
-		    return outPut;		
-			 
-	   }
-	 
-	 
-	 /**
-	 * @author shivayogi. 
-	 * @Description : this is duplicate method, this method is not used anywhere.This method is same as storeProject() .
+	@Autowired
+	EmailScenarioService emailScenarioService;
+
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+
+	@Autowired
+	private ProjectsService projectsService;
+
+	@Autowired
+	private OrgService orgService;
+
+	@Autowired
+	private OrgLocationService orgLocationService;
+
+	@Autowired
+	private ProjectTasksService tasksService;
+
+	@Autowired
+	public UserService userService;
+
+	@Autowired
+	public EmployeesService employeesService;
+
+	@Autowired
+	public UserRoleService userRoleService;
+
+	@Autowired
+	public ProjectApproverHierarchyService projectApproverHierarchyService;
+
+	@Autowired
+	public ProjectMembersService projectMembersService;
+
+	@Autowired
+	public RolesService rolesService;
+
+	@Autowired
+	CommonUtil commonUtil;
+
+	@Autowired
+	ProjectsIndexHelper projectsIndexHelper;
+
+	@Autowired
+	SourceleadELKBaseIndexer<ProjectsIndex> sourceleadELKBaseIndexer;
+
+	@Autowired
+	ProjectTasksService projectTasksService;
+
+	/**
+	 * This method for save the project by json
+	 * 
+	 * @param json
+	 * @param request
+	 * @return value is Project pojo
+	 * @throws Exception
 	 */
-	@RequestMapping(value = "/saveProject" , method = RequestMethod.POST)
-	 public @ResponseBody  String saveProject(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		   
+
+	@RequestMapping(value = "/storeProject", method = RequestMethod.POST)
+	public @ResponseBody String storeProject(@RequestParam("project_file") MultipartFile file,
+			@RequestParam("json") String jsonPayload) throws Exception {
+
+		/* String json1 = "{"+json+"}"; */
+		JSONObject jsonObj = new JSONObject(jsonPayload);
+		ProjectDocumentBO projectDocumentBO = new ProjectDocumentBO();
+		if (file != null) {
+			projectDocumentBO.setFileName(file.getOriginalFilename());
+			projectDocumentBO.setFileType(file.getContentType());
+			projectDocumentBO.setFileContents(file.getBytes());
+		}
+		String outPut = projectsService.storeProject(jsonObj, projectDocumentBO);
+		return outPut;
+
+	}
+
+	/**
+	 * @author shivayogi.
+	 * @Description : this is duplicate method, this method is not used
+	 *              anywhere.This method is same as storeProject() .
+	 */
+	@RequestMapping(value = "/saveProject", method = RequestMethod.POST)
+	public @ResponseBody String saveProject(@RequestParam(value = "json", required = false) String json,
+			HttpServletRequest request) throws Exception {
+
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 
@@ -145,195 +147,210 @@ public class ProjectsRestController {
 		SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg",
 				"Successfully you have created a project");
 		return "projectDashboard";
-			 
-	   }
-	 
-	 
-    @RequestMapping(value = "/validateProjectId",  method = RequestMethod.POST)
-    public @ResponseBody String validateJobSequenceNumber(@RequestParam(value="ProjectId", required=false) Long projectId) throws Exception {
-	    	String result;
-			String resultJson;
-			Integer projectIdCount = projectsService.projectIdValidation(projectId);
-			if(projectIdCount>0){
-				result = "duplicate";
-			}
-			else{
-				result = "unique";
-			}
-			resultJson = commonUtil.toJSON(result);
-			return resultJson;
-	    }
-		
-  //to validate Task Name
-	 @RequestMapping(value = "/taskNameValidation" , method = RequestMethod.GET)
-	 public @ResponseBody  Boolean taskNameValidation(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId,
-			 @RequestParam(value="taskId", required=false) Long taskId,HttpServletRequest request) throws Exception {
-		    ProjectTasks projectTasks = null;
-	       if(null != projectId){
-	    	   projectTasks = projectTasksService.validateTaskNameByTaskId(taskId, TaskName, projectId);
-	       }
-	       Boolean flag = false;
-	       if(null == projectTasks){
-	    	   flag = projectsService.validateTasksName(TaskName,projectId);
-	       }
-			return flag;
-	   }
+
+	}
+
+	@RequestMapping(value = "/validateProjectId", method = RequestMethod.POST)
+	public @ResponseBody String validateJobSequenceNumber(
+			@RequestParam(value = "ProjectId", required = false) Long projectId) throws Exception {
+		String result;
+		String resultJson;
+		Integer projectIdCount = projectsService.projectIdValidation(projectId);
+		if (projectIdCount > 0) {
+			result = "duplicate";
+		} else {
+			result = "unique";
+		}
+		resultJson = commonUtil.toJSON(result);
+		return resultJson;
+	}
+
+	// to validate Task Name
+	@RequestMapping(value = "/taskNameValidation", method = RequestMethod.GET)
+	public @ResponseBody Boolean taskNameValidation(@RequestParam(value = "TaskName", required = false) String TaskName,
+			@RequestParam(value = "ProjectId", required = false) Long projectId,
+			@RequestParam(value = "taskId", required = false) Long taskId, HttpServletRequest request)
+			throws Exception {
+		ProjectTasks projectTasks = null;
+		if (null != projectId) {
+			projectTasks = projectTasksService.validateTaskNameByTaskId(taskId, TaskName, projectId);
+		}
+		Boolean flag = false;
+		if (null == projectTasks) {
+			flag = projectsService.validateTasksName(TaskName, projectId);
+		}
+		return flag;
+	}
 
 	@RequestMapping(value = "/sourceLeadTasks")
 	public String sourceLeadTasks() throws Exception {
-			ModelAndView model = new ModelAndView();
-			Collection<ProjectTasks>  sourceleadProjectTasks = tasksService.getAllSourceleadTasks();
-			model.addObject("Tasks_List", sourceleadProjectTasks);
-			return commonUtil.toJSON(sourceleadProjectTasks);
-		}
-	 
-	 @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET,headers="Accept=application/json")
-	 public Projects getProjectById(@PathVariable Long id) throws Exception { 
-		    Projects projects = projectsService.getProjectById(id);
-		    return projects;
-	  }
-	 
-	 
-	 /**
-	  * This method for delete project by id
-	  * @param id
-	  * @return
-	  * @throws Exception
-	  */
-	 @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET,headers="Accept=application/json")
-	 public Boolean delete(@PathVariable Long id) throws Exception { 
+		ModelAndView model = new ModelAndView();
+		Collection<ProjectTasks> sourceleadProjectTasks = tasksService.getAllSourceleadTasks();
+		model.addObject("Tasks_List", sourceleadProjectTasks);
+		return commonUtil.toJSON(sourceleadProjectTasks);
+	}
+
+	@RequestMapping(value = "/getById/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public Projects getProjectById(@PathVariable Long id) throws Exception {
+		Projects projects = projectsService.getProjectById(id);
+		return projects;
+	}
+
+	/**
+	 * This method for delete project by id
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public Boolean delete(@PathVariable Long id) throws Exception {
 		Boolean isDeleted = projectsService.deleteProjectById(id);
 		return isDeleted;
-	  }
-	  
-	/*@RequestMapping(value = "/addNewEmployee",  method = RequestMethod.POST)
-	public @ResponseBody  String addNewEmployee(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		    
-		    String json1 = "{"+json+"}";	
-		    JSONObject jsonObj = new JSONObject(json1);
-		 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 	User users = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 	userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new Org());
-			return "SUCCESS";
-		}
-	  */
-	  /**
-		  * This method for getEmployeesList by by excluding  Level1 and Level2 Managers 
-		  * @param id
-		  * @return
-		  * @throws Exception
-		  */
-	  @RequestMapping(value = "/getEmployeesListByExcludingManagers",  method = RequestMethod.POST)
-		public @ResponseBody  String getEmployeesListByExcludingManagers(HttpServletRequest request,
-			   @RequestParam(value="level1Manager", required=false) Long level1Manager,
-			   @RequestParam(value="level2Manager", required=false) Long level2Manager,
-			   @RequestParam(value="searchByName", required=false) String searchByName) throws Exception {
-		 	String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-		    Collection<Employees> employeList=employeesService.getAllEmployeesByOrgLocationIdAndSearchByName(loginOrgLocations.getId(),level1Manager,level2Manager,searchByName);
-		    
-		    for (Employees employees : employeList) {
-		    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(employees.getUser().getId(), loginOrgLocations.getId());
-		    	if(userRole != null){
-		    		employees.setUserType(userRole.getUserType());
-		    	}
-			}
-		    return  commonUtil.toJSON(employeList);
-			
-	  }
-	  
-	  
-	  /**
-		 * @author Venkat Kesav
-		 * Assign Employee to project by  project id in ELK 
-		 * @param projectId
-		 * @param request
-		 * @return Json
-		 * @throws Exception
-		 */
-		
-		 @PreAuthorize("hasRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')")
-		 @RequestMapping(value = "/storeAssignEmployeeIntoELK",  method = RequestMethod.POST)
-			 public @ResponseBody  String storeAssignEmployeeIntoELK(
-					@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
-			 	
-				 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-				 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				 	
-				 	if(projectId != null){
-						Projects projects = projectsService.getProjectById(projectId);
-						Collection<ProjectMembers> projectMembers = projectMembersService.getAllProjectMembersByProjectId(projects.getId());
-						ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null, projectMembers);
-						//Elastic Search Document Saving
-						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX, Constants.ELK_PROJECT_TYPE,projects.getId().toString());
-				 	}
-				 	return "success";
-			}
-	 
- 
-	/* @RequestMapping(value = "/notification", method = RequestMethod.GET,headers="Accept=application/json")
-	 public void getNotification() throws Exception{
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION);
-		 Map<String, String> globalVarsMap = new HashMap<>();
-		    globalVarsMap.put("firstName", "Vinesh");
-		    globalVarsMap.put("lastName","Kammari");
-			String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
-			emailScenario.setBody(body);
-			String actionLink = "";
-			User user = new User();
-			OrgLocations loginOrgLocation = new OrgLocations();
-			emailScenerioUtil.sendNotification(actionLink, user, user, loginOrgLocation, emailScenario);
-	}*/
-	 
-	 //to  validate user email
-	 @RequestMapping(value = "/getEmailVerification" , method = RequestMethod.POST)
-	 public @ResponseBody  String validateUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
-		 	
-		 	String result;
-		 	User user = userService.findByEmail(EmailId);
-		 	
-		 	if (user != null) {
-				result = "true";
-			}else{
-				result = "false";
-			}
-			return result;
-	   }
+	}
 
-	//to validate Project SequeneNumber
-		 @RequestMapping(value = "/validateProjectSequeneNumberById" , method = RequestMethod.POST)
-		 public @ResponseBody  Boolean validateProjectSequeneNumber(@RequestParam(value="ProjectSequeneNumber", required=false) String ProjectSequeneNumber, HttpServletRequest request) throws Exception {
-			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			    return projectsService.validateProjectSequeneNumber(ProjectSequeneNumber,orgLocations.getId());
-		   }
+	/*
+	 * @RequestMapping(value = "/addNewEmployee", method = RequestMethod.POST)
+	 * public @ResponseBody String addNewEmployee(@RequestParam(value="json",
+	 * required=false) String json,HttpServletRequest request) throws Exception
+	 * {
+	 * 
+	 * String json1 = "{"+json+"}"; JSONObject jsonObj = new JSONObject(json1);
+	 * OrgLocations loginOrgLocation = (OrgLocations)
+	 * SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 * User users = (User) SourceLeadSessionManager.getSessionAttribute(request,
+	 * "user");
+	 * userService.storeUser(jsonObj,users,loginOrgLocation,"PROJECTS","",new
+	 * Org()); return "SUCCESS"; }
+	 */
+	/**
+	 * This method for getEmployeesList by by excluding Level1 and Level2
+	 * Managers
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getEmployeesListByExcludingManagers", method = RequestMethod.POST)
+	public @ResponseBody String getEmployeesListByExcludingManagers(HttpServletRequest request,
+			@RequestParam(value = "level1Manager", required = false) Long level1Manager,
+			@RequestParam(value = "level2Manager", required = false) Long level2Manager,
+			@RequestParam(value = "searchByName", required = false) String searchByName) throws Exception {
+		String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+		Collection<Employees> employeList = employeesService.getAllEmployeesByOrgLocationIdAndSearchByName(
+				loginOrgLocations.getId(), level1Manager, level2Manager, searchByName);
 
-	//Validate for Cilent Website
-	 @RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
-	   public @ResponseBody String validateOrgWebsite(
-	   		@RequestParam(value="website", required=false) String website,
-	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
-			String status = "success";
-            String orgInfo = orgService.websiteValidation(website,sourceleadBLockedwebsites);
-            if(orgInfo !=null && !"".equalsIgnoreCase(orgInfo)){
-            	 if ("Website Duplicated".equalsIgnoreCase(orgInfo)) {
-                     status = "Website Duplicated";
-                 }else if("Invalid Website".equalsIgnoreCase(orgInfo)){
-                     status = "Invalid Website";
-                 }
-            }
-	    return status;
-	   }
-	 
-	 
-	 
-	//to validate Task Name
-	 @RequestMapping(value = "/validateTasksNameById" , method = RequestMethod.GET)
-	 public @ResponseBody  Boolean validateTasksNameById(@RequestParam(value="TaskName", required=false) String TaskName,@RequestParam(value="ProjectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
-		    return projectsService.validateTasksName(TaskName,projectId);
-	   }
-	 
-	   protected static boolean isNullOrEmpty(String str) {
-			return str == null || "".equals(str.trim());
+		for (Employees employees : employeList) {
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(employees.getUser().getId(),
+					loginOrgLocations.getId());
+			if (userRole != null) {
+				employees.setUserType(userRole.getUserType());
+			}
 		}
+		return commonUtil.toJSON(employeList);
+
+	}
+
+	/**
+	 * @author Venkat Kesav Assign Employee to project by project id in ELK
+	 * @param projectId
+	 * @param request
+	 * @return Json
+	 * @throws Exception
+	 */
+
+	@PreAuthorize("hasRole('ROLE_ASSIGN_EMPLOYEE_TO_PROJECT')")
+	@RequestMapping(value = "/storeAssignEmployeeIntoELK", method = RequestMethod.POST)
+	public @ResponseBody String storeAssignEmployeeIntoELK(
+			@RequestParam(value = "ProjectId", required = false) Long projectId, HttpServletRequest request)
+			throws Exception {
+
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		if (projectId != null) {
+			Projects projects = projectsService.getProjectById(projectId);
+			Collection<ProjectMembers> projectMembers = projectMembersService
+					.getAllProjectMembersByProjectId(projects.getId());
+			ProjectsIndex projectsIndex = projectsIndexHelper.getProjectsIndexFromProjects(projects, null,
+					projectMembers);
+			// Elastic Search Document Saving
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(projectsIndex, Constants.ELK_PROJECT_INDEX,
+					Constants.ELK_PROJECT_TYPE, projects.getId().toString());
+		}
+		return "success";
+	}
+
+	/*
+	 * @RequestMapping(value = "/notification", method =
+	 * RequestMethod.GET,headers="Accept=application/json") public void
+	 * getNotification() throws Exception{ EmailScenario emailScenario =
+	 * emailScenarioService.getEmailScenarioByUniqueName(Constants.
+	 * TIME_SHEET_SUBMISSION,Constants.ENTITY_TYPE_NOTIFICATION); Map<String,
+	 * String> globalVarsMap = new HashMap<>(); globalVarsMap.put("firstName",
+	 * "Vinesh"); globalVarsMap.put("lastName","Kammari"); String body =
+	 * emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+	 * emailScenario.setBody(body); String actionLink = ""; User user = new
+	 * User(); OrgLocations loginOrgLocation = new OrgLocations();
+	 * emailScenerioUtil.sendNotification(actionLink, user, user,
+	 * loginOrgLocation, emailScenario); }
+	 */
+
+	// to validate user email
+	@RequestMapping(value = "/getEmailVerification", method = RequestMethod.POST)
+	public @ResponseBody String validateUserEmail(@RequestParam(value = "EmailId", required = false) String EmailId)
+			throws Exception {
+
+		String result;
+		User user = userService.findByEmail(EmailId);
+
+		if (user != null) {
+			result = "true";
+		} else {
+			result = "false";
+		}
+		return result;
+	}
+
+	// to validate Project SequeneNumber
+	@RequestMapping(value = "/validateProjectSequeneNumberById", method = RequestMethod.POST)
+	public @ResponseBody Boolean validateProjectSequeneNumber(
+			@RequestParam(value = "ProjectSequeneNumber", required = false) String ProjectSequeneNumber,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		return projectsService.validateProjectSequeneNumber(ProjectSequeneNumber, orgLocations.getId());
+	}
+
+	// Validate for Cilent Website
+	@RequestMapping(value = "/ws/validateClientWebsite", method = RequestMethod.GET)
+	public @ResponseBody String validateOrgWebsite(@RequestParam(value = "website", required = false) String website,
+			@RequestParam(value = "sourceleadBLockedwebsites", required = false) String sourceleadBLockedwebsites) {
+		String status = "success";
+		String orgInfo = orgService.websiteValidation(website, sourceleadBLockedwebsites);
+		if (orgInfo != null && !"".equalsIgnoreCase(orgInfo)) {
+			if ("Website Duplicated".equalsIgnoreCase(orgInfo)) {
+				status = "Website Duplicated";
+			} else if ("Invalid Website".equalsIgnoreCase(orgInfo)) {
+				status = "Invalid Website";
+			}
+		}
+		return status;
+	}
+
+	// to validate Task Name
+	@RequestMapping(value = "/validateTasksNameById", method = RequestMethod.GET)
+	public @ResponseBody Boolean validateTasksNameById(
+			@RequestParam(value = "TaskName", required = false) String TaskName,
+			@RequestParam(value = "ProjectId", required = false) Long projectId, HttpServletRequest request)
+			throws Exception {
+		return projectsService.validateTasksName(TaskName, projectId);
+	}
+
+	protected static boolean isNullOrEmpty(String str) {
+		return str == null || "".equals(str.trim());
+	}
 }
