@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -289,7 +290,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public String storeProject(JSONObject jsonObj, ProjectDocumentBO projectDocumentBO) throws Exception {
+	public String storeProject(JSONObject jsonObj, List<ProjectDocumentBO> projectDocumentBOList) throws Exception {
 		    
 		  
 		String resultJson = null;
@@ -333,17 +334,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setEstimatedBudget(jsonObj.getDouble("EstimatedBudget"));
 		}
 		
+		List<ProjectDocuments> projDocDBList = projectDocumentBOList.stream().map(bo -> new ProjectDocuments(bo.getFileName(), bo.getFileType(),bo.getFileContents(),projects)).collect(Collectors.toList());
 		
-		ProjectDocuments projectDocument = new ProjectDocuments();
-		projectDocument.setFileName(projectDocumentBO.getFileName());
-		projectDocument.setFileContents(projectDocumentBO.getFileContents());
-		projectDocument.setFileType(projectDocumentBO.getFileType());
-		projectDocument.setProjects(projects);
-		projects.getProjectDocuments().add(projectDocument);
-		
-		
-		
-    	
+		projects.getProjectDocuments().addAll(projDocDBList);
+	
     	if((jsonObj.has("Satatus"))){
     	projects.setProjectStatus(Project_Status.getNameByValue((jsonObj.getString("Satatus"))));
     	}

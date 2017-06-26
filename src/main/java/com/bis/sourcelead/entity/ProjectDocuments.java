@@ -82,6 +82,18 @@ public class ProjectDocuments implements Serializable {
 	public void setFileContents(byte[] fileContents) {
 		this.fileContents = fileContents;
 	}
+	
+	public ProjectDocuments(){
+		
+	}
+
+	public ProjectDocuments(String fileName, String fileType, byte[] fileContents, Projects projects) {
+		super();
+		this.fileName = fileName;
+		this.fileType = fileType;
+		this.fileContents = fileContents;
+		this.projects = projects;
+	}
 
 	
 	

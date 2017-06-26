@@ -1,6 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -111,18 +117,19 @@ public class ProjectsRestController {
 	 */
 
 	@RequestMapping(value = "/storeProject", method = RequestMethod.POST)
-	public @ResponseBody String storeProject(@RequestParam("project_file") MultipartFile file,
+	public @ResponseBody String storeProject(@RequestParam("project_files") MultipartFile[] files,
 			@RequestParam("json") String jsonPayload) throws Exception {
-
-		/* String json1 = "{"+json+"}"; */
 		JSONObject jsonObj = new JSONObject(jsonPayload);
-		ProjectDocumentBO projectDocumentBO = new ProjectDocumentBO();
-		if (file != null) {
-			projectDocumentBO.setFileName(file.getOriginalFilename());
-			projectDocumentBO.setFileType(file.getContentType());
-			projectDocumentBO.setFileContents(file.getBytes());
-		}
-		String outPut = projectsService.storeProject(jsonObj, projectDocumentBO);
+		List<ProjectDocumentBO> projectDocuments = Arrays.asList(files).stream().map(file -> {
+			try {
+				return new ProjectDocumentBO(file.getOriginalFilename(),file.getContentType(), file.getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}).collect(Collectors.toList());
+		
+		String outPut = projectsService.storeProject(jsonObj, projectDocuments);
 		return outPut;
 
 	}

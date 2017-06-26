@@ -391,7 +391,7 @@ function validateTaskName(){
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 						<h5>Documents</h5>
-						<input type="file" name="project_file" id="project_file"/>
+						<input type="file" name="project_files" id="project_files" multiple="multiple"/>
 					</div>
 
 				</div>
