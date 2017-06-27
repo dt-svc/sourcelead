@@ -413,7 +413,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		if(startDate != null && endDate != null){
 			   dateQuery =  " and pm.id IN ( "
                 + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
-                + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
                 + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
                 + "    ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
                 + "  )  ";

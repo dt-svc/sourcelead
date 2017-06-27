@@ -50,7 +50,7 @@ private static final long serialVersionUID = 1L;
 @Column(name = "ID", nullable = false)
 private Long id;
 
-@ManyToOne
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
 private ProjectApproverHierarchy hierarchyId;
 
