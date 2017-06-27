@@ -29,7 +29,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 	public WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(wageTaxSummary);
+			session.saveOrUpdate(wageTaxSummary);
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}

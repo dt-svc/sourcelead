@@ -119,4 +119,13 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	    return educationList;
 	}
 
+	@Override
+	@Transactional
+	public List<String> getAllVisaByCategory() throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "select lookupdata.name from LookUpData lookupdata where lookupdata.category = 'VisaCategory' ";
+	    List<String> visaList = session.createQuery(query.toString()).setCacheable(true).list();
+	    return visaList;
+	}
+
 }
