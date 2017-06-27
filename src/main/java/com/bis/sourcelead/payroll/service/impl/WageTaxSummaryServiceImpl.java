@@ -354,8 +354,8 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 								}
 							
 								if (row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())) {
+									employeeName = getCellValueAsString(row.getCell(1), fileName);
 									if(StringUtils.containsIgnoreCase(employeeName, "SSN:")){
-										employeeName = getCellValueAsString(row.getCell(1), fileName);
 										ssn = employeeName;
 									}else{
 										 employeeName = getCellValueAsString(row.getCell(1), fileName);
