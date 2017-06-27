@@ -104,7 +104,7 @@
   </div>
       
       <div class="candidate_wrap_table recruiterReports_table">
-        <div id="usersList"></div>
+        <div id="usersList" class="datatable_filter"></div>
       </div> 
  </div>
  </c:if>
@@ -145,7 +145,7 @@
  <div class="clearfix">
 <section class="candidate_wrap_table recruiterReports_table">
 
-<div id="vendorReportsDiv" class=""></div>
+<div id="vendorReportsDiv" class="datatable_filter"></div>
 
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
 
@@ -229,10 +229,10 @@
           </ul>
           <div class="project_tabs">
             
-            <div id="tab-1" class="project_tabs_inn">
+            <div id="tab-1" class="project_tabs_inn datatable_filter">
             </div>
 
-			<div id="tab-2" class="project_tabs_inn">
+			<div id="tab-2" class="project_tabs_inn datatable_filter">
           </div>
         </div> 
               </div>
@@ -257,7 +257,7 @@
 
 <div class="pavPop">
 <span class="pavClose" onclick="pavClose();"><i class="fa fa-times"></i></span>
-		<div id="vendorspc" class="clients_wrap_table"></div>
+		<div id="vendorspc" class="clients_wrap_table datatable_filter"></div>
 </div> 
     
     
@@ -428,8 +428,8 @@ function usersList(){
 function reportpagination(){ 
     $('#reportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -844,8 +844,8 @@ function getPayableBillingReports(invoiceType){
 function billingReportPagination(){ 
     $('#billingReportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -860,8 +860,8 @@ function billingReportPagination(){
 function billingPayableReportPagination(){ 
     $('#billingPayableReportPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

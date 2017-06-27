@@ -959,9 +959,9 @@ function sideBar(requirementId){
 				           //#####################  actions div @prasad salina ################################################
 						    
 						    
-							result = result +'<div id="status-data"></div>';
+							result = result +'<div id="status-data" class="datatable_filter"></div>';
 						   
-						    result = result+'<div id="tab-3" class="project_tabs_inn overflow-data">';
+						    result = result+'<div id="tab-3" class="project_tabs_inn overflow-data datatable_filter">';
 						    
 						    result = result+'</div> ';
 						    result = result +'<div id="recommendationsLoading"></div>'; 
@@ -1879,7 +1879,7 @@ function documentpagination(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2161,7 +2161,7 @@ function documentpaginationDA(){
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2437,7 +2437,7 @@ function documentpaginationRS(){
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2725,7 +2725,7 @@ function documentpaginationSL(){
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -2988,7 +2988,7 @@ function documentpaginationSC(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3167,7 +3167,7 @@ function documentpaginationIN(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	/* "aaSorting": [[8,'desc']], */
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3366,7 +3366,7 @@ function documentpaginationOffer(){
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[8,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3627,7 +3627,7 @@ function documentpaginationRejected(){
     	"scrollCollapse": false,
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -3885,7 +3885,7 @@ function documentpaginationBackout(){
     	"scrollCollapse": false,
 //     	"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -4488,7 +4488,7 @@ function recommendationpagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

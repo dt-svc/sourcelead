@@ -406,7 +406,7 @@ function validMask(){
  <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
 <div class="modal modal_invoice datatable_filter" style="display: none;">
-   <div id="linkPayblePopup" ></div>
+   <div id="linkPayblePopup" class="datatable_filter"></div>
 </div>
 <!-- modal pop -->
 
@@ -745,7 +745,7 @@ function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
@@ -1180,7 +1180,7 @@ function exportToPayableExcel(){
 
 <script type="text/javascript">
 function linkPayableInvoice(invoiceId,totalAmount){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
@@ -1259,7 +1259,7 @@ function linkPayableInvoice(invoiceId,totalAmount){
 			result = result +'          </tr>                                                                                                               ';
 			}
 			}else{
-	 			result = result +'          <tr>';
+				result = result +'          <tr>';
 				result = result +'                <td valign="top" colspan="10" class="dataTables_empty"></td>';
 				result = result +'          </tr>';
 			}
@@ -1295,8 +1295,11 @@ function linkInvoicePayablePagination(){
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
-    	//
     	"aaSorting": [[3,'desc']],
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 0
+			}],
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
