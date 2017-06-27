@@ -126,6 +126,9 @@ public class Candidate implements Serializable{
 	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
 	private String summary;
 	
+	@Column(name = "VISA_TYPE", columnDefinition = "TEXT default NULL")
+	private String visaType;
+	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
 	private  byte[] docFile;
@@ -332,6 +335,9 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private String sowContractName;
+	 
+	 @Transient
+	 private LinkedHashSet<String> allAndCandidateVisa;
 	 
 	 
 	 @Transient
@@ -1283,6 +1289,27 @@ public class Candidate implements Serializable{
 	{
 		this.contractsList = contractsList;
 	}
+
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+
+	public LinkedHashSet<String> getAllAndCandidateVisa() {
+		return allAndCandidateVisa;
+	}
+
+
+	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
+		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+	
 	
 	
 }

@@ -39,7 +39,7 @@ function candidateHistoryList(candidateId){
 	                	 result = result +"<table id='candidateHistoryPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
-	                     result  = result +"           <th>Requirement Name</th>";
+	                     result  = result +"           <th>Job Name</th>";
 	                     result  = result +"             <th>Client Name</th>";
 	                 	 result  = result + "           <th>Stage</th>";
 	                 	 result = result +"  </tr>"; 

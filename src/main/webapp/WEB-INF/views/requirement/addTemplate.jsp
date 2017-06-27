@@ -55,12 +55,12 @@ width: 100% !important;
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Requirement Template</h2>
+			<h2>Job Template</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/template'/>">Requirement Template List </a>&raquo;
-			Add Requirement Template
+				href="<c:url value='/template'/>">Job Template List </a>&raquo;
+			Add Job Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -68,7 +68,7 @@ width: 100% !important;
 			<div class="form-horizontal req-dtls mb">
 				<div class="clearfix">
 					<div class="col-lg-12">
-						<h3>Add Requirement Template Details</h3>
+						<h3>Add Job Template Details</h3>
 					</div>
 <div class="clearfix"></div>
 					<div class="mt pras req-title">

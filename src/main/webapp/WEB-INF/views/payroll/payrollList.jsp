@@ -40,9 +40,12 @@ window.onload = function () {
 	<form:form id="upload_payroll_form" name="upload_payroll_form" method="post">
 <div class="timesheet_head clearfix">
 
-     <ul><li><a href="javascript:void(0)" class="addcon-pop"> <i class="glyphicon glyphicon-plus"></i>Add Document</a></li></ul>
+     <ul>
+     <li>
+     <a href="javascript:void(0)" class="addcon-pop">
+      	<i class="glyphicon glyphicon-plus paddingRight"></i>Add Document</a>
                   <!-- Popup Div -->
-                  <div class="collapse-div-adduser col-md-4" id="adddocDiv"> <i class="fa fa-close close-div"></i>
+                  <div class="collapse-div-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px;'> <i class="fa fa-close close-div"></i>
                     <div class="form-horizontal clearfix">
                      
                       <div class="clearfix mb10">
@@ -67,7 +70,7 @@ window.onload = function () {
                         </div>
                         <div class="col-md-12 mt10">
                           <div class="input-group ratetype" id="uploadFileGroup">
-	                        <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+	                        <label class="input-group-btn"> <span class="btn btn-primary uploadDiv"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
 	                          <input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">
 	                            </span> </label>
 		                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload File." field-name="Attachment" data-validation="required validate_importFile">
@@ -80,10 +83,43 @@ window.onload = function () {
                       </div>
                     </div>
                   </div>
+                    </form:form>
+                  </li>
+                  
+                  
+                  <!-- Start -->
+                  
+                  <!-- <ul class="popdiv_two"> -->
+                  <li>
+                  <a href="javascript:void(0)" class="bulk_addconpop"> <i class="glyphicon glyphicon-plus paddingRight"></i>Bulk</a>
+                  <!-- Popup Div -->
+                  	<form:form id="upload_bulk_payroll_form" name="upload_payroll_form" method="post">
+                  <div class="collapse-bulk-adduser col-md-4" id="adddocDiv" style='width:400px; right: 35px; top:25px; padding:10px 0'> <i class="fa fa-close close-div"></i>
+                    <div class="form-horizontal clearfix">
+                        <div class="col-md-12 mt10">
+                          <div class="input-group ratetype" id="uploadBulkFileGroup">
+	                        <label class="input-group-btn"> <span class="btn btn-primary uploadDiv"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+	                          <input type="file" name="uploadBulkBtn" id="uploadBulkBtn" style="display: none;"  multiple="" class="upload">
+	                            </span> </label>
+		                          <input type="text" class="form-control" readonly id="uploadBulkFile" name="docBulkFile" placeholder="Upload Bulk File." field-name="Attachment" data-validation="required validate_importFile">
+	                        </div>
+                          
+                        </div>
+                      </div>
+                      <div class="clearfix mr mt">
+                        <button type="button" class="btn btn-sm btn-primary pull-right" id="uploadBulkPayroll" onclick="uploadBulkPayrollDocument();">Upload</button>
+                      </div>
+                    </div>
+                    </form:form>
+                    </li>
+                  </ul>
+                  </div>
+                  <!-- End -->
+                  
                   </div>
                   
                   <!-- Popup Div --> 
-                  </form:form>
+                
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
     	<div id="loading"></div>
@@ -217,13 +253,21 @@ function employeePayrollCostPagination(){
 	});
 </script>
 
+
 <script>
-	$(".addcon-pop").click(function() {
-		$(".collapse-div-adduser").toggleClass("show-div").css({"right":" 275px","top":"35px" });
-		$(".collapse-div").removeClass("show-div");
-	});
+//bulk_addconpop script
+$(".bulk_addconpop").click(function() {
+	$(".collapse-bulk-adduser").toggleClass("show-div");
+	$(".collapse-div-adduser").removeClass("show-div");
+	$(".collapse-div").removeClass("show-div");
+});
+$(".addcon-pop").click(function() {
+	$(".collapse-div-adduser").toggleClass("show-div");
+	$(".collapse-bulk-adduser").removeClass("show-div");
+	$(".collapse-div").removeClass("show-div");
+});
 	
-	$(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(
+	$(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div, .bulk_addconpop").click(
 			function(e) {
 				e.stopPropagation();
 			});
@@ -246,6 +290,42 @@ function employeePayrollCostPagination(){
 </script>
 
 <!-- Added By Rajashekar  -->
+<script type="text/javascript">
+	function uploadBulkPayrollDocument() {
+		alert("Hi");
+		 if ($('#upload_bulk_payroll_form').validate(false, validationSettings)) { 
+			$('#adddocDiv').removeClass("show-div");
+		var frm = $('#upload_bulk_payroll_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		var jsonData = encodeURIComponent(con);
+		var form = $('#upload_bulk_payroll_form')[0];
+		var formData = new FormData(form);
+
+		var sourceleadUrl = '${sourceleadUrl}';
+		$
+				.ajax({
+					type : "POST",
+					data : formData,
+					contentType : 'application/json; charset=utf-8',
+					enctype : 'multipart/form-data',
+					processData : false,
+					contentType : false,
+					dataType : 'json',
+					url : sourceleadUrl
+							+ "/uploadPayrollDocument?${_csrf.parameterName}=${_csrf.token}&json="
+							+ jsonData,
+					success : function(result) {
+					    alert("Hi");
+					},
+				});
+		
+		}  
+	}
+	
+</script>
+
+
 <script type="text/javascript">
 	function uploadPayrollDocument() {
 		if ($('#upload_payroll_form').validate(false, validationSettings)) { 
@@ -274,19 +354,12 @@ function employeePayrollCostPagination(){
 						loadEmployeePayrollCost();
 					},
 				});
-		/* return true; */
-		} /* else {
-			return false;
-		} */
+		
+		} 
 	}
-	/* $('body').on('blur', '#upload_payroll_form', function() {
-		$("#upload_payroll_form").showHelpOnFocus();
-		$("#upload_payroll_form").validateOnBlur(false, validationSettings);
-	}); */
+	
 </script>
-<!-- End By Rajashekar -->
 
-<
 <script type="text/javascript">
 	$(document.body)
 			.on(
@@ -321,6 +394,43 @@ function employeePayrollCostPagination(){
 						}
 					});
 </script>
+
+
+<script type="text/javascript">
+	$(document.body)
+			.on(
+					'change',
+					'#uploadBulkBtn',
+					function() {
+						$('#uploadBulkFile').val(this.value.split('\\').pop());
+						$("#uploadBulkFile").focus();
+						if (validate_fileupload(this.value)) {
+							var docFileSize = $('#uploadBulkFile');
+							var docSize = this.files[0].size;
+							$("#uploadBulkFileGroup").find(
+									'p.jquery_form_error_message').remove();
+							if (docSize > 2097152) {
+								document.getElementById("uploadBulkFile").value = '';
+								$('#uploadBulkFileGroup').find(
+										'p.jquery_form_error_message').remove();
+								$("input#uploadBulkFile")
+										.after(
+												"<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+								document.getElementById("uploadBulkFile")
+										.setAttribute('record-exist', 'yes');
+								document.getElementById("uploadBulkFile")
+										.setAttribute('record-exist-errorMsg',
+												'Limit is exceeded than 2MB');
+							} else {
+								$('input#uploadBulkFile').removeAttr(
+										"record-exist record-exist-errormsg");
+								$('#uploadBulkFileGroup').find(
+										'p.jquery_form_error_message').remove();
+							}
+						}
+					});
+</script>
+
 
 <script>
 $("ul#parentUl").on("click","li", function(){

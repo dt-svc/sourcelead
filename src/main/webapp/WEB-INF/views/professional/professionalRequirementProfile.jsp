@@ -26,14 +26,14 @@ $(document).ready(function() {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Requirement Details</h2>
+      <h2>Job Details</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Requirement List </a> &raquo; Requirement Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Requirement List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Requirement List </a> &raquo; Requirement Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Jobs List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>
@@ -192,7 +192,7 @@ function requirementProfile(requirementUUID){
 						 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
 					 }
 				 
-				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';

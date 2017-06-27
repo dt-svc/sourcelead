@@ -245,8 +245,8 @@ function preventTabkey(e){
 		       <c:if test="${userTabs.tabName == 'Users'}">
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirements</option>
+	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
 	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>

@@ -132,9 +132,20 @@ function prepareReportDataDiv(data){
 <script>
 function vendorReportPagination(){
 	$('#vendorReportPagination').DataTable({ 
+		 dom: 'Bfrtip',
+	        buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Jobs Posted',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Jobs Posted',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -298,9 +309,20 @@ function editCancel(){
 <script>
 function vendorSpocReportPagination(){
 	$('#vendorSpocReportPagination').DataTable({ 
+		 dom: 'Bfrtip',
+	        buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Jobs Posted',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Jobs Posted',
+	            }
+	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
