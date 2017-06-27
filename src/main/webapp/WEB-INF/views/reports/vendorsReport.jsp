@@ -132,20 +132,9 @@ function prepareReportDataDiv(data){
 <script>
 function vendorReportPagination(){
 	$('#vendorReportPagination').DataTable({ 
-		 dom: 'Bfrtip',
-	        buttons: [
-	        	{
-	                extend: 'excel',
-	                title: 'Requirements Posted',
-	            },
-	            {
-	                extend: 'pdf',
-	                title: 'Requirements Posted',
-	            }
-	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -153,8 +142,6 @@ function vendorReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
-	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 
 </script>
@@ -311,20 +298,9 @@ function editCancel(){
 <script>
 function vendorSpocReportPagination(){
 	$('#vendorSpocReportPagination').DataTable({ 
-		 dom: 'Bfrtip',
-	        buttons: [
-	        	{
-	                extend: 'excel',
-	                title: 'Requirements Posted',
-	            },
-	            {
-	                extend: 'pdf',
-	                title: 'Requirements Posted',
-	            }
-	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -332,8 +308,6 @@ function vendorSpocReportPagination(){
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
-	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Excel");
-	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 
 </script>

@@ -100,7 +100,7 @@ $(document).ready(function() {
             <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheet approval</div>
            <div class="clearfix"></div>
         </section>
-		<div id="timesheetApprovalDiv"></div>
+		<div id="timesheetApprovalDiv" class="datatable_filter"></div>
          </section>
  </body>
     

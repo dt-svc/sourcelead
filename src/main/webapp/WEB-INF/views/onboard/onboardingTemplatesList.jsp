@@ -31,7 +31,7 @@
             </div>
 			
 			    <div class="clients_wrap_table datatable_scroll">
-				    <div id="onboardingTemplatesList"></div>
+				    <div id="onboardingTemplatesList" class="datatable_filter"></div>
 				</div>	   
 					
 			</div>
@@ -116,8 +116,8 @@ function onboardingPagenation(){
 	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
 	 $('#onboardingPagination').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-	    	"bLengthChange": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

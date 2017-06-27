@@ -705,7 +705,7 @@ $(document).ready(function () {
               <div class="form-group">
               <label class="col-md-3">Visa</label>
               <div class="col-md-9">
-                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Skills" data-validation-optional="true">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
                <c:forEach var="visaList" items="${visaList}">
                		<c:set var = "NUM" value = "${0}"/>
                		<c:forEach var="existedVisa" items="${requirement.visaType}">
@@ -2637,6 +2637,7 @@ function pagination(){
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"bPaginate":false,
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0

@@ -583,7 +583,7 @@ function notificationStatusAsRead(){
 				               </div>	
 				          
 				            <div class="clearfix require_wrap_table">
-				               <div id="myTasksId"></div>
+				               <div id="myTasksId" class="datatable_filter"></div>
 				              
 				            </div>
 				          </div>
@@ -595,7 +595,7 @@ function notificationStatusAsRead(){
 								<i class="fa fa-calendar mr"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
-					              <div id="assignedTasksId"></div>
+					              <div id="assignedTasksId" class="datatable_filter"></div>
 					            </div>
 				          </div>
 				          
@@ -606,7 +606,7 @@ function notificationStatusAsRead(){
 									<i class="fa fa-calendar mr"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
-				               <div id="closedTasksId"></div>
+				               <div id="closedTasksId" class="datatable_filter"></div>
 				            </div>
 				          </div>
 				        </div>
@@ -1196,7 +1196,7 @@ function myTasksPagination(){
     $('#myTasksPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1212,7 +1212,7 @@ function assignedTasksPagination(){
     $('#assignedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1227,7 +1227,7 @@ function closedTasksPagination(){
     $('#closedTasksPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

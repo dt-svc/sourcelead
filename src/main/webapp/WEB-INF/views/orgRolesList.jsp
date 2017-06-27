@@ -72,7 +72,7 @@ padding-right: 254px; padding-top: 10px;
               
               </div>
 			
-			    <div class="project_wrap_table roles_list">
+			    <div class="project_wrap_table datatable_filter">
 			    				<table id="rolesList" class="display" cellspacing="0" width="100%">
 								</table>
 				</div>	   
@@ -217,7 +217,7 @@ function rolepagination(){
 	$('#rolePagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -263,7 +263,7 @@ function getRolesList(){
    		    		result = result +'<td>';
    		    		result = result +'<div>';
    		    		result = result +'<label class="label label-success">';
-   		    		result = result +'<a href="<c:url value="/roleActions/'+report.id+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
+   		    		result = result +'<a class="anchorWhite" href="<c:url value="/roleActions/'+report.id+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
    		    		result = result +'</label>';
    		    		result = result +'</div>';
    		    		result = result +'</td>';

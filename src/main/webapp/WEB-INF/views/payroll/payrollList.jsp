@@ -87,10 +87,10 @@ window.onload = function () {
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
     	<div id="loading"></div>
-    	<div id="employerCostDiv"></div>
-    	<div id="wagesAndTaxListDiv"></div>
-    	<div id="accountDeductionsListDiv"></div>
-    	<div id="hrDeductionsListDiv"></div>
+    	<div id="employerCostDiv" class="datatable_filter"></div>
+    	<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
+    	<div id="accountDeductionsListDiv" class="datatable_filter"></div>
+    	<div id="hrDeductionsListDiv" class="datatable_filter"></div>
        
 	</div>
 	
@@ -180,7 +180,7 @@ function employeePayrollCostPagination(){
     $('#EmployeePayrollCostTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
