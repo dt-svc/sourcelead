@@ -342,6 +342,9 @@ public class Constants {
 	/** For LookUpData (Eductions,Skills) **/
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
+	public static final String VISA = "VisaCategory";
+	
+	
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
