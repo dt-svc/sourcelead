@@ -95,9 +95,9 @@ function clientNotesList(orgRelationId,clientLocationId){
  <script>
 function clientNotes(orgRelationId){
 	var urlForm = "";
-	
-    	urlForm = "/getNotes?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId;
-	
+		
+	    urlForm = "/getNotes?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId;
+		
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
@@ -198,6 +198,9 @@ function addClientNotes(orgRelationId,clientLocationId) {
 	result = result+'	                  <div class="clearfix">';
 	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="required"  field-name="Description" class="form-control"></textarea>';
 	result = result+'	                  </div>';
+	result = result+' <div class="col-md-9 checkBox"> ';
+	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
+	result = result + '	                    <p>Allow All Users</p>';
 	result = result  +'                  </div>';     
 	
 	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
@@ -286,9 +289,7 @@ var validationSettings = {
 
 <script type="text/javascript">
 	function storeClientNotes(orgRelationId){
-		alert("storeClientNotes");
 		if ($('#clinetNotes_form').validate(false, validationSettings)){
-			alert("validationSettings");
 				var frm = $('#clinetNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
@@ -308,7 +309,8 @@ var validationSettings = {
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(result) {
-							savedCommentAndCount(candidateId);
+							closeDocPopup();
+							clientNotes(orgRelationId);
 							
 						},
 					});
@@ -353,7 +355,7 @@ function selectCategory(){
 	var categoryType = $('#categoryType').val(); 
 	if(categoryType != ''){
 		if(categoryType == "Jobs"){
-			var status = "OPEN";
+			var status = "";
 			$.ajax({
 		    	type: "POST",
 		    	url : sourceleadUrl+"/getClientReleasedRequirementList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&status="+status, 

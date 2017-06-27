@@ -172,6 +172,10 @@ function addNotes(orgRelationId) {
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length2-500" field-name="Description" class="form-control"></textarea>';
 	result = result+'	                    </div>';
+	result = result+' <div class="col-md-9 checkBox"> ';
+	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
+	result = result + '	                    <p>Allow All Users</p>';
+	result = result+'	                  </div>';
 	result = result+'	                  </div>';
 	result = result  +'                  </div>';                                                                                                                            
 	
@@ -257,6 +261,8 @@ var validationSettings = {
 
 <script type="text/javascript">
 	function storeVendorNotes(orgRelationId){
+		
+		 
 		if ($('#vendorNotes_form').validate(false, validationSettings)){ 
 				var frm = $('#vendorNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
