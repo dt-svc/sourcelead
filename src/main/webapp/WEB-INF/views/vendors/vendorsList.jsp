@@ -804,7 +804,7 @@ function preparedVendorsListFromElk(data){
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
 		 	result = result +'<th>Created By</th>';
-		   	result = result +'<th>Released Requirements</th>';
+		   	result = result +'<th>Released Jobs</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -914,7 +914,7 @@ function preparedVendorsLists(data){
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
-		   	result = result +'<th>Released Requirements</th>';
+		   	result = result +'<th>Released Jobs</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -1736,7 +1736,7 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
-		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Requirment List</a></li>'; 
+		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Jobs List</a></li>'; 
 		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
 		
@@ -1839,7 +1839,7 @@ function getVendorOrgname(vendorOrgname){
 							'</sec:authorize>';
 								result = result + ' </div>'; 
 							result = result + '<div class="project_details_cta">';
-								result = result + '<strong>Name:</strong>';
+								result = result + '<strong>Vendor Name:</strong>';
 								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
 									result = result + '<span title="'+json.orgName+'">'+json.orgName+'</span>';
 								}

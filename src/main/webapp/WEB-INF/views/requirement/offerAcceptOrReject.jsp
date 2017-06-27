@@ -78,7 +78,7 @@ width: auto;
 							  <c:otherwise>
 							    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 						          		<i class="fa fa-clock-o fa-3x"></i>
-							        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
+							        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
 							  </c:otherwise>
 							  </c:choose>
 						  </div>
@@ -106,7 +106,7 @@ width: auto;
 					 <c:otherwise>
 					    	<div class="col-md-8 col-md-offset-2 inner-widget pending-user">
 				          		<i class="fa fa-clock-o fa-3x"></i>
-					        	<p class="reason-msg">Your decision is already submitted for the Requirement<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
+					        	<p class="reason-msg">Your decision is already submitted for the Job<br> <B>${requirementOffers.submissionId.requirement.jobTitle}</B></p>
 					        </div>
 					    </c:otherwise>
 					  </c:choose>					  
