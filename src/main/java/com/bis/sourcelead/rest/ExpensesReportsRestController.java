@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -511,6 +512,27 @@ public class ExpensesReportsRestController {
 		}
 	   return commonUtil.toJSON(finalProjectMemberList);
 	}
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/expensesReportExportList")
+	public void expensesReportExportList(HttpServletRequest request,HttpServletResponse response,
+			   @RequestParam(value="frequencyYear", required=false) String frequencyYear,
+			   @RequestParam(value="frequencyMonth", required=false) String frequencyMonth,
+			   @RequestParam(value="exportType", required=false) String exportType) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(exportType.equalsIgnoreCase("pdf")){
+		expensesReportService.expensesReportExportListPdf();
+		}else{
+			expensesReportService.expensesReportExportListExcel();	
+		}
+	}
+	
+	
 	
 	
 	private Map<String, String> getCurrentYearAndCurrentQuater() {

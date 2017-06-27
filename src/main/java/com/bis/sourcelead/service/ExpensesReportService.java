@@ -23,4 +23,8 @@ public interface ExpensesReportService {
 
 	public Map<String, String> getmonthStringNamefromStartAndEndDate(Date convertedStartDate, Date convertedEndDate, List<ProjectMembers> projectMembers);
 
+	public void expensesReportExportListPdf();
+
+	public void expensesReportExportListExcel();
+
 }

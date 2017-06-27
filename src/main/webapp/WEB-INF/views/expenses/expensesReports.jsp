@@ -38,8 +38,8 @@
 					<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
 						<div class="export_pop">
 							<ul>
-								<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-								<li>Excel<i class="fa fa-file-excel-o"></i></li>
+								<li onclick="exportExpensesReports('pdf')"><i class="fa fa-file-pdf-o"></i>PDF</li>
+								<li onclick="exportExpensesReports('excel')"><i class="fa fa-file-excel-o"></i>Excel</li>
 							</ul>
 						</div></li>
 				</ul>
@@ -586,6 +586,16 @@ $.ajax({
 });	
 }     
 </script>
+ 
+ <script>
+ function exportExpensesReports(type){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var frequencyYear =document.getElementById("selectedYear").value;
+	var frequencyMonth =document.getElementById("selectedQuarter").value;
+ window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
+ }
+ </script>
+ 
  
  <script>
 function pagination(){ 
