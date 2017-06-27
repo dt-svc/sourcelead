@@ -619,6 +619,9 @@ public class RequirementReleaseRestController {
 		requirement.setDocFile(parentRequirement.getDocFile());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setFileName(parentRequirement.getFileName());
+		if(parentRequirement.getVisaType() != null){
+			requirement.setVisaType(parentRequirement.getVisaType());	
+		}
 		requirement.setIsClientJob("Y");
 		requirement.setIsTemplate("N");
 		requirement.setSubmissionTemplateJsonString(parentRequirement.getSubmissionTemplateJsonString());
