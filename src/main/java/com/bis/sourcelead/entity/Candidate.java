@@ -336,6 +336,9 @@ public class Candidate implements Serializable{
 	 @Transient
 	 private String sowContractName;
 	 
+	 @Transient
+	 private LinkedHashSet<String> allAndCandidateVisa;
+	 
 	 
 	 @Transient
 	 private List<Contracts> contractsList;
@@ -1295,6 +1298,16 @@ public class Candidate implements Serializable{
 
 	public void setVisaType(String visaType) {
 		this.visaType = visaType;
+	}
+
+
+	public LinkedHashSet<String> getAllAndCandidateVisa() {
+		return allAndCandidateVisa;
+	}
+
+
+	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
+		this.allAndCandidateVisa = allAndCandidateVisa;
 	}
 	
 	

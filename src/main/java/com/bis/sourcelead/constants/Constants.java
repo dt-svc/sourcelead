@@ -343,6 +343,9 @@ public class Constants {
 	/** For LookUpData (Eductions,Skills) **/
 	public static final String EDUCATIONS = "Educations";
 	public static final String SKILLS = "Skills";
+	public static final String VISA = "VisaCategory";
+	
+	
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
@@ -627,5 +630,6 @@ public class Constants {
     public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
     public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
+    public static final String PERCENTAGE = "percentage";
      
 }

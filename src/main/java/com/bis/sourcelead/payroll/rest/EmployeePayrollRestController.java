@@ -67,21 +67,27 @@ public class EmployeePayrollRestController {
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 		MultipartFile multipartFile = null;
+		Integer isInserted = 0;
 		Iterator<String> itrator = request.getFileNames();
 		if(itrator.hasNext()){
 			multipartFile = request.getFile(itrator.next());
 		}
-		String payrollType = jsonObj.getString("payrollType");
-		if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
-			Integer isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
-		}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-			Integer isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
-		}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
-			Integer isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
-		}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
-			Integer isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
+		if(jsonObj.has("payrollType")){
+			String payrollType = jsonObj.getString("payrollType");
+			if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
+				 isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
+			}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
+				 isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
+			}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
+				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
+			}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
+				 isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
+			}
+		}else{
+			isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
 		}
-		return commonUtil.toJSON("success");
+		
+		return commonUtil.toJSON(isInserted);
 	}
 	
 	@RequestMapping(value = "/loadEmployerPayrollCostByOrgLocationId", method = RequestMethod.GET)
