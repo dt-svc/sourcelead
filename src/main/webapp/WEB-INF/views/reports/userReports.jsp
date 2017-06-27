@@ -60,6 +60,7 @@
 <%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
+				    <li><a href="<c:url value='/expensesReportsList'/>"><span><i class="fa fa-briefcase"></i></span>Expenses Reports</a></li>
 				</ul>
 			</div>
 		</div> 

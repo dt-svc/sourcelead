@@ -1172,7 +1172,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.reqCoolingOffPeriod != null && json.reqCoolingOffPeriod != '' && json.reqCoolingOffPeriod != 'undefined'){
-					            result = result +'<div class="require_wrap_details_cta"> <b>Cooling Off Period:</b><span>'+json.reqCoolingOffPeriod+'</span>';
+					            result = result +'<div class="require_wrap_details_cta"> <b>Cooling Off Period:</b>'+json.reqCoolingOffPeriod+'';
 					            }else{
 					           	result = result +'<div class="require_wrap_details_cta "> <b>Cooling Off Period:</b> <span> -- </span>';
 					            }
@@ -1180,9 +1180,13 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				           
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Created By:</b>'+json.createdByName+'';
-
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Visa:</b><span>'+json.visaType+'</span>';
+				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'   </div>';				            
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'     </div>';
 
@@ -4701,10 +4705,8 @@ function clientSideBar(candidateId){
 			             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             
-			            
-			             
 			             result = result+'<li><a href="#tab-17" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
-			             result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
+						 result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
 			             
 			             result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
 			             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
@@ -4731,7 +4733,6 @@ function clientSideBar(candidateId){
 						 
 						 result = result + '<div id="tab-18" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';
-						 
 						 
 						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
 						 result = result + '</div>';

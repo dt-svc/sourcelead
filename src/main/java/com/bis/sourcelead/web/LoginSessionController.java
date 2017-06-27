@@ -272,6 +272,7 @@ public class LoginSessionController {
 			
 			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(user.getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
+			SourceLeadSessionManager.setSessionAttribute(request,"isAdmin",isAdmin);
 			
 			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 			model.addObject("timezone",timezone.getTimeZoneId());
