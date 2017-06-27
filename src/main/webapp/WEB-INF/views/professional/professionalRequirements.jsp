@@ -668,6 +668,13 @@ function getViewMoreSearchRecords(){
 </script>
 
 <script>
+function getPostedOrgJobs(id){
+	$("#postedOrg").val(id.innerHTML);
+	requirementsList('0');
+}
+</script>
+
+<script>
 function requirementsList(offset){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var requirementType = document.getElementById('requirementType').value;
@@ -677,7 +684,7 @@ function requirementsList(offset){
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	var candidateId = '${SourceLeadWeb_candidateId}'
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	
+	var postedOrgName = $("#postedOrg").val();
     loadChosenRequirementScripts();
 	
 	
@@ -703,7 +710,7 @@ function requirementsList(offset){
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch,
+	   	url: sourceleadUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch+"&postedOrgName="+postedOrgName,
 	   			
 	    success: function(data) {
        	 var json = JSON.parse(data);
@@ -782,8 +789,9 @@ function requirementsList(offset){
 			 					
 			 				}
 			 				
-			 				
-			 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
+			 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
+			 				result = result +'<h4 onClick="getPostedOrgJobs(this);" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';
+			 				result = result +'<div class="clearfix"></div>';
 			 				result = result +'<span>';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';

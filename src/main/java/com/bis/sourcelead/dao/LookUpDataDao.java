@@ -24,5 +24,7 @@ public interface LookUpDataDao {
 	public List<String> getAllEducationsByEducationCategory();
 	
 	public List<String> getAllSkillsByIndustryCategory()throws Exception;
+
+	public List<String> getAllVisaByCategory()throws Exception;
 	
 }

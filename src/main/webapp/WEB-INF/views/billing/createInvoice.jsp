@@ -344,7 +344,6 @@ function errRemoveClientContact(){
                    result = result +'  <label class="col-md-7 text-right"><strong>Total</strong></label>';
                    result = result +'  <div class="col-md-5 text-right"><span class="pull-left">'+currencyCode+'</span><input type="text" value = "00.00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></div>';
                    result = result +'  </div>';
-                   
                    //New Div for currency conversion: srinivas l
                  if(clientCurrency != currencyCode){ 
                 	 result = result +'  <div class="row">';
