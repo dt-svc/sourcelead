@@ -64,7 +64,6 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -1266,6 +1265,25 @@ public class CandidateListRestController {
 					return "failed";
 				}
 			 }
+		   
+		   
+//		   @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
+//		   public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="visaName", required=false) String  visaName, HttpServletRequest request) throws Exception {
+//			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+//				
+//				if(null != can && StringUtils.isNotEmpty(visaName)){
+//					can.setVisaName("");
+//					can.setVisaName(visaName);
+//					candidateService.saveOrUpdateCandidate(can);
+//					candidateService.saveOrUpdateCandidateElkDocument(can);
+//					return "success";
+//				}else{
+//					can.setVisaName("");
+//					candidateService.saveOrUpdateCandidate(can);
+//					candidateService.saveOrUpdateCandidateElkDocument(can);
+//					return "failed";
+//				}
+//			 }
 		   
 		   @RequestMapping(value = "/getCandidateReportsListByOrgLocationID")
 			 public String getCandidateReportsListByOrgLocationID(@RequestParam(value="candidateType", required=false) String  candidateType,

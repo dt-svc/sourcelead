@@ -64,6 +64,8 @@ public class CandidateIndex implements Serializable {
 	private String expectedRateCurrencey;
 
 	private String summary;
+	
+	private String visaType;
 
 	private String invitationstatus;
 
@@ -772,6 +774,15 @@ public class CandidateIndex implements Serializable {
 		this.candidateUUID = candidateUUID;
 	}
 
+	public String getVisaType() {
+		return visaType;
+	}
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+	
 }
 
 
