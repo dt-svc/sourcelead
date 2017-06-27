@@ -243,7 +243,7 @@ padding: 2px 300px 2px 0px;
 function PopUp(contractUUID,stage){
 	var sourceleadUrl ='${sourceleadUrl}';
 	localStorage.setItem("stage",stage);
-	window.location.replace(sourceleadUrl+'/viewContract?contractUUID='+contractUUID);
+ 	window.location.replace(sourceleadUrl+'/viewContract?contractUUID='+contractUUID);
 }
 
 

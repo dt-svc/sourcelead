@@ -250,7 +250,7 @@ $(document).ready(function(){
 	        "dashLength": 5,
 	        "gridCount": 10,
 	        "position": "left",
-	        "title": "Requirements"
+	        "title": "Jobs"
 	    }],
 	    "startDuration": 0.5,
 	    "graphs": [{
@@ -785,7 +785,7 @@ function flushDate(){
 		            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
 		            				resultToday = resultToday+'	<thead>';
 		            				resultToday = resultToday+'	  <tr>';
-		            				resultToday = resultToday+'	    <th>Requirement Title </th>';
+		            				resultToday = resultToday+'	    <th>Job Title </th>';
 		            				resultToday = resultToday+'	    <th>Company Name</th>';
 		            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
 		            				resultToday = resultToday+'	    <th>Type</th>';

@@ -50,7 +50,7 @@ function ApplicantAuthorization(status){
 	            				resultToday = resultToday+'	<thead>';
 	            				resultToday = resultToday+'	  <tr>';
 	            				resultToday = resultToday+'	    <th>Applicant</th>';
-	            				resultToday = resultToday+'	    <th>Requirement</th>';
+	            				resultToday = resultToday+'	    <th>Job</th>';
 	            				resultToday = resultToday+'	    <th>Team Member</th>';
 	            				if(status == 'accepted'){
 	            					resultToday = resultToday+'	    <th>Accepted By</th>';

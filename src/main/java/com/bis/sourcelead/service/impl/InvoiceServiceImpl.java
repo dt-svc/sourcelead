@@ -1392,6 +1392,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  						invoice.setCreatedDate(commonUtil.currentDate());
   	  						invoice.setPaymentStatus("Unpaid");
   	  						invoice.setProjectID(project);
+  	  						invoice.setDiscountType(Constants.PERCENTAGE);
   	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoice.getTotal()));
   	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1);
   	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
