@@ -295,6 +295,24 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setSkillsName(candidateSkills);
 		}
 		
+		if(jsonObj.has("visa")){
+			
+			String visaList =null;
+			try{
+				JSONArray jsonArray = jsonObj.getJSONArray("visa");
+				visaList = jsonArray.toString();
+			}
+			catch(JSONException e){
+				visaList =jsonObj.getString("visa");
+			}
+			visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
+			visaList = visaList.replaceAll("\"", "");
+			candidate.setVisaType(visaList);
+	  	 
+		}else{
+			candidate.setVisaType(null);
+		}
+		
 		if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null){
 			candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
 		}

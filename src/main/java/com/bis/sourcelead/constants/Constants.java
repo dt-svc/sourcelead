@@ -296,6 +296,7 @@ public class Constants {
 	public static final String List_by_status = "List by status";
 	public static final String TimeSheet_Approval = "Timesheet Approval";
 	public static final String Requirement = "Requirement";
+	public static final String JOBS = "Jobs";
 	public static final String Vendors = "Vendors";
 	public static final String Candidates = "Candidates";
 	public static final String Associates = "Associates";
@@ -626,5 +627,6 @@ public class Constants {
     public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
     public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
+    public static final String PERCENTAGE = "percentage";
      
 }
