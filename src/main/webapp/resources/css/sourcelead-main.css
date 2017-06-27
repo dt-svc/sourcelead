@@ -259,6 +259,39 @@ color: #333; display: block !important; text-shadow: none; padding: 0!important;
 }
 /* Alerts Styels ends */
 /*updated links for quick links based on user */
+#qlinks .qlinksArea h5{
+    margin: 0; color: #f60; padding-left: 5px;
+}
+#qlinks .qlinksArea {
+height: auto; background: #f5f5f5; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);  left: -340px;
+padding-top: 0; position: absolute; right: 0; top: 50px; border-top: 4px solid #3081cb;
+width: auto; min-width: 150px; width: 550px; border-radius: 0 0 3px 3px; padding: 15px 10px 15px 15px;
+visibility: hidden; opacity: 0; transition: visibility 0s, opacity 0.5s linear;
+transition: all 0.3s ease-in-out; -webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out;
+-o-transition: all 0.3s ease-in-out;
+}
+#qlinks .qlinksArea ul {
+width: 175px; float: left; margin-bottom: 15px;
+}
+#qlinks:hover .qlinksArea{
+    visibility: visible; opacity: 1;
+}
+#qlinks .qlinksArea li{
+ line-height: 20px; border-bottom: 1px solid #e0e0e0; padding: 0; margin: 0 5px;
+}
+#qlinks .qlinksArea li a{
+color: #424242; padding:5px 5px 5px 0;
+text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 175px; display: block;
+font-size: 13px; transition: all 0.3s ease-in-out; -webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out;
+-o-transition: all 0.3s ease-in-out;
+}
+#qlinks .qlinksArea li:hover{
+    background: #e0e0e0;
+}
+#qlinks .qlinksArea li a:hover{
+    padding-left: 5px;
+}
+
 .qlinks-area, .spoclinks-area {
 min-width: 150px; height: auto; background: #eef1fc none repeat scroll 0 0; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 padding-top: 0; position: absolute; right: 0; top: 50px; border-top: 4px solid #3081cb;
@@ -5579,14 +5612,30 @@ a.color_white{
 .changeRate_div .drpdownMonthly select {
     width: 50px;
 }
-.proposeNewRate .panel-group {
-	margin-bottom: 0;
+.chosenSelect_li ul li {
+float: none !important; font-weight: none !important; color:#101010 !important;
+font-weight: 400 !important;
 }
-.proposeNewRate .panel-title a{
-	color:#368ee0;
+.chosenSelect_li ul li:hover{
+color:#fff !important;
 }
-.proposeNewRate .panel-title a:hover{
-	color:#909090;
+.validLabel p {
+bottom: -13px !important;
+}
+.invite_class .fa {
+    width: 25px;
+}
+.modal.modal_Expenses {
+    display: none;
+}
+.modal.modal_Expenses .modal-dialog {
+	width: 850px;
+}
+h4.orgLink {
+	cursor: pointer; float: left;
+}
+h4.orgLink:hover{
+	color:#4e71a8; border-bottom:1px solid #368ee0;
 }
 /* media 320px */
 @media (max-width: 320px) {
