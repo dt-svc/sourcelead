@@ -26,14 +26,14 @@ $(document).ready(function() {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Requirement Details</h2>
+      <h2>Job Details</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Requirement List </a> &raquo; Requirement Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Requirement List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Requirement List </a> &raquo; Requirement Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Jobs List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>
@@ -192,7 +192,7 @@ function requirementProfile(requirementUUID){
 						 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
 					 }
 				 
-				 result = result +'                        <li><i class="fa fa-rupee" title="Requirement Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+city+' '+state+' '+country+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
@@ -468,12 +468,12 @@ function getSubmissionDetails(requirementUUID){
 </script>
 
 <script>
-function getRateNegotiationDetails(requirementUUID){
-	
+function getRateNegotiationDetails(submissionId, candidateId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
-	   	type: "GET",
-	    url: sourceleadUrl+"/getReferalListByRequirementId?requirementUUID="+requirementUUID, 	   
+	   	type: "POST",
+	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId, 	   
 		    success: function(data) {
 		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	 var json = JSON.parse(data);
@@ -529,7 +529,7 @@ function getRateNegotiationDetails(requirementUUID){
 	                    
 	                    result = result + '  <div class="col-md-12 mt">';
 	                    result = result + '    <div class="pull-right mr">';
-	                    result = result + '      <input type="button" value="Submit" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate();">';
+	                    result = result + '      <input type="button" value="Submit" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
 	                    result = result + '      <input type="button" value="Clear" class="btn btn-default btn-sm" onClick="clearRatediv();">';
 	                    result = result + '    </div>';
 	                    result = result + '  </div>';
@@ -678,8 +678,7 @@ function proposeNewRate(submissionId, candidateId) {
 			type: "POST",
 			url: sourceleadUrl+"/proposeRate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&candidateId="+candidateId,
 				success: function(data) {
-					alert(data);
-					alert("submitted");
+					getRateNegotiationDetails(submissionId, candidateId);
 				},
 			});
 			return true;
