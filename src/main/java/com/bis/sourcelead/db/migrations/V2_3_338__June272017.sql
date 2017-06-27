@@ -35,4 +35,12 @@ INSERT INTO `sourcelead`.`EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQ
 			('inviteCompany','Email', 'inviteCompany', 'Send invite company email', 'Invitation From {{inviteCompany.LoginUser}}','org', 'Best Regards,\n{{inviteCompany.LoginUser}}\n{{inviteCompany.LoginUserEmail}}\n{{inviteCompany.LoginOrg}}', 'Dear {{inviteCompany.Name}},\nI am delighted to Introduce Platform to Manage Day to day Operations,SourceLead is a Software as a Service talent acquisition platform that helps you attract, source, onboard and manage talent. Our platform provides the business insight needed to track the processes with in talent ecosystem.{{inviteCompany.ServicesList}}\nIf you have any questions please refer to our Blog and FAQ sections here
  ','N', 'SLADMIN', 'slead', 'sleadIN');
 
+ 
+ CALL sourcelead.AlterTableAddColumn ('sourcelead','RECOMMENDED_CUSTOMIZE_SCORE','CUSTOMIZE_EDUCATION','TEXT NULL AFTER `CUSTOMIZE_KEYWORDS_SCORE`');
+ CALL sourcelead.AlterTableAddColumn ('sourcelead','RECOMMENDED_CUSTOMIZE_SCORE','CUSTOMIZE_EDUCATION_SCORE','VARCHAR(10) NULL AFTER `CUSTOMIZE_EDUCATION`');
+ 
+ CALL sourcelead.AlterTableAddColumn ('sourcelead','RECOMMENDED_CUSTOMIZE_SCORE','CUSTOMIZE_VISATYPE','TEXT NULL AFTER `CUSTOMIZE_EDUCATION_SCORE`');
+ CALL sourcelead.AlterTableAddColumn ('sourcelead','RECOMMENDED_CUSTOMIZE_SCORE','CUSTOMIZE_VISATYPE_SCORE','VARCHAR(10) NULL AFTER `CUSTOMIZE_VISATYPE`');
+ 
+ 
 

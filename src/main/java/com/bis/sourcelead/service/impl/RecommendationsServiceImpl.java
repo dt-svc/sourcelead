@@ -540,12 +540,14 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@Override
 	public List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId) throws Exception {
 		float locationPercentage = 0; // location 10%
-		float ratePercentage = 0;    // rate 20 %
+		float ratePercentage = 0;    // rate 10 %
 		float skillPercentage = 0; // skill = 20%
 		float percentPerSkill = 0;
 		float percentPerkeyword = 0; //keyword 20%
 		float noticePeriod = 0; // notice 10%
-		float expPercentage = 0; //  experience = 20%
+		float expPercentage = 0; //  experience = 10%
+		float visaTypePercentage = 0; //  visaType = 10%
+		float educationPercentage = 0; //  education = 10%
 		
 		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
 		String reqSkills = "";
@@ -555,6 +557,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
 			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
 		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+		     String visaType = recommendedCustomizeScore.getCustomizeVisatype();
+		     String education  = recommendedCustomizeScore.getCustomizeEducation();
 		     String [] numOfKeyWords = null;
 		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
 		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
@@ -567,6 +571,21 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					boolQueryBuilder.should(QueryBuilders.matchQuery("skillsName", skill));
 				}
 			}
+			
+			String [] visatype = visaType.split(",");
+			if(visatype != null && visatype.length >0){
+				for(String visa : visatype){
+					boolQueryBuilder.should(QueryBuilders.matchQuery("visaType", visa));
+				}
+			}
+			
+			String [] Education = education.split(",");
+			if(Education != null && Education.length >0){
+				for(String edu : Education){
+					boolQueryBuilder.should(QueryBuilders.matchQuery("education", edu));
+				}
+			}
+			
 			boolQueryBuilder.minimumShouldMatch("1");
 			
 			//Long  count = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,0,boolQueryBuilder).getTotalHits();
@@ -575,6 +594,8 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 			
 			if(null != searchHits && searchHits.length >0){
 				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
+				visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)reqMaxSkills.length;
+				educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)reqMaxSkills.length; 
 				int reqMinExp = 0;
 				int reqMaxExp = 0;
 				float percentPerMonthExp = 0;

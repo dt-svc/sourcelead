@@ -381,7 +381,7 @@
           <label class="col-md-3"></label>
         </div> 
         
-          <div class="form-group">
+        <!--   <div class="form-group">
           <label class="col-md-3">Location</label>
           <div class="col-md-9" id="locationField">
           <input class="form-control" id="autocomplete" placeholder="Enter your address" type="text"></input>
@@ -431,7 +431,7 @@
           <input class="form-control" id="longitude"  type="text"></input>
           </div>
         </div> 
-        
+         -->
         
         
         
