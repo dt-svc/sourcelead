@@ -468,12 +468,12 @@ function getSubmissionDetails(requirementUUID){
 </script>
 
 <script>
-function getRateNegotiationDetails(requirementUUID){
-	
+function getRateNegotiationDetails(submissionId, candidateId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
-	   	type: "GET",
-	    url: sourceleadUrl+"/getReferalListByRequirementId?requirementUUID="+requirementUUID, 	   
+	   	type: "POST",
+	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId, 	   
 		    success: function(data) {
 		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	 var json = JSON.parse(data);
@@ -529,7 +529,7 @@ function getRateNegotiationDetails(requirementUUID){
 	                    
 	                    result = result + '  <div class="col-md-12 mt">';
 	                    result = result + '    <div class="pull-right mr">';
-	                    result = result + '      <input type="button" value="Submit" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate();">';
+	                    result = result + '      <input type="button" value="Submit" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
 	                    result = result + '      <input type="button" value="Clear" class="btn btn-default btn-sm" onClick="clearRatediv();">';
 	                    result = result + '    </div>';
 	                    result = result + '  </div>';
@@ -678,8 +678,7 @@ function proposeNewRate(submissionId, candidateId) {
 			type: "POST",
 			url: sourceleadUrl+"/proposeRate?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&candidateId="+candidateId,
 				success: function(data) {
-					alert(data);
-					alert("submitted");
+					getRateNegotiationDetails(submissionId, candidateId);
 				},
 			});
 			return true;

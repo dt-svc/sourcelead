@@ -482,6 +482,12 @@ public class SubmissionsRateRestController {
 				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
+			}else if(requirementSubmission.getCandidate() != null && requirementSubmission.getCandidate().getConsultantUser() != null && requirementSubmission.getCandidate().getConsultantUser().getId() == users.getId()){
+				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
+				candidate = requirementSubmission.getCandidate();
+				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+				}
 			}else{
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);
 				candidate = requirementSubmission.getCandidate();
