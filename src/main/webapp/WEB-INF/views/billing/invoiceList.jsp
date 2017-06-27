@@ -388,7 +388,7 @@ function removeErr(){
 
   <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
-<div class="modal modal_invoice" style="display: none;">
+<div class="modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPopup" ></div>
 </div>
 <!-- modal pop -->
@@ -1165,6 +1165,7 @@ function exportToReceivableExcel(){
 
 <script type="text/javascript">
 function linkInvoice(invoiceId,totalAmount){
+	alert("Hi");
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
@@ -1182,7 +1183,7 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'      <div class="modal-body clearfix">                                                                                       ';
 			result = result +' <div class="timesheet_out clearfix">                                                                                         ';
 			result = result +'      <div class="candidate_wrap_table">                                                                                      ';
-			result = result +'      <table>                                                                                                                 ';
+			result = result +'      <table id="linkInvoiceListPagination">                                                                                                                 ';
 			result = result +'        <thead>                                                                                                               ';
 			result = result +'          <tr>                                                                                                                ';
 			result = result +'            <th>&nbsp;                                                                                                        ';
@@ -1210,13 +1211,25 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'              <div class="tbldata-dotdot-100">'+opt.invoiceId+'</div>                                                                   ';
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>                                                    ';
+			if(opt.clientContactName !=null && opt.clientContactName != '' && opt.clientContactName != 'undefined'){
+				result = result +'              <div class="tbldata-dotdot-sm">'+opt.clientContactName+'</div>';
+			}else{
+				result = result +'              <div class="tbldata-dotdot-sm">--</div>';
+			}
 			result = result +'            </td>                                                                                                             ';
-			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tblminwidth-50">'+opt.dueDateStr+'</div>                                                                    ';
-			result = result +'            </td>                                                                                                             ';
-			result = result +'            <td>                                                                                                              ';
-			result = result +'              <div class="tblminwidth-50">'+opt.invoiceDateStr+'</div>                                                                     ';
+			result = result +'            <td>';
+			if(opt.dueDateStr !=null && opt.dueDateStr !='' && opt.dueDateStr !='undefined'){
+				result = result +'<div class="tblminwidth-50">'+opt.dueDateStr+'</div>';
+			}else{
+				result = result +'<div class="tblminwidth-50">--</div>';
+			}
+			result = result +'            </td>';
+			result = result +'            <td>';
+			if(opt.invoiceDateStr != null && opt.invoiceDateStr !='' && opt.invoiceDateStr !='undefined'){
+				result = result +'              <div class="tblminwidth-50">'+opt.invoiceDateStr+'</div>';		
+			}else{
+				result = result +'              <div class="tblminwidth-50">--</div>';
+			}
 			result = result +'            </td>                                                                                                             ';
 			result = result +'            <td>                                                                                                              ';
 			result = result +'              <div class="tbldata-dotdot_80"  id="linkedReceivableTotalId'+opt.id+'" >'+opt.total+'</div>                                                                 ';
@@ -1249,6 +1262,7 @@ function linkInvoice(invoiceId,totalAmount){
 		
 			$("#linkPopup").empty();
 			$("#linkPopup").append(result);
+			LinkInvoicePagination();
 			$('.modal.modal_invoice').fadeIn(200);
 	        $('.side_mask').fadeIn(200);
 		},
@@ -1256,6 +1270,25 @@ function linkInvoice(invoiceId,totalAmount){
 }
 </script>
 
+<script>
+function LinkInvoicePagination(){  
+	 $.fn.dataTable.moment( 'DD-MM-YYYY' );
+    $('#linkInvoiceListPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	//
+    	"aaSorting": [[3,'desc']],
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $("#linkInvoiceListPagination").wrap("<div class='overflow_Auto'></div>");
+}
+</script>
 
  <!-- Script for Linked Invoice pop -->
     <script>
