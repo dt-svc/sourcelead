@@ -350,48 +350,7 @@ public class CandidateController {
 		
 	 }	 
 	 
-		/**
-		* @author Venkat Kesav 
-		* 
-		* This method is used to download Resume
-		* 
-		* @param resumeId
-		* @param request
-		* 
-		* @return resultJson
-		* 
-		* @throws Exception
-		*/
-		@RequestMapping(value = "/downloadResumeCandidate/{resumeUUID}", method = RequestMethod.GET)
-	    public void downloadResumeCandidate(@PathVariable String resumeUUID,HttpServletResponse response) throws Exception {
-			
-				CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
-			    
-				if(null != candidateResume){
-					response.setContentType("application/octet-stream");
-				    StringBuilder fileName = new StringBuilder();
-			        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
-				    
-					InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
-					try {
-						OutputStream outStream = response.getOutputStream();
-
-						byte[] buffer = new byte[4096];
-						int bytesRead = -1;
-
-						while ((bytesRead = inputStream.read(buffer)) != -1) {
-							outStream.write(buffer, 0, bytesRead);
-						}
-
-						inputStream.close();
-						outStream.close();
-
-					} catch (FileNotFoundException e) {
-						logger.error(ExceptionUtils.getFullStackTrace(e));
-					} 
-				}
-			    
-			}
+	
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;
