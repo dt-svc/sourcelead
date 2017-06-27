@@ -47,10 +47,13 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDate(Long projectMembersId,Date startDate, Date endtDate) {
+	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDate(Long projectMembersId,Date startDate, Date endDate) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers where proMembers.id = :projectMembersId and expenses.endDate  >= :startDate and expenses.endDate <= :endtDate";
-		List<Expenses> expenses =session.createQuery(query).setLong("projectMembersId", projectMembersId).setDate("startDate", startDate).setDate("endtDate", endtDate).setCacheable(true).list();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		
+		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers where proMembers.id = :projectMembersId and expenses.endDate  BETWEEN :startDate and :endDate";
+		List<Expenses> expenses =session.createQuery(query).setLong("projectMembersId", projectMembersId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setCacheable(true).list();
 		return expenses;
 	}
 
