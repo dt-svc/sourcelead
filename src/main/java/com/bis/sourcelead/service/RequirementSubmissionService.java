@@ -262,4 +262,6 @@ public interface RequirementSubmissionService {
 	public void sendEmailtoAssignedMemberApplicantAuthorization(Org loginOrg, User users,RequirementSubmission requirementSubmission,OrgLocations loginOrgLocation) throws Exception;
 
 	List<RequirementSubmission> getSubmissionsForSOWByOrgLocationId(String sowType, OrgLocations loginOrgLocation);
+
+	List<RequirementSubmission> getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(Long id, String string, String tab, String userType, User user, Date startUTCDate, Date endUTCDate);
 }

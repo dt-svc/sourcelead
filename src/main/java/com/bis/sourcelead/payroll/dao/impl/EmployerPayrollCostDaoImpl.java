@@ -28,7 +28,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 	public EmployerPayrollCost saveEmployerPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			session.save(employerPayrollCost);
+			session.saveOrUpdate(employerPayrollCost);
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}

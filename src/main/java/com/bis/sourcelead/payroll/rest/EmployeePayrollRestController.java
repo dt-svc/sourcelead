@@ -23,9 +23,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.HrDeductions;
+import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.AccountDeductions;
+import com.bis.sourcelead.payroll.entity.AccountDeductionsDetails;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
+import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -52,6 +56,9 @@ public class EmployeePayrollRestController {
 	@Autowired
 	private AccountDeductionsService accountDeductionsService;
 	
+	@Autowired
+	private HrDeductionsService hrDeductionsService;
+	
 	@RequestMapping(value = "/uploadPayrollDocument", method = RequestMethod.POST)
 	@ResponseBody 
 	public String fileUploaded(@RequestParam(value = "json", required = false) String json,MultipartHttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -66,11 +73,13 @@ public class EmployeePayrollRestController {
 		}
 		String payrollType = jsonObj.getString("payrollType");
 		if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
-			String isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
+			Integer isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 		}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-			String isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
+			Integer isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 		}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
-			String isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
+			Integer isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
+		}else if(Constants.HR_DEDUCTIONS.equalsIgnoreCase(payrollType)){
+			Integer isInserted = hrDeductionsService.saveHRDeductions(multipartFile,orgLocation,user,jsonObj);
 		}
 		return commonUtil.toJSON("success");
 	}
@@ -97,24 +106,61 @@ public class EmployeePayrollRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getWagesAndTaxList", method = RequestMethod.GET)
-	public @ResponseBody String getWagesAndTaxList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody String getWagesAndTaxList(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<WageTaxSummary>  wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxListByOrgLocationId(orgLocation);
-		if(wagesAndTaxList != null){
-			for(WageTaxSummary wts : wagesAndTaxList){
-				if(null !=  wts.getFromDate()){
-					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
-				}
-				if(null != wts.getToDate()){
-					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
-				}
-				if(wts.getCheckNo() != null){
-					wts.setCheckNo(wts.getCheckNo());
-				}
-			}
-		}
 		return commonUtil.toJSON(wagesAndTaxList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAccountDeductionsList", method = RequestMethod.GET)
+	public @ResponseBody String getAccountDeductionsList(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<AccountDeductions> accountDeductionsList = accountDeductionsService.getAccountDeductionsListByOrgLocationId(orgLocation);
+		return commonUtil.toJSON(accountDeductionsList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getDeductionsDetailsbyId", method = RequestMethod.GET)
+	public @ResponseBody String getDeductionsDetailsbyId(@RequestParam(value = "deductionId", required = false) String deductionId, HttpServletRequest request) throws Exception
+	{
+		List<AccountDeductionsDetails> accountDeductionsDetailsList = accountDeductionsService.getDeductionsDetailsbyId(Long.parseLong(deductionId));
+		return commonUtil.toJSON(accountDeductionsDetailsList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getHrDeductionsList", method = RequestMethod.GET)
+	public @ResponseBody String getHrDeductionsList(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<HrDeductions> hrDeductionsList = hrDeductionsService.getHrDeductionsListByOrgLocationid(orgLocation);
+		return commonUtil.toJSON(hrDeductionsList);
+	}
+	
+	/**
+	 * @author : Pavan Jampana
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getEmpHrDeductionsDetailsbyId", method = RequestMethod.GET)
+	public @ResponseBody String getEmpHrDeductionsDetailsbyId(@RequestParam(value = "hrDeductionId", required = false) String hrDeductionId, HttpServletRequest request) throws Exception
+	{
+		List<HrDeductionsDetails> hrDeductionsList = hrDeductionsService.getHrDeductionsDetailsbyId(Long.parseLong(hrDeductionId));
+		return commonUtil.toJSON(hrDeductionsList);
 	}
 	
 }

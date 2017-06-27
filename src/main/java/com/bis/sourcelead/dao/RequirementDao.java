@@ -119,5 +119,7 @@ public interface RequirementDao {
 	
 	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status);
 
+	public List<String> getAllRequirementVisaByRequirementI(Long requirementId)throws Exception;
+
 	
 }

@@ -380,6 +380,24 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setSkills(null);
 			}
 			
+             if(jsonObj.has("visa")){
+				
+				String visaList =null;
+				try{
+					JSONArray jsonArray = jsonObj.getJSONArray("visa");
+					visaList = jsonArray.toString();
+				}
+				catch(JSONException e){
+					visaList =jsonObj.getString("visa");
+				}
+				visaList = visaList.replaceAll("\\[", "").replaceAll("\\]","");
+				visaList = visaList.replaceAll("\"", "");
+		  	    requirement.setVisaType(visaList);
+		  	 
+			}else{
+				requirement.setVisaType(null);
+			}
+			
 			if(jsonObj.has("education")){
 				
              String educationId =null;
@@ -3514,6 +3532,12 @@ private void releaseUpdatedMailScenario(User loginUser, Requirement requirement,
 	@Override
 	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status)  {
 		return requirementDao.getAllVendorJobsBasedonRelationId(locationId,relationId, userRoleName,user,status);
+	}
+
+
+	@Override
+	public List<String> getAllRequirementVisaByRequirementI(Long requirementId) throws Exception {
+		return requirementDao.getAllRequirementVisaByRequirementI(requirementId);
 	}
 	
 }

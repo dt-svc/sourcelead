@@ -28,8 +28,8 @@ window.onload = function () {
 		<ul id="parentUl">
 			<li title="Employer Payroll Cost"><a class="wVer" onclick="loadEmployeePayrollCost();">Employer Payroll Cost</a></li>
 			<li title="Wages & Tax Summary"><a onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
-			<li title="AccountDeductions"><a>Account Deductions</a></li>
-			<li title=""><a>Tab 4</a></li>
+			<li title="Account Deductions"><a onclick="accountDeductionsList();">Account Deductions</a></li>
+			<li title="HR Deductions"><a onclick="hrDeductionsList();">HR Deductions</a></li>
 		</ul>
 		<div class="clearfix"></div>
 	</section>
@@ -62,7 +62,7 @@ window.onload = function () {
                             <option value="EMPLOYEE_PAYROLL">Employee Payroll</option>
                             <option value="WAGE_TAX">Wage & Tax Summary</option>
                             <option value="ACCOUNT_DEDUCTIONS">Account Deductions</option>
-                            <option value="April">Type 4</option>
+                            <option value="HR_DEDUCTIONS">HR Deductions</option>
                           </select>
                         </div>
                         <div class="col-md-12 mt10">
@@ -86,8 +86,11 @@ window.onload = function () {
                   </form:form>
                 </div>
     <div class="project_tabs_inn_table vendor_wrap_inn_table">
+    	<div id="loading"></div>
     	<div id="employerCostDiv"></div>
     	<div id="wagesAndTaxListDiv"></div>
+    	<div id="accountDeductionsListDiv"></div>
+    	<div id="hrDeductionsListDiv"></div>
        
 	</div>
 	
@@ -98,6 +101,7 @@ window.onload = function () {
 
 <script>
 function loadEmployeePayrollCost(){
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -130,35 +134,38 @@ function loadEmployeePayrollCost(){
 						{
 			        		 var opt = json[i];
 			        		    result = result + ' <tr>';
-								result = result + '<td><div>'+opt.fromDateStr+'</div></td>';
-								result = result + ' <td><div>'+opt.toDateStr+'</div></td>';
-								result = result + '<td><div>'+opt.employeeId+'</div></td>';
-								result = result + '<td><div>'+opt.employeeName+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
+								result = result + '<td class="tblminwidth-75"><div>'+opt.employeeId+'</div></td>';
+								result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
 								if(opt.ssn !=null && opt.ssn !='' && opt.ssn !='undefined'){
-									result = result + ' <td><div>'+opt.ssn+'</div></td>';
+									result = result + ' <td><div class="tbldata-dotdot-sm">'+opt.ssn+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
 								if(opt.totalHrs !=null && opt.totalHrs !='' && opt.totalHrs !='undefined'){
-									result = result + '<td><div>'+opt.totalHrs+'</div></td>';
+									result = result + '<td><div class="tblminwidth-50">'+opt.totalHrs+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
-								result = result + ' <td><div>'+opt.grossWages+'</div></td>';
-								result = result + '<td><div>'+opt.fica+'</div></td>';
-								result = result + '<td><div>'+opt.futa+'</div></td>';
-								result = result + ' <td><div>'+opt.sui+'</div></td>';
-								result = result + '<td><div>'+opt.erLocals+'</div></td>';
-								result = result + ' <td><div>'+opt.wcCost+'</div></td>';
-								result = result + '<td><div>'+opt.adminFee+'</div></td>';
-								result = result + '<td><div>'+opt.totalErCost+'</div></td>';
+								result = result + ' <td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-125 text-right">'+opt.grossWages+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.fica+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.futa+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75">'+opt.sui+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.erLocals+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75">'+opt.wcCost+'</div></td>';
+								result = result + '<td><div class="tblminwidth-100">'+opt.adminFee+'</div></td>';
+								result = result + '<td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tblminwidth-150 text-right">'+opt.totalErCost+'</div></td>';
 								result = result + ' </tr>';
 						}
 						result = result + '  </table>';
 						result = result + ' </tbody>';
 						$("#employerCostDiv").empty();
 						$("#wagesAndTaxListDiv").empty();
+						$("#accountDeductionsListDiv").empty();
+						$("#hrDeductionsListDiv").empty();
 						$("#employerCostDiv").append(result);
+						$("#loading").removeAttr("style");
 						employeePayrollCostPagination();
 				        	
 				        },
@@ -215,13 +222,23 @@ function employeePayrollCostPagination(){
 		$(".collapse-div-adduser").toggleClass("show-div").css({"right":" 275px","top":"35px" });
 		$(".collapse-div").removeClass("show-div");
 	});
-	$(".close-div").click(function() {
-		$(this).parent().removeClass("show-div");
-	});
+	
 	$(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(
 			function(e) {
 				e.stopPropagation();
 			});
+	
+	$(".close-div").click(function() {
+		$(this).parent().removeClass("show-div");
+		$("#fromDate").val("");
+		$("#toDate").val("");
+		$("#payrollType").val('').trigger("chosen:updated");
+		$("#batchNumber").val("");
+		$("#uploadFile").val("");
+	});
+	
+	
+	
 	/* $('html').click(function() {
 		$(".collapse-div-adduser").removeClass("show-div");
 		$(".collapse-div").removeClass("show-div");
@@ -313,5 +330,7 @@ $("ul#parentUl").on("click","li", function(){
 </script>
 
 <jsp:include page="wagesAndTaxlist.jsp" />
+<jsp:include page="accountDeductionsList.jsp" />
+<jsp:include page="hrDeductionsList.jsp" />
 
 <jsp:include page="../masterFooter.jsp" />

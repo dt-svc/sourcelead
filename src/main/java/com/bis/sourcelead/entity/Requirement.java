@@ -253,6 +253,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "VISA_TYPE", columnDefinition = "TEXT default NULL")
+	private String visaType;
+	
+	
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
 	
@@ -1461,6 +1465,18 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setReferId(Long referId)
 	{
 		this.referId = referId;
+	}
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 
