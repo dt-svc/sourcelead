@@ -443,7 +443,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				}
 				
 				
-				else if(tabs.getTabName().equalsIgnoreCase(Constants.Jobs)){
+				else if(tabs.getTabName().equalsIgnoreCase(Constants.JOBS)){
 					
 					 /*To change requirement Manager*/
 					 Integer requirementsCountAsManager = requirementDao.getManagerAssignedRequirementsCount(userId, orgLocationId);
