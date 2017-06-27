@@ -254,7 +254,7 @@ function requirementProfile(requirementUUID){
 			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getSubmissionDetails(\''+requirementUUID+'\');">Submissions</a></li>';
 			     '</sec:authorize>';
 			     
-			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getRateNegotiationDetails(\''+requirementUUID+'\');" >Rate Negotiation</a></li>';
+			     result = result+'      <li><a data-toggle="tab" href="javascript:void(0)" onclick="getRateNegotiationDetails(\''+json.submissionId+'\', '+candidateId+');" >Rate Negotiation</a></li>';
 			     
 			     result = result+'      <div class="clearfix"></div>';
 			     result = result+'    </ul>';
@@ -563,9 +563,15 @@ function getRateNegotiationDetails(submissionId, candidateId){
 					    	 var report = json[i];
 					    	 if(i == json.length-1){
 		                    	 divState = report.rateInitiatorType;
-		                    	 if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
+		                    	 /* if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
 		                    		 isLastNegotiator = "true";
 		                    	 }else{
+		                    		 isLastNegotiator = "false";
+		                    	 } */
+		                    	 
+		                    	 if(report.isLastProposedUser == "Y"){
+		                    		 isLastNegotiator = "true";
+		                    	 }else if(report.isLastProposedUser == "N"){
 		                    		 isLastNegotiator = "false";
 		                    	 }
 	                    	 }
@@ -597,16 +603,28 @@ function getRateNegotiationDetails(submissionId, candidateId){
 		                     else{
 		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
 		                     }
+		                     result = result + '    <td><div class="tblminwidth-75">';
 		                     
-		                     if(report.rateStage == 'ACCEPTED'){
-		                    	 result = result + ' <td><div class="tblminwidth-75">Accepted</div></td>';
-		                     	}else if(report.rateStage == 'REJECTED'){
-		                     		result = result + ' <td><div class="tblminwidth-75">Rejected</div></td>';
-		                     	}else{
-		                     		result = result + ' <td><div class="tblminwidth-75">----</div></td>';
-		                     	}
-		                     
-		                      
+		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
+		                    	 var Accepted = 'Accepted';
+		                    	 var Rejected = 'Rejected';
+		                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
+		                    		 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+		                    			 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\',\''+candidateId+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\',\''+candidateId+'\');"><i class="fa fa-times"></i></a>';	 
+		                    		 }else{
+		                    			 result = result + '----';
+		                    		 }
+		                    	 }
+		                     }else{
+		                    	 if(report.rateStage == 'ACCEPTED'){
+			                    	 result = result + ' Accepted';
+			                     	}else if(report.rateStage == 'REJECTED'){
+			                     		result = result + 'Rejected';
+			                     	}else{
+			                     		result = result + '----';
+			                     	}
+		                     }
+		                     result = result + '		</div></td>';
 		                     result = result + '      </tr>';
 			   				}
 	                     result = result + '    </tbody>';
@@ -639,9 +657,6 @@ function getRateNegotiationDetails(submissionId, candidateId){
 		    }
 	});
 }
-
-
-
 
 
 function toggleChevron(e) {
@@ -688,6 +703,20 @@ function proposeNewRate(submissionId, candidateId) {
 	}
 </script>
 
+<script type="text/javascript">
+	function acceptRejectRate(submissionId, status, candidateId) {
+			var sourceleadUrl ='${sourceleadUrl}';
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			$.ajax({
+			type: "POST",
+			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
+				success: function(data) {
+					getRateNegotiationDetails(submissionId, candidateId);
+				},
+			});
+			  return true;
+	}
+</script>
 
 
 <script>
