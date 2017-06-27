@@ -131,7 +131,7 @@ function cancelFunction(){
 	result = result + '<div class="row clearfix">';
 /* 	result = result + '<div col-md-6 ">';
 		result = result + '<div class="col-md-6">';
-		result = result + '<label class="col-md-4">Requirement Name</label>';
+		result = result + '<label class="col-md-4">Job Name</label>';
 		result = result + '<span class="col-md-8">'+requirementName+'</span>';
 		result = result + '</div>';
 	
@@ -278,7 +278,7 @@ function interviewTemplateForm(){
 		
 		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 			result = result + '<div class="sjfb-field sjfb-text">';
-			result = result + '<label>Requirement Name</label>';
+			result = result + '<label>Job Name</label>';
 			result = result + '<span>'+requirementName+'</span>';
 			result = result + '</div>';
 

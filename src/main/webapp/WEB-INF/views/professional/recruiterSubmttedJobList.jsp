@@ -163,7 +163,7 @@ function portletListFilter(requirementStatus){
 	           result = result + '<th>Name</th>';
 	           result = result + '<th>Email</th>';
 	           result = result + '<th>Phone</th>';
-	           result = result + '<th>Requirement</th>';
+	           result = result + '<th>Job</th>';
 	           result = result + '<th>Status</th>';
 	           result = result + '<th>Stage</th>';
 		       result = result + '<th>Submitted on</th>';

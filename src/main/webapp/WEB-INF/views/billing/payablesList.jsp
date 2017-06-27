@@ -1167,7 +1167,7 @@ function exportToPayableExcel(){
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
 				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Requirement List is Empty</p>";
+				result = result +"		<p>Jobs List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 				result = result +"	</div>";
