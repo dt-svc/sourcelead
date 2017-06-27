@@ -49,6 +49,13 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	public SourceleadNotes storeComments(JSONObject jsonObj, User user) throws Exception
 	{
 		SourceleadNotes sourceleadNotes = new SourceleadNotes();
+		
+		
+		if (jsonObj.has("invoiceUUID") && jsonObj.getString("invoiceUUID") != null) {
+			Invoice invoice=invoiceService.getInvoicetByInvoiceUUID(jsonObj.getString("invoiceUUID"));
+			sourceleadNotes.setInvoicdeId(invoice);
+		}
+		
 		if (jsonObj.has("noteDescription") && jsonObj.getString("noteDescription") != null) {
 			sourceleadNotes.setComment(jsonObj.getString("noteDescription"));
 		}
@@ -205,7 +212,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	
 	@Override
 	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId) throws Exception{
-		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByRequirementId(invoiceId);
+		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByInvoiceID(invoiceId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
 			notes.setUserName(notes.getUserId().getFirstName());
@@ -248,7 +255,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	
 	@Override
 	public List<SourceleadNotes> getNotesListByContractId(Long contractId) throws Exception{
-		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByRequirementId(contractId);
+		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByContractId(contractId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
 			notes.setUserName(notes.getUserId().getFirstName());
