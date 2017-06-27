@@ -1834,7 +1834,7 @@ function getVendorOrgname(vendorOrgname){
 							'</sec:authorize>';
 								result = result + ' </div>'; 
 							result = result + '<div class="project_details_cta">';
-								result = result + '<strong>Name:</strong>';
+								result = result + '<strong>Vendor Name:</strong>';
 								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
 									result = result + '<span title="'+json.orgName+'">'+json.orgName+'</span>';
 								}
