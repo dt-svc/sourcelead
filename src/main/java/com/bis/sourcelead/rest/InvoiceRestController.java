@@ -1548,14 +1548,22 @@ public class InvoiceRestController {
 		List<Invoice> clientList = new ArrayList<Invoice>();
 		for(Invoice invce : clientinvoiceList){
 			if(invce.getId().longValue() != Long.parseLong(invoiceId)){
-				invce.setInvoiceDateStr(conversionUtil.getDateAsString(invce.getInvoiceDate()));
-				invce.setDueDateStr(conversionUtil.getDateAsString(invce.getDueDate()));
+				if(invce.getInvoiceDate() !=null){
+					invce.setInvoiceDateStr(conversionUtil.getDateAsString(invce.getInvoiceDate()));
+				}
+				if(invce.getDueDate() != null){
+					invce.setDueDateStr(conversionUtil.getDateAsString(invce.getDueDate()));	
+				}
 				
-				if(null != invce.getContactUser().getLastName()){
-				StringBuilder username = new StringBuilder();
-				invce.setClientContactName(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
-				}else{
-					invce.setClientContactName(invce.getContactUser().getFirstName());
+				
+				if(null != invce.getContactUser()){
+					StringBuilder username = new StringBuilder();
+					if(null != invce.getContactUser().getLastName()){
+						username.append(username.append(invce.getContactUser().getFirstName()).append(" ").append(invce.getContactUser().getLastName()).toString());
+					}else{
+						username.append(invce.getContactUser().getFirstName());
+					}
+					invce.setClientContactName(username.toString());
 				}
 				clientList.add(invce);
 			}

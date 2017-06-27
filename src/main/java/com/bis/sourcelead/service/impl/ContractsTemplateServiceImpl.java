@@ -855,7 +855,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setParentId(contracts.getParentContractId().getId().toString());
 			}
 			else{
-				contracts.setParentId("");
+				contracts.setParentId("--");
 			}
 			
 			if(null != contracts.getApproverUser()){
@@ -911,7 +911,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setParentId(contracts.getParentContractId().getId().toString());
 			}
 			else{
-				contracts.setParentId("");
+				contracts.setParentId("--");
 			}
 			RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
         	if(null != reqSub.getCandidate().getLastName()){

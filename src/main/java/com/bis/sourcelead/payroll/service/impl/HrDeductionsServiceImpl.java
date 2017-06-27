@@ -50,11 +50,10 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	private ConversionUtil conversionUtil;
 
 	@Override
-	public String saveHRDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
+	public Integer saveHRDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
 		String fileName = multipartFile.getOriginalFilename();
 		int count = 0;
 		Workbook workbook = null;
-		List<AccountDeductions> accountDeductionsList = new ArrayList<>();
 		if (fileName.endsWith("xlsx")) {
 			workbook = new XSSFWorkbook();
 		} else if (fileName.endsWith("xls")) {
@@ -186,7 +185,7 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 		} catch (IOException e) {
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 		}
-		return "";
+		return count;
 		
 	}
 	
@@ -240,7 +239,19 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	@Override
 	public List<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation)
 	{
-		return hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation);
+		 List<HrDeductions> hrDeductionsList = hrDeductionsDao.getHrDeductionsListByOrgLocationid(orgLocation);
+		
+		if(hrDeductionsList != null){
+			for(HrDeductions hd : hrDeductionsList){
+				if(null !=  hd.getFromDate()){
+					hd.setFromDateStr(conversionUtil.getDateAsString(hd.getFromDate()));
+				}
+				if(null != hd.getToDate()){
+					hd.setToDateStr(conversionUtil.getDateAsString(hd.getToDate()));
+				}
+			}
+		}
+		return hrDeductionsList;
 	}
 
 	@Override

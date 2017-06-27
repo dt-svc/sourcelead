@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -48,12 +49,11 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	@Autowired
 	private ConversionUtil conversionUtil;
 	@Override
-	public String saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
+	public Integer saveAccountDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception {
 		
 		String fileName = multipartFile.getOriginalFilename();
 		int count = 0;
 		Workbook workbook = null;
-		List<AccountDeductions> accountDeductionsList = new ArrayList<>();
 		if (fileName.endsWith("xlsx")) {
 			workbook = new XSSFWorkbook();
 		} else if (fileName.endsWith("xls")) {
@@ -231,7 +231,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
 		}
 		
-		return "";
+		return count;
 		
 		
 	}
@@ -286,7 +286,19 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 	@Override
 	public List<AccountDeductions> getAccountDeductionsListByOrgLocationId(OrgLocations orgLocation) throws Exception
 	{
-		return accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
+		List<AccountDeductions> accountDeductionsList =  accountDeductionsDao.getAccountDeductionsListByOrgLocationId(orgLocation);
+		
+		if(accountDeductionsList != null){
+			for(AccountDeductions ad : accountDeductionsList){
+				if(null !=  ad.getFromDate()){
+					ad.setFromDateStr(conversionUtil.getDateAsString(ad.getFromDate()));
+				}
+				if(null != ad.getToDate()){
+					ad.setToDateStr(conversionUtil.getDateAsString(ad.getToDate()));
+				}
+			}
+		}
+		return accountDeductionsList;
 	}
 
 	@Override

@@ -1172,7 +1172,7 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				            
 				            if(json.reqCoolingOffPeriod != null && json.reqCoolingOffPeriod != '' && json.reqCoolingOffPeriod != 'undefined'){
-					            result = result +'<div class="require_wrap_details_cta"> <b>Cooling Off Period:</b><span>'+json.reqCoolingOffPeriod+'</span>';
+					            result = result +'<div class="require_wrap_details_cta"> <b>Cooling Off Period:</b>'+json.reqCoolingOffPeriod+'';
 					            }else{
 					           	result = result +'<div class="require_wrap_details_cta "> <b>Cooling Off Period:</b> <span> -- </span>';
 					            }
@@ -1180,9 +1180,13 @@ function requirementDetails(requirementId){
 				            result = result +'     </div>';
 				           
 				            result = result +'     <div class="require_wrap_details_cta"> <b>Created By:</b>'+json.createdByName+'';
-
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'   </div>';
+				            
+				            result = result +'     <div class="require_wrap_details_cta"> <b>Visa:</b><span>'+json.visaType+'</span>';
+				            result = result +'     <div class="clearfix"></div>';
+				            result = result +'   </div>';				            
+				            
 				            result = result +'     <div class="clearfix"></div>';
 				            result = result +'     </div>';
 

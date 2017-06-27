@@ -283,8 +283,9 @@
 	                 </c:if>
 
           </c:forEach>
+         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
           <li class=""><a href="<c:url value='/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
-          				 
+          	</c:if>			 
      <%--  <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li> --%>
         </ul>
       </div>

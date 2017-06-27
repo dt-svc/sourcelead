@@ -12,7 +12,7 @@ import com.bis.sourcelead.payroll.entity.HrDeductionsDetails;
 
 public interface HrDeductionsService {
 
-	String saveHRDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
+	Integer saveHRDeductions(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 
 	List<HrDeductions> getHrDeductionsListByOrgLocationid(OrgLocations orgLocation);
 
