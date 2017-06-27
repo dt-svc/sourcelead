@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -945,9 +946,10 @@ public class UserRestController {
 		 }
 		 
 		 @RequestMapping(value = "/restAuthenticate", method = RequestMethod.POST)
-		 public @ResponseBody String restAuthenticate(HttpServletRequest request) throws Exception {
+		 public @ResponseBody RestResponsetUtil restAuthenticate(HttpServletRequest request) throws Exception {
 		 
 			 String json = IOUtils.toString(request.getInputStream());
+			 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 			 if(StringUtils.isNotEmpty(json)){
 				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
 				 JSONObject jsonObject = new JSONObject(json);
@@ -959,20 +961,29 @@ public class UserRestController {
 					 ClientResponse response = webResource.header("X-Username", jsonObject.getString("username")).header("X-Password", jsonObject.getString("password")).accept("application/json").get(ClientResponse.class);
 					 int status = response.getStatus();
 					 if(status == HttpServletResponse.SC_OK){
-						 return "Valid User";
+						 String header = response.getHeaders().get("X-CustomToken").toString();
+						 String token = header.replaceAll("\\[", "").replaceAll("\\]", "");
+						 resResponsetUtil.setToken(token);
+						 resResponsetUtil.setLoginResponse("Valid User");
+						 return resResponsetUtil;
 					 }
+					
 					 else if(status == HttpServletResponse.SC_NOT_FOUND){
-						 return "User Not Registered";
+						 resResponsetUtil.setLoginResponse("User Not Registered");
+						 return resResponsetUtil;
 					 }
 					 else if(status == HttpServletResponse.SC_MOVED_TEMPORARILY){
-						 return "In-Active User";
+						 resResponsetUtil.setLoginResponse("In-Active User");
+						 return resResponsetUtil;
 					 }
 					 else if(status == HttpServletResponse.SC_UNAUTHORIZED){
-						 return  "Invalid UserName Or Password";
+						 resResponsetUtil.setLoginResponse("Invalid UserName Or Password");
+						 return  resResponsetUtil;
 					 }
 				 }
 			 }
-			 return "Invalid Json String";
+			 resResponsetUtil.setLoginResponse("Invalid Json String");
+			 return resResponsetUtil;
 		 }
 		 
 		 
