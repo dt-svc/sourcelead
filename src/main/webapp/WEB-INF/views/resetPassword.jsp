@@ -172,8 +172,8 @@ var validationSettings = {
               	      contentType : 'application/json; charset=utf-8',
               	      dataType : 'json',
                     	  url: sourceleadUrl+"/verifyResetPassword?${_csrf.parameterName}=${_csrf.token}",
-                      	success: function(result) {
-                      		if((result == 'Invalid')){
+                      	success: function(json) {
+                      		if(json.resetResponse == 'Invalid'){
   	                   			 $('#passwordDiv').find('span.jquery_form_error_message').remove();
   	             		         document.getElementById("verificationCode").setAttribute('class','error signin_fild');
   	             		         $("input#verificationCode").after("<span class='jquery_form_error_message'> <font color='red'>Invalid Verification Code</font></span>");
@@ -183,7 +183,6 @@ var validationSettings = {
   			    				 $("#submit_button").removeAttr("disabled")
   			    				 $("#loading").removeAttr("style");
       			        	}else{
-  								                   			     
       			        		location.replace(sourceleadUrl+"/login"); 
       			        	}
   			        },  
