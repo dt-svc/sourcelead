@@ -571,7 +571,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Manager to Requirements<strong class="label label-success">'+json.requirementsCountAsManager+'</strong></p>';
+						    result = result + '<p>Assigned as Manager to Jobs<strong class="label label-success">'+json.requirementsCountAsManager+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="managerUserDiv">';
@@ -594,7 +594,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Approver to Requirements<strong class="label label-warning">'+json.requirementsCountAsApprover+'</strong></p>';
+						    result = result + '<p>Assigned as Approver to Jobs<strong class="label label-warning">'+json.requirementsCountAsApprover+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="approverUserDiv">';
@@ -619,7 +619,7 @@ function getChangeRole(userId,userRoleId){
 					result = result + '<div class="clearfix mb10">';
 					result = result + '<div class="col-md-6">';
 					    result = result + '<div class="user_badg">';
-						    result = result + '<p>Assigned as Team Owner for Requirements<strong class="label label-info">'+json.teamsCountAsOwner+'</strong></p>';
+						    result = result + '<p>Assigned as Team Owner for Jobs<strong class="label label-info">'+json.teamsCountAsOwner+'</strong></p>';
 								result = result + '</div>';
 				            result = result + '</div>';
 						result = result + '<div class="col-md-6" id="teamOwnerUserDiv">';
@@ -1706,7 +1706,7 @@ function removeUser(userId){
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							    result = result + '<div class="user_badg">';
-								    result = result + '<p>Assigned as Manager to Requirements<strong class="label label-success">'+json.requirementsCountAsManager+'</strong></p>';
+								    result = result + '<p>Assigned as Manager to Jobs<strong class="label label-success">'+json.requirementsCountAsManager+'</strong></p>';
 										result = result + '</div>';
 						            result = result + '</div>';
 								result = result + '<div class="col-md-6" id="managerUserDiv">';
@@ -1729,7 +1729,7 @@ function removeUser(userId){
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							    result = result + '<div class="user_badg">';
-								    result = result + '<p>Assigned as Approver to Requirements<strong class="label label-warning">'+json.requirementsCountAsApprover+'</strong></p>';
+								    result = result + '<p>Assigned as Approver to Jobs<strong class="label label-warning">'+json.requirementsCountAsApprover+'</strong></p>';
 										result = result + '</div>';
 						            result = result + '</div>';
 								result = result + '<div class="col-md-6" id="approverUserDiv">';
@@ -1754,7 +1754,7 @@ function removeUser(userId){
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
 							    result = result + '<div class="user_badg">';
-								    result = result + '<p>Assigned as Team Owner for Requirements<strong class="label label-info">'+json.teamsCountAsOwner+'</strong></p>';
+								    result = result + '<p>Assigned as Team Owner for Jobs<strong class="label label-info">'+json.teamsCountAsOwner+'</strong></p>';
 										result = result + '</div>';
 						            result = result + '</div>';
 								result = result + '<div class="col-md-6" id="teamOwnerUserDiv">';

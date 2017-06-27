@@ -166,7 +166,7 @@ function submitToClient(requirementId){
 		    		$('#submitToClientDiv').empty();
 		    		$('#submitToClientDiv').append(result);
 		    	}else if(data == 'failed'){
-		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client requirement was Closed/Onhold/Canceled. </h3></div>";
+		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client Job was Closed/Onhold/Canceled. </h3></div>";
 		    		$('#submitToClientDiv').empty();
 		    		$('#submitToClientDiv').append(result);
 		    	}

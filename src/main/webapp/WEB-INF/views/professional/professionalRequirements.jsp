@@ -113,7 +113,7 @@ window.onload = function () {
 <section class="content-wraper openJobsWrap">
     <section class="content-header clearfix">
       <div class="pull-left mt20">
-        <h2>Requirements<span class="select-fild"> </h2>  
+        <h2>Jobs<span class="select-fild"> </h2>  
         <div class="clearfix"></div>    
         
         <div class="success_pop" id="jobSavedMsg"  style="display: none;">
@@ -126,15 +126,15 @@ window.onload = function () {
 	    
           </div>
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-           <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Requirements List  </div>
+           <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard'/>">Home </a> &raquo; <a href="<c:url value='/requirementList'/>">Requirements List </a> </div>
+           <div class="pull-right brud-crum"><a href="<c:url value='/dashboard'/>">Home </a> &raquo; <a href="<c:url value='/requirementList'/>">Jobs List </a> </div>
            </c:if>
           
           <div class="clearfix"></div> 
@@ -213,9 +213,9 @@ window.onload = function () {
               </div>
               <div class="clearfix">
                 <div class="col-md-4">
-                  <label>Requirement Title</label>
+                  <label>Job Title</label>
                   <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
+                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
                   </div>
                 </div>
                 <div class="col-md-8">
@@ -852,7 +852,7 @@ function requirementsList(offset){
 			 				
 			 				if(requirementType != "AppliedJobs"){
 			 					result = result +'<div class="openCtaRight">';
-				 			    result = result +'<p>Share Requirement</p>';
+				 			    result = result +'<p>Share Job</p>';
 				 				result = result +'<span>';
 			 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 								result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
@@ -1178,7 +1178,7 @@ function searchRequirement(offset){
 									 				
 									 				if(requirementType != "AppliedJobs"){
 									 					result = result +'<div class="openCtaRight">';
-										 				 result = result +'<p>Share Requirement</p>';
+										 				 result = result +'<p>Share Job</p>';
 										 				 result = result +'<span>';
 									 				    result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 														result = result +'  <a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';				  
