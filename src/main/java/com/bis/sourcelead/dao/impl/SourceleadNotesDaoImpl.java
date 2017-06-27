@@ -19,22 +19,16 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
-	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
-	
-
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadNotesDaoImpl.class);
-
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public SourceleadNotes storeComments(SourceleadNotes sourceleadNotes) throws Exception
 	{
-		
 		logger.debug("Storing SourceleadNotes");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
@@ -43,21 +37,52 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 			}
 			logger.debug("Requirement Stored Successfully");
 		} catch (Exception exception) {
-				StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"SourceleadNotes"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "SourceleadNotes"));
+			throw new SourceLeadConstraintViolationException(message.toString()
+					+ exception.getCause().toString());
 		}
-		return  sourceleadNotes;
-
+		return sourceleadNotes;
 	}
-
-
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelation) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadNotes sn where  sn.orgRelationID.id =:orgrelation ORDER BY sn.id DESC";  
+		String query = "from SourceleadNotes sn where  sn.orgRelationID.id =:orgrelation ORDER BY sn.id DESC";
 		List<SourceleadNotes> notesList = session.createQuery(query).setLong("orgrelation", orgrelation).setCacheable(true).list();
 		return notesList;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadNotes sn where  sn.requirementId.id =:requirementId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
+		return notesList;
+		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadNotes sn where  sn.invoicdeId.id =:invoiceId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		return notesList;
+		
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SourceleadNotes> getNotesListByContractId(Long contractId) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadNotes sn where  sn.contractId.id =:contractId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("contractId", contractId).setCacheable(true).list();
+		return notesList;
+		
 	}
 }

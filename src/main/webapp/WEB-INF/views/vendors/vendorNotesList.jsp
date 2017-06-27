@@ -50,17 +50,17 @@ float:none;
 <div id="deleteDocpopUp"></div>
 
 <script>
-function vendorNotesList(orgRelationId){
+function vendorNotesList(orgRelationId,vendorLocationId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
 	result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
 	result  = result + '<div class="success_pop" id="vendorDocSelector" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="vendorDocMsgDiv"></span>';
     result  = result + '</div>';
-	    result = result + '<ul>';
+	    result = result + '<ul class="padding_right">';
 	    
 	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
-	        	result = result  +'    	<a href="javascript:void(0)" onClick="addNotes('+orgRelationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+	        	result = result  +'    	<a href="javascript:void(0)" onClick="addNotes('+orgRelationId+','+vendorLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
 		 '</sec:authorize>';
 		 
 		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
@@ -86,8 +86,6 @@ function vendorNotesList(orgRelationId){
     $("#tab-8").empty(); 
     $("#tab-8").append(result);  
     vendorNotes(orgRelationId);
-	
-   /*  vendorNotes(orgRelationId); */
     
 }
 </script>
@@ -106,11 +104,13 @@ function vendorNotes(orgRelationId){
 	var output = "";
     if(data != null && data != 'undefined' && data != "" && data != '[]'){
     var json = JSON.parse(data);
-	
+//     '${SourceLeadWeb_user.id}' 
+
 	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
 	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
      for(var i=0;i<json.length;i++){
        	var report = json[i];
+       	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
    	  	output = output+'<div class="comments-div comments-inner clearfix">';
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
@@ -121,12 +121,27 @@ function vendorNotes(orgRelationId){
    	    output = output+'     <div class="comments-content">';
    	    output = output+'         <div class="pull-left">';
    	    output = output+'         <p class="comment-by">';
-   	    output = output+'            By <span class="text-danger">'+report.userName+'</span>';
-   	    output = output+'            <span class="small">'+report.createdDateString+'</span></p>';
+   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	 if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
+   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
+   	    }
+   	    
+   	    else if(report.contactName !=null && report.contactName != 'undefined'){
+   		 output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
+   	    }
+   	 else if(report.contract !=null && report.contract != 'undefined'){
+   		 output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
+   	    }
+   	    
+   	 else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
+   		 output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
+   	    }
+   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
    	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
    	    output = output+'         </div>';
    	    output = output+'     </div>';
    	    output = output+'</div>';
+    	}
      }
 }else{
      var output ="";
@@ -158,29 +173,73 @@ function documentpagination(){
     } );
 }
 </script>
+<script>
+function getRejectedCategory(){
+	var rejectedCategory = document.getElementById("categoryType").value;
+	if(rejectedCategory == 'Other'){
+		 document.getElementById("rejectOtherCategoryDiv").style.display="block";
+	    $("#rejectedCategoryOther").removeAttr("data-validation-optional");
+		$('#rejectedCategoryOther').attr("data-validation","required validate_Space validate_length length2-100 "); 
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#rejectedCategoryOther").attr("data-validation-optional","true");
+		$("#rejectedCategoryOther").removeAttr("data-validation");
+		$("#rejectedCategoryOther").val('');
+		document.getElementById("rejectOtherCategoryDiv").style.display="none";
+		$('#rejectOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+	
+}
+</script>
+
+
+
 
 <script>
-function addNotes(orgRelationId) {	
+function addNotes(orgRelationId,vendorLocationId) {	
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="vendorNotes_form" name="vendorNotes_form" method="post" > ';
 	result = result  +'          <input type="hidden" id="noteType" name="noteType" value="Vendor"> ';
 	result = result  +'          <input type="hidden" id="orgRelationId" name="orgRelationId" value="'+orgRelationId+'"> ';
+	result = result  +'          <input type="hidden" id="vendorLocationId" name="vendorLocationId" value="'+vendorLocationId+'"> ';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length2-500" field-name="Description" class="form-control"></textarea>';
-	result = result+'	                    </div>';
+	
+	
+	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
+     result = result +" <div class='dropdown-select mb10' id='clientcategoryTypeListDiv'>";
+     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange=' selectClientCategory(this);' field-name='Category'>";
+     result = result +"<option selected value=''>--Select Category--</option>";
+     result = result +"<option value='Jobs'>Jobs</option>";
+     result = result +"<option value='Contacts'>Contacts</option>";
+     result = result +"<option value='Contracts'>Contracts</option>";
+     result = result +"<option value='Billing'>Billing</option>";
+     result = result +"<option value='Project'>Project</option>";
+     result = result +"<option value='Other'>Other</option>";
+     result = result +"</select>";
+     result = result +"    </div>";
+	
+	
+     result = result +"    <div class='mt10'>";
+     result = result +"    <div class='dropdown-select mb10' id='clientCategoryContactTypeListDivDiv'>";
+     result = result +"    </div>";
+ 	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result+'	                  <div class="clearfix">';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required"  field-name="Note" class="form-control"></textarea>';
+	result = result+'	                  </div>';
+	result = result  +'                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
 	result = result + '	                    <p>Allow All Users</p>';
 	result = result+'	                  </div>';
-	result = result+'	                  </div>';
-	result = result  +'                  </div>';                                                                                                                            
 	
-	result = result  +'                  <div class="clearfix mr mt" id="docAddButton"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary pull-right" onClick ="storeVendorNotes('+orgRelationId+');" />'; 
+	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
+	result = result  +'                  <div class="pull-right"> ';
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeVendorNotes('+orgRelationId+');" />'; 
+  /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
+	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
 	result = result  +'                </div>';
 	
@@ -261,8 +320,6 @@ var validationSettings = {
 
 <script type="text/javascript">
 	function storeVendorNotes(orgRelationId){
-		
-		 
 		if ($('#vendorNotes_form').validate(false, validationSettings)){ 
 				var frm = $('#vendorNotes_form').serializeFormJSON();
 				var con = JSON.stringify(frm);
@@ -302,3 +359,113 @@ var validationSettings = {
 	});
 </script>
 
+
+
+<script>
+function selectClientCategory(){
+	$('#clientCategoryContactTypeListDivDiv').val('').trigger("chosen:updated");
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgRelationId = $('#orgRelationId').val(); 
+	var clientLocationId = $('#clientLocationId').val(); 
+	var categoryType = $('#categoryType').val(); 
+	var vendorLocationId = $('#vendorLocationId').val();
+	if(categoryType != ''){
+		if(categoryType == "Jobs"){
+			var status = "OPEN";
+			$.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getVendorJobs?${_csrf.parameterName}=${_csrf.token}&orgRelationID="+orgRelationId+"&status="+status,  
+		        success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 var result ="";
+		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	 for(var i=0;i<json.length;i++){
+		        		 var opt = json[i];
+		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
+		             }
+		        	 result = result +"</select>";
+		        	 $("#clientCategoryContactTypeListDivDiv").empty();
+				     $("#clientCategoryContactTypeListDivDiv").append(result);
+				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+		        }
+			});
+		}
+		
+		if(categoryType == "Contacts"){
+			$.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/getOrgSpocsList?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&type=Client", 
+		        success: function(data) {
+		        	 var json = JSON.parse(data);
+		        	 var result ="";
+		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	 for(var i=0;i<json.length;i++){
+		        		 var opt = json[i];
+		        		 result = result +"<option value="+opt.id+">"+opt.spocName+"</option>";
+		             }
+		        	 result = result +"</select>";
+		        	 $("#clientCategoryContactTypeListDivDiv").empty();
+				     $("#clientCategoryContactTypeListDivDiv").append(result);
+				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+		        }
+			});
+		}
+	
+		
+		if(categoryType == "Billing"){
+			var dayWisetype = "month";
+			var endDate = "";
+			var startDate = "";
+			var invoice = "";
+			var payment ="";
+				$.ajax({
+			    	type: "POST",
+			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=payables", 
+			        success: function(data) {
+		        	  var json = JSON.parse(data);
+		        	  var result ="";
+		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	  if(json.length>0){
+              		    for (var i = 0; i < json.length; i++) {
+              		    	var opt= json[i];
+              		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
+              		    }
+              		  result = result +"</select>";
+ 		        	 $("#clientCategoryContactTypeListDivDiv").empty();
+ 				     $("#clientCategoryContactTypeListDivDiv").append(result);
+ 				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+		          }
+			 }
+		});
+	 }
+	
+		if(categoryType == "Contracts"){
+			var contractStatus = "";
+			 $.ajax({  
+		          type : "POST",
+		          url: sourceleadUrl+"/getClientOrVendorContracts?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
+		          success :function(data) {
+		        	  var json = JSON.parse(data);
+		        	  var result ="";
+		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
+		        	  if(json.length>0){
+              		    for (var i = 0; i < json.length; i++) {
+              		    	var opt= json[i];
+              		    	 result = result +"<option value="+opt.id+">"+opt.contractTitle+"</option>";
+              		    }
+              		  result = result +"</select>";
+ 		        	 $("#clientCategoryContactTypeListDivDiv").empty();
+ 				     $("#clientCategoryContactTypeListDivDiv").append(result);
+ 				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+		          }
+			 }
+		});
+	 }
+		
+		else{
+			$("#clientCategoryContactTypeListDivDiv").empty();
+			  $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+		}	
+		
+}}
+</script>

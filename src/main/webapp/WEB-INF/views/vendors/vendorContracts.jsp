@@ -160,7 +160,7 @@ function vendorContractsList(orgRelationId){
     {
 		contractStatus.push($(this).val());
     });
-	
+	alert("contractStatus"+contractStatus);
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
