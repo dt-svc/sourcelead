@@ -715,6 +715,20 @@ public class CandidateListRestController {
 			}
 			can.setAllAndCandidateSkills(lhs);
 			
+			// visa type
+			LinkedHashSet<String> lhs1 = new LinkedHashSet<String>();
+			List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+			for(LookUpData lookUpData :visaList){
+				lhs.add(lookUpData.getName());
+			}
+			if(null != can.getVisaType() && StringUtils.isNotEmpty(can.getVisaType())){
+				String [] csl = can.getVisaType().split(",");
+				for(String sl : csl){
+					lhs1.add(sl);
+				}
+			}
+			can.setAllAndCandidateVisa(lhs1);
+			
 			if(null != can.getExpectedRateCurrencey()){
 				  can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
 			}else{
@@ -1267,23 +1281,23 @@ public class CandidateListRestController {
 			 }
 		   
 		   
-//		   @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
-//		   public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="visaName", required=false) String  visaName, HttpServletRequest request) throws Exception {
-//			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-//				
-//				if(null != can && StringUtils.isNotEmpty(visaName)){
-//					can.setVisaName("");
-//					can.setVisaName(visaName);
-//					candidateService.saveOrUpdateCandidate(can);
-//					candidateService.saveOrUpdateCandidateElkDocument(can);
-//					return "success";
-//				}else{
-//					can.setVisaName("");
-//					candidateService.saveOrUpdateCandidate(can);
-//					candidateService.saveOrUpdateCandidateElkDocument(can);
-//					return "failed";
-//				}
-//			 }
+		   @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
+		   public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="visaName", required=false) String  visaName, HttpServletRequest request) throws Exception {
+			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+				
+				if(null != can && StringUtils.isNotEmpty(visaName)){
+					can.setVisaType("");
+					can.setVisaType(visaName);
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					return "success";
+				}else{
+					can.setVisaType("");
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					return "failed";
+				}
+			 }
 		   
 		   @RequestMapping(value = "/getCandidateReportsListByOrgLocationID")
 			 public String getCandidateReportsListByOrgLocationID(@RequestParam(value="candidateType", required=false) String  candidateType,
