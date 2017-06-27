@@ -68,7 +68,7 @@ window.onload = function() {
 	          result = result +"    <th>Mobile</th>";
 	          result = result +"    <th>Primary Skill</th>";
 	          result = result +"    <th>Experience</th>"; 
-	          result = result +"    <th>No of Requirements</th>"; 
+	          result = result +"    <th>No of Jobss</th>"; 
 	          result = result +"    <th>Owner</th>"; 
 	          result = result +"    <th>Last Update</th>"; 
 	          result = result +"  </tr>"; 
@@ -233,12 +233,12 @@ function toDate(selector) {
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Added Candidates</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirements Stages</a></li>
+					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
 <%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
 				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Requirement Assign To</a></li> --%>
+<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Assign To</a></li> --%>
 				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>

@@ -33,9 +33,9 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Release Requirement</h2>
+        <h2>Release Job</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Requirement</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Job</div>
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
@@ -137,7 +137,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   
                   <div class="form-group clearfix" id="crowd_rate" style="display: none">
                     <div class="clearfix">
-                      <label class="col-md-5"><strong>Requirement Details</strong></label>
+                      <label class="col-md-5"><strong>Job Details</strong></label>
                       <div class="col-md-7">
                         <p><i class="fa fa-suitcase text-muted paddingRight"></i>
                           <label id="jobType"></label>

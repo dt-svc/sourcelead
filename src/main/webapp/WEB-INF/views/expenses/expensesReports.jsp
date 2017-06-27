@@ -17,7 +17,7 @@
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Timesheet Reports</h2>
+			<h2>Expenses Reports</h2>
 		</div>
 		<div class="pull-right brud-crum">Home &raquo; List by status</div>
 	</section>
@@ -38,20 +38,20 @@
 					<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
 						<div class="export_pop">
 							<ul>
-								<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-								<li>Excel<i class="fa fa-file-excel-o"></i></li>
+								<li onclick="exportExpensesReports('pdf')"><i class="fa fa-file-pdf-o"></i>PDF</li>
+								<li onclick="exportExpensesReports('excel')"><i class="fa fa-file-excel-o"></i>Excel</li>
 							</ul>
 						</div></li>
 				</ul>
 				<div class="clearfix"></div>
-				<div class="remove_search">
+				<!-- <div class="remove_search">
 					<input placeholder="search" type="text">
-				</div>
+				</div> -->
 
 			</div>
 		</form:form>
 		<div id="YearQuartersDiv" style="display: none;" ></div>
-		<div class="timesheetRepTab mt5">
+		<div class="timesheetRepTab  datatable_filter mt5">
 			<div id="expensesReportsListDiv"></div>
 		</div>
 	</div>
@@ -174,12 +174,10 @@ $.ajax({
      url: sourceleadUrl+"/getExpensesReportList?${_csrf.parameterName}=${_csrf.token}&datequarterly="+datequarterly,       
      success :function(data) {
     	 	var json = JSON.parse(data);
-    	 	alert(json);
-    	 	
     	 if(json != null && json != '' && json != 'undefined'){
     	 	var result = '';
     	 	var  dateresult="";
- 			result = result +'<table>';
+ 			result = result +'<table id="expensesReportsPagination" class="display" cellspacing="0" width="100%">';
  			result = result +'<thead>';
  			result = result +'<tr>';
  			result = result +'<th>Emp ID & Name</th>';
@@ -202,7 +200,7 @@ $.ajax({
  			
  			}
  			result = result +'<th>Amount</th>';
- 			result = result +'<th>Status</th>';
+ 			/* result = result +'<th>Status</th>'; */
  			result = result +'<th>Claimed Expenses</th>';
  			result = result +'</tr>';
  			result = result +'</thead>';	
@@ -214,23 +212,40 @@ $.ajax({
  			result = result +'<div class="lg clearfix">';
  			//result = result +'<div class="uimg"><img src="images/23.jpg" alt=""/></div>';
  			result = result +'<div class="Utext">';
- 			result = result +'<i title="User name here">'+opt.userName+'</i>';
+ 			if(opt.employeeIdForExpenses != null && opt.employeeIdForExpenses !='' && opt.employeeIdForExpenses!='Undefined'){
+ 			result = result +'<i title="User name here">'+opt.employeeIdForExpenses+'</i>';	
+ 			}
+ 			if(opt.userName != null && opt.userName !='' && opt.userName!='Undefined'){
+ 			result = result +'<i title="User name here">'+opt.userName+'</i>';	
+ 	 		}
+ 			if(opt.userEmail != null && opt.userEmail !='' && opt.userEmail!='Undefined'){
  			result = result +'<i title="Email id here">'+opt.userEmail+'</i>';
+ 	 		}
  			result = result +'</div>';
  			result = result +'</div>';
  			result = result +'</td>';
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i><i title="client name">Client 1</i></div></td>';
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i><i title="client name">Client 1</i></div></td>';
- 		
+ 			if(opt.employmentTypeVendors != null && opt.employmentTypeVendors !='' && opt.employmentTypeVendors!='Undefined' && opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
+ 			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i><i title="client name">'+opt.employmentTypeVendors+'</i></div></td>';	
+ 			}else if(opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
+ 			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i></div></td>';	
+ 			}else{
+ 			result = result +'<td><div class="md"><i title="Project name">--</i></div></td>';	
+ 			}
+ 			
+ 			if(opt.clientNameExpenses != null && opt.clientNameExpenses !='' && opt.clientNameExpenses!='Undefined'){
+ 			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i><i title="client name">'+opt.clientNameExpenses+'</i></div></td>';
+ 			}else{
+ 			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i></div></td>';	
+ 			}
  			
  			if(months.indexOf("January") > -1){
  			result = result +'<td>';
  			if(opt.janExpenseTotal != null && opt.janExpenseTotal !='' && opt.janExpenseTotal!='Undefined'){
- 			result = result +'<div class="week"><span class="appr">'+opt.janExpenseTotal+'</span>';
+ 			result = result +'<div class="week"><span class="draft">'+opt.janExpenseTotal+'</span>';
  			}else{
- 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 				result = result +'<div class="week"><span class="draft">0</span>';	
  			}
- 			result = result +'<div class="progress">';
+ 			/* result = result +'<div class="progress">';
  			if(opt.janExpenseApprovedTotal != null && opt.janExpenseApprovedTotal !='' && opt.janExpenseApprovedTotal!='Undefined'){
  			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.janExpenseApprovedTotal+'</div>';
  			}else{
@@ -241,20 +256,20 @@ $.ajax({
  			}else{
  			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  			}
- 			result = result +'</div>';                    
+ 			result = result +'</div>'; */                    
  			result = result +'</div>';
  			result = result +'</td>'; 
  			}
  			
- 			
+ 		
  			if(months.indexOf("February") > -1){
  	 			result = result +'<td>';
  	 			if(opt.febExpenseTotal != null && opt.febExpenseTotal !='' && opt.febExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.febExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.febExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.febExpenseApprovedTotal != null && opt.febExpenseApprovedTotal !='' && opt.febExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.febExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -265,7 +280,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}
@@ -274,11 +289,11 @@ $.ajax({
  			if(months.indexOf("March") > -1){
  	 			result = result +'<td>';
  	 			if(opt.marExpenseTotal != null && opt.marExpenseTotal !='' && opt.marExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.marExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.marExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.marExpenseApprovedTotal != null && opt.marExpenseApprovedTotal !='' && opt.marExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.marExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -289,7 +304,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}
@@ -299,11 +314,11 @@ $.ajax({
  			if(months.indexOf("April") > -1){
  	 			result = result +'<td>';
  	 			if(opt.aprExpenseTotal != null && opt.aprExpenseTotal !='' && opt.aprExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.aprExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.aprExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.aprExpenseApprovedTotal != null && opt.aprExpenseApprovedTotal !='' && opt.aprExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.aprExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -314,7 +329,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}
@@ -323,11 +338,11 @@ $.ajax({
  			if(months.indexOf("May") > -1){
  	 			result = result +'<td>';
  	 			if(opt.mayExpenseTotal != null && opt.mayExpenseTotal !='' && opt.mayExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.mayExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.mayExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.mayExpenseApprovedTotal != null && opt.mayExpenseApprovedTotal !='' && opt.mayExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.mayExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -338,7 +353,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}
@@ -349,11 +364,11 @@ $.ajax({
  			if(months.indexOf("June") > -1){
  	 			result = result +'<td>';
  	 			if(opt.junExpenseTotal != null && opt.junExpenseTotal !='' && opt.junExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.junExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.junExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.junExpenseApprovedTotal != null && opt.junExpenseApprovedTotal !='' && opt.junExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.junExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -364,7 +379,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}
@@ -373,11 +388,11 @@ $.ajax({
  			if(months.indexOf("July") > -1){
  	 			result = result +'<td>';
  	 			if(opt.julExpenseTotal != null && opt.julExpenseTotal !='' && opt.julExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.julExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.julExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.julExpenseApprovedTotal != null && opt.julExpenseApprovedTotal !='' && opt.julExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.julExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -388,7 +403,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}	
@@ -397,11 +412,11 @@ $.ajax({
  			if(months.indexOf("August") > -1){
  	 			result = result +'<td>';
  	 			if(opt.augExpenseTotal != null && opt.augExpenseTotal !='' && opt.augExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.augExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.augExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.augExpenseApprovedTotal != null && opt.augExpenseApprovedTotal !='' && opt.augExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.augExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -412,7 +427,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}	
@@ -420,11 +435,11 @@ $.ajax({
  			if(months.indexOf("September") > -1){
  	 			result = result +'<td>';
  	 			if(opt.sepExpenseTotal != null && opt.sepExpenseTotal !='' && opt.sepExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.sepExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.sepExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.sepExpenseApprovedTotal != null && opt.sepExpenseApprovedTotal !='' && opt.sepExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.sepExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -435,7 +450,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}	
@@ -443,11 +458,11 @@ $.ajax({
  			if(months.indexOf("October") > -1){
  	 			result = result +'<td>';
  	 			if(opt.octExpenseTotal != null && opt.octExpenseTotal !='' && opt.octExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.octExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.octExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.octExpenseApprovedTotal != null && opt.octExpenseApprovedTotal !='' && opt.octExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.octExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -458,7 +473,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';  */                   
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}	
@@ -466,11 +481,11 @@ $.ajax({
  			if(months.indexOf("November") > -1){
  	 			result = result +'<td>';
  	 			if(opt.novExpenseTotal != null && opt.novExpenseTotal !='' && opt.novExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.novExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.novExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 				result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.novExpenseApprovedTotal != null && opt.novExpenseApprovedTotal !='' && opt.novExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.novExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -481,7 +496,7 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>';  */                   
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}	
@@ -489,11 +504,11 @@ $.ajax({
  			if(months.indexOf("December") > -1){
  	 			result = result +'<td>';
  	 			if(opt.decExpenseTotal != null && opt.decExpenseTotal !='' && opt.decExpenseTotal!='Undefined'){
- 	 			result = result +'<div class="week"><span class="appr">'+opt.decExpenseTotal+'</span>';
+ 	 			result = result +'<div class="week"><span class="draft">'+opt.decExpenseTotal+'</span>';
  	 			}else{
- 	 				result = result +'<div class="week"><span class="appr">0</span>';	
+ 	 			result = result +'<div class="week"><span class="draft">0</span>';	
  	 			}
- 	 			result = result +'<div class="progress">';
+ 	 			/* result = result +'<div class="progress">';
  	 			if(opt.decExpenseApprovedTotal != null && opt.decExpenseApprovedTotal !='' && opt.decExpenseApprovedTotal!='Undefined'){
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.decExpenseApprovedTotal+'</div>';
  	 			}else{
@@ -504,20 +519,19 @@ $.ajax({
  	 			}else{
  	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
  	 			}
- 	 			result = result +'</div>';                    
+ 	 			result = result +'</div>'; */                    
  	 			result = result +'</div>';
  	 			result = result +'</td>'; 
  	 			}	
  			
  			
- 			
  				result = result +'<td>';
 	 			if(opt.expenseTotal != null && opt.expenseTotal !='' && opt.expenseTotal!='Undefined'){
-	 			result = result +'<div class="week"><span class="appr">'+opt.expenseTotal+'</span>';
+	 			result = result +'<div class="week"><span class="draft">'+opt.expenseTotal+'</span>';
 	 			}else{
-	 				result = result +'<div class="week"><span class="appr">0</span>';	
+	 				result = result +'<div class="week"><span class="draft">0</span>';	
 	 			}
-	 			result = result +'<div class="progress">';
+	 			/* result = result +'<div class="progress">';
 	 			if(opt.expenseApprovedTotal != null && opt.expenseApprovedTotal !='' && opt.expenseApprovedTotal!='Undefined'){
 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.expenseApprovedTotal+'</div>';
 	 			}else{
@@ -528,31 +542,80 @@ $.ajax({
 	 			}else{
 	 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
 	 			}
-	 			result = result +'</div>';                    
+	 			result = result +'</div>';  */                   
 	 			result = result +'</div>';
-	 			result = result +'</td>'; 
- 			
- 			
+	 			result = result +'</td>';
+ 		
+			/* result = result +'<td><div class="sm"><b class="proj_active">'+opt.projectStatus+'</b></div></td>'; */
 			
-
-			result = result +'<td><div class="sm"><b class="proj_active">'+opt.projectStatus+'</b></div></td>';
- 			result = result +'<td><div class="sm"><b class="proj_active">'+opt.endDateStr+'</b></div></td>';
+			result = result +'<td>';
+ 			if(opt.claimedExpenseTotal != null && opt.claimedExpenseTotal !='' && opt.claimedExpenseTotal!='Undefined'){
+ 			result = result +'<div class="week"><span class="draft">'+opt.claimedExpenseTotal+'</span>';
+ 			}else{
+ 				result = result +'<div class="week"><span class="draft">0</span>';	
+ 			}
+ 			/* result = result +'<div class="progress">';
+ 			if(opt.claimedExpenseApprovedTotal != null && opt.claimedExpenseApprovedTotal !='' && opt.claimedExpenseApprovedTotal!='Undefined'){
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">'+opt.claimedExpenseApprovedTotal+'</div>';
+ 			}else{
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width:60%">0</div>';	
+ 			}
+ 			if(opt.claimedExpenseUnApprovedTotal != null && opt.claimedExpenseUnApprovedTotal !='' && opt.claimedExpenseUnApprovedTotal!='Undefined'){
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">'+opt.claimedExpenseUnApprovedTotal+'</div>';
+ 			}else{
+ 			result = result +'<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width:40%">0</div>';	
+ 			}
+ 			result = result +'</div>';  */                   
+ 			result = result +'</div>';
+ 			result = result +'</td>'; 
+ 			
  			result = result +'</tr>';
  		}
  			result = result +'</tbody>';
 			result = result +'</table>';
  			$("#expensesReportsListDiv").empty();
 			$("#expensesReportsListDiv").append(result);
+			pagination();
     	 }
     	 else {
     		 result = "<div class='dataTables_empty'></div>";
     		 $("#expensesReportsListDiv").empty();
  			 $("#expensesReportsListDiv").append(result);
     	 }
- 		
      }
 });	
 }     
 </script>
+ 
+ <script>
+ function exportExpensesReports(type){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var frequencyYear =document.getElementById("selectedYear").value;
+	var frequencyMonth =document.getElementById("selectedQuarter").value;
+ window.location.href = sourceleadUrl+"/expensesReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type;
+ }
+ </script>
+ 
+ 
+ <script>
+function pagination(){ 
+	$.fn.dataTable.moment( 'DD-MM-YYYY' );
+    $('#expensesReportsPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"autoWidth": false,
+		"scrollX": true,
+    	"aaSorting": [[7,'desc']],
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    } );
+}
+</script>
+ 
  
 <jsp:include page="../masterFooter.jsp" />

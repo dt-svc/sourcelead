@@ -121,6 +121,9 @@ public class ProjectMembers implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private Status userState;
     
+	@Transient
+	private String employeeIdForExpenses;
+	
      //For Expenses 
     
     @Transient
@@ -234,6 +237,14 @@ public class ProjectMembers implements Serializable {
     @Transient
     private Float decExpenseUnApprovedTotal;
     
+    @Transient
+    private Float claimedExpenseTotal;
+    
+    @Transient
+    private Float claimedExpenseApprovedTotal;
+    
+    @Transient
+    private Float claimedExpenseUnApprovedTotal;
     
     @Transient
     private Float Q1ExpenseTotal;
@@ -289,6 +300,9 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	private String userEmail;
 	
+	
+	@Transient
+	private String employmentTypeVendors;
     //For Expenses 
 
 	@Transient
@@ -317,6 +331,9 @@ public class ProjectMembers implements Serializable {
 
 	@Transient
 	private LinkedHashSet<String> monthsStringFormat;
+	
+	@Transient
+	private String clientNameExpenses;
 	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
@@ -652,6 +669,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getJanExpenseTotal() {
+		if(janExpenseTotal == null){
+			janExpenseTotal = 0f;
+		}
 		return janExpenseTotal;
 	}
 
@@ -676,6 +696,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getFebExpenseTotal() {
+		if(febExpenseTotal == null){
+			febExpenseTotal = 0f;
+		}
 		return febExpenseTotal;
 	}
 
@@ -700,6 +723,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getMarExpenseTotal() {
+		if(marExpenseTotal == null){
+			marExpenseTotal = 0f;
+		}
 		return marExpenseTotal;
 	}
 
@@ -724,6 +750,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getAprExpenseTotal() {
+		if(aprExpenseTotal == null){
+			aprExpenseTotal = 0f;
+		}
 		return aprExpenseTotal;
 	}
 
@@ -748,6 +777,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getMayExpenseTotal() {
+		if(mayExpenseTotal == null){
+			mayExpenseTotal = 0f;
+		}
 		return mayExpenseTotal;
 	}
 
@@ -772,6 +804,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getJunExpenseTotal() {
+		if(junExpenseTotal == null){
+			junExpenseTotal = 0f;
+		}
 		return junExpenseTotal;
 	}
 
@@ -796,6 +831,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getJulExpenseTotal() {
+		if(julExpenseTotal == null){
+			julExpenseTotal = 0f;
+		}
 		return julExpenseTotal;
 	}
 
@@ -820,6 +858,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getAugExpenseTotal() {
+		if(augExpenseTotal == null){
+			augExpenseTotal = 0f;
+		}
 		return augExpenseTotal;
 	}
 
@@ -844,6 +885,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getSepExpenseTotal() {
+		if(sepExpenseTotal == null){
+			sepExpenseTotal = 0f;
+		}
 		return sepExpenseTotal;
 	}
 
@@ -868,6 +912,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getOctExpenseTotal() {
+		if(octExpenseTotal == null){
+			octExpenseTotal = 0f;
+		}
 		return octExpenseTotal;
 	}
 
@@ -892,6 +939,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getNovExpenseTotal() {
+		if(novExpenseTotal == null){
+			novExpenseTotal = 0f;
+		}
 		return novExpenseTotal;
 	}
 
@@ -916,6 +966,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getDecExpenseTotal() {
+		if(decExpenseTotal == null){
+			decExpenseTotal = 0f;
+		}
 		return decExpenseTotal;
 	}
 
@@ -1090,6 +1143,56 @@ public class ProjectMembers implements Serializable {
 	public void setExpenseUnApprovedTotal(Float expenseUnApprovedTotal) {
 		this.expenseUnApprovedTotal = expenseUnApprovedTotal;
 	}
+
+	public String getEmployeeIdForExpenses() {
+		return employeeIdForExpenses;
+	}
+
+	public void setEmployeeIdForExpenses(String employeeIdForExpenses) {
+		this.employeeIdForExpenses = employeeIdForExpenses;
+	}
+
+	public Float getClaimedExpenseTotal() {
+		return claimedExpenseTotal;
+	}
+
+	public void setClaimedExpenseTotal(Float claimedExpenseTotal) {
+		this.claimedExpenseTotal = claimedExpenseTotal;
+	}
+
+	public Float getClaimedExpenseApprovedTotal() {
+		return claimedExpenseApprovedTotal;
+	}
+
+	public void setClaimedExpenseApprovedTotal(Float claimedExpenseApprovedTotal) {
+		this.claimedExpenseApprovedTotal = claimedExpenseApprovedTotal;
+	}
+
+	public Float getClaimedExpenseUnApprovedTotal() {
+		return claimedExpenseUnApprovedTotal;
+	}
+
+	public void setClaimedExpenseUnApprovedTotal(Float claimedExpenseUnApprovedTotal) {
+		this.claimedExpenseUnApprovedTotal = claimedExpenseUnApprovedTotal;
+	}
+
+	public String getClientNameExpenses() {
+		return clientNameExpenses;
+	}
+
+	public void setClientNameExpenses(String clientNameExpenses) {
+		this.clientNameExpenses = clientNameExpenses;
+	}
+
+	public String getEmploymentTypeVendors() {
+		return employmentTypeVendors;
+	}
+
+	public void setEmploymentTypeVendors(String employmentTypeVendors) {
+		this.employmentTypeVendors = employmentTypeVendors;
+	}
+
+	
 
 	
 }

@@ -665,7 +665,7 @@ function configCoolingOff(){
 					result = result + '<form id="coolingOff_form"  name="coolingOff_form" method="post">'; 
 					
 					result = result + '<div class="form-group">';
-					result = result + '<label class="col-md-3">Cooling Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for requirement, because of applied recently."></i></label>';
+					result = result + '<label class="col-md-3">Cooling Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for Jobs, because of applied recently."></i></label>';
 					result = result + '<div class="col-md-4 select-field selectChosen">';
 					result = result + '<select  class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
 					result = result + '		<option value="'+coolingOffPeriod+'" selected>'+coolingOffPeriod+'</option>';
