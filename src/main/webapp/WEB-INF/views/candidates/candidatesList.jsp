@@ -46,6 +46,7 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
+<jsp:include page="candidateReferences.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
@@ -674,8 +675,9 @@ function candidateSideBar(candidateId){
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
 			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
 			             '</sec:authorize>';
-			            
-			            
+			             
+			            result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+');">References</a></li>';
+						 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
@@ -704,6 +706,9 @@ function candidateSideBar(candidateId){
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-9" class="project_tabs_inn">';
+			             result = result+'     </div>';
+			             
+			             result = result + '<div id="tab-10" class="project_tabs_inn">';
 			             result = result+'     </div>';
 						 
 						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
