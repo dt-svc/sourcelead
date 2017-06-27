@@ -118,6 +118,9 @@ public class RequirementRateSubmissionNegotiation {
 	
 	@Transient
 	private String expectedRatePerRN;
+	
+	@Transient
+	private String isLastProposedUser;
 
 	public Long getId() {
 		return id;
@@ -350,6 +353,16 @@ public class RequirementRateSubmissionNegotiation {
 
 	public void setExpectedRatePerRN(String expectedRatePerRN) {
 		this.expectedRatePerRN = expectedRatePerRN;
+	}
+
+	public String getIsLastProposedUser()
+	{
+		return isLastProposedUser;
+	}
+
+	public void setIsLastProposedUser(String isLastProposedUser)
+	{
+		this.isLastProposedUser = isLastProposedUser;
 	}
 	
 }

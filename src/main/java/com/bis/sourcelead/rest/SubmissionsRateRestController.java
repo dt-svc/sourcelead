@@ -309,10 +309,10 @@ public class SubmissionsRateRestController {
 
 	@RequestMapping(value = "/getRateHistoryBySubmissionId", method = RequestMethod.POST)
 	public @ResponseBody String getRateHistoryBySubmissionId(@RequestParam(value = "submissionId", required = false) Long submissionId,
-															 @RequestParam(value = "candidateId", required = false) Long candidateId
-															) throws Exception {
+															 @RequestParam(value = "candidateId", required = false) Long candidateId,
+															 HttpServletRequest request) throws Exception {
 		 
-		
+		User logInUsers = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		RequirementRateSubmissionNegotiation requirementRateSubmission = new RequirementRateSubmissionNegotiation();
 		String expectedRateRN = "";
@@ -411,6 +411,12 @@ public class SubmissionsRateRestController {
 				requirementRateSubmissionNegotiation.setRateAndType(rateTypeSB.append(requirementRateSubmissionNegotiation.getExpectedRate()).append(" ").append(requirementRateSubmissionNegotiation.getExpectedRateType()).toString());	
 			}
 			
+			if(requirementRateSubmissionNegotiation.getCreatedBy() != null && requirementRateSubmissionNegotiation.getCreatedBy().equalsIgnoreCase(logInUsers.getUserCode())){
+				requirementRateSubmissionNegotiation.setIsLastProposedUser("Y");
+			}else{
+				requirementRateSubmissionNegotiation.setIsLastProposedUser("N");
+			}
+			
 			
 			if(null != requirementRateSubmissionNegotiation.getRequirementsubmissionId() && null != requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus()){
 				requirementRateSubmissionNegotiation.setSubmissionRateStatus(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getSubmissionStatus().toString());
@@ -482,7 +488,7 @@ public class SubmissionsRateRestController {
 				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
-			}else if(requirementSubmission.getCandidate() != null && requirementSubmission.getCandidate().getConsultantUser() != null && requirementSubmission.getCandidate().getConsultantUser().getId() == users.getId()){
+			}else if(requirementSubmission.getCandidate() != null && requirementSubmission.getCandidate().getConsultantUser() != null && requirementSubmission.getCandidate().getConsultantUser().getId().equals(users.getId())){
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
 				candidate = requirementSubmission.getCandidate();
 				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
