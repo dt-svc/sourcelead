@@ -1286,13 +1286,11 @@ public class CandidateListRestController {
 			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
 				
 				if(null != can && StringUtils.isNotEmpty(visaName)){
-					can.setVisaType("");
 					can.setVisaType(visaName);
 					candidateService.saveOrUpdateCandidate(can);
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "success";
 				}else{
-					can.setVisaType("");
 					candidateService.saveOrUpdateCandidate(can);
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "failed";
