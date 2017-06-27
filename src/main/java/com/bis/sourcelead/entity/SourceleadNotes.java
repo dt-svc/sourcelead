@@ -44,6 +44,11 @@ public class SourceleadNotes {
     @JoinColumn(name="USER_ID", nullable=false )     
 	private User userId;
 	
+	
+	@ManyToOne
+    @JoinColumn(name="SPOC_ID", nullable=false )     
+	private OrgSpoc spocId;
+	
 	@ManyToOne
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )     
 	private Requirement requirementId;
@@ -98,6 +103,8 @@ public class SourceleadNotes {
 	@Transient
 	private String invoiceId;
 	
+	@Transient
+	private Long userIdStr;
 	
 	@Transient
 	private String updatedDateString;
@@ -312,6 +319,24 @@ public class SourceleadNotes {
 	{
 		this.invoiceId = invoiceId;
 	}
-	
-	
+
+	public OrgSpoc getSpocId()
+	{
+		return spocId;
+	}
+
+	public void setSpocId(OrgSpoc spocId)
+	{
+		this.spocId = spocId;
+	}
+
+	public Long getUserIdStr()
+	{
+		return userIdStr;
+	}
+
+	public void setUserIdStr(Long userIdStr)
+	{
+		this.userIdStr = userIdStr;
+	}
 }

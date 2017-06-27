@@ -1749,7 +1749,7 @@ function getVendorDashboardName(vendorDashboardName){
 		 
 		 // vendors notes list
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
-		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+');">Notes List</a></li>';
+		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes List</a></li>';
 		 '</sec:authorize>';
 
 

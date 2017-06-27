@@ -60,7 +60,7 @@ function clientNotesList(orgRelationId,clientLocationId){
 	    result = result + '<ul class="padding_right">';
 	    
 	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
-	        	result = result  +'    	<a href="javascript:void(0)" onClick="addClientNotes('+orgRelationId+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Documents</a>                                                            ';
+	        	result = result  +'    	<a href="javascript:void(0)" onClick="addClientNotes('+orgRelationId+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
 		 '</sec:authorize>';
 		 
 		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
@@ -110,6 +110,7 @@ function clientNotes(orgRelationId){
 	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
      for(var i=0;i<json.length;i++){
        	var report = json[i];
+    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
    	  	output = output+'<div class="comments-div comments-inner clearfix">';
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
@@ -117,16 +118,30 @@ function clientNotes(orgRelationId){
    	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.userId+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
-   	    output = output+'     <div class="comments-content">';
-   	    output = output+'         <div class="pull-left">';
+   	    output = output+'     <div class="comments-content comments-notes">';
+   	    output = output+'         <div class="pull-left comments-text">';
    	    output = output+'         <p class="comment-by">';
-   	    output = output+'            By <span class="text-danger">'+report.userName+'</span>';
-   	 output = output+'            By <span class="text-danger">'+report.requirementTitle+'</span>';
-   	    output = output+'            <span class="small">'+report.createdDateString+'</span></p>';
+   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
+   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
+   	    }
+   	    
+   	    else if(report.contactName !=null && report.contactName != 'undefined'){
+   		 output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
+   	    }
+   	 else if(report.contract !=null && report.contract != 'undefined'){
+   		 output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
+   	    }
+   	    
+   	 else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
+   		 output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
+   	    }
+   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
    	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
    	    output = output+'         </div>';
    	    output = output+'     </div>';
    	    output = output+'</div>';
+    	}
      }
 }else{
      var output ="";
@@ -171,7 +186,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
 	
 	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
      result = result +" <div class='dropdown-select mb10' id='categoryTypeListDiv'>";
-     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange='getRejectedCategory(); selectCategory(this);' data-validation='required' field-name='Category'>";
+     result = result +"<select id='categoryType' name='categoryType' class='chosen-select form-control' onchange='selectCategory(this);' data-validation='required' field-name='Category'>";
      result = result +"<option selected value=''>--Select Category--</option>";
      result = result +"<option value='Jobs'>Jobs</option>";
      result = result +"<option value='Contacts'>Contacts</option>";
@@ -184,19 +199,11 @@ function addClientNotes(orgRelationId,clientLocationId) {
 	
      result = result +"    <div class='mt10'>";
      result = result +"    <div class='dropdown-select mb10' id='categoryContactTypeListDivDiv'>";
-//      result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-//      result = result +"</select>";
      result = result +"    </div>";
-   
-     result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mb10'>";
-     result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other' >";
-     result = result +" </div>";
-     
-     
      
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result+'	                  <div class="clearfix">';
-	result = result+'	                      <textarea rows="2" placeholder="Description" value="" id="noteDescription" name="noteDescription" data-validation="required"  field-name="Description" class="form-control"></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required"  field-name="Note" class="form-control"></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
@@ -371,6 +378,8 @@ function selectCategory(){
 		        	 $("#categoryContactTypeListDivDiv").empty();
 				     $("#categoryContactTypeListDivDiv").append(result);
 				     $('#categoryContactTypeListDivDiv').trigger("chosen:updated");
+				     $('#vendorcontact').trigger("chosen:updated");
+				     $('#vendorcontact').chosen();
 		        }
 			});
 		}

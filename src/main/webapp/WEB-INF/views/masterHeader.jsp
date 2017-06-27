@@ -142,6 +142,41 @@ document.onkeydown=function(e){
 }
 </script>  -->
 
+<!--
+	Key Codes events
+	0 = blur
+	13 = enter
+	9 = tab
+	32 = space
+	188 = comma
+-->
+
+<script type="text/javascript">
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
+
+<script type="text/javascript">
+function tagItBykeyForSkills(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
+
+<script type="text/javascript">
+function preventTabkey(e){
+	 if(e.which == 9){
+		 e.preventDefault();
+	 }
+}
+</script>
+
 <script>
 	function predefineOrgImage(imageId){
 		$(imageId).attr('src','resources/images/office-image.jpg');

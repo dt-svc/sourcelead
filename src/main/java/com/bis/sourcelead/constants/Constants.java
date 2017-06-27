@@ -344,6 +344,11 @@ public class Constants {
 	public static final String SKILLS = "Skills";
 	public static final String EXPENSESCATEGORY = "Expense Category";
 	
+	public static final String NOTES_JOBS = "Jobs";
+    public static final String NOTES_CONTRACTS = "Contracts";
+    public static final String NOTES_BILLING = "Billing";
+    public static final String NOTES_CONTACTS = "Contacts";
+	
 	public static final String DOCUMENT_TYPE = "Document Type";
 	public static final String ADMIN = "Admin";
 	public static final String MAIL_SENT = "Sent";
