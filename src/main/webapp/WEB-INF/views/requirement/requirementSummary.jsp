@@ -4423,7 +4423,32 @@ function requirementRecommendations(requirementId){
 		    result = result +' </div>';
 		    
 		    result = result +' </div>';
+		    
+		    
+		    
+ 			result = result +'<div class="clearfix row">';
+		    
+		    result = result +'<div class="col-md-6 paddingRight">';
+		    result = result +'<label>Visa Type</label>';
+		    result = result +'<div class="progress">';
+		    var visaTypeGraph = (100 * report.visaTypePercentage)/report.totalVisaTypePercentage;
+		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+visaTypeGraph+'%"> '+report.visaTypePercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +'<div class="col-md-6 paddingLeft">';
+		    result = result +'<label>Education</label>';
+		    result = result +'<div class="progress">';
+		    var educationGraph = (100 * report.educationPercentage)/report.totalEducationPercentage;
+		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.totalEducationPercentage+'% ';
+   	        result = result +'</div>';
+		    result = result +' </div>';
+		    result = result +' </div>';
+		    
+		    result = result +' </div>';
 		  
+		    
 		   
 		    result = result +'</div>';		    
 		    result = result +'</div></td>';
