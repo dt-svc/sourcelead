@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 /**
  * @author Prasad K
@@ -42,8 +43,17 @@ public class CandidateDocuments implements Serializable{
     private OrgLocations orgLocationId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="REQUESTED_DOC_ID", nullable=false )        
+    @JoinColumn(name="REQUESTED_DOC_ID")        
     private RequestedDocuments requestedDocumentsId;
+	
+	@Column(name = "DOC_UPLOAD_STATUS ")
+	private String docUploadStatus;
+	
+	@Column(name = "IS_REQUESTED_DOC_REQUIRED ")
+	private String isRequestedDocRequired;
+
+	@Column(name = "REQUESTED_DOC_STATUS ")
+	private String requestedDocStatus;
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
@@ -56,6 +66,7 @@ public class CandidateDocuments implements Serializable{
 	private String documentOtherType;
 	
 	@Column(name = "DESCRIPTION ")
+	@Type(type="text")
 	private String description ;
 	
 	@Column(name = " DOC_FILE",columnDefinition="mediumblob")
@@ -206,6 +217,44 @@ public class CandidateDocuments implements Serializable{
 		this.status = status;
 	}
 
-	
+	public RequestedDocuments getRequestedDocumentsId()
+	{
+		return requestedDocumentsId;
+	}
+
+	public void setRequestedDocumentsId(RequestedDocuments requestedDocumentsId)
+	{
+		this.requestedDocumentsId = requestedDocumentsId;
+	}
+
+	public String getIsRequestedDocRequired()
+	{
+		return isRequestedDocRequired;
+	}
+
+	public void setIsRequestedDocRequired(String isRequestedDocRequired)
+	{
+		this.isRequestedDocRequired = isRequestedDocRequired;
+	}
+
+	public String getDocUploadStatus()
+	{
+		return docUploadStatus;
+	}
+
+	public void setDocUploadStatus(String docUploadStatus)
+	{
+		this.docUploadStatus = docUploadStatus;
+	}
+
+	public String getRequestedDocStatus()
+	{
+		return requestedDocStatus;
+	}
+
+	public void setRequestedDocStatus(String requestedDocStatus)
+	{
+		this.requestedDocStatus = requestedDocStatus;
+	}
 	
 }

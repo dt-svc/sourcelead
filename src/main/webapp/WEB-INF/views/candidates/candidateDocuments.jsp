@@ -18,13 +18,18 @@
 .validation_p p.jquery_form_error_message {
 bottom:-25px !important;
 }
-
+.settPop .form-control {
+height: auto !important;
+}
 </style>
 <%-- 
      @author : prasadK.
      this script is for display candidate education tab data.
      1.usage     : used at clientSideBar().
 --%>
+
+<div id="rejectedReasonDiv"></div>
+
 <script>
 function candidateDocuments(candidateId){
 	var candidateType = '${candidateType}';
@@ -53,7 +58,9 @@ function candidateDocuments(candidateId){
 		var docUUID = '';
 		if(candidateType =="Candidates"){
 			'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="requestDoc();createDocsType();" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
+			result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+');" title="Reject"></i></a></span>';
+			result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+');" title="Accept"></i></a></span>';
+			result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
 			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
 		}else{
@@ -107,7 +114,9 @@ function candDocumentsList(candidateId){
 	                	 result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
+	                     result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>';
 	                     result  = result + '<th>Document Type</th>';
+	                     result  = result + '<th>Upload Status</th>';
 	                 	 result  = result + '<th>Document</th>';
 	                 	 result  = result + '<th>Description</th>';
 	                 	 result  = result + '<th>Action</th>';
@@ -118,6 +127,14 @@ function candDocumentsList(candidateId){
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + ' <tr>';
+	                    	 
+	                    	 if(opt.requestedDocumentsId != null){
+	                    		 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
+	                    	 }else{
+	                    		 result = result +"  <td><div>--</div></td>"; 
+	                    	 }
+	                    	 
+	                    	 
 	                    	 if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined")
 	    	             	 {
 	    	            	  if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
@@ -128,6 +145,8 @@ function candDocumentsList(candidateId){
 	    	             	 }else{
 	    	             		 result = result +"  <td><div>----</div></td>"; 
 	    	             	 }
+	                    	 
+	                    	 result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
 	                    	 
 	                    	 if(opt.fileName != null && opt.fileName != '' && opt.fileName != 'undefined'){
 	                    	 result  = result + ' <td><div class="tbldata-dotdot-me" title="'+opt.fileName+'"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadDoc?documentUUID='+opt.documentUUID+'\">&nbsp;&nbsp;&nbsp;'+opt.fileName+'</a></div></td>';
@@ -171,6 +190,87 @@ function candDocumentsList(candidateId){
           });     
 }
 </script>
+
+<script>
+	function toggleAllDocuments(source) {
+	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+	        if (checkboxes[i] != source)
+	            checkboxes[i].checked = source.checked;
+	        
+	    }
+	$('input:checkbox:not(#checkAllDocuments)').click(function() {
+	    if(!this.checked) {
+	        $('#checkAllDocuments').removeAttr('checked');
+	    }
+	});
+	}
+</script>
+
+
+<script>
+function deleteRequestedDoc(){
+	
+	 var documentsIds = [];
+	 $("input[name='documents[]']:checked").each( function (i) {
+		 documentsIds[i] = $(this).val();
+	});
+	 
+	 if(documentsIds.length > 0){
+		 document.getElementById("rejectDoc").style.display="";
+		 document.getElementById("acceptDoc").style.display="";
+	 }else{
+		 document.getElementById("rejectDoc").style.display="none";
+		 document.getElementById("acceptDoc").style.display="none";
+	 }
+	 
+}
+</script> 
+
+<script>
+ function rejectRequestedDocs(candidateId){
+	
+	 var result = "";
+		result = result + '	<div class="settPop">';
+		result = result + '	<div id="docsrejectedLoading"></div>';
+		result = result + '<form id="docrejectedReason_form" name="docrejectedReason_form" method="post">';
+		result = result + '	<h3>Documents Rejected Reason<i class="fa fa-times" onclick="cancelDocumentRejectedReason();"></i></h3>  ';
+		result = result + '	<div class="settPopInn"> ';
+		
+		result = result + '		<div class="clearfix">  ';
+		result = result + '      <input type="hidden" name="rejectedDocsCandidateId"  id="rejectedDocsCandidateId" value='+candidateId+' />';
+		result = result + '		  <label class="col-md-12" for="Rejected Reason">Reason</label> ';
+		result = result + '		  <div class="col-md-12 taskdesp mt10">   ';
+		result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+		result = result + '			<span class="hidden"></span> </div>  ';
+		result = result + '		</div>';
+		result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+		result = result + '		<div class="pull-right">  ';
+		result = result + '		  <input type="submit" value="Save" id="submit_rejectedReason"  class="btn btn-primary" >';
+		result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelDocumentRejectedReason();">';
+		result = result + '		</div>';
+		result = result + '		</div>';
+		result = result + '		<div class="clearfix"></div>   ';
+		result = result + '	</div>  ';
+		result = result + '</form>';
+		result = result + '	</div>';
+	    $("#rejectedReasonDiv").empty();
+	    $("#rejectedReasonDiv").append(result);
+	    
+	    $(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	    
+	    
+ }
+ </script> 
+ 
+ 
+<script>
+function cancelDocumentRejectedReason(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+</script>  
 
 <!-- Show success message after form submission script -->
 <script>
@@ -235,20 +335,25 @@ function closePopup(){
 <div class="requestDocSideMask"></div>
 <div class="modal modalInvite requestDocuments">
   <div class="modal-dialog modal-lg"> 
+    <div id="documentLoading"></div>
     <div id="documentsTypeDiv"></div>
     </div>
   </div>
   
   <div id="divDocsTd1" style="display: none; float: left;">
   <div class="dropdown-select paddingRight">
-              <select class="width100percnt form-control selectborder" id="REPLACEROWIDdocType" name="REPLACEROWIDdocType">
-                <option selected>- -Document Type * - -</option>
-                <option>Document Type-1</option>
-                <option>Document Type-2</option>
-                <option>Document Type-3</option>
+              <select class="width100percnt form-control selectborder" data-validation="required" onchange="getSelectedDocumentType(REPLACEROWID);" field-name="Document Type" id="REPLACEROWIDdocType" name="REPLACEROWIDdocType">
+                <option selected value="">--Document Type--</option>
+                <c:forEach var="doctype" items="${documentsList}">
+					<option value="${doctype.name}" >${doctype.name}</option>
+    			</c:forEach> 
               </select>
   </div>
-  </div>
+  
+ <div class="clearfix mt5" id="REPLACEROWIDotherType" name="REPLACEROWIDotherType" style="display: none;">
+	<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="REPLACEROWIDotherDocType" id="REPLACEROWIDotherDocType">
+ </div>
+ </div>
   
   <div id="divDocsTd2" style="display: none; float: left;">
   <div>
@@ -259,7 +364,7 @@ function closePopup(){
   <div id="divDocsTd3" style="display: none; float: left;">
   <div>
      <label class="switch mt10 ml10 pull-left">
-       <input type="checkbox" checked id="REPLACEROWIDchecked" name="REPLACEROWIDchecked">
+       <input type="checkbox" checked id="REPLACEROWIDchecked" name="REPLACEROWIDchecked" onclick="checkDocument(REPLACEROWID)" value="Y">
        <div class="slider round"></div>
        </label>
          <div class="pull-right">
@@ -418,6 +523,7 @@ function getDocumentType(documentType){
 	}
 }
 </script>
+
     
  <%-- 
      @author : prasad K
@@ -629,11 +735,12 @@ function refreshDocList(candidateId){
 </script>
 
 <script>
-function createDocsType(){
+function createDocsType(candidateId){
 	
 	$("#documentsTypeDiv").empty();
 	
 	var result = "";
+	result = result +'<form id="requestForDocuments_form" name="requestForDocuments_form" method="post">';
 	result = result +'<div class="modal-content">';
 	result = result +'<div class="modal-header">';
 	result = result +'<button type="button" class="close" data-dismiss="modal" onClick="closeRD();">&times;</button>';
@@ -647,6 +754,7 @@ function createDocsType(){
         
         
 	result = result +'<div class="clearfix mb10 mt5 requestdocmntTable">';
+	result = result +'<input type="hidden" name="requestedCandidateId"  id="requestedCandidateId" value='+candidateId+' />';
 	result = result +'<input type="hidden" name="docuemntMaxRowNumber"  id="docuemntMaxRowNumber" value="1" />';
 	result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="requestedDocumentsTable" border="0">';
 	result = result +'<tbody>';
@@ -654,14 +762,16 @@ function createDocsType(){
 	result = result +'<div id="0requestedDocumentsFileGroup">';
 	result = result +'<td width="200px">';
 	result = result +'<div class="dropdown-select">';
-	result = result +'<select class="width100percnt form-control selectborder" id="0docType" name="0docType">';
-	result = result +'<option selected>- -Document Type  - -</option>';
-	result = result +'<option>Document Type-1</option>';
-	result = result +'<option>Document Type-2</option>';
-	result = result +'<option>Document Type-3</option>';
+	result = result +'<select class="width100percnt form-control selectborder" data-validation="required" field-name="Document Type" onchange="getSelectedDocumentType(0);" id="0docType" name="0docType">';
+	result = result +'<option selected value="">--Document Type--</option>';
+	
+    <c:forEach var="doctype" items="${documentsList}">
+		result = result + '<option value="${doctype.name}" >${doctype.name}</option>';
+    </c:forEach> 
+    
 	result = result +'</select>';
 	result = result +'<div class="clearfix mt5" id="0otherType" name="0otherType" style="display: none;">';
-	result = result +'<input type="text" class="form-control input-sm" placeholder="Other Type">';
+	result = result +'<input type="text" class="form-control input-sm" placeholder="Other Type" data-validation-optional="true" field-name="Other Type" name="0otherDocType" id="0otherDocType">';
 	result = result +'</div>';
 	result = result +'</div>';
 	result = result +'</td>';
@@ -673,7 +783,7 @@ function createDocsType(){
 	result = result +'<td width="150px">';
 	result = result +'<div class="">';
 	result = result +'<label class="switch mt10 ml10 pull-left">';
-	result = result +'<input type="checkbox" checked id="0checked" name="0checked">';
+	result = result +'<input type="checkbox" checked id="0checked" name="0checked" onclick="checkDocument(0)" value="Y">';
 	result = result +'<div class="slider round"></div>';
 	result = result +'</label>';
 	result = result +'<div class="pull-right">';
@@ -690,15 +800,93 @@ function createDocsType(){
 	result = result +'</div>';
     
 	result = result +'<div class="modal-footer clearfix">';
-	result = result +'<button type="submit" class="btn btn-sm btn-primary mr10">Send</button>';
-	result = result +'<button type="submit" class="btn btn-sm btn-default" onclick="closeRD();">Cancel</button>';
+	result = result +'<button type="submit" id="submit_docs" class="btn btn-sm btn-primary mr10">Send</button>';
+	result = result +'<button type="button" class="btn btn-sm btn-default" onclick="closeRD();">Cancel</button>';
 	result = result +' </div>';
 	result = result +'</div>';
+	result = result + '</form>';
 	
 	$("#documentsTypeDiv").append(result);
 	
 }
 </script>
+
+<script>
+function checkDocument(id){
+	var checked = document.getElementById(id+"checked").checked
+	if(checked == true){
+		$("#"+id+"checked").val("Y");
+	}else{
+		$("#"+id+"checked").val("N");
+	}
+}
+</script>
+
+<script>
+function getSelectedDocumentType(id){
+	 var selectedDocType = document.getElementById(id+"docType").value; 
+	if(selectedDocType == 'Other'){
+		  document.getElementById(id+"otherType").style.display="block";
+		  $("#"+id+"otherDocType").removeAttr("data-validation-optional");
+		  $("#"+id+"otherDocType").attr("data-validation", "required validate_Space validate_length length2-250");
+	}else{
+		  document.getElementById(id+"otherType").style.display="none";
+		  $("#"+id+"otherDocType").removeAttr("data-validation");
+		  $("#"+id+"otherDocType").attr("data-validation-optional", "true");
+		  $("#"+id+"otherType").find('p.jquery_form_error_message').remove();
+		  if(selectedDocType ==null || selectedDocType == "" || selectedDocType == "undefined" || selectedDocType != 'Other'){
+			  $("#"+id+"otherDocType").val('');
+		  }
+	}
+}
+</script>
+
+<script type="text/javascript">
+$('body').on('submit', '#requestForDocuments_form', function(e){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	        borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	  if ($(this).validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var frm = $('#requestForDocuments_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      var sourceleadUrl ='${sourceleadUrl}';
+      var requestedCandidateId = document.getElementById("requestedCandidateId").value;
+      
+        $("#submit_docs").attr("disabled", "disabled");
+		$("#submit_docs" ).addClass('button').val('Processing..');
+		$("#documentLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	       $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/requestCandidateForDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		        success: function(result) {
+		        	$("#documentLoading").removeAttr("style"); 
+		        	closeRD();
+		        	candidateDocuments(requestedCandidateId);
+		        },
+		    });   
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#requestForDocuments_form', function() {
+		$("#requestForDocuments_form").showHelpOnFocus();
+		$("#requestForDocuments_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
 
 
 <script>
@@ -743,3 +931,61 @@ function addDocumentRow(){
 		 
 	}
 </script>
+ 
+<script type="text/javascript">
+$('body').on('submit', '#docrejectedReason_form', function(e){
+	  if ($(this).validate(false, validationSettings)){
+      e.preventDefault();
+     
+      var frm = $('#docrejectedReason_form').serializeFormJSON();
+      var con = JSON.stringify(frm);
+      con = con.replace(/[{}]/g, "");
+      
+      //It will escape all the special characters
+      var jsonData = encodeURIComponent(con);
+      var sourceleadUrl ='${sourceleadUrl}';
+      var rejectedDocsCandidateId = document.getElementById("rejectedDocsCandidateId").value;
+      
+      var documentsIds = [];
+	 	 $("input[name='documents[]']:checked").each( function (i) {
+	 		 documentsIds[i] = $(this).val();
+	 	});
+	 	 
+       $("#submit_rejectedReason").attr("disabled", "disabled");
+       $("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+ /* 	   $.ajax({
+	    	type: "POST",
+	    	 url: sourceleadUrl+"/rejectRequestedDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&documentsIds="+documentsIds, 
+	        success: function(result) {
+	        	cancelDocumentRejectedReason();
+	        	$("#docsrejectedLoading").removeAttr("style"); 
+	        	candidateDocuments(rejectedDocsCandidateId);
+	        },
+	    });  */  
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#docrejectedReason_form', function() {
+		$("#docrejectedReason_form").showHelpOnFocus();
+		$("#docrejectedReason_form").validateOnBlur(false, validationSettings);
+	});
+  </script>
+ 
+ 
+ <script type="text/javascript">
+$(document).ready(function() {
+    $(".glyphicon-edit").click(function(){
+		$(".settPop").slideDown(200);
+		$(".vendor_wrap_mask").fadeIn(200);
+	});
+	$(".settPop i, .btn-default").click(function(){
+		$(".settPop").slideUp(200);
+		$(".vendor_wrap_mask").fadeOut(200);
+	});
+});		
+	
+</script>  

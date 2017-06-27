@@ -235,6 +235,7 @@ public class Constants {
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_TEAM_OWNER="UserNewActionAssignedAsaTeamOwnerUser";
 	public static final String USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER="UserNewActionAssignedAsaProjectApproverUser";
 	public static final String USER_NEW_ACTION_ASSIGNED_NOTIFICATION ="UserNewActionAssignedNotification";
+	public static final String REQUESTED_DOCUMENTS = "RequestForDocumentsToCandidates";
 	public static final String APPLICANT_ACCEPT_RATE = "ApplicantAcceptRate";
 	public static final String APPLIED_TO_REQUIREMENT = "Applied To Requirement";
 	public static final String REFER_REQUIREMENT_TO_PROFESSIONAL = "Refer Requirment To Professional";
@@ -625,5 +626,8 @@ public class Constants {
     public static final String EMPLOYEE_PAYROLL = "EMPLOYEE_PAYROLL";
     public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
+    
+    public static final String DOCUMENT_UPLOAD_MANUALLY = "Manually";
+    public static final String DOCUMENT_UPLOAD_REQUESTED = "Requested";
      
 }

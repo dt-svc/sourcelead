@@ -5641,7 +5641,7 @@ h4.orgLink:hover{
     color:#4e71a8; border-bottom:1px solid #368ee0;
 }
 .modal.modalInvite {
-	display: none;
+	display: none; z-index: 99999;
 }
 .proposeNewRate .panel-group {
 margin-bottom: 0;
@@ -5663,6 +5663,9 @@ select.selectborder {
     height: 35px;
 }
 */
+.requestDocSideMask {
+	z-index: 99999;
+}
 /* media 320px */
 @media (max-width: 320px) {
 	.uasrch-selectpicker {

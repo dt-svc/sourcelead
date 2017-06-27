@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequestedDocumentsDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -64,6 +67,24 @@ private static final Logger logger = LoggerFactory.getLogger(RequestedDocumentsD
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requestedDocuments;
+	}
+
+
+	@Override
+	@Transactional
+	public RequestedDocuments getRequestedDocumentsByRequestDocUUID(String requestDocUUID) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequestedDocuments> requestedDocuments = new ArrayList<RequestedDocuments>();
+		logger.debug("getCandidateById start");
+		requestedDocuments = session.createQuery("from RequestedDocuments requestedDocuments left join fetch requestedDocuments.candidateId "
+				+ " left join fetch requestedDocuments.orgLocationId orgLocation left join fetch orgLocation.org where requestedDocuments.requestDocUUID = :requestDocUUID" ).setCacheable(true).setString("requestDocUUID", requestDocUUID ).setCacheable(true).list();
+		logger.debug("getCandidateById end");
+		if (requestedDocuments.size() > 0) {
+			return requestedDocuments.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

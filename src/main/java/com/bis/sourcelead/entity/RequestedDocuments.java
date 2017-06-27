@@ -28,22 +28,23 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column(name = "DOCUMENT_TYPE")
-	private String documentType;
-	
-	@Column(name = "DOCUMENT_OTHER_TYPE")
-	private String documentOtherType;
-	
-	@Column(name = "IS_DOC_REQUIRED")
-	private String isDocRequired;
-	
-	@Column(name = "DESCRIPTION")
-	@Type(type="text")
-	private String description;
+	@ManyToOne
+    @JoinColumn(name="USER_ID")        
+    private User userId;
 	
 	@ManyToOne
-    @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
+    @JoinColumn(name="CANDIDATE_ID")        
+    private Candidate candidateId;
+	
+	@ManyToOne
+    @JoinColumn(name="ORG_LOCATION_ID")        
     private OrgLocations orgLocationId;
+	
+	@Column(name = "REQUEST_DOC_UUID")
+	private String requestDocUUID;
+	
+	@Column(name = "IS_DOCS_UPLOADED")
+	private String isDocsUploaded;
 	
 	@Column(name="STATUS")
 	private Integer status;
@@ -71,44 +72,24 @@ private static final long serialVersionUID = 1L;
 		this.id = id;
 	}
 
-	public String getDocumentType()
+	public User getUserId()
 	{
-		return documentType;
+		return userId;
 	}
 
-	public void setDocumentType(String documentType)
+	public void setUserId(User userId)
 	{
-		this.documentType = documentType;
+		this.userId = userId;
 	}
 
-	public String getDocumentOtherType()
+	public Candidate getCandidateId()
 	{
-		return documentOtherType;
+		return candidateId;
 	}
 
-	public void setDocumentOtherType(String documentOtherType)
+	public void setCandidateId(Candidate candidateId)
 	{
-		this.documentOtherType = documentOtherType;
-	}
-
-	public String getIsDocRequired()
-	{
-		return isDocRequired;
-	}
-
-	public void setIsDocRequired(String isDocRequired)
-	{
-		this.isDocRequired = isDocRequired;
-	}
-
-	public String getDescription()
-	{
-		return description;
-	}
-
-	public void setDescription(String description)
-	{
-		this.description = description;
+		this.candidateId = candidateId;
 	}
 
 	public OrgLocations getOrgLocationId()
@@ -119,6 +100,16 @@ private static final long serialVersionUID = 1L;
 	public void setOrgLocationId(OrgLocations orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getRequestDocUUID()
+	{
+		return requestDocUUID;
+	}
+
+	public void setRequestDocUUID(String requestDocUUID)
+	{
+		this.requestDocUUID = requestDocUUID;
 	}
 
 	public Integer getStatus()
@@ -169,5 +160,15 @@ private static final long serialVersionUID = 1L;
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public String getIsDocsUploaded()
+	{
+		return isDocsUploaded;
+	}
+
+	public void setIsDocsUploaded(String isDocsUploaded)
+	{
+		this.isDocsUploaded = isDocsUploaded;
 	}
 }

@@ -6,4 +6,6 @@ public interface RequestedDocumentsDao {
 	
 	RequestedDocuments saveRequestedDocuments(RequestedDocuments requestedDocuments) throws Exception;
 	
+	RequestedDocuments getRequestedDocumentsByRequestDocUUID(String requestDocUUID) throws Exception;
+	
 }
