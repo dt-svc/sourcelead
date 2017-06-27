@@ -105,6 +105,9 @@ public class WageTaxSummary implements Serializable {
 	
 	@Transient
 	private String toDateStr;
+	
+	@Transient
+	private String checkDateStr;
 
 	public Long getId() {
 		return id;
@@ -320,6 +323,14 @@ public class WageTaxSummary implements Serializable {
 	public void setToDateStr(String toDateStr)
 	{
 		this.toDateStr = toDateStr;
+	}
+
+	public String getCheckDateStr() {
+		return checkDateStr;
+	}
+
+	public void setCheckDateStr(String checkDateStr) {
+		this.checkDateStr = checkDateStr;
 	}
 	
 }

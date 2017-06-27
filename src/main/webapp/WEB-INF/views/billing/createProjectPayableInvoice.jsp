@@ -536,7 +536,12 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
-    	 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';
+    	 if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
+    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';	 
+    	 }else{
+    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="'+i+'amount"  placeholder="Amount" type="text" readonly="readonly">';
+    	 }
+    	
     	 result = result +'</td>';
     	 result = result +'</tr>';
     	/* getSow(i,opt.candidateId,opt.contractId); */

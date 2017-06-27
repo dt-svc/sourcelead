@@ -13,7 +13,7 @@ import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 @Service
 public interface EmployerPayrollCostService {
 
-	String saveEmployerPayrollCost(MultipartFile multipartFile,OrgLocations orgLocation,User user, JSONObject jsonObj)throws Exception;
+	Integer saveEmployerPayrollCost(MultipartFile multipartFile,OrgLocations orgLocation,User user, JSONObject jsonObj)throws Exception;
 
 	List<EmployerPayrollCost> loadEmployerPayrollCostByOrgLocationId(OrgLocations orgLocation)throws Exception;
 	
