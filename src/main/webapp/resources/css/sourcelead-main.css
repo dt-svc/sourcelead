@@ -5612,6 +5612,15 @@ a.color_white{
 .changeRate_div .drpdownMonthly select {
     width: 50px;
 }
+.proposeNewRate .panel-group {
+	margin-bottom: 0;
+}
+.proposeNewRate .panel-title a{
+	color:#368ee0;
+}
+.proposeNewRate .panel-title a:hover{
+	color:#909090;
+}
 .chosenSelect_li ul li {
 float: none !important; font-weight: none !important; color:#101010 !important;
 font-weight: 400 !important;
