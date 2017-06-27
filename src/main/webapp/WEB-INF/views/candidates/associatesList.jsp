@@ -1909,13 +1909,14 @@ function getCities(){
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	var anyKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e);
 		        	var par = this.parent;
 		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
 		            select.append(option);
@@ -1933,11 +1934,12 @@ function getCities(){
 		    selectone = $("#allKeywords");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
+		    chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var allKeyword = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(allKeyword).text(allKeyword);
 		            selectone.append(option);
@@ -1955,11 +1957,12 @@ function getCities(){
 		    selecttwo = $("#excludeKeyWord");
 		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
+		    chosentwo.search_field.on('keydown keyup', function(e2)
 		    {
 		    	var excludeKeyword = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+		        if (tagItBykeyForSkills(e2) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
 		        {
+		        	preventTabkey(e2);
 		        	var par = this.parent;
 		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
 		            selecttwo.append(option);
@@ -1976,11 +1979,12 @@ function getCities(){
 		    selectthree = $("#designation");
 		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Designation:' });
 		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keyup', function(e3)
+		    chosenthree.search_field.on('keydown keyup', function(e3)
 		    {
 		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
+		        if (tagItBykeyForSkills(e3) && (desg != null  && desg != '' && desg != 'undefined'))
 		        {
+		        	preventTabkey(e3);
 		        	var par = this.parent;
 		            var option = $("<option>").val(desg).text(desg);
 		            selectthree.append(option);
@@ -1998,11 +2002,12 @@ function getCities(){
 		    selectsix = $("#certification");
 		    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Certification:' });
 		    chosensix = selectsix.data('chosen');
-		    chosensix.search_field.on('keyup', function(e6)
+		    chosensix.search_field.on('keydown keyup', function(e6)
 		    {
 		    	var cert = this.value.replace(",","");
-		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
+		        if (tagItBykeyForSkills(e6) && (cert != null  && cert != '' && cert != 'undefined'))
 		        {
+		        	preventTabkey(e6);
 		        	var par = this.parent;
 		            var option = $("<option>").val(cert).text(cert);
 		            selectsix.append(option);
@@ -2019,11 +2024,12 @@ function getCities(){
 		    selectseven = $("#employers");
 		    selectseven.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Employer:' });
 		    chosenseven = selectseven.data('chosen');
-		    chosenseven.search_field.on('keyup', function(e7)
+		    chosenseven.search_field.on('keydown keyup', function(e7)
 		    {
 		    	var emp = this.value.replace(",","");
-		        if ((e7.which == 13 || e7.which == 188) && (emp != null  && emp != '' && emp != 'undefined'))
+		        if (tagItBykeyForSkills(e7) && (emp != null  && emp != '' && emp != 'undefined'))
 		        {
+		        	preventTabkey(e7);
 		        	var par = this.parent;
 		            var option = $("<option>").val(emp).text(emp);
 		            selectseven.append(option);
@@ -2040,11 +2046,12 @@ function getCities(){
 		    selectzero = $("#primarySkill");
 		    selectzero.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Primary Skill:' });
 		    chosenzero = selectzero.data('chosen');
-		    chosenzero.search_field.on('keyup', function(e10)
+		    chosenzero.search_field.on('keydown keyup', function(e10)
 		    {
 		    	var prmSkill = this.value.replace(",","");
-		        if ((e10.which == 13 || e10.which == 188) && (prmSkill != null  && prmSkill != '' && prmSkill != 'undefined'))
+		        if (tagItBykeyForSkills(e10) && (prmSkill != null  && prmSkill != '' && prmSkill != 'undefined'))
 		        {
+		        	preventTabkey(e10);
 		        	var par = this.parent;
 		            var option = $("<option>").val(prmSkill).text(prmSkill);
 		            selectzero.append(option);
@@ -2061,11 +2068,12 @@ function getCities(){
 		    selecteight = $("#excludeEmployers");
 		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Employer:' });
 		    choseneight = selecteight.data('chosen');
-		    choseneight.search_field.on('keyup', function(e8)
+		    choseneight.search_field.on('keydown keyup', function(e8)
 		    {
 		    	var excEmp = this.value.replace(",","");
-		        if ((e8.which == 13 || e8.which == 188) && (excEmp != null  && excEmp != '' && excEmp != 'undefined'))
+		        if (tagItBykeyForSkills(e8) && (excEmp != null  && excEmp != '' && excEmp != 'undefined'))
 		        {
+		        	preventTabkey(e8);
 		        	var par = this.parent;
 		            var option = $("<option>").val(excEmp).text(excEmp);
 		            selecteight.append(option);
@@ -2078,25 +2086,40 @@ function getCities(){
 		        }
 		    });
 		    
-		    var selectnine, chosennine;
-		    selectnine = $("#candidateSkills");
-		    selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Skill:' });
-		    chosennine = selecteight.data('chosen');
-		    chosennine.search_field.on('keyup', function(e9)
-		    {
-		    	var skills = this.value.replace(",","");
-		        if ((e9.which == 13 || e9.which == 188) && (skills != null  && skills != '' && skills != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(skills).text(skills);
-		            selectnine.append(option);
-		            selectnine.find(option).prop('selected', true);
-                    $("#candidateSkills option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#candidateSkills").trigger("chosen:updated");
-	        		
-		        }
+		    
+		    
+			  //Adding Customized Skills to the list
+	        var selectnine, chosennine;
+	        selectnine = $("#candidateSkills");
+	        selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
+		    chosennine = selectnine.data('chosen');
+		    chosennine.search_field.bind(('keydown keyup'), function(e11)
+		    { 
+		    	 
+		    	 var enterSkillsArray = this.value.split(",");
+		    	 if(enterSkillsArray.length > 1){
+	        		 for (var i=0; i < enterSkillsArray.length; i++) {
+	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+	        			 selectnine.append(option);
+	        			 selectnine.find(option).prop('selected', true);
+	 	        		 $("#candidateSkills").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newSkill = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForSkills(e11) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        {
+			        	preventTabkey(e11); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+			        		 selectnine.append(option);
+			        		 selectnine.find(option).prop('selected', true);
+				        		$("#candidateSkills").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
 		    });
 		    
 		    

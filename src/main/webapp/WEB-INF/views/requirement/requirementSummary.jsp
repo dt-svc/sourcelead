@@ -5631,7 +5631,7 @@ function customizeScore(requirementId){
 		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 		    		    chosen = select.data('chosen');
 		    		   
-		    		    chosen.search_field.on('keyup', function(e)
+		    		    chosen.search_field.on('keydown keyup', function(e)
 		    				    {
 		    				    	   var skillsArray = this.value.split(",");
 		    					    	 if(skillsArray.length > 1){
@@ -5644,8 +5644,9 @@ function customizeScore(requirementId){
 		    				                 }
 		    					    	 }else{
 		    				    			var newSkill = this.value.replace(","," ");
-		    				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 		    				                {
+		    				    				 preventTabkey(e);
 		    				    				 var option = $("<option>").val(newSkill).text(newSkill);
 		    				                     select.append(option);
 		    				                     select.find(option).prop('selected', true);
@@ -5666,11 +5667,12 @@ function customizeScore(requirementId){
 		    		     selectone = $("#anyKeyWord");
 		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    		    chosenone = selectone.data('chosen');
-		    		    chosenone.search_field.on('keyup', function(e)
+		    		    chosenone.search_field.on('keydown keyup', function(e5)
 		    		    {
 		    		    	var anyofKeyword = this.value.replace(",","");
-		    		        if ((e.which == 13 || e.which == 188) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
+		    		        if (tagItBykeyForSkills(e5) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
 		    		        {
+		    		        	 preventTabkey(e5);
 		    		        	var par = this.parent;
 		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
 		    		            selectone.append(option);

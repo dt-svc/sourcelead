@@ -341,7 +341,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
 	'<sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">';
-	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" onclick="saveReceivePayment('+invoiceId+');">   ';
+	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" id="save_payment" onclick="saveReceivePayment('+invoiceId+');">   ';
 	'</sec:authorize>';
 	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
@@ -404,6 +404,8 @@ function saveReceivePayment(invoiceId){
 	        var form = $('#receivePayment-form')[0];
 	 	   var formData = new FormData(form); 
 	        var sourceleadUrl ='${sourceleadUrl}';
+	        $("#save_payment").attr("disabled", "disabled");
+     		$("#save_payment" ).addClass('button').val('Processing..');
 	        $.ajax({
 		    	type: "POST",
 		    	 data: formData,

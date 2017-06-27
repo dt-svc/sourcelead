@@ -2063,13 +2063,14 @@ $('body').on('blur', '#requirement_form', function() {
 			//Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#requirementTitle");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Title:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Title:' });
 		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 		    {
 		    	var reqTitle = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (reqTitle != null  && reqTitle != '' && reqTitle != 'undefined'))
+		        if (tagItBykeyForSkills(e) && (reqTitle != null  && reqTitle != '' && reqTitle != 'undefined'))
 		        {
+		        	preventTabkey(e); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(reqTitle).text(reqTitle);
 		            select.append(option);
@@ -2084,13 +2085,14 @@ $('body').on('blur', '#requirement_form', function() {
 		    
 		    var selectone, chosenone;
 		    selectone = $("#jobId");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Add Requirement ID:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:' });
 		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
+		    chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var reqId = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (reqId != null  && reqId != '' && reqId != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (reqId != null  && reqId != '' && reqId != 'undefined'))
 		        {
+		        	preventTabkey(e1); 
 		        	var par = this.parent;
 		            var option = $("<option>").val(reqId).text(reqId);
 		            selectone.append(option);

@@ -4,9 +4,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<!-- <script src="resources/js/location.js"></script>  -->
-<!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB59YbHoFDIkjVrDVNKBu1DkgYUVdxhMCE&callback=initMap" type="text/javascript"></script> -->
-<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script> -->
+<script src="resources/js/location.js"></script> 
+ <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB59YbHoFDIkjVrDVNKBu1DkgYUVdxhMCE&callback=initMap" type="text/javascript"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script> -->
 
 
 <!-- these files for autocomplete with tagit -->
@@ -381,7 +381,7 @@
           <label class="col-md-3"></label>
         </div> 
         
-          <!-- <div class="form-group">
+          <div class="form-group">
           <label class="col-md-3">Location</label>
           <div class="col-md-9" id="locationField">
           <input class="form-control" id="autocomplete" placeholder="Enter your address" type="text"></input>
@@ -430,7 +430,7 @@
           <div class="col-md-9">
           <input class="form-control" id="longitude"  type="text"></input>
           </div>
-        </div> -->
+        </div> 
         
         
         
@@ -701,7 +701,7 @@ function getCities(){
 		    	
 		    });
 		    
-		    chosen.search_field.on('keyup', function(e)
+		    chosen.search_field.on('keydown keyup', function(e)
 				    {
 				    	   var skillsArray = this.value.split(",");
 					    	 if(skillsArray.length > 1){
@@ -714,8 +714,9 @@ function getCities(){
 				                 }
 					    	 }else{
 				    			var newSkill = this.value.replace(","," ");
-				    			 if ((e.which == 13 || e.which == 188) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
 				                {
+				    				 preventTabkey(e);
 				    				 var option = $("<option>").val(newSkill).text(newSkill);
 				                     select.append(option);
 				                     select.find(option).prop('selected', true);
@@ -734,11 +735,12 @@ function getCities(){
 	        selectone = $("#candidateEducation");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
 	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keyup', function(e1)
+	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
 		        {
+		        	preventTabkey(e1);
 		        	var par = this.parent;
 		            var option = $("<option>").val(newEducation).text(newEducation);
 		            selectone.append(option);
@@ -1091,5 +1093,32 @@ function geolocate() {
 }
 
 initialize();
+
+</script>
+<script type="text/javascript">
+
+function initialize() {
+
+
+ var myLatLng = {lat: 17.385044, lng: 78.486671}; 
+     var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 12,
+    center: myLatLng,
+    scrollwheel: false,
+    draggable:true,
+
+
+
+  });
+     var image='logo.png';
+     var marker = new google.maps.Marker({
+    position: myLatLng,
+    map: map,
+    icon:image
+
+  });
+
+
+}
 
 </script>

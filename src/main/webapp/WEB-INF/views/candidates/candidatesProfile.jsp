@@ -1047,13 +1047,47 @@ function candidateProfile(candidateId,candidateType){
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
 		
-		//Adding Customized Skills to the list
-        var select, chosen;
+		  //Adding Customized Skills to the list
+		   var select, chosen;
+	        select = $("#skillName");
+	        select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
+		    chosen = select.data('chosen');
+		    chosen.search_field.bind(('keydown keyup'), function(e)
+		    { 
+		    	 
+		    	 var enterSkillsArray = this.value.split(",");
+		    	 if(enterSkillsArray.length > 1){
+	        		 for (var i=0; i < enterSkillsArray.length; i++) {
+	        			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+	        			 select.append(option);
+	        			 select.find(option).prop('selected', true);
+	 	        		 $("#skillName").trigger("chosen:updated");
+	                 }
+		    	 }else{
+			    	var newSkill = this.value.replace(","," ");
+			    	
+			    	 
+			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        {
+			        	preventTabkey(e); 
+			        	var par = this.parent;
+			        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+			        		 select.append(option);
+			        		 select.find(option).prop('selected', true);
+				        		$("#skillName").trigger("chosen:updated");
+				        		
+				        		
+			        }
+		    	 }
+		    });
+		    
+		    
+		    
+		
+       /*  var select, chosen;
 	    select = $("#skillName");
 	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
 	    chosen = select.data('chosen');
-	    
-	    
 	    chosen.search_field.on('keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
@@ -1079,7 +1113,7 @@ function candidateProfile(candidateId,candidateType){
 			                }
 					       
 		    	         }
-	    	});
+	    	}); */
 	    
 	    
 	    //Adding Customized Skills to the list
