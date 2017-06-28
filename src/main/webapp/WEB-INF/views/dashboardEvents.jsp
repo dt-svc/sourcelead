@@ -23,7 +23,8 @@ width: 75px; padding: 0 !important;
         
       <!-- show Calendar -->
             <div class="col-xs-12 col-md-7 mb eventCalendr_content alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
-            
+            	<div id ="interviewDiv"></div>
+           	 	<div id ="taskDiv"></div>
 	     </div>
       </div>
 		<div class="add_inter_wrap">
@@ -47,6 +48,7 @@ window.onload = function() {
 	        success: function(data) {
 	        	 var json = JSON.parse(data);
 	        	 var result = "";
+	        	 var opt = "";
 	        	 
 				     result = result + '    <div class="eventHeader">                                                      ';
 				     result = result + '          <div class="media">                                                      ';
@@ -59,7 +61,6 @@ window.onload = function() {
 				     result = result + '            </div>                                                                 ';
 				     result = result + '          </div>                                                                   ';
 				     result = result + '    </div>																		   ';
-	        	 
 	        	 for(var i=0; i<json.interviewerList.length; i++)
 					{
 	        		 
@@ -150,47 +151,45 @@ window.onload = function() {
 	        		 else{
 	        			 description = "--";
 		        		}
-					     result = result + '  <div class="eventList clearfix">       ';
-					 	 result = result + '     <div class="media">                 ';
-					 	 result = result + '         <div class="media-left">        ';
-					 	 result = result + '             <div>'+taskTime+'</div>           ';
-					 	 result = result + '         </div>                          ';
-					 	 result = result + '             <div class="media-body paddingLeft"> ';
-					 	 result = result + '                 <figure class="pull-left">       ';
-					 	 result = result + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
-					 	 result = result + '                 </figure>                                                             ';
-					 	 result = result + '                     <div class="pull-left event_details">                             ';
-					 	 result = result + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
+					     opt = opt + '  <div class="eventList clearfix">       ';
+					 	 opt = opt + '     <div class="media">                 ';
+					 	 opt = opt + '         <div class="media-left">        ';
+					 	 opt = opt + '             <div>'+taskTime+'</div>           ';
+					 	 opt = opt + '         </div>                          ';
+					 	 opt = opt + '             <div class="media-body paddingLeft"> ';
+					 	 opt = opt + '                 <figure class="pull-left">       ';
+					 	 opt = opt + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
+					 	 opt = opt + '                 </figure>                                                             ';
+					 	 opt = opt + '                     <div class="pull-left event_details">                             ';
+					 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
+					 	 opt = opt + '                     <div class="clearfix"></div>            ';
+					 	 opt = opt + '                     <div class="row">            ';
+					 	 opt = opt + '                     <div class="col-md-5">            ';
+					 	 opt = opt + '                         <p class="text-danger"><label class="text-muted small col-md-6" style="width:45%;">Priority:</label> '+priority+'</p>   ';
+					 	 opt = opt + '                     </div>            ';
+					 	 opt = opt + '                     <div class="col-md-5">            ';
+					 	 opt = opt + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
+					 	 opt = opt + '                     </div>            ';
 					 	 
-					 	 result = result + '                     <div class="clearfix"></div>            ';
-
-					 	 result = result + '                     <div class="row">            ';
+					 	opt = opt + '                     </div>            ';
 					 	 
-					 	 result = result + '                     <div class="col-md-5">            ';
-					 	 result = result + '                         <p class="text-danger"><label class="text-muted small col-md-6" style="width:45%;">Priority:</label> '+priority+'</p>   ';
-					 	 result = result + '                     </div>            ';
-
-					 	 result = result + '                     <div class="col-md-5">            ';
-					 	 result = result + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
-					 	 result = result + '                     </div>            ';
-					 	 
-					 	result = result + '                     </div>            ';
-					 	 
-					 	result = result + '                         <p><label class="text-muted small col-md-2" style="width:15.7%;">Des.:</label><div class="col-md-10 paddingLeft">'+description+'</div></p>';
-					 	 result = result + '                     </div>            ';
-					 	 result = result + '             </div>                    ';
-					 	 result = result + '     </div>                            ';
-					 	 result = result + ' </div>                                ';
+					 	opt= opt+ '                         <p><label class="text-muted small col-md-2" style="width:15.7%;">Des.:</label><div class="col-md-10 paddingLeft">'+description+'</div></p>';
+					 	opt =opt + '                     </div>            ';
+					 	opt =opt + '             </div>                    ';
+					 	opt =opt + '     </div>                            ';
+					 	opt =opt + ' </div>                                ';
 					}
 	        	 if(json.tasksList.length<=0 && json.interviewerList.length<=0){
 			        	result = result + '<div class="row">                                            ';
-						result = result + '	<div class="dataTables_empty">                                     ';
+						result = result + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">                                     ';
 						result = result + '	</div>                                                      ';
 						result = result + ' </div>                                                      ';
 	        	 }
 	        	 result = result + '<div class="mask_inner"></div>';
-	        	 $("#dashboardEventsDiv").empty();
-	           	 $("#dashboardEventsDiv").append(result); 
+	        	 $("#interviewDiv").empty();
+	           	 $("#interviewDiv").append(result);
+	           	 $("#taskDiv").empty();
+	           	 $("#taskDiv").append(opt);
 	        }
 		});
 		
