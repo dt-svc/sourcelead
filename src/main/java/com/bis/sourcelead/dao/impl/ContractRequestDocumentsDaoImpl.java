@@ -110,5 +110,19 @@ public class ContractRequestDocumentsDaoImpl implements ContractRequestDocuments
 		return contractRequestDocuments;
 	}
 
-
+	@Override
+	@Transactional
+	public ContractRequestDocuments getContractByContractId(Long contractId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="from ContractRequestDocuments cd  left join fetch crq.contractId contract where contract.id =:contractId and crq.status = '"+Constants.MEMBER_ACTIVE+"')";
+	  List contractList = session.createQuery(query).setLong("contractId", contractId).setCacheable(true).list();
+      
+	  ContractRequestDocuments requirement = null;
+      if(contractList != null && !contractList.isEmpty())
+      {
+          requirement = (ContractRequestDocuments) contractList.iterator().next();
+      }
+      return requirement;
+	}
 }

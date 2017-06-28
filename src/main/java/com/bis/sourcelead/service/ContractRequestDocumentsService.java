@@ -17,4 +17,6 @@ public interface ContractRequestDocumentsService {
 	List<ContractRequestDocuments> getAllDocByContractId(Long contractId);
 	ContractRequestDocuments getContractRequestDocumentsById(Long docId);
 	ContractRequestDocuments getContractRequestDocumentsByContractUUID(String contractUUID);
+	ContractRequestDocuments getContractByContractId(Long contractId);
+	
 }

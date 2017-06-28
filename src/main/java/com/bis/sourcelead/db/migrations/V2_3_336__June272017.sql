@@ -1,5 +1,5 @@
 
-UPDATE `sourcelead`.`tabs` SET `TAB_NAME`='Jobs' WHERE `ID`='8';
+UPDATE `sourcelead`.`TABS` SET `TAB_NAME`='Jobs' WHERE `ID`='8';
 
 UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='Add Job' WHERE `ID`='46';
 UPDATE `sourcelead`.`SOURCELEAD_ACTIONS` SET `ACTION_NAME`='View Job' WHERE `ID`='47';

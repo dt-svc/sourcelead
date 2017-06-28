@@ -34,7 +34,7 @@
 
 	 <div class="clients_wrap_table datatable_scroll mt10">
 		 <div id="popUpDiv" class="edit-details col-md-4"> </div>
-		 <div id="expenseCategoryList" class="datatable_filter"></div>
+		 <div id="expenseCategoryList"></div>
 	 </div>	  
 		
     </div>  
@@ -193,7 +193,7 @@ function expenseCategoryList(){
 	  $.ajax({
            type : "GET",
            url: sourceleadUrl+"/getExpensesCategoryList",    
-            success :function(data) {
+            success :function(json) {
 			    	     $("#expenseCategoryLoading").removeAttr("style");
 	                	 $("#expenseCategoryList").empty();
 	                	 var result = "";
@@ -210,7 +210,7 @@ function expenseCategoryList(){
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
 	                     
-	                     var json = JSON.parse(data);
+	                     /* var json = JSON.parse(data); */
 	                    	for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr>";
@@ -277,8 +277,8 @@ function expenseCategoryList(){
 function expenseCategoryPagenation(){ 
 	 $('#expenseCategoryPagenation').DataTable( { 
 	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": true,
+	    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+	    	"bLengthChange": false,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {

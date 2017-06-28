@@ -949,7 +949,7 @@ function getCheckedCandidates(){
 			  //Adding Customized Emails to the list
 	        var select, chosen;
 		    select = $("#otherEmails");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
 		    chosen.search_field.bind(('keydown keyup'), function(e)
 		    {
@@ -982,7 +982,7 @@ function getCheckedCandidates(){
 
 		    var selectone, chosenone;
 		    selectone = $("#emailsList");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Email:' });
+		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosenone = selectone.data('chosen');
 		    chosenone.search_field.bind(('keydown keyup'), function(e)
 		    {
