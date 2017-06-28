@@ -37,40 +37,40 @@ function wagesAndTaxList(){
 			        		 var opt = json[i];
 			        		    result = result + ' <tr>';
 			        		    if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
-									result = result + ' <td><div>'+opt.fromDateStr+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">'+opt.fromDateStr+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
 			        		    
 			        		    if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
-									result = result + ' <td><div>'+opt.toDateStr+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">'+opt.toDateStr+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
-								result = result + '<td><div>'+opt.employeeId+'</div></td>';
-								result = result + '<td><div>'+opt.employeeName+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
+								result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.employeeName+'</div></td>';
 								if(opt.ssnNumber !=null && opt.ssnNumber !='' && opt.ssnNumber !='undefined'){
-									result = result + ' <td><div>'+opt.ssnNumber+'</div></td>';
+									result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.ssnNumber+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
 								if(opt.checkDateStr !=null && opt.checkDateStr !='' && opt.checkDateStr !='undefined'){
-									result = result + '<td><div>'+opt.checkDateStr+'</div></td>';
+									result = result + '<td><div class="tblminwidth-50">'+opt.checkDateStr+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
-								result = result + ' <td><div>'+opt.checkNo+'</div></td>';
-								result = result + '<td><div>'+opt.gross+'</div></td>';
-								result = result + '<td><div>'+opt.fwt+'</div></td>';
-								result = result + ' <td><div>'+opt.ssec+'</div></td>';
-								result = result + '<td><div>'+opt.med+'</div></td>';
-								result = result + ' <td><div>'+opt.swt+'</div></td>';
-								result = result + '<td><div>'+opt.sdiSui+'</div></td>';
-								result = result + '<td><div>'+opt.local+'</div></td>';
-								result = result + '<td><div>'+opt.deds+'</div></td>';
-								result = result + '<td><div>'+opt.net+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.gross+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.fwt+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75">'+opt.ssec+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.med+'</div></td>';
+								result = result + ' <td><div class="tblminwidth-75">'+opt.swt+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.sdiSui+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.local+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.deds+'</div></td>';
+								result = result + '<td><div class="tblminwidth-75">'+opt.net+'</div></td>';
 								if(opt.batchNumber !=null && opt.batchNumber !='' && opt.batchNumber !='undefined'){
-									result = result + ' <td><div>'+opt.batchNumber+'</div></td>';
+									result = result + ' <td><div class="tblminwidth-75">'+opt.batchNumber+'</div></td>';
 								}else{
 									result = result + ' <td><div>--</div></td>';
 								}
