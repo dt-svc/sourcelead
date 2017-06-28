@@ -148,21 +148,21 @@ public class RequirementController {
 		
 		if(null != requirementUUID && !requirementUUID.isEmpty()){
 			requirement = this.requirementService.getRequirementByRequirementUUID(requirementUUID);
-			
-			if(requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
-			
-			if(null != requirement.getEducation()){
+
+			if (requirement != null && requirement.getOrgLocationId().getId().equals(orgLocations.getId())) {
+
+				if (null != requirement.getEducation()) {
 					String[] educationList = requirement.getEducation().split(",");
 					requirement.setReqEducationList(educationList);
 					requirement.setReqEducationListString(requirement.getEducation());
-			}
-			
-			if(null != requirement.getSkills()){		
+				}
+
+				if (null != requirement.getSkills()) {
 					String[] skillsList = requirement.getSkills().split(",");
 					requirement.setReqSkillsList(skillsList);
 					requirement.setReqSkillsListString(requirement.getSkills());
-			}
-			
+				}
+
 			if(null != requirement.getIndustryName()){
 				String selectedIndustryName = requirement.getIndustryName();
 				requirement.setIndustrySavedName(selectedIndustryName);
@@ -305,6 +305,27 @@ public class RequirementController {
 			model.addObject("skillsList", skillsList);
 		}
 		
+		
+		if(requirement != null && requirement.getId() != null){
+
+			List<String> allReqVisaList = requirementService.getAllRequirementVisaByRequirementI(requirement.getId());
+				List<String> visaList = lookUpDataService.getAllVisaByCategory();
+				String visa = allReqVisaList.get(0);
+				if(!"null".equalsIgnoreCase(visa) && null != visa){
+				String arr[] = visa.split(",");
+				for(String visaName : arr){
+					if(!visaList.contains(visaName)){
+						visaList.add(visaName);
+					}
+				}
+			      model.addObject("visaList", visaList);
+				}else{
+				  model.addObject("visaList", visaList);
+				} 
+		}else{
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);
+		}
 		
 		
 		
@@ -786,7 +807,46 @@ public class RequirementController {
 			} 
    }
 	
+	/**
+	* @author David Raju 
+	* 
+	* This method is used to download OfferAttachment
+	* 
+	* @param offerId
+	* @param request
+	* 
+	* @return resultJson
+	* 
+	* @throws Exception
+	*/
+	@RequestMapping(value = "/downloadOfferAttachment/{offerId}", method = RequestMethod.GET)
+    public void downloadOfferAttachment(@RequestParam(value="offerId", required=false) Long offerId ,HttpServletResponse response) throws Exception {
+		
+		
+		   RequirementOffers requirementOffers  =requirementOffersService.getRequirementOfferId(offerId);
+		
+		    response.setContentType("application/octet-stream");
+		    StringBuilder fileName = new StringBuilder();
+	        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(requirementOffers.getFileName()).append("\"").toString());
+		    
+			InputStream inputStream = new ByteArrayInputStream(requirementOffers.getDocFile());
+			try {
+				OutputStream outStream = response.getOutputStream();
 
+				byte[] buffer = new byte[4096];
+				int bytesRead = -1;
+
+				while ((bytesRead = inputStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+
+				inputStream.close();
+				outStream.close();
+
+			} catch (FileNotFoundException e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			} 
+		}
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;

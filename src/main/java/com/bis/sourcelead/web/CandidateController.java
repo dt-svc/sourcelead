@@ -1,39 +1,38 @@
 package com.bis.sourcelead.web;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.States;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -57,6 +56,9 @@ public class CandidateController {
 	CountriesService countriesService;
 	
 	@Autowired
+	CandidateResumesService candidateResumesService;
+	
+	@Autowired
 	StatesService statesService;
 	
 	@Autowired
@@ -71,6 +73,7 @@ public class CandidateController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	private CandidateResumes candidate;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -97,6 +100,11 @@ public class CandidateController {
             List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
 			
+			
+			List<String> visaList = lookUpDataService.getAllVisaByCategory();
+			model.addObject("visaList", visaList);	
+			
+			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillsList", skillsList);
 			
@@ -120,6 +128,8 @@ public class CandidateController {
 	            model.addObject("currencyCode", countries.getCurrency());
 				}
 	           
+				List<String> visaList = lookUpDataService.getAllVisaByCategory();
+				model.addObject("visaList", visaList);
 	            
 	            List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
@@ -338,7 +348,48 @@ public class CandidateController {
 		
 	 }	 
 	 
-	
+		/**
+		* @author Venkat Kesav 
+		* 
+		* This method is used to download Resume
+		* 
+		* @param resumeId
+		* @param request
+		* 
+		* @return resultJson
+		* 
+		* @throws Exception
+		*/
+		@RequestMapping(value = "/downloadResumeCandidate/{resumeUUID}", method = RequestMethod.GET)
+	    public void downloadResumeCandidate(@PathVariable String resumeUUID,HttpServletResponse response) throws Exception {
+			
+				CandidateResumes candidateResume =  candidateResumesService.getCandidateResumeByResumeUUID(resumeUUID);
+			    
+				if(null != candidateResume){
+					response.setContentType("application/octet-stream");
+				    StringBuilder fileName = new StringBuilder();
+			        response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(candidateResume.getFileName()).append("\"").toString());
+				    
+					InputStream inputStream = new ByteArrayInputStream(candidateResume.getDocFile());
+					try {
+						OutputStream outStream = response.getOutputStream();
+
+						byte[] buffer = new byte[4096];
+						int bytesRead = -1;
+
+						while ((bytesRead = inputStream.read(buffer)) != -1) {
+							outStream.write(buffer, 0, bytesRead);
+						}
+
+						inputStream.close();
+						outStream.close();
+
+					} catch (FileNotFoundException e) {
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					} 
+				}
+			    
+			}
 	private boolean isNullOrEmpty(String msg) {
 		// TODO Auto-generated method stub
 		return false;

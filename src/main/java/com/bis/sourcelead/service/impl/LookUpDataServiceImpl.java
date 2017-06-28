@@ -56,5 +56,10 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public List<String> getAllSkillsByIndustryCategory() throws Exception{
 		return lookUpDataDao.getAllSkillsByIndustryCategory();
 	}
+
+	@Override
+	public List<String> getAllVisaByCategory() throws Exception {
+		return lookUpDataDao.getAllVisaByCategory();
+	}
 	
 }

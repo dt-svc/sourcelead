@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.Registration;
+import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PasswordResetsSevice;
@@ -561,8 +562,8 @@ public class RegistrationRestController {
 	
 	
 	@RequestMapping(value = "/resetPasswordWithUserName" , method = RequestMethod.POST)
-	public String resetPasswordWithUserName(HttpServletRequest request) throws Exception {
-		JSONObject obj = new JSONObject();
+	public RestResponsetUtil resetPasswordWithUserName(HttpServletRequest request) throws Exception {
+		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
 		if(StringUtils.isNotEmpty(json1)){
 			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -589,20 +590,21 @@ public class RegistrationRestController {
 						logger.error(ExceptionUtils.getFullStackTrace(e));
 					}
 				}
-				obj.put("status", "valid");
-				return obj.toString();
+				resResponsetUtil.setStatus("valid");
+				return resResponsetUtil;
 			} else {
-				obj.put("status", "Invalid");
-				return obj.toString();
+				resResponsetUtil.setStatus("Invalid");
+				return resResponsetUtil;
 			}
 		}
-		obj.put("status", "Invalid");
-		return obj.toString();
+		resResponsetUtil.setStatus("Invalid");
+		return resResponsetUtil;
 	}
 	
 
 	@RequestMapping(value = "/verifyResetPassword" , method = RequestMethod.POST)
-	   public String verifyResetPassword(HttpServletRequest request) throws Exception {
+	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
+		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
 		if(StringUtils.isNotEmpty(json1)){
 			Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -629,12 +631,15 @@ public class RegistrationRestController {
 				} catch (Exception e) {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				}
-				return "login";
+				resResponsetUtil.setResetResponse("login");
+				return resResponsetUtil;
 			}else{
-				return "Invalid";
+				resResponsetUtil.setResetResponse("Invalid");
+				return resResponsetUtil;
 			}
 		}
-		return "Invalid";
+		resResponsetUtil.setResetResponse("Invalid");
+		return resResponsetUtil;
 	 }
 	
 	   @RequestMapping(value = "/ws/validateOrgWebsite", method = RequestMethod.GET)
