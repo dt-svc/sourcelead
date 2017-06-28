@@ -16,13 +16,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateDocumentsDao;
 import com.bis.sourcelead.dao.RequestedDocumentsDao;
-import com.bis.sourcelead.dao.RequestedDocumentsHistoryDao;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.entity.RequestedDocumentsHistory;
@@ -104,6 +102,8 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					
 					if(jsonObj.has(a+"description") && !isNullOrEmpty(a+"description")){
 						requestedDocumentsHistory.setDescription(jsonObj.getString(a+"description"));
+					}else{
+						requestedDocumentsHistory.setDescription(null);
 					}
 					
 					if(jsonObj.has(a+"checked") && !isNullOrEmpty(a+"checked") && 
@@ -161,21 +161,23 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	public void sendEmailToCandidateForDocument(User user,Candidate candidate,OrgLocations orgLocations,String requestDocUUID) throws Exception {
 		
 		 
-		 StringBuilder sb = new StringBuilder();
+		 StringBuilder sb1 = new StringBuilder();
+		 StringBuilder sb2 = new StringBuilder();
+		 
 		 EmailMessage emailMessage = new EmailMessage();
 		 String userName = null;
 		 String candidateName = null;
 		 
 		 if(!isNullOrEmpty(user.getLastName())){
-			 userName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+			 userName = sb1.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
 		 }else{
-			 userName = sb.append(user.getFirstName()).toString();
+			 userName = sb1.append(user.getFirstName()).toString();
 		 }
 		 
 		 if(!isNullOrEmpty(candidate.getLastName())){
-			 candidateName = sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
+			 candidateName = sb2.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
 		 }else{
-			 candidateName = sb.append(candidate.getFirstName()).toString();
+			 candidateName = sb2.append(candidate.getFirstName()).toString();
 		 }
 		 
 		 emailMessage.setToEmail(candidate.getEmail());
@@ -220,6 +222,92 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	public RequestedDocuments getRequestedDocumentsByRequestDocUUID(String requestDocUUID) throws Exception
 	{
 		return requestedDocumentsDao.getRequestedDocumentsByRequestDocUUID(requestDocUUID);
+	}
+
+	@Override
+	public void rejectRequestedDocuments(JSONObject jsonObj, User user, OrgLocations orgLocations, String documentsIds) throws Exception
+	{
+		if(!isNullOrEmpty(documentsIds)){
+			String[] documents = documentsIds.split(",");
+			
+				Candidate candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(jsonObj.getString("rejectedDocsCandidateId")));
+				
+				RequestedDocuments requestedDocuments = new RequestedDocuments();
+				requestedDocuments.setCandidateId(candidate);
+				requestedDocuments.setUserId(user);
+				requestedDocuments.setOrgLocationId(orgLocations);
+				requestedDocuments.setRequestDocUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				requestedDocuments.setIsDocsUploaded(Constants.NO);
+				requestedDocuments.setStatus(1);
+				requestedDocuments.setCreatedBy(user.getUserCode());
+				requestedDocuments.setUpdatedBy(user.getUserCode());
+				requestedDocuments.setCreatedDate(new Date());
+				requestedDocuments.setUpdatedDate(new Date());
+				requestedDocumentsDao.saveRequestedDocuments(requestedDocuments);
+				
+				
+				for(int i=0; i<documents.length; i++){
+					
+					CandidateDocuments candidateDocuments = candidateDocumentsDao.getCandidateDocumentByDocumentId(Long.valueOf(documents[i]));
+					
+					RequestedDocumentsHistory requestedDocumentsHistory = new RequestedDocumentsHistory();
+					requestedDocumentsHistory.setRequestedDocumentsId(requestedDocuments);
+					
+					if(!isNullOrEmpty(candidateDocuments.getDocumentOtherType())){
+						requestedDocumentsHistory.setDocumentType(candidateDocuments.getDocumentOtherType());
+					}else{
+						requestedDocumentsHistory.setDocumentType(candidateDocuments.getDocumentType());
+					}
+					
+					if(!isNullOrEmpty(candidateDocuments.getDescription())){
+						requestedDocumentsHistory.setDescription(candidateDocuments.getDescription());
+					}else{
+						requestedDocumentsHistory.setDescription(null);
+					}
+					
+					requestedDocumentsHistory.setIsRequestedDocRequired(candidateDocuments.getIsRequestedDocRequired());
+					
+					requestedDocumentsHistory.setStatus(1);
+					requestedDocumentsHistory.setCreatedBy(user.getUserCode());
+					requestedDocumentsHistory.setUpdatedBy(user.getUserCode());
+					requestedDocumentsHistory.setCreatedDate(new Date());
+					requestedDocumentsHistory.setUpdatedDate(new Date());
+					requestedDocumentsHistoryService.saveRequestedDocumentsHistory(requestedDocumentsHistory);
+					
+					candidateDocuments.setRequestedDocumentsId(requestedDocuments);
+					candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_REJECTED);
+					
+					if(jsonObj.has("rejectedReason") && !isNullOrEmpty(jsonObj.getString("rejectedReason"))){
+						candidateDocuments.setRequestedDocRejectedReason(jsonObj.getString("rejectedReason"));
+					}
+					
+					candidateDocuments.setCreatedBy(user.getUserCode());
+					candidateDocuments.setUpdatedBy(user.getUserCode());
+					candidateDocuments.setCreatedDate(new Date());
+					candidateDocuments.setUpdatedDate(new Date());
+					candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
+				}
+				sendEmailToCandidateForDocument(user,candidate,orgLocations,requestedDocuments.getRequestDocUUID());
+		}
+	}
+
+	@Override
+	public void acceptRequestedDocuments(User user, String documentsIds) throws Exception
+	{
+		if(!isNullOrEmpty(documentsIds)){
+			String[] documents = documentsIds.split(",");
+			for(int i=0; i<documents.length; i++){
+				CandidateDocuments candidateDocuments = candidateDocumentsDao.getCandidateDocumentByDocumentId(Long.valueOf(documents[i]));
+				candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_ACCEPTED);
+				candidateDocuments.setCreatedBy(user.getUserCode());
+				candidateDocuments.setUpdatedBy(user.getUserCode());
+				candidateDocuments.setCreatedDate(new Date());
+				candidateDocuments.setUpdatedDate(new Date());
+				candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
+			}
+			
+		}
+		
 	}
 	
 }
