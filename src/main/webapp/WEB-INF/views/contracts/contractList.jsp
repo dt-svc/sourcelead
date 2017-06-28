@@ -673,6 +673,7 @@ function getTemplateList(){
 
 <script>
 function preparedContractListDraft(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -944,25 +945,25 @@ function preparedContractListDraft(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res); 
-    listContractsPagination();	
-    vendorListContractsPagination();
-    appListContractsPagination();
+    listContractsPagination(SourceLeadWeb_loginOrg);	
+    vendorListContractsPagination(SourceLeadWeb_loginOrg);
+    appListContractsPagination(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPagination(){
+function listContractsPagination(SourceLeadWeb_loginOrg){
 	$('#contractListTableDraft1').DataTable({ 
 		dom: 'Bfrtip',
         buttons: [
         	{
                 extend: 'excel',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
 		"scrollCollapse": false,
@@ -978,17 +979,17 @@ function listContractsPagination(){
 	$(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPagination(){ 
+function vendorListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft').DataTable( { 
     	dom: 'Bfrtip',
         buttons: [
         	{
                 extend: 'excel',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             },
             {
                 extend: 'pdf',
-                title: 'Draft Contract',
+                title: SourceLeadWeb_loginOrg +' - Draft',
             }
         ],
     	"scrollCollapse": false,
@@ -1004,7 +1005,7 @@ function vendorListContractsPagination(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function appListContractsPagination(){ 
+function appListContractsPagination(SourceLeadWeb_loginOrg){ 
     $('#contractListTableDraft2').DataTable( { 
     	
     	"scrollCollapse": false,
@@ -1022,6 +1023,7 @@ function appListContractsPagination(){
 
 <script>
 function preparedContractListWFA(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#clientContractsList").empty();
@@ -1351,25 +1353,25 @@ function preparedContractListWFA(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res); 
-    listContractsPaginationWFA();	
-    vendorListContractsPaginationWFA();
-    appListContractsPaginationWFA();
+    listContractsPaginationWFA(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg);
+    appListContractsPaginationWFA(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationWFA(){
+function listContractsPaginationWFA(SourceLeadWeb_loginOrg){
 	$('#contractListTableWFA1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -1386,17 +1388,17 @@ function listContractsPaginationWFA(){
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 
 }
-function vendorListContractsPaginationWFA(){ 
+function vendorListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWFA').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -1414,17 +1416,17 @@ function vendorListContractsPaginationWFA(){
 
 }
 
-function appListContractsPaginationWFA(){ 
+function appListContractsPaginationWFA(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTA2').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Approved Contract',
+	                title: SourceLeadWeb_loginOrg +' - Approve',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -1445,6 +1447,7 @@ function appListContractsPaginationWFA(){
 
 <script>
 function preparedContractListWTS(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -1708,24 +1711,24 @@ function preparedContractListWTS(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationWTS();	
-    vendorListContractsPaginationWTS();
-    appListContractsPaginationWTS();
+    listContractsPaginationWTS(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg);
+    appListContractsPaginationWTS(SourceLeadWeb_loginOrg);
 }
 </script>
 
 <script>
-function listContractsPaginationWTS(){
+function listContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTS1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -1741,17 +1744,17 @@ function listContractsPaginationWTS(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationWTS(){ 
+function vendorListContractsPaginationWTS(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTS').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -1767,17 +1770,17 @@ function vendorListContractsPaginationWTS(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function appListContractsPaginationWTS(){
+function appListContractsPaginationWTS(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTS2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Signed Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Sign',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -1797,6 +1800,7 @@ function appListContractsPaginationWTS(){
 
 <script>
 function preparedContractListWTV(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -2090,25 +2094,25 @@ function preparedContractListWTV(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationWTV();	
-    vendorListContractsPaginationWTV();
-    applicantsContractsPaginationWTV();	
+    listContractsPaginationWTV(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg);	
 	
 }
 </script>
 
 <script>
-function listContractsPaginationWTV(){
+function listContractsPaginationWTV(SourceLeadWeb_loginOrg){
 	$('#contractListTableWTV1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2125,17 +2129,17 @@ function listContractsPaginationWTV(){
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 	$("#contractListTableWTV1").wrap("<div class='overflow_Auto'></div>");
 }
-function vendorListContractsPaginationWTV(){ 
+function vendorListContractsPaginationWTV(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTV').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2153,17 +2157,17 @@ function vendorListContractsPaginationWTV(){
 	$("#contractListTableWTV").wrap("<div class='overflow_Auto'></div>");
 }
 
-function applicantsContractsPaginationWTV(){ 
+function applicantsContractsPaginationWTV(SourceLeadWeb_loginOrg){ 
     $('#contractListTableWTV2').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Verified Contract',
+	                title: SourceLeadWeb_loginOrg+ ' - Verify',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2184,6 +2188,7 @@ function applicantsContractsPaginationWTV(){
 
 <script>
 function preparedContractListFinalize(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -2434,25 +2439,25 @@ function preparedContractListFinalize(data){
     $("#clientContractsList").append(opt);
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationFinalize();	
-    vendorListContractsPaginationFinalize();
-    applicantsContractsPaginationFinalize();	
+    listContractsPaginationFinalize(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg);	
 	
 }
 </script>
 
 <script>
-function listContractsPaginationFinalize(){
+function listContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	$('#contractListTableFinalize1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2468,17 +2473,17 @@ function listContractsPaginationFinalize(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationFinalize(){ 
+function vendorListContractsPaginationFinalize(SourceLeadWeb_loginOrg){ 
     $('#contractListTableFinalize').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2494,17 +2499,17 @@ function vendorListContractsPaginationFinalize(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function applicantsContractsPaginationFinalize(){
+function applicantsContractsPaginationFinalize(SourceLeadWeb_loginOrg){
 	$('#contractListTableFinalize2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Finalized Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Finalized',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2524,6 +2529,7 @@ function applicantsContractsPaginationFinalize(){
 <!-- preparedContractListExpired -->
 <script>
 function preparedContractListExpired(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -2747,25 +2753,25 @@ function preparedContractListExpired(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationEXP();	
-    vendorListContractsPaginationEXP();
-    applicantsContractsPaginationEXP();
+    listContractsPaginationEXP(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationEXP(){
+function listContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	$('#contractListTableEXP1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2781,17 +2787,17 @@ function listContractsPaginationEXP(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationEXP(){ 
+function vendorListContractsPaginationEXP(SourceLeadWeb_loginOrg){ 
     $('#contractListTableEXP').DataTable( { 
     	dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -2807,17 +2813,17 @@ function vendorListContractsPaginationEXP(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function applicantsContractsPaginationEXP(){
+function applicantsContractsPaginationEXP(SourceLeadWeb_loginOrg){
 	$('#contractListTableEXP2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Expired Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Expired',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -2837,6 +2843,7 @@ function applicantsContractsPaginationEXP(){
 
 <script>
 function preparedContractListRejected(data){
+	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
@@ -3094,25 +3101,25 @@ function preparedContractListRejected(data){
     $("#clientContractsList").append(opt); 
     $("#applicantsContractsList").empty();
     $("#applicantsContractsList").append(res);
-    listContractsPaginationREJ();	
-    vendorListContractsPaginationREJ();
-    applicantsContractsPaginationREJ();
+    listContractsPaginationREJ(SourceLeadWeb_loginOrg);	
+    vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg);
+    applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg);
 	
 }
 </script>
 
 <script>
-function listContractsPaginationREJ(){
+function listContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	$('#contractListTableREJ1').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
 		"scrollCollapse": false,
@@ -3128,17 +3135,17 @@ function listContractsPaginationREJ(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function vendorListContractsPaginationREJ(){ 
+function vendorListContractsPaginationREJ(SourceLeadWeb_loginOrg){ 
     $('#contractListTableREJ').DataTable( { 
     	dom: 'Bfrtip', 
     	buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -3154,17 +3161,17 @@ function vendorListContractsPaginationREJ(){
     $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
 	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
-function applicantsContractsPaginationREJ(){
+function applicantsContractsPaginationREJ(SourceLeadWeb_loginOrg){
 	$('#contractListTableREJ2').DataTable({ 
 		dom: 'Bfrtip', 
 		buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Rejected Contract',
+	                title: SourceLeadWeb_loginOrg + ' - Rejected',
 	            }
 	        ],
 		"scrollCollapse": false,
