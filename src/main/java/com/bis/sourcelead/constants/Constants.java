@@ -423,6 +423,11 @@ public class Constants {
 	public static final String[] BILLING_PAYABLE_HEADERS = { "Bill Id", "Vendor Name",
 			"Vendor Contact Name"," Vendor Contact Email", "Vendor Phone ", "Bill Date", "Due Date", "Total Amount", "Due Amount",
 			"Paid Amount", "Status", "Payment Status", "Linked Bill Id"};
+	
+	public static final String[] EXPENSES_REPORTS_HEADERS = {"Expense id","Employee Name","Email id","Phone Number","Emp Type","Vendor","Vendor Contact","Project","Client"};
+	public static final String[] EXPENSES_REPORTS_HEADERS_1 = {"Amount","Claimed"};
+	
+	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
