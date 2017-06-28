@@ -38,6 +38,10 @@ public class Candidate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    private MasterCandidate masterCandidateId;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
@@ -1290,6 +1294,16 @@ public class Candidate implements Serializable{
 		this.contractsList = contractsList;
 	}
 
+	public MasterCandidate getMasterCandidateId()
+	{
+		return masterCandidateId;
+	}
+
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId)
+	{
+		this.masterCandidateId = masterCandidateId;
+	}
 
 	public String getVisaType() {
 		return visaType;
@@ -1309,7 +1323,7 @@ public class Candidate implements Serializable{
 	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
 		this.allAndCandidateVisa = allAndCandidateVisa;
 	}
-	
+
 	
 	
 }

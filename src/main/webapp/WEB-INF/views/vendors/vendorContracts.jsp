@@ -141,6 +141,7 @@ function vendorContracts(orgRelationId){
     $("#tab-3").empty();  
     $("#tab-4").empty();  
     $("#tab-6").empty();  
+    $("#tab-8").empty();
     $("#tab-7").empty();  
     $("#tab-5").empty();  
     $("#tab-5").append(result);  
@@ -159,7 +160,7 @@ function vendorContractsList(orgRelationId){
     {
 		contractStatus.push($(this).val());
     });
-	
+	alert("contractStatus"+contractStatus);
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({  
           type : "POST",
