@@ -156,20 +156,6 @@ function addContractNotes(){
    	    output = output+'         <div class="pull-left comments-text">';
    	    output = output+'         <p class="comment-by">';
    	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
-   	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
-   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
-   	    }
-   	    
-   	    else if(report.contactName !=null && report.contactName != 'undefined'){
-   		 output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
-   	    }
-   	 else if(report.contract !=null && report.contract != 'undefined'){
-   		 output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
-   	    }
-   	    
-   	 else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
-   		 output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
-   	    }
    	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
    	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
    	    output = output+'         </div>';
