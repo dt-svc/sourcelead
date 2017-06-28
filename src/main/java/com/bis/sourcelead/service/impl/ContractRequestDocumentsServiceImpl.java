@@ -94,5 +94,11 @@ public class ContractRequestDocumentsServiceImpl implements ContractRequestDocum
 		return contractRequestDocumentsDao.getContractRequestDocumentsByContractUUID(contractUUID);
 	}
 
+	@Override
+	public ContractRequestDocuments getContractByContractId(Long contractId)
+	{
+		return contractRequestDocumentsDao.getContractByContractId(contractId);
+	}
+
 	
 }

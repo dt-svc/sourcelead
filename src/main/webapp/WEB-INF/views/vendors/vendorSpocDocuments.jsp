@@ -38,6 +38,7 @@ function vendorSpocDocuments(orgRelationId,clientLocationId,spocName,userId){
    // $("#tab-3").empty(); 
     $("#tab-4").empty();
     $("#tab-6").empty();
+    $("#tab-8").empty();
     $("#tab-7").empty();
     $("#tab-2").append(result);  
 	
