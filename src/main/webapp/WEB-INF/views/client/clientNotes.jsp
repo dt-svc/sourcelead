@@ -58,14 +58,7 @@ function clientNotesList(orgRelationId,clientLocationId){
     result  = result + '<i class="fa fa-check-circle"></i><span id="clientNotesMsgDiv"></span>';
     result  = result + '</div>';
 	    result = result + '<ul class="padding_right">';
-	    
-	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
 	        	result = result  +'    	<a href="javascript:void(0)" onClick="addClientNotes('+orgRelationId+','+clientLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
-		 '</sec:authorize>';
-		 
-		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
-		      result = result  +'    	<a href="javascript:void(0)" class="addUser-org" ><i class=""></i></a>                                                            ';
-		 '</sec:authorize>';
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
