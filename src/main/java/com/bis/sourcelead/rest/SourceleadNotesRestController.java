@@ -85,30 +85,33 @@ public class SourceleadNotesRestController {
 	
 	
 	@RequestMapping(value = "/getNotes", method = RequestMethod.POST)
-	public @ResponseBody String getNotes(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception
+	public @ResponseBody String getNotes(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,HttpServletRequest request) throws Exception
 	{
 		String notesList;
-		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByOrglocationIdAndType(orgRelationId);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByOrglocationIdAndType(orgRelationId,orgLocation.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}
 	@RequestMapping(value = "/getNotesInvoice", method = RequestMethod.POST)
-	public @ResponseBody String getNotesInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID) throws Exception
+	public @ResponseBody String getNotesInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID,HttpServletRequest request) throws Exception
 	{
 		String notesList;
-			Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
-		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByInvoiceID(invoice.getId());
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByInvoiceID(invoice.getId(),orgLocation.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}
 	
 	
 	@RequestMapping(value = "/getContractNotes", method = RequestMethod.POST)
-	public @ResponseBody String getContractNotes(@RequestParam(value = "contractUUID", required = false) String contractUUID) throws Exception
+	public @ResponseBody String getContractNotes(@RequestParam(value = "contractUUID", required = false) String contractUUID,HttpServletRequest request) throws Exception
 	{
 		String notesList;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Contracts contracts = contractsTemplateService.getContractByContractUUID(contractUUID);
-		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByContractId(contracts.getId());
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByContractId(contracts.getId(),orgLocation.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}

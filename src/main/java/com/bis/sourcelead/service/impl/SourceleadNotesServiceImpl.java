@@ -30,6 +30,10 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 
+/**
+ * @author Ajith Matta
+ *
+ */
 @Service
 public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	@Autowired
@@ -57,6 +61,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	private OrgSpocService orgSpocService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadNotesServiceImpl.class);
+	
 	
 	@Override
 	public SourceleadNotes storeComments(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception
@@ -141,12 +146,12 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	}
 	
 	@Override
-	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelationId) throws Exception
+	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelationId,Long orgLocationId) throws Exception
 	{
-		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByOrglocationIdAndType(orgrelationId);
+		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByOrglocationIdAndType(orgrelationId,orgLocationId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
-			
+			// for image display
 			User user = userService.getUserByUserCode(notes.getCreatedBy());
 			if(null != user){
 				String authorLastName = "";
@@ -162,10 +167,14 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 				notes.setRequirementTitle(notes.getRequirementId().getJobTitle());
 			}
 			if (notes.getContractId() != null) {
-				notes.setContactName(notes.getContractId().getContractTitle());
+				notes.setContract(notes.getContractId().getContractTitle());
 			}
 			if (notes.getInvoicdeId() != null) {
 				notes.setInvoiceId(notes.getInvoicdeId().getInvoiceId());
+			}
+			
+			if (notes.getSpocId() != null) {
+				notes.setContactName(notes.getSpocId().getClientUser().getFirstName());
 			}
 			notes.setCheckBox(notes.getCheckBox());
 			notes.setUserIdStr(notes.getUserId().getId());
@@ -198,11 +207,12 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	}
 	
 	@Override
-	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId) throws Exception
+	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId,Long orgLocationId) throws Exception
 	{
-		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByRequirementId(requirementId);
+		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByRequirementId(requirementId,orgLocationId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
+			// for image display
 			User user = userService.getUserByUserCode(notes.getCreatedBy());
 			if(null != user){
 				String authorLastName = "";
@@ -247,11 +257,12 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	}
 	
 	@Override
-	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId) throws Exception
+	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId,Long orgLocationId) throws Exception
 	{
-		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByInvoiceID(invoiceId);
+		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByInvoiceID(invoiceId,orgLocationId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
+			// for image display
 			User user = userService.getUserByUserCode(notes.getCreatedBy());
 			if(null != user){
 				String authorLastName = "";
@@ -298,11 +309,12 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	
 	
 	@Override
-	public List<SourceleadNotes> getNotesListByContractId(Long contractId) throws Exception
+	public List<SourceleadNotes> getNotesListByContractId(Long contractId,Long orgLocationId) throws Exception
 	{
-		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByContractId(contractId);
+		List<SourceleadNotes> notesList = sourceleadNotesDao.getNotesListByContractId(contractId,orgLocationId);
 		for (SourceleadNotes notes : notesList) {
 			notes.setComment(notes.getComment());
+			// for image display
 			User user = userService.getUserByUserCode(notes.getCreatedBy());
 			if(null != user){
 				String authorLastName = "";
