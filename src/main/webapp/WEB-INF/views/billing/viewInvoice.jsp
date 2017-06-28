@@ -65,6 +65,15 @@ $(document).ready(function(){
               </a>
             </li>
             
+            
+              <li class="">
+<%--             <sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')"> --%>
+              <a href="#notesList" data-toggle="tab" title="Payment History" aria-expanded="false" onclick="invoiceNotesList();">
+<%--               </sec:authorize> --%>
+                <h5>Note List</h5>
+              </a>
+            </li>
+            
           </ul>
           <div class="tab-content"> 
             
@@ -75,7 +84,14 @@ $(document).ready(function(){
           
             <div class="tab-pane fade positionRelative" id="paymentHistory">
                 <div class="invoiceview_area clearfix candidate_wrap_table filter_position">
-                  <div id="paymentHistorytId" class="datatable_filter"></div>
+                  <div id="paymentHistorytId"></div>
+                    
+              </div>
+            </div>
+            
+            <div class="tab-pane fade positionRelative" id="notesList">
+                <div class="invoiceview_area clearfix candidate_wrap_table filter_position">
+                  <div id="notesListId"></div>
                     
               </div>
             </div>
@@ -510,7 +526,206 @@ function getViewInvoice(){
 
 </script>
 
+<script>
+function invoiceNotesList(){
+	var result = "";
+	result = result  +'<div class="timesheet_head">';
+	result = result  +'    <div class="project_tabs_inn_head addUser-org"> '; 
+	result  = result + '<div class="success_pop" id="vendorDocSelector" style="display: none;">';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="vendorDocMsgDiv"></span>';
+    result  = result + '</div>';
+	    result = result + '<ul class="padding_right">';
+	    
+	    '<sec:authorize access="hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
+	        	result = result  +'    	<a href="javascript:void(0)" onClick="addNotes();" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
+		 '</sec:authorize>';
+		 
+		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
+		      result = result  +'    	<a href="javascript:void(0)" class="addUser-org" ><i class=""></i></a>                                                            ';
+		 '</sec:authorize>';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     </div>  ';
+		
+		result = result + '</ul>';
+		result = result  +'  <div class="clearfix"></div> ';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div id="vendorNotesListDiv" ></div>';
+		result  = result + '   </div>';
+	result = result+'	    </div>';
+	result = result+'	    </div>';
+	
+	$("#notesListId").empty();  
+    $("#notesListId").append(result)
+    invoiceNotes();
+    
+}
+</script>
+<script>
+function invoiceNotes(){
+	var urlForm = "";
+	  var invoiceUUID ='${invoiceUUID}';
+    	urlForm = "/getNotesInvoice?${_csrf.parameterName}=${_csrf.token}&invoiceUUID="+invoiceUUID;
+	
+	var sourceleadUrl ='${sourceleadUrl}';
+	  $.ajax({
+        type : "POST",
+         url: sourceleadUrl+urlForm,        
+         success :function(data) {
+	var output = "";
+    if(data != null && data != 'undefined' && data != "" && data != '[]'){
+    var json = JSON.parse(data);
+//     '${SourceLeadWeb_user.id}' 
 
+	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+     for(var i=0;i<json.length;i++){
+       	var report = json[i];
+       	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+   	  	output = output+'<div class="comments-div comments-inner clearfix">';
+   	    output = output+'    <div class="commentsimg">';
+   	    output = output+'    <i class="fa fa-comments"></i>';
+   	    output = output+'        <div class="commentsimg-inner">';
+   	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.userId+'"/>';
+   	    output = output+'        </div>';
+   	    output = output+'    </div>';
+   	    output = output+'     <div class="comments-content">';
+   	    output = output+'         <div class="pull-left">';
+   	    output = output+'         <p class="comment-by">';
+   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+   	 if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
+   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
+   	    }
+   	    
+   	    else if(report.contactName !=null && report.contactName != 'undefined'){
+   		 output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
+   	    }
+   	 else if(report.contract !=null && report.contract != 'undefined'){
+   		 output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
+   	    }
+   	    
+   	 else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
+   		 output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
+   	    }
+   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+   	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
+   	    output = output+'         </div>';
+   	    output = output+'     </div>';
+   	    output = output+'</div>';
+    	}
+     }
+}else{
+     var output ="";
+    output = output+"   <div class='dataTables_empty'>"; 
+	 output = output+"  </div> ";
+}
+output  = output + '              </div>';
+output  = output + '        </div>';
+	$("#vendorNotesListDiv").empty(); 
+    $("#vendorNotesListDiv").append(output);
+ },
+         
+      });
+}
+</script>
+
+<script>
+function closeDocPopup(){
+	 $("#popUpDiv").removeClass("edit-details-active");
+}
+</script>
+
+<script>
+function addNotes() {	
+	 var invoiceUUID ='${invoiceUUID}';
+	var result = "";
+	result = result  +'<!-- Popup Div -->';
+	result = result  +'          <form role="form"  id="invoiceNotes_form" name="invoiceNotes_form" method="post" > ';
+	result = result  +'          <input type="hidden" id="invoicdeId" name="invoiceUUID" value="'+invoiceUUID+'"> ';
+	result = result  +'          <input type="hidden" id="noteType" name="noteType" value="Billing"> ';
+	result = result  +'          <i class="fa fa-close close-div"  onClick="closeDocPopup();"></i> ';
+	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result+'	                  <div class="clearfix">';
+	 result = result +" <div class='col-md-12 inputOther mt10 inputOther'>";
+    
+	
+     result = result +"    <div class='mt10'>";
+     result = result +"    <div class='dropdown-select mb10' id='clientCategoryContactTypeListDivDiv'>";
+     result = result +"    </div>";
+ 	result = result  +'                <div class="form-horizontal clearfix"> ';
+	result = result+'	                  <div class="clearfix">';
+	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required"  field-name="Note" class="form-control"></textarea>';
+	result = result+'	                  </div>';
+	result = result  +'                  </div>';
+	result = result+' <div class="col-md-9 checkBox"> ';
+	result = result+'   <input type="checkbox"  value= "Y" id="allowAll" name = "allowAll" checked="checked">';
+	result = result + '	                    <p>Allow All Users</p>';
+	result = result+'	                  </div>';
+	
+	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
+	result = result  +'                  <div class="pull-right"> ';
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeInvoiceNotes();" />'; 
+  /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
+	result = result  +'                  </div> ';
+	result = result  +'                  </div> ';
+	result = result  +'                </div>';
+	
+	result = result  +'                </form>';
+	
+	$("#popUpDiv").empty();
+	$("#popUpDiv").append(result);
+	
+	  $(".edit-details").toggleClass("edit-details-active");
+		 $(".close-div").click(function(){ 
+			 $(this).parent("div.edit-details").removeClass("edit-details-active");
+			 });
+		 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+			 e.stopPropagation();
+		 });
+		 
+				
+				
+	}
+</script>
+<script type="text/javascript">
+	function storeInvoiceNotes(){
+		if ($('#invoiceNotes_form').validate(false, validationSettings)){ 
+				var frm = $('#invoiceNotes_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				var form = $('#invoiceNotes_form')[0];
+	      		var formData = new FormData(form); 
+				var sourceleadUrl = '${sourceleadUrl}';
+				$("#submit_comment").attr("disabled", "disabled");
+         		$("#submit_comment" ).addClass('button').val('Processing..');
+		        var jsonData = encodeURIComponent(con);
+				$.ajax({
+						type : "POST",
+		        	    data: formData,
+		        	    contentType : 'application/json; charset=utf-8',
+		        	    enctype: 'multipart/form-data',
+		    	        processData: false,
+		    	        contentType:false,
+		        	    dataType : 'json',
+						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+							closeDocPopup();
+							invoiceNotes();
+							
+						},
+					});
+					$('.add-comment').toggle(200);
+					return true;
+			 
+		}else {
+			return false;	
+		}
+		}
+		$('body').on('blur', '#invoiceNotes_form', function() {
+		$("#invoiceNotes_form").showHelpOnFocus();
+		$("#invoiceNotes_form").validateOnBlur(false, validationSettings);
+		
+	});
+</script>
 <script>
 function paymentHistroy(){
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -593,7 +808,7 @@ function paymentHistoryPagination(){
     $('#paymentHistoryPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
+    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {

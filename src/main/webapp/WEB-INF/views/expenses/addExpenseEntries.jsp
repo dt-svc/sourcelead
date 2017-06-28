@@ -225,7 +225,7 @@ function addAttachment(entityRowId,from){
 											  	<option value="AUD" ${currencyCode  == "AUD" ? "selected" : ""}>AUD</option>
 											  	<option value="USD" ${currencyCode  == "USD" ? "selected" : ""}>USD</option>
 											  	<option value="GBP" ${currencyCode  == "GBP" ? "selected" : ""}>GBP</option>
-											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</opton>
+											  	<option value="SGD" ${currencyCode  == "SGD" ? "selected" : ""}>SGD</option>
 											  	<option value="EUR" ${currencyCode  == "EUR" ? "selected" : ""}>EUR</option>
 											  </select>
 									 </div>
@@ -234,7 +234,7 @@ function addAttachment(entityRowId,from){
 	                 </div>
 					<div class="col-md-4 mb10">
 						<label>Description</label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" data-validation="validate_Space validate_length length5-500"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="entryDesREPLACEROWID" class="form-control" placeholder="Description" data-validation-optional="true" data-validation="validate_Space validate_length length5-500"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 mb10'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>

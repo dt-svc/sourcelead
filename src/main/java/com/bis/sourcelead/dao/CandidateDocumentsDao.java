@@ -25,4 +25,6 @@ public interface CandidateDocumentsDao {
 	public CandidateDocuments getCandidateDocumentByDocumentId(Long documentId) throws Exception;
 	
 	public CandidateDocuments getCandidateDocumentByDocumentUUID(String documentUUID) throws Exception;
+	
+	public List<CandidateDocuments>  getCandidateDocumentsListByRequestedDocumentsId(Long requestedDocumentsId) throws Exception;
 }

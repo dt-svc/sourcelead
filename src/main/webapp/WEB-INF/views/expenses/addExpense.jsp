@@ -54,7 +54,7 @@
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div>                                          
 				<div class="form-group">
@@ -82,7 +82,7 @@
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
 						  </div>
 						  <div class="col-lg-6">
-							  <input type="text" class="form-control calendar" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
+							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
 						  </div>					  
 						</div>
 	              </div>
@@ -158,25 +158,25 @@
 		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
 								</select>
 							</div>	
-		                  <div class="col-md-4 mb10">
-			                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-								  <div class="input-group er ratetype">
-										<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
-												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="expenseRateType${entryCount.count}" field-name="Rate Type" field-name="Rate Type" data-validation="required">
-												  	<option value="INR" ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
-												  	<option value="AUD" ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
-												  	<option value="USD" ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
-												  	<option value="GBP" ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
-												  	<option value="SGD" ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
-												  	<option value="EUR" ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
+		                  <div class='col-md-4 mb10'>
+			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
+								  <div class='input-group er'>
+										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
+												  <select class='btn btn-info' id='expenseRateType${entryCount.count}' name='expenseRateType${entryCount.count}' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+												  	<option value='INR' ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
+												  	<option value='AUD' ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
+												  	<option value='USD' ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
+												  	<option value='GBP' ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
+												  	<option value='SGD' ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
+												  	<option value='EUR' ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
 												  </select>
 										 </div>
-								         <input type="text" class="form-control"  placeholder="Amount"  name="expenseAmount${entryCount.count}" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float">
+								         <input type='text' class='form-control'  placeholder='Amount'  name='expenseAmount${entryCount.count}' id='expenseAmount${entryCount.count}' value='${entry.amount}' field-name='Amount' data-validation='required validate_float'>
 									</div>
 		                 </div>
 						<div class="col-md-4 mb10">
 							<label>Description</label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description">${entry.description}</textarea>
+							<textarea rows="2"  id="entryDes${entryCount.count}" name="entryDes${entryCount.count}" class="form-control" placeholder="Description" data-validation-optional="true">${entry.description}</textarea>
 						</div>		
 		                   <div id='attachmentSection' class='col-md-4 mb10'>
 		                   <div class="uploadFile timesheet_week_comm">
