@@ -14,7 +14,7 @@ public interface WageTaxSummaryService {
 	
 	WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary)throws Exception;
 
-	String saveWagesTaxSummary(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
+	Integer saveWagesTaxSummary(MultipartFile multipartFile, OrgLocations orgLocation, User user, JSONObject jsonObj)throws Exception;
 
 	List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation);
 }
