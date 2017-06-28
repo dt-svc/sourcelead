@@ -93,15 +93,15 @@ public class CandidateReferencesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getCandidateReferencesListByCandidateId")
-	public String getCandidateReferencesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
+	public List<CandidateReferences> getCandidateReferencesListByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,HttpServletRequest request) throws Exception {
 		
 		
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 String resultJson;
+		/* String resultJson;*/
 		 List<CandidateReferences>   candidateReferencesList = candidateReferencesService.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), loginOrgLocation.getId());
 		 
-		 resultJson = commonUtil.toJSON(candidateReferencesList);
-		 return resultJson;
+		/* resultJson = commonUtil.toJSON(candidateReferencesList);*/
+		 return candidateReferencesList;
 	}
 	
 	/**
