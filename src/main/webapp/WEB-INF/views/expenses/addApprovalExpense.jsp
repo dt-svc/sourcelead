@@ -228,7 +228,7 @@
 			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
-			<input type="button" value="Cancel" class="btn btn-sm btn-default ml10">
+			<input type="button" value="Cancel" onClick="javascript:location.href = '<c:url value='expensesApprovalList'/>'" class="btn btn-sm btn-default ml10">
 		</div>
    </div>
   </div>
