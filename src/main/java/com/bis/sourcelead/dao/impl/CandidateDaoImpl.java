@@ -278,7 +278,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateByCandidateId(Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  left join fetch cnadidate.consultantUser left join fetch cnadidate.orgLocationId where cnadidate.id =:candidateId";
+		String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId where cnadidate.id =:candidateId";
 		List candidateList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
 		
 		Candidate candidate = null;
