@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
@@ -51,7 +52,8 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	@Autowired
 	private ConversionUtil conversionUtil;
 	
-	
+	@Autowired
+	private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	
 	@Override
 	public WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary) throws Exception {
@@ -59,7 +61,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	}
 
 	@Override
-	public String saveWagesTaxSummary(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj) throws Exception {
+	public Integer saveWagesTaxSummary(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj) throws Exception {
 
 		String fileName = multipartFile.getOriginalFilename();
 		int count = 0;
@@ -200,7 +202,14 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 						}
 					}
 				for(WageTaxSummary wageTaxSummary:wageTaxSummaryList){
-					wageTaxSummary.setSsnNumber(map.get(wageTaxSummary.getEmployeeId()));
+					StringBuilder sb = new StringBuilder();
+					String ssnNumber = map.get(wageTaxSummary.getEmployeeId());
+					String[] arr = ssnNumber.split(":");
+					String ssn =  arr[1];
+					String last4DigitsSsn = ssn.substring(ssn.length() - 4);
+					String enCodedSsnNumber = sourceleadPasswordEncoder.encode(ssn);
+					sb.append(last4DigitsSsn).append("-").append(enCodedSsnNumber);
+					wageTaxSummary.setSsnNumber(sb.toString());
 					WageTaxSummary wageTax = wageTaxSummaryDao.saveWageTaxSummary(wageTaxSummary);
 					if(wageTax != null){
 						count++;
@@ -212,10 +221,10 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			
 			fis.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 
-		return "";
+		return count;
 	
 	}
 	
@@ -254,7 +263,31 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	@Override
 	public List<WageTaxSummary> getWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)
 	{
-		return wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation);
+		List<WageTaxSummary> wagesAndTaxList  = wageTaxSummaryDao.getWagesAndTaxListByOrgLocationId(orgLocation);
+		
+		if(wagesAndTaxList != null){
+			for(WageTaxSummary wts : wagesAndTaxList){
+				StringBuilder sb = new StringBuilder();
+				if(null !=  wts.getFromDate()){
+					wts.setFromDateStr(conversionUtil.getDateAsString(wts.getFromDate()));
+				}
+				if(null != wts.getToDate()){
+					wts.setToDateStr(conversionUtil.getDateAsString(wts.getToDate()));
+				}
+				
+				if(wts.getCheckDate() !=null   ){
+					wts.setCheckDateStr(conversionUtil.getDateAsString(wts.getCheckDate()));
+				}
+				if(wts.getCheckNo() != null){
+					wts.setCheckNo(wts.getCheckNo());
+				}
+				String ssn = wts.getSsnNumber();
+				String[] arr = ssn.split("-");
+				sb.append("xxx").append("-").append("xx").append("-").append(arr[0]);
+				wts.setSsnNumber(sb.toString());
+			}
+		}
+		return wagesAndTaxList;
 	}
 
 

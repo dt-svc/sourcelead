@@ -33,6 +33,8 @@ public interface ProjectMembersDao {
 	
 	public ProjectMembers getProjectMemberByUserIdAndProjectId(Long userId, Long projectId) throws Exception;
 	
+	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId);
+	
 	/**
 	 * @author Prasad Salina
 	 * @param empId

@@ -54,13 +54,13 @@
                     <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <li class="${sessionData.nav == 'Clients' ? 'side-nav-active' : ''}"><a href="<c:url value='/clientDashboard'/>" title="Clients"><span><i class="fa fa-user-plus"></i></span><i class="subMenu">Clients</i></a></li>
                     </c:if>
-	                <c:if test="${userTabs.tabName == 'Requirement'}"> 
+	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-	                   <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/requirementList'/>" title="Requirements"><span><i class="fa fa-briefcase"></i></span><i class="subMenu">Requirements</i></a></li>
+	                   <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/requirementList'/>" title="Jobs"><span><i class="fa fa-briefcase"></i></span><i class="subMenu">Jobs</i></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
-	                 <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalRequirements'/>" title="Requirements"><span><i class="fa fa-briefcase"></i></span><i class="subMenu">Requirements</i></a></li>
+	                 <li class="${sessionData.nav == 'Requirement' ? 'side-nav-active' : ''}"><a href="<c:url value='/professionalRequirements'/>" title="Jobs"><span><i class="fa fa-briefcase"></i></span><i class="subMenu">Jobs</i></a></li>
 	                </c:if>
 	                </c:if>
 	                
@@ -283,8 +283,9 @@
 	                 </c:if>
 
           </c:forEach>
+         <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_ADMIN'}">
           <li class=""><a href="<c:url value='/payrollList'/>" title="PayRoll"><span><i class="fa fa-usd"></i></span><i class="subMenu">Payroll</i></a></li>
-          				 
+          	</c:if>			 
      <%--  <li class="${sessionData.nav == 'SocialInviter' ? 'side-nav-active' : ''}"><a href="<c:url value='/socialinviter'/>" title="SocialInviter"><span><i class="fa fa-bar-chart"></i></span>Social Inviter</a></li> --%>
         </ul>
       </div>

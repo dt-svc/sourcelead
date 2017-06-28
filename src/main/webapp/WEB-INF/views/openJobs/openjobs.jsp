@@ -3,7 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
 <link href="resources/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="resources/css/reset.css">
 <link href="resources/css/jobs/css/source-style.css" rel="stylesheet">
@@ -102,13 +102,35 @@ display: none;}
 a.alertBtn {
     padding: 8px 15px !important;
 }
-
 .ratetype p {
     left: -45px !important;
     position: absolute;
     bottom: -14px;
 }
-
+.adSearch .chosen-container .search-field input[type="text"] {
+width:100% !important;
+}
+a.alertBtn {
+    padding: 8px 15px !important;
+}
+.jobResultsCta.job_container {
+cursor: inherit !important;
+}
+.jobResultsCta.job_container h3{
+	cursor: pointer; font-size: 18px; width: auto; clear: both; float: left;
+}
+.jobResultsCta.job_container h4{
+	cursor: pointer; font-size: 16px; width: auto; clear: both; float: left;
+}
+.jobDetails .jobResultsInn h3  {
+	cursor: pointer; font-size: 18px; width: auto; clear: both; float: left;
+}
+.jobResultsInn.job_ResultsInn h3 {
+cursor: inherit; font-size: 18px; width: auto; clear: both; float: left; 
+}
+.jobResultsInn.job_ResultsInn h4 {
+cursor: pointer; font-size: 16px; width: auto; clear: both; float: left;
+}
 </style>
 
 
@@ -200,7 +222,7 @@ a.alertBtn {
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">1 days ago
+						<label class="control-radio control--checkbox-ra">1 day ago
 						  <input type="radio" name="dateFilter" value="1 Day Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
@@ -210,7 +232,7 @@ a.alertBtn {
 						</label>
 					</li>
 					<li class="control-group">
-						<label class="control-radio control--checkbox-ra">1 week ago
+						<label class="control-radio control--checkbox-ra">1 Week ago
 						  <input type="radio" name="dateFilter" value="1 Week Ago" onclick="requirementsFilter();"/><div class="control__indicator_ra"></div>
 						</label>
 					</li>
@@ -463,9 +485,9 @@ a.alertBtn {
               </div>
               <div class="clearfix">
                 <div class="col-md-4">
-                  <label>Requirement Title</label>
+                  <label>Job Title</label>
                   <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
+                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
                   </div>
                 </div>
                 <div class="col-md-8">
@@ -682,7 +704,9 @@ a.alertBtn {
 
 
 <section class="pageLoad"></section> 
-<div class="backtotopA"><img src="resources/css/jobs/images/backtotop.png" alt="" /></div>  
+<div class="backtotop">
+	<img src="resources/css/jobs/images/backtotop.png" alt="" />
+</div>  
 
 <!-- Footer Area -->
 <%-- <jsp:include page="../masterFooter.jsp" /> --%>
@@ -767,11 +791,16 @@ function requirementsFilter(type){
 		offset = $("#openJobsOffset").val();
 	}
 	
+	var postedOrgName = "";
+	if(type == "postedOrg"){
+		postedOrgName = $("#postedOrg").val();
+	}
+	
 	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	
 	 $.ajax({ 
 	   	type: "POST",
-	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country,
+	   	url: sourceleadUrl+"/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset+"&reqType="+reqType+"&orgLocationIds="+orgLocationIds+"&dates="+dates+"&country="+country+"&postedOrgName="+postedOrgName,
 	    success: function(data) {
 	    	var json = JSON.parse(data);
 	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
@@ -868,15 +897,18 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 					location = requirements.country;
 				}
 				
-				result = result +'	<div class="jobResultsCta">';
+				result = result +'	<div class="jobResultsCta job_container">';
 				result = result +'	<div class="jobResultsInn">';
-				result = result +'	<h3 style="font-size:20px;color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
+				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
+				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 				
 				if(requirements.postedOrg != null && requirements.postedOrg != '' && requirements.postedOrg !='undefined'){
-				result = result +'	<h4>'+requirements.postedOrg+'</h4>';	
+				result = result +'<input type="hidden" id="postedOrg" value=""/>';
+				result = result +'	<h4 onClick="getPostedOrgJobs(this);" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';	
+				result = result +'<div class="clearfix"></div>';
 				description =  description+'Posted By :'+requirements.postedOrg+";";
 				}else{
 				result = result +'	<h4>--</h4>';
@@ -961,6 +993,13 @@ function prepareOpenJobsElkList(data,sourceleadUrl,offset){
 			}
 		}
     socialInviterScripts();
+}
+</script>
+
+<script>
+function getPostedOrgJobs(id){
+	$("#postedOrg").val(id.innerHTML);
+	requirementsFilter("postedOrg");
 }
 </script>
 
@@ -1053,19 +1092,21 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				var comment='';		      
     
 		      result = result +' <div class="beard clearfix">';
-		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();">Back to List</a>';
+		      result = result +'	<a href="javascript:void(0)" onclick="backtoList();"><i class="fa fa-arrow-left text-muted paddingRight"></i>Back to List</a>';
 		      result = result +'</div>';
 		      
 				result = result +'	<section class="innerContent">';
-				result = result +'  <div class="jobDetails">';
-				result = result +'	<div class="jobResultsInn">';
+				result = result +'  <div class="jobDetails positionRelative">';
+				result = result +'	<div class="jobResultsInn job_ResultsInn">';
 		    	result = result +'	<h3>'+json.jobTitle+'</h3>';
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
-				result = result +'	<h4>'+json.requirementOrgName+'</h4>';
+				result = result +'	<h4 onClick="getPostedOrgJobs(this);">'+json.requirementOrgName+'</h4>';
 		    	}else{
 		    		result = result +'	<h4>--</h4>';	
 		    	}
-				result = result +'	<div class="skills"><strong>Skills :</strong>';
+				
+		    	result = result +'	<div class="clearfix"></div>';
+		    	result = result +'	<div class="skills clearfix"><strong>Skills :</strong>';
 				if(json.skills != null && json.skills != '' && json.skills !='undefined'){
 				result = result +'	<span>'+json.skills+'</span>';
 				}else{
@@ -1103,12 +1144,12 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				}
 				result = result +'	</span>';
 				result = result +'    </div>';			
-				result = result +'  <div class="jobDetailsLogo">';
+				result = result +'  <div class="jobApply">';
 				result = result +'	<a title="Create Alert" href="javascript:void(0)" class="alertBtn" onClick="alertFunction();createAlert(\''+json.requirementUUID+'\');"><i class="fa fa-bell-o"></i></a>';
 				result = result +'  <a href="'+sourceleadUrl+"/login?requirementUUID="+json.requirementUUID+'">Apply</a>';
 				result = result +'	<a href="'+sourceleadUrl+'/login" class="btn2" style="background-color:#eb821c;">Refer</a>';
 				result = result +'	<div style="clear:both;"></div>';
-				result = result +'	<div class="share">';
+				result = result +'	<div class="share hidden">';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'linkedin\');"><i class="fa fa-linkedin-square"></i></a>';
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'twitter\');"><i class="fa fa-twitter-square"></i></a>';			  
 				result = result +'	<a href="javascript:setPostValues(\''+title+'\',\''+link+'\',\''+picture+'\',\''+description+'\',\''+comment+'\');socialinviter.socialpost.auth(\'facebook\');"><i class="fa fa-facebook-square"></i></a>';
@@ -1123,28 +1164,28 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	<p></p>'; 	
 				}
 				result = result +'	<h4>Other details:</h4>';
-				result = result +'	<b><i class="fa fa-caret-right"></i>Work Location : </b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Work Location: </label></b>';
 				if(json.positions != null && json.positions != '' && json.positions !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions :</label>'+json.positions+'</b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions:</label>'+json.positions+'</b>';
 				}else{
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions :</label>--</b>';	
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>No. of positions:</label>--</b>';	
 				}
 				if(json.education != null && json.education != '' && json.education !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Education :</label>'+json.education+'</b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Education:</label>'+json.education+'</b>';
 				}else{
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Education :</label>--</b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Education:</label>--</b>';
 				}
 				if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString !='undefined'){
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Posted :'+json.requirementCreatedDateToString+'</label></b>';
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Posted:'+json.requirementCreatedDateToString+'</label></b>';
 				}else{
-				result = result +'	<b><i class="fa fa-caret-right"></i><label>Posted :</label>--</b>';	
+				result = result +'	<b><i class="fa fa-caret-right"></i><label>Posted:</label>--</b>';	
 				}
 				result = result +'	</div>';
 				result = result +'	<div class="jobShare">';
 				if(json.requirementCreatedDateToString != null && json.requirementCreatedDateToString != '' && json.requirementCreatedDateToString !='undefined'){
-				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted :'+json.requirementCreatedDateToString+'</label></div>';
+				result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:'+json.requirementCreatedDateToString+'</label></div>';
 				}else{
-					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted :</label>--</div>';
+					result = result +'	<div class="posted"><i class="fa fa-thumb-tack"></i><label>Posted:</label>--</div>';
 				}
 				result = result +'	<div class="refer" title="Refer your friend"><i class="fa fa-user" aria-hidden="true"></i></div>';
 				result = result +'	<div class="share">';
@@ -1169,8 +1210,10 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 function backtoList(){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
-	$("#loadMoreDiv").show(); 
-	$("#loadMoreReq").css("display", "block");
+	if(maxJobCount > 10){
+		$("#loadMoreDiv").show(); 
+		$("#loadMoreReq").css("display", "block");
+	}
 }
 
 </script>
@@ -1688,7 +1731,7 @@ function alertClose(){
 	$(".modal.modal_createalert").fadeOut();
 }
 </script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
+<!-- <script src="resources/js/jobs/js/bootstrap-select.min.js"></script> -->
 <script>
 function createAlert(requirementUUID){
 	 
@@ -2114,12 +2157,12 @@ var validationSettings = {
 ///////////////////// Back To Top 
     $(window).scroll(function() {
         if ($(this).scrollTop() > 200) {
-            $('.backtotopA').fadeIn('slow');
+            $('.backtotop').fadeIn('slow');
         } else {
-            $('.backtotopA').fadeOut('slow');
+            $('.backtotop').fadeOut('slow');
         }
     });
-    $('.backtotopA').click(function() {
+    $('.backtotop').click(function() {
         $("html, body").animate({scrollTop: 0}, 500);
         return false;
     });

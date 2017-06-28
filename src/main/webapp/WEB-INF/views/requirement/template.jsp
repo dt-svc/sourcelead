@@ -18,16 +18,16 @@
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Requirement Templates</h2>
+      <h2>Job Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requirement Templates</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job Templates</div>
   </section>
   <div class="timesheet_out overflow_Auto">
     <div class="vendor_wrap">
       <div class="timesheet_head">
         <ul>
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')">
-          	<li> <a href="<c:url value='/addTemplate'/>"><i class="fa fa-plus"></i>Add Requirement Template</a></li>
+          	<li> <a href="<c:url value='/addTemplate'/>"><i class="fa fa-plus"></i>Add Job Template</a></li>
          </sec:authorize>
          
           <div class="clearfix"></div>
