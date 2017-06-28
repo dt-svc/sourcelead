@@ -387,6 +387,8 @@ function selectClientCategory(){
 		        	 $("#clientCategoryContactTypeListDivDiv").empty();
 				     $("#clientCategoryContactTypeListDivDiv").append(result);
 				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+				     $('#vendorcontact').trigger("chosen:updated");
+				     $('#vendorcontact').chosen();
 		        }
 			});
 		}
@@ -407,6 +409,8 @@ function selectClientCategory(){
 		        	 $("#clientCategoryContactTypeListDivDiv").empty();
 				     $("#clientCategoryContactTypeListDivDiv").append(result);
 				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+				     $('#vendorcontact').trigger("chosen:updated");
+				     $('#vendorcontact').chosen();
 		        }
 			});
 		}
@@ -434,6 +438,8 @@ function selectClientCategory(){
  		        	 $("#clientCategoryContactTypeListDivDiv").empty();
  				     $("#clientCategoryContactTypeListDivDiv").append(result);
  				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+ 				    $('#vendorcontact').trigger("chosen:updated");
+				     $('#vendorcontact').chosen();
 		          }
 			 }
 		});
@@ -457,6 +463,8 @@ function selectClientCategory(){
  		        	 $("#clientCategoryContactTypeListDivDiv").empty();
  				     $("#clientCategoryContactTypeListDivDiv").append(result);
  				     $('#clientCategoryContactTypeListDivDiv').trigger("chosen:updated");
+ 				    $('#vendorcontact').trigger("chosen:updated");
+				     $('#vendorcontact').chosen();
 		          }
 			 }
 		});

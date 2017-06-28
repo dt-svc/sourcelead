@@ -35,7 +35,7 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 			if (sourceleadNotes != null) {
 				session.saveOrUpdate(sourceleadNotes);
 			}
-			logger.debug("Requirement Stored Successfully");
+			logger.debug("SourceleadNotes Stored Successfully");
 		} catch (Exception exception) {
 			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "SourceleadNotes"));
 			throw new SourceLeadConstraintViolationException(message.toString()

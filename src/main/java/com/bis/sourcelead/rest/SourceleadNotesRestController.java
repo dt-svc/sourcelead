@@ -14,20 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.elk.index.ClientVendorIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.ClientService;
-import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
-import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
-import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -62,6 +57,9 @@ public class SourceleadNotesRestController {
 	CandidateService candidateService;
 	
 	@Autowired
+	InvoiceService invoiceService;
+	
+	@Autowired
 	UserService userService;
 	@Autowired
 	SourceleadNotesService sourceleadNotesService;
@@ -85,6 +83,15 @@ public class SourceleadNotesRestController {
 	{
 		String notesList;
 		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByOrglocationIdAndType(orgRelationId);
+		notesList = commonUtil.toJSON(list);
+		return notesList;
+	}
+	@RequestMapping(value = "/getNotesInvoice", method = RequestMethod.POST)
+	public @ResponseBody String getNotesInvoice(@RequestParam(value = "invoiceUUID", required = false) String invoiceUUID) throws Exception
+	{
+		String notesList;
+			Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+		List<SourceleadNotes> list = sourceleadNotesService.getNotesListByInvoiceID(invoice.getId());
 		notesList = commonUtil.toJSON(list);
 		return notesList;
 	}
