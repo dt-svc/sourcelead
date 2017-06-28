@@ -21,7 +21,7 @@
       </div>
       <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Expenses Approval</a> &raquo; Add Expense</div> 
@@ -122,7 +122,7 @@
 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
 			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50">${entry.description}</div></td>
 			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)});"></i>
+			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
 			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
@@ -211,7 +211,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)});">
+							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix"></div>
@@ -224,11 +224,13 @@
 </div>
   <div class="form-footer clearfix mt">
 		<div class="col-lg-12">
+		
+		
 			<div class="pull-right">
 			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
-			<input type="button" value="Cancel" class="btn btn-sm btn-default ml10">
+			<input type="button" value="Cancel"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
 		</div>
    </div>
   </div>
