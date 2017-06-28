@@ -17,6 +17,10 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.SourceleadNotes;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
+/**
+ * @author Ajith Matta
+ *
+ */
 @Repository
 public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 	@Autowired
@@ -46,42 +50,42 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelation) throws Exception
+	public List<SourceleadNotes> getNotesListByOrglocationIdAndType(Long orgrelation,Long orgLocationId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadNotes sn where  sn.orgRelationID.id =:orgrelation ORDER BY sn.id DESC";
-		List<SourceleadNotes> notesList = session.createQuery(query).setLong("orgrelation", orgrelation).setCacheable(true).list();
+		String query = "from SourceleadNotes sn where  sn.orgRelationID.id =:orgrelation and sn.orgLocationID.id = :orgLocationId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("orgrelation", orgrelation).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return notesList;
 	}
 	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId) throws Exception{
+	public List<SourceleadNotes> getNotesListByRequirementId(Long requirementId,Long orgLocationId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadNotes sn where  sn.requirementId.id =:requirementId ORDER BY sn.id DESC";
-		List<SourceleadNotes> notesList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
-		return notesList;
-		
-	}
-	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId) throws Exception{
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadNotes sn where  sn.invoicdeId.id =:invoiceId ORDER BY sn.id DESC";
-		List<SourceleadNotes> notesList = session.createQuery(query).setLong("invoiceId", invoiceId).setCacheable(true).list();
+		String query = "from SourceleadNotes sn where  sn.requirementId.id =:requirementId and sn.orgLocationID.id =:orgLocationId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return notesList;
 		
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId,Long orgLocationId) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadNotes sn where  sn.invoicdeId.id =:invoiceId and sn.orgLocationID.id =:orgLocationId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("invoiceId", invoiceId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return notesList;
+		
+	}
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<SourceleadNotes> getNotesListByContractId(Long contractId) throws Exception{
+	public List<SourceleadNotes> getNotesListByContractId(Long contractId,Long orgLocationId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from SourceleadNotes sn where  sn.contractId.id =:contractId ORDER BY sn.id DESC";
-		List<SourceleadNotes> notesList = session.createQuery(query).setLong("contractId", contractId).setCacheable(true).list();
+		String query = "from SourceleadNotes sn where  sn.contractId.id =:contractId and sn.orgLocationID.id =:orgLocationId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("contractId", contractId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
 		return notesList;
 		
 	}
