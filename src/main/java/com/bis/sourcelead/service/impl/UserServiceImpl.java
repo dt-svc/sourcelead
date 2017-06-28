@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -144,6 +146,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private CandidateService  candidateService;
+	
+	@Autowired
+	MasterCandidateService masterCandidateService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -254,6 +259,13 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
+		}else{
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			if(null == masterCandidate){
+				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginuser);
+			}
+			candidateService.storeCandidateForUsers(jsonObj, user, orgLocations, masterCandidate);
 		}
 		
 		

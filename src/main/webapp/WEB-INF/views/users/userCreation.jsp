@@ -122,7 +122,7 @@
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
-                    <input type="text" class="form-control" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                   </div>
