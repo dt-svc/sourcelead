@@ -111,7 +111,7 @@ margin:0;
 
 <h4>2.8&nbsp;&nbsp;Sharing Information with Third  Parties</h4>
 
-<p>Any information you put on your profile and any content you post on  Crowdsourcing may be seen by others.We don&rsquo;t provide any of your non-public  information (including everything you mention under Private Info, whether you  are looking for a job and your CV) to third parties without your consent,  unless required by law, or as described in this Policy.Other people may find  your Crowdsourcing profile information through search engines or use other  social media services in conjunction with your Crowdsourcing account.The  visibility of your professional profile to other Members depends on your degree  of connection with the viewing Member, the subscriptions they may have, their  usage of the Services, access channels and search types (e.g. by name or by  keyword). Please note that Recruiter Licence users will also be able to access  your CV, whether or not you are open to jobs, your contact information and all  information under the Private Info section, irrespective whether they are  connected to you or not.We do not rent or sell personal information that you  have not posted on our Services, except as described in this Privacy Policy. We  will not disclose personal information that is not published to your profile or  generated through engagement with our other services, such as Company Pages or  Jobs you have applied, except to carry out your instructions (for example, to  process payment information) or unless we have your separate consent, unless we  have a good faith belief that disclosure is permitted by law or is reasonably  necessary to: (1) comply with a legal requirement or process, including, but  not limited to, civil and criminal subpoenas, court orders or other compulsory  disclosures; (2) enforce this Privacy Policy or our User Agreement; (3) respond  to claims of a violation of the rights of third parties; (4) respond to Member  service inquiries; or (5) protect the rights, property, or safety of  Crowdsourcing, our Services, our Members, Visitors, or the public. </p>
+<p>Any information you put on your profile and any content you post on  Crowdsourcing may be seen by others.We don&rsquo;t provide any of your non-public  information (including everything you mention under Private Info, whether you  are looking for a job and your CV) to third parties without your consent,  unless required by law, or as described in this Policy.Other people may find  your Crowdsourcing profile information through search engines or use other  social media services in conjunction with your Crowdsourcing account.The  visibility of your professional profile to other Members depends on your degree  of connection with the viewing Member, the subscriptions they may have, their  usage of the Services, access channels and search types (e.g. by name or by  keyword). Please note that Recruiter Licence users will also be able to access  your CV, whether or not you are open to jobs, your contact information and all  information under the Private Info section, irrespective whether they are  connected to you or not.We do not rent or sell personal information that you  have not posted on our Services, except as described in this Privacy Policy. We  will not disclose personal information that is not published to your profile or  generated through engagement with our other services, such as Company Pages or  Jobs you have applied, except to carry out your instructions (for example, to  process payment information) or unless we have your separate consent, unless we  have a good faith belief that disclosure is permitted by law or is reasonably  necessary to: (1) comply with a legal Job or process, including, but  not limited to, civil and criminal subpoenas, court orders or other compulsory  disclosures; (2) enforce this Privacy Policy or our User Agreement; (3) respond  to claims of a violation of the rights of third parties; (4) respond to Member  service inquiries; or (5) protect the rights, property, or safety of  Crowdsourcing, our Services, our Members, Visitors, or the public. </p>
 
 <h4>2.9&nbsp;&nbsp;Search</h4>
 
@@ -147,7 +147,7 @@ margin:0;
 
 <h4>4.1&nbsp;&nbsp;Minimum  Age </h4>
 
-<p>You have to meet  Crowdsourcing&rsquo;s minimum age requirements to create an account. </p>
+<p>You have to meet  Crowdsourcing&rsquo;s minimum age Jobs to create an account. </p>
 
 <h4>4.2&nbsp;&nbsp;Changes  to this Privacy Policy </h4>
 
@@ -255,7 +255,7 @@ margin:0;
 <h4>8.1&nbsp;&nbsp;Dos.  You agree that you will: </h4>
 
   <ul>
-    <li>Comply with all applicable laws, including, without limitation,  privacy laws, intellectual property laws, anti-spam laws, export control laws,  tax laws, and regulatory requirements; </li>
+    <li>Comply with all applicable laws, including, without limitation,  privacy laws, intellectual property laws, anti-spam laws, export control laws,  tax laws, and regulatory Jobs; </li>
     <li>Provide accurate information to us and keep it updated; </li>
     <li>Use your real name on your profile; </li>
     <li>Use the Services in a professional manner. </li>

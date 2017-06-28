@@ -23,6 +23,7 @@
 <jsp:include page="clientContracts.jsp" />
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
+<jsp:include page="clientNotes.jsp" /> 
 
 <style type="text/css">
 clients_wrap {
@@ -968,7 +969,7 @@ function pagination(){
 		
 		//for client requirement tab
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
-		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Requirement List</a></li>';	
+		result = result + '<li><a href="#tab-5" onclick="clientRequirementList('+orgRelationId+');">Jobs List</a></li>';	
 		'</sec:authorize>';
 		
 		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Billing</a></li>';
@@ -976,6 +977,11 @@ function pagination(){
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		result = result + '<li><a href="#tab-7" onclick="clientContracts('+orgRelationId+');">Contracts</a></li>';	
 		'</sec:authorize>';
+	
+		// client notes
+		
+		result = result + '<li><a href="#tab-8" onclick="clientNotesList('+orgRelationId+','+clientLocationId+');">Notes List</a></li>';	
+	
 		
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -1008,6 +1014,10 @@ function pagination(){
 		 //for client contracts
 		result = result + '<div id="tab-7" class="project_tabs_inn">';
 		result = result + '</div>';
+		
+		//for notes tab
+		 result = result + '<div id="tab-8" class="project_tabs_inn">';
+		 result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>';

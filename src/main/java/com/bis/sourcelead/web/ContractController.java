@@ -529,5 +529,23 @@ public class ContractController {
 		model.setViewName("contracts/addCustomContract");
 		return model;
 	}
+	
+	
+	@RequestMapping(value = "/viewContract")
+	public ModelAndView viewContract(HttpServletRequest request) throws Exception
+	{
+		logger.debug("display contract view page");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Contract);
+		
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("contracts/viewContract");
+		return model;
+	}
 		
 }

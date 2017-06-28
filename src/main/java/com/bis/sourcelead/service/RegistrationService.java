@@ -9,7 +9,7 @@ import com.bis.sourcelead.form.Registration;
 
 public interface RegistrationService {
 	
-	public void addRegistration(Registration registration,User user,String modules,String subModules, Long orgLocationsId) throws Exception;
+	public void addRegistration(Registration registration,User user,String modules,String subModules, Long orgLocationsId,JSONObject jsonObj) throws Exception;
 	
 	public void sendEmail(Registration registration,Long locationsId) throws Exception;
 	

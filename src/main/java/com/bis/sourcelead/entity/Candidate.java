@@ -38,6 +38,10 @@ public class Candidate implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    private MasterCandidate masterCandidateId;
+	
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
@@ -125,6 +129,9 @@ public class Candidate implements Serializable{
 	
 	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
 	private String summary;
+	
+	@Column(name = "VISA_TYPE", columnDefinition = "TEXT default NULL")
+	private String visaType;
 	
 	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
 	@Lob
@@ -332,6 +339,9 @@ public class Candidate implements Serializable{
 	 
 	 @Transient
 	 private String sowContractName;
+	 
+	 @Transient
+	 private LinkedHashSet<String> allAndCandidateVisa;
 	 
 	 
 	 @Transient
@@ -1283,6 +1293,37 @@ public class Candidate implements Serializable{
 	{
 		this.contractsList = contractsList;
 	}
+
+	public MasterCandidate getMasterCandidateId()
+	{
+		return masterCandidateId;
+	}
+
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId)
+	{
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+
+	public LinkedHashSet<String> getAllAndCandidateVisa() {
+		return allAndCandidateVisa;
+	}
+
+
+	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
+		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+
 	
 	
 }

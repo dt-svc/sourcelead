@@ -57,6 +57,10 @@ public class CandidateIndexHelper {
 			if(null != candidate.getPrimarySkill()){
 				candidateIndex.setPrimarySkill(candidate.getPrimarySkill());
 			}
+			
+			if(null != candidate.getVisaType() && !candidate.getVisaType().isEmpty()){
+				candidateIndex.setVisaType(candidate.getVisaType());
+			}
 			/*if(null != candidate.getCandidateSkills() && !candidate.getCandidateSkills().isEmpty()){
 				ArrayList<String> skillList = new ArrayList<>();
 				for(CandidateSkills skills : candidate.getCandidateSkills()){

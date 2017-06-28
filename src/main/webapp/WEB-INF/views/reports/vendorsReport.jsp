@@ -136,11 +136,11 @@ function vendorReportPagination(){
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Requirements Posted',
+	                title: 'Jobs Posted',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Requirements Posted',
+	                title: 'Jobs Posted',
 	            }
 	        ],
     	"scrollCollapse": false,
@@ -315,11 +315,11 @@ function vendorSpocReportPagination(){
 	        buttons: [
 	        	{
 	                extend: 'excel',
-	                title: 'Requirements Posted',
+	                title: 'Jobs Posted',
 	            },
 	            {
 	                extend: 'pdf',
-	                title: 'Requirements Posted',
+	                title: 'Jobs Posted',
 	            }
 	        ],
     	"scrollCollapse": false,

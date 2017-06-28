@@ -14,4 +14,6 @@ public interface ContractRequestDocumentsDao {
 	ContractRequestDocuments getContractRequestDocumentsById(Long docId);
 	
 	ContractRequestDocuments getContractRequestDocumentsByContractUUID(String contractUUID);
+	
+	ContractRequestDocuments getContractByContractId(Long contractId);
 }
