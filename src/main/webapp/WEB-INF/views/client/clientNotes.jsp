@@ -111,15 +111,15 @@ function clientNotes(orgRelationId){
      for(var i=0;i<json.length;i++){
        	var report = json[i];
     	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
-   	  	output = output+'<div class="comments-div comments-inner clearfix">';
+   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
    	    output = output+'        	<img onerror="predefineProfileImage(this);" src="'+sourceleadUrl+'/displayUserImage/'+report.commentAuthorUserId+'"/>';
    	    output = output+'        </div>';
    	    output = output+'    </div>';
-   	    output = output+'     <div class="comments-content comments-notes">';
-   	    output = output+'         <div class="pull-left comments-text">';
+   	    output = output+'     <div class="comments-content">';
+   	    output = output+'         <div class="commentsNotes_inner">';
    	    output = output+'         <p class="comment-by">';
    	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
    	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
@@ -137,7 +137,7 @@ function clientNotes(orgRelationId){
    		 output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
    	    }
    	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
-   	    output = output+'         <span class="commentText pull-left">'+report.comment+'</span>';
+   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
    	    output = output+'         </div>';
    	    output = output+'     </div>';
    	    output = output+'</div>';
@@ -192,7 +192,6 @@ function addClientNotes(orgRelationId,clientLocationId) {
      result = result +"<option value='Contacts'>Contacts</option>";
      result = result +"<option value='Contracts'>Contracts</option>";
      result = result +"<option value='Billing'>Billing</option>";
-     result = result +"<option value='Project'>Project</option>";
      result = result +"<option value='Other'>Other</option>";
      result = result +"</select>";
      result = result +"    </div>";
