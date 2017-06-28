@@ -32,7 +32,12 @@
     <div class="pull-left">
       <h2>Add Candidate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
+    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+   	 <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
+    </c:if>
+     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+   	 <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Add Candidate</div>
+    </c:if>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -304,7 +309,7 @@
             <label class="col-md-3">Attach Resume</label>
             <div class="col-md-9">
 			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+               <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
                 <input type="file" style="display: none;" multiple name ="uploadBtn" id="uploadBtn"  class="upload">
                  </span> </label>
                  <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc " data-validation-optional="true" >
@@ -318,6 +323,27 @@
                 <select multiple data-placeholder="Select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true" >
                 <c:forEach var="skill" items="${skillsList}">
 	                     <option value="${skill.name}">${skill.name}</option>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3">Visa</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
+               <c:forEach var="visaList" items="${visaList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedVisa" items="${requirement.visaType}">
+					    <c:if test="${existedVisa eq visaList}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${visaList}">${visaList}</option>
+					    </c:if>
+					</c:forEach>
+					
+					<c:if test="${NUM == 0}">
+						<option  value="${visaList}">${visaList}</option>
+					</c:if>
                 </c:forEach>
                 </select>
               </div>
@@ -352,7 +378,17 @@
         </div>
         </div>
         
-         
+        <div class="clearfix"></div>
+        <div class="form-group">
+            <label class="col-md-3"></label>
+             <div class="col-md-9">
+               <div class="checkbox checkBox">
+                 <label>
+                   <input type="checkbox" value="Y" name="email">
+                   Invite to SourceLead</label>
+               </div>
+                </div>
+         </div>
            
            
          
@@ -504,7 +540,7 @@ function getAllCountries(){
         	$('#country').empty();
         	$('#country').append('<option value="">---select country---</option>');
             for(var i=0;i<json.length;i++){
-            	if(json[i] == '${loginCountryName}'){
+            	if(json[i] == '${SourceLeadWeb_loginCountryName}'){
             		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
             	}
             	else{

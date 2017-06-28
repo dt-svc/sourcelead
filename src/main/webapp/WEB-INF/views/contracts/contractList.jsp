@@ -11,8 +11,18 @@
 <link href="resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
 
-<!-- Content Area -->
-<!-- Content Area -->
+<!-- these files for export -->
+<link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet">
+<!-- <script src="//code.jquery.com/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- ends files of export -->
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -24,7 +34,9 @@ $(document).ready(function(){
 
 <style>
 .CurDiv { position: static !important; float: left;}
-
+.timesheet_head ul {
+padding: 2px 300px 2px 0px;
+}
 </style>
 
 <section class="content-wraper">
@@ -41,7 +53,7 @@ $(document).ready(function(){
 <li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Approve (${contractsCount.totalWTACount})</a></li> 
 <li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
 <li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList();"><i class="fa fa-clock-o fa-2"></i>Verify (${contractsCount.totalWTVCount})</a></li>
-<li title="Finalised"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList();">Finalized (${contractsCount.totalFinalizedCount})</a></li>
 <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList();">Expired (${contractsCount.totalExpiredCount})</a></li>
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
@@ -112,6 +124,7 @@ $(document).ready(function(){
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Clients</a> -->
 			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');">Vendors (${contractsCount.totalDraftVendorCount})</a>
 			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');">Clients (${contractsCount.totalDraftClientCount})</a>
+			<a href="#" id="Applicants1" class="tabActivation" onclick="tabEnable(this);Check('Applicants');">Applicants (${contractsCount.totalDraftClientCount})</a>
 		</div>
 		<ul>
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
@@ -137,24 +150,16 @@ $(document).ready(function(){
 					</ul>
 				</div>	                	
 			</li>
-			<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
-				<div class="statusFiler-2">
-					<ul class="list-unstyled">
-						<li>PDF<i class="fa fa-file-pdf-o"></i></li>
-						<li>Excel<i class="fa fa-file-excel-o"></i></li>
-						<li>Word<i class="fa fa-file-word-o"></i></li>
-					</ul>
-				</div>
-			</li>	
 			<div class="clearfix"></div>
 		</ul>
 		<div class="clearfix"></div>
             
 	</div>
 	<div id="loading"></div>
-    <div class="clients_wrap_table">
+    <div class="clients_wrap_table repoPositiNoCount">
     <div id="vendorContractsList"  class=" overflow-data" ></div>
      <div id="clientContractsList"  class=" overflow-data" style="display: none"></div>
+     <div id="applicantsContractsList"  class=" overflow-data" style="display: none"></div>
 	</div>
 	
 </div>
@@ -167,258 +172,80 @@ $(document).ready(function(){
 	<div id="viewPopupDiv"></div>
 </section>
 
+<section class="DocAccPopup">
+	<div class="DocAccPopupHead clearfix"><h4>Requested Documents</h4><span><i class="fa fa-times" onclick="contPopClose();"></i></span></div>
+	<form:form id="contractDoc_form" name="contractDoc_form" method="post">
+	<div id ="loadingDoc"></div>
+		<div id="DocAccPopupDiv" class="clearfix rd_table"></div>
+	
+<!-- 	<div class="col-xs-12 col-sm-12 col-md-12 clearfix myForm DocAccWrap">
+            <div class="form-group">
+              <label class="col-md-4">Attachment<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+				<div class="input-group positionRelative ratetype" id="uploadFileGroup" title="Document Type: .pdf format only">
+					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
+	                <input name="uploadBtn" id="uploadBtn" style="display: none;" multiple="" class="upload" type="file">
+	                </span> </label>
+					<input class="form-control padSm" readonly="" id="uploadFile" name="docFile" value="" placeholder="Upload File" type="text">
+				</div>
+              </div>			
+			</div>
+			
+			<div class="clearfix"></div>
+        </div> -->
+        
+<div class="clearfix DocAccWrapFoot" id="saveAction">
+		<!-- <input type="button" value="Submit" class="btn btn-primary padSm"> -->
+		 <input type="button" value="Submit" id="save_Doc" onclick="saveDocContract();" class="btn btn-primary padSm">
+		<input type="button" value="Cancel" class="btn btn-default padSm" onclick="contPopClose();">
+      </div>
+</form:form>
+</section>
+
+<script type="text/javascript">
+	function saveDocContract() {
+		if ($('#contractDoc_form').validate(false, validationSettings)) {
+			var frm = $('#contractDoc_form').serializeFormJSON();
+			var con = JSON.stringify(frm);
+			con = con.replace(/[{}]/g, "");
+	        var jsonData = encodeURIComponent(con);
+	        var form = $('#contractDoc_form')[0];
+ 	 	    var formData = new FormData(form); 
+			var sourceleadUrl = '${sourceleadUrl}';
+			$("#save_Doc").attr("disabled", "disabled");
+			$("#contractDoc_form").attr("disabled", "disabled");
+			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 		$.ajax({
+	 			 type: "POST",
+		    	 data: formData,
+			     contentType : 'application/json; charset=utf-8',
+			     enctype: 'multipart/form-data',
+		         processData: false,
+		         contentType:false,
+			     dataType : 'json',
+						url : sourceleadUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						success : function(result) {
+							location.replace(sourceleadUrl+"/contractListbyStatus");
+						},
+					}); 
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#contractDoc_form', function() {
+		$("#contractDoc_form").showHelpOnFocus();
+		$("#contractDoc_form").validateOnBlur(false, validationSettings);
+	});
+</script>
 
 <script>
-function PopUp(contractUUID){
-	$(".mask_time").fadeIn(200);
-	$(".contPopup").fadeIn(100);
+function PopUp(contractUUID,stage){
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#viewPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	 $.ajax({
-      type : "GET",
-       url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
-       success :function(data) {
-    	   $("#viewPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-    	    var result = '';
-    	    var json = JSON.parse(data);
-			result = result +	'<div class="contPopupHead clearfix">';
-			result = result +	'<h4>'+json.contractTitle+'</h4>';
-			result = result +	'<span>';
-			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
-				if('New' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
-				}else if('Existing' == json.typeOfContract){
-					result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
-				}else if('Custom' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
-				}
-			}else{
-				result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
-			}
-			
-			result = result +	'</span>';
-			result = result +	'</div>';
-		
-			result = result +	'<div class="modal-body clearfix">';
-			result = result +	'<div class="col-xs-12 col-md-12 col-lg-12 noPad clearfix mt10">';
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contract Title</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractTitle+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contract Type</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractType+'</div>';
-			result = result +	'	</div>';
-			
-			if('Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Template Title</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.templateName+' <a href="#" title="Preview"><i  title="View Template" class="fa fa-eye" onclick="previewTemplatePDF(\''+json.contractsTemplate.templateUUID+'\', \''+json.contractsTemplate.templateName+'\')"></i></a></div>';
-				result = result +	'	</div>';
-			}
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
-			result = result +	'	</div>';
-			
-			if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">End Date</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.endDateStr+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Owner</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
-			result = result +	'	</div>';
-			
-			if(null != json.approverUserName && "" != json.approverUserName && 'undefined' != json.approverUserName){
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Approver</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.approverUserName+'</div>';
-			result = result +	'	</div>';
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Applicant Name</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.applicantName+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.offerValue && "" != json.offerValue && 'undefined' != json.offerValue){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Offer Rate</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.offerValue+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.duration && "" != json.duration && 'undefined' != json.duration){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Duration</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: </div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.initiatorType && "Client" == json.initiatorType){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.initiatorType && "Vendor" == json.initiatorType){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
-			result = result +	'	</div>';
-			
-			if(null != json.stateJurisdiction && "" != json.stateJurisdiction && 'undefined' != json.stateJurisdiction){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">State of Jurisdiction</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.stateJurisdiction+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.description && "" != json.description && 'undefined' != json.description){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Description</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.description+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			result = result +	'<div class="clearfix"/>';
-			
-		if(json.contractType != "Vendor NDA" && json.contractType != "Vendor NSA"){
-			result = result +	'<h4>Billing Details</h4>';
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.hoursPerWeek && "" != json.hoursPerWeek && 'undefined' != json.hoursPerWeek){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Hours Per Week</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.hoursPerWeek+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.overTimeHours && "" != json.overTimeHours && 'undefined' != json.overTimeHours){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Overtime Hours</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overTimeHours+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.overtimeRate && "" != json.overtimeRate && 'undefined' != json.overtimeRate){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Overtime rate</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.overtimeRate+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.typeOfContract && json.contractType.includes("SOW")){
-				if(null != json.totalHours && "" != json.totalHours && 'undefined' != json.totalHours){
-					result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-					result = result +	'		<div class="col-md-4 col-sm-4">Total Estimated Hours</div>';
-					result = result +	'		<div class="col-md-8 col-sm-8">: '+json.totalHours+'</div>';
-					result = result +	'	</div>';
-				}
-			}
-			
-			if(null != json.billingAmount && "" != json.billingAmount && 'undefined' != json.billingAmount){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Billing Amount</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.billingRateType+' '+json.billingAmount+' / '+json.billingRatePer+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.invoiceFrequency && "" != json.invoiceFrequency && 'undefined' != json.invoiceFrequency){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Billing Cycle</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.invoiceFrequency+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.paymentTerm && "" != json.paymentTerm && 'undefined' != json.paymentTerm){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			if(null != json.tax && "" != json.tax && 'undefined' != json.tax){
-				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Tax</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.tax+' '+json.taxType+'</div>';
-				result = result +	'	</div>';
-			}
-			
-			result = result +	'<div class="clearfix"/>';
-		}
-			result = result +	'<h4>History</h4>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Updated On</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.updatedDateStr+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Updated By</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.updatedByName+'</div>';
-			result = result +	'	</div>';
-			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Added From</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.typeOfContract+'</div>';
-			result = result +	'	</div>';
-			
-			
-			result = result +	'</div>';
-			result = result +	'</div>';
-			$("#viewPopupDiv").empty();
-			$("#viewPopupDiv").append(result);
-       },
-	  }); 
+	localStorage.setItem("stage",stage);
+ 	window.location.replace(sourceleadUrl+'/viewContract?contractUUID='+contractUUID);
 }
 
-function contPopClose(){
-	$("#viewPopupDiv").empty();
-	$(".mask_time").fadeOut(200);
-	$(".contPopup").fadeOut(100);
-}
 
 function previewTemplatePDF(uuid, templateName){
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -496,11 +323,12 @@ function getTemplateList(){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#verifyDiv").css("display", "none");
 		$("#signedDiv").css("display", "block");
-	}
-	if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
+	}else if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#signedDiv").css("display", "none");
 		$("#verifyDiv").css("display", "block");
+	}else{
+		$("#filterContractTypePop-2").css("display", "none");
 	}
 	
 	
@@ -549,6 +377,7 @@ function getTemplateList(){
 function preparedContractListDraft(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableDraft" class="display" cellspacing="0" width="100%" >';
@@ -557,9 +386,10 @@ function preparedContractListDraft(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -570,7 +400,7 @@ function preparedContractListDraft(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
@@ -587,20 +417,36 @@ function preparedContractListDraft(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
-		         result = result + '</td>';
-		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
 		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result +' | '+ report.endDateStr+'</div>';
+		         }
+		         result = result + '</td>';
+		         /* result = result + '<td>';
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
+		         result = result + '</td>'; */
+		         
+		         result = result + '<td>';
+		         if(report.reqDocCount!="0"){
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 result = result + '<div class="tblminwidth-75 ">'+report.reqDocCount+'</div>';
+		         }	 
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
 		     	if(report.templateSubmissionStatus == "DRAFT"){
-		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
 		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -609,10 +455,6 @@ function preparedContractListDraft(data){
 		     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		'</sec:authorize>';
-		     		//result = result + '</div>';
-	     	  }
-	     	  else{
-	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
 	     	  }
 		         result = result + '</div></td>';
 		     	 
@@ -629,9 +471,10 @@ function preparedContractListDraft(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
@@ -642,7 +485,7 @@ function preparedContractListDraft(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'DRAFT\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
@@ -659,20 +502,31 @@ function preparedContractListDraft(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
-	         opt = opt + '</td>';
-	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
 	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +' | '+output.endDateStr+'</div>';
+	         }
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	         if(output.reqDocCount!="0"){
+	         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+	         }
+	         else{
+	        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+	         }
+	         opt = opt + '</td>';
+	         
+	         
+	         opt = opt + '<td>';
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	     	  if(output.templateSubmissionStatus == "DRAFT" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -681,9 +535,6 @@ function preparedContractListDraft(data){
 		     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 	     		'</sec:authorize>';
-	     	  }
-	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
 	     	  }
 	     		opt = opt + '</div></td>';
 	     	
@@ -695,20 +546,109 @@ function preparedContractListDraft(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	var res = '';
+	 res = res +  '<table id="contractListTableDraft2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\',\'DRAFT\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         if(appReport.billingAmount != null && appReport.billingAmount != '' && appReport.billingAmount != 'undefined'){
+		      	   res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75">--</div>'; 
+		         }
+		         res = res + '</td>';
+		         /* res = res + '<td>';
+		        	 res = res + '<div class="tblminwidth-75">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>'; */
+		         
+		         res = res + '<td>';
+		         if(appReport.reqDocCount!="0"){
+		        	 res = res + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         }	 
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tbldata-dotdot_80">';
+		     	if(appReport.templateSubmissionStatus == "DRAFT"){
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		     		res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize>';
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		if(appReport.typeOfContract == "New"){
+		     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		if(appReport.typeOfContract == "Custom"){
+		     			res = res + '| <a href="<c:url value="/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		'</sec:authorize>';
+		     		//res = res + '</div>';
+	     	  }
+		         res = res + '</div></td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
+	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var draftCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
+	var draftCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#draft").html('Draft ('+draftCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res); 
     listContractsPagination();	
     vendorListContractsPagination();
+    appListContractsPagination();
 	
 }
 </script>
@@ -716,7 +656,18 @@ function preparedContractListDraft(data){
 <script>
 function listContractsPagination(){
 	$('#contractListTableDraft1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip',
+        buttons: [
+        	{
+                extend: 'excel',
+                title: 'Draft Contract',
+            },
+            {
+                extend: 'pdf',
+                title: 'Draft Contract',
+            }
+        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -725,12 +676,41 @@ function listContractsPagination(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+	$(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPagination(){ 
     $('#contractListTableDraft').DataTable( { 
+    	dom: 'Bfrtip',
+        buttons: [
+        	{
+                extend: 'excel',
+                title: 'Draft Contract',
+            },
+            {
+                extend: 'pdf',
+                title: 'Draft Contract',
+            }
+        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+}
+function appListContractsPagination(){ 
+    $('#contractListTableDraft2').DataTable( { 
+    	
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -746,6 +726,7 @@ function vendorListContractsPagination(){
 function preparedContractListWFA(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#clientContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWFA" class="display" cellspacing="0" width="100%" >';
@@ -754,13 +735,12 @@ function preparedContractListWFA(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
-// 		result = result + '    <th>Contract Type</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Approver</th>';
 		result = result + '    <th>Action</th>';
-// 		result = result + '    <th>Doc View</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
 		result = result + '	<tbody>';
@@ -770,7 +750,7 @@ function preparedContractListWFA(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'APPROVE\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
@@ -787,14 +767,27 @@ function preparedContractListWFA(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
+		         
 		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+' | ';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
+		        	 result = result + report.endDateStr+'</div>';
 		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         } 
+		        	 result = result + '--</div>';
+		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.reqDocCount!="0"){
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 result = result + '<div class="tblminwidth-75 ">'+report.reqDocCount+'</div>';
+		         }	 
 		         result = result + '</td>';
 		         /* result = result + '<td>';
 		         result = result + '<div><span>'+report.contractType+'</span></div>';
@@ -814,23 +807,22 @@ function preparedContractListWFA(data){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot-vsm">';
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-	        		 '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
-	            		//result = result + '<div class="CurDiv" id="removeStatus'+report.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+report.id+'"><a class="btn btn-sm btn-danger" title="REJECTED" onclick="approveContract('+report.id+',\'REJECTED\');">Reject</a></div>'; 
-	            	  result = result +'<div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
-	            	  result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-	            	  '</sec:authorize>';
-	            	  '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-			     		if(report.typeOfContract == "New"){
-			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     		if(report.typeOfContract == "Custom"){
-			     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     	  '</sec:authorize>';
-
-	        	  }
-	        	  else{
-	        		  result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	        		  
+	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
+	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div></div>';
+	      	         }
+	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+	      	     		if(report.typeOfContract == "New"){
+	      	     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+	      	     		}
+	      	     		if(report.typeOfContract == "Custom"){
+	      	     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+	      	     		}
+	        			'</sec:authorize>';
+	        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	        			result = result + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	        			'</sec:authorize>';
+	        			
 	        	  }
 	        	  
 		     		 //result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
@@ -850,13 +842,12 @@ function preparedContractListWFA(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
-// 	opt = opt + '    <th>Contract Type</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '     <th>Req Docs</th>'; 
 	opt = opt + '    <th>Approver</th>';
 	opt = opt + '    <th>Action</th>';
-// 	opt = opt + '    <th>Doc View</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
 	opt = opt + '	<tbody>';
@@ -866,7 +857,7 @@ function preparedContractListWFA(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'APPROVE\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
@@ -883,15 +874,28 @@ function preparedContractListWFA(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
+	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+' | ';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +output.endDateStr+'</div>';
+	         }else{
+	        	 opt = opt + '--</div>';
+	         }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
-	         result = result + '</td>';
+	         if(output.reqDocCount!="0"){
+	         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+	         }
+	         else{
+	        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+	         }
+	         opt = opt + '</td>';
+	         
 	         /* opt = opt + '<td>';
 	         opt = opt + '<div><span>'+output.contractType+'</span></div>';
 	         opt = opt + '</td>'; */
@@ -910,30 +914,23 @@ function preparedContractListWFA(data){
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot-vsm">';
 	         
+	         
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-        		   '<sec:authorize access="hasAnyRole(\'ROLE_APPROVE_CONTRACT\')">';
-            		//opt = opt + '<div><div class="CurDiv" id="removeStatus'+output.id+'"><a class="btn btn-sm btn-success pull-left" title="approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');">Approve</a></div><div class="CurDiv" id="removeReject'+output.id+'"><a class="btn btn-sm btn-danger ml" title="REJECTED" onclick="approveContract('+output.id+',\'REJECTED\');">Reject</a></div></div>'; 
-
-            		opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
-            		opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
-
-            		'</sec:authorize>';
-            		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-			     		if(output.typeOfContract == "New"){
-			     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     		if(output.typeOfContract == "Custom"){
-			     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-		     		'</sec:authorize>';
+        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
+     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+output.id+',\'REJECTED\');"></i></div></div>';
+     	         }
+     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+     	     		if(output.typeOfContract == "New"){
+     	     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+     	     		}
+     	     		if(output.typeOfContract == "Custom"){
+     	     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+     	     		}
+       			'</sec:authorize>';
+       			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+       			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+       			'</sec:authorize>';
         	  }
-        	  else{
-         	 	//opt = opt + '<div><span>--</span></div>';
-        		  opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
-        	  }
-        	 // opt = opt + '<div class="tbldata-dotdot_80">';
-	     	 
-	     		 //opt = opt + '<div><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a></div>';
 	     	 
 	     		opt = opt + '</div></td>';
 	     	
@@ -945,20 +942,120 @@ function preparedContractListWFA(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	
+	var res = '';
+	 res = res +  '<table id="contractListTableWTA2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Approver</th>';
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\',\'APPROVE\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         if(appReport.billingAmount != null && appReport.billingAmount != '' && appReport.billingAmount != 'undefined'){
+		      	   res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75">--</div>'; 
+		         }
+		         res = res + '</td>';
+		         /* res = res + '<td>';
+		        	 res = res + '<div class="tblminwidth-75">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>'; */
+		         
+		         res = res + '<td>';
+		         if(appReport.reqDocCount!="0"){
+		        	 res = res + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         }	 
+		         res = res + '</td>';
+		         
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.approverUserName+'">'+appReport.approverUserName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tbldata-dotdot_80">';
+		     	if(appReport.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
+					if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.approverUserId){
+					res = res +' <div><div class="CurDiv" id="removeStatus'+appReport.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+appReport.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+appReport.id+',\'REJECTED\');"></i></div></div>';
+					}
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		     		res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize>';
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		if(appReport.typeOfContract == "New"){
+		     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		if(appReport.typeOfContract == "Custom"){
+		     			res = res + '| <a href="<c:url value="/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		'</sec:authorize>';
+		     		//res = res + '</div>';
+	     	  }
+		         res = res + '</div></td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
+	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var approveCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
+	var approveCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#approve").html('<i class="fa fa-clock-o fa-2"></i>Approve ('+approveCount+')');
+	
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res); 
     listContractsPaginationWFA();	
     vendorListContractsPaginationWFA();
+    appListContractsPaginationWFA();
 	
 }
 </script>
@@ -966,7 +1063,18 @@ function preparedContractListWFA(data){
 <script>
 function listContractsPaginationWFA(){
 	$('#contractListTableWFA1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Approved Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Approved Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -975,12 +1083,26 @@ function listContractsPaginationWFA(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+
 }
 function vendorListContractsPaginationWFA(){ 
     $('#contractListTableWFA').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Approved Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Approved Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -988,15 +1110,46 @@ function vendorListContractsPaginationWFA(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+
+}
+
+function appListContractsPaginationWFA(){ 
+    $('#contractListTableWTA2').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Approved Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Approved Contract',
+	            }
+	        ],
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+
 }
 </script>
-
 
 <script>
 function preparedContractListWTS(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTS" class="display" cellspacing="0" width="100%" >';
@@ -1005,10 +1158,10 @@ function preparedContractListWTS(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
-// 		result = result + '    <th>Received On</th>';
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -1020,7 +1173,7 @@ function preparedContractListWTS(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'SIGN\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
@@ -1037,16 +1190,25 @@ function preparedContractListWTS(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
-		         result = result + '</td>';
-		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
-		         } 
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
+		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result +' | '+ report.endDateStr+'</div>';
+		         }
+		         result = result + '</td>';
+		         result = result + '<td>';
+		         if(report.reqDocCount!="0"){
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 result = result + '<div class="tblminwidth-75 ">'+report.reqDocCount+'</div>';
+		         }	 
+		         result = result + '</td>';
 		         //to be change for Received On
 		         
 		         /* result = result + '<td>';
@@ -1058,7 +1220,9 @@ function preparedContractListWTS(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';//Waiting to be signed
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize>';
 		         result = result + '</td>';
 		     	 
 		        result = result + '</tr>';
@@ -1074,10 +1238,10 @@ function preparedContractListWTS(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
-// 	opt = opt + '    <th>Received On</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Req Docs</th>';
 	opt = opt + '    <th>Status</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -1089,7 +1253,7 @@ function preparedContractListWTS(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'SIGN\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
@@ -1106,15 +1270,27 @@ function preparedContractListWTS(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
+	         
 	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
+	        	 opt = opt +' | '+output.endDateStr+'</div>';
+	         }
 	         opt = opt + '</td>';
+	         
+	         opt = opt + '<td>';
+	         if(output.reqDocCount!="0"){
+	         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+	         }
+	         else{
+	        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+	         }
+	         opt = opt + '</td>';
+	         
 
 	         //to be changed for Received on
 	         /* opt = opt + '<td>';
@@ -1126,7 +1302,9 @@ function preparedContractListWTS(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';//Waiting to be signed
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+     		'</sec:authorize>';
      		 opt = opt + '</td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1137,28 +1315,122 @@ function preparedContractListWTS(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	
+	var res = '';
+	 res = res +  '<table id="contractListTableWTS2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Status</th>';
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\',\'SIGN\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         if(appReport.billingAmount != null && appReport.billingAmount != '' && appReport.billingAmount != 'undefined'){
+		      	   res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75">--</div>'; 
+		         }
+		         res = res + '</td>';
+		         /* res = res + '<td>';
+		        	 res = res + '<div class="tblminwidth-75">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>'; */
+		         
+		         res = res + '<td>';
+		         if(appReport.reqDocCount!="0"){
+		        	 res = res + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         }	 
+		         res = res + '</td>';
+		         
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.templateSubmissionStatus+'">'+appReport.templateSubmissionStatus+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';//Waiting to be signed
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize>';
+		         res = res + '</td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
+	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var signCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
+	var signCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#sign").html('<i class="fa fa-clock-o fa-2"></i>Sign ('+signCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res);
     listContractsPaginationWTS();	
     vendorListContractsPaginationWTS();
-	
+    appListContractsPaginationWTS();
 }
 </script>
 
 <script>
 function listContractsPaginationWTS(){
 	$('#contractListTableWTS1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Signed Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Signed Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1167,12 +1439,25 @@ function listContractsPaginationWTS(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationWTS(){ 
     $('#contractListTableWTS').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Signed Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Signed Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1180,7 +1465,35 @@ function vendorListContractsPaginationWTS(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+}
+function appListContractsPaginationWTS(){
+	$('#contractListTableWTS2').DataTable({ 
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Signed Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Signed Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -1188,6 +1501,7 @@ function vendorListContractsPaginationWTS(){
 function preparedContractListWTV(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableWTV" class="display" cellspacing="0" width="100%" >';
@@ -1196,11 +1510,12 @@ function preparedContractListWTV(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-// 		result = result + '    <th>Signed On</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>'; 
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Billing Cycle</th>';
+		result = result + '    <th>Status</th>';
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -1211,7 +1526,7 @@ function preparedContractListWTV(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'VERIFY\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
@@ -1227,34 +1542,56 @@ function preparedContractListWTV(data){
 		         result = result + '<div><span title="'+report.vendorContactName+'">'+report.vendorContactName+'</span></div>';
 		         result = result + '</td>';
 		         
+		         result = result + '<td>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
+		         result = result + '</td>';
+		         
 		         //need to change for signed on
 		         /* result = result + '<td>';
 		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
 		         result = result + '</td>'; */
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
-		         result = result + '</td>';
-		         
-		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
+		        	 result = result +' | '+ report.endDateStr+'</div>';
 		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div><span>'+report.invoiceFrequency+'</span></div>';
+		         if(report.reqDocCount!="0"){
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 result = result + '<div class="tblminwidth-75 ">'+report.reqDocCount+'</div>';
+		         }	 
+		         
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.invoiceFrequency != null && report.invoiceFrequency != '' && report.invoiceFrequency != 'undefined'){
+			         result = result + '<div><span>'+report.invoiceFrequency+'</span></div>';
+		         }else{
+		        	 result = result + '<div><span>---</span></div>';
+		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         result = result + '<div><span>'+report.templateSubmissionStatus+'</span></div>';
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';//Waiting to be signed
 		         result = result + '<div class="tbldata-dotdot_80">';
-	     		 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
-
-	     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+ 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
+		        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+			     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 	            	 }
+		         }
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	     		 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	     		'</sec:authorize>';
 		         result = result + '</div></td>';
 		        result = result + '</tr>';
 		    }
@@ -1269,11 +1606,12 @@ function preparedContractListWTV(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-// 	opt = opt + '    <th>Signed On</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>'; 
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Billing Cycle</th>';
+	opt = opt + '    <th>Status</th>';
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
@@ -1284,7 +1622,7 @@ function preparedContractListWTV(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'VERIFY\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
@@ -1300,33 +1638,49 @@ function preparedContractListWTV(data){
 	         opt = opt + '<div><span title="'+output.vendorContactName+'">'+output.vendorContactName+'</span></div>';
 	         opt = opt + '</td>';
 	         
-	         //need to change for signed on
-	         /* opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
-	         opt = opt + '</td>'; */
-	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
+	        	 opt = opt +' | '+output.endDateStr+'</div>';
+	         }
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	         if(output.reqDocCount!="0"){
+		         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+		         }
+		         else{
+		        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+		         }
 	         opt = opt + '</td>';
 
-	         opt = opt + '<td>';
-	         opt = opt + '<div><span>'+output.invoiceFrequency+'</span></div>';
-	         opt = opt + '</td>';
+	         result = result + '<td>';
+	         if(output.invoiceFrequency != null && output.invoiceFrequency != '' && output.invoiceFrequency != 'undefined'){
+		         result = result + '<div><span>'+output.invoiceFrequency+'</span></div>';
+	         }else{
+	        	 result = result + '<div><span>---</span></div>';
+	         }
+	         result = result + '</td>';
+	         
+	         result = result + '<td>';
+	         result = result + '<div><span>'+output.templateSubmissionStatus+'</span></div>';
+	         result = result + '</td>';
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	         if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
-	     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
-	     		}
+ 	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
+	        	 if(output.contractStatus == "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
+		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		     		}
+ 	         }
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+     		'</sec:authorize>';
      		 opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
@@ -1337,20 +1691,110 @@ function preparedContractListWTV(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	
+	var res = '';
+	 res = res +  '<table id="contractListTableWTV2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Status</th>';
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\',\'VERIFY\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         if(appReport.billingAmount != null && appReport.billingAmount != '' && appReport.billingAmount != 'undefined'){
+		      	   res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75">--</div>'; 
+		         }
+		         res = res + '</td>';
+		         /* res = res + '<td>';
+		        	 res = res + '<div class="tblminwidth-75">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>'; */
+		         
+		         res = res + '<td>';
+		         if(appReport.reqDocCount!="0"){
+		        	 res = res + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         }	 
+		         res = res + '</td>';
+		         
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.templateSubmissionStatus+'">'+appReport.templateSubmissionStatus+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';//Waiting to be signed
+		         res = res + '<div class="tbldata-dotdot_80">';
+ 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.ownerUser){
+		        	 if(appReport.contractStatus == "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
+			        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+			     		}
+		         }
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		         '</sec:authorize>';
+		         res = res + '</div></td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
+	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var verifyCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
+	var verifyCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#verify").html('<i class="fa fa-clock-o fa-2"></i>Verify ('+verifyCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res);
     listContractsPaginationWTV();	
     vendorListContractsPaginationWTV();
+    applicantsContractsPaginationWTV();	
 	
 }
 </script>
@@ -1358,7 +1802,18 @@ function preparedContractListWTV(data){
 <script>
 function listContractsPaginationWTV(){
 	$('#contractListTableWTV1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Verified Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Verified Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1367,12 +1822,26 @@ function listContractsPaginationWTV(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTV1").wrap("<div class='overflow_Auto'></div>");
 }
 function vendorListContractsPaginationWTV(){ 
     $('#contractListTableWTV').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Verified Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Verified Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1380,7 +1849,38 @@ function vendorListContractsPaginationWTV(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTV").wrap("<div class='overflow_Auto'></div>");
+}
+
+function applicantsContractsPaginationWTV(){ 
+    $('#contractListTableWTV2').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Verified Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Verified Contract',
+	            }
+	        ],
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+	$("#contractListTableWTV2").wrap("<div class='overflow_Auto'></div>");
 }
 </script>
 
@@ -1388,6 +1888,7 @@ function vendorListContractsPaginationWTV(){
 function preparedContractListFinalize(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableFinalize" class="display" cellspacing="0" width="100%" >';
@@ -1396,10 +1897,10 @@ function preparedContractListFinalize(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End date</th>';
-// 		result = result + '    <th>Finalized On</th>'; 
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Req Docs</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -1410,7 +1911,7 @@ function preparedContractListFinalize(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'FINALIZE\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
@@ -1427,15 +1928,25 @@ function preparedContractListFinalize(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
+		        	 result = result +' | '+ report.endDateStr+'</div>';
 		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		         if(report.reqDocCount!="0"){
+		        	 result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+report.contractUUID+'\',\''+report.parentId+'\');">'+report.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 result = result + '<div class="tblminwidth-75 ">'+report.reqDocCount+'</div>';
+		         }	 
 		         result = result + '</td>';
 		         
 		         //need to change for finalized on
@@ -1444,7 +1955,9 @@ function preparedContractListFinalize(data){
 		         result = result + '</td>'; */
 		         
 		         result = result + '<td>';
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize>';
 		         result = result + '</td>';
 		        result = result + '</tr>';
 		    }
@@ -1459,9 +1972,10 @@ function preparedContractListFinalize(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End date</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Req Docs</th>'; 
 // 	opt = opt + '    <th>Finalized On</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -1473,7 +1987,7 @@ function preparedContractListFinalize(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'FINALIZE\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
@@ -1490,16 +2004,30 @@ function preparedContractListFinalize(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
-	         opt = opt + '</td>';
-	         
-	         opt = opt + '<td>';
-	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
 	         }
 	         opt = opt + '</td>';
+	         
+	        /*  opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         opt = opt + '</td>'; */
+	         
+	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
+	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
+	        	 opt = opt +' | '+output.endDateStr+'</div>';
+	         }
+	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	         if(output.reqDocCount!="0"){
+		         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+		         }
+		         else{
+		        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
+		         }
+	         opt = opt + '</td>';
+	         
 	         
 	       //need to change for Finalized on
 	         /* opt = opt + '<td>';
@@ -1507,7 +2035,9 @@ function preparedContractListFinalize(data){
 	         opt = opt + '</td>'; */
 
 	         opt = opt + '<td>';
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
      		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+     		 '</sec:authorize>';
      		 opt = opt + '</td>';
      		 
 	     	 opt = opt + '</tr>';
@@ -1518,20 +2048,97 @@ function preparedContractListFinalize(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	var res = '';
+	 res = res +  '<table id="contractListTableFinalize2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\',\'FINALIZE\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         if(appReport.billingAmount != null && appReport.billingAmount != '' && appReport.billingAmount != 'undefined'){
+		      	   res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75">--</div>'; 
+		         }
+		         res = res + '</td>';
+		         /* res = res + '<td>';
+		        	 res = res + '<div class="tblminwidth-75">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>'; */
+		         
+		         res = res + '<td>';
+		         if(appReport.reqDocCount!="0"){
+		        	 res = res + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         }	 
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		         res = res + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a></div>';
+		         '</sec:authorize>';
+		         res = res + '</td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
+
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var finalisedCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
+	var finalisedCount = parseInt(vendorsCount) + parseInt(clientsCount)+parseInt(fullTimeCount);;
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#finalised").html('Finalized ('+finalisedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
-    $("#clientContractsList").append(opt); 
+    $("#clientContractsList").append(opt);
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res);
     listContractsPaginationFinalize();	
     vendorListContractsPaginationFinalize();
+    applicantsContractsPaginationFinalize();	
 	
 }
 </script>
@@ -1539,7 +2146,18 @@ function preparedContractListFinalize(data){
 <script>
 function listContractsPaginationFinalize(){
 	$('#contractListTableFinalize1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Finalized Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Finalized Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1548,12 +2166,25 @@ function listContractsPaginationFinalize(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationFinalize(){ 
     $('#contractListTableFinalize').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Finalized Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Finalized Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1561,14 +2192,43 @@ function vendorListContractsPaginationFinalize(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+}
+function applicantsContractsPaginationFinalize(){
+	$('#contractListTableFinalize2').DataTable({ 
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Finalized Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Finalized Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
-
+<!-- preparedContractListExpired -->
 <script>
 function preparedContractListExpired(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableEXP" class="display" cellspacing="0" width="100%" >';
@@ -1577,9 +2237,10 @@ function preparedContractListExpired(data){
 		result = result + '    <th>Title</th>';
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
-		result = result + '    <th>Vendor Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End Date</th>'; 
+		result = result + '    <th>Contact</th>';
+		result = result + '    <th>Vendor</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Req Docs</th>';  
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
 		result = result + '	</thead>';
@@ -1590,7 +2251,7 @@ function preparedContractListExpired(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'EXPIRE\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
@@ -1607,31 +2268,27 @@ function preparedContractListExpired(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
-		         result = result + '</td>';
-		         
-		         result = result + '<td>';
-		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
 		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
+		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
+		        	 result = result +' | '+ report.endDateStr+'</div>';
+		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
-			     	/* if(report.templateSubmissionStatus == "EXPIRED"){
-			     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a>';
-			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-				     		if(report.typeOfContract == "New"){
-				     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-				     		}
-			     		'</sec:authorize>';
-			     		result = result + '</div>';
-		     	  }
-		     	  else{ */
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
-// 		     	  }
+	     		 '</sec:authorize>';
 			         result = result + '</div></td>';
 		     	 
 		        result = result + '</tr>';
@@ -1647,9 +2304,10 @@ function preparedContractListExpired(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End Date</th>'; 
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
+	opt = opt + '    <th>Start | End date</th>';
+	opt = opt + '    <th>Req Docs</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
 	opt = opt + '	</thead>';
@@ -1660,7 +2318,7 @@ function preparedContractListExpired(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'EXPIRE\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
@@ -1677,33 +2335,29 @@ function preparedContractListExpired(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
+	        	 opt = opt +' | '+output.endDateStr+'</div>';
+	         }
 	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	        	 opt = opt + '<div class="tblminwidth-75">'+output.reqDocCount+'</div>';
+	         opt = opt + '</td>';
+	         
 	         
 	         opt = opt + '<td>';
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	     	  /* if(output.templateSubmissionStatus == "EXPIRED" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\')"></i></a>';
-	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-		     		if(output.typeOfContract == "New"){
-		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-		     		}
-	     		'</sec:authorize>';
-	     		opt = opt + '</div>';
-	     	  }
-	     	  else{ */
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
-// 	     	  }
-	     		opt = opt + '</div></td>';
+     		 '</sec:authorize>';
+	     		 opt = opt + '</div></td>';
 	     	
 	     	opt = opt + '</tr>';
 	    }
@@ -1713,20 +2367,91 @@ function preparedContractListExpired(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	
+	var res = '';
+	 res = res +  '<table id="contractListTableEXP2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\',\'EXPIRE\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         if(appReport.billingAmount != null && appReport.billingAmount != '' && appReport.billingAmount != 'undefined'){
+		      	   res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75">--</div>'; 
+		         }
+		         res = res + '</td>';
+		        
+		         res = res + '<td>';
+		       	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tbldata-dotdot_80">';
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+		         '</sec:authorize>';
+		         res = res + '</div></td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
+
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var expiredCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
+	var expiredCount = parseInt(vendorsCount) + parseInt(clientsCount) + parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#expired").html('Expired ('+expiredCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res);
     listContractsPaginationEXP();	
     vendorListContractsPaginationEXP();
+    applicantsContractsPaginationEXP();
 	
 }
 </script>
@@ -1734,7 +2459,18 @@ function preparedContractListExpired(data){
 <script>
 function listContractsPaginationEXP(){
 	$('#contractListTableEXP1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Expired Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Expired Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1743,12 +2479,25 @@ function listContractsPaginationEXP(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationEXP(){ 
     $('#contractListTableEXP').DataTable( { 
+    	dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Expired Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Expired Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1756,7 +2505,35 @@ function vendorListContractsPaginationEXP(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+}
+function applicantsContractsPaginationEXP(){
+	$('#contractListTableEXP2').DataTable({ 
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Expired Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Expired Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -1764,6 +2541,7 @@ function vendorListContractsPaginationEXP(){
 function preparedContractListRejected(data){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
 	 var json = JSON.parse(data);
 	 var result = '';
 	 result = result +  '<table id="contractListTableREJ" class="display" cellspacing="0" width="100%" >';
@@ -1773,8 +2551,9 @@ function preparedContractListRejected(data){
 		result = result + '    <th>Type</th>';
 		result = result + '    <th>Owner</th>';
 		result = result + '    <th>Contact</th>';
-		result = result + '    <th>Start date</th>';
-		result = result + '    <th>End Date</th>'; 
+		result = result + '    <th>Vendor</th>';
+		result = result + '    <th>Start | End date</th>';
+		result = result + '    <th>Req Docs</th>'; 
 // 		result = result + '    <th>Rejected By</th>'; 
 		result = result + '    <th>Action</th>';
 		result = result + '   </tr>';
@@ -1786,7 +2565,7 @@ function preparedContractListRejected(data){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'REJECTED\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 		        }else{
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
 		        }
@@ -1803,15 +2582,20 @@ function preparedContractListRejected(data){
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
-		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'</div>';
+		         if(report.contractWith != null && report.contractWith != '' && report.contractWith != 'undefined'){
+		        	 result = result + '<div><span title="'+report.contractWith+'">'+report.contractWith+'</span></div>';
+		         }
 		         result = result + '</td>';
 		         
 		         result = result + '<td>';
+		         result = result + '<div class="tblminwidth-75">'+report.startDateStr+'';
 		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-		        	 result = result + '<div class="tblminwidth-75">'+report.endDateStr+'</div>';
-		         }else{
-		        	 result = result + '<div class="tblminwidth-75">--</div>';
+		        	 result = result +' | '+ report.endDateStr+'</div>';
 		         }
+		         result = result + '</td>';
+		         
+		         result = result + '<td>';
+		        	 result = result + '<div class="tblminwidth-75">'+report.reqDocCount+'</div>';
 		         result = result + '</td>';
 		         
 		         //need to be changed for Rejected by
@@ -1821,21 +2605,17 @@ function preparedContractListRejected(data){
 		         
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot_80">';
-		     	if(report.templateSubmissionStatus == "REJECTED"){
-		     		result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
-		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-			     		if(report.typeOfContract == "New"){
-			     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-			     		if(report.typeOfContract == "Custom"){
-			     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-			     		}
-	     			'</sec:authorize>';
-		     		result = result + '</div>';
-	     	  }
-	     	  else{
-	     		 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
-	     	  } 
+		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		     		result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
+	     		 '</sec:authorize>';
+	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		     		if(report.typeOfContract == "New"){
+		     			result = result + '| <a href="<c:url value="/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		if(report.typeOfContract == "Custom"){
+		     			result = result + '| <a href="<c:url value="/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+     			'</sec:authorize>';
 		         result = result + '</div></td>';
 		     	 
 		        result = result + '</tr>';
@@ -1851,9 +2631,10 @@ function preparedContractListRejected(data){
 	opt = opt + '    <th>Title</th>';
 	opt = opt + '    <th>Type</th>';
 	opt = opt + '    <th>Owner</th>';
-	opt = opt + '    <th>Client Contact</th>';
-	opt = opt + '    <th>Start date</th>';
-	opt = opt + '    <th>End Date</th>';
+	opt = opt + '    <th>Contact</th>';
+	opt = opt + '    <th>Client</th>';
+	opt = opt + '   <th>Start | End date</th>';
+	opt = opt + '    <th>Req Docs</th>';
 // 	opt = opt + '    <th>Rejected By</th>'; 
 	opt = opt + '    <th>Action</th>';
 	opt = opt + '   </tr>';
@@ -1865,7 +2646,7 @@ function preparedContractListRejected(data){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'REJECTED\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
 	        }else{
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
 	        }
@@ -1882,16 +2663,21 @@ function preparedContractListRejected(data){
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
-	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'</div>';
+	         if(output.contractWith != null && output.contractWith != '' && output.contractWith != 'undefined'){
+	        	 opt = opt + '<div><span title="'+output.contractWith+'">'+output.contractWith+'</span></div>';
+	         }
 	         opt = opt + '</td>';
 	         
 	         opt = opt + '<td>';
+	         opt = opt + '<div class="tblminwidth-75">'+output.startDateStr+'';
 	         if(output.endDateStr != null && output.endDateStr != '' && output.endDateStr != 'undefined'){
-	        	 opt = opt + '<div class="tblminwidth-75">'+output.endDateStr+'</div>';
-	         }else{
-	        	 opt = opt + '<div class="tblminwidth-75">--</div>';
-	         } 
+	        	 opt = opt +' | '+output.endDateStr+'</div>';
+	         }
 	         opt = opt + '</td>';
+	         opt = opt + '<td>';
+	        	 opt = opt + '<div class="tblminwidth-75">'+output.reqDocCount+'</div>';
+	         opt = opt + '</td>';
+	         
 	         opt = opt + '<td>';
 	         // need to be changed for Rejected By
 	         /* opt = opt + '<td>';
@@ -1899,8 +2685,9 @@ function preparedContractListRejected(data){
 	         opt = opt + '</td>'; */
 	         
 	         opt = opt + '<div class="tbldata-dotdot_80">';
-	     	  if(output.templateSubmissionStatus == "REJECTED" ){
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	     		 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
+     		 '</sec:authorize>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
 		     			opt = opt + '| <a href="<c:url value="/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1909,11 +2696,6 @@ function preparedContractListRejected(data){
 		     			opt = opt + '| <a href="<c:url value="/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
  				'</sec:authorize>';
-	     		opt = opt + '</div>';
-	     	  }
-	     	  else{
-	     		 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
-	     	  }
 	     		opt = opt + '</div>';
 	     		 opt = opt + '</td>';
 	     	opt = opt + '</tr>';
@@ -1924,20 +2706,99 @@ function preparedContractListRejected(data){
 	opt = opt + '	</tbody>';
 	opt = opt + '</table>';
 	
+	
+	var res = '';
+	 res = res +  '<table id="contractListTableREJ2" class="display" cellspacing="0" width="100%" >';
+		res = res + '	<thead>';
+		res = res + '   <tr>';
+		res = res + '    <th>Title</th>';
+		res = res + '    <th>Type</th>';
+		res = res + '    <th>Owner</th>';
+		res = res + '    <th>Employee Name</th>';
+		res = res + '    <th>Join date</th>';
+		res = res + '    <th>Rate</th>'; 
+		res = res + '    <th>Req Docs</th>'; 
+		res = res + '    <th>Action</th>';
+		res = res + '   </tr>';
+		res = res + '	</thead>';
+		res = res + '	<tbody>';
+	if(json.fullTimeoffercontractsList.length>0){
+		    for (var i = 0; i < json.fullTimeoffercontractsList.length; i++) {
+		    	var appReport= json.fullTimeoffercontractsList[i];
+		    	res = res + '<tr id="row'+appReport.id+'">';
+		        res = res + '<td>';
+		        	res = res + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+appReport.contractUUID+'\',\'REJECTED\');"><span title="'+appReport.contractTitle+'">'+appReport.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		         res = res + '</td>';
+		         res = res + '<td>';
+		           	res = res + '<div class="tblminwidth-75">'+appReport.contractType+'</div>';
+		         res = res + '</td>';
+		    	 res = res + '<td>';
+		       	 res = res + '<div><span title="'+appReport.ownerName+'">'+appReport.ownerName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div><span title="'+appReport.empName+'">'+appReport.empName+'</span></div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tblminwidth-75">'+appReport.joinedDateStr+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         if(appReport.billingAmount != null && appReport.billingAmount != '' && appReport.billingAmount != 'undefined'){
+		      	   res = res + '<div class="tblminwidth-75">'+appReport.billingAmount+'</div>';
+		         }
+		         else{
+		        	 res = res + '<div class="tblminwidth-75">--</div>'; 
+		         }
+		         res = res + '</td>';
+		        
+		         res = res + '<td>';
+		       	 res = res + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+		         res = res + '</td>';
+		         
+		         res = res + '<td>';
+		         res = res + '<div class="tbldata-dotdot_80">';
+		     		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		     		 res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		     		'</sec:authorize>';
+		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+			     		if(appReport.typeOfContract == "New"){
+			     			res = res + '| <a href="<c:url value="/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			     		}
+			     		if(appReport.typeOfContract == "Custom"){
+			     			res = res + '| <a href="<c:url value="/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			     		}
+	 				'</sec:authorize>';
+		     	 res = res + '</div>';
+		     	res = res + '</td>';
+		     	 
+		        res = res + '</tr>';
+		    }
+			
+	}
+	res = res + '	</tbody>';
+	res = res + '</table>';
+	
 	var vendorsCount = json.vendorcontractsList.length;
 	var clientsCount = json.clientcontractsList.length;
-	var rejectedCount = parseInt(vendorsCount) + parseInt(clientsCount);
+	var fullTimeCount = json.fullTimeoffercontractsList.length;
+	var rejectedCount = parseInt(vendorsCount) + parseInt(clientsCount)+ parseInt(fullTimeCount);
 	
 	$("#Vendor1").html('Vendors ('+vendorsCount+')');
 	$("#Client1").html('Clients ('+clientsCount+')');
+	$("#Applicants1").html('Applicants ('+fullTimeCount+')');
 	$("#rejected").html('Rejected ('+rejectedCount+')');
 	
     $("#vendorContractsList").empty();
     $("#vendorContractsList").append(result);
     $("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
+    $("#applicantsContractsList").empty();
+    $("#applicantsContractsList").append(res);
     listContractsPaginationREJ();	
     vendorListContractsPaginationREJ();
+    applicantsContractsPaginationREJ();
 	
 }
 </script>
@@ -1945,7 +2806,18 @@ function preparedContractListRejected(data){
 <script>
 function listContractsPaginationREJ(){
 	$('#contractListTableREJ1').DataTable({ 
-    	"scrollCollapse": false,
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Rejected Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Rejected Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -1954,12 +2826,25 @@ function listContractsPaginationREJ(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 function vendorListContractsPaginationREJ(){ 
     $('#contractListTableREJ').DataTable( { 
+    	dom: 'Bfrtip', 
+    	buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Rejected Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Rejected Contract',
+	            }
+	        ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -1967,7 +2852,35 @@ function vendorListContractsPaginationREJ(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
+}
+function applicantsContractsPaginationREJ(){
+	$('#contractListTableREJ2').DataTable({ 
+		dom: 'Bfrtip', 
+		buttons: [
+	        	{
+	                extend: 'excel',
+	                title: 'Rejected Contract',
+	            },
+	            {
+	                extend: 'pdf',
+	                title: 'Rejected Contract',
+	            }
+	        ],
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": false,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $(".repoPositiNoCount").find('a.buttons-excel').prop("title", "Excel");
+	$(".repoPositiNoCount").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 
@@ -2088,7 +3001,7 @@ function mainTabEnable(local){
         $("#sign").addClass("wSig");
         $("#verify").removeClass("wVer");
         $("#finalised").removeClass("fin");
-        $("#expired").removeClass("expi");
+        $("#expired").removeClass("exp");
         $("#rejected").removeClass("rej");
         
         $("#contractStage").val("WAITING_TO_BE_SIGNED");
@@ -2184,11 +3097,18 @@ function Check(val){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 if(val=="Vendors"){
 			 document.getElementById("clientContractsList").style.display="none";
+			 document.getElementById("applicantsContractsList").style.display="none"; 
 			 document.getElementById("vendorContractsList").style.display="block";
 		 }
 		 if(val=="Clients"){
 			 document.getElementById("vendorContractsList").style.display="none";
+			 document.getElementById("applicantsContractsList").style.display="none"; 
 			 document.getElementById("clientContractsList").style.display="block";
+		 }
+		 if(val=="Applicants"){
+			 document.getElementById("clientContractsList").style.display="none";
+			 document.getElementById("vendorContractsList").style.display="none";
+			 document.getElementById("applicantsContractsList").style.display="block"; 
 		 }
 	 $("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 }
@@ -2210,10 +3130,168 @@ function rejectContract(recordId,status){
 }
 </script>
 
+<script>
+function CountClick(contractUUID,parentId){
+	$(".mask_time").fadeIn(200);
+	$(".DocAccPopup").fadeIn(100);	
+	var sourceleadUrl ='${sourceleadUrl}';
+	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	 $.ajax({
+      type : "GET",
+       url: sourceleadUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
+       success :function(data) {
+    	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+    	    var json = JSON.parse(data);
+    	    var result= "";
+    	    
+    	    result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
+			result = result +'	     <div class="form-group">                                                                                                             ';
+			result = result +'	       <label class="col-md-4 text-center"><strong>Title</strong></label>                                                 ';
+			result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
+				  result = result +'	       <div><strong>Action</strong></div>                                                 ';
+				  result = result +'	       </div>';
+				  result = result +'	       </div>';
+				  result = result +'	       </div>';
+			result = result + ' <input type="hidden" id="maxDocCount" name="maxDocCount" value="'+json.length+'" />';
+    	    for (var i = 0; i < json.length; i++) {
+    	      var opt=json[i];
+			  result = result +'		    <div class="col-xs-12 col-sm-12 col-md-12 clearfix DocAccWrap">                                                            ';
+			  result = result +'	     <div class="form-group">                                                                                                             ';
+
+			  if(opt.docFile != null && opt.docFile !=""){
+				  result = result +'	       <label class="col-md-4 text-center"><a href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\">'+opt.fileName+'</a></label>                                                 ';
+			  }else{
+				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</label>                                                 ';
+			  }
+
+			  if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
+				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
+				  result = result +'	       <label class="text-center">--</label>                                                 ';
+				  result = result +'	       </div>			                                                                                                                  ';
+				  $("#saveAction").empty(); 
+			  }
+			  else{
+				  if(parentId != "--"){
+						  if(opt.docFile != null && opt.docFile !=""){
+							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
+							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result +'	       </div>			                                                                                                                  ';
+							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+							  result = result +'	             </span> </label>                                                                                                                 ';
+							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+							  result = result +'				</div>                                                                                                                            ';
+							  result = result +'	       </div>			                                                                                                                  ';
+						  }
+						  else{
+							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
+							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" multiple="" class="upload" type="file" onclick="check('+opt.id+');">                            ';
+							  result = result +'	             </span> </label>                                                                                                                 ';
+							  result = result +'					<input class="form-control padSm"  id="uploadFile'+opt.id+'" name="docFile'+opt.id+'"  placeholder="Upload File" readonly type="text">  ';
+							  result = result +'				</div>                                                                                                                            ';
+							  result = result +'	       </div>			                                                                                                                  ';
+					  }
+				  }
+				  else{
+					  $("#saveAction").empty(); 
+					  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
+					  result = result +'	       <label class="text-center">--</label>                                                 ';
+					  result = result +'	       </div>			                                                                                                                  ';
+					  $("#saveAction").empty(); 
+				  }
+			  }
+			  result = result +'			</div>                                                                                                                                ';
+			  result = result +'			<div class="clearfix"></div>                                                                                                          ';
+			  result = result +'	 </div>                                                                                                                                   ';
+			  result = result + ' <input type="hidden" id="docId'+(i+1)+'" name="docId'+(i+1)+'" value="'+opt.id+'" />';
+    	    }
+			  $("#DocAccPopupDiv").empty();
+			  $("#DocAccPopupDiv").append(result);
+       },
+	  }); 
+	
+	
+}
+
+function removeResumeNameDiv(id){
+	$("#removeDiv"+id).hide();
+	
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 $.ajax({
+	     type : "POST",
+	      url: sourceleadUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
+	      success :function(data) {
+	      	  //  $("#tr"+id).empty();
+	    	  $("#uploadDocumentDiv"+id).show();
+	     },
+	 });   
+//	$("#uploadFile"+id).attr("data-validation", "required validate_Space validatedoc");
+}
+function contPopClose(){
+	$("#viewPopupDiv").empty();
+	$(".mask_time").fadeOut(200);
+	$(".contPopup").fadeOut(100);
+	$(".DocAccPopup").fadeOut(100);	
+}
+function check(id){
+document.getElementById("uploadBtn"+id).onchange = function () {
+    document.getElementById("uploadFile"+id).value = this.value.split( '\\' ).pop();;
+    };
+    
+    /* upload file script for size validation 2MB*/
+    var selectedFile = document.getElementById("uploadBtn"+id);
+    selectedFile.addEventListener("change", function() {
+      var docSize = this.files[0].size;
+      $("#uploadFileGroup"+id).find('p.jquery_form_error_message').remove();
+      if(docSize > 2097152){
+    	  document.getElementById("uploadFile"+id).value = '';
+    	  $("#uploadFileGroup"+id).append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+      }
+    });
+}
+</script>
+
+<script>
+function editOne(startDate,endDate){
+	$('.editNewDat').show();
+	$('#endDate').datepicker({
+        dateFormat: 'dd-mm-yy',
+        changeMonth: true,
+          changeYear: true,
+          minDate: startDate,
+          onSelect: function (selected) {
+              var dt = toDate("#endDate");
+              dt.setDate(dt.getDate() - 1);
+          }
+    });
+}
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+
+function editClo(contractId){
+	$('.editNewDat').hide();
+	var startDate = $("#ExportStartDate").val();
+	var endDate = $("#endDate").val();
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+    type : "POST",
+     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
+     success :function(data) {
+    	 $("#endVal").empty();
+		  $("#endVal").append(": "+endDate);
+     	 //   $("#tr"+id).empty();
+    },
+});  
+	
+}
+</script>
+
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
-
-
-

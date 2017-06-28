@@ -132,4 +132,14 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
        return (long) rhl.size();
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndSubId(Long orgLocationID, Long submissionId)
+	{
+		logger.debug("In RequirementSubmissionHistoryDaoImpl class getRequirementHistoryByLocationIdAndSubId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementSubmissionHistory requirementSubmissionHistory where requirementSubmissionHistory.submissionId.id = :submissionId and requirementSubmissionHistory.submissionId.orgLocations.id = :orgLocationID";
+		return  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationID", orgLocationID).setCacheable(true).list();
+	}
+
 }

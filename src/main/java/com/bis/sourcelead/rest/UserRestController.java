@@ -12,7 +12,10 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +50,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -65,6 +69,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -195,6 +202,7 @@ public class UserRestController {
 	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)
     public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 if(candidateId !=null){
 		Candidate candidate   = candidateService.getCandidateById(candidateId);
 		if(null != candidate.getOrgRelationId()){
 			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
@@ -219,6 +227,8 @@ public class UserRestController {
 		
 		
 		return commonUtil.toJSON(candidate);
+		}
+		return "success";
 		
 	}
 
@@ -930,6 +940,53 @@ public class UserRestController {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
 		}
 		
+		 
+		 @RequestMapping(value = "/rest/", method = RequestMethod.GET)
+		 public void authenticate() {
+		 }
+		 
+		 @RequestMapping(value = "/restAuthenticate", method = RequestMethod.POST)
+		 public @ResponseBody RestResponsetUtil restAuthenticate(HttpServletRequest request) throws Exception {
+		 
+			 String json = IOUtils.toString(request.getInputStream());
+			 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
+			 if(StringUtils.isNotEmpty(json)){
+				 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
+				 JSONObject jsonObject = new JSONObject(json);
+				 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
+				    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))
+				 { 		
+					 Client client = Client.create();
+					 WebResource webResource = client.resource(sourceleadUrl+"/rest/");
+					 ClientResponse response = webResource.header("X-Username", jsonObject.getString("username")).header("X-Password", jsonObject.getString("password")).accept("application/json").get(ClientResponse.class);
+					 int status = response.getStatus();
+					 if(status == HttpServletResponse.SC_OK){
+						 String header = response.getHeaders().get("X-CustomToken").toString();
+						 String token = header.replaceAll("\\[", "").replaceAll("\\]", "");
+						 resResponsetUtil.setToken(token);
+						 resResponsetUtil.setLoginResponse("Valid User");
+						 return resResponsetUtil;
+					 }
+					
+					 else if(status == HttpServletResponse.SC_NOT_FOUND){
+						 resResponsetUtil.setLoginResponse("User Not Registered");
+						 return resResponsetUtil;
+					 }
+					 else if(status == HttpServletResponse.SC_MOVED_TEMPORARILY){
+						 resResponsetUtil.setLoginResponse("In-Active User");
+						 return resResponsetUtil;
+					 }
+					 else if(status == HttpServletResponse.SC_UNAUTHORIZED){
+						 resResponsetUtil.setLoginResponse("Invalid UserName Or Password");
+						 return  resResponsetUtil;
+					 }
+				 }
+			 }
+			 resResponsetUtil.setLoginResponse("Invalid Json String");
+			 return resResponsetUtil;
+		 }
+		 
+		 
 		/**
 		 * to assign the project to the particular user
 		 * @param json
@@ -1143,10 +1200,10 @@ public class UserRestController {
 			String resultJson = null;
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			for(OrgRelations vendors:vendorList){
-				if(vendors.getLocationId().getId() == orgLocations.getId()){
+				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getResponderLocationId().getOrg().getOrgName());
 				}
-				if(vendors.getResponderLocationId().getId() == orgLocations.getId()){
+				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getLocationId().getOrg().getOrgName());
 				}
 				

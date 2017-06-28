@@ -1,7 +1,10 @@
 package com.bis.sourcelead.web;
 
+import java.io.IOException;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
@@ -75,8 +78,8 @@ public class HomeController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	@Autowired
-	private ApplicationContext applicationContext;
+	/*@Autowired
+	private ApplicationContext applicationContext;*/
 	
 	@Autowired
 	private DataSource dataSource;
@@ -88,7 +91,7 @@ public class HomeController {
 	
 	@PostConstruct
 	public void init() {
-		logger.debug(" *** HomeController init with: " + applicationContext);
+		logger.debug(" *** HomeController init with: " );
 	}
 
 	@RequestMapping(value = { "/**"},  method = { RequestMethod.GET, RequestMethod.POST })
@@ -155,12 +158,24 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/login",  method = { RequestMethod.GET, RequestMethod.POST })
-	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,HttpServletRequest request) {
+	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,
+			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
+			@RequestParam(value = "referUUID", required = false) String referUUID,HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken) && !StringUtils.isNotEmpty(logout)){
-			return new ModelAndView("redirect:/dashboard");
+			if(isNullOrEmpty(requirementUUID)){
+				return new ModelAndView("redirect:/dashboard");
+			}else{
+				StringBuilder redirectUrl = new StringBuilder();
+				try {
+					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+				} catch (IOException e) {
+					
+				}
+			}
+			
 	    }
 		 else{
 			 if (logout != null) {
@@ -172,6 +187,15 @@ public class HomeController {
 	  				model.addObject("msg", msg);
 	  				SourceLeadSessionManager.removeSessionAttribute(request, "resetPasswordSucessfulMsg");
 	  			}
+	  			
+	  			if(!isNullOrEmpty(requirementUUID)){
+	  				 model.addObject("requirementUUID", requirementUUID);
+	  			}
+	  			
+	  			if(!isNullOrEmpty(referUUID)){
+	  				 model.addObject("referUUID", referUUID);
+	  			}
+  			
 			 model.setViewName("login");
 		    	 
 		 }
@@ -263,10 +287,7 @@ public class HomeController {
 
 	}
 	
-	@RequestMapping(value = "/rest/{name}", method = RequestMethod.GET)
-	public String getMovie(@PathVariable String name) {
-		return name;
-	}
+	
 
 	/**
 	 * Returns File upload jsp

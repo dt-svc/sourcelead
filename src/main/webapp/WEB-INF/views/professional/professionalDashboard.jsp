@@ -112,7 +112,7 @@ $(document).ready(function(){
 				    
 				    <div class="row">
 				    <div class="col-md-3 paddingRight">
-				    	<h4>Requirements Referred To Me</h4>
+				    	<h4>Jobs Referred To Me</h4>
 				    </div>
 				    
 				    <div class="col-md-2 select-field monthSearch_Custom pull-right">
@@ -273,7 +273,7 @@ function flushDate(){
 		            				resultToday = resultToday+'	<table id="requirementInterviewsPagination" class="display" cellspacing="0" width="100%">';
 		            				resultToday = resultToday+'	<thead>';
 		            				resultToday = resultToday+'	  <tr>';
-		            				resultToday = resultToday+'	    <th>Requirement Title </th>';
+		            				resultToday = resultToday+'	    <th>Job Title </th>';
 		            				resultToday = resultToday+'	    <th>Company Name</th>';
 		            				resultToday = resultToday+'	    <th>Date &amp; Time</th>';
 		            				resultToday = resultToday+'	    <th>Type</th>';
@@ -455,7 +455,7 @@ function flushDate(){
               result = result +'<span class="label label-primary">Hired</span>';
               
               result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
-              result = result +'<a href="#"><span class="count">0</span></a>';
+              result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
               result = result +'</div>';
@@ -578,7 +578,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<span class="label label-primary">Hired</span>';
               
               result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
-              result = result +'<a href="#"><span class="count">0</span></a>';
+              result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
               result = result +'</div>';
@@ -746,7 +746,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
 	        "dashLength": 5,
 	        "gridCount": 10,
 	        "position": "left",
-	        "title": "Requirements"
+	        "title": "Jobs"
 	    }],
 	    "startDuration": 0.5,
 	    "graphs": [{

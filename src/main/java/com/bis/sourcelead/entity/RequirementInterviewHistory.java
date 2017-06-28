@@ -140,6 +140,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	private List<RequirementInterviewHistory> interviewerList;
 	
 	@Transient
+	private List<ProposeTime> proposeTimeList;
+	
+	@Transient
 	private List<Tasks> tasksList;
 	
 	@Transient
@@ -169,6 +172,17 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	@Transient
 	private String feedbackDate;
 	
+	@Transient
+	private String submissionStatus;
+	
+	@Transient
+	private String proposeTimeStatus;
+
+	@Transient
+	private List<RequirementInterviewer> requirementInterviewerList;
+	
+	@Transient
+	private Long requirementIntervieweId;
 	
 	public String getCandidateEmail() {
 		return candidateEmail;
@@ -208,6 +222,14 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 	public void setInterviewerList(List<RequirementInterviewHistory> interviewerList) {
 		this.interviewerList = interviewerList;
+	}
+
+	public List<ProposeTime> getProposeTimeList() {
+		return proposeTimeList;
+	}
+
+	public void setProposeTimeList(List<ProposeTime> proposeTimeList) {
+		this.proposeTimeList = proposeTimeList;
 	}
 
 	public List<Tasks> getTasksList() {
@@ -542,5 +564,36 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 	public void setFeedbackDate(String feedbackDate) {
 		this.feedbackDate = feedbackDate;
 	}
-	
+
+	public String getProposeTimeStatus() {
+		return proposeTimeStatus;
+	}
+
+	public void setProposeTimeStatus(String proposeTimeStatus) {
+		this.proposeTimeStatus = proposeTimeStatus;
+	}
+
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
+	}
+
+	public List<RequirementInterviewer> getRequirementInterviewerList() {
+		return requirementInterviewerList;
+	}
+
+	public void setRequirementInterviewerList(List<RequirementInterviewer> requirementInterviewerList) {
+		this.requirementInterviewerList = requirementInterviewerList;
+	}
+
+	public Long getRequirementIntervieweId() {
+		return requirementIntervieweId;
+	}
+
+	public void setRequirementIntervieweId(Long requirementIntervieweId) {
+		this.requirementIntervieweId = requirementIntervieweId;
+	}
 }

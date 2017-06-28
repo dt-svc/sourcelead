@@ -56,6 +56,9 @@ public class RequirementRefer implements Serializable {
 	@Column(name = "REFER_STATUS")
 	private String referStatus;
 	
+	@Column(name = "REFER_UUID")
+	private String referUUID;
+	
 	@Column(name = "REFER_FROM_EMAIL")
 	private String referFromEmail;
 	
@@ -181,6 +184,12 @@ public class RequirementRefer implements Serializable {
 	
     @Transient
 	private String dateString;
+    
+    @Transient
+   	private String rejectedReason;
+    
+    @Transient
+   	private String submissionStatus;
     
     @Transient
    	private String userName;
@@ -586,5 +595,33 @@ public class RequirementRefer implements Serializable {
 
 	public void setRequirementJobType(String requirementJobType) {
 		this.requirementJobType = requirementJobType;
+	}
+
+	public String getReferUUID()
+	{
+		return referUUID;
+	}
+
+	public void setReferUUID(String referUUID)
+	{
+		this.referUUID = referUUID;
+	}
+
+	public String getRejectedReason()
+	{
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason)
+	{
+		this.rejectedReason = rejectedReason;
+	}
+
+	public String getSubmissionStatus() {
+		return submissionStatus;
+	}
+
+	public void setSubmissionStatus(String submissionStatus) {
+		this.submissionStatus = submissionStatus;
 	}
 }

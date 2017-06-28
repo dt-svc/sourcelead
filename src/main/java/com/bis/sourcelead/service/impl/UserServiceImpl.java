@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -144,6 +146,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private CandidateService  candidateService;
+	
+	@Autowired
+	MasterCandidateService masterCandidateService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -254,6 +259,13 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
+		}else{
+			MasterCandidate masterCandidate = null;
+			masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+			if(null == masterCandidate){
+				masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginuser);
+			}
+			candidateService.storeCandidateForUsers(jsonObj, user, orgLocations, masterCandidate);
 		}
 		
 		
@@ -586,7 +598,7 @@ public class UserServiceImpl implements UserService {
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
 		 
 		
@@ -829,7 +841,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+				 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 			 } 
 		     StringBuilder actionUrlBuilder = new StringBuilder();
 			 actionLink = actionUrlBuilder.append("").append(sourceleadUrl).append("/").append("acceptClientOrVendorInvitation?actionLink=acceptNotification&respondingOrgType=VMS&respondingPartyOrgLocationId=").append(respondingPartyOrgLocation.getId()).append("&initiatingPartyOrgLocationId=").append(loginOrgLocation.getId()).append("&UUID=").append(UUID).append("&spocUUID=").append(spocUUID).append(" ").toString();
@@ -863,7 +875,7 @@ public class UserServiceImpl implements UserService {
 				 globalVarsMap.put("password",password);
 			 }else{
 				 globalVarsMap.put("userName",user.getEmail());
-				 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+				 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 			 }
 			 
 			 StringBuilder actionLinkBuilder = new StringBuilder();
@@ -1114,7 +1126,7 @@ public class UserServiceImpl implements UserService {
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
 		 
 		

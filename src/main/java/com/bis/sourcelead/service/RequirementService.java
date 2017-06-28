@@ -40,6 +40,8 @@ public interface RequirementService {
 	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
+	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
+	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 
 	public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception;
@@ -109,6 +111,8 @@ public interface RequirementService {
 	public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId) throws Exception;
+	
+	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
 
 	public List<Requirement> searchRequirement(OrgLocations orgLocation, JSONObject jsonObj, Org org, String userRole, User user)throws Exception;
 
@@ -154,4 +158,15 @@ public interface RequirementService {
 
 	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
 			Long relationId) throws Exception; 
+	
+	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId,Long relationId,String userRoleName,User user,String status)throws Exception;
+
+	
+	public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
+	
+	
+	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status);
+
+	public List<String> getAllRequirementVisaByRequirementI(Long requirementId)throws Exception;
+	
 }

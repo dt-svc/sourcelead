@@ -192,8 +192,8 @@ function candidateCertificateList(candidateId){
 	                 	result  = result + "           <th>Score</th>";
 	                 	result  = result + "           <th>Score Type</th>";
 	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from</th>";
-	                 	result  = result + "           <th>Valid to</th>";
+	                 	result  = result + "           <th>Valid From</th>";
+	                 	result  = result + "           <th>Valid To</th>";
 	                 	result  = result + "           <th>Action</th>";
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
@@ -235,7 +235,11 @@ function candidateCertificateList(candidateId){
 	                    	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span title = "'+opt.provider+'">'+opt.provider+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
+	                    	 if(opt.scoreType == 'Percentage'){
+	                    		 result  = result + '           <td><div><span>%</span></div></td>';
+							}else{
+								result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
+							}
 	                    	 result  = result + '           <td><div><span title = "'+description+'">'+description+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
 	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
@@ -274,7 +278,7 @@ function certificationPagination(){
     	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
     	"bLengthChange": false,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -570,24 +574,29 @@ function toDate(selector) {
 								$(".edit-details").removeClass("edit-details-active");
 							   });	 */
 
-							  $('#StartDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
-							      onSelect: function (selected) {
-							            var dt = new Date(selected);
-							            dt.setDate(dt.getDate() + 1);
-							            $("#EndDateEdit").datepicker("option", "minDate", dt);
-							        }
-							  });
+							   
+							   $('#StartDateEdit').datepicker({
+									  dateFormat: 'dd-mm-yy',
+								      changeMonth: true,
+								  	  changeYear: true, 
+								      onSelect: function (selected) {
+								    	    var dt = toDate("#StartDateEdit");
+								            dt.setDate(dt.getDate() + 1);
+								            $("#EndDateEdit").datepicker("option", "minDate", dt);
+								        }
+								  });
+							   
+							   $('#EndDateEdit').datepicker({
+									  dateFormat: 'dd-mm-yy',
+								      changeMonth: true,
+								  	  changeYear: true, 
+								        onSelect: function (selected) {
+								        	var dt = toDate("#EndDateEdit");
+								            dt.setDate(dt.getDate() - 1);
+								            $("#StartDateEdit").datepicker("option", "maxDate", dt);
+								        }
+								  });
 							  
-							  $('#EndDateEdit').datepicker({
-							      dateFormat: 'yy-mm-dd',
-							        onSelect: function (selected) {
-							            var dt = new Date(selected);
-							            dt.setDate(dt.getDate() - 1);
-							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
-							        }
-							  });
-																
 							}
 						
 						}
@@ -668,9 +677,41 @@ function toDate(selector) {
      2.parameter : candidateId ,csrf.token,candidateemployerId
      3.ajax url implementation in CandidateCertificationRestController.
 --%>    
+ 
+ <script>
+function removeCertification(candidateCertificationId, candidateId){
+	
+	alertMessageforCer(candidateCertificationId, candidateId);
+}
+</script>
+
+<script type="text/javascript">
+function cancelPopup(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteEmp3PopUp"></div> 
+
+<script type="text/javascript">
+function alertMessageforCer(candidateCertificationId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Certification</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCer("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteEmp3PopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+ 
       
 <script>
-function removeCertification(candidateCertificationId,candidateId){
+function deleteSelectedCer(candidateCertificationId,candidateId){
 	
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 
@@ -691,6 +732,7 @@ function removeCertification(candidateCertificationId,candidateId){
             			 $("#selector5").removeAttr("style");
              			 $("#selector5").css({ display: "block" });
              			 $("#cerMsgDiv").html("Certification deleted");
+             			$("#remove_user_pop, .project_inn_mask").fadeOut();
              			candidateCertificateList(candidateId);
              			cerMsgFadein();
 			    	}

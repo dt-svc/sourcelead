@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,18 +36,20 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnboardTasks;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -98,6 +102,11 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	@Autowired
 	TaskDao taskDao;
 	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -337,6 +346,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			onboardingUserRole = saveUserRoles(candidateOnBoarding,onboardingUser,loginUser,orgLocations);
 		    userRoleDao.addUserRole(onboardingUserRole);
 		}
+		
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		if(null != candidate){
+			candidate.setConsultantUser(onboardingUser);
+			candidateService.addCandidate(candidate);
+		}
 	    
 	    onboardingEmployee = employeesDao.getEmployeeByUserIdAndOrgLocationsId(onboardingUser.getId(), orgLocations.getId());
 	    
@@ -369,14 +384,14 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 						 tasks = getTaskDetails(onboardTasks, taskUser, loginUser, orgLocations);
 						 tasks.setOnboardingId(candidateOnBoarding);
 						 taskDao.saveTasks(tasks);
-						 mailToUserTask(tasks);
+						 mailToUserTask(tasks,orgLocations);
 					 }
 				 }else{
 					 Tasks tasks = null;
 					 tasks = getTaskDetails(onboardTasks, onboardingUser, loginUser, orgLocations);
 					 tasks.setOnboardingId(candidateOnBoarding);
 					 taskDao.saveTasks(tasks);
-					 mailToUserTask(tasks);
+					 mailToUserTask(tasks,orgLocations);
 				 }
 			 }
 			 
@@ -621,7 +636,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 if(isUserActive == false){
 			 globalVarsMap.put("password",password);
 		 }else{
-			 globalVarsMap.put("password","Note : Login with your existing Sourcelead password");
+			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
 		 }
 		 
 		
@@ -647,8 +662,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 	}
 	
-	public void mailToUserTask(Tasks task) throws Exception{
-		EmailMessage emailMessage = new EmailMessage();
+	public void mailToUserTask(Tasks task,OrgLocations orgLocations) throws Exception{
+		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(task.getTaskOwnerId().getFirstName());
 		 emailMessage.setLastName(task.getTaskOwnerId().getLastName());
 		 emailMessage.setToEmail(task.getAssignedUserId().getEmail());
@@ -677,11 +692,20 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 }else{
 	     globalVarsMap.put("date","--"); 
 		 }
-		 if(task.getTaskTime()!= null  && !"".equalsIgnoreCase(task.getTaskTime())){
-		 globalVarsMap.put("time", task.getTaskTime());	 
-		 }else{
-		 globalVarsMap.put("time","--"); 
-		 }
+		 
+		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+
+			if(task.getTaskTime() != null){
+			   	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
+				String currentTimeStr = Constants.TZ_DF.format(task.getTaskDate());  
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				String convertedDateStr = DF_DMY.format(convertedDate);
+				globalVarsMap.put("time", convertedDateStr);	
+			
+		   }
+		 
 		 if(task.getDescription()!= null  && !"".equalsIgnoreCase(task.getDescription())){
 		 globalVarsMap.put("description", task.getDescription()); 
 		 }else{
@@ -695,9 +719,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 }
 		 if (task.getAssignedUserId().getFirstName() != null && task.getAssignedUserId().getLastName()!= null  && !"".equalsIgnoreCase( task.getAssignedUserId().getFirstName()) && !"".equalsIgnoreCase( task.getAssignedUserId().getLastName())){
 			 StringBuilder userBuild = new StringBuilder();
-			 globalVarsMap.put("assignedUser",userBuild.append(task.getAssignedUserId().getFirstName()).append(" ").append(task.getAssignedUserId().getLastName()).toString());
+			 globalVarsMap.put("assignedUser",userBuild.append(task.getAssignedUserId().getFirstName()).append(" ").append(task.getAssignedUserId().getLastName()).toString().trim());
 		 }else{
-		 globalVarsMap.put("assignedUser",task.getAssignedUserId().getFirstName()); 
+		 globalVarsMap.put("assignedUser",task.getAssignedUserId().getFirstName().trim()); 
 		 }
 		 
 		 
@@ -718,7 +742,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org());
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg());
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 

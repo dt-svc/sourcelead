@@ -19,18 +19,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.EmailDomains;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.EmailDomainsService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -100,6 +101,9 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 private ClientService clientService;
+	 
+	 @Autowired
+	 EmailDomainsService emailDomainsService;
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/enrolledOrgsList")
@@ -439,12 +443,34 @@ public class RegistrationController {
 	   public @ResponseBody String validateCrowdSourcingEmail(@RequestParam(value="email", required=false) String email,
 	   		@RequestParam(value="type", required=false) String type) throws Exception {
 		  
-		  User user = userService.getUserByEmailAndUserType(email, type);
-		  if(null == user){
+		  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+		  if(null == userRole){
 			  return "Success";
 		  }else{
 			  return "Invalid";
+		  } 
+		  
+	   }
+	  
+	  
+	  @RequestMapping(value = "/validateCrowdSourcingRegistrationEmail",  method = RequestMethod.GET)
+	   public @ResponseBody String validateCrowdSourcingRegistrationEmail(@RequestParam(value="email", required=false) String email,
+	   		@RequestParam(value="type", required=false) String type) throws Exception {
+		  
+		  String[] registeredEmail = email.split("[@]"); 
+		  EmailDomains emailDomains = emailDomainsService.getEmailDomainsByDomainName(registeredEmail[1]);
+		  
+		  if(null != emailDomains){
+			  UserRole userRole = userRoleService.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, type);
+			  if(null == userRole){
+				  return "Success";
+			  }else{
+				  return "Invalid";
+			  } 
+		  }else{
+			  return "Invalid Domain";
 		  }
+		  
 	   }
 	  
 	  

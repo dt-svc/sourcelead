@@ -482,6 +482,12 @@ public class SubmissionsRateRestController {
 				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
 				}
+			}else if(requirementSubmission.getCandidate() != null && requirementSubmission.getCandidate().getConsultantUser() != null && requirementSubmission.getCandidate().getConsultantUser().getId() == users.getId()){
+				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.CANDIDATE);
+				candidate = requirementSubmission.getCandidate();
+				if(!isNullOrEmpty(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
+					pastUser = userService.getUserByUserCode(pastRequirementRateSubmissionNegotiation.getCreatedBy());
+				}
 			}else{
 				requirementRateSubmissionNegotiation.setRateInitiatorType(SubmissionRateStatus.ORG);
 				candidate = requirementSubmission.getCandidate();
@@ -640,16 +646,21 @@ public class SubmissionsRateRestController {
 			
 			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 			}
 			
 			if(null != requirementSubmissionTemplateFields.getFirstName() && null != requirementSubmissionTemplateFields.getLastName() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getFirstName()) && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getLastName())){
 			 StringBuilder candBuild = new StringBuilder();
 			 requirementSubmission.setUpdatedUser(candBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+			 requirementSubmission.setSubmissionRequestUser(candBuild.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			 }else{
 				 requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName());
+				 requirementSubmission.setSubmissionRequestUser(requirementSubmissionTemplateFields.getFirstName());
 			 }
 			
 			requirementSubmission.setRejectedReason(rejectreason);
+			
+			requirementSubmission.setRejectedCategoryType(Constants.APPLICANT_REJECTED);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 			requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);

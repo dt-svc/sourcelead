@@ -572,39 +572,41 @@ public class SubmissionsRestController {
 	 */
 
 	@RequestMapping(value = "/rejectApplicant")
-	public @ResponseBody String rejectApplicant(
-			@RequestParam(value = "requirementId", required = false) Long requirementId,
-			@RequestParam(value = "submissionId", required = false) Long submissionId,
-			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request)
-			throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+	public @ResponseBody String rejectApplicant(@RequestParam(value = "json", required = false) String json, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
+	{
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-		RequirementSubmission requirementSubmission = requirementSubmissionService
-				.getRequirementSubmissionById(submissionId);
-
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		// to update submission history
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.REJECTED.toString());
-
 		// to update Submission status
 		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-		requirementSubmission.setRejectedReason(reason);
+		if (jsonObj.has("reasonForReject")) {
+			requirementSubmission.setRejectedReason(jsonObj.getString("reasonForReject"));
+		}
+		if (jsonObj.has("rejectedCategory")) {
+			requirementSubmission.setRejectedCategoryType(jsonObj.getString("rejectedCategory"));
+		}
+		if (jsonObj.has("rejectedCategoryOther")) {
+			requirementSubmission.setRejectedCategoryOther(jsonObj.getString("rejectedCategoryOther"));
+		}
 		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		StringBuilder sb = new StringBuilder();
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionService.sendRejectionMailToVendorContact(user,reason,submissionId,orgLocations);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-				requirementSubmissionHistory);
-
+		// requirementSubmissionService.sendRejectionMailToVendorContact(user,
+		// requirementSubmission.getRejectedReason(), submissionId,
+		// orgLocations);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 		return "success";
 	}
-
+	
 	// vendors mail sending the private method
 
 	public void sendEmailToManages(Requirement requirement, OrgLocations loginOrgLocations, User user,

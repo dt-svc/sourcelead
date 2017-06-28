@@ -55,6 +55,10 @@ public class ProfessionalProfileController {
 	@Autowired
 	CandidateResumesService candidateResumesService;
 	
+	protected static boolean isNullOrEmpty(String str) {
+		return (str == null || "".equals(str.trim()));
+	}
+	
 	 @PreAuthorize("hasRole('ROLE_CROWDSOURCING_PROFILE')")
 	 @RequestMapping(value = "/professionalProfile")
 		public ModelAndView professionalProfile(HttpServletRequest request) throws Exception {
@@ -146,6 +150,15 @@ public class ProfessionalProfileController {
 			
 			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			
+			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Profile);
+			
+			request.getSession().setAttribute("sessionData",sessionData);
+			
 			model.addObject("skillsList", skillsList);
 			model.addObject("candidateId", candidateId);
 			
@@ -159,7 +172,14 @@ public class ProfessionalProfileController {
 			ModelAndView model = new ModelAndView();
 			model.setViewName("professional/professionalAddProfile");
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			Countries countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			Countries countries = null;
+			
+			if(isNullOrEmpty(loginUser.getProfessionalRegisterCountry())){
+				countries = countriesService.getCountriesByCountryName(loginUser.getCountry());
+			}else{
+				countries = countriesService.getCountriesByCountryName(loginUser.getProfessionalRegisterCountry());
+			}
+			
 			if(null != countries){
 	         model.addObject("loginCountryName", countries.getName());
 	         model.addObject("currencyCode", countries.getCurrency());

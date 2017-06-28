@@ -60,6 +60,12 @@ public class Contracts {
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
+	@Column(name = "JOIN_DATE")
+	private Date joinDate;
+	
+	@Column(name = "WORK_LOCATION")
+	private String workLocation;
+	
 	@Column(name = "INITIATOR_TYPE")
 	private String initiatorType;
 	
@@ -127,9 +133,13 @@ public class Contracts {
 	@Column(name = "TAX_TYPE")
 	private String taxType;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="REQUIREMENT_SUBMISSION_ID")     
 	private RequirementSubmission requirementSubmission;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="CANDIDATE_ID")     
+	private Candidate candidate;
 	
 	@Column(name = "HOURS_PER_WEEK")
 	private String hoursPerWeek;
@@ -196,11 +206,17 @@ public class Contracts {
 	private String parentId;
 	
 	@Transient
+	private Integer reqDocCount;
+	
+	@Transient
 	List<Contracts> vendorcontractsList;
 	
 	@Transient
 	List<Contracts> clientcontractsList;
 	
+	@Transient
+	List<Contracts> fullTimeoffercontractsList;
+
 	@Transient
 	private String tempEnvId;
 
@@ -247,6 +263,9 @@ public class Contracts {
 	private String updatedDateStr;
 	
 	@Transient
+	private String joinedDateStr;
+	
+	@Transient
 	private String createdByName;
 	
 	@Transient
@@ -267,7 +286,88 @@ public class Contracts {
 	@Transient
 	private String contractWith;
 	
+	@Transient
+	private String empName;
 	
+	@Transient
+	private String tempUUID;
+	
+	@Transient
+	private Long approverUserId;
+	
+	@Transient
+	private Long ownerUser;
+	
+	public String getTempUUID()
+	{
+		return tempUUID;
+	}
+
+	public void setTempUUID(String tempUUID)
+	{
+		this.tempUUID = tempUUID;
+	}
+
+	public String getEmpName()
+	{
+		return empName;
+	}
+
+	public void setEmpName(String empName)
+	{
+		this.empName = empName;
+	}
+
+	public List<Contracts> getFullTimeoffercontractsList()
+	{
+		return fullTimeoffercontractsList;
+	}
+
+	public void setFullTimeoffercontractsList(List<Contracts> fullTimeoffercontractsList)
+	{
+		this.fullTimeoffercontractsList = fullTimeoffercontractsList;
+	}
+
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
+
+	public Date getJoinDate()
+	{
+		return joinDate;
+	}
+
+	public void setJoinDate(Date joinDate)
+	{
+		this.joinDate = joinDate;
+	}
+
+	public String getWorkLocation()
+	{
+		return workLocation;
+	}
+
+	public void setWorkLocation(String workLocation)
+	{
+		this.workLocation = workLocation;
+	}
+
+	public Integer getReqDocCount()
+	{
+		return reqDocCount;
+	}
+
+	public void setReqDocCount(Integer reqDocCount)
+	{
+		this.reqDocCount = reqDocCount;
+	}
+
 	public String getContactUserName() {
 		return contactUserName;
 	}
@@ -887,5 +987,35 @@ public class Contracts {
 	public void setContractWith(String contractWith) {
 		this.contractWith = contractWith;
 	}
-	
+
+	public Long getApproverUserId()
+	{
+		return approverUserId;
+	}
+
+	public void setApproverUserId(Long approverUserId)
+	{
+		this.approverUserId = approverUserId;
+	}
+
+	public Long getOwnerUser()
+	{
+		return ownerUser;
+	}
+
+	public void setOwnerUser(Long ownerUser)
+	{
+		this.ownerUser = ownerUser;
+	}
+
+	public Candidate getCandidate()
+	{
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate)
+	{
+		this.candidate = candidate;
+	}
+
 }

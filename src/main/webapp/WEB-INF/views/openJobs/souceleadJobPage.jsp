@@ -156,19 +156,9 @@ display: none;}
 		</h1>
 		<p><i class="fa fa-search"></i>Search for vacancies</p>
 		<section class="searchWrap">
-			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" class="searchHome"></span>
-			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" class="searchHome"></span>
-			<span><i class="fa fa-briefcase"></i>
-				<select class="searchHome searchHomeE">
-					<option>Exp (Years)</option>
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
-					<option>5</option>
-					<option>6</option>
-				</select>
-			</span>
+			<span><i class="fa fa-search"></i><input type="text" placeholder="Search" id= "openJobsRequirementTitleId" value="${openJobsTitle}" class="searchHome"></span>
+			<span><i class="fa fa-map-marker"></i><input type="text" placeholder="Location" value="${openJobsLocation}" id="openJobsLocationId" class="searchHome"></span>
+			<span><i class="fa fa-briefcase"></i> <p id = "dropDownCountId" value="${openJobsExperience}"></p></span>
 			<span><input type="button" value="Search" class="searchBtn" onclick="redirectPage();"></span>
 			<h3><b id="ADS">Advanced Search</b></h3>
 			<div class="clear"></div>
@@ -209,9 +199,9 @@ display: none;}
               </div>
               <div class="clearfix">
                 <div class="col-md-4">
-                  <label>Requirement Title</label>
+                  <label>Job Title</label>
                   <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Requirement Title">
+                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
                   </div>
                 </div>
                 <div class="col-md-8">
@@ -350,7 +340,7 @@ display: none;}
             </div>
             <div class="row form-footer">
               <div class="pull-right mr"> 
-              <input type="button" value="Search" id="advancedOpenJobsSearch" onclick="openJobSearchRequirement();loadOpenJobsChosenRequirementScripts();" class="btn btn-sm btn-primary"/>
+              <input type="button" value="Search" id="advancedOpenJobsSearch" onclick="openJobSearchRequirement();loadOpenJobsChosenRequirementScripts();redirectPage();" class="btn btn-sm btn-primary"/>
                <input type="button" value="Cancel" onClick="adSearchClose();loadOpenJobsChosenRequirementScripts();" class="btn btn-sm btn-default ml10"/> 
               </div>
             </div>
@@ -1201,8 +1191,10 @@ function loadOpenJobsChosenRequirementScripts(){
 <script type="text/javascript">
 function redirectPage(){
 	var sourceleadUrl = '${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/openRequirementsRedirect?${_csrf.parameterName}=${_csrf.token}";
-	
+	var openJobsTitle = document.getElementById("openJobsRequirementTitleId").value;
+	var openJobsLocation = document.getElementById("openJobsLocationId").value;
+	var openJobsExperience = document.getElementById("dropDownCountId").value;
+	window.location.href = sourceleadUrl+"/openRequirementsRedirect?${_csrf.parameterName}=${_csrf.token}&openJobsTitle="+openJobsTitle+"&openJobsLocation="+openJobsLocation+"&openJobsExperience="+openJobsExperience;
 }
 </script>
 

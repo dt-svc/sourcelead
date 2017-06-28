@@ -21,6 +21,9 @@ public interface RequirementDao {
 	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
+	public List<Requirement> getRequirementListByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
+
+	
 	public List<Requirement> getJobTitleByJobTemplateStatusAndOrgLocationId(Long orgLocationId)throws Exception;
 	
 	public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
@@ -71,6 +74,8 @@ public interface RequirementDao {
 	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	List<String> getAllRequirementSkillsByRequirementI(Long requirementId)throws Exception;
+	
+	List<String> getAllRequirementIndustryByRequirementId(Long requirementId) throws Exception;
 
 	public List<Requirement> getAllRequirementsByOrglocationId(Long orgLocationId) throws Exception;
 	
@@ -105,4 +110,16 @@ public interface RequirementDao {
 
 	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
 			Long relationId)throws Exception;
+	
+	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId,Long relationId,String userRoleName,User user,String status)throws Exception;
+
+	
+	public List<Requirement> getAllClosedRequirementsByStartDateAndEndDate(Date startDateUTC, Date endDateUTC) throws Exception;
+	
+	
+	public List<Requirement> getAllVendorJobsBasedonRelationId(Long locationId,Long relationId, String userRoleName,User user,String status);
+
+	public List<String> getAllRequirementVisaByRequirementI(Long requirementId)throws Exception;
+
+	
 }

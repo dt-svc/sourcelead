@@ -41,7 +41,8 @@ window.onload = function () {
         <ul class="pull-right list-unstyled list-inline">
           <li><i class="fa fa-filter"></i>&nbsp;
                <select id="userState" onchange="getOrgsList();">
-				<option value="">--Select Status--</option>
+				<option value="" selected>--Select Status--</option>
+				<option value="ALL" >All</option>
 				<option value="ACTIVE" >Active</option>
 				<option value="INACTIVE" >In Active</option>
 				<option value="NOT_LOGGEDIN">Not Logged IN</option>
@@ -109,13 +110,13 @@ window.onload = function () {
 		    	    if(org.mobilePhone != null && org.mobilePhone != ''){
 	 			    	mobilePhone = org.mobilePhone;
 	 			    }else{
-	 			    	mobilePhone = "&nbsp;No Data"
+	 			    	mobilePhone = "---"
 	 			    }
 	 				
 	 				if(org.email != null && org.email != ''){
 	 			    	email = org.email;
 	 			    }else{
-	 			    	email = "No Data"
+	 			    	email = "---"
 	 			    }
 	 				
 	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";

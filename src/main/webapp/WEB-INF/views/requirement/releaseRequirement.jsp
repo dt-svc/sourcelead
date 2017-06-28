@@ -33,9 +33,9 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Release Requirement</h2>
+        <h2>Release Job</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Requirement</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Release Job</div>
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
@@ -88,7 +88,6 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   </li>
                   <div class="clearfix"></div>
                 </ul>
-                <div class="clearfix"></div>
               </div>
               <!-- Contact Table -->
               
@@ -138,7 +137,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
                   
                   <div class="form-group clearfix" id="crowd_rate" style="display: none">
                     <div class="clearfix">
-                      <label class="col-md-5"><strong>Requirement Details</strong></label>
+                      <label class="col-md-5"><strong>Job Details</strong></label>
                       <div class="col-md-7">
                         <p><i class="fa fa-suitcase text-muted paddingRight"></i>
                           <label id="jobType"></label>
@@ -209,12 +208,15 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
             <div class="select-field col-md-6 paddingLeft row">
             <input type="text" class="form-control input-sm" field-name="RefeeralLink" id="referralLink" name="referralLink" placeholder="Referral Link" readonly="readonly"> 
             <i id="copyButton" class="fa fa-clipboard" aria-hidden="true"></i>
+        
+
             <div class="share mt10">
 		   	<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('linkedin');"><i class="fa-2x fa fa-linkedin-square"></i></a>
 			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('twitter');"><i class="fa-2x fa fa-twitter-square paddingLeft paddingRight"></i></a>				  
 			<a href="javascript:setPostValues('${socialpost_title}','${socialpost_link}','${socialpost_picture}','${socialpost_description}','${socialpost_comment}');socialinviter.socialpost.auth('facebook');"><i class="fa-2x fa fa-facebook-square"></i></a>
 			</div>
             </div>
+
           </div>
         </div> 
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
@@ -556,6 +558,7 @@ function getContactsLists(){
 			   	        	result = result +'  <th>Email</th>';
 			   	        	result = result +' <th>Phone</th>';
 			   	        	result = result +' <th>Owner</th>';
+			   	        	result = result +' <th>Released On</th>';
 			   	        	result = result +' <th>Vendor</th>';
 			   	        	result = result +' <th>Release</th>';
 			   	        	result = result +'</tr>';
@@ -587,6 +590,13 @@ function getContactsLists(){
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title="'+report.ownerName+'"><span>'+report.ownerName+'</span></div>';
+					        			result = result +'</td>';
+					        			result = result +'<td>';
+					        			if(null != report.stringDate && '' != report.stringDate && 'undefined' != report.stringDate){
+					        				result = result +'<div title="'+report.stringDate+'"><span>'+report.stringDate+'</span></div>';
+					        			}else{
+					        				result = result +'<div title=""><span>---</span></div>';
+					        			}
 					        			result = result +'</td>';
 					        			result = result +'<td>';
 					        			result = result +'<div title=""><span>'+report.orgName+'</span></div>';
@@ -716,6 +726,7 @@ function getVendorLists(){
 	           	            result = result +'<th class="text-center"><input type="checkbox" id="checkbox1" onclick="toggle(this);"/></th>'; 
 	           	        	result = result +'  <th>Name</th>';
 	           	        	result = result +'  <th>Location</th>';
+	           	        	result = result +' <th>Released On</th>';
 	           	        	result = result +' <th>No. of contacts</th>';
 	           	        	result = result +' <th>Level</th>';
 	           	        	result = result +' <th>Release</th>';
@@ -761,9 +772,17 @@ function getVendorLists(){
 	           	        		}else{
 	           	        			result = result +'<td><div>--</div></td>';
 	           	        		}
+	           	        		result = result +'<td>';
+			        			if(null != report.stringDate && '' != report.stringDate && 'undefined' != report.stringDate){
+			        				result = result +'<div title="'+report.stringDate+'"><span>'+report.stringDate+'</span></div>';
+			        			}else{
+			        				result = result +'<div title=""><span>---</span></div>';
+			        			}
+			        			result = result +'</td>';
 	        	       		result = result +'<td><div class="tbldata-dotdot-sm">'+report.noOfContatcs+'</div></td>';
 	        	       		result = result +' <td><div class="tbldata-dotdot-sm"><span  title="'+report.level+'">'+report.level+'</span></td>';
 	        	       		result = result +'<td>';
+	        	       		
 	        	       		if(report.noOfNonReleasedContacts == 0){
 	                			result = result +'<div><b class="proj_active">Released</b></div>';
 	                		}else if(report.noOfNonReleasedContacts > 0){
@@ -774,6 +793,7 @@ function getVendorLists(){
 										result = result +'<div class="fa fa-bullhorn"></div>';
 									'</sec:authorize>';
 	                		}
+	        	       		
 	                		result = result +'</td>';
 	           	        	result = result +'</tr>';
 	           				}
@@ -887,7 +907,6 @@ $(document).ready(function(){
 
 <script type="text/javascript">
  function listChange(sel) {
-	
     	if(sel.value=="releaseByVendors"){
     		document.getElementById("vendor").style.display="block";
 			document.getElementById("vendorContacts").style.display="none";
@@ -1055,6 +1074,7 @@ function openVendors(){
 	document.getElementById("releaseToVendors").style.display="";
 }
 </script>
+
 <script>
  function socialPostSucess(service,status){
 	 msgFadein();
@@ -1065,6 +1085,7 @@ function openVendors(){
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
+
 	 if (title) {
          postdatavalues.title = title;
      }
@@ -1098,5 +1119,7 @@ function getPostValueDetails(){
 .footer-area {
 display: none;}
 </style>
+
 <jsp:include page="../socialinviterscripts.jsp" />
 <jsp:include page="../masterFooter.jsp" />
+

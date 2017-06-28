@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +64,6 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -203,7 +203,7 @@ public class CandidateListRestController {
 			}
 			
 			if(StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange) && !updatedDateRange.equalsIgnoreCase("all")  && !updatedDateRange.equalsIgnoreCase("undefined")){
-				
+				DateTime zoned = new DateTime(DateTimeZone.forID(loginOrgLocation.getTimezone().getTimeZoneId()));
 				// This Code is for  getting the sql enddate based on range
 		    	 Calendar c = Calendar.getInstance();
 			     c.setTime(new Date()); // Now use today date.
@@ -211,9 +211,11 @@ public class CandidateListRestController {
 		         c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
 		         String updatedDate = df.format(c.getTime());
 		         Date parsed = df.parse(updatedDate);
-		         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 		         
-		         boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate));
+		         Date endDate = getPreviousDate(zoned, loginOrgLocation.getTimezone());
+		         java.sql.Date endDate1 = new java.sql.Date(endDate.getTime());
+		         
+		         boolQueryBuilder.must(QueryBuilders.rangeQuery("updatedDate").gte(endDate1));
 	   	    	
 			}
 			
@@ -248,7 +250,15 @@ public class CandidateListRestController {
 		return resultJson;
 	 }
 	 
-	 
+	 private Date getPreviousDate(DateTime zoned, Timezone timezone) throws ParseException
+		{
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			DateTime yesterDayZoned = zoned;
+			String yesterDayDate = outputFormatter.print(yesterDayZoned);
+			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, yesterDayDate);
+			return TZ_DF_TS.parse(startDateString);
+		}
 	 
 	 @RequestMapping(value = "/getUniversalCandidatesListByOrgLocationID")
 	 public String getUniversalCandidatesListByOrgLocationID(@RequestParam(value="serachValue", required=false) String  serachValue,
@@ -704,6 +714,20 @@ public class CandidateListRestController {
 				}
 			}
 			can.setAllAndCandidateSkills(lhs);
+			
+			// visa type
+			LinkedHashSet<String> lhs1 = new LinkedHashSet<String>();
+			List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+			for(LookUpData lookUpData :visaList){
+				lhs.add(lookUpData.getName());
+			}
+			if(null != can.getVisaType() && StringUtils.isNotEmpty(can.getVisaType())){
+				String [] csl = can.getVisaType().split(",");
+				for(String sl : csl){
+					lhs1.add(sl);
+				}
+			}
+			can.setAllAndCandidateVisa(lhs1);
 			
 			if(null != can.getExpectedRateCurrencey()){
 				  can.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
@@ -1186,8 +1210,19 @@ public class CandidateListRestController {
 				                             @RequestParam(value="isAssociate", required=false) String  isAssociate,HttpServletRequest request,HttpServletResponse response) throws Exception {
 
 	 		 Org   org = (Org)SourceLeadSessionManager.getSessionAttribute(request, "org");
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-			List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType,isAssociate);
+			 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 
+			 List<Candidate>   candidatesList = null;
+			
+			
+			 if(!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				 candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(),user.getId());
+			 }else{
+				 candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(),org.getId(),candidateStatus,updatedDateRange,candidateType,isAssociate);
+			 }
+		    
 			File file = null;
 			if(!"pdf".equalsIgnoreCase(exportType)){
 			file = candidateService.getCandidateExcelFile(candidatesList,org.getOrgName(),isAssociate);
@@ -1239,6 +1274,25 @@ public class CandidateListRestController {
 					return "success";
 				}else{
 					can.setSkillsName("");
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					return "failed";
+				}
+			 }
+		   
+		   
+		   @RequestMapping(value = "/saveOrUpdateOnlyVisaBycandidateId")
+		   public String saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value="candidateId", required=false) String  candidateId,@RequestParam(value="visaName", required=false) String  visaName, HttpServletRequest request) throws Exception {
+			   Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+				
+				if(null != can && StringUtils.isNotEmpty(visaName)){
+					can.setVisaType("");
+					can.setVisaType(visaName);
+					candidateService.saveOrUpdateCandidate(can);
+					candidateService.saveOrUpdateCandidateElkDocument(can);
+					return "success";
+				}else{
+					can.setVisaType("");
 					candidateService.saveOrUpdateCandidate(can);
 					candidateService.saveOrUpdateCandidateElkDocument(can);
 					return "failed";

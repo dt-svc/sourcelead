@@ -222,6 +222,9 @@ public class RequirementRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Requirement requirement = requirementService.storeRequirementTemplate(jsonObj,orgLocation,user);
 		
+		
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", "Successfully created a template");
+		
 		return "success";
 		
 	}
@@ -254,6 +257,7 @@ public class RequirementRestController {
 	public @ResponseBody String requirementAcceptOrReject(
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "isLoginUserAsAdmin", required = false) String isLoginUserAsAdmin,
 			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request)
 			throws Exception {
 
@@ -264,8 +268,13 @@ public class RequirementRestController {
 	   
 		//rejected reason save in requirementApproverHierarchy table only who can reject the requirement
 
-		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
-		if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+		RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+		
+		if(isLoginUserAsAdmin.equalsIgnoreCase("true") && status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
+			requirementApproverHierarchy.setRejectedReason(reason);
+	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
+		}
+		else if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
 	    	requirementApproverHierarchy.setRejectedReason(reason);
 	    	requirementApproverHierarchyService.addRequirementApproverHierarchy(requirementApproverHierarchy);
 	    }
@@ -289,7 +298,40 @@ public class RequirementRestController {
 					Integer maxLevel = requirementApproverHierarchyService.getRequirementApproverHierarachyWithHighestLevel(requirementId);
 
 					if (null != maxLevel) {
-						if (maxLevel.equals(requirementApproverHierarchy.getLevel())) {
+						
+						// approve the requirement from admin login. 
+						if(isLoginUserAsAdmin.equalsIgnoreCase("true")){
+							if (status.equalsIgnoreCase("APPROVED")) {
+								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+							} else if (status.equalsIgnoreCase("REJECTED")) {
+								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+							}
+							requirement.setUpdatedBy(loginUser.getUserCode());
+							requirement.setUpdatedDate(commonUtil.currentDate());
+							requirementService.addRequirement(requirement);
+							List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+							for (RequirementApproverHierarchy rah : list1) {
+								if (status.equalsIgnoreCase("APPROVED")) {
+									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+								} else if (status.equalsIgnoreCase("REJECTED")) {
+									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+								}
+								rah.setUpdatedBy(loginUser.getUserCode());
+								rah.setUpdatedDate(commonUtil.currentDate());
+								requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
+							}
+							/*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
+							RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
+					    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
+				    			if(null != hierarchy && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
+				    				for(RequirementAssignTo reqAssign:reqAssignTo ){
+											if(null != reqAssign.getAssignUserId() && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
+												requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+											}
+				    				}
+				    		}
+						}
+						else if (maxLevel.equals(requirementApproverHierarchy.getLevel())) {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
 								} else if (status.equalsIgnoreCase("REJECTED")) {

@@ -74,7 +74,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    	 /*========== Universal Search list of Requirement ==========*/ 
 	    	if(searchType == 'Requirement'){
 	    		if(checkSize > 0){
-	    			result = result+'   <h4>Requirements</h4>';
+	    			result = result+'   <h4>Jobs</h4>';
 	   	    	 for (var i = 0; i < checkSize; i++) {
 	   	             var report= json[i];
 	   	             var location = "";
@@ -464,7 +464,7 @@ function getSearchResultsForAll(searchType,searchValue){
 				            	 if(report.searchType=="Requirement"){	 
 						            	 if((report.searchType=="Requirement") && j == 0){
 						            		 result = result+'  <div class="clearfix">';	 
-						            	   		result = result+'   <h4>Requirements</h4>';
+						            	   		result = result+'   <h4>Jobs</h4>';
 						            	   	 result = result+' </div>';
 						            	 }
 						            	 result = result+'  <div class="srchresult clearfix">';

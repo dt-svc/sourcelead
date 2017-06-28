@@ -178,19 +178,19 @@ function closeCertificatePopup(){
 		result = result + '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span 	class="hidden">Address</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
-		result = result + '	               <div class="clearfix mb10">';
-		result = result + '	                 <p class="ml">Start Date</p>';
+		
+		result = result + '	               <div class="clearfix mb10 dates">';
+		
 		result = result + '	                   <div class="col-md-6" id="startYearDiv">';
-		result = result	+ '	                   <input type="text" max class="form-control" value="" id="startYear" name="startYear"  placeholder="Select Start Date"  field-name="Start Date" >';
+		result = result + '	                    <p>Start Date</p>';
+		result = result	+ '	                   <input type="text" max class="form-control calendar" value="" id="startYear" name="startYear"  placeholder="Start Date"  field-name="Start Date" readonly>';
 		result = result + '	                 </div>';
+		
+		result = result + '	                   <div class="col-md-6 endDate" id="endDateDiv" >';
+		result = result + '	                  <p>End Date</p>';
+		result = result	+ '	                   <input type="text" max class="form-control calendar" id="endYear" name="endYear" field-name="End Year"  placeholder="End Date" readonly>';
 		result = result + '	                 </div>';
-		result = result + '	                 <div id="endDateDiv">';
-		result = result + '	                 <div class="clearfix mb10 endDate">';
-		result = result + '	                 <p class="ml">End Date</p>';
-		result = result + '	                   <div class="col-md-6" >';
-		result = result	+ '	                   <input type="text" max class="form-control" id="endYear" name="endYear" field-name="End Year"  placeholder="Select End Date" >';
-		result = result + '	                 </div>';
-		result = result + '	                 </div> ';
+		
 		result = result + '	                 </div> ';
 		result = result + '	               <div class="clearfix mr">';
 		result = result	+ '	                 <button type="button" id ="candidateEmployersAdd" onClick ="candidateEmployersStore('+ candidateId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
@@ -288,10 +288,11 @@ function closeCertificatePopup(){
 								if (json.isCurrentPosition == 'Y' && json.isCurrentPosition != '' && json.isCurrentPosition !== 'undefined') {
 									result = result	+ '	 <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '"   checked="checked"    onClick ="iscurrentPositionEdit();" name = "isCurrentPosition"> Is Current Position</label>';
 								} else {
-									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
+									result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="Y" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
+								
 								result = result	+ '	               <div class="clearfix mb10">';
 								result = result	+ '	                 <div class="col-md-12">';
 								if (json.designation != null && json.designation != '' && json.designation != 'undefined') {
@@ -310,33 +311,29 @@ function closeCertificatePopup(){
 								}
 								result = result + '	                 </div>';
 								result = result + '	               </div>';
-								result = result	+ '	               <div class="clearfix mb10">';
-								result = result + '	                 <p class="ml">Start Date</p>';
 								
+								result = result	+ '	               <div class="clearfix mb10 dates">';
 								result = result	+ '<div class="col-md-6">';
+								result = result + '	                 <p>Start Date</p>';
 								if (json.startYear != null && json.startYear != '' && json.startYear != 'undefined') {
-									result = result	+ '<input type="text" max class="form-control" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control calendar" value="'+ json.startYear+ '" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" readonly>';
 								}else{
-									result = result	+ '<input type="text" max class="form-control" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Select End Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text" max class="form-control calendar" value="" id="startYear" name="startYear" onblur="validYearEdit();"  placeholder="Start Date"  field-name="Start Date" data-validation="required" data-validation-optional="true" readonly>';
 								}
 								result = result + '</div>';
-								result = result + '</div>';
 								
-								result = result	+ '<div id="endDateEditDiv">';
-								result = result	+ '<div class="clearfix mb10 endDate >';
-								result = result	+ '<p class="ml">End Date</p>';
 								
-								result = result	+ '<div class="col-md-6">';
+								result = result	+ '<div class="col-md-6" id="endDateEditDiv">';
+								result = result	+ '<p>End Date</p>';
 								if (json.endYear != null && json.endYear != '' && json.endYear != 'undefined') {
-									result = result	+ '<input type="text"  class="form-control" value="'+ json.endYear+'" id="endYearEdit" name="endYear" placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text"  class="form-control calendar" value="'+ json.endYear+'" id="endYearEdit" name="endYear" placeholder="Enter Year"  field-name="End Date" data-validation="required" data-validation-optional="true" readonly>';
 									result = result	+ '<input type="hidden" value="'+json.endYear+'" id="exisitngEndYear">';
 								}else{
-									result = result	+ '<input type="text"  class="form-control" value="" id="endYearEdit" name="endYear" placeholder="Enter Year"  field-name="end Date" data-validation="required" data-validation-optional="true" >';
+									result = result	+ '<input type="text"  class="form-control calendar" value="" id="endYearEdit" name="endYear" placeholder="End Date"  field-name="end Date" data-validation="required" data-validation-optional="true" readonly>';
 								}
-								result = result + '</div>';
-								result = result + '</div>';
 								result = result + '	                 </div> ';
 								result = result + '	                 </div> ';
+								
 								result = result	+ '	               <div class="clearfix mr">';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateEmpId+'" id="candidateEmpId"  name="candidateEmployeeId" >';
 								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
@@ -574,7 +571,31 @@ function employeePagination(){
  }
 </script>
 
+ 
 
+<script type="text/javascript">
+function deletePopup(){
+	$("#remove_user_pop_emp, .project_inn_mask").fadeOut();
+}
+</script>
+
+<div id="deleteExcepPopUp"></div> 
+
+<script type="text/javascript">
+function removeEmployer(candidateemployerId, candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop_emp' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are choosing to delete the Employer</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmployer("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deletePopup();'></b>";
+	result = result +"	</div>";
+	$("#deleteExcepPopUp").append(result);
+	$("#remove_user_pop_emp").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
 
 <%-- 
      @author : David Sammeta.
@@ -584,7 +605,7 @@ function employeePagination(){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-	function removeEmployer(candidateemployerId, candidateId) {
+	function deleteSelectedEmployer(candidateemployerId, candidateId) {
 
 		var sourceleadUrl = '${sourceleadUrl}';
 				$.ajax({
@@ -602,6 +623,7 @@ function employeePagination(){
 			         			 $("#selector3").css({ display: "block" });
 			         			 $("#empMsgDiv").html("Employer deleted");
 								 $("#popUpDivEmp").removeClass("edit-details-active");
+								 $("#remove_user_pop_emp, .project_inn_mask").fadeOut();
 								 candidateEmployersList(candidateId);
 								 empMsgFadein();
 							}

@@ -16,6 +16,11 @@
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
+				    /* $("#closedDate").datepicker({
+			                minDate: 0
+			            });
+			        */
+			  
 			});
        </script> 
 
@@ -129,6 +134,20 @@ $(document).ready(function() {
 				  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 				  $("#jobOtherType").val('');
 			}
+			
+			  if(jobType == 'C2C' || jobType == 'C2H' || jobType == 'Contract'){
+					 
+					
+					 document.getElementById("projectDurationYearsDiv").style.display="block";
+					 document.getElementById("projectDurationMonthsDiv").style.display="block";
+					 
+					 
+				  
+				}else{
+					document.getElementById("projectDurationYearsDiv").style.display="none";
+					document.getElementById("projectDurationMonthsDiv").style.display="none";
+					
+				}
 			
 			getAllCountries();
 			removeEditButton();
@@ -264,9 +283,9 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-      <h2>Add Requirement</h2>
+      <h2>Add Job</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Requirement List  </a>&raquo; Add Requirement </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Add Job </div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div>
@@ -274,7 +293,7 @@ $(document).ready(function () {
     <div class="form-horizontal req-dtls myForm row">
       <div class="clearfix">
         <div class="col-lg-12">
-          <h3>Requirement Details</h3>
+          <h3>Job Details</h3>
         </div>
 	       <div class="col-md-12 clearfix">
         	  <div class="col-md-12">
@@ -306,8 +325,8 @@ $(document).ready(function () {
 
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
            <div class="form-group pras req-title" id="jobTitleDiv">
-	         <label class="col-md-3">Title<span class="text-danger">*</span></label>
-	         <div class="col-md-9">
+	         <label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
+	        <div class="col-md-9 validLabel">
 	             <input type="text" id="jobTitle" name="jobTitle" value="${fn:escapeXml(requirement.jobTitle)}"  field-name="Job Title"  data-validation="required validate_Space validate_length length1-250"   value="" class="form-control" onblur="getTemplateVal();">
 	         </div>
 	       </div>
@@ -345,9 +364,82 @@ $(document).ready(function () {
             </div>
           </div>
           
+          <div class="form-group" id="projectDurationYearsDiv" style="display:none">
+            <label class="col-md-3">Project Duration</label>
+            <div class="col-md-9">
+              <div class="row">
+	                <div class="col-md-6 dropdown-select">
+						<select class="form-control" id="projectDurationYears" name="projectDurationYears">
+							<option value="">--Select Years--</option>
+	                 <option  ${requirement.projectDurationYears  == '0' ? 'selected' : ''}>0</option>
+	                 <option  ${requirement.projectDurationYears  == '1' ? 'selected' : ''}>1</option>
+	                 <option  ${requirement.projectDurationYears  == '2' ? 'selected' : ''}>2</option>
+	                 <option  ${requirement.projectDurationYears  == '3' ? 'selected' : ''}>3</option>
+	                 <option  ${requirement.projectDurationYears  == '4' ? 'selected' : ''}>4</option>
+	                 <option  ${requirement.projectDurationYears  == '5' ? 'selected' : ''}>5</option>
+	                 <option  ${requirement.projectDurationYears  == '6' ? 'selected' : ''}>6</option>
+	                 <option  ${requirement.projectDurationYears  == '7' ? 'selected' : ''}>7</option>
+	                 <option  ${requirement.projectDurationYears  == '8' ? 'selected' : ''}>8</option>
+	                 <option  ${requirement.projectDurationYears  == '9' ? 'selected' : ''}>9</option>
+	                 <option  ${requirement.projectDurationYears  == '10' ? 'selected' : ''}>10</option>
+	                 <option  ${requirement.projectDurationYears  == '11' ? 'selected' : ''}>11</option>
+	                 <option  ${requirement.projectDurationYears  == '12' ? 'selected' : ''}>12</option>
+	                 <option  ${requirement.projectDurationYears  == '13' ? 'selected' : ''}>13</option>
+	                 <option  ${requirement.projectDurationYears  == '14' ? 'selected' : ''}>14</option>
+	                 <option  ${requirement.projectDurationYears  == '15' ? 'selected' : ''}>15</option>
+	                 <option  ${requirement.projectDurationYears  == '16' ? 'selected' : ''}>16</option>
+	                 <option  ${requirement.projectDurationYears  == '17' ? 'selected' : ''}>17</option>
+	                 <option  ${requirement.projectDurationYears  == '18' ? 'selected' : ''}>18</option>
+	                 <option  ${requirement.projectDurationYears  == '19' ? 'selected' : ''}>19</option>
+	                 <option  ${requirement.projectDurationYears  == '20' ? 'selected' : ''}>20</option>
+	                 <option  ${requirement.projectDurationYears  == '21' ? 'selected' : ''}>21</option>
+	                 <option  ${requirement.projectDurationYears  == '22' ? 'selected' : ''}>22</option>
+	                 <option  ${requirement.projectDurationYears  == '23' ? 'selected' : ''}>23</option>
+	                 <option  ${requirement.projectDurationYears  == '24' ? 'selected' : ''}>24</option>
+	                 <option  ${requirement.projectDurationYears  == '25' ? 'selected' : ''}>25</option>
+	                 <option  ${requirement.projectDurationYears  == '26' ? 'selected' : ''}>26</option>
+	                 <option  ${requirement.projectDurationYears  == '27' ? 'selected' : ''}>27</option>
+	                 <option  ${requirement.projectDurationYears  == '28' ? 'selected' : ''}>28</option>
+	                 <option  ${requirement.projectDurationYears  == '29' ? 'selected' : ''}>29</option>
+	                 <option  ${requirement.projectDurationYears  == '30' ? 'selected' : ''}>30</option>
+	                   
+						</select>	                 
+	                </div>
+	                <div class="col-md-6 dropdown-select" id="projectDurationMonthsDiv" style="display:none">
+	                <select class="form-control" id="projectDurationMonths" name="projectDurationMonths">
+							<option value="">--Select Months--</option>
+							 <option  ${requirement.projectDurationMonths  == '0' ? 'selected' : ''}>0</option>
+							 <option  ${requirement.projectDurationMonths  == '1' ? 'selected' : ''}>1</option>
+							 <option  ${requirement.projectDurationMonths  == '2' ? 'selected' : ''}>2</option>
+							 <option  ${requirement.projectDurationMonths  == '3' ? 'selected' : ''}>3</option>
+							 <option  ${requirement.projectDurationMonths  == '4' ? 'selected' : ''}>4</option>
+							 <option  ${requirement.projectDurationMonths  == '5' ? 'selected' : ''}>5</option>
+							 <option  ${requirement.projectDurationMonths  == '6' ? 'selected' : ''}>6</option>
+							 <option  ${requirement.projectDurationMonths  == '7' ? 'selected' : ''}>7</option>
+							 <option  ${requirement.projectDurationMonths  == '8' ? 'selected' : ''}>8</option>
+							 <option  ${requirement.projectDurationMonths  == '9' ? 'selected' : ''}>9</option>
+							 <option  ${requirement.projectDurationMonths  == '10' ? 'selected' : ''}>10</option>
+							 <option  ${requirement.projectDurationMonths  == '11' ? 'selected' : ''}>11</option>
+							 
+						</select>
+	                </div>
+              </div>
+              <!-- <div class="row" id="projectduration">
+                  <input type="hidden" name="expValidation" id="projectDuration">
+              </div>  -->
+            </div>
+          </div>
+          
 		          
           
-           
+            <!--  <div class="form-group">
+            <label class="col-md-3">Closed Date</label>
+            <div class="col-md-9">
+             <div class="col-lg-6 positionRelative" id="closedDateDiv">
+			<input type="text" class="form-control" value="" id="closedDate" name="closedDate" field-name="Closed Date"  readonly="readonly"> <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+			</div>
+            </div>
+          </div> -->
             
           <div class="form-group">
             <label class="col-md-3">No. of Positions</label>
@@ -430,11 +522,38 @@ $(document).ready(function () {
             </div>
           </div>
           
+          <div class="form-group">
+				<label class="col-md-3">Industry</label>
+				<div class="col-md-9">
+				<select  class="chosen-select form-control" name="industryName" id="industryName" data-placeholder="--Select Industry--"  field-name="Industry" data-validation-optional="true">
+				<option value="">--Select Industry--</option>
+				<%-- <c:forEach var="industry" items="${industryList}">
+	                     <option value="${industry.name}">${industry.name}</option>
+                </c:forEach>  --%>
+                
+                  <c:forEach var="industry" items="${industryList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedIndustry" items="${requirement.industrySavedName}">
+					    <c:if test="${existedIndustry eq industry}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${industry}">${industry}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${industry}">${industry}</option>
+					</c:if>
+                </c:forEach>
+                
+                 </select>
+                 <%-- <input type="hidden" id="existingState" value="${requirement.state}" > --%>
+				</div>
+		 </div>
+          
           <div class="form-group pras" >
-            <label class="col-md-3">Pay Rate/Salary</label>
+            <label class="col-md-3">Min / Max Rate</label>
             <div class="col-md-9">
              <div class="input-group payrate_p">
-                <div class="input-group-btn selp-custom-min">
+                <div class="input-group-btn selp-custom-min selp-customMin">
                   
                   <select class="selectpicker" id="currencyCode" name="currencyCode" >
                
@@ -457,7 +576,13 @@ $(document).ready(function () {
                  </c:if>
                 </select>
                 </div>
-                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="">
+                <div class="pull-left input_minmax">
+                <input type="text" class="form-control input-sm" id="rate" name="rate" field-name="Min Rate" placeholder="Min Rate" value="${requirement.rate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
+                <input type="text" class="form-control input-sm" id="maxRate" name="maxRate" field-name="Max Rate" placeholder="Max Rate" value="${requirement.maxRate}" data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
+                </div>
+                 <div class="row" id="rateValidateId">
+                  <input type="hidden" name="rateValidation" id="rateValidation">
+              </div> 
                 <div class="input-group-btn selp-custom-min payrate_p">
                   <select class="selectpicker ratetype" id="rateType" name="rateType" field-name="Rate Per">
                     <option value="">Rate Per</option>
@@ -473,13 +598,66 @@ $(document).ready(function () {
               </div>
             </div>
           </div>
+         
           
-        
+      
+          
+          
+		<div class="form-group">
+				<label class="col-md-3">Travel Allowance</label>
+				<div class="col-md-9">
+				<select  class="selectpicker" name="travelAllowance" id="travelAllowance" field-name="Travel Allowance">
+	                 <option  ${requirement.travelAllowance  == '0%' ? 'selected' : ''}>0%</option>
+	                 <option  ${requirement.travelAllowance  == '10%' ? 'selected' : ''}>10%</option>
+	                 <option  ${requirement.travelAllowance  == '15%' ? 'selected' : ''}>15%</option>
+	                 <option  ${requirement.travelAllowance  == '20%' ? 'selected' : ''}>20%</option>
+	                 <option  ${requirement.travelAllowance  == '25%' ? 'selected' : ''}>25%</option>
+	                 <option  ${requirement.travelAllowance  == '30%' ? 'selected' : ''}>30%</option>
+	                 <option  ${requirement.travelAllowance  == '35%' ? 'selected' : ''}>35%</option>
+	                 <option  ${requirement.travelAllowance  == '40%' ? 'selected' : ''}>40%</option>
+	                 <option  ${requirement.travelAllowance  == '45%' ? 'selected' : ''}>45%</option>
+	                 <option  ${requirement.travelAllowance  == '50%' ? 'selected' : ''}>50%</option>
+                 </select>
+                 
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+                      <label class="col-md-3">Closed Date</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text"  name="closedDate" class="form-control" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
+                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                           </div>
+                        </div>
+                  </div>
+                  
+                  
+              <div class="form-group" id="receivingApplicantsDiv"  style="display:none">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+		     <c:if test="${! empty requirement.closedDateStringFormat}">
+		     <div class="form-group"  style="display:block">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox"  id="receivingApplicantsId" value="${requirement.isreceivingApplicants}"
+                 
+						 ${requirement.isreceivingApplicants  == 'Y' ? "checked" : ''}	name="isreceivingApplicants"  onclick="receivingApplicants();"> Allow Receiving Applicants
+				</label>
+              </div>
+            </div>
+		     </c:if>
           
           <div class="form-group">
 				<label class="col-md-3">Country</label>
 				<div class="col-md-9">
-				 <select class="chosen-select form-control select-bg" name="countryReq" id="countryReq" field-name="Country" >
+				 <select class="chosen-select form-control select-bg" data-validation="required" name="countryReq" id="countryReq" field-name="Country" >
                  </select>
                    <input type="hidden" id="existingCountry" value="${requirement.country}" >
 				</div>
@@ -518,6 +696,27 @@ $(document).ready(function () {
 					</c:forEach>
 					<c:if test="${NUM == 0}">
 						<option  value="${skill}">${skill}</option>
+					</c:if>
+                </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+              <div class="form-group">
+              <label class="col-md-3">Visa</label>
+              <div class="col-md-9">
+                <select multiple class="chosen-select form-control" name="visa" id="visa" data-placeholder="Select Visa" data-validation-optional="true">
+               <c:forEach var="visaList" items="${visaList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedVisa" items="${requirement.visaType}">
+					    <c:if test="${existedVisa eq visaList}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${visaList}">${visaList}</option>
+					    </c:if>
+					</c:forEach>
+					
+					<c:if test="${NUM == 0}">
+						<option  value="${visaList}">${visaList}</option>
 					</c:if>
                 </c:forEach>
                 </select>
@@ -674,7 +873,7 @@ $(document).ready(function () {
             </div>
             <div class="clearfix">
               <div class="form-group">
-                <label class="col-md-3">Client<span class="text-danger">*</span></label>
+                <label class="col-md-3">Client<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9">
                   <div>
                    <c:set var="val" value="${requirement.isClientJob}"/>
@@ -746,9 +945,9 @@ $(document).ready(function () {
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Client Contact <span class="text-danger">*</span></label>
+                <label class="col-md-3">Client Contact <span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9">
-                  <div class="form-icon">
+                  <div>
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
@@ -863,9 +1062,9 @@ $(document).ready(function () {
               <div class="clearfix"></div>
               </div>
               <div class="form-group">
-                <label class="col-md-3">Submission Form<span class="text-danger">*</span></label>
+                <label class="col-md-3">Submission Form<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9">
-                  <div class="form-icon">
+                  <div>
                   <c:set var="val" value="${requirement.isClientJob}"/>
                   <c:choose> 
 				 	<c:when test="${val == 'Y'}">
@@ -949,7 +1148,7 @@ $(document).ready(function () {
          </div> -->
          
          <div class="form-group parallel" style="display:none;">
-                <label class="col-md-3">Approver<span class="text-danger">*</span></label>
+                <label class="col-md-3">Approver<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9">
                     <select multiple class="chosen-select form-control" id="parallelApprover" name="parallelApprover" field-name="Approver" data-validation="required" data-validation-optional="true" data-placeholder="Select Approver">
                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
@@ -970,7 +1169,7 @@ $(document).ready(function () {
          
          
          <div class="form-group sequential" id="addLvl" style="display:none;">
-                <label class="col-md-3">Approver1<span class="text-danger">*</span></label>
+                <label class="col-md-3">Approver1<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-9">   
                     
                         <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
@@ -992,7 +1191,7 @@ $(document).ready(function () {
                     <!-- <span onClick="addLvl();"><i class="fa fa-level-down btn btn-default formic1" data-toggle="tooltip" data-placement="left" title="Add Level"></i></span> -->
                 </div>
                 
-	            <label class="col-md-3 mt">Approver2<span class="text-danger">*</span></label>
+	            <label class="col-md-3 mt">Approver2<span class="text-danger paddingLeft">*</span></label>
 	            <div class="col-md-9 mt">
 	              		
                        <c:if test="${requirement.requirementSubmissionStatus == 'OPEN' ||  requirement.requirementSubmissionStatus == 'ONHOLD'}">
@@ -1017,7 +1216,7 @@ $(document).ready(function () {
               </div>
            
           <div class="form-group">
-            <label class="col-md-3">Manager<span class="text-danger">*</span></label>
+            <label class="col-md-3">Manager<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
            
               <select  class="chosen-select form-control"  data-validation = "required" field-name = "Manager" name="manager" id="managerId">
@@ -1062,7 +1261,7 @@ $(document).ready(function () {
               </div>
           </div>
           <div class="form-group">
-            <label class="col-md-3">Priority<span class="text-danger">*</span></label>
+            <label class="col-md-3">Priority<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
               <select class="selectpicker" id="priority" name="priority" data-validation = "required" field-name = "priority">
                 <option ${requirement.priority  == 'Medium' ? 'selected' : ''}>Medium</option>
@@ -1073,7 +1272,7 @@ $(document).ready(function () {
             </div>
           </div>
           <div class="form-group" id="internalSubmissionFrom">
-            <label class="col-md-3">Application Form<span class="text-danger">*</span></label>
+            <label class="col-md-3">Application Form<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
                
                <select class="chosen-select form-control select-bg" name="applicationFrom" id="applicationFrom"  data-validation="required"  field-name = "Application Form">
@@ -1129,14 +1328,14 @@ $(document).ready(function () {
                         <div class="form-horizontal custom-form clearfix">
                           <div class="col-xs-12 col-md-12 col-lg-12">
                             <div class="form-group">
-                            <label class="col-lg-4">Team Name <span class="text-danger">*</span></label>
+                            <label class="col-lg-4">Team Name <span class="text-danger paddingLeft">*</span></label>
                             <div class="col-lg-8" id="teamNameDiv">
                               <!-- <input type="text" class="form-control" value=""> -->
                               <input type="text" class="form-control"  placeholder="Team Name" id="name" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">
                               </div>
                             </div>
                             <div class="form-group">
-                            <label class="col-lg-4">Team Lead <span class="text-danger">*</span></label>
+                            <label class="col-lg-4">Team Lead <span class="text-danger paddingLeft">*</span></label>
                             <div class="col-lg-8 select-field">
                              <select class="form-control"  name="ownerUserId" id="ownerUserId" placeholder="Team Lead *" data-validation="required validate_Space" field-name="Team Lead"  onchange="getTeamMembers();">
 			                    	
@@ -1144,7 +1343,7 @@ $(document).ready(function () {
                               </div>
                             </div>
                             <div class="form-group">
-                            <label class="col-lg-4">Team Members <span class="text-danger">*</span></label>
+                            <label class="col-lg-4">Team Members <span class="text-danger paddingLeft">*</span></label>
                             <div class="col-lg-8">
                              <select multiple class="chosen-select form-control select-bg" name="memberUserId" id="memberUserId" data-placeholder="Select Team Member" data-validation="required validate_Space" field-name="Team Member">
 					                  
@@ -1167,6 +1366,21 @@ $(document).ready(function () {
   </div>
 </section>
 
+<script>
+  $( function() {
+	  
+	  $('#closedDate').datepicker({
+	      dateFormat: 'dd-mm-yy',
+	      changeMonth: true,
+	  	  changeYear: true,
+	  	  minDate: 1,
+	  	onSelect : function(selected) {
+	  		  document.getElementById("receivingApplicantsDiv").style.display="block";
+	  	}
+	  });
+	  
+  } );
+</script>
 
 <script>
 var selectedFile = document.getElementById("uploadBtn");
@@ -1215,7 +1429,23 @@ function validate_fileupload(fileName)
 </script>
 
 
+<script type="text/javascript">
 
+ function receivingApplicants(){
+	
+	if (document.getElementById('receivingApplicantsId').checked){
+		 $("#receivingApplicantsId").val('Y');
+	}
+	
+	else{
+		
+		 $("#receivingApplicantsId").val('N');
+		
+		}
+	
+} 
+	  
+</script>
 
 
 
@@ -1287,6 +1517,16 @@ function validate_fileupload(fileName)
  			 $('#rateType').removeAttr('data-validation');
  			 $('#rateType').attr("data-validation-optional","true"); 
  		 }
+ 		 
+ 		var maxRate = document.getElementById("maxRate").value; 
+		 if(maxRate != null && maxRate != ""){
+			 $('#rateType').removeAttr('data-validation-optional');
+			 $('#rateType').attr("data-validation","required");
+			 $('#rate').attr("data-validation","required validate_Space validate_int validate_length length1-8");
+		 }else{
+			 $('#rateType').removeAttr('data-validation');
+			 $('#rateType').attr("data-validation-optional","true"); 
+		 }
  		 
  		 var clientRateType = document.getElementById("clientRateType").value; 
  		 if(clientRateType != null && clientRateType != ""){
@@ -1706,7 +1946,7 @@ function getRequirementAndLookUpSkills(requirementid){
 </script>
 <script>
 function setTemplateValues(){
- var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 	var requirementId = document.getElementById('template').value;
 	getEditRequirementDetails(requirementId);
 	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
@@ -1725,17 +1965,18 @@ function setTemplateValues(){
 		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
 		    			$("#templateId").val(json.id);
 		    		}
-		    		
 			    	$("#jobTitle").val(json.jobTitle);
 			    	$("#jobType").val(json.jobType);
 			    	
 			    	$("#coolingOff").val(json.reqCoolingOffPeriod);
+			    	$("#industryName").val(json.industryName);
+			    	$("#industryName").trigger("chosen:updated");
 			    	
 			    	$("#jobOtherType").val(json.otherJobType);
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#jobId").val(json.jobId);
 			    	$("#positions").val(json.positions);
-			    	
+			    	$("#travelAllowance").val(json.travelAllowance);
 			    	$("#minExp").val(json.minExp);
 			    	$("#maxExp").val(json.maxExp);
 			    	
@@ -1802,11 +2043,11 @@ function setTemplateValues(){
 			    	$('#txtEditor').html(json.description); 
 			    	
 			    	$("#rate").val(json.rate);
+			    	$("#maxRate").val(json.maxRate);
 			    	
 			    	if(json.currencyCode != null && json.currencyCode != '' && json.currencyCode != 'undefined'){
 			    	$("#currencyCode").val(json.currencyCode);
 			    	}
-			    	
 			    	$('.selectpicker').selectpicker('refresh');
 			    	$("#rateType").val(json.rateType);
 			    	$('.selectpicker').selectpicker('refresh');
@@ -1816,15 +2057,16 @@ function setTemplateValues(){
 			   
 			    	 //$( ".jobTypeDiv" ).hide();
 		    	}else{
-		    		
 		    		$("#jobTitle").val('');
 			    	$("#jobType").val('');
+			    	$("#travelAllowance").val('');
 			    	$("#jobOtherType").val('');
 			    	$("#jobId").val('');
 			    	$("#positions").val('');
+			    	$("#industryName").val('');
+			    	$("#industryName").trigger("chosen:updated");
 			    	$("#minExp").val('');
 			    	$("#maxExp").val('');
-			    	
 					$("#countryReq").val('');
 					$("#state").val('');
 					$("#city").val('');
@@ -1835,10 +2077,11 @@ function setTemplateValues(){
 					
 		            $("#skills").val('');
 		            $("#education").val('');
-			    	$("#description").val('');
+		            $(".Editor-editor").text('');
 			    	$("#rate").val('');
 			     	$("#currencyCode").val('');
 			    	$("#rateType").val('');
+			    	$("#maxRate").val('');
 			    	$( ".jobTypeDiv" ).show();
 			    	$(".")
 			    	
@@ -1850,16 +2093,14 @@ function setTemplateValues(){
      });
 	}else{
 		 document.getElementById("requirement_form").reset();
+		 $(".Editor-editor").text('');
 		 $("#skills").trigger("chosen:updated");
 		 $("#education").trigger("chosen:updated");
 		 $("#existingCountry").val('');
 		 $("#existingState").val('');
 		 $("#existingCity").val('');
-		/*  $("#state").trigger("chosen:updated");
-		 $("#city").trigger("chosen:updated"); */
 		 getAllCountries(); 		
 		 $("#rate").val('');
-		 $("#description").val('');
 		
 		 
 	}
@@ -2736,6 +2977,28 @@ function minMaxExperience(){
 
 </script>
 
+
+<script>
+//Function to validate if maximum rate value is more the minimum rate value
+function minMaxRate(){
+    var maxRate = ($('#maxRate').val());
+    var minRate = ($('#rate').val());
+    
+    if (parseFloat(maxRate) <= parseFloat(minRate)){
+        $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+		$('input#rateValidation').attr('class','error signin_fild');
+		$("input#rateValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
+		$('input#rateValidation').attr('record-exist','yes');
+		$('input#rateValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+    }  else{
+    	$('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+    	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#rateValidateId').find('p.jquery_form_error_message').remove();
+    }
+}
+
+</script>
+
 <script type="text/javascript">
 function checkTemplateforDouplicate(){
 	if(document.getElementById('isTemplate').checked) {
@@ -2797,9 +3060,33 @@ function getJobType(jobType){
 		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
 			  $("#jobOtherType").val('');
 		  }
+		  
+		  
+		  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
+			 
+	
+				 document.getElementById("projectDurationYearsDiv").style.display="block";
+				 document.getElementById("projectDurationMonthsDiv").style.display="block";
+				 
+				 
+			  
+			}else{
+				document.getElementById("projectDurationYearsDiv").style.display="none";
+				document.getElementById("projectDurationMonthsDiv").style.display="none";
+				
+			}
+		  
+		  
+		  
+		  
+		  
+		  
 	}
 }
 </script>
+
+
+
 
 <!-- <script type="text/javascript">
 function checkcheckbox(){

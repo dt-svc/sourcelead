@@ -46,6 +46,7 @@
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
+<jsp:include page="candidateReferences.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include>
  <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
@@ -277,6 +278,7 @@ else{
 	          result = result +"</table>";
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
+	          $("#noCandidates").val(json.length);
 	          cpagination(); 
 	 /*  }
 	  else{
@@ -319,13 +321,13 @@ function cpagination(){
 	$.fn.dataTable.moment( 'DD-MM-YYYY' );
     $('#candidatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"aoColumnDefs": [{
 	           'bSortable': false,
 	           'aTargets': 0
 			}],
 		"aaSorting": [[7,'desc']],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -673,14 +675,15 @@ function candidateSideBar(candidateId){
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
 			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
 			             '</sec:authorize>';
-			            
-			            
+			             
+			            result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+');">References</a></li>';
+						 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_CANDIDATE_REQUIREMENT_HISTORY\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Requirement History</a></li>';
+			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Job History</a></li>';
 			              '</sec:authorize>';
 			              
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
@@ -703,6 +706,9 @@ function candidateSideBar(candidateId){
 						 result = result + '</div>';
 						 
 						 result = result + '<div id="tab-9" class="project_tabs_inn">';
+			             result = result+'     </div>';
+			             
+			             result = result + '<div id="tab-10" class="project_tabs_inn">';
 			             result = result+'     </div>';
 						 
 						 result = result + '<div id="tab-8" class="project_tabs_inn" style="min-height:450px">';
@@ -1056,7 +1062,7 @@ function cancel(candidateId){
 		
   </section>
   <div class="timesheet_out">
-    <div class="vendor_wrap minHeight_225" style="overflow-X:auto;">
+    <div class="vendor_wrap">
     
      <div class="pull-left cand-advsrche">
 			  <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
@@ -1402,7 +1408,7 @@ function cancel(candidateId){
         
         <div class="clearfix"></div>
       </div>
-      <div class="candidate_wrap_table">
+      <div class="candidate_wrap_table datatable_filter">
         <div id="candidateList"></div>
         <div id="emptyPopup"></div>
       </div>
@@ -1624,13 +1630,13 @@ function exportToPdf(){
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
-	  if(isCandidatesAvailable == ''){
+	  if(isCandidatesAvailable > 0){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Candidate List is Empty</p>";
+			result = result +"		<p>Candidates List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
 			result = result +"	</div>";
@@ -1665,13 +1671,13 @@ function exportToExcel(){
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
-	  if(isCandidatesAvailable == ''){
+	  if(isCandidatesAvailable > 0){
 	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Candidate List is Empty</p>";
+			result = result +"		<p>Candidates List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
 			result = result +"	</div>";

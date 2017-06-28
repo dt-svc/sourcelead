@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.omg.CosNaming.NamingContextPackage.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +55,20 @@ public class RequirementHelper {
 			requirementIndex.setJobTitle(requirement.getJobTitle());
 			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setOtherJobType(requirement.getOtherJobType());
-			
+			requirementIndex.setIndustryName(requirement.getIndustryName());
+			requirementIndex.setTravelAllownace(requirement.getTravelAllowance());
 			requirementIndex.setReqCoolingOffPeriod(requirement.getReqCoolingOffPeriod());
+			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
+			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
+			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
+			
+			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
+				requirementIndex.setDescription(requirement.getDescription());
+			}
+			
+			if (null != requirement.getMaxRate() && !"".equals(requirement.getMaxRate())) {
+				requirementIndex.setMaxRate(Float.parseFloat(requirement.getMaxRate()));
+			}
 			
 			if (null != requirement.getRate() && !"".equals(requirement.getRate())) {
 				requirementIndex.setRate(Float.parseFloat(requirement.getRate()));
@@ -78,7 +91,12 @@ public class RequirementHelper {
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy());
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
-			 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if(null != requirement.getClosedDate()){
+				 String reqclosedDate = dateFormat.format(requirement.getClosedDate());
+				 requirementIndex.setClosedDate(reqclosedDate);
+			}
 			 String reqcreatedDate = dateFormat.format(requirement.getCreatedDate());
 			requirementIndex.setCreatedDate(reqcreatedDate);
 			 String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());

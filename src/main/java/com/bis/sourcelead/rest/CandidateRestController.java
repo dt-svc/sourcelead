@@ -286,6 +286,9 @@ public class CandidateRestController {
 			}
 			if(null != isAssociate && isAssociate.equalsIgnoreCase(Constants.YES)){
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", "1"));
+			}else{
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", isAssociate));
 			}
 	        try {
 				SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,Constants.MAX_RESULTS_200,boolQueryBuilder).getHits();

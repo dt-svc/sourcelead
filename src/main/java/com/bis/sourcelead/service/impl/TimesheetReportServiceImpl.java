@@ -324,7 +324,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     timesheetApprovalDiv.append("<td><div class='sm'>").append("--").append("</div></td>"); 
 				     }
 				     if(null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
-				     timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>");
+				    	 if(null != projectMember.getEmployee().getCurrentCurrency() && !"".equalsIgnoreCase(projectMember.getEmployee().getCurrentCurrency())){
+				    		 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>"); 
+				    	 }else{
+				    		 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>");
+				    	 }
+				     
 				     }else{
 				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
 				     }
@@ -453,7 +458,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	    	 }
 	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
 	    	    		 combinedApprovalClass = "class='proj_process'";
-	    	    		  combinedApprStatus = "Submit For Approval";
+	    	    		  combinedApprStatus = "Submitted";
 	    	    	 }
 	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
 	    	    		 combinedApprovalClass = "class='bgGReen'";

@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,9 +39,11 @@ import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -47,6 +51,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -66,6 +71,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
 
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Autowired
 	private RequirementOffersDao requirementOffersDao;
@@ -93,6 +100,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	private RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	
+	@Autowired
+	private ContractsTemplateService contractsTemplateService;
 	
 	@Override
 	public void saveRequirementOffers(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception {
@@ -730,7 +740,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(OfferId);
 	    
 	    if(requirementOfferHistories != null && !requirementOfferHistories.isEmpty() ){  
-		    if(offerStatus.equalsIgnoreCase("OFFERACCEPTED")){
+		    if("OFFERACCEPTED".equalsIgnoreCase(offerStatus)){
 		    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 		    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 			    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
@@ -762,10 +772,22 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 					    requirementOffersDao.storeRequirementOffers(requirementOffers);
 			     }
+			      
+			      
+			     
 			      if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 			      sendOfferAcceptedMail(requirementOffers,loginUser,orgLocations);
 			      }
-	    }else if(offerStatus.equalsIgnoreCase("OFFERREJECTED")){
+			      
+		      	  if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
+		      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
+		      		
+		      		JSONObject jsonObj = populateJsonObject(requirementOffers,loginUser,orgLocations);
+		      		contractsTemplateService.saveNewContract(jsonObj, orgLocations, "DRAFT", loginUser, orgLocations.getOrg(), "NEW", null);
+			      }
+			      
+			      
+	    }else if("OFFERREJECTED".equalsIgnoreCase(offerStatus)){
 	    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 	    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 		    		if(requirementSubmission.getSourceSubmission() == null){
@@ -889,6 +911,49 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		}
 		return null;
 	}*/
+
+
+	private JSONObject populateJsonObject(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
+	{
+		JSONObject jsonObj = new JSONObject(); 
+		
+		RequirementSubmissionTemplateFields candidate = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementOffers.getSubmissionId().getId());
+		if(null != candidate){
+		jsonObj.put("contractType", "Vendor SOW");
+		
+		if(null != candidate.getFirstName() && null != candidate.getLastName()){
+			StringBuilder candisb = new StringBuilder();
+			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).append(" SOW").toString());
+		}else{
+			StringBuilder candisb = new StringBuilder();
+			jsonObj.put("contractTitle", candisb.append(candidate.getFirstName()).append(" ").append(" SOW").toString());
+		}
+		
+		jsonObj.put("submissionOffersList", requirementOffers.getSubmissionId().getId());
+		
+		/*
+		 * to allow default owner un-comment the below line --Pavan jampana
+		 */
+//		jsonObj.put("owner", loginUser.getId());
+		
+		jsonObj.put("orgRelationId", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getClientId().getId());
+		
+		jsonObj.put("vendorContact", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getVendorUser().getId());
+		
+		jsonObj.put("flatReward", requirementOffers.getAmount());
+		
+		jsonObj.put("billingRatePer", requirementOffers.getPaymentMode());
+		
+		jsonObj.put("billingRateType", requirementOffers.getPaymentType());
+		
+		
+		//Date startTime =  commonUtil.getDateFormat(jsonObj.getString("startDate"));
+		String currentTimeStr = Constants.DF_DMY.format(requirementOffers.getDateOfJoining());  
+		
+		jsonObj.put("startDate", currentTimeStr);
+		}
+		return jsonObj;
+	}
 
 
 	private void sendOfferAcceptedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception {

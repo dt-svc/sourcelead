@@ -78,8 +78,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "RATE")
 	private String rate;
 	
+	@Column(name = "MAX_RATE")
+	private String maxRate;
+	
 	@Column(name = "RATE_TYPE") 
 	private String rateType;
+	
 	
 	@Column(name = "COUNTRY")
 	private String country;
@@ -112,6 +116,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "IS_CLIENT_JOB")
 	private String isClientJob;
 	
+	@Column(name = "IS_RECEIVING_APPLICANTS")
+	private String isreceivingApplicants;
+	
 	@Column(name = "IS_PUBLIC")
 	private String isPublic;
 	
@@ -120,6 +127,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "REQUIREMENT_UUID")
 	private String requirementUUID;
+	
+	@Column(name = "INDUSTRY_NAME")
+	private String industryName;
 	
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
@@ -137,6 +147,10 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
+	
+
+	@Column(name = "TRAVEL_ALLOWANCE")
+	private String travelAllowance;
 	
 	@Column(name = "POSTED_ORG_NAME")
 	private String postedOrgName;
@@ -225,11 +239,29 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
+	@Column(name = "PROJECT_DURATION_YEARS")
+	private String projectDurationYears;
+	
+	@Column(name = "PROJECT_DURATION_MONTHS")
+	private String projectDurationMonths;
+	
+	
+	@Column(name = "REQUIRMENT_CLOSED_DATE")
+	private Date closedDate;
+	
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "VISA_TYPE", columnDefinition = "TEXT default NULL")
+	private String visaType;
+	
+	
 	@Column(name = "REQ_COOLINGOFF_PERIOD")
 	private String reqCoolingOffPeriod;
+	
+	@Transient
+	private String closedDateStringFormat;
 	
 	@Transient
 	private String clientSubmissionTemplate;
@@ -285,7 +317,13 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	private String[] reqSkillsList;
 	
 	@Transient
+	private String reqIndustryList;
+	
+	@Transient
 	private String reqSkillsListString;
+	
+	@Transient
+	private String industrySavedName;
 	
 	@Transient
 	private ArrayList<String> approverNames;
@@ -307,6 +345,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Transient
 	private String noOfOfferedApplicants;
+	
+	@Transient
+	private String noOfBackOutApplicants;
 	
 	@Transient
 	private String clientContactName;
@@ -385,6 +426,20 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Transient
 	private String requirementOrgName;
+	
+	
+	
+	@Transient
+	private Integer vendorInterviewsCount;
+	
+	@Transient
+	private Integer vendorBackoutCount;
+	
+	@Transient
+	private Integer vendorOfferedCount;
+	
+	@Transient
+	private Long referId;
 	
 	
 	public String getRequirementOrgName() {
@@ -1260,6 +1315,171 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.noticePeriod = noticePeriod;
 	}
 
+	public String getIndustryName()
+	{
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName)
+	{
+		this.industryName = industryName;
+	}
+
+	public String getMaxRate()
+	{
+		return maxRate;
+	}
+
+	public void setMaxRate(String maxRate)
+	{
+		this.maxRate = maxRate;
+	}
+
+	public String getIndustrySavedName()
+	{
+		return industrySavedName;
+	}
+
+	public void setIndustrySavedName(String industrySavedName)
+	{
+		this.industrySavedName = industrySavedName;
+	}
+
+	public String getReqIndustryList()
+	{
+		return reqIndustryList;
+	}
+
+	public void setReqIndustryList(String reqIndustryList)
+	{
+		this.reqIndustryList = reqIndustryList;
+	}
+
+	public String getTravelAllowance()
+	{
+		return travelAllowance;
+	}
+
+	public void setTravelAllowance(String travelAllowance)
+	{
+		this.travelAllowance = travelAllowance;
+	}
+
+	public String getProjectDurationYears()
+	{
+		return projectDurationYears;
+	}
+
+	public void setProjectDurationYears(String projectDurationYears)
+	{
+		this.projectDurationYears = projectDurationYears;
+	}
+
+	public String getProjectDurationMonths()
+	{
+		return projectDurationMonths;
+	}
+
+	public void setProjectDurationMonths(String projectDurationMonths)
+	{
+		this.projectDurationMonths = projectDurationMonths;
+	}
+
+	public Date getClosedDate()
+	{
+		return closedDate;
+	}
+
+	public void setClosedDate(Date closedDate)
+	{
+		this.closedDate = closedDate;
+	}
+
+	public String getClosedDateStringFormat()
+	{
+		return closedDateStringFormat;
+	}
+
+	public void setClosedDateStringFormat(String closedDateStringFormat)
+	{
+		this.closedDateStringFormat = closedDateStringFormat;
+	}
+
+	public String getIsreceivingApplicants()
+	{
+		return isreceivingApplicants;
+	}
+
+	public void setIsreceivingApplicants(String isreceivingApplicants)
+	{
+		this.isreceivingApplicants = isreceivingApplicants;
+	}
+
+	public String getNoOfBackOutApplicants()
+	{
+		return noOfBackOutApplicants;
+	}
+
+	public void setNoOfBackOutApplicants(String noOfBackOutApplicants)
+	{
+		this.noOfBackOutApplicants = noOfBackOutApplicants;
+	}
 
 	
+	
+	public Integer getVendorBackoutCount()
+	{
+		return vendorBackoutCount;
+	}
+
+	public Integer getVendorInterviewsCount()
+	{
+		return vendorInterviewsCount;
+	}
+
+	public void setVendorInterviewsCount(Integer vendorInterviewsCount)
+	{
+		this.vendorInterviewsCount = vendorInterviewsCount;
+	}
+
+	public void setVendorBackoutCount(Integer vendorBackoutCount)
+	{
+		this.vendorBackoutCount = vendorBackoutCount;
+	}
+
+	public Integer getVendorOfferedCount()
+	{
+		return vendorOfferedCount;
+	}
+
+	public void setVendorOfferedCount(Integer vendorOfferedCount)
+	{
+		this.vendorOfferedCount = vendorOfferedCount;
+	}
+
+	public Long getReferId()
+	{
+		return referId;
+	}
+
+	public void setReferId(Long referId)
+	{
+		this.referId = referId;
+	}
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
+	
+
 }

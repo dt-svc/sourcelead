@@ -166,7 +166,7 @@ function submitToClient(requirementId){
 		    		$('#submitToClientDiv').empty();
 		    		$('#submitToClientDiv').append(result);
 		    	}else if(data == 'failed'){
-		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client requirement was Closed/Onhold/Canceled. </h3></div>";
+		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client Job was Closed/Onhold/Canceled. </h3></div>";
 		    		$('#submitToClientDiv').empty();
 		    		$('#submitToClientDiv').append(result);
 		    	}
@@ -320,7 +320,7 @@ function clientSubmissions(requirementId){
 <script type="text/javascript">
 function alertMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='sideMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -328,7 +328,7 @@ function alertMessage(message){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".sideMask").fadeIn(200);
 
 }
 </script>
@@ -490,7 +490,7 @@ function addEmailtemplate(requirementId){
 		 }); 
 }else{
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='sideMask'></div>";
 	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -498,7 +498,7 @@ function addEmailtemplate(requirementId){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".sideMask").fadeIn(200);
  }
 		 
  }else{
@@ -516,7 +516,7 @@ function addEmailtemplate(requirementId){
 	  
 		 if(selectedRate != '' && selectedRatePer == ''){
 		 var result = "";
-		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	<div class='sideMask'></div>";
 		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -524,11 +524,11 @@ function addEmailtemplate(requirementId){
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#pipeline_user_pop").slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
+		$(".sideMask").fadeIn(200);
 		
 		}else if(selectedRate == '' && selectedRatePer != ''){
 		 var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	<div class='sideMask'></div>";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Submission Rate is Required</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -536,7 +536,7 @@ function addEmailtemplate(requirementId){
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#pipeline_user_pop").slideDown(200);
-			$(".project_inn_mask").fadeIn(200);
+			$(".sideMask").fadeIn(200);
 	 }
  });	
 }

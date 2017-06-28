@@ -142,6 +142,41 @@ document.onkeydown=function(e){
 }
 </script>  -->
 
+<!--
+	Key Codes events
+	0 = blur
+	13 = enter
+	9 = tab
+	32 = space
+	188 = comma
+-->
+
+<script type="text/javascript">
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
+
+<script type="text/javascript">
+function tagItBykeyForSkills(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
+
+<script type="text/javascript">
+function preventTabkey(e){
+	 if(e.which == 9){
+		 e.preventDefault();
+	 }
+}
+</script>
+
 <script>
 	function predefineOrgImage(imageId){
 		$(imageId).attr('src','resources/images/office-image.jpg');
@@ -210,8 +245,8 @@ document.onkeydown=function(e){
 		       <c:if test="${userTabs.tabName == 'Users'}">
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
 	           </c:if>
-	           <c:if test="${userTabs.tabName == 'Requirement'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Requirements</option>
+	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
+	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
 	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
@@ -309,20 +344,58 @@ document.onkeydown=function(e){
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-				                     </div>
-				                   </div>
-				                   <div class="pull-left">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
+			              
+			              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
+				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+					                <div class="clearfix">
+					                   <div class="pull-left image-parent positionRelative">
+					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
+					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+					                     </div>
+					                   </div>
+					                   <div class="pull-left">
+					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
+					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+					                   </div>
+					                </div>
+				                </a>
+			              </c:if>
+			              
+			              <c:if test="${links.roles.displayName == 'Professional'}">
+			              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+					                <div class="clearfix">
+					                   <div class="pull-left image-parent positionRelative">
+					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Professional' ? 'active-comp' : ''}">
+					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                       </div>
+					                   </div>
+					                   <div class="pull-left">
+					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+					                   </div>
+					                </div>
+				                </a>
+			              </c:if>
+			              
+			              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
+			              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+					                <div class="clearfix">
+					                   <div class="pull-left image-parent positionRelative">
+					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Recruiter' ? 'active-comp' : ''}">
+					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                       </div>
+					                   </div>
+					                   <div class="pull-left">
+					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
+					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
+					                   </div>
+					                </div>
+				                </a>
+			              </c:if>
+			              
+			              
+			              
 		              </li>
 	              </c:forEach>
 	              </ul>
@@ -397,6 +470,9 @@ document.onkeydown=function(e){
 	                      <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
 	                      <li><a href="<c:url value="/offboardingTemplatesList" />"><i class="fa fa-file-text" aria-hidden="true"></i>Offboarding</a></li>
 						  </sec:authorize>	
+						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
+						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>
@@ -408,6 +484,8 @@ document.onkeydown=function(e){
             	<div class="setting-area">
             	<ul class="list-unstyled">
             	<li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+            	
+            	<li><a href="<c:url value="/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
             	</ul>
             	</div>
             	</li>
@@ -501,7 +579,7 @@ function notificationStatusAsRead(){
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
 									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="myTaskDatpicker" id="myTaskDatpicker"  type="text" readonly="readonly">
-									<i class="fa fa-calendar"></i></span>
+									<i class="fa fa-calendar mr"></i></span>
 				               </div>	
 				          
 				            <div class="clearfix require_wrap_table">
@@ -513,8 +591,8 @@ function notificationStatusAsRead(){
 				          <div id="other-task" class="tab-pane fade">
 							 <div class="col-md-6 clearfix newdate">
 			                    <i class="fa fa-filter"></i>
-								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
-								<i class="fa fa-calendar"></i></span>
+								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm calendar"  name="assignedTaskDatpicker" id="assignedTaskDatpicker"  type="text" readonly="readonly" >
+								<i class="fa fa-calendar mr"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
 					              <div id="assignedTasksId"></div>
@@ -525,7 +603,7 @@ function notificationStatusAsRead(){
 				             <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
 									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm"  name="closedTaskDatpicker" id="closedTaskDatpicker" type="text" readonly="readonly">
-									<i class="fa fa-calendar"></i></span>
+									<i class="fa fa-calendar mr"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
 				               <div id="closedTasksId"></div>
@@ -600,7 +678,7 @@ function notificationStatusAsRead(){
 			              </div>
 			              <div class="col-md-6">
 			                <label class="checkbox-inline">
-			                	<input type="checkbox" value="Email" name="email">Email
+			                	<input type="checkbox" value="Email" name="email" checked>Email
 			                 </label>
 			                <label class="checkbox-inline">
 			                    <input type="checkbox" name="notification" value="Notification">Notification
@@ -871,12 +949,12 @@ function tasksList(status){
         			description = "---";
         		}
         		result = result + '       <tr>';
-        		result = result + '         <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + '         <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + '         <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + '         <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + '         <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + '         <td>'+alertType+'</td>';
+        		result = result + '         <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + '         <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + '         <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + '         <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
             	
        			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
@@ -953,12 +1031,12 @@ function assignedTasksList(status){
         			description = "---";
         		}
         		result = result + ' <tr>';
-        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + ' <td>'+alertType+'</td>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
             	
 		        result = result + '<select id="assignTaskState'+report.id+'" name="assignTaskState" onchange="updateAssignTaskStatus('+report.id+');">';
@@ -1035,12 +1113,12 @@ function closedTasksList(status){
         			description = "---";
         		}
         		result = result + ' <tr>';
-        		result = result + ' <td><div title="'+report.subject+'"><span>'+report.subject+'</span></div></td>';
-            	result = result + ' <td><div class="text-center">'+taskDateStr+'  '+taskTime+'</div></td>';
-            	result = result + ' <td><div title="'+report.taskOwnerName+'"><span>'+report.taskOwnerName+'</span></div></td>';
-            	result = result + ' <td><div title="'+report.assignedName+'"><span>'+report.assignedName+'</span></div></td>';
-            	result = result + ' <td><div title="'+description+'"><span>'+description+'</span></div></td>';
-            	result = result + ' <td>'+alertType+'</td>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
             	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
 		        result = result + report.taskStatus;
             	
@@ -1203,5 +1281,4 @@ $("#searchType").selectpicker('refresh');
 </script>
 
 <!-- Task related code Ends -->
-
 

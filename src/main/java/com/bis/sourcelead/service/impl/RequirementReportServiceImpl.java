@@ -290,6 +290,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					String requestSentDate="";
 					String submitToClientDate="";
 					String rejectedDate="";
+					String backedOutDate="";
 					
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportDao.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 				
@@ -309,10 +310,18 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 								submitToClientDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}else if("rejected".equals(rsh.getToStage())){
 								rejectedDate = getDateStr(rsh.getCreatedDate(),timezone);
+							}else if("backout".equals(rsh.getToStage())){
+								backedOutDate = getDateStr(rsh.getCreatedDate(),timezone);
 							}
 						}
 						applicantReport.setRequirementTitle(reqSub.getRequirement().getJobTitle());
-						applicantReport.setApplicantName(reqSub.getCandidate().getFirstName());
+						if(reqSub.getCandidate().getLastName() != null && !"".equalsIgnoreCase(reqSub.getCandidate().getLastName())){
+							StringBuilder sb = new StringBuilder();
+							applicantReport.setApplicantName(sb.append(reqSub.getCandidate().getFirstName()).append(" ").append(reqSub.getCandidate().getLastName()).toString());
+						}else{
+							applicantReport.setApplicantName(reqSub.getCandidate().getFirstName());
+						}
+						
 						applicantReport.setSubmissionDate(submissionDate);
 						applicantReport.setShortlistDate(shortlistDate);
 						applicantReport.setInterviewDate(interviewDate);
@@ -320,6 +329,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 						applicantReport.setSubmitToClientDate(submitToClientDate);
 						applicantReport.setRequestSentDate(requestSentDate);
 						applicantReport.setRejectedDate(rejectedDate);
+						applicantReport.setBackedOutDate(backedOutDate);
 						if(null != reqSub.getSubmissionStatus()){
 							applicantReport.setStage(reqSub.getSubmissionStatus().toString());
 						}
@@ -343,6 +353,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		int interviewsSum = 0;
 		int offeredSum = 0;
 		int rejectedSum = 0;
+		int backoutSum = 0;
 	     ApplicantReport applicantReport = null;
 		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -400,6 +411,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					int interviewsCount = 0;
 					int offeredCount = 0;
 					int rejectedCount = 0;
+					int backoutCount = 0;
 					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportDao.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
 					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
@@ -417,6 +429,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 								submitToClientCount++;
 							}else if("rejected".equals(rsh.getToStage())){
 								rejectedCount++;
+							}else if("backout".equals(rsh.getToStage())){
+								backoutCount++;
 							}
 						}
 						 applicantsSum = applicantsSum+applicantsCount;
@@ -426,6 +440,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 						 interviewsSum = interviewsSum+interviewsCount;
 						 offeredSum = offeredSum+offeredCount;
 						 rejectedSum = rejectedSum+rejectedCount;
+						 backoutSum = backoutSum+backoutCount;
 					}
 				}
 				applicantReport.setApplicantsSum(reqSubmissionList.size());
@@ -435,6 +450,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				applicantReport.setOfferedSum(offeredSum);
 				applicantReport.setRejectedSum(rejectedSum);
 				applicantReport.setRequestSentSum(requestSentSum);
+				applicantReport.setBackoutSum(backoutSum);
 				
 				return applicantReport;
 			}
@@ -1057,11 +1073,14 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 			}
 		
 		String client = null;
-		String clientids = "{" + jsonData + "}";
-		JSONObject jsonObj = new JSONObject(clientids);
-		if(jsonObj.has("client")){
-			client = jsonObj.getString("client");
+		if(jsonData != null){
+			String clientids = "{" + jsonData + "}";
+			JSONObject jsonObj = new JSONObject(clientids);
+			if(jsonObj.has("client")){
+				client = jsonObj.getString("client");
+			}
 		}
+		
 		List<RequirementSubmission> shortlistedList = requirementSubmissionService.getRecruiterSubmittedCandidatesListForReportsByLocationIdAndStatus(orgLocation.getId(), client,filterDate,startDateUTC,endDateUTC);
 			
 			ArrayList<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();

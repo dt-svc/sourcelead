@@ -1152,6 +1152,7 @@ function newSaveTimesheet(status,savingType){
 		   var form = $('#timesheet_form')[0];
 		   var formData = new FormData(form); 
 		   var submissionIds = $("#submissionId").val();
+		   
 	   $.ajax({
 	          type : "POST",
     	      data: formData,

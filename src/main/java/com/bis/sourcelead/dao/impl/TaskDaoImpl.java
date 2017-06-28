@@ -83,10 +83,10 @@ public class TaskDaoImpl implements TaskDao{
 		
 		
 		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
-			query = "from Tasks tasks where tasks.assignedUserId =:userId "+subQuery+" and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) ORDER BY tasks.createdDate DESC";
+			query = "from Tasks tasks where tasks.assignedUserId =:userId "+subQuery+" and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) and  tasks.taskStatus = 'Open' ORDER BY tasks.createdDate DESC";
 			//query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
 		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(taskStatus)){
-			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId "+subQuery+" and  tasks.taskStatus = 'Open' ORDER BY tasks.createdDate DESC";
 		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(taskStatus)){
 			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' "+subQuery+" ORDER BY tasks.createdDate DESC";
 		}
@@ -213,6 +213,15 @@ public class TaskDaoImpl implements TaskDao{
 		return tasksList;
 	}
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks  where tasks.taskRepeat = :taskRepeatStatus and tasks.taskStatus ='Open'";
+		List<Tasks> tasksScheduledList = session.createQuery(query).setString("taskRepeatStatus",taskRepeatStatus).setCacheable(true).list();
+		return tasksScheduledList;
+	}
 
 
 

@@ -20,7 +20,7 @@
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12" >
         <h4 class="clearfix">
-        Assigned Requirements
+        Assigned Jobs
         &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
         <div class="pull-right" id="viewmoresDiv" style="display: none;"> 
@@ -134,9 +134,13 @@ function requirementList(){
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
 		                     }
-		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
-			                     result = result +"<td><div><span><span>"+opt.rate+"</span></span></div></td>";
-		                     }else{
+		                     if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined' && opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined'){
+			                     result = result +"<td><div><span  title='"+opt.currencyCode+"&nbsp;"+opt.rate+"-"+opt.maxRate+"&nbsp;"+opt.rateType+"'>"+opt.currencyCode+"&nbsp;"+opt.rate+"-"+opt.maxRate+"&nbsp;"+opt.rateType+"</span></div></td>";
+		                     }else if(opt.rate != null && opt.rate != '' && opt.rate != 'undefined'){
+			                     result = result +"<td><div><span  title='"+opt.currencyCode+"&nbsp;"+opt.rate+"&nbsp;"+opt.rateType+"'>"+opt.currencyCode+"&nbsp;"+opt.rate+"&nbsp;"+opt.rateType+"</span></div></td>";
+	 
+		                     }
+		                     else{
 			                     result = result +"<td><div><span><span>---</span></span></div></td>";
 		                     }
 		                     if(opt.priority != null && opt.priority != '' && opt.priority != 'undefined'){
@@ -155,7 +159,7 @@ function requirementList(){
 		                     result = result + '<div class="tblminwidth-75">';
 		         	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 			         	       if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
-			         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
+			         	    	  result = result +'<div class="text-center pull-left ml mr"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';
 			         	       }else{
 			         	    	  result = result +"<div class='text-center'>---</div>";
 			         	       }
@@ -163,9 +167,9 @@ function requirementList(){
 		         	       '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
 		                     if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 		                    	 if(opt.isRequirementReleasedByuser == 'Y'){
-		                       		 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success'></i></a></div>"; 
+		                       		 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn success' title='Release Job'></i></a></div>"; 
 		                       	 }else{	
-		                       	 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn'></i></a></div>";
+		                       	 result = result +"<div class='pull-left'><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>'><i class='fa fa-bullhorn' title='Release Job'></i></a></div>";
 		                       	 }
 		                     }else{
 			                     result = result +"<div>---</div>";
@@ -197,7 +201,7 @@ function requirementList(){
   } 
 </script>   
 
-<!-- <script>
+ <script>
 function pagination(){ 
     $('#requirementPagination').DataTable( { 
     	"scrollCollapse": false,
@@ -211,6 +215,6 @@ function pagination(){
        }
     } );
 }
-</script> -->
+</script> 
 
 <jsp:include page="addApplicantFromDashboard.jsp" />

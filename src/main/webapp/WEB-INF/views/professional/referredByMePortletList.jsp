@@ -19,8 +19,11 @@
  .require_wrap_details_cta b {
     width: 110px;
 }
-.top_o{
+.top_o {
 top:0 !important;
+}
+.repoPositi .dataTables_filter {
+    top: 0px !important;
 }
  </style>
 
@@ -61,7 +64,14 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Referred By Me</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+       <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+     </c:if>
+     
+     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+       <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+     </c:if>
+    
   </section>
   <section class="clearfix">
   <div class="timesheet_out timesheet_background crowdDash_btn">
@@ -156,7 +166,7 @@ function portletListFilter(requirementStatus){
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 
-	    	   result = result + '<div class="require_wrap_table overflow-data filter-position">';
+	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi">';
 	    	   result = result + '<div class="clerfix">';
 	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';
@@ -164,7 +174,7 @@ function portletListFilter(requirementStatus){
 	           result = result + '<th>Name</th>';
 	           result = result + '<th>Email</th>';
 	           result = result + '<th>Phone</th>';
-	           result = result + '<th>Requirement</th>';
+	           result = result + '<th>Job</th>';
 	           result = result + '<th>Status</th>';
 	           if(requirementStatus  != "referByMe"){ 
 	        	   result = result + '<th>Stage</th>';
@@ -296,7 +306,9 @@ function rejectedPagenatio(){
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+	$(".require_wrap_table").find('a.buttons-excel').prop("title", "Excel");
+	$(".require_wrap_table").find('a.buttons-pdf').prop("title", "PDF");
 }
 </script>
 <script>

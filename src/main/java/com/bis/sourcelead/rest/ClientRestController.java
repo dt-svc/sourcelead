@@ -13,6 +13,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,17 +32,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -50,6 +57,10 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementReportService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -86,6 +97,9 @@ public class ClientRestController {
 
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 
 	@Autowired
 	HttpServletRequest request;
@@ -96,6 +110,9 @@ public class ClientRestController {
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
@@ -118,9 +135,17 @@ public class ClientRestController {
 	@Autowired
 	NotificationsService notificationsService;
 	
+	@Autowired
+	ContractsTemplateService contractsTemplateService;
+
+	@Autowired
+	private RequirementService requirementService;
   
 	@Autowired
 	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	RequirementReportService requirementReportService;
 	
 	/**
 	 * Handles to get Orgs
@@ -716,6 +741,92 @@ public class ClientRestController {
 			return resultJson;
 		}
 	 
+	   
+	   
+	@RequestMapping(value = "/getClientReleasedRequirementList", method = RequestMethod.POST)
+	@ResponseBody
+	String getClientReleasedRequirementList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String resultJson;
+		List<Requirement> reqList = requirementService.getAllClientJobsBasedonRelationId(orgLocations.getId(), Long.parseLong(orgRelationId), userRoleName, loginUser, status);
+		for (Requirement req : reqList) {
+			req.setPostedDateStr(Constants.DF_DMY.format(req.getCreatedDate()));
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int submitToClient = 0;
+			if (req.getManagerUserId() != null) {
+				String managerFirstName = "";
+				if (StringUtils.isNotEmpty(req.getManagerUserId().getFirstName())) {
+					managerFirstName = req.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if (StringUtils.isNotEmpty(req.getManagerUserId().getLastName())) {
+					managerLastName = req.getManagerUserId().getLastName();
+				}
+				StringBuilder name = new StringBuilder();
+				req.setManager(name.append(managerFirstName).append(" ").append(managerLastName).toString());
+				
+				List<RequirementSubmission> subList = requirementSubmissionService.getSubmissionsByRequirementId(req.getId(), loginUser, orgLocations);
+				for(RequirementSubmission reqsub : subList){
+					RequirementSubmission sourceSub = requirementSubmissionService.getClientRequierementSubmission(reqsub.getId());
+					int vendorInterviewsCount = 0;
+					int vendorOfferedCount = 0;
+					int vendorSubmittoClientCount = 0;
+					if(sourceSub != null && sourceSub.getRequirement() != null ){
+						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(sourceSub.getId(),null,null);
+						for(RequirementSubmissionHistory subhistory : requirementSubmissionHistoryList){
+							// iterate here for interview and offer stages and get the counts
+							
+							if (ApplicantSubmissionStatus.INTERVIEW.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorInterviewsCount++;
+							}
+							else if (ApplicantSubmissionStatus.OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorOfferedCount++;
+							}else if(ApplicantSubmissionStatus.SUBMISSION.toString().equalsIgnoreCase(subhistory.getToStage())){
+								vendorSubmittoClientCount++;
+							}
+							
+						}
+						interviewsSum = interviewsSum + vendorInterviewsCount;
+						offeredSum = offeredSum + vendorOfferedCount;
+						submitToClient = submitToClient + vendorSubmittoClientCount;
+						
+					}else{
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(reqsub.getId());
+						List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportService.getApplicantsCountsByDateRange(submission.getId(),null,null);
+						for(RequirementSubmissionHistory subhistory : requirementSubmissionHistoryList){
+							// iterate here for client interview and client offer and get the counts
+							
+							if (ApplicantSubmissionStatus.INTERVIEW.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorInterviewsCount++;
+							}
+							else if (ApplicantSubmissionStatus.OFFERMADE.toString().equalsIgnoreCase(subhistory.getToStage())) {
+								vendorOfferedCount++;
+							}else if(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString().equalsIgnoreCase(subhistory.getToStage())){
+								vendorSubmittoClientCount++;
+							}
+							
+						}
+						interviewsSum = interviewsSum + vendorInterviewsCount;
+						offeredSum = offeredSum + vendorOfferedCount;
+						submitToClient = submitToClient + vendorSubmittoClientCount;
+					}
+				}
+				
+				req.setNoOfInterviewedApplicants(String.valueOf(interviewsSum));
+				req.setNoOfOfferedApplicants(String.valueOf(offeredSum));
+				req.setNoOfSubmittedApplicants(String.valueOf(submitToClient));
+			   /*RequirementSubmission rs=requirementSubmissionService.getRequirementSubmissionByRequirementIdAndUserId(req.getId(), loginUser.getId());
+				requirementSubmissionHistoryService.getCandidatesCountBySubmissionIdandRequirementId(rs.getId(), rs.getSubmissionStatus().toString());*/
+			}
+		}
+		resultJson = commonUtil.toJSON(reqList);
+		return resultJson;
+	}
+	   
 	/**
 	 * @author Prasanna vadla
 	 * @param json
@@ -1035,5 +1146,19 @@ public class ClientRestController {
 		return str == null || "".equals(str.trim());
 	}
 
+	
+	/**
+	 * @author Pavan Jampana
+	 * to get the client or vendor contracts List
+	 */
+	@RequestMapping(value = " /getClientOrVendorContracts")
+	 @ResponseBody
+	 public String  getClientOrVendorContracts(@RequestParam(value="orgRelationId", required=false)Long orgRelationId,@RequestParam(value="responderType", required=false)String responderType,@RequestParam(value="contractStatus", required=false)String contractStatus,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String  userRoleName = (String)SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		List<Contracts> clientcontractsList = contractsTemplateService.getAllClientOrVendorContractsBasedOnLocationId(orgLocations,responderType,user,userRoleName,contractStatus,orgRelationId);
+		return commonUtil.toJSON(clientcontractsList);
+	 }
 
 }

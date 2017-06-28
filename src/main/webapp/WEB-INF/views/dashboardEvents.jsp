@@ -22,7 +22,8 @@ width: 75px; padding: 0 !important;
         </div>
         
       <!-- show Calendar -->
-            <div class="col-xs-12 col-md-7 mb eventCalendr_content alert alert-dismissable" id ="dashboardEventsDiv">
+            <div class="col-xs-12 col-md-7 mb eventCalendr_content alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+            
 	     </div>
       </div>
 		<div class="add_inter_wrap">
@@ -90,23 +91,41 @@ window.onload = function() {
 					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
 					 result = result + '                          <div class="feedBack"> ';
 					
-					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-						  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
+					 
+					 /*  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN"){
+						
+						  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
+						      result = result+'	 <a title="Feedback Given" href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
 						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
                         	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
 						  }else{
 							  result = result+'<i class="fa fa-handshake-o"></i>';
 						  }
- 
-						 
-						  
 						  result = result+'</a>';
-                      }  
+						  }else{
+							  alert("hello1111");
+							  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
+							  
+						  }
+                      }else */ if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
+						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
+						  }else{
+							  result = result+'<i class="fa fa-handshake-o"></i>';
+						  }
+						  result = result+'</a>';
+                      }   
+					  
+// 					  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
+					  
+					  
 					 //result = result + '                          <a href="javascript:void(0)" title="FeedBack"><i class="fa fa-handshake-o"></i></a>    ';
 					 result = result + '                          </div>                                                                               ';
 					 result = result + '                      </div>                                                                                   ';
 					 result = result + '              </div>                                                                                           ';
 					 result = result + '      </div>   ';
+					 result = result+' <div id="feedbackInterviewerId"></div>';
 					 result = result + '  </div>                                                                                                       ';
 					}
 	        	 
@@ -169,6 +188,7 @@ window.onload = function() {
 						result = result + '	</div>                                                      ';
 						result = result + ' </div>                                                      ';
 	        	 }
+	        	 result = result + '<div class="mask_inner"></div>';
 	        	 $("#dashboardEventsDiv").empty();
 	           	 $("#dashboardEventsDiv").append(result); 
 	        }
@@ -194,9 +214,9 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row">';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft">Posted from<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<span class="col-md-3 paddingLeft mt10">Posted from<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list">';
-	result = result + '<select class="form-control mt10" id="requirementsTimeRange" onchange="getRequirements();">';
+	result = result + '<select class="form-control" id="requirementsTimeRange" onchange="getRequirements();">';
 	result = result + '		<option value="today">Today</option>';
     result = result + '		<option value="yesterday">Yesterday</option>';
     result = result + '		<option value="week" selected>1 week</option>';
@@ -209,9 +229,9 @@ function dashboardAddInterview(){
 	result = result + '<div class="clearfix form-group row"></div>';
 	
 	result = result + '<div class="col-md-5">';
-	result = result + '<span class="col-md-3 paddingLeft">Requirement<span class="text-danger">&nbsp;*</span></span>';
+	result = result + '<span class="col-md-3 paddingLeft mt10">Job<span class="text-danger">&nbsp;*</span></span>';
 	result = result + '<div class="col-md-9 req_list" id="reqDiv">';
-	result = result + '<select class="form-control mt10" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Requirement" data-validation="required">';
+	result = result + '<select class="form-control" id="requirementsList" name="requirementsList" onchange="selectAndGetApplicantsForRequirement();" field-name="Job" data-validation="required">';
 	
 	result = result + '</select>';
 	result = result + '</div>';
@@ -294,6 +314,7 @@ function dashboardAddInterview(){
 	result = result + '<div class="col-md-12 mt10">';
 	result = result + '<div class="ne-ch">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
+	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	result = result + '</div>';
 	
 	
@@ -308,10 +329,6 @@ function dashboardAddInterview(){
 	
 	result = result + '</div>';
 	result = result + '</div>';
-	
-	
-	
-	
 	
 	result = result + '<div class="pull-right">';
 	result = result + '<button type="submit" id="add_interview" class="btn btn-sm btn-primary mr">Submit</button>';
@@ -562,10 +579,11 @@ function getRequirements(){
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
 	              	$("#reqDiv").find('p.jquery_form_error_message').remove();
-	              	$("#reqDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>Select Requirement</p>");
+	              	$("#reqDiv").find('p.text-primary').empty();
+	              	$("#reqDiv").append("<p class='text-primary pull-left small'><i class='fa fa-info-circle paddingRight'></i>Select Job</p>");
               }else{
             	  var result = "";
-            	  	 result = result + '<option value="">--- Select Requirement ---</option>';
+            	  	 result = result + '<option value="">--- Select Job ---</option>';
             	  $("#requirementsList").empty();
                   $("#requirementsList").append(result);
                   $("#requirementsList").chosen();
@@ -574,7 +592,8 @@ function getRequirements(){
 	                .find('option:first-child').prop('selected', true)
 	                .end().trigger('chosen:updated');
 	             $("#reqDiv").find('p.jquery_form_error_message').remove();
-	             $("#reqDiv").append("<p class='jquery_form_error_message'>No requirements found</span>");
+	             $("#reqDiv").find('p.text-primary').empty();
+	             $("#reqDiv").append("<p class='jquery_form_error_message'>No Jobs found</span>");
               }
           	$("#1applicant").attr("data-placeholder", "Select Applicants");
           	$("#1applicant").empty();
@@ -750,7 +769,7 @@ function cancelAddInterviewDiv(){
    		if(isNofityToOthers == "Y"){
    			validateOtherMail();
    		} */
-   		
+   		$("#reqDiv").find('p.text-primary').empty();
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
@@ -839,8 +858,67 @@ ApplicantAuthorization('requestSent');
 };
 
 </script> -->
-<!-- Applicant Authorization Ends --> 
-
+<!-- Applicant Authorization Ends -->
  
-
+<script>
+function feedbackView(interviewId,templateId){
+	$(".feedback_view").show(200);
+	$(".mask_inner").fadeIn(200);
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+		type: "GET",
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId,
+			success: function(data) {
+				var json = JSON.parse(data);
+				var result = "";
+				result = result +'	<div id="#" class="require_wrap_table feedback_view overflow_inherint">                                     ';
+				result = result +   '<a href="javascript:void(0)" class="close-div" onclick="closePop()"><i class="fa fa-close"></i></a>';
+				result = result +'	<strong>Interview Feedback</strong>                                                       ';
+				result = result +'<div class="feedbackInner">';
+				result = result +'	<table id="requirementApproverPagination" cellspacing="0" width="100%" class="mt10">      ';
+				result = result +'	<thead>                                                                                   ';
+				result = result +'	<tr>                                                                                      ';
+				result = result +'	<th>Interviewer Name</th>                                                                 ';
+				result = result +'	<th>Date</th>';
+				result = result +'	<th>Action</th>';
+				result = result +'	</tr>';
+				result = result +'	</thead>';
+				result = result +'	<tbody>';
+				for (var i=0; i<json.length; i++)
+				{
+					var report = json[i];
+					if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+						feedbackDate  = report.feedbackDate;
+					}else{
+						feedbackDate = "--";
+					}
+					 result = result +"  <tr>";  
+					    result = result +'<td><div class="tbldata-dotdot-me">'+report.interviewerName+'</div></td>'; 
+					    result = result +' <td><div class="tblminwidth-100">'+feedbackDate+'</div></td>'; 
+					    if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+					    	result = result +' <td><div class="tblminwidth-50"><span class="text-primary"><a onclick="viewfeedback('+report.id+',\''+templateId+'\',\''+report.feedbackStatus+'\');">View</a></span></div></td>';
+					    }else{
+					    	result = result +'<td><div class="tblminwidth-50"> &nbsp;<span class="text-danger">Notfilled</span></div></td>';
+					    }
+					     
+					    result = result +'</tr>'; 
+				}
+				result = result +'	</tbody>';
+				result = result +'	</table>';
+				result = result +'</div> ';
+				result = result +'</div> ';
+				$("#feedbackInterviewerId").empty();  
+				$("#feedbackInterviewerId").append(result);
+				
+			}
+	});
+	
+}
+</script>
+<script>
+function closePop(){
+$(".feedback_view").hide();
+$(".mask_inner").hide();
+}
+</script>
       

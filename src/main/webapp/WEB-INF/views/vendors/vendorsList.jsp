@@ -361,7 +361,7 @@ border:none; background-color: none !important; padding:0 5px !important;
             <div class="clearfix"></div>
         </div>
         
-    <div class="clients_wrap_table">
+    <div class="clients_wrap_table datatable_filter">
 	    <input type="hidden" name="emptyVendorcontactList" id="emptyVendorcontactList">
 	    <input type="hidden" name="emptyVendorList" id="emptyVendorList">
     
@@ -799,7 +799,7 @@ function preparedVendorsListFromElk(data){
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
 		 	result = result +'<th>Created By</th>';
-		   	result = result +'<th>Released Requirements</th>';
+		   	result = result +'<th>Released Jobs</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -909,7 +909,7 @@ function preparedVendorsLists(data){
 		   	result = result +' <th>Website</th>';
 		   	result = result +'<th>Location</th>';
 		   	result = result +'<th>Tier</th>';
-		   	result = result +'<th>Released Requirements</th>';
+		   	result = result +'<th>Released Jobs</th>';
 		   	result = result +'<th>No.of Contacts</th>';
 		   	/* result = result +'<th>Actions</th>'; */
 		   	result = result +'</tr>';
@@ -1042,7 +1042,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1140,7 +1140,7 @@ function preparedVendorContactListFromElk(data){
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
 			result = result +'  <th>Vendor</th>';
-		   	result = result +'	<th>Name</th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
@@ -1270,11 +1270,11 @@ function preparedVendorContactList(data){
 		   	
 		   	result = result +'<thead>';
 		   	result = result +'<tr>';
-		   	result = result +'	<th>Name</th>';
+			result = result +'  <th>Vendor</th>';
+		   	result = result +'	<th>Contact Name</th>';
 		   	result = result +'  <th>Email</th>';
 		   	result = result +'  <th>Phone</th>';
 		   	result = result +' <th>Owner</th>';
-		   	result = result +'  <th>Vendor</th>';
 		   	result = result +' <th>Status</th>';
 		   	result = result +' <th>Invitation</th>';
 		   	result = result +'<th>Action</th>';
@@ -1288,6 +1288,7 @@ function preparedVendorContactList(data){
 		   		var report = json[i];
 		   		result = result +'<tr id="row'+report.id+'">';
 		   		
+		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 		   				result = result +'<td><div class="proj_show"onclick="vendorSpocSideBar(\''+report.id+'\',\''+report.ownerUserId+'\',\''+report.spocUserId+'\',\''+report.spocName+'\',\''+report.tempOwnerId+'\',\''+report.spocLocationId+'\',\''+report.orgRelationId+'\',\''+report.userId+'\');"><span title="'+report.spocName+'">'+report.spocName+'</span><i class="fa fa-binoculars"></i></div></td>';
@@ -1306,7 +1307,6 @@ function preparedVendorContactList(data){
 		   			result = result +'<td><div>--</div></td>';
 		   		}
 		   		result = result +'<td><div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div></td>';
-		   		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
 		   		
 		   		
 		   		result = result + ' <td><div>';
@@ -1410,14 +1410,24 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 </script>
 
 <script>
+function cancelTerminationReson(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+	$("#reasonForSpoc").val('');
+	$("#reasonForVendorSpocDiv").find("p.jquery_form_error_message").remove();
+	$("#reasonForVendorSpocDiv").empty(); 
+}
+</script>
+
+<script>
 function terminateSpoc1(spocId, orgRelationID){
+	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1429,13 +1439,8 @@ function terminateSpoc1(spocId, orgRelationID){
 function saveReason1(spocId, orgRelationID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForVendorSpocDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+	if(reason.match(/^[^\s-](.*)*$/) != null){
+		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateSpoc?${_csrf.parameterName}=${_csrf.token}&spocId="+spocId+"&reason="+reason,	    	   
@@ -1452,10 +1457,20 @@ function saveReason1(spocId, orgRelationID){
 	 			 msgFadein();
 		    }
 	   });
+	}else{
+		if(reason){
+			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForVendorSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+		}else{
+			 $("#reasonForVendorSpocDiv").find('p.jquery_form_error_message').remove();
+			$("#reasonForVendorSpocDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+		}
 	}
 	  
 }
 </script>
+
+
 <script>
 function updateSpocStatus(spocId){
     var spocStatus = $('#spocState'+spocId).val();
@@ -1487,7 +1502,7 @@ function pagination(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1627,7 +1642,7 @@ function pagination1(){
     	"scrollCollapse": false,
     	//"scrollX": true,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -1714,7 +1729,30 @@ function getVendorDashboardName(vendorDashboardName){
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
 		'</sec:authorize>';
+		
+		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_REQUIREMENT\")">';
+		result = result + '<li><a href="#tab-6" onclick="vendorRequirementListInclude('+ orgRelationId + ');">Jobs List</a></li>'; 
+		'</sec:authorize>';
 		/* result = result + '<li><a href="#tab-4">Activity</a></li>';  */
+		
+		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		result = result + '<li><a href="#tab-5" onclick="vendorContracts('+orgRelationId+');">Contracts</a></li>'; 
+		'</sec:authorize>';
+		
+		
+		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
+		
+		 // vendors associates list
+		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
+		 result = result + '<li><a href="#tab-7" onClick="vendorAssociatesList('+orgRelationId+');">Associate List</a></li>';
+		 '</sec:authorize>';
+		 
+		 // vendors notes list
+		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
+		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes List</a></li>';
+		 '</sec:authorize>';
+
+
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
 		result = result + '<div class="project_tabs">';
@@ -1729,6 +1767,27 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		//for vendor documents tab
 		result = result + '<div id="tab-3" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor billing
+		result = result + '<div id="tab-4" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor Contracts
+		result = result + '<div id="tab-5" class="project_tabs_inn">';
+		result = result + '</div>';
+
+		//for vendor requirement list tab
+		result = result + '<div id="tab-6" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		//for vendor associate list tab
+		result = result + '<div id="tab-7" class="project_tabs_inn">';
+		result = result + '</div>';
+		
+		
+		//for vendor notes list tab
+		result = result + '<div id="tab-8" class="project_tabs_inn">';
 		result = result + '</div>';
 
 		result = result + '</div>';
@@ -1786,7 +1845,7 @@ function getVendorOrgname(vendorOrgname){
 							'</sec:authorize>';
 								result = result + ' </div>'; 
 							result = result + '<div class="project_details_cta">';
-								result = result + '<strong>Name:</strong>';
+								result = result + '<strong>Vendor Name:</strong>';
 								if(json.orgName !=null && json.orgName !='' && json.orgName !='undefined'){
 									result = result + '<span title="'+json.orgName+'">'+json.orgName+'</span>';
 								}
@@ -1797,6 +1856,8 @@ function getVendorOrgname(vendorOrgname){
 								result = result + '<strong>Website:</strong>';
 								if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 								result = result + '<span title="'+json.webSite+'">'+json.webSite+'</span><div class="clearfix"></div>';
+								}else{
+									result = result + '<span> --- </span><div class="clearfix"></div>';
 								}
 							result = result + '</div>';
 							
@@ -2107,7 +2168,14 @@ $(".addcon-pop").click(function(){
 <jsp:include page="editSpocDetails.jsp" />
 <jsp:include page="vendorContacts.jsp" />
 <jsp:include page="vendorDocuments.jsp" />
+<jsp:include page="vendorContracts.jsp" />
 <jsp:include page="vendorSpocDocuments.jsp" />
+
+<jsp:include page="vendorRequirmentList.jsp" />
+
+<jsp:include page="vendorBilling.jsp" /> 
+<jsp:include page="vendorAssociatesList.jsp" /> 
+<jsp:include page="vendorNotesList.jsp" />
 
 
 

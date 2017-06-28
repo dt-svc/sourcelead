@@ -443,7 +443,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				}
 				
 				
-				else if(tabs.getTabName().equalsIgnoreCase(Constants.Requirement)){
+				else if(tabs.getTabName().equalsIgnoreCase(Constants.JOBS)){
 					
 					 /*To change requirement Manager*/
 					 Integer requirementsCountAsManager = requirementDao.getManagerAssignedRequirementsCount(userId, orgLocationId);
@@ -533,6 +533,18 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public Boolean isUserisPrimaryForOrg(Long userId, Long orgLocationId) {
 		return userRoleDao.isUserisPrimaryForOrg(userId, orgLocationId);
+	}
+
+	@Override
+	public UserRole getUserDetailsByUserIdAndLocationIdAndUserType(Long userId, Long locationId, String userType) throws Exception
+	{
+		return userRoleDao.getUserDetailsByUserIdAndLocationIdAndUserType(userId, locationId, userType);
+	}
+
+	@Override
+	public UserRole getIsProfessionalOrRecruiterExistsWithEmailAndUserType(String email, String userType) throws Exception
+	{
+		return userRoleDao.getIsProfessionalOrRecruiterExistsWithEmailAndUserType(email, userType);
 	}
 
 }

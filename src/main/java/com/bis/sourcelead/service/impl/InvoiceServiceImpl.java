@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +30,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,20 +54,26 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -72,6 +86,8 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 
 @Service
@@ -118,6 +134,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Autowired
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
+	@Autowired
+	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -134,6 +153,9 @@ public class InvoiceServiceImpl implements InvoiceService{
 
 	@Autowired
 	TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
+	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@Override
 
@@ -206,7 +228,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(!loginOrgCurrencyCode.equalsIgnoreCase(vendorCurrencyCode)){
 	        if(null != vendorCurrencyCode){
 	      	float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(jsonObj.getString("grandTotal")));
-	      	float exchangeAmoiunt = conversionUtil.singleConvert(vendorCurrencyCode,loginOrgCurrencyCode, 1);
+	      	float exchangeAmoiunt = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode,1);
 	      	float convertedAmount1 = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
 	      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
 	      	invoice.setConvertAmount(String.valueOf(convertedAmount1));
@@ -313,7 +335,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		}
 		
 		//store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType);
+		File file = invoicePdfHelper.createPdfTableForInvoice(invoice,orgLocation,user,org,invoiceType,vendorCurrencyCode,loginOrgCurrencyCode);
 		        invoice.setFileName(file.getName());
 //		        byte[] bytesArray = new byte[(int) file.length()];
 		        byte[] bytesArray = getByteArray(file);
@@ -324,7 +346,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		        }
 		        
 		invoiceDao.saveInvoce(invoice);
-		if(saveType.equalsIgnoreCase("SENT")){
+		if(Constants.SENT.equalsIgnoreCase(saveType)){
 			//mail scenario for client accept or reject
 			/*int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
 			 for(int i=0;i<maxRowCount;i++){
@@ -558,8 +580,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					 
 					 if(null != jsonObj.getString(i+"candidate") && !"".equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
-						 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
-						 invoiceLineItems.setCandidate(candidate);
+						 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"candidate"))){
+							 Candidate candidate = candidateService.getCandidateById(Long.parseLong(jsonObj.getString(i+"candidate")));
+							 invoiceLineItems.setCandidate(candidate);
+						 }
+						 if(jsonObj.has(i+"user")){
+							 if(!Constants.UNDEFINED.equalsIgnoreCase(jsonObj.getString(i+"user"))){
+								 User usr = userService.getUserById(Long.parseLong(jsonObj.getString(i+"user")));
+								 invoiceLineItems.setUser(usr);
+							 } 
+						 }
 					 }
 					 
 					 if(null != jsonObj.getString(i+"sow") && !"".equalsIgnoreCase(jsonObj.getString(i+"sow"))){
@@ -595,22 +625,17 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 }
 					if(jsonObj.has(i+"submissionInvoiceId")){
 						 if(null != jsonObj.getString(i+"submissionInvoiceId") && !"".equalsIgnoreCase(jsonObj.getString(i+"submissionInvoiceId"))){
-								
 						       List<TimesheetSubmissionsDocuments> documentList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(Long.parseLong(jsonObj.getString(i+"submissionInvoiceId")));
 					           if(null != documentList && documentList.size() >0){
-					        	   
 					        	   for(TimesheetSubmissionsDocuments document : documentList){
 					        		   
 					        		   docusList.add(document);
 					        	   }
-					        	   
 					        	  
 					           }
 						
 							 }
 					}
-					
-						
 					
 					 invoiceLineItems.setOrgLocation(orgLocation);
 					 invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
@@ -618,7 +643,6 @@ public class InvoiceServiceImpl implements InvoiceService{
 					 invoiceLineItems.setCreatedDate(commonUtil.currentDate());
 					 invoiceLineItems.setInvoice(invoice);
 					 invoiceLineItemsSet.add(invoiceLineItems);
-					 
 				 }
 			 }
 			 
@@ -638,14 +662,15 @@ public class InvoiceServiceImpl implements InvoiceService{
 	
 	
 	 public EmailAttachment zipFiles(List<TimesheetSubmissionsDocuments> docusList) throws MessagingException{
-         EmailAttachment ema = new EmailAttachment();
+
+         EmailAttachment ema = null;
 	        FileOutputStream fos = null;
 	        ZipOutputStream zipOut = null;
 	        FileInputStream fis = null;
 	        try {
 	           ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
 		    	 if(docusList != null && !docusList.isEmpty()){
-		    		    
+		    		    ema=new EmailAttachment();
 		    	         ZipOutputStream outZip = new ZipOutputStream(zipBytes);
 		    	         
 				    	 int i= 0;
@@ -747,7 +772,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("orgName",orglocations.getOrg().getOrgName());
-		 globalVarsMap.put("address",invoice.getBillingAddress());
+		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
 		/* StringBuilder acceptBuilder = new StringBuilder();
 		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptedInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
@@ -798,7 +823,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 emailAttachment.setDocFile(invoice.getDocFile());
 		 emailAttachment.setName(invoice.getFileName());
 		 attachmentList.add(emailAttachment);
-		 attachmentList.add(attachmentZip);
+
+		 if(null != attachmentZip){
+			 attachmentList.add(attachmentZip);
+		 }
 		 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
 		 attachmentList.addAll(documentList);
 		 }
@@ -1078,16 +1106,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 	@Override
 	public void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType) throws Exception
 	{
-		for(String id :submissionApproverHierarchyIds){
-			SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
-			if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
-				submissionApproverHierarchy.setBillingStatus(Constants.SENT);
-			}else{
-				submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+		if(null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() >0){
+			for(String id :submissionApproverHierarchyIds){
+				if(!Constants.UNDEFINED.equalsIgnoreCase(id) && id !=null && !"".equalsIgnoreCase(id)){
+					 submissionApproverHierarchyService.updateAllSubmissionApproverHierarchyInvoiceStatusBySubmissionApproverHierarchyId(Long.parseLong(id), invoiceType, Constants.SENT);
+				}
 			}
-			submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
 		}
-	
 	}
 	@Override
 	public CurrencyConversionResponse getExchangeCurrency(String loginOrgCurrencyCode, OrgLocations orgLocation, Long orgRelationId, String grandTotal) throws Exception
@@ -1107,12 +1132,786 @@ public class InvoiceServiceImpl implements InvoiceService{
 			if (null != vendorCurrencyCode) {
 				currencyConversionResponse = new CurrencyConversionResponse();
 				float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(grandTotal));
-				float exchangeRate = conversionUtil.singleConvert(vendorCurrencyCode, loginOrgCurrencyCode, 1);
+				float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode, 1);
 				float exchangeCurrency = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
 				currencyConversionResponse.setExchangeRate(exchangeRate);
 				currencyConversionResponse.setExchangeCurrency(exchangeCurrency);
+				currencyConversionResponse.setVendorCurrencyCode(vendorCurrencyCode);
 			}
 		}
 		return currencyConversionResponse;
 	}
+	
+	
+	@Override
+	public File getExportBillingFile(List<Invoice> invoiceList,String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate,String invoiceType) throws Exception {
+		
+		File file = null;
+		if (!"pdf".equalsIgnoreCase(exportType)) {
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgName + "_" + dateFormat.format(new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,totalStagesAmount,orgName,exportStartDate,exportEndDate,invoiceType);
+			int column = 0;
+			for (Invoice invoice : invoiceList) {
+				writeRow = createExcelsheet.createRow(column + 10);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, invoice);
+				column++;
+			}
+			 file = File.createTempFile(orgName + Constants.BILLING + dateFormat.format(new Date()),".xls");
+			 file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			file = invoicePdfHelper.getBillingPdf(invoiceList,orgName,totalStagesAmount,exportStartDate,exportEndDate,invoiceType);
+		}
+			return file;
+	}
+	
+	
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Invoice invoice) {
+		
+	
+	if(null != invoice.getInvoiceId() && !"".equalsIgnoreCase(invoice.getInvoiceId())){
+		writeRow.createCell(0).setCellValue(invoice.getInvoiceId());
+	}
+	
+	Org org = null;
+	if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
+			org = invoice.getOrgRelationID().getLocationId().getOrg();
+	}else if(invoice.getOrgRelationID().getLocationId().getId().longValue() == invoice.getOrgLocation().getId().longValue()){
+			 org = invoice.getOrgRelationID().getResponderLocationId().getOrg();
+	}
+	if(null != org){
+		writeRow.createCell(1).setCellValue(org.getOrgName());
+	}
+	
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getLastName() && !"".equalsIgnoreCase(invoice.getContactUser().getLastName())){
+		StringBuilder contactName = new StringBuilder();
+		writeRow.createCell(2).setCellValue(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+	}else if(null != invoice.getContactUser().getFirstName()){
+		writeRow.createCell(2).setCellValue(invoice.getContactUser().getFirstName());
+	}
+	}
+	
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getEmail() && !"".equalsIgnoreCase(invoice.getContactUser().getEmail())){
+		writeRow.createCell(3).setCellValue(invoice.getContactUser().getEmail()); 
+	}
+	}
+	
+	if(null != invoice.getContactUser()){
+		if(null != invoice.getContactUser().getMobilePhone() && !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())){
+		 writeRow.createCell(4).setCellValue(invoice.getContactUser().getMobilePhone());
+	}
+	}
+	
+	if(null != invoice.getInvoiceDate()){
+		 writeRow.createCell(5).setCellValue(invoice.getInvoiceDate().toString());
+	}
+	
+	if(null != invoice.getDueDate()){
+		writeRow.createCell(6).setCellValue(invoice.getDueDate().toString());  
+	}
+	
+	if(null != invoice.getTotal() && !"".equalsIgnoreCase(invoice.getTotal())){
+		writeRow.createCell(7).setCellValue(invoice.getTotal());
+	}
+	
+	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount())){
+		writeRow.createCell(8).setCellValue(invoice.getDueAmount());
+	}
+	
+	if(null != invoice.getDueAmount() && !"".equalsIgnoreCase(invoice.getDueAmount()) ){
+		Double paidAmount = Double.parseDouble(invoice.getTotal()) - Double.parseDouble(invoice.getDueAmount());
+		String convertedPaidAmount = String.valueOf(paidAmount);
+		writeRow.createCell(9).setCellValue(convertedPaidAmount);
+	}
+	
+	if(null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())){
+		 writeRow.createCell(10).setCellValue(invoice.getInvoiceStatus());
+	}
+	
+	if(null != invoice.getPaymentStatus() && !"".equalsIgnoreCase(invoice.getPaymentStatus())){
+		writeRow.createCell(11).setCellValue(invoice.getPaymentStatus());
+	}
+	
+	if(null != invoice.getLinkInvoiceReferenceId() && !"".equalsIgnoreCase(String.valueOf(invoice.getLinkInvoiceReferenceId()))){
+		writeRow.createCell(12).setCellValue(String.valueOf(invoice.getLinkInvoiceReferenceId()));
+	}
+		
+	return createExcelsheet;
+	}
+
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, InvoiceAmount totalStagesAmount, String orgName,String exportStartDate,String exportEndDate, String invoiceType) {
+	
+	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+
+	writeRow = createExcelsheet.createRow(1);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell1 = writeRow.createCell(0);
+	cell1.setCellValue("Company name :");
+	cell1.setCellStyle(style);
+	Cell cell2 = writeRow.createCell(1);
+    cell2.setCellValue(orgName);
+	cell2.setCellStyle(style);
+
+	writeRow = createExcelsheet.createRow(2);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell3 = writeRow.createCell(0);
+	cell3.setCellValue("Duration :");
+	cell3.setCellStyle(style);
+
+	Cell cell4 = writeRow.createCell(1);
+	cell4.setCellValue(exportStartDate +" - "+exportEndDate);
+	cell4.setCellStyle(style);
+
+	writeRow = createExcelsheet.createRow(3);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell5 = writeRow.createCell(0);
+	cell5.setCellValue("Total Unpaid Amount(Open) : ");
+	cell5.setCellStyle(style);
+
+	Cell cell6 = writeRow.createCell(1);
+	cell6.setCellValue(totalStagesAmount.getTotalOpenUnpaidAmount());
+	cell6.setCellStyle(style);
+	
+	writeRow = createExcelsheet.createRow(4);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell7 = writeRow.createCell(0);
+	cell7.setCellValue("Total Unpaid Amount(OverDue) : ");
+	cell7.setCellStyle(style);
+
+	Cell cell8 = writeRow.createCell(1);
+	cell8.setCellValue(totalStagesAmount.getTotalOverDueUnpaidAmount());
+	cell8.setCellStyle(style);
+	
+	
+	writeRow = createExcelsheet.createRow(5);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell9 = writeRow.createCell(0);
+	cell9.setCellValue("Total Paid Amount : ");
+	cell9.setCellStyle(style);
+
+	Cell cell10 = writeRow.createCell(1);
+	cell10.setCellValue(totalStagesAmount.getTotalPaidAmount());
+	cell10.setCellStyle(style);
+	
+	writeRow = createExcelsheet.createRow(6);
+	createExcelsheet.setColumnWidth(0, 10000);
+	createExcelsheet.setColumnWidth(1, 10000);
+
+	Cell cell11 = writeRow.createCell(0);
+	cell11.setCellValue("Total Unbilled Amount : ");
+	cell11.setCellStyle(style);
+
+	Cell cell12 = writeRow.createCell(1);
+	cell12.setCellValue(totalStagesAmount.getTotalUnbilledAmount());
+	cell12.setCellStyle(style);
+	
+	String[] headers = null;
+	if(Constants.Payables.equalsIgnoreCase(invoiceType)){
+		 headers  = Constants.BILLING_PAYABLE_HEADERS;
+	}else{
+		 headers  = Constants.BILLING_HEADERS;
+	}
+	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
+	return createExcelsheet;
+}
+
+	@Override
+	public Invoice getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user,String contractType) throws Exception
+	{
+		List<OrgRelations> clientVendorList = null;
+		OrgLocations vendorOrgLocation = null;
+		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+			clientVendorList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+		}else{
+			clientVendorList = getVendorsList(orgLocation);
+		}
+		for (OrgRelations client : clientVendorList) {
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(client.getId());
+			if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				vendorOrgLocation = orgRelation.getLocationId();
+//				populateClientDetails(vendorOrgLocation,invoice);
+			}
+			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				vendorOrgLocation = orgRelation.getResponderLocationId();
+//				populateClientDetails(vendorOrgLocation,invoice);
+			}
+			List<Projects> projectsList = null;
+			if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+				projectsList = projectsService.getClientProjectsByOrgRelationId(client.getId(),orgLocation.getId());
+			}else{
+				projectsList = projectsService.getAllProjectsByOrgLocationIdAndStatus(orgLocation.getId());
+			}
+			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+  			if(null != projectsList && projectsList.size() >0){
+  				for(Projects project : projectsList){
+  	  				List<String> frequencyDates = getProjectsFrequency(project);
+  	  				for(String frequency :frequencyDates){
+  	  				   Invoice invoice = new Invoice();
+  	  					List<ProjectMembers> projectMembersList = null;
+  	  					if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+  	  						 projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  					}else{
+  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  					}
+  	  					if(null != projectMembersList && projectMembersList.size() >0){
+  	  						populateClientDetails(vendorOrgLocation,invoice);
+  	  						invoice.setOrgRelationID(orgRelation);
+  	  						invoice.setOrgLocation(orgLocation);
+  	  						invoice.setInvoiceType(invoiceType);
+  	  						invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+  	  						invoice.setInvoiceId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
+  	  						Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItems(projectMembersList,orgLocation,client.getId(),loginOrgCurrencyCode,invoice,user);
+  	  						invoice.setInvoiceLineItems(invoiceLineItemSet);
+  	  						invoice.setConvertCurrencyCode(vendorCurrencyCode);
+  	  						invoice.setCurrencyCode(loginOrgCurrencyCode);
+  	  						invoice.setCreatedBy(user.getUserCode());
+  	  						invoice.setStatus(Constants.RECORD_ACTIVE.toString());
+  	  						invoice.setInvoiceStatus(Constants.DRAFT);
+  	  						invoice.setUpdatedBy(user.getUserCode());
+  	  						invoice.setCreatedDate(commonUtil.currentDate());
+  	  						invoice.setPaymentStatus("Unpaid");
+  	  						invoice.setProjectID(project);
+  	  						invoice.setDiscountType(Constants.PERCENTAGE);
+  	  						float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.parseFloat(invoice.getTotal()));
+  	  						float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1);
+  	  		  		      	float roundAmount = 	(float) (Math.round(convertedAmount * 100.0) / 100.0);
+  	  		  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
+  	  		  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
+  	  		  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+  	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
+  	  		  		        updateSubmissionApproverHierachy(savedInvoice.getSubmissionApproverHierarchyIds(),savedInvoice.getInvoiceFrequency(),invoiceType);
+  	  					}
+  	  					
+  	  				}
+  	  			}
+  			}
+		}
+		return null;
+	}
+	
+	/**
+	 * used to update submission approver hieararchy
+	 * 
+	 * @param submissionApproverHierarchyIds
+	 * @param invoiceFrequency
+	 * @param invoiceType
+	 * @throws Exception
+	 */
+	private void updateSubmissionApproverHierachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency, String invoiceType) throws Exception
+	{
+		if (null != submissionApproverHierarchyIds && submissionApproverHierarchyIds.size() > 0) {
+			for (String id : submissionApproverHierarchyIds) {
+				SubmissionApproverHierarchy submissionApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchy(id);
+				if (Constants.PAYABLES.equalsIgnoreCase(invoiceType)) {
+					submissionApproverHierarchy.setBillingStatus(Constants.SENT);
+				}
+				else {
+					submissionApproverHierarchy.setInvoiceStatus(Constants.SENT);
+				}
+				submissionApproverHierarchyService.addSubmissionApproverHierarchy(submissionApproverHierarchy);
+			}
+		}
+	}
+	
+	/**
+	 * to get all vendor list
+	 * 
+	 * @param orgLocation
+	 * @return List<OrgRelations>
+	 */
+	private List<OrgRelations> getVendorsList(OrgLocations orgLocation)
+	{
+		List<OrgRelations> vendorsList = new ArrayList<>();
+		List<OrgRelations> vendorAllList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+		if (null != vendorAllList) {
+			for (OrgRelations orgRelations : vendorAllList) {
+				String orgName = "";
+				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					orgName = orgRelations.getLocationId().getOrg().getOrgName();
+				}
+				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					orgName = orgRelations.getResponderLocationId().getOrg().getOrgName();
+				}
+				orgRelations.setOrgName(orgName);
+				vendorsList.add(orgRelations);
+			}
+		}
+		return vendorsList;
+	}
+	
+	/**
+	 * population Invoiceline items
+	 * 
+	 * @param projectMembersList
+	 * @param orgLocation
+	 * @param orgRelationId
+	 * @param loginOrgCurrencyCode
+	 * @param invoice
+	 * @param user
+	 * @return Set<InvoiceLineItems>
+	 * @throws Exception
+	 */
+	private Set<InvoiceLineItems> populateInvoiceInlineItems(List<ProjectMembers> projectMembersList, OrgLocations orgLocation, Long orgRelationId, String loginOrgCurrencyCode, Invoice invoice, User user) throws Exception
+	{
+		Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
+		List<String> submissionApproverHiearachyIds = new ArrayList<>();
+		float subTotal = 0;
+		for (ProjectMembers projectMember : projectMembersList) {
+			String rate = null;
+			String ratePer = null;
+			String rateCurrencyType = null;
+			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
+			invoiceLineItems.setStartDate(conversionUtil.getDateFromString(projectMember.getStartDate()));
+			invoiceLineItems.setEndDate(conversionUtil.getDateFromString(projectMember.getEndDate()));
+			if(projectMember.getCandidateId() !=null){
+				Candidate candidate = candidateService.getCandidateByCandidateId(projectMember.getCandidateId());
+				invoiceLineItems.setCandidate(candidate);
+				List<Contracts> contractsList = projectMember.getContractsList();
+				if (null != contractsList && contractsList.size() > 0) {
+					Contracts contract = contractsList.get(0);
+					invoiceLineItems.setContract(contract);
+					rate = contract.getBillingAmount();
+					ratePer = contract.getBillingRatePer();
+					rateCurrencyType = contract.getBillingRateType();
+				}
+			}else{
+				if (projectMember.getUserId() !=null) {
+					User usr = userService.getUserById(Long.parseLong(projectMember.getUserId()));
+					invoiceLineItems.setUser(usr);
+				}
+			}
+			
+			if (null != projectMember.getTotalHours()) {
+				invoiceLineItems.setTotalHours(projectMember.getTotalHours());
+			}
+			if (null != rate && null != projectMember.getTotalHours()) {
+				invoiceLineItems.setRate(String.valueOf(conversionUtil.getHourlyRate(rate, ratePer)));
+				float totalAmount = getTotalAmount(rate, projectMember.getTotalHours(), loginOrgCurrencyCode, ratePer, rateCurrencyType);
+				invoiceLineItems.setAmount(String.valueOf(totalAmount));
+				subTotal = subTotal + totalAmount;
+			}
+			invoiceLineItems.setOrgLocation(orgLocation);
+			invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
+			invoiceLineItems.setCreatedBy(user.getUserCode());
+			invoiceLineItems.setCreatedDate(commonUtil.currentDate());
+			invoiceLineItems.setInvoice(invoice);
+			invoiceLineItemsSet.add(invoiceLineItems);
+			submissionApproverHiearachyIds.add(String.valueOf(projectMember.getSubmissionApproverHierarchyId()));
+		}
+		invoice.setSubTotal(String.valueOf(subTotal));
+		invoice.setDueAmount(String.valueOf(subTotal));
+		invoice.setTotal(String.valueOf(subTotal));
+		invoice.setSubmissionApproverHierarchyIds(submissionApproverHiearachyIds);
+		return invoiceLineItemsSet;
+	}
+	
+	/**
+	 * calculating total amount
+	 * 
+	 * @param billingAmount
+	 * @param totalHours
+	 * @param loginOrgCurrencyCode
+	 * @param billingRatePer
+	 * @param rateCurrencyType
+	 * @return float
+	 */
+	private float getTotalAmount(String billingAmount, String totalHours, String loginOrgCurrencyCode, String billingRatePer, String rateCurrencyType)
+	{
+		float hourlyRate = conversionUtil.getHourlyRate(billingAmount, billingRatePer);
+		float roundValue = 0;
+		if (!loginOrgCurrencyCode.equalsIgnoreCase(rateCurrencyType)) {
+			float coversionRate = conversionUtil.convert(rateCurrencyType, loginOrgCurrencyCode, hourlyRate);
+			roundValue = (float) (Math.round(coversionRate * 100.0) / 100.0);
+		}
+		else {
+			roundValue = (float) (Math.round(hourlyRate * 100.0) / 100.0);
+		}
+		String[] split = totalHours.split(":");
+		int splitHours = Integer.parseInt(split[0]);
+		int hourminits = splitHours * 60;
+		int minute = Integer.parseInt(split[1]);
+		int finalMin = hourminits + minute;
+		float perMinit = roundValue / 60;
+		float totlalAmount = (perMinit * finalMin);
+		float finalRoundAmount = (float) (Math.round(totlalAmount * 100.0) / 100.0);
+		return finalRoundAmount;
+	}
+	
+	/**
+	 * Get Client Projects assigned members
+	 * 
+	 * @param frequency
+	 * @param orgLocation
+	 * @param projectId
+	 * @param orgRelationId
+	 * @param contractType
+	 * @param invoice
+	 * @return List<ProjectMembers>
+	 * @throws Exception
+	 */
+	private List<ProjectMembers> getClientProjectAssinedMembersAutoInvoice(String frequency, OrgLocations orgLocation, Long projectId, Long orgRelationId, String contractType, Invoice invoice) throws Exception
+	{
+		String frequencyArray[] = frequency.split("/");
+		String startDateStr = frequencyArray[0];
+		String endDateStr = frequencyArray[1];
+		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		Date startDate = format.parse(startDateStr);
+		Date endDate = format.parse(endDateStr);
+		List<ProjectMembers> projectMembersList = new ArrayList<>();
+		List<SubmissionApproverHierarchy> sahList = null;
+		invoice.setInvoiceFrequency(frequency);
+		if (null != projectId) {
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
+		}
+		if (null != sahList && sahList.size() > 0) {
+			for (SubmissionApproverHierarchy sah : sahList) {
+				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				projectMember.setSubmissionApproverHierarchyId(sah.getId());
+				StringBuilder candidateName = new StringBuilder();
+				if (null != projectMember.getEmployee().getUser().getFirstName()
+						&& null != projectMember.getEmployee().getUser().getLastName()) {
+					candidateName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+				}
+				else {
+					candidateName.append(projectMember.getEmployee().getUser().getFirstName());
+				}
+				projectMember.setCandidateName(candidateName.toString());
+				projectMember.setUserId(String.valueOf(projectMember.getEmployee().getUser().getId()));
+				if (null != projectMember.getEmployee().getUser().getId()) {
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(projectMember.getEmployee().getUser().getId(), orgLocation.getId());
+					if (null != candidate) {
+						projectMember.setCandidateId(candidate.getId());
+						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
+						if (null != contractList && contractList.size() > 0) {
+							projectMember.setContractsList(contractList);
+						}
+					}
+				}
+				projectMember.setStartDate(startDateStr);
+				projectMember.setEndDate(endDateStr);
+				String billableHours = String.valueOf(sah.getBillableHours());
+				StringBuilder sb = new StringBuilder();
+				if(billableHours != null){
+					String arr[] = billableHours.split("\\.");
+					if (arr[0].length() == 2) {
+						sb.append("0").append(arr[0]);
+					}
+					else if (arr[0].length() == 3) {
+						sb.append(arr[0]);
+					}
+					else if (arr[0].length() == 1) {
+						sb.append("00").append(arr[0]);
+					}
+					if (arr[1].length() == 1) {
+						sb.append(":").append("0").append(arr[1]);
+					}
+					else {
+						sb.append(":").append(arr[1]);
+					}
+				}else{
+					sb.append("0");
+				}
+				
+				projectMember.setTotalHours(sb.toString());
+				projectMembersList.add(projectMember);
+			}
+		}
+		return projectMembersList;
+	}
+	
+	/**
+	 * To get all vendor projects assigned members
+	 * 
+	 * @param frequency
+	 * @param orgLocation
+	 * @param projectId
+	 * @param orgRelationId
+	 * @param contractType
+	 * @param invoice
+	 * @return
+	 * @throws Exception
+	 */
+	private List<ProjectMembers> getVendorProjectAssinedMembersAutoInvoice(String frequency, OrgLocations orgLocation, Long projectId, Long orgRelationId, String contractType, Invoice invoice) throws Exception
+	{
+		String frequencyArray[] = frequency.split("/");
+		String startDateStr = frequencyArray[0];
+		String endDateStr = frequencyArray[1];
+		String pattern = "dd-MM-yyyy";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		Date startDate = format.parse(startDateStr);
+		Date endDate = format.parse(endDateStr);
+		List<ProjectMembers> filteredMembersList = new ArrayList<>();
+		List<SubmissionApproverHierarchy> sahList = null;
+		if (null != projectId) {
+			sahList = submissionApproverHierarchyService.getApprovedSubmissionApproverHierarchiesByProjectIdFrequencyStartDateAndFrequencyEndDate(projectId, startDate, endDate,contractType);
+		}
+		if (null != sahList && sahList.size() > 0) {
+			for (SubmissionApproverHierarchy sah : sahList) {
+				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
+				projectMember.setSubmissionApproverHierarchyId(sah.getId());
+				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
+				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getEmployee().getUser().getId(),orgRelationId);
+//				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
+				if (null != employee) {
+					StringBuilder empName = new StringBuilder();
+					if (null != projectMember.getEmployee().getUser().getFirstName()
+							&& null != projectMember.getEmployee().getUser().getLastName()) {
+						empName.append(projectMember.getEmployee().getUser().getFirstName()).append(" ").append(projectMember.getEmployee().getUser().getLastName());
+					}
+					else {
+						empName.append(projectMember.getEmployee().getUser().getFirstName());
+					}
+					projectMember.setCandidateName(empName.toString());
+					projectMember.setUserId(employee.getUser().getId().toString());
+					projectMember.setStartDate(startDateStr);
+					projectMember.setEndDate(endDateStr);
+					String billableHours = String.valueOf(sah.getBillableHours());;
+					String arr[] = billableHours.split("\\.");
+					StringBuilder sb = new StringBuilder();
+					if (arr[0].length() == 2) {
+						sb.append("0").append(arr[0]);
+					}
+					else if (arr[0].length() == 3) {
+						sb.append(arr[0]);
+					}
+					else if (arr[0].length() == 1) {
+						sb.append("00").append(arr[0]);
+					}
+					if (arr[1].length() == 1) {
+						sb.append(":").append("0").append(arr[1]);
+					}
+					else {
+						sb.append(":").append(arr[1]);
+					}
+					projectMember.setTotalHours(sb.toString());
+					Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
+					if (null != candidate) {
+						projectMember.setCandidateId(candidate.getId());
+						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
+						if (null != contractList && contractList.size() > 0) {
+							projectMember.setContractsList(contractList);
+						}
+					}
+				
+					filteredMembersList.add(projectMember);
+				}
+			}
+		}
+		return filteredMembersList;
+	}
+	
+	/**
+	 * Get projects frequency
+	 * 
+	 * @param projects
+	 * @return List<String>
+	 * @throws Exception
+	 */
+	private List<String> getProjectsFrequency(Projects projects) throws Exception
+	{
+		// Projects projects = projectsService.getProjectById(projectId);
+		List<String> frequencyDates = new ArrayList<>();
+		Map<String, String> map = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projects);
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append(entry.getKey().replaceAll("/", "-")).append("/").append(entry.getValue().replaceAll("/", "-"));
+			frequencyDates.add(sb.toString());
+		}
+		return frequencyDates;
+	}
+	
+	/**
+	 * check give org is client or vendor
+	 * 
+	 * @param vendorOrgLocation
+	 * @param invoice
+	 */
+	private void populateClientDetails(OrgLocations vendorOrgLocation, Invoice invoice)
+	{
+		invoice.setResponderLocationId(vendorOrgLocation);
+		if (null != vendorOrgLocation.getOrg().getPaymentTerm()
+				&& !"".equalsIgnoreCase(vendorOrgLocation.getOrg().getPaymentTerm())) {
+			invoice.setPaymentFrequency(vendorOrgLocation.getOrg().getPaymentTerm());
+			invoice.setInvoiceDate(new Date());
+			Date dueDate = getDueDateByPaymentTerm(new Date(), vendorOrgLocation.getOrg().getPaymentTerm());
+			invoice.setDueDate(dueDate);
+		}
+		if (null != vendorOrgLocation.getOrg().getClientBillingAddress()
+				&& !"".equalsIgnoreCase(vendorOrgLocation.getOrg().getClientBillingAddress())) {
+			invoice.setBillingAddress(vendorOrgLocation.getOrg().getClientBillingAddress());
+		}
+	}
+	
+	/**
+	 * Get due date frequency based on invoice date
+	 * 
+	 * @param invoiceDate
+	 * @param paymentTerm
+	 * @return Date
+	 */
+	private Date getDueDateByPaymentTerm(Date invoiceDate, String paymentTerm)
+	{
+		String[] frequency = paymentTerm.split(" ");
+		Calendar c = Calendar.getInstance();
+		c.setTime(invoiceDate);
+		c.add(Calendar.DATE, Integer.parseInt(frequency[0]));
+		return c.getTime();
+	}
+	
+	/**
+	 * Get contracts sow based on candidate id
+	 * 
+	 * @param candidateId
+	 * @param orgLocation
+	 * @param orgRelationId
+	 * @param contractType
+	 * @return List<Contracts>
+	 * @throws Exception
+	 */
+	private List<Contracts> getSowContract(Long candidateId, OrgLocations orgLocation, Long orgRelationId, String contractType) throws Exception
+	{
+		List<Contracts> contractsList = null;
+		if (null != orgRelationId) {
+			if (Constants.VENDOR_SOW.equalsIgnoreCase(contractType)) {
+				contractsList = invoiceDao.getSowcontractListByAssociateId(candidateId, orgLocation.getId(), orgRelationId, Constants.Vendor_SOW);
+			}
+			else {
+				contractsList = invoiceDao.getSowcontractListByAssociateId(candidateId, orgLocation.getId(), orgRelationId, Constants.Client_SOW);
+			}
+		}
+		return contractsList;
+	}
+	
+	@Override
+	public List<Invoice> getInvoiceByOrgLocationId(Long orgLocationId,Date startDateUTC, Date endDateUTC,String invoiceTYpe) throws Exception
+	{
+		return invoiceDao.getInvoiceByOrgLocationId(orgLocationId,startDateUTC, endDateUTC,invoiceTYpe);
+
+	}
+	
+	@Override
+	public List<Invoice> getClientBasedInvoiceLists(Long orgRelationId,Long orgLocationId,String invoiceType)
+	{
+		return invoiceDao.getClientBasedInvoiceLists(orgRelationId,orgLocationId,invoiceType);
+	}
+	@Override
+	public void linkInvoice(Invoice invoice) throws Exception
+	{
+      invoiceDao.saveInvoce(invoice);		
+	}
+	
+	@Override
+	public List<Invoice> getInvoiceByOrgRelationId(Long orgRelationId,Long clientLocationId,Date startDateUTC, Date endDateUTC,String invoiceStatus, String paymentStatus,String invoiceType,OrgLocations orgLocations)
+	{
+		
+		List<Invoice> invoiceList =  invoiceDao.getInvoiceByOrgRelationId(orgRelationId,clientLocationId,startDateUTC,endDateUTC,invoiceStatus,paymentStatus,invoiceType);
+//      		String currentDate = sdf.format(new Date());
+      		Date todayDate = new Date();
+      		if (null != invoiceList && invoiceList.size() > 0) {
+      			for (Invoice invoice : invoiceList) {
+      				Integer draftCount = 0;
+      				Integer paidCount = 0;
+      				Integer overDueInvoiceCount = 0;
+      				Integer openInvoiceCount = 0;
+      				if (invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+      					invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgName());
+      				}
+      				if (invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
+      					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrg().getOrgName());
+      				}
+      				StringBuilder contactName = new StringBuilder();
+      				if (null != invoice.getContactUser()) {
+      					if (invoice.getContactUser().getLastName() != null) {
+      						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+      					}
+      					else {
+      						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName()).toString());
+      					}
+      				}
+      				if (null != invoice.getInvoiceDate()) {
+      					invoice.setInvoiceDateStr(conversionUtil.getDateAsString(invoice.getInvoiceDate()));
+      				}
+      				if (null != invoice.getDueDate()) {
+      					invoice.setDueDateStr(conversionUtil.getDateAsString(invoice.getDueDate()));
+      				}
+      				invoice.setTotal(invoice.getTotal());
+      				invoice.setInvoiceStatus(invoice.getInvoiceStatus());
+      				invoice.setPaymentStatus(invoice.getPaymentStatus());
+      				if (null != invoice.getProjectID()) {
+      					invoice.setProjectId(invoice.getProjectID().getId().toString());
+      				}
+      				if (!isNullOrEmpty(invoice.getInvoiceStatus())) {
+      					if (Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							|| Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
+      						draftCount = draftCount + 1;
+      						invoice.setDraftInvoiceAmount(invoice.getDueAmount());
+      					}
+      					if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& Constants.INVOICE_STATUS_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      							&& !Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())) {
+      						paidCount = paidCount + 1;
+      						Float paidAmount = Float.parseFloat(invoice.getTotal())
+      								- Float.parseFloat(invoice.getDueAmount());
+      						invoice.setPaidInvoiceAmount(paidAmount.toString());
+      					}
+      					if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& !Constants.INVOICE_REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
+      							&& (Constants.INVOICE_STATUS_UNPAID.equalsIgnoreCase(invoice.getPaymentStatus())
+      									|| Constants.INVOICE_STATUS_PARTIAL_PAID.equalsIgnoreCase(invoice.getPaymentStatus()))) {
+      						Date invoiceDueDate = invoice.getDueDate();
+      						Float dueAmount = Float.parseFloat(invoice.getDueAmount());
+      						if (dueAmount > 0) {
+      							if (todayDate.after(invoiceDueDate)) {
+      								overDueInvoiceCount = overDueInvoiceCount + 1;
+      								invoice.setDueAfterInvoiceAmount(invoice.getDueAmount());
+      							}
+      							else {
+      								openInvoiceCount = openInvoiceCount + 1;
+      								invoice.setDueBeforeInvoiceAmount(invoice.getDueAmount());
+      							}
+      						}
+      					}
+      				}
+      				if (null != invoice.getParentInvoiceId()) {
+      					invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());
+      				}
+      				invoice.setDraftInvoiceCount(draftCount);
+      				invoice.setPaidInvoiceCount(paidCount);
+      				invoice.setDueAfterInvoiceCount(overDueInvoiceCount);
+      				invoice.setDueBeforeInvoiceCount(openInvoiceCount);
+      			}
+      		}
+			return invoiceList;
+	}
+
+	@Override
+	public List<Invoice> getInvoiceByOrgLocationIdNetIncome(Long orgLocationId, Date startDateUTC, Date endDateUTC) throws Exception
+	{
+		return invoiceDao.getInvoiceByOrgLocationIdNetIncome(orgLocationId,startDateUTC,endDateUTC);
+	}
+
 }
