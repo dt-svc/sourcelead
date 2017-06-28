@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -34,10 +35,11 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.ExpensesService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -76,6 +78,12 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	@Autowired
 	private ExpensesApproverHierarchyDao expensesApproverHierarchyDao;
+	
+	@Autowired
+	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	private CountriesService countriesService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
@@ -168,7 +176,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		        cell1.setColspan(11);
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{5,3,5,3,3,3,3,7});
+	            table.setWidths(new int[]{5,3,5,3,3,3,7});
 	            table.addCell(cell1);
 		        for (int i = 0; i < myExpensesHeaders.length; i++) {
 		            String header = myExpensesHeaders[i];
@@ -204,6 +212,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder Client=new StringBuilder();
 		            StringBuilder StDate=new StringBuilder();
 		            StringBuilder edDate=new StringBuilder();
+		            StringBuilder purposeStringBuilder =new StringBuilder();
 			        orderedList.add(new ListItem(reqNameBuilder.append("Expense Id :").append(expenseDetails.getExpenseId()).toString()));
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(expenseDetails.getProjectMembers().getProjects().getProjectName()).toString()));
 			       if(null != expenseDetails.getClientName()){
@@ -215,7 +224,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        }
 			        if(null != expenseDetails.getEndDate()){
 			        	String EndDate = Constants.DMY.format(expenseDetails.getEndDate());
-			        	orderedList.add(new ListItem(edDate.append("Start Date :").append(EndDate).toString()));
+			        	orderedList.add(new ListItem(edDate.append("End Date :").append(EndDate).toString()));
+			        }
+			        if(null != expenseDetails.getEndDate()){
+			        	orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append(expenseDetails.getPurpose()).toString()));
 			        }
 			        document.add(orderedList);
 			        
@@ -234,7 +246,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			return file;
 	}
 
-	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser) {
+	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser) throws Exception {
 		String userArray[] = new String[myExpensesHeaders.length];
 				if(null != expEntries.getExpensesCategoryId()){
 					if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
@@ -269,11 +281,19 @@ public class ExpensesServiceImpl implements ExpensesService{
 			   }else{
 				   userArray[5] = "--";
 			 }
-			  userArray[6] = "NEED TO WORK ON IT";
+			
+			/*Countries country = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+			if(!country.getCurrency().equalsIgnoreCase(expEntries.getCurrencyType())){
+				 Float amount = conversionUtil.convert(expEntries.getCurrencyType(),country.getCurrency(),expEntries.getAmount());
+				 String countryCode = country.getCurrency();
+				 userArray[6] =countryCode+""+amount.toString();
+				}else{
+					userArray[6] ="--";	
+				}*/
 			 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
-				   userArray[7] = expEntries.getDescription();
+				   userArray[6] = expEntries.getDescription();
 			   }else{
-				   userArray[7] = "--";
+				   userArray[6] = "--";
 			 }
 	return userArray;
 	}
@@ -291,11 +311,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 		List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
 		
 		for (ExpensesEntries expensesEntries : expenseEntries) {
-			writeRow = createExcelsheet.createRow(column + 9);
+			writeRow = createExcelsheet.createRow(column + 8);
 			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries);
 			column++;
 		}
-		 //file = new File(orgLoc.getOrg().getOrgName() + "_Expenses_" + dateFormat.format(new Date()) + ".xls");
 		 file = File.createTempFile(orgLoc.getOrg().getOrgName() + "_ExpensesApproval_" + dateFormat.format(new Date()),".xls");
 		 file.setReadable(true);
 		FileOutputStream fos = new FileOutputStream(file);
@@ -339,11 +358,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 		writeRow.createCell(5).setCellValue(amount.append(expEntries.getAmount()).toString());
 		createExcelsheet.autoSizeColumn(5);
 	   }
-	writeRow.createCell(6).setCellValue( "NEED TO WORK ON IT");
-	createExcelsheet.autoSizeColumn(6);
 	 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
-		 writeRow.createCell(7).setCellValue( expEntries.getDescription());
-		 createExcelsheet.autoSizeColumn(7);
+		 writeRow.createCell(6).setCellValue( expEntries.getDescription());
+		 createExcelsheet.autoSizeColumn(6);
 	   }
 		return createExcelsheet;
 	}
@@ -352,7 +369,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp) {
 		
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-		writeRow = createExcelsheet.createRow(1);
+		writeRow = createExcelsheet.createRow(0);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
@@ -363,7 +380,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	    cell2.setCellValue(exp.getExpenseId());
 		cell2.setCellStyle(style);
 
-		writeRow = createExcelsheet.createRow(2);
+		writeRow = createExcelsheet.createRow(1);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
@@ -375,7 +392,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell4.setCellValue(exp.getProjectMembers().getProjects().getProjectName());
 		cell4.setCellStyle(style);
 
-		writeRow = createExcelsheet.createRow(3);
+		writeRow = createExcelsheet.createRow(2);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
@@ -388,7 +405,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell6.setCellStyle(style);
 		
 		
-		writeRow = createExcelsheet.createRow(4);
+		writeRow = createExcelsheet.createRow(3);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
@@ -401,7 +418,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell8.setCellValue(StrtDate);
 		cell8.setCellStyle(style);
 		
-		writeRow = createExcelsheet.createRow(5);
+		writeRow = createExcelsheet.createRow(4);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
@@ -420,7 +437,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell10.setCellValue(EndDate);
 		cell10.setCellStyle(style);
 		
-		writeRow = createExcelsheet.createRow(6);
+		writeRow = createExcelsheet.createRow(5);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 
@@ -432,7 +449,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell12.setCellValue(exp.getPurpose());
 		cell12.setCellStyle(style);
 		String headers [] = Constants.MY_EXPENSES_HEADERS;
-		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,8);
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,7);
 
 		return createExcelsheet;
 	}
