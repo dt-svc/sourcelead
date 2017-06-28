@@ -503,8 +503,17 @@ public class ContractRestController {
 		
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
-		List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+		
+		List<RequirementSubmission> requirementSubmissionsList = new ArrayList<>();
+		
+		if(!"".equalsIgnoreCase(requirementId)){
+			requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByRequirementId(Long.parseLong(requirementId), sowType,loginOrgLocation);
+		}
+		else{
+			 requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
+		}
+		
+		//List<RequirementSubmission> requirementSubmissionsList = requirementSubmissionService.getSubmissionsForSOWByOrgLocationId(sowType,loginOrgLocation);
 		if(requirementSubmissionsList.size() > 0){
 			for(RequirementSubmission requirementSubmission : requirementSubmissionsList){
 				StringBuffer candidateName = new StringBuffer(); 
@@ -515,6 +524,9 @@ public class ContractRestController {
 				}
 				if(null != requirementSubmission.getVendorLocationId()){
 					requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
+				}
+				if(null != requirementSubmission.getRequirement()){
+					requirementSubmission.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
 				}
 			}
 		}
